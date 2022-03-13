@@ -1333,44 +1333,38 @@ namespace Chummer
                             */
                             // If the character options permit initiation in create mode, show the Initiation page.
                             await UpdateInitiationCost();
-                            
-                            await tabInitiation.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Tab_Initiation"));
-                            await cmsMetamagic.DoThreadSafeAsync(async () => tsMetamagicAddMetamagic.Text = await LanguageManager.GetStringAsync("Button_AddMetamagic"));
-                            await cmdAddMetamagic.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Button_AddInitiateGrade"));
-                            await cmdDeleteMetamagic.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Button_RemoveInitiateGrade"));
-                            await gpbInitiationType.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_InitiationType"));
-                            await gpbInitiationGroup.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_InitiationGroup"));
-                            await chkInitiationOrdeal.DoThreadSafeAsync(async x => x.Text
-                                                                            = (await LanguageManager.GetStringAsync(
-                                                                                "Checkbox_InitiationOrdeal"))
-                                                                            .Replace(
-                                                                                "{0}",
-                                                                                CharacterObjectSettings
-                                                                                    .KarmaMAGInitiationOrdealPercent
-                                                                                    .ToString(
-                                                                                        "P",
-                                                                                        GlobalSettings.CultureInfo)));
-                            await chkInitiationGroup.DoThreadSafeAsync(async x => x.Text
-                                                                           = (await LanguageManager.GetStringAsync(
-                                                                               "Checkbox_InitiationGroup"))
-                                                                           .Replace(
-                                                                               "{0}",
-                                                                               CharacterObjectSettings
-                                                                                   .KarmaMAGInitiationGroupPercent
-                                                                                   .ToString(
-                                                                                       "P",
-                                                                                       GlobalSettings.CultureInfo)));
-                            await chkInitiationSchooling.DoThreadSafeAsync(async x => x.Text
-                                                                               = (await LanguageManager.GetStringAsync(
-                                                                                   "Checkbox_InitiationSchooling"))
-                                                                               .Replace(
-                                                                                   "{0}",
-                                                                                   CharacterObjectSettings
-                                                                                       .KarmaMAGInitiationSchoolingPercent
-                                                                                       .ToString(
-                                                                                           "P",
-                                                                                           GlobalSettings.CultureInfo)));
-                            await chkInitiationSchooling.DoThreadSafeAsync(x => x.Enabled = true);
+
+                            string strText = await LanguageManager.GetStringAsync("Tab_Initiation");
+                            await tabInitiation.DoThreadSafeAsync(x => x.Text = strText);
+                            strText = await LanguageManager.GetStringAsync("Button_AddMetamagic");
+                            await cmsMetamagic.DoThreadSafeAsync(() => tsMetamagicAddMetamagic.Text = strText);
+                            strText = await LanguageManager.GetStringAsync("Button_AddInitiateGrade");
+                            await cmdAddMetamagic.DoThreadSafeAsync(x => x.Text = strText);
+                            strText = await LanguageManager.GetStringAsync("Button_RemoveInitiateGrade");
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(x => x.Text = strText);
+                            strText = await LanguageManager.GetStringAsync("String_InitiationType");
+                            await gpbInitiationType.DoThreadSafeAsync(x => x.Text = strText);
+                            strText = await LanguageManager.GetStringAsync("String_InitiationGroup");
+                            await gpbInitiationGroup.DoThreadSafeAsync(x => x.Text = strText);
+                            strText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
+                                                        "Checkbox_InitiationOrdeal"),
+                                                    CharacterObjectSettings.KarmaMAGInitiationOrdealPercent.ToString(
+                                                        "P", GlobalSettings.CultureInfo));
+                            await chkInitiationOrdeal.DoThreadSafeAsync(x => x.Text = strText);
+                            strText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
+                                                        "Checkbox_InitiationGroup"),
+                                                    CharacterObjectSettings.KarmaMAGInitiationGroupPercent.ToString(
+                                                        "P", GlobalSettings.CultureInfo));
+                            await chkInitiationGroup.DoThreadSafeAsync(x => x.Text = strText);
+                            strText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
+                                                        "Checkbox_InitiationSchooling"),
+                                                    CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent.ToString(
+                                                        "P", GlobalSettings.CultureInfo));
+                            await chkInitiationSchooling.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = strText;
+                                x.Enabled = true;
+                            });
                             await cmsMetamagic.DoThreadSafeAsync(() =>
                             {
                                 tsMetamagicAddArt.Visible = true;
@@ -1378,12 +1372,14 @@ namespace Chummer
                                 tsMetamagicAddEnhancement.Visible = true;
                                 tsMetamagicAddRitual.Visible = true;
                             });
-
-                            string strInitTip = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Tip_ImproveInitiateGrade")
-                                                              , (CharacterObject.InitiateGrade + 1).ToString(GlobalSettings.CultureInfo)
-                                                              , (CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectSettings.KarmaInitiation).ToString(GlobalSettings.CultureInfo));
+                            string strInitTip = string.Format(GlobalSettings.CultureInfo,
+                                                              await LanguageManager.GetStringAsync(
+                                                                  "Tip_ImproveInitiateGrade")
+                                                              , CharacterObject.InitiateGrade + 1
+                                                              , CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectSettings.KarmaInitiation);
                             await cmdAddMetamagic.SetToolTipAsync(strInitTip);
-                            await chkJoinGroup.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Checkbox_JoinedGroup"));
+                            strText = await LanguageManager.GetStringAsync("Checkbox_JoinedGroup");
+                            await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strText);
 
                             if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.MAG))
                             {
@@ -1423,54 +1419,49 @@ namespace Chummer
                         // Change to the status of RES being enabled.
                         if (CharacterObject.RESEnabled)
                         {
+                            if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
+                                tabCharacterTabs.TabPages.Insert(3, tabInitiation);
+
                             /*
                             int intEssenceLoss = 0;
                             if (!CharacterObjectSettings.ESSLossReducesMaximumOnly)
                                 intEssenceLoss = _objCharacter.EssencePenalty;
                             // If the character options permit submersion in create mode, show the Initiation page.
                             */
+
                             await UpdateInitiationCost();
 
-                            if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
-                                tabCharacterTabs.TabPages.Insert(3, tabInitiation);
-
-                            await tabInitiation.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Tab_Submersion"));
-                            await cmsMetamagic.DoThreadSafeAsync(async () => tsMetamagicAddMetamagic.Text = await LanguageManager.GetStringAsync("Button_AddEcho"));
-                            await cmdAddMetamagic.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Button_AddSubmersionGrade"));
-                            await cmdDeleteMetamagic.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Button_RemoveSubmersionGrade"));
-                            await gpbInitiationType.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_SubmersionType"));
-                            await gpbInitiationGroup.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_SubmersionNetwork"));
-                            await chkInitiationOrdeal.DoThreadSafeAsync(async x => x.Text
-                                                                            = (await LanguageManager.GetStringAsync(
-                                                                                "Checkbox_SubmersionTask"))
-                                                                            .Replace(
-                                                                                "{0}",
-                                                                                CharacterObjectSettings
-                                                                                    .KarmaRESInitiationOrdealPercent
-                                                                                    .ToString(
-                                                                                        "P",
-                                                                                        GlobalSettings.CultureInfo)));
-                            await chkInitiationGroup.DoThreadSafeAsync(async x => x.Text
-                                                                          = (await LanguageManager.GetStringAsync(
-                                                                              "Checkbox_NetworkSubmersion"))
-                                                                          .Replace(
-                                                                              "{0}",
-                                                                              CharacterObjectSettings
-                                                                                  .KarmaRESInitiationGroupPercent
-                                                                                  .ToString(
-                                                                                      "P",
-                                                                                      GlobalSettings.CultureInfo)));
-                            await chkInitiationSchooling.DoThreadSafeAsync(async x => x.Text
-                                                                              = (await LanguageManager.GetStringAsync(
-                                                                                  "Checkbox_InitiationSchooling"))
-                                                                              .Replace(
-                                                                                  "{0}",
-                                                                                  CharacterObjectSettings
-                                                                                      .KarmaRESInitiationSchoolingPercent
-                                                                                      .ToString(
-                                                                                          "P",
-                                                                                          GlobalSettings.CultureInfo)));
-                            await chkInitiationSchooling.DoThreadSafeAsync(x => x.Enabled = CharacterObjectSettings.AllowTechnomancerSchooling);
+                            string strText = await LanguageManager.GetStringAsync("Tab_Submersion");
+                            await tabInitiation.DoThreadSafeAsync(x => x.Text = strText);
+                            strText = await LanguageManager.GetStringAsync("Button_AddEcho");
+                            await cmsMetamagic.DoThreadSafeAsync(() => tsMetamagicAddMetamagic.Text = strText);
+                            strText = await LanguageManager.GetStringAsync("Button_AddSubmersionGrade");
+                            await cmdAddMetamagic.DoThreadSafeAsync(x => x.Text = strText);
+                            strText = await LanguageManager.GetStringAsync("Button_RemoveSubmersionGrade");
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(x => x.Text = strText);
+                            strText = await LanguageManager.GetStringAsync("String_SubmersionType");
+                            await gpbInitiationType.DoThreadSafeAsync(x => x.Text = strText);
+                            strText = await LanguageManager.GetStringAsync("String_SubmersionNetwork");
+                            await gpbInitiationGroup.DoThreadSafeAsync(x => x.Text = strText);
+                            strText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
+                                                        "Checkbox_SubmersionTask"),
+                                                    CharacterObjectSettings.KarmaRESInitiationOrdealPercent.ToString(
+                                                        "P", GlobalSettings.CultureInfo));
+                            await chkInitiationOrdeal.DoThreadSafeAsync(x => x.Text = strText);
+                            strText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
+                                                        "Checkbox_NetworkSubmersion"),
+                                                    CharacterObjectSettings.KarmaRESInitiationGroupPercent.ToString(
+                                                        "P", GlobalSettings.CultureInfo));
+                            await chkInitiationGroup.DoThreadSafeAsync(x => x.Text = strText);
+                            strText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
+                                                        "Checkbox_InitiationSchooling"),
+                                                    CharacterObjectSettings.KarmaRESInitiationSchoolingPercent.ToString(
+                                                        "P", GlobalSettings.CultureInfo));
+                            await chkInitiationSchooling.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = strText;
+                                x.Enabled = CharacterObjectSettings.AllowTechnomancerSchooling;
+                            });
                             await cmsMetamagic.DoThreadSafeAsync(() =>
                             {
                                 tsMetamagicAddArt.Visible = false;
@@ -1478,14 +1469,16 @@ namespace Chummer
                                 tsMetamagicAddEnhancement.Visible = false;
                                 tsMetamagicAddRitual.Visible = false;
                             });
-
-                            string strInitTip = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Tip_ImproveSubmersionGrade")
-                                                              , (CharacterObject.SubmersionGrade + 1).ToString(GlobalSettings.CultureInfo)
-                                                              , (CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectSettings.KarmaInitiation).ToString(GlobalSettings.CultureInfo));
+                            string strInitTip = string.Format(GlobalSettings.CultureInfo,
+                                                              await LanguageManager.GetStringAsync(
+                                                                  "Tip_ImproveSubmersionGrade")
+                                                              , CharacterObject.SubmersionGrade + 1
+                                                              , CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectSettings.KarmaInitiation);
                             await cmdAddMetamagic.SetToolTipAsync(strInitTip);
-                            await chkJoinGroup.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Checkbox_JoinedNetwork"));
+                            strText = await LanguageManager.GetStringAsync("Checkbox_JoinedNetwork");
+                            await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strText);
 
-                            if (!(await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.RES)))
+                            if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.RES))
                             {
                                 CharacterObject.AttributeSection.Attributes.Add(CharacterObject.RES);
                             }
@@ -1542,12 +1535,12 @@ namespace Chummer
 
                             string strPrimaryArm = CharacterObject.PrimaryArm;
 
-                            await cboPrimaryArm.DoThreadSafeAsync(async cboThis =>
+                            await cboPrimaryArm.PopulateWithListItemsAsync(lstPrimaryArm);
+                            await cboPrimaryArm.DoThreadSafeAsync(x =>
                             {
-                                await cboThis.PopulateWithListItemsAsync(lstPrimaryArm);
-                                cboThis.SelectedValue = strPrimaryArm;
-                                if (cboThis.SelectedIndex == -1)
-                                    cboThis.SelectedIndex = 0;
+                                x.SelectedValue = strPrimaryArm;
+                                if (x.SelectedIndex == -1)
+                                    x.SelectedIndex = 0;
                             });
                         }
                     }
@@ -7077,12 +7070,12 @@ namespace Chummer
                     await lblQualitySource.DoThreadSafeAsync(x => x.Visible = true, token);
                     await lblQualityBP.DoThreadSafeAsync(x => x.Visible = true, token);
                     await objQuality.SetSourceDetailAsync(lblQualitySource, token);
-                    await lblQualityBP.DoThreadSafeAsync(async x => x.Text
-                                                             = (objQuality.BP * objQuality.Levels
-                                                                              * CharacterObjectSettings.KarmaQuality)
-                                                               .ToString(GlobalSettings.CultureInfo) +
-                                                               await LanguageManager.GetStringAsync("String_Space")
-                                                               + await LanguageManager.GetStringAsync("String_Karma"), token);
+                    string strText
+                        = (objQuality.BP * objQuality.Levels * CharacterObjectSettings.KarmaQuality).ToString(
+                              GlobalSettings.CultureInfo) +
+                          await LanguageManager.GetStringAsync("String_Space")
+                          + await LanguageManager.GetStringAsync("String_Karma");
+                    await lblQualityBP.DoThreadSafeAsync(x => x.Text = strText, token);
                 }
             }
             finally
@@ -9118,20 +9111,23 @@ namespace Chummer
         private async Task RefreshSelectedMetamagic(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (!CharacterObject.InitiationEnabled)
+                return;
             IsRefreshing = true;
             try
             {
+                string strText;
                 switch (await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token))
                 {
                     case Metamagic objMetamagic:
                         {
-                            await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
+                            strText = await LanguageManager.GetStringAsync(
+                                objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic
+                                    ? "Button_RemoveMetamagic"
+                                    : "Button_RemoveEcho");
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(x =>
                             {
-                                x.Text = await LanguageManager.GetStringAsync(
-                                    objMetamagic.SourceType
-                                    == Improvement.ImprovementSource.Metamagic
-                                        ? "Button_RemoveMetamagic"
-                                        : "Button_RemoveEcho");
+                                x.Text = strText;
                                 x.Enabled = objMetamagic.Grade >= 0;
                             }, token);
                             await objMetamagic.SetSourceDetailAsync(lblMetamagicSource, token);
@@ -9139,12 +9135,13 @@ namespace Chummer
                         }
                     case Art objArt:
                         {
-                            await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
+                            strText = await LanguageManager.GetStringAsync(
+                                objArt.SourceType == Improvement.ImprovementSource.Metamagic
+                                    ? "Button_RemoveMetamagic"
+                                    : "Button_RemoveEcho");
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(x =>
                             {
-                                x.Text = await LanguageManager.GetStringAsync(
-                                    objArt.SourceType == Improvement.ImprovementSource.Metamagic
-                                        ? "Button_RemoveMetamagic"
-                                        : "Button_RemoveEcho");
+                                x.Text = strText;
                                 x.Enabled = objArt.Grade >= 0;
                             }, token);
                             await objArt.SetSourceDetailAsync(lblMetamagicSource, token);
@@ -9152,10 +9149,10 @@ namespace Chummer
                         }
                     case Spell objSpell:
                         {
-                            await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
+                            strText = await LanguageManager.GetStringAsync("Button_RemoveMetamagic");
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(x =>
                             {
-                                x.Text = await LanguageManager.GetStringAsync(
-                                    "Button_RemoveMetamagic");
+                                x.Text = strText;
                                 x.Enabled = objSpell.Grade >= 0;
                             }, token);
                             await objSpell.SetSourceDetailAsync(lblMetamagicSource, token);
@@ -9163,9 +9160,10 @@ namespace Chummer
                         }
                     case ComplexForm objComplexForm:
                         {
-                            await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
+                            strText = await LanguageManager.GetStringAsync("Button_RemoveEcho");
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(x =>
                             {
-                                x.Text = await LanguageManager.GetStringAsync("Button_RemoveEcho");
+                                x.Text = strText;
                                 x.Enabled = objComplexForm.Grade >= 0;
                             }, token);
                             await objComplexForm.SetSourceDetailAsync(lblMetamagicSource, token);
@@ -9173,28 +9171,32 @@ namespace Chummer
                         }
                     case Enhancement objEnhancement:
                         {
-                            await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
+                            strText = await LanguageManager.GetStringAsync(
+                                objEnhancement.SourceType == Improvement.ImprovementSource.Metamagic
+                                    ? "Button_RemoveMetamagic"
+                                    : "Button_RemoveEcho");
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(x =>
                             {
-                                x.Text = await LanguageManager.GetStringAsync(
-                                    objEnhancement.SourceType == Improvement.ImprovementSource.Metamagic
-                                        ? "Button_RemoveMetamagic"
-                                        : "Button_RemoveEcho");
+                                x.Text = strText;
                                 x.Enabled = objEnhancement.Grade >= 0;
                             }, token);
                             await objEnhancement.SetSourceDetailAsync(lblMetamagicSource, token);
                             break;
                         }
                     default:
-                        await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
+                    {
+                        strText = await LanguageManager.GetStringAsync(
+                            CharacterObject.MAGEnabled
+                                ? "Button_RemoveInitiateGrade"
+                                : "Button_RemoveSubmersionGrade");
+                        await cmdDeleteMetamagic.DoThreadSafeAsync(x =>
                         {
-                            x.Text = await LanguageManager.GetStringAsync(
-                                CharacterObject.MAGEnabled
-                                    ? "Button_RemoveInitiateGrade"
-                                    : "Button_RemoveSubmersionGrade");
+                            x.Text = strText;
                             x.Enabled = true;
                         }, token);
                         await SourceString.Blank.SetControlAsync(lblMetamagicSource, token);
                         break;
+                    }
                 }
             }
             finally
@@ -10637,12 +10639,13 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasRating objHasRating)
                 {
-                    await lblCyberwareRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
-                                                                        GlobalSettings.CultureInfo,
-                                                                        await LanguageManager.GetStringAsync(
-                                                                            "Label_RatingFormat"),
-                                                                        await LanguageManager.GetStringAsync(
-                                                                            objHasRating.RatingLabel)));
+                    string strText = string.Format(
+                        GlobalSettings.CultureInfo,
+                        await LanguageManager.GetStringAsync(
+                            "Label_RatingFormat"),
+                        await LanguageManager.GetStringAsync(
+                            objHasRating.RatingLabel));
+                    await lblCyberwareRatingLabel.DoThreadSafeAsync(x => x.Text = strText);
                 }
                 token.ThrowIfCancellationRequested();
                 string strESSFormat = CharacterObjectSettings.EssenceFormat;
@@ -10685,7 +10688,8 @@ namespace Chummer
 
                         // gpbCyberwareCommon
                         await lblCyberwareName.DoThreadSafeAsync(x => x.Text = objCyberware.CurrentDisplayName);
-                        await lblCyberwareCategory.DoThreadSafeAsync(async x => x.Text = await objCyberware.DisplayCategoryAsync(GlobalSettings.Language));
+                        string strText = await objCyberware.DisplayCategoryAsync(GlobalSettings.Language);
+                        await lblCyberwareCategory.DoThreadSafeAsync(x => x.Text = strText);
                         // Cyberware Grade is not available for Genetech items.
                         // Cyberware Grade is only available on root-level items (sub-components cannot have a different Grade than the piece they belong to).
                         await cboCyberwareGrade.DoThreadSafeAsync(x => x.Enabled = objCyberware.Parent == null
@@ -10778,17 +10782,19 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         if (CharacterObject.BlackMarketDiscount)
                         {
-                            await chkCyberwareBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                            bool blnEnabled = CharacterObject.GenerateBlackMarketMappings(
+                                                                 await (await CharacterObject
+                                                                         .LoadDataXPathAsync(
+                                                                             objCyberware.SourceType
+                                                                             == Improvement.ImprovementSource.Cyberware
+                                                                                 ? "cyberware.xml"
+                                                                                 : "bioware.xml"))
+                                                                     .SelectSingleNodeAndCacheExpressionAsync(
+                                                                         "/chummer"))
+                                                             .Contains(objCyberware.Category);
+                            await chkCyberwareBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
-                                x.Enabled = CharacterObject.GenerateBlackMarketMappings(
-                                                               await (await CharacterObject
-                                                                       .LoadDataXPathAsync(
-                                                                           objCyberware.SourceType
-                                                                           == Improvement.ImprovementSource.Cyberware
-                                                                               ? "cyberware.xml"
-                                                                               : "bioware.xml"))
-                                                                   .SelectSingleNodeAndCacheExpressionAsync("/chummer"))
-                                                           .Contains(objCyberware.Category);
+                                x.Enabled = blnEnabled;
                                 x.Checked = !string.IsNullOrEmpty(objCyberware.ParentID)
                                     ? objCyberware.Parent?.DiscountCost == true
                                     : objCyberware.DiscountCost;
@@ -10904,15 +10910,16 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         if (CharacterObject.BlackMarketDiscount)
                         {
-                            await chkCyberwareBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                            bool blnEnabled = !objGear.IncludedInParent && CharacterObject
+                                                                           .GenerateBlackMarketMappings(
+                                                                               await (await CharacterObject
+                                                                                       .LoadDataXPathAsync("gear.xml"))
+                                                                                   .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                       "/chummer"))
+                                                                           .Contains(objGear.Category);
+                            await chkCyberwareBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
-                                x.Enabled = !objGear.IncludedInParent && CharacterObject
-                                                                         .GenerateBlackMarketMappings(
-                                                                             await (await CharacterObject
-                                                                                     .LoadDataXPathAsync("gear.xml"))
-                                                                                 .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                     "/chummer"))
-                                                                         .Contains(objGear.Category);
+                                x.Enabled = blnEnabled;
                                 x.Checked = objGear.IncludedInParent
                                     ? (objGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
                                     : objGear.DiscountCost;
@@ -11007,12 +11014,13 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasRating objHasRating)
                 {
-                    await lblWeaponRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
-                                                                     GlobalSettings.CultureInfo,
-                                                                     await LanguageManager.GetStringAsync(
-                                                                         "Label_RatingFormat"),
-                                                                     await LanguageManager.GetStringAsync(
-                                                                         objHasRating.RatingLabel)));
+                    string strText = string.Format(
+                        GlobalSettings.CultureInfo,
+                        await LanguageManager.GetStringAsync(
+                            "Label_RatingFormat"),
+                        await LanguageManager.GetStringAsync(
+                            objHasRating.RatingLabel));
+                    await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Text = strText);
                 }
                 token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasStolenProperty loot
@@ -11048,7 +11056,8 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         // gpbWeaponsCommon
                         await lblWeaponName.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayName);
-                        await lblWeaponCategory.DoThreadSafeAsync(async x => x.Text = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language));
+                        string strText = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language);
+                        await lblWeaponCategory.DoThreadSafeAsync(x => x.Text = strText);
                         await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
                         await lblWeaponRating.DoThreadSafeAsync(x => x.Visible = false);
                         await lblWeaponCapacityLabel.DoThreadSafeAsync(x => x.Visible = false);
@@ -11081,7 +11090,11 @@ namespace Chummer
                                 await lblWeaponSlots.DoThreadSafeAsync(x => x.Text = objWeapon.AccessoryMounts);
                         }
                         else
-                            await lblWeaponSlots.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_None"));
+                        {
+                            string strNone = await LanguageManager.GetStringAsync("String_None");
+                            await lblWeaponSlots.DoThreadSafeAsync(x => x.Text = strNone);
+                        }
+
                         token.ThrowIfCancellationRequested();
                         await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = true);
                         await lblWeaponConceal.DoThreadSafeAsync(x =>
@@ -11089,11 +11102,12 @@ namespace Chummer
                             x.Visible = true;
                             x.Text = objWeapon.DisplayConcealability;
                         });
-                        await chkWeaponEquipped.DoThreadSafeAsync(async x =>
+                        strText = await LanguageManager.GetStringAsync(objWeapon.Parent == null
+                                                                           ? "Checkbox_Equipped"
+                                                                           : "Checkbox_Installed");
+                        await chkWeaponEquipped.DoThreadSafeAsync(x =>
                         {
-                            x.Text = await LanguageManager.GetStringAsync(objWeapon.Parent == null
-                                                                              ? "Checkbox_Equipped"
-                                                                              : "Checkbox_Installed");
+                            x.Text = strText;
                             x.Enabled = !objWeapon.IncludedInWeapon;
                             x.Checked = objWeapon.Equipped;
                         });
@@ -11106,16 +11120,17 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         if (CharacterObject.BlackMarketDiscount)
                         {
-                            await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                            bool blnEnabled = !objWeapon.IncludedInWeapon && CharacterObject
+                                                                             .GenerateBlackMarketMappings(
+                                                                                 await (await CharacterObject
+                                                                                         .LoadDataXPathAsync(
+                                                                                             "weapons.xml"))
+                                                                                     .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                         "/chummer"))
+                                                                             .Contains(objWeapon.Category);
+                            await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
-                                x.Enabled = !objWeapon.IncludedInWeapon && CharacterObject
-                                                                           .GenerateBlackMarketMappings(
-                                                                               await (await CharacterObject
-                                                                                       .LoadDataXPathAsync(
-                                                                                           "weapons.xml"))
-                                                                                   .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                       "/chummer"))
-                                                                           .Contains(objWeapon.Category);
+                                x.Enabled = blnEnabled;
                                 x.Checked = objWeapon.IncludedInWeapon
                                     ? objWeapon.Parent?.DiscountCost == true
                                     : objWeapon.DiscountCost;
@@ -11131,7 +11146,8 @@ namespace Chummer
                         }
                         token.ThrowIfCancellationRequested();
                         // gpbWeaponsWeapon
-                        await gpbWeaponsWeapon.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_Weapon"));
+                        strText = await LanguageManager.GetStringAsync("String_Weapon");
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Text = strText);
                         await lblWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = true);
                         await lblWeaponDamage.DoThreadSafeAsync(x =>
                         {
@@ -11274,7 +11290,8 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         // gpbWeaponsCommon
                         await lblWeaponName.DoThreadSafeAsync(x => x.Text = objSelectedAccessory.CurrentDisplayName);
-                        await lblWeaponCategory.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_WeaponAccessory"));
+                        string strText = await LanguageManager.GetStringAsync("String_WeaponAccessory");
+                        await lblWeaponCategory.DoThreadSafeAsync(x => x.Text = strText);
                         if (objSelectedAccessory.MaxRating > 0)
                         {
                             await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
@@ -11349,12 +11366,12 @@ namespace Chummer
                                 = objSelectedAccessory.TotalConcealability.ToString(
                                     "+#,0;-#,0;0", GlobalSettings.CultureInfo);
                         });
-                        await chkWeaponEquipped.DoThreadSafeAsync(async x =>
-                        {
-                            x.Text
-                                = await LanguageManager.GetStringAsync(objSelectedAccessory.Parent == null
+                        strText = await LanguageManager.GetStringAsync(objSelectedAccessory.Parent == null
                                                                            ? "Checkbox_Equipped"
                                                                            : "Checkbox_Installed");
+                        await chkWeaponEquipped.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = strText;
                             x.Enabled = !objSelectedAccessory.IncludedInWeapon;
                             x.Checked = objSelectedAccessory.Equipped;
                         });
@@ -11366,16 +11383,17 @@ namespace Chummer
                         });
                         if (CharacterObject.BlackMarketDiscount)
                         {
-                            await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                            bool blnEnabled = !objSelectedAccessory.IncludedInWeapon
+                                              && CharacterObject
+                                                 .GenerateBlackMarketMappings(
+                                                     await (await CharacterObject
+                                                             .LoadDataXPathAsync("weapons.xml"))
+                                                         .SelectSingleNodeAndCacheExpressionAsync(
+                                                             "/chummer"))
+                                                 .Contains(objSelectedAccessory.Parent.Category);
+                            await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
-                                x.Enabled = !objSelectedAccessory.IncludedInWeapon
-                                            && CharacterObject
-                                               .GenerateBlackMarketMappings(
-                                                   await (await CharacterObject
-                                                           .LoadDataXPathAsync("weapons.xml"))
-                                                       .SelectSingleNodeAndCacheExpressionAsync(
-                                                           "/chummer"))
-                                               .Contains(objSelectedAccessory.Parent.Category);
+                                x.Enabled = blnEnabled;
                                 x.Checked = objSelectedAccessory.IncludedInWeapon
                                     ? objSelectedAccessory.Parent?.DiscountCost == true
                                     : objSelectedAccessory.DiscountCost;
@@ -11391,7 +11409,8 @@ namespace Chummer
                         }
                         token.ThrowIfCancellationRequested();
                         // gpbWeaponsWeapon
-                        await gpbWeaponsWeapon.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_WeaponAccessory"));
+                        strText = await LanguageManager.GetStringAsync("String_WeaponAccessory");
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Text = strText);
                         if (string.IsNullOrEmpty(objSelectedAccessory.Damage))
                         {
                             await lblWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = false);
@@ -11552,10 +11571,11 @@ namespace Chummer
                         await lblWeaponSlots.DoThreadSafeAsync(x => x.Visible = false);
                         await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = false);
                         await lblWeaponConceal.DoThreadSafeAsync(x => x.Visible = false);
-                        await chkWeaponEquipped.DoThreadSafeAsync(async x =>
+                        string strText = await LanguageManager.GetStringAsync(
+                            "Checkbox_Equipped");
+                        await chkWeaponEquipped.DoThreadSafeAsync(x =>
                         {
-                            x.Text = await LanguageManager.GetStringAsync(
-                                "Checkbox_Equipped");
+                            x.Text = strText;
                             x.Enabled = !objGear.IncludedInParent;
                             x.Checked = objGear.Equipped;
                         });
@@ -11563,15 +11583,16 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         if (CharacterObject.BlackMarketDiscount)
                         {
-                            await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                            bool blnEnabled = !objGear.IncludedInParent && CharacterObject
+                                                                           .GenerateBlackMarketMappings(
+                                                                               await (await CharacterObject
+                                                                                       .LoadDataXPathAsync("gear.xml"))
+                                                                                   .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                       "/chummer"))
+                                                                           .Contains(objGear.Category);
+                            await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
-                                x.Enabled = !objGear.IncludedInParent && CharacterObject
-                                                                         .GenerateBlackMarketMappings(
-                                                                             await (await CharacterObject
-                                                                                     .LoadDataXPathAsync("gear.xml"))
-                                                                                 .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                     "/chummer"))
-                                                                         .Contains(objGear.Category);
+                                x.Enabled = blnEnabled;
                                 x.Checked = objGear.IncludedInParent
                                     ? (objGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
                                     : objGear.DiscountCost;
@@ -11688,12 +11709,13 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasRating objHasRating)
                 {
-                    await lblArmorRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
-                                                                    GlobalSettings.CultureInfo,
-                                                                    await LanguageManager.GetStringAsync(
-                                                                        "Label_RatingFormat"),
-                                                                    await LanguageManager.GetStringAsync(
-                                                                        objHasRating.RatingLabel)));
+                    string strText = string.Format(
+                        GlobalSettings.CultureInfo,
+                        await LanguageManager.GetStringAsync(
+                            "Label_RatingFormat"),
+                        await LanguageManager.GetStringAsync(
+                            objHasRating.RatingLabel));
+                    await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Text = strText);
                 }
                 token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is Armor objArmor)
@@ -11730,14 +11752,15 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (CharacterObject.BlackMarketDiscount)
                     {
-                        await chkArmorBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                        bool blnEnabled = CharacterObject
+                                          .GenerateBlackMarketMappings(
+                                              await (await CharacterObject.LoadDataXPathAsync(
+                                                      "armor.xml"))
+                                                  .SelectSingleNodeAndCacheExpressionAsync(
+                                                      "/chummer")).Contains(objArmor.Category);
+                        await chkArmorBlackMarketDiscount.DoThreadSafeAsync(x =>
                         {
-                            x.Enabled = CharacterObject
-                                        .GenerateBlackMarketMappings(
-                                            await (await CharacterObject.LoadDataXPathAsync(
-                                                    "armor.xml"))
-                                                .SelectSingleNodeAndCacheExpressionAsync(
-                                                    "/chummer")).Contains(objArmor.Category);
+                            x.Enabled = blnEnabled;
                             x.Checked = objArmor.DiscountCost;
                         });
                     }
@@ -11814,16 +11837,19 @@ namespace Chummer
                                 ? "[0]"
                                 : objArmorMod.CalculatedCapacity);
                         if (!string.IsNullOrEmpty(objArmorMod.GearCapacity))
-                            await lblArmorCapacity.DoThreadSafeAsync(async x => x.Text
-                                                                         = objArmorMod.GearCapacity + '/'
-                                                                         + lblArmorCapacity.Text
-                                                                         + strSpace + '('
-                                                                         +
-                                                                         objArmorMod.GearCapacityRemaining.ToString(
-                                                                             "#,0.##", GlobalSettings.CultureInfo) +
-                                                                         strSpace
-                                                                         + await LanguageManager.GetStringAsync(
-                                                                             "String_Remaining") + ')');
+                        {
+                            string strText = objArmorMod.GearCapacity + '/'
+                                                                      + lblArmorCapacity.Text
+                                                                      + strSpace + '('
+                                                                      +
+                                                                      objArmorMod.GearCapacityRemaining.ToString(
+                                                                          "#,0.##", GlobalSettings.CultureInfo) +
+                                                                      strSpace
+                                                                      + await LanguageManager.GetStringAsync(
+                                                                          "String_Remaining") + ')';
+                            await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = strText);
+                        }
+
                         if (objArmorMod.MaximumRating > 1)
                         {
                             await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
@@ -11858,16 +11884,17 @@ namespace Chummer
                         });
                         if (CharacterObject.BlackMarketDiscount)
                         {
-                            await chkArmorBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                            bool blnEnabled = !objArmorMod.IncludedInArmor && CharacterObject
+                                                                              .GenerateBlackMarketMappings(
+                                                                                  await (await CharacterObject
+                                                                                          .LoadDataXPathAsync(
+                                                                                              "armor.xml"))
+                                                                                      .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                          "/chummer/modcategories"))
+                                                                              .Contains(objArmorMod.Category);
+                            await chkArmorBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
-                                x.Enabled = !objArmorMod.IncludedInArmor && CharacterObject
-                                                                            .GenerateBlackMarketMappings(
-                                                                                await (await CharacterObject
-                                                                                        .LoadDataXPathAsync(
-                                                                                            "armor.xml"))
-                                                                                    .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                        "/chummer/modcategories"))
-                                                                            .Contains(objArmorMod.Category);
+                                x.Enabled = blnEnabled;
                                 x.Checked = objArmorMod.IncludedInArmor
                                     ? objArmorMod.Parent?.DiscountCost == true
                                     : objArmorMod.DiscountCost;
@@ -11945,17 +11972,18 @@ namespace Chummer
                                 });
                                 if (CharacterObject.BlackMarketDiscount)
                                 {
-                                    await chkArmorBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                                    bool blnEnabled = !objSelectedGear.IncludedInParent
+                                                      && CharacterObject
+                                                         .GenerateBlackMarketMappings(
+                                                             await (await CharacterObject
+                                                                     .LoadDataXPathAsync(
+                                                                         "gear.xml"))
+                                                                 .SelectSingleNodeAndCacheExpressionAsync(
+                                                                     "/chummer"))
+                                                         .Contains(objSelectedGear.Category);
+                                    await chkArmorBlackMarketDiscount.DoThreadSafeAsync(x =>
                                     {
-                                        x.Enabled = !objSelectedGear.IncludedInParent
-                                                    && CharacterObject
-                                                       .GenerateBlackMarketMappings(
-                                                           await (await CharacterObject
-                                                                   .LoadDataXPathAsync(
-                                                                       "gear.xml"))
-                                                               .SelectSingleNodeAndCacheExpressionAsync(
-                                                                   "/chummer"))
-                                                       .Contains(objSelectedGear.Category);
+                                        x.Enabled = blnEnabled;
                                         x.Checked = objSelectedGear.IncludedInParent
                                             ? (objSelectedGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
                                             : objSelectedGear.DiscountCost;

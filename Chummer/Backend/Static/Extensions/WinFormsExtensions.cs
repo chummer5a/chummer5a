@@ -152,6 +152,7 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
         public static void DoThreadSafe<T>(this T objControl, Func<T, Task> funcToRun) where T : Control
         {
             objControl.DoThreadSafeCore(true, funcToRun);
@@ -200,6 +201,7 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
         public static void QueueThreadSafe<T>(this T objControl, Func<T, Task> funcToRun) where T : Control
         {
             objControl.DoThreadSafeCore(false, funcToRun);
@@ -726,6 +728,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
         public static async Task DoThreadSafeAsync<T>(this T objControl, Func<T, Task> funcToRun, CancellationToken token = default) where T : Control
         {
             token.ThrowIfCancellationRequested();
