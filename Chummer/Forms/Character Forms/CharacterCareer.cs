@@ -454,7 +454,6 @@ namespace Chummer
                                 using (new FetchSafelyFromPool<List<ListItem>>(
                                            Utils.ListItemListPool, out List<ListItem> lstDrainAttributes))
                                 {
-                                    lstDrainAttributes.Add(ListItem.Blank);
                                     if (xmlTraditionsBaseChummerNode != null)
                                     {
                                         foreach (XPathNavigator xmlDrain in await xmlTraditionsBaseChummerNode
@@ -475,6 +474,7 @@ namespace Chummer
                                     }
 
                                     lstDrainAttributes.Sort(CompareListItems.CompareNames);
+                                    lstDrainAttributes.Insert(0, ListItem.Blank);
                                     await cboDrain.PopulateWithListItemsAsync(lstDrainAttributes);
                                     cboDrain.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
                                                            nameof(Tradition.DrainExpression));
@@ -2251,7 +2251,6 @@ namespace Chummer
                             using (new FetchSafelyFromPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstDrainAttributes))
                             {
-                                lstDrainAttributes.Add(ListItem.Blank);
                                 if (xmlTraditionsBaseChummerNode != null)
                                 {
                                     foreach (XPathNavigator xmlDrain in await xmlTraditionsBaseChummerNode
@@ -2271,6 +2270,7 @@ namespace Chummer
                                 }
 
                                 lstDrainAttributes.Sort(CompareListItems.CompareNames);
+                                lstDrainAttributes.Insert(0, ListItem.Blank);
                                 await cboDrain.PopulateWithListItemsAsync(lstDrainAttributes);
                             }
 
