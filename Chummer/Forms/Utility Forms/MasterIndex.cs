@@ -405,27 +405,23 @@ namespace Chummer
                         _lstFileNamesWithItems.Insert(
                             0, new ListItem(string.Empty, await LanguageManager.GetStringAsync("String_All")));
 
+                        int intOldSelectedIndex = cboFile.DoThreadSafeFunc(x => x.SelectedIndex);
                         await Task.WhenAll(
-                            cboFile.DoThreadSafeAsync(async cboThis =>
-                            {
-                                int intOldSelectedIndex = cboThis.SelectedIndex;
-                                await cboThis.PopulateWithListItemsAsync(_lstFileNamesWithItems);
-                                try
+                            cboFile.PopulateWithListItemsAsync(_lstFileNamesWithItems).ContinueWith(
+                                y => cboFile.DoThreadSafe
+                                (x =>
                                 {
-                                    cboThis.SelectedIndex = Math.Max(intOldSelectedIndex, 0);
-                                }
-                                // For some reason, some unit tests will fire this exception even when _lstFileNamesWithItems is explicitly checked for having enough items
-                                catch (ArgumentOutOfRangeException)
-                                {
-                                    cboThis.SelectedIndex = -1;
-                                }
-                            })
-                            ,
-                            lstItems.DoThreadSafeAsync(async lstThis =>
-                            {
-                                await lstThis.PopulateWithListItemsAsync(_lstItems);
-                                lstThis.SelectedIndex = -1;
-                            }));
+                                    try
+                                    {
+                                        x.SelectedIndex = Math.Max(intOldSelectedIndex, 0);
+                                    }
+                                    // For some reason, some unit tests will fire this exception even when _lstFileNamesWithItems is explicitly checked for having enough items
+                                    catch (ArgumentOutOfRangeException)
+                                    {
+                                        x.SelectedIndex = -1;
+                                    }
+                                })),
+                            lstItems.PopulateWithListItemsAsync(_lstItems).ContinueWith(y => lstItems.DoThreadSafe(x => x.SelectedIndex = -1)));
                     }
                 }
                 finally

@@ -807,16 +807,24 @@ namespace Chummer
         /// <summary>
         /// Set List of Characters to print.
         /// </summary>
-        public async ValueTask SetCharacters(params Character[] lstCharacters)
+        public Task SetCharacters(params Character[] lstCharacters)
         {
-            IAsyncDisposable objLocker = await _lstCharacters.LockObject.EnterWriteLockAsync();
+            return SetCharacters(default, lstCharacters);
+        }
+
+        /// <summary>
+        /// Set List of Characters to print.
+        /// </summary>
+        public async Task SetCharacters(CancellationToken token = default, params Character[] lstCharacters)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await _lstCharacters.LockObject.EnterWriteLockAsync(token);
             try
             {
                 foreach (Character objCharacter in _lstCharacters)
                 {
                     objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
                 }
-
                 await _lstCharacters.ClearAsync();
                 if (lstCharacters != null)
                     await _lstCharacters.AddRangeAsync(lstCharacters);
@@ -829,7 +837,7 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync();
             }
-
+            token.ThrowIfCancellationRequested();
             bool blnOldLoading = _blnLoading;
             try
             {
@@ -837,7 +845,7 @@ namespace Chummer
                 // Populate the XSLT list with all of the XSL files found in the sheets directory.
                 await LanguageManager.PopulateSheetLanguageListAsync(cboLanguage, _strSelectedSheet, _lstCharacters);
                 await PopulateXsltList();
-                await RefreshCharacters();
+                await RefreshCharacters(token);
             }
             finally
             {

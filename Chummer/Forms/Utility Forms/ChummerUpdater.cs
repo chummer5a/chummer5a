@@ -458,19 +458,18 @@ namespace Chummer
             if (!_blnIsConnected || strLatestVersion == (await LanguageManager.GetStringAsync("String_Error")).Trim())
             {
                 token.ThrowIfCancellationRequested();
-                await Task.WhenAll(lblUpdaterStatus.DoThreadSafeAsync(async x => x.Text
-                                                                         = string.IsNullOrEmpty(_strExceptionString)
-                                                                             ? await LanguageManager.GetStringAsync(
-                                                                                 "Warning_Update_CouldNotConnect")
-                                                                             : string.Format(
-                                                                                 GlobalSettings.CultureInfo,
-                                                                                 (await LanguageManager.GetStringAsync(
-                                                                                     "Warning_Update_CouldNotConnectException"))
-                                                                                 .NormalizeWhiteSpace(),
-                                                                                 _strExceptionString), token),
-                                   cmdUpdate.DoThreadSafeFuncAsync(
-                                       async x => x.Text
-                                           = await LanguageManager.GetStringAsync("Button_Reconnect"), token),
+                string strText1 = string.IsNullOrEmpty(_strExceptionString)
+                    ? await LanguageManager.GetStringAsync(
+                        "Warning_Update_CouldNotConnect")
+                    : string.Format(
+                        GlobalSettings.CultureInfo,
+                        (await LanguageManager.GetStringAsync(
+                            "Warning_Update_CouldNotConnectException"))
+                        .NormalizeWhiteSpace(),
+                        _strExceptionString);
+                string strText2 = await LanguageManager.GetStringAsync("Button_Reconnect");
+                await Task.WhenAll(lblUpdaterStatus.DoThreadSafeAsync(x => x.Text = strText1, token),
+                                   cmdUpdate.DoThreadSafeFuncAsync(x => x.Text = strText2, token),
                                    cmdRestart.DoThreadSafeAsync(x => x.Enabled = false, token),
                                    cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = false, token));
                 return;
@@ -500,9 +499,10 @@ namespace Chummer
                 if (intResult < 0)
                 {
                     token.ThrowIfCancellationRequested();
-                    await cmdRestart.DoThreadSafeAsync(async x =>
+                    string strText = await LanguageManager.GetStringAsync("Button_Up_To_Date");
+                    await cmdRestart.DoThreadSafeAsync(x =>
                     {
-                        x.Text = await LanguageManager.GetStringAsync("Button_Up_To_Date");
+                        x.Text = strText;
                         x.Enabled = false;
                     }, token);
                 }
@@ -943,14 +943,16 @@ namespace Chummer
         private async void wc_DownloadCompleted(object sender, AsyncCompletedEventArgs e)
         {
             Log.Info("wc_DownloadExeFileCompleted enter");
-            cmdUpdate.QueueThreadSafe(async x =>
+            string strText1 = await LanguageManager.GetStringAsync("Button_Redownload");
+            cmdUpdate.QueueThreadSafe(x =>
             {
-                x.Text = await LanguageManager.GetStringAsync("Button_Redownload");
+                x.Text = strText1;
                 x.Enabled = true;
             });
-            cmdRestart.QueueThreadSafe(async x =>
+            string strText2 = await LanguageManager.GetStringAsync("Button_Up_To_Date");
+            cmdRestart.QueueThreadSafe(x =>
             {
-                if (_blnIsConnected && x.Text != await LanguageManager.GetStringAsync("Button_Up_To_Date"))
+                if (_blnIsConnected && x.Text != strText2)
                     x.Enabled = true;
             });
             cmdCleanReinstall.QueueThreadSafe(() => cmdCleanReinstall.Enabled = true);

@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -59,9 +60,9 @@ namespace Chummer.UI.Shared.Components
             lblDicePool.SetToolTip(caption);
         }
 
-        public Task SetLabelToolTipAsync(string caption)
+        public Task SetLabelToolTipAsync(string caption, CancellationToken token = default)
         {
-            return lblDicePool.SetToolTipAsync(caption);
+            return lblDicePool.SetToolTipAsync(caption, token);
         }
 
         public bool CanBeRolled

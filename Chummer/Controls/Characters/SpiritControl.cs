@@ -70,8 +70,10 @@ namespace Chummer
             chkFettered.DoDataBinding("Checked", _objSpirit, nameof(Spirit.Fettered));
             if (blnIsSpirit)
             {
-                await lblForce.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Label_Spirit_Force"));
-                await chkBound.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Checkbox_Spirit_Bound"));
+                string strText = await LanguageManager.GetStringAsync("Label_Spirit_Force");
+                await lblForce.DoThreadSafeAsync(x => x.Text = strText);
+                strText = await LanguageManager.GetStringAsync("Checkbox_Spirit_Bound");
+                await chkBound.DoThreadSafeAsync(x => x.Text = strText);
                 await cmdLink.SetToolTipTextAsync(await LanguageManager.GetStringAsync(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Spirit_OpenFile" : "Tip_Spirit_LinkSpirit"));
                 string strTooltip = await LanguageManager.GetStringAsync("Tip_Spirit_EditNotes");
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
@@ -80,10 +82,14 @@ namespace Chummer
             }
             else
             {
-                await lblForce.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Label_Sprite_Rating"));
-                await lblServices.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Label_Sprite_TasksOwed"));
-                await chkBound.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Label_Sprite_Registered"));
-                await chkFettered.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Checkbox_Sprite_Pet"));
+                string strText = await LanguageManager.GetStringAsync("Label_Sprite_Rating");
+                await lblForce.DoThreadSafeAsync(x => x.Text = strText);
+                strText = await LanguageManager.GetStringAsync("Label_Sprite_TasksOwed");
+                await lblServices.DoThreadSafeAsync(x => x.Text = strText);
+                strText = await LanguageManager.GetStringAsync("Label_Sprite_Registered");
+                await chkBound.DoThreadSafeAsync(x => x.Text = strText);
+                strText = await LanguageManager.GetStringAsync("Checkbox_Sprite_Pet");
+                await chkFettered.DoThreadSafeAsync(x => x.Text = strText);
                 await cmdLink.SetToolTipTextAsync(await LanguageManager.GetStringAsync(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Sprite_OpenFile" : "Tip_Sprite_LinkSpirit"));
                 string strTooltip = await LanguageManager.GetStringAsync("Tip_Sprite_EditNotes");
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))

@@ -915,18 +915,20 @@ namespace Chummer
                     if (objCache != null)
                     {
                         string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
-                        await txtCharacterBio.DoThreadSafeAsync(async x => x.Text = await objCache.Description.RtfToPlainTextAsync(), token);
-                        await txtCharacterBackground.DoThreadSafeAsync(async x => x.Text = await objCache.Background.RtfToPlainTextAsync(), token);
-                        await txtCharacterNotes.DoThreadSafeAsync(async x => x.Text = await objCache.CharacterNotes.RtfToPlainTextAsync(), token);
-                        await txtGameNotes.DoThreadSafeAsync(async x => x.Text = await objCache.GameNotes.RtfToPlainTextAsync(), token);
-                        await txtCharacterConcept.DoThreadSafeAsync(async x => x.Text = await objCache.Concept.RtfToPlainTextAsync(), token);
-                        await lblCareerKarma.DoThreadSafeAsync(async x =>
-                        {
-                            x.Text = objCache.Karma;
-                            if (string.IsNullOrEmpty(x.Text)
-                                || x.Text == 0.ToString(GlobalSettings.CultureInfo))
-                                x.Text = await LanguageManager.GetStringAsync("String_None");
-                        }, token);
+                        string strText = await objCache.Description.RtfToPlainTextAsync();
+                        await txtCharacterBio.DoThreadSafeAsync(x => x.Text = strText, token);
+                        strText = await objCache.Background.RtfToPlainTextAsync();
+                        await txtCharacterBackground.DoThreadSafeAsync(x => x.Text = strText, token);
+                        strText = await objCache.CharacterNotes.RtfToPlainTextAsync();
+                        await txtCharacterNotes.DoThreadSafeAsync(x => x.Text = strText, token);
+                        strText = await objCache.GameNotes.RtfToPlainTextAsync();
+                        await txtGameNotes.DoThreadSafeAsync(x => x.Text = strText, token);
+                        strText = await objCache.Concept.RtfToPlainTextAsync();
+                        await txtCharacterConcept.DoThreadSafeAsync(x => x.Text = strText, token);
+                        strText = objCache.Karma;
+                        if (string.IsNullOrEmpty(strText) || strText == 0.ToString(GlobalSettings.CultureInfo))
+                            strText = await LanguageManager.GetStringAsync("String_None");
+                        await lblCareerKarma.DoThreadSafeAsync(x => x.Text = strText, token);
                         await lblPlayerName.DoThreadSafeAsync(x =>
                         {
                             x.Text = objCache.PlayerName;
@@ -951,11 +953,12 @@ namespace Chummer
                             if (string.IsNullOrEmpty(x.Text))
                                 x.Text = strUnknown;
                         }, token);
-                        await lblFilePath.DoThreadSafeAsync(async x =>
+                        strText = objCache.FileName;
+                        if (string.IsNullOrEmpty(strText))
+                            strText = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound");
+                        await lblFilePath.DoThreadSafeAsync(x =>
                         {
-                            x.Text = objCache.FileName;
-                            if (string.IsNullOrEmpty(x.Text))
-                                x.Text = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound");
+                            x.Text = strText;
                         }, token);
                         await lblSettings.DoThreadSafeAsync(x =>
                         {
@@ -1002,8 +1005,11 @@ namespace Chummer
                             await lblMetatype.DoThreadSafeAsync(x => x.Text = strMetatype, token);
                         }
                         else
-                            await lblMetatype.DoThreadSafeAsync(
-                                async x => x.Text = await LanguageManager.GetStringAsync("String_MetatypeLoadError"), token);
+                        {
+                            strText = await LanguageManager.GetStringAsync("String_MetatypeLoadError");
+                            await lblMetatype.DoThreadSafeAsync(x => x.Text = strText, token);
+                        }
+
                         await tabCharacterText.DoThreadSafeAsync(x => x.Visible = true, token);
                         if (!string.IsNullOrEmpty(objCache.ErrorText))
                         {

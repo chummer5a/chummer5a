@@ -87,9 +87,10 @@ namespace Chummer
             }
 
             _blnLoading = false;
+            string strText = await LanguageManager.GetStringAsync("String_Space") + _objCharacter?.Name;
             await Task.WhenAll(
-                this.DoThreadSafeAsync(async x => x.Text += await LanguageManager.GetStringAsync("String_Space") + _objCharacter?.Name),
-                DoLanguageUpdate().AsTask());
+                this.DoThreadSafeAsync(x => x.Text += strText),
+                DoLanguageUpdate());
         }
 
         private void ExportCharacter_FormClosing(object sender, FormClosingEventArgs e)
@@ -131,7 +132,7 @@ namespace Chummer
             await DoXsltUpdate();
         }
 
-        private async ValueTask DoLanguageUpdate(CancellationToken token = default)
+        private async Task DoLanguageUpdate(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!_blnLoading)
@@ -175,8 +176,8 @@ namespace Chummer
                         using (CursorWait.New(this))
                         {
                             token.ThrowIfCancellationRequested();
-                            await txtText.DoThreadSafeAsync(
-                                async x => x.Text = await LanguageManager.GetStringAsync("String_Generating_Data"), token);
+                            string strText = await LanguageManager.GetStringAsync("String_Generating_Data");
+                            await txtText.DoThreadSafeAsync(x => x.Text = strText, token);
                             (bool blnSuccess, Tuple<string, string> strBoxText)
                                 = await _dicCache.TryGetValueAsync(
                                     new Tuple<string, string>(_strExportLanguage, _strXslt));
@@ -261,10 +262,9 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
+                string strText = await LanguageManager.GetStringAsync("String_Generating_Data");
                 await Task.WhenAll(cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token),
-                                   txtText.DoThreadSafeAsync(
-                                       async x => x.Text
-                                           = await LanguageManager.GetStringAsync("String_Generating_Data"), token));
+                                   txtText.DoThreadSafeAsync(x => x.Text = strText, token));
                 token.ThrowIfCancellationRequested();
                 _objCharacterXml = await _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
                                                                          _objCharacterXmlGeneratorCancellationTokenSource

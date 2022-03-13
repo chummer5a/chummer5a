@@ -9047,8 +9047,8 @@ namespace Chummer
                 // Locate the Program that is selected in the tree.
                 if (await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is AIProgram objProgram)
                 {
-                    await lblAIProgramsRequires.DoThreadSafeAsync(
-                        async x => x.Text = await objProgram.DisplayRequiresProgramAsync(GlobalSettings.Language), token);
+                    string strText = await objProgram.DisplayRequiresProgramAsync(GlobalSettings.Language);
+                    await lblAIProgramsRequires.DoThreadSafeAsync(x => x.Text = strText, token);
                     await objProgram.SetSourceDetailAsync(lblAIProgramsSource, token);
                 }
                 else
@@ -9230,26 +9230,24 @@ namespace Chummer
             IsRefreshing = true;
             try
             {
-                token.ThrowIfCancellationRequested();
                 // Look for the selected Critter Power.
-                if (await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is CritterPower objPower)
+                if (await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is CritterPower
+                    objPower)
                 {
-                    token.ThrowIfCancellationRequested();
-                    await cmdDeleteCritterPower.DoThreadSafeAsync(x => x.Enabled = objPower.Grade == 0);
-                    await lblCritterPowerName.DoThreadSafeAsync(x => x.Text = objPower.CurrentDisplayName);
-                    await lblCritterPowerCategory.DoThreadSafeAsync(
-                        async x => x.Text = await objPower.DisplayCategoryAsync(GlobalSettings.Language));
-                    await lblCritterPowerType.DoThreadSafeAsync(
-                        async x => x.Text = await objPower.DisplayTypeAsync(GlobalSettings.Language));
-                    await lblCritterPowerAction.DoThreadSafeAsync(
-                        async x => x.Text = await objPower.DisplayActionAsync(GlobalSettings.Language));
-                    await lblCritterPowerRange.DoThreadSafeAsync(
-                        async x => x.Text = await objPower.DisplayRangeAsync(GlobalSettings.Language));
-                    await lblCritterPowerDuration.DoThreadSafeAsync(
-                        async x => x.Text = await objPower.DisplayDurationAsync(GlobalSettings.Language));
-                    await chkCritterPowerCount.DoThreadSafeAsync(x => x.Checked = objPower.CountTowardsLimit);
-                    await objPower.SetSourceDetailAsync(lblCritterPowerSource);
-                    token.ThrowIfCancellationRequested();
+                    await cmdDeleteCritterPower.DoThreadSafeAsync(x => x.Enabled = objPower.Grade == 0, token);
+                    await lblCritterPowerName.DoThreadSafeAsync(x => x.Text = objPower.CurrentDisplayName, token);
+                    string strText = await objPower.DisplayCategoryAsync(GlobalSettings.Language);
+                    await lblCritterPowerCategory.DoThreadSafeAsync(x => x.Text = strText, token);
+                    strText = await objPower.DisplayTypeAsync(GlobalSettings.Language);
+                    await lblCritterPowerType.DoThreadSafeAsync(x => x.Text = strText, token);
+                    strText = await objPower.DisplayActionAsync(GlobalSettings.Language);
+                    await lblCritterPowerAction.DoThreadSafeAsync(x => x.Text = strText, token);
+                    strText = await objPower.DisplayRangeAsync(GlobalSettings.Language);
+                    await lblCritterPowerRange.DoThreadSafeAsync(x => x.Text = strText, token);
+                    strText = await objPower.DisplayDurationAsync(GlobalSettings.Language);
+                    await lblCritterPowerDuration.DoThreadSafeAsync(x => x.Text = strText, token);
+                    await chkCritterPowerCount.DoThreadSafeAsync(x => x.Checked = objPower.CountTowardsLimit, token);
+                    await objPower.SetSourceDetailAsync(lblCritterPowerSource, token);
                     if (objPower.PowerPoints > 0)
                     {
                         await lblCritterPowerPointCost.DoThreadSafeAsync(x =>
@@ -9257,32 +9255,29 @@ namespace Chummer
                             x.Text = objPower.PowerPoints.ToString(GlobalSettings
                                                                        .CultureInfo);
                             x.Visible = true;
-                        });
-                        await lblCritterPowerPointCostLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        }, token);
+                        await lblCritterPowerPointCostLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                     }
                     else
                     {
-                        await lblCritterPowerPointCost.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblCritterPowerPointCostLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblCritterPowerPointCost.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblCritterPowerPointCostLabel.DoThreadSafeAsync(x => x.Visible = false, token);
                     }
                 }
                 else
                 {
-                    token.ThrowIfCancellationRequested();
-                    await cmdDeleteCritterPower.DoThreadSafeAsync(x => x.Enabled = false);
-                    await lblCritterPowerName.DoThreadSafeAsync(x => x.Text = string.Empty);
-                    await lblCritterPowerCategory.DoThreadSafeAsync(x => x.Text = string.Empty);
-                    await lblCritterPowerType.DoThreadSafeAsync(x => x.Text = string.Empty);
-                    await lblCritterPowerAction.DoThreadSafeAsync(x => x.Text = string.Empty);
-                    await lblCritterPowerRange.DoThreadSafeAsync(x => x.Text = string.Empty);
-                    await lblCritterPowerDuration.DoThreadSafeAsync(x => x.Text = string.Empty);
-                    await chkCritterPowerCount.DoThreadSafeAsync(x => x.Checked = false);
-                    await lblCritterPowerSource.DoThreadSafeAsync(x => x.Text = string.Empty);
-                    await lblCritterPowerSource.SetToolTipAsync(null);
-                    await lblCritterPowerPointCost.DoThreadSafeAsync(x => x.Visible = false);
-                    await lblCritterPowerPointCostLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await cmdDeleteCritterPower.DoThreadSafeAsync(x => x.Enabled = false, token);
+                    await lblCritterPowerName.DoThreadSafeAsync(x => x.Text = string.Empty, token);
+                    await lblCritterPowerCategory.DoThreadSafeAsync(x => x.Text = string.Empty, token);
+                    await lblCritterPowerType.DoThreadSafeAsync(x => x.Text = string.Empty, token);
+                    await lblCritterPowerAction.DoThreadSafeAsync(x => x.Text = string.Empty, token);
+                    await lblCritterPowerRange.DoThreadSafeAsync(x => x.Text = string.Empty, token);
+                    await lblCritterPowerDuration.DoThreadSafeAsync(x => x.Text = string.Empty, token);
+                    await chkCritterPowerCount.DoThreadSafeAsync(x => x.Checked = false, token);
+                    await SourceString.Blank.SetControlAsync(lblCritterPowerSource, token);
+                    await lblCritterPowerPointCost.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await lblCritterPowerPointCostLabel.DoThreadSafeAsync(x => x.Visible = false, token);
                 }
-                token.ThrowIfCancellationRequested();
             }
             finally
             {
@@ -11390,7 +11385,7 @@ namespace Chummer
                                                              .LoadDataXPathAsync("weapons.xml"))
                                                          .SelectSingleNodeAndCacheExpressionAsync(
                                                              "/chummer"))
-                                                 .Contains(objSelectedAccessory.Parent.Category);
+                                                 .Contains(objSelectedAccessory.Parent?.Category);
                             await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(x =>
                             {
                                 x.Enabled = blnEnabled;
@@ -12058,10 +12053,13 @@ namespace Chummer
                                     if (sbdArmorEquipped.Length > 0)
                                     {
                                         --sbdArmorEquipped.Length;
-                                        await lblArmorEquipped.DoThreadSafeAsync(x => x.Text = sbdArmorEquipped.ToString());
+                                        await lblArmorEquipped.DoThreadSafeAsync(x => x.Text = sbdArmorEquipped.ToString(), token);
                                     }
                                     else
-                                        await lblArmorEquipped.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_None"));
+                                    {
+                                        string strNone = await LanguageManager.GetStringAsync("String_None");
+                                        await lblArmorEquipped.DoThreadSafeAsync(x => x.Text = strNone, token);
+                                    }
                                 }
                                 token.ThrowIfCancellationRequested();
                                 break;

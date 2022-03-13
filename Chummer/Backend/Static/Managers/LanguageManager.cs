@@ -1551,10 +1551,13 @@ namespace Chummer
             try
             {
                 cboLanguage.PopulateWithListItems(lstSheetLanguageList);
-                cboLanguage.SelectedValue = strDefaultSheetLanguage;
-                if (cboLanguage.SelectedIndex == -1)
-                    cboLanguage.SelectedValue
-                        = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
+                cboLanguage.DoThreadSafe(x =>
+                {
+                    x.SelectedValue = strDefaultSheetLanguage;
+                    if (x.SelectedIndex == -1)
+                        x.SelectedValue
+                            = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
+                });
             }
             finally
             {
@@ -1579,10 +1582,13 @@ namespace Chummer
             try
             {
                 await cboLanguage.PopulateWithListItemsAsync(lstSheetLanguageList);
-                cboLanguage.SelectedValue = strDefaultSheetLanguage;
-                if (cboLanguage.SelectedIndex == -1)
-                    cboLanguage.SelectedValue
-                        = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
+                await cboLanguage.DoThreadSafeAsync(x =>
+                {
+                    x.SelectedValue = strDefaultSheetLanguage;
+                    if (x.SelectedIndex == -1)
+                        x.SelectedValue
+                            = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
+                });
             }
             finally
             {
