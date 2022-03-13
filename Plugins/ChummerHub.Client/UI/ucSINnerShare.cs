@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer;
-using Chummer.Plugins;
 using ChummerHub.Client.Backend;
 using ChummerHub.Client.Sinners;
 using ChummerHub.Client.Properties;
@@ -69,8 +68,8 @@ namespace ChummerHub.Client.UI
             try
             {
                 string hash = string.Empty;
-                using (CustomActivity op_shareChummer = Timekeeper.StartSyncron("Share Group", null,
-                    CustomActivity.OperationType.DependencyOperation, MySINnerSearchGroup?.Groupname))
+                using (CustomActivity op_shareChummer = await Timekeeper.StartSyncronAsync("Share Group", null,
+                           CustomActivity.OperationType.DependencyOperation, MySINnerSearchGroup?.Groupname))
                 {
                     MyUserState myState = new MyUserState(this);
                     SinnersClient client = StaticUtils.GetClient();
@@ -88,9 +87,9 @@ namespace ChummerHub.Client.UI
                     }
 
                     //check if char is already online and updated
-                    using (_ = Timekeeper.StartSyncron(
-                        "check if online", op_shareChummer,
-                        CustomActivity.OperationType.DependencyOperation, MySINnerSearchGroup?.Groupname))
+                    using (_ = await Timekeeper.StartSyncronAsync(
+                               "check if online", op_shareChummer,
+                               CustomActivity.OperationType.DependencyOperation, MySINnerSearchGroup?.Groupname))
                     {
                         ResultGroupGetGroupById checkresult = await client.GetGroupByIdAsync(MySINnerSearchGroup?.Id).ConfigureAwait(false);
                         if (checkresult == null)
@@ -140,8 +139,8 @@ namespace ChummerHub.Client.UI
             string hash = string.Empty;
             try
             {
-                using (CustomActivity op_shareChummer = Timekeeper.StartSyncron("Share Chummer", null,
-                    CustomActivity.OperationType.DependencyOperation, MyCharacterCache.FilePath))
+                using (CustomActivity op_shareChummer = await Timekeeper.StartSyncronAsync("Share Chummer", null,
+                           CustomActivity.OperationType.DependencyOperation, MyCharacterCache.FilePath))
                 {
                     MyUserState myState = new MyUserState(this);
                     CharacterExtended ce = null;
@@ -153,8 +152,8 @@ namespace ChummerHub.Client.UI
                     {
                         async Task<CharacterExtended> GetCharacterExtended(CustomActivity parentActivity)
                         {
-                            using (_ = Timekeeper.StartSyncron("Loading Chummerfile", parentActivity,
-                                CustomActivity.OperationType.DependencyOperation, MyCharacterCache.FilePath))
+                            using (_ = await Timekeeper.StartSyncronAsync("Loading Chummerfile", parentActivity,
+                                                                          CustomActivity.OperationType.DependencyOperation, MyCharacterCache.FilePath))
                             {
                                 Character c = Program.OpenCharacters.FirstOrDefault(a => a.FileName == MyCharacterCache.FilePath);
                                 bool blnSuccess = true;
@@ -213,9 +212,9 @@ namespace ChummerHub.Client.UI
                         {
                             //check if char is already online and updated
                             ResultSinnerGetSINById checkresult;
-                            using (_ = Timekeeper.StartSyncron(
-                                "check if online", op_shareChummer,
-                                CustomActivity.OperationType.DependencyOperation, MyCharacterCache?.FilePath))
+                            using (_ = await Timekeeper.StartSyncronAsync(
+                                       "check if online", op_shareChummer,
+                                       CustomActivity.OperationType.DependencyOperation, MyCharacterCache?.FilePath))
                             {
                                 checkresult = await client.GetSINByIdAsync(SINid);
                                 if (checkresult == null)
@@ -247,9 +246,9 @@ namespace ChummerHub.Client.UI
 
                                 if (ce != null)
                                 {
-                                    using (CustomActivity op_uploadChummer = Timekeeper.StartSyncron(
-                                        "Uploading Chummer", op_shareChummer,
-                                        CustomActivity.OperationType.DependencyOperation, MyCharacterCache?.FilePath))
+                                    using (CustomActivity op_uploadChummer = await Timekeeper.StartSyncronAsync(
+                                               "Uploading Chummer", op_shareChummer,
+                                               CustomActivity.OperationType.DependencyOperation, MyCharacterCache?.FilePath))
                                     {
                                         myState.StatusText = "Checking SINner availability (and if necessary upload it).";
                                         myState.CurrentProgress = 35;

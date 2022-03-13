@@ -438,7 +438,7 @@ namespace Chummer.Plugins
                 msg += "If you want to use SINners as online store, please register!";
                 Log.Warn(msg);
             }
-            else if (input.DoOnSaveCompletedAsync.Remove(MyOnSaveUpload)) // Makes we only run this if we haven't already triggered the callback
+            else if (await input.DoOnSaveCompletedAsync.RemoveAsync(MyOnSaveUpload)) // Makes we only run this if we haven't already triggered the callback
             {
                 try
                 {
@@ -491,7 +491,7 @@ namespace Chummer.Plugins
                 }
                 finally
                 {
-                    input.DoOnSaveCompletedAsync.Add(MyOnSaveUpload);
+                    await input.DoOnSaveCompletedAsync.AddAsync(MyOnSaveUpload);
                 }
             }
             return true;
@@ -649,8 +649,8 @@ namespace Chummer.Plugins
                                                                     ssgr.SinGroups.Where(a => a.Groupname == "Archetypes")).ToList();
                             foreach (TreeNode node in nodelist)
                             {
-                                MyTreeNodes2Add.AddOrUpdate(node.Name, node,
-                                    (key, oldValue) => node);
+                                await MyTreeNodes2Add.AddOrUpdateAsync(node.Name, node,
+                                                                       (key, oldValue) => node);
                             }
 
                             await MainForm.CharacterRoster.RefreshPluginNodes(this);
@@ -924,7 +924,7 @@ namespace Chummer.Plugins
                         IEnumerable<TreeNode> nodelist = ChummerHub.Client.Backend.Utils.CharacterRosterTreeNodifyGroupList(list);
                         foreach (TreeNode node in nodelist)
                         {
-                            MyTreeNodes2Add.AddOrUpdate(node.Name, node, (key, oldValue) => node);
+                            await MyTreeNodes2Add.AddOrUpdateAsync(node.Name, node, (key, oldValue) => node);
                         }
                         await MainForm.CharacterRoster.RefreshPluginNodes(this);
                         MainForm.CharacterRoster.BringToFront();

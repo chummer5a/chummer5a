@@ -557,7 +557,7 @@ namespace ChummerHub.Client.UI
                     IEnumerable<TreeNode> nodelist = Backend.Utils.CharacterRosterTreeNodifyGroupList(list);
                     foreach (TreeNode node in nodelist)
                     {
-                        PluginHandler.MyTreeNodes2Add.AddOrUpdate(node.Name, node, (key, oldValue) => node);
+                        await PluginHandler.MyTreeNodes2Add.AddOrUpdateAsync(node.Name, node, (key, oldValue) => node);
                     }
                     await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
                     PluginHandler.MainForm.CharacterRoster.BringToFront();

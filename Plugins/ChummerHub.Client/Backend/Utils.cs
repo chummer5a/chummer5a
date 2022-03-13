@@ -791,10 +791,21 @@ namespace ChummerHub.Client.Backend
                                               CharacterAlias = sinner.Alias,
                                               BuildMethod = "online"
                                           };
+                if (blnSync)
+                {
+                    // ReSharper disable MethodHasAsyncOverload
+                    if (objCache.MyPluginDataDic.ContainsKey("IsSINnerFavorite"))
+                        objCache.MyPluginDataDic.Remove("IsSINnerFavorite");
+                    objCache.MyPluginDataDic.Add("IsSINnerFavorite", member.IsFavorite);
+                    // ReSharper restore MethodHasAsyncOverload
+                }
+                else
+                {
+                    if (await objCache.MyPluginDataDic.ContainsKeyAsync("IsSINnerFavorite"))
+                        await objCache.MyPluginDataDic.RemoveAsync("IsSINnerFavorite");
+                    await objCache.MyPluginDataDic.AddAsync("IsSINnerFavorite", member.IsFavorite);
+                }
 
-                if (objCache.MyPluginDataDic.ContainsKey("IsSINnerFavorite"))
-                    objCache.MyPluginDataDic.Remove("IsSINnerFavorite");
-                objCache.MyPluginDataDic.Add("IsSINnerFavorite", member.IsFavorite);
                 SetEventHandlers(sinner, objCache);
                 TreeNode memberNode = new TreeNode
                 {
@@ -985,8 +996,8 @@ namespace ChummerHub.Client.Backend
             }
             finally
             {
-                if (ce == null)
-                    objCharacter?.Dispose();
+                if (ce == null && objCharacter != null)
+                    await objCharacter.DisposeAsync();
             }
 
             return ce;
