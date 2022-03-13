@@ -7058,42 +7058,37 @@ namespace Chummer
         private async Task RefreshSelectedQuality(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await tlpCommonLeftSide.DoThreadSafeAsync(x => x.SuspendLayout());
+            await tlpCommonLeftSide.DoThreadSafeAsync(x => x.SuspendLayout(), token);
             try
             {
                 // Locate the selected Quality.
-                Quality objQuality = await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag as Quality);
-                token.ThrowIfCancellationRequested();
+                Quality objQuality = await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag as Quality, token);
                 await UpdateQualityLevelValue(objQuality, token);
                 if (objQuality == null)
                 {
-                    token.ThrowIfCancellationRequested();
-                    await lblQualitySourceLabel.DoThreadSafeAsync(x => x.Visible = false);
-                    await lblQualityBPLabel.DoThreadSafeAsync(x => x.Visible = false);
-                    await lblQualitySource.DoThreadSafeAsync(x => x.Visible = false);
-                    await lblQualityBP.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblQualitySourceLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await lblQualityBPLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await lblQualitySource.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await lblQualityBP.DoThreadSafeAsync(x => x.Visible = false, token);
                 }
                 else
                 {
-                    token.ThrowIfCancellationRequested();
-                    await lblQualitySourceLabel.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblQualityBPLabel.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblQualitySource.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblQualityBP.DoThreadSafeAsync(x => x.Visible = true);
-                    await objQuality.SetSourceDetailAsync(lblQualitySource);
-                    token.ThrowIfCancellationRequested();
+                    await lblQualitySourceLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                    await lblQualityBPLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                    await lblQualitySource.DoThreadSafeAsync(x => x.Visible = true, token);
+                    await lblQualityBP.DoThreadSafeAsync(x => x.Visible = true, token);
+                    await objQuality.SetSourceDetailAsync(lblQualitySource, token);
                     await lblQualityBP.DoThreadSafeAsync(async x => x.Text
                                                              = (objQuality.BP * objQuality.Levels
                                                                               * CharacterObjectSettings.KarmaQuality)
                                                                .ToString(GlobalSettings.CultureInfo) +
                                                                await LanguageManager.GetStringAsync("String_Space")
-                                                               + await LanguageManager.GetStringAsync("String_Karma"));
+                                                               + await LanguageManager.GetStringAsync("String_Karma"), token);
                 }
-                token.ThrowIfCancellationRequested();
             }
             finally
             {
-                await tlpCommonLeftSide.DoThreadSafeAsync(x => x.ResumeLayout());
+                await tlpCommonLeftSide.DoThreadSafeAsync(x => x.ResumeLayout(), token);
             }
         }
 
@@ -7110,7 +7105,7 @@ namespace Chummer
                 {
                     x.Value = 1;
                     x.Enabled = false;
-                });
+                }, token);
                 return;
             }
             token.ThrowIfCancellationRequested();
@@ -7127,7 +7122,7 @@ namespace Chummer
                     x.Maximum = intMaxRating;
                     x.Value = objSelectedQuality.Levels;
                     x.Enabled = true;
-                });
+                }, token);
             }
             else
             {
@@ -7135,7 +7130,7 @@ namespace Chummer
                 {
                     x.Value = 1;
                     x.Enabled = false;
-                });
+                }, token);
             }
         }
 
@@ -9054,23 +9049,19 @@ namespace Chummer
             IsRefreshing = true;
             try
             {
-                token.ThrowIfCancellationRequested();
                 // Locate the Program that is selected in the tree.
-                if (await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is AIProgram objProgram)
+                if (await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is AIProgram objProgram)
                 {
-                    token.ThrowIfCancellationRequested();
                     await lblAIProgramsRequires.DoThreadSafeAsync(
-                        async x => x.Text = await objProgram.DisplayRequiresProgramAsync(GlobalSettings.Language));
-                    await objProgram.SetSourceDetailAsync(lblAIProgramsSource);
+                        async x => x.Text = await objProgram.DisplayRequiresProgramAsync(GlobalSettings.Language), token);
+                    await objProgram.SetSourceDetailAsync(lblAIProgramsSource, token);
                 }
                 else
                 {
-                    token.ThrowIfCancellationRequested();
-                    await lblAIProgramsRequires.DoThreadSafeAsync(x => x.Text = string.Empty);
-                    await lblAIProgramsSource.DoThreadSafeAsync(x => x.Text = string.Empty);
-                    await lblAIProgramsSource.SetToolTipAsync(string.Empty);
+                    await lblAIProgramsRequires.DoThreadSafeAsync(x => x.Text = string.Empty, token);
+                    await lblAIProgramsSource.DoThreadSafeAsync(x => x.Text = string.Empty, token);
+                    await lblAIProgramsSource.SetToolTipAsync(string.Empty, token);
                 }
-                token.ThrowIfCancellationRequested();
             }
             finally
             {
@@ -9129,12 +9120,10 @@ namespace Chummer
             IsRefreshing = true;
             try
             {
-                token.ThrowIfCancellationRequested();
-                switch (await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag))
+                switch (await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token))
                 {
                     case Metamagic objMetamagic:
                         {
-                            token.ThrowIfCancellationRequested();
                             await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
                             {
                                 x.Text = await LanguageManager.GetStringAsync(
@@ -9143,13 +9132,12 @@ namespace Chummer
                                         ? "Button_RemoveMetamagic"
                                         : "Button_RemoveEcho");
                                 x.Enabled = objMetamagic.Grade >= 0;
-                            });
-                            await objMetamagic.SetSourceDetailAsync(lblMetamagicSource);
+                            }, token);
+                            await objMetamagic.SetSourceDetailAsync(lblMetamagicSource, token);
                             break;
                         }
                     case Art objArt:
                         {
-                            token.ThrowIfCancellationRequested();
                             await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
                             {
                                 x.Text = await LanguageManager.GetStringAsync(
@@ -9157,36 +9145,33 @@ namespace Chummer
                                         ? "Button_RemoveMetamagic"
                                         : "Button_RemoveEcho");
                                 x.Enabled = objArt.Grade >= 0;
-                            });
-                            await objArt.SetSourceDetailAsync(lblMetamagicSource);
+                            }, token);
+                            await objArt.SetSourceDetailAsync(lblMetamagicSource, token);
                             break;
                         }
                     case Spell objSpell:
                         {
-                            token.ThrowIfCancellationRequested();
                             await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
                             {
                                 x.Text = await LanguageManager.GetStringAsync(
                                     "Button_RemoveMetamagic");
                                 x.Enabled = objSpell.Grade >= 0;
-                            });
-                            await objSpell.SetSourceDetailAsync(lblMetamagicSource);
+                            }, token);
+                            await objSpell.SetSourceDetailAsync(lblMetamagicSource, token);
                             break;
                         }
                     case ComplexForm objComplexForm:
                         {
-                            token.ThrowIfCancellationRequested();
                             await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
                             {
                                 x.Text = await LanguageManager.GetStringAsync("Button_RemoveEcho");
                                 x.Enabled = objComplexForm.Grade >= 0;
-                            });
-                            await objComplexForm.SetSourceDetailAsync(lblMetamagicSource);
+                            }, token);
+                            await objComplexForm.SetSourceDetailAsync(lblMetamagicSource, token);
                             break;
                         }
                     case Enhancement objEnhancement:
                         {
-                            token.ThrowIfCancellationRequested();
                             await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
                             {
                                 x.Text = await LanguageManager.GetStringAsync(
@@ -9194,12 +9179,11 @@ namespace Chummer
                                         ? "Button_RemoveMetamagic"
                                         : "Button_RemoveEcho");
                                 x.Enabled = objEnhancement.Grade >= 0;
-                            });
-                            await objEnhancement.SetSourceDetailAsync(lblMetamagicSource);
+                            }, token);
+                            await objEnhancement.SetSourceDetailAsync(lblMetamagicSource, token);
                             break;
                         }
                     default:
-                        token.ThrowIfCancellationRequested();
                         await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
                         {
                             x.Text = await LanguageManager.GetStringAsync(
@@ -9207,12 +9191,11 @@ namespace Chummer
                                     ? "Button_RemoveInitiateGrade"
                                     : "Button_RemoveSubmersionGrade");
                             x.Enabled = true;
-                        });
-                        await lblMetamagicSource.DoThreadSafeAsync(x => x.Text = string.Empty);
-                        await lblMetamagicSource.SetToolTipAsync(string.Empty);
+                        }, token);
+                        await lblMetamagicSource.DoThreadSafeAsync(x => x.Text = string.Empty, token);
+                        await lblMetamagicSource.SetToolTipAsync(string.Empty, token);
                         break;
                 }
-                token.ThrowIfCancellationRequested();
             }
             finally
             {
@@ -9713,10 +9696,8 @@ namespace Chummer
                         }
                     }
 
-                    await lblPositiveQualitiesBP.SetToolTipAsync(sbdPositiveQualityTooltip.ToString());
-                    token.ThrowIfCancellationRequested();
-                    await lblNegativeQualitiesBP.SetToolTipAsync(sbdNegativeQualityTooltip.ToString());
-                    token.ThrowIfCancellationRequested();
+                    await lblPositiveQualitiesBP.SetToolTipAsync(sbdPositiveQualityTooltip.ToString(), token);
+                    await lblNegativeQualitiesBP.SetToolTipAsync(sbdNegativeQualityTooltip.ToString(), token);
                 }
             }
 
@@ -9791,9 +9772,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
 
                 if (blnDoUIUpdate)
-                    await lblBuildMartialArts.SetToolTipAsync(sbdMartialArtsBPToolTip.ToString());
-
-                token.ThrowIfCancellationRequested();
+                    await lblBuildMartialArts.SetToolTipAsync(sbdMartialArtsBPToolTip.ToString(), token);
             }
 
             intKarmaPointsRemain -= intMartialArtsPoints;
@@ -9976,14 +9955,11 @@ namespace Chummer
                     string strFormat = "{0}" + strSpace + '×' + strSpace + "{1}" + strSpace + await LanguageManager.GetStringAsync("String_Karma")
                                        + strSpace + '=' + strSpace + "{2}" + strSpace + await LanguageManager.GetStringAsync("String_Karma");
                     if (lblSpellsBP != null)
-                        await lblSpellsBP.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo, strFormat, spells, spellCost, intSpellPointsUsed));
-                    token.ThrowIfCancellationRequested();
+                        await lblSpellsBP.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo, strFormat, spells, spellCost, intSpellPointsUsed), token);
                     if (lblBuildRitualsBP != null)
-                        await lblBuildRitualsBP.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo, strFormat, rituals, spellCost, intRitualPointsUsed));
-                    token.ThrowIfCancellationRequested();
+                        await lblBuildRitualsBP.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo, strFormat, rituals, spellCost, intRitualPointsUsed), token);
                     if (lblBuildPrepsBP != null)
-                        await lblBuildPrepsBP.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo, strFormat, preps, spellCost, intPrepPointsUsed));
-                    token.ThrowIfCancellationRequested();
+                        await lblBuildPrepsBP.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo, strFormat, preps, spellCost, intPrepPointsUsed), token);
                     if (limit + intLimitMod > 0)
                     {
                         if (lblBuildPrepsBP != null)
@@ -9991,24 +9967,21 @@ namespace Chummer
                             string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}", prepPoints + spellPoints + ritualPoints - 2 * (limit + intLimitMod), strOf, spellPoints + ritualPoints - (limit + intLimitMod));
                             if (intPrepPointsUsed > 0)
                                 strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intPrepPointsUsed, strPoints);
-                            await lblBuildPrepsBP.DoThreadSafeAsync(x => x.Text = strText);
-                            token.ThrowIfCancellationRequested();
+                            await lblBuildPrepsBP.DoThreadSafeAsync(x => x.Text = strText, token);
                         }
                         if (lblSpellsBP != null)
                         {
                             string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}", prepPoints + spellPoints + ritualPoints - 2 * (limit + intLimitMod), strOf, prepPoints + ritualPoints - (limit + intLimitMod));
                             if (intSpellPointsUsed > 0)
                                 strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intSpellPointsUsed, strPoints);
-                            await lblSpellsBP.DoThreadSafeAsync(x => x.Text = strText);
-                            token.ThrowIfCancellationRequested();
+                            await lblSpellsBP.DoThreadSafeAsync(x => x.Text = strText, token);
                         }
                         if (lblBuildRitualsBP != null)
                         {
                             string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}", prepPoints + spellPoints + ritualPoints - 2 * (limit + intLimitMod), strOf, prepPoints + spellPoints - (limit + intLimitMod));
                             if (intRitualPointsUsed > 0)
                                 strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intRitualPointsUsed, strPoints);
-                            await lblBuildRitualsBP.DoThreadSafeAsync(x => x.Text = strText);
-                            token.ThrowIfCancellationRequested();
+                            await lblBuildRitualsBP.DoThreadSafeAsync(x => x.Text = strText, token);
                         }
                     }
                     else if (intLimitMod == 0)
@@ -10016,22 +9989,19 @@ namespace Chummer
                         if (lblBuildPrepsBP != null)
                         {
                             await lblBuildPrepsBP.DoThreadSafeAsync(x => x.Text =
-                                                                        intPrepPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints);
-                            token.ThrowIfCancellationRequested();
+                                                                        intPrepPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints, token);
                         }
 
                         if (lblSpellsBP != null)
                         {
                             await lblSpellsBP.DoThreadSafeAsync(x => x.Text =
-                                                                    intSpellPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints);
-                            token.ThrowIfCancellationRequested();
+                                                                    intSpellPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints, token);
                         }
 
                         if (lblBuildRitualsBP != null)
                         {
                             await lblBuildRitualsBP.DoThreadSafeAsync(x => x.Text =
-                                                                          intRitualPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints);
-                            token.ThrowIfCancellationRequested();
+                                                                          intRitualPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints, token);
                         }
                     }
                     else
@@ -10046,8 +10016,7 @@ namespace Chummer
                                                                             prepPoints + spellPoints + ritualPoints
                                                                             - 2 * intLimitMod,
                                                                             spellPoints + ritualPoints - intLimitMod,
-                                                                            intPrepPointsUsed));
-                            token.ThrowIfCancellationRequested();
+                                                                            intPrepPointsUsed), token);
                         }
 
                         if (lblSpellsBP != null)
@@ -10057,8 +10026,7 @@ namespace Chummer
                                                                         prepPoints + spellPoints + ritualPoints
                                                                         - 2 * intLimitMod,
                                                                         prepPoints + ritualPoints - intLimitMod,
-                                                                        intSpellPointsUsed));
-                            token.ThrowIfCancellationRequested();
+                                                                        intSpellPointsUsed), token);
                         }
 
                         if (lblBuildRitualsBP != null)
@@ -10069,8 +10037,7 @@ namespace Chummer
                                                                               prepPoints + spellPoints + ritualPoints
                                                                               - 2 * intLimitMod,
                                                                               prepPoints + spellPoints - intLimitMod,
-                                                                              intRitualPointsUsed));
-                            token.ThrowIfCancellationRequested();
+                                                                              intRitualPointsUsed), token);
                         }
                     }
                 }
@@ -10123,8 +10090,7 @@ namespace Chummer
 
                 if (blnDoUIUpdate)
                 {
-                    await lblBuildFoci.SetToolTipAsync(sbdFociPointsTooltip.ToString());
-                    token.ThrowIfCancellationRequested();
+                    await lblBuildFoci.SetToolTipAsync(sbdFociPointsTooltip.ToString(), token);
                 }
             }
 
@@ -10282,32 +10248,21 @@ namespace Chummer
                 }
 
                 string strContactPoints = sbdContactPoints.ToString();
-                token.ThrowIfCancellationRequested();
-                await lblContactsBP.DoThreadSafeAsync(x => x.Text = strContactPoints);
-                token.ThrowIfCancellationRequested();
-                await lblContactPoints.DoThreadSafeAsync(x => x.Text = strContactPoints);
-                token.ThrowIfCancellationRequested();
+                await lblContactsBP.DoThreadSafeAsync(x => x.Text = strContactPoints, token);
+                await lblContactPoints.DoThreadSafeAsync(x => x.Text = strContactPoints, token);
             }
-
-            token.ThrowIfCancellationRequested();
+            
             string strTemp = await BuildAttributes(CharacterObject.AttributeSection.AttributeList);
             token.ThrowIfCancellationRequested();
-            await lblAttributesBP.DoThreadSafeAsync(x => x.Text = strTemp);
-            token.ThrowIfCancellationRequested();
+            await lblAttributesBP.DoThreadSafeAsync(x => x.Text = strTemp, token);
             string strTemp2 = await BuildAttributes(CharacterObject.AttributeSection.SpecialAttributeList, null, true);
             token.ThrowIfCancellationRequested();
-            await lblPBuildSpecial.DoThreadSafeAsync(x => x.Text = strTemp2);
-            token.ThrowIfCancellationRequested();
-            await lblMartialArtsBP.DoThreadSafeAsync(x => x.Text = intMartialArtsPoints.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints);
-            token.ThrowIfCancellationRequested();
-            await lblNuyenBP.DoThreadSafeAsync(x => x.Text = intNuyenBP.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints);
-            token.ThrowIfCancellationRequested();
-            await lblFociBP.DoThreadSafeAsync(x => x.Text = intFociPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints);
-            token.ThrowIfCancellationRequested();
-            await lblSpiritsBP.DoThreadSafeAsync(x => x.Text = intSpiritPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints);
-            token.ThrowIfCancellationRequested();
-            await lblSpritesBP.DoThreadSafeAsync(x => x.Text = intSpritePointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints);
-            token.ThrowIfCancellationRequested();
+            await lblPBuildSpecial.DoThreadSafeAsync(x => x.Text = strTemp2, token);
+            await lblMartialArtsBP.DoThreadSafeAsync(x => x.Text = intMartialArtsPoints.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints, token);
+            await lblNuyenBP.DoThreadSafeAsync(x => x.Text = intNuyenBP.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints, token);
+            await lblFociBP.DoThreadSafeAsync(x => x.Text = intFociPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints, token);
+            await lblSpiritsBP.DoThreadSafeAsync(x => x.Text = intSpiritPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints, token);
+            await lblSpritesBP.DoThreadSafeAsync(x => x.Text = intSpritePointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints, token);
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdComplexFormsBP))
             {
@@ -10330,23 +10285,18 @@ namespace Chummer
                         .Append(((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost)
                                 .ToString(GlobalSettings.CultureInfo)).Append(strSpace).Append(strPoints);
                 }
-                token.ThrowIfCancellationRequested();
-                await lblComplexFormsBP.DoThreadSafeAsync(x => x.Text = sbdComplexFormsBP.ToString());
+                await lblComplexFormsBP.DoThreadSafeAsync(x => x.Text = sbdComplexFormsBP.ToString(), token);
             }
-            token.ThrowIfCancellationRequested();
             await lblAINormalProgramsBP.DoThreadSafeAsync(
                 x => x.Text = ((intAINormalProgramPointsUsed - CharacterObject.AINormalProgramLimit)
                                * CharacterObject.AIProgramKarmaCost).ToString(GlobalSettings.CultureInfo) + strSpace
-                    + strPoints);
-            token.ThrowIfCancellationRequested();
+                    + strPoints, token);
             await lblAIAdvancedProgramsBP.DoThreadSafeAsync(
                 x => x.Text = ((intAIAdvancedProgramPointsUsed - CharacterObject.AIAdvancedProgramLimit)
                                * CharacterObject.AIAdvancedProgramKarmaCost).ToString(GlobalSettings.CultureInfo)
-                              + strSpace + strPoints);
-            token.ThrowIfCancellationRequested();
+                              + strSpace + strPoints, token);
             await lblInitiationBP.DoThreadSafeAsync(x => x.Text = intInitiationPoints.ToString(GlobalSettings.CultureInfo)
-                                                                  + strSpace + strPoints);
-            token.ThrowIfCancellationRequested();
+                                                                  + strSpace + strPoints, token);
             // ------------------------------------------------------------------------------
             // Update the number of BP remaining in the StatusBar.
             await tsMain.DoThreadSafeAsync(() =>
@@ -10364,7 +10314,7 @@ namespace Chummer
                     tslKarma.Text = CharacterObjectSettings.BuildKarma.ToString(GlobalSettings.CultureInfo);
                     tslKarma.ForeColor = ColorManager.ControlText;
                 }
-            });
+            }, token);
 
             return intKarmaPointsRemain;
         }
