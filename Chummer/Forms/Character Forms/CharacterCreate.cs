@@ -1035,7 +1035,7 @@ namespace Chummer
                             {
                                 await UpdateCharacterInfoTask;
                             }
-                            catch (TaskCanceledException)
+                            catch (OperationCanceledException)
                             {
                                 return;
                             }
@@ -1218,9 +1218,9 @@ namespace Chummer
                     {
                         await UpdateCharacterInfoTask;
                     }
-                    catch (TaskCanceledException)
+                    catch (OperationCanceledException)
                     {
-                        return;
+                        // Swallow this
                     }
 
                     // Trash the global variables and dispose of the Form.
@@ -2980,7 +2980,7 @@ namespace Chummer
                         {
                             await UpdateCharacterInfoTask;
                         }
-                        catch (TaskCanceledException)
+                        catch (OperationCanceledException)
                         {
                             return;
                         }
@@ -10505,7 +10505,7 @@ namespace Chummer
                     {
                         await UpdateCharacterInfoTask;
                     }
-                    catch (TaskCanceledException)
+                    catch (OperationCanceledException)
                     {
                         return;
                     }
