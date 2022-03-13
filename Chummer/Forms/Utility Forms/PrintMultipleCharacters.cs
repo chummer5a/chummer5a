@@ -108,11 +108,11 @@ namespace Chummer
             try
             {
                 if (_tskPrinter?.IsCompleted == false)
-                    await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(x => x.Enabled = true),
-                                       prgProgress.DoThreadSafeAsync(x => x.Value = 0));
+                    await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, token),
+                                       prgProgress.DoThreadSafeAsync(x => x.Value = 0, token));
                 else
-                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true),
-                                       prgProgress.DoThreadSafeAsync(x => x.Value = 0));
+                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, token),
+                                       prgProgress.DoThreadSafeAsync(x => x.Value = 0, token));
             }
             catch (OperationCanceledException)
             {
@@ -137,12 +137,12 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = false),
+                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token),
                                        prgProgress.DoThreadSafeAsync(objBar =>
                                        {
                                            objBar.Value = 0;
                                            objBar.Maximum = treCharacters.Nodes.Count;
-                                       }));
+                                       }, token));
                     token.ThrowIfCancellationRequested();
                     // Parallelized load because this is one major bottleneck.
                     Character[] lstCharacters = new Character[treCharacters.Nodes.Count];
@@ -164,7 +164,7 @@ namespace Chummer
                         innerToken.ThrowIfCancellationRequested();
 
                         if (blnLoadSuccessful)
-                            await prgProgress.DoThreadSafeAsync(() => ++prgProgress.Value);
+                            await prgProgress.DoThreadSafeAsync(() => ++prgProgress.Value, innerToken);
                         return objReturn;
                     }
 
@@ -173,7 +173,7 @@ namespace Chummer
                     for (int i = 0; i < lstCharacters.Length; ++i)
                         lstCharacters[i] = await tskLoadingTasks[i];
                     token.ThrowIfCancellationRequested();
-                    await CleanUpOldCharacters();
+                    await CleanUpOldCharacters(token);
                     token.ThrowIfCancellationRequested();
                     _aobjCharacters = lstCharacters;
 
@@ -185,7 +185,7 @@ namespace Chummer
                             await _frmPrintView.SetSelectedSheet("Game Master Summary");
                             await _frmPrintView.SetCharacters(_aobjCharacters);
                             _frmPrintView.Show();
-                        });
+                        }, token);
                     }
                     else
                     {
@@ -193,25 +193,27 @@ namespace Chummer
                         {
                             await objSheetViewer.SetCharacters(_aobjCharacters);
                             objSheetViewer.Activate();
-                        });
+                        }, token);
                     }
                 }
                 finally
                 {
-                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true),
-                                       prgProgress.DoThreadSafeAsync(x => x.Value = 0));
+                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, token),
+                                       prgProgress.DoThreadSafeAsync(x => x.Value = 0, token));
                 }
             }
         }
 
-        private async ValueTask CleanUpOldCharacters()
+        private async ValueTask CleanUpOldCharacters(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!(_aobjCharacters?.Length > 0))
                 return;
             // Dispose of any characters who were previous loaded but are no longer needed and don't have any linked characters
             bool blnAnyChanges = true;
             while (blnAnyChanges)
             {
+                token.ThrowIfCancellationRequested();
                 blnAnyChanges = false;
                 foreach (Character objCharacter in _aobjCharacters)
                 {
@@ -222,6 +224,7 @@ namespace Chummer
                     blnAnyChanges = true;
                     Program.OpenCharacters.Remove(objCharacter);
                     await objCharacter.DisposeAsync();
+                    token.ThrowIfCancellationRequested();
                 }
             }
         }

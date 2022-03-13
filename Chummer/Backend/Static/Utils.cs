@@ -249,10 +249,11 @@ namespace Chummer
         /// <param name="strPath">File path to delete.</param>
         /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the file cannot be accessed because of permissions.</param>
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <param name="token">Cancellation token to use</param>
         /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
-        public static bool SafeDeleteFile(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
+        public static bool SafeDeleteFile(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
         {
-            return SafeDeleteFileCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout).GetAwaiter()
+            return SafeDeleteFileCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout, token).GetAwaiter()
                 .GetResult();
         }
 
@@ -262,10 +263,11 @@ namespace Chummer
         /// <param name="strPath">File path to delete.</param>
         /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the file cannot be accessed because of permissions.</param>
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <param name="token">Cancellation token to use</param>
         /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
-        public static Task<bool> SafeDeleteFileAsync(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
+        public static Task<bool> SafeDeleteFileAsync(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
         {
-            return SafeDeleteFileCoreAsync(false, strPath, blnShowUnauthorizedAccess, intTimeout);
+            return SafeDeleteFileCoreAsync(false, strPath, blnShowUnauthorizedAccess, intTimeout, token);
         }
 
         /// <summary>
@@ -277,28 +279,33 @@ namespace Chummer
         /// <param name="strPath">File path to delete.</param>
         /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the file cannot be accessed because of permissions.</param>
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <param name="token">Cancellation token to use</param>
         /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
-        private static async Task<bool> SafeDeleteFileCoreAsync(bool blnSync, string strPath, bool blnShowUnauthorizedAccess, int intTimeout)
+        private static async Task<bool> SafeDeleteFileCoreAsync(bool blnSync, string strPath, bool blnShowUnauthorizedAccess, int intTimeout, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strPath))
                 return true;
             int intWaitInterval = Math.Max(intTimeout / DefaultSleepDuration, DefaultSleepDuration);
             while (File.Exists(strPath))
             {
+                token.ThrowIfCancellationRequested();
                 try
                 {
-                    if (!strPath.StartsWith(GetStartupPath, StringComparison.OrdinalIgnoreCase) && !strPath.StartsWith(GetTempPath(), StringComparison.OrdinalIgnoreCase))
+                    if (!strPath.StartsWith(GetStartupPath, StringComparison.OrdinalIgnoreCase)
+                        && !strPath.StartsWith(GetTempPath(), StringComparison.OrdinalIgnoreCase))
                     {
+                        token.ThrowIfCancellationRequested();
                         // For safety purposes, do not allow unprompted deleting of any files outside of the Chummer folder itself
                         if (blnShowUnauthorizedAccess)
                         {
                             if (Program.ShowMessageBox(
                                     string.Format(GlobalSettings.CultureInfo,
-                                        blnSync
-                                            // ReSharper disable once MethodHasAsyncOverload
-                                            ? LanguageManager.GetString("Message_Prompt_Delete_Existing_File")
-                                            : await LanguageManager.GetStringAsync(
-                                                "Message_Prompt_Delete_Existing_File"), strPath),
+                                                  blnSync
+                                                      // ReSharper disable once MethodHasAsyncOverload
+                                                      ? LanguageManager.GetString("Message_Prompt_Delete_Existing_File")
+                                                      : await LanguageManager.GetStringAsync(
+                                                          "Message_Prompt_Delete_Existing_File"), strPath),
                                     buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning) != DialogResult.Yes)
                                 return false;
                         }
@@ -309,10 +316,11 @@ namespace Chummer
                         }
                     }
 
+                    token.ThrowIfCancellationRequested();
                     if (blnSync)
                         File.Delete(strPath);
                     else
-                        await Task.Run(() => File.Delete(strPath));
+                        await Task.Run(() => File.Delete(strPath), token);
                 }
                 catch (PathTooLongException)
                 {
@@ -345,6 +353,7 @@ namespace Chummer
                     //still being written to
                     //or being processed by another thread
                     //or does not exist (has already been processed)
+                    token.ThrowIfCancellationRequested();
                     if (blnSync)
                         SafeSleep(intWaitInterval);
                     else
@@ -366,10 +375,11 @@ namespace Chummer
         /// <param name="strPath">Directory path to delete.</param>
         /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the directory cannot be accessed because of permissions.</param>
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
-        public static bool SafeDeleteDirectory(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
+        public static bool SafeDeleteDirectory(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
         {
-            return SafeDeleteDirectoryCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout).GetAwaiter()
+            return SafeDeleteDirectoryCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout, token).GetAwaiter()
                 .GetResult();
         }
 
@@ -379,10 +389,11 @@ namespace Chummer
         /// <param name="strPath">Directory path to delete.</param>
         /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the directory cannot be accessed because of permissions.</param>
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
-        public static Task<bool> SafeDeleteDirectoryAsync(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
+        public static Task<bool> SafeDeleteDirectoryAsync(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
         {
-            return SafeDeleteDirectoryCoreAsync(false, strPath, blnShowUnauthorizedAccess, intTimeout);
+            return SafeDeleteDirectoryCoreAsync(false, strPath, blnShowUnauthorizedAccess, intTimeout, token);
         }
 
         /// <summary>
@@ -394,9 +405,11 @@ namespace Chummer
         /// <param name="strPath">Directory path to delete.</param>
         /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the directory cannot be accessed because of permissions.</param>
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
-        private static async Task<bool> SafeDeleteDirectoryCoreAsync(bool blnSync, string strPath, bool blnShowUnauthorizedAccess, int intTimeout)
+        private static async Task<bool> SafeDeleteDirectoryCoreAsync(bool blnSync, string strPath, bool blnShowUnauthorizedAccess, int intTimeout, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strPath))
                 return true;
             if (!Directory.Exists(strPath))
@@ -404,17 +417,19 @@ namespace Chummer
             if (blnSync)
                 // ReSharper disable once MethodHasAsyncOverload
                 SafeClearDirectory(strPath, blnShowUnauthorizedAccess: blnShowUnauthorizedAccess,
-                    intTimeout: intTimeout);
+                    intTimeout: intTimeout, token: token);
             else
                 await SafeClearDirectoryAsync(strPath, blnShowUnauthorizedAccess: blnShowUnauthorizedAccess,
-                    intTimeout: intTimeout);
+                    intTimeout: intTimeout, token: token);
             int intWaitInterval = Math.Max(intTimeout / DefaultSleepDuration, DefaultSleepDuration);
             while (Directory.Exists(strPath))
             {
+                token.ThrowIfCancellationRequested();
                 try
                 {
                     if (!strPath.StartsWith(GetStartupPath, StringComparison.OrdinalIgnoreCase) && !strPath.StartsWith(GetTempPath(), StringComparison.OrdinalIgnoreCase))
                     {
+                        token.ThrowIfCancellationRequested();
                         // For safety purposes, do not allow unprompted deleting of any files outside of the Chummer folder itself
                         if (blnShowUnauthorizedAccess)
                         {
@@ -434,11 +449,11 @@ namespace Chummer
                             return false;
                         }
                     }
-
+                    token.ThrowIfCancellationRequested();
                     if (blnSync)
                         Directory.Delete(strPath, true);
                     else
-                        await Task.Run(() => Directory.Delete(strPath, true));
+                        await Task.Run(() => Directory.Delete(strPath, true), token);
                 }
                 catch (PathTooLongException)
                 {
@@ -471,6 +486,7 @@ namespace Chummer
                     //still being written to
                     //or being processed by another thread
                     //or does not exist (has already been processed)
+                    token.ThrowIfCancellationRequested();
                     if (blnSync)
                         SafeSleep(intWaitInterval);
                     else
@@ -494,11 +510,12 @@ namespace Chummer
         /// <param name="blnRecursive">Whether to a delete all subdirectories, too.</param>
         /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if a file cannot be accessed because of permissions.</param>
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
-        public static bool SafeClearDirectory(string strPath, string strSearchPattern = "*", bool blnRecursive = true, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
+        public static bool SafeClearDirectory(string strPath, string strSearchPattern = "*", bool blnRecursive = true, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
         {
             return SafeClearDirectoryCoreAsync(true, strPath, strSearchPattern, blnRecursive, blnShowUnauthorizedAccess,
-                intTimeout).GetAwaiter().GetResult();
+                intTimeout, token).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -509,11 +526,12 @@ namespace Chummer
         /// <param name="blnRecursive">Whether to a delete all subdirectories, too.</param>
         /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if a file cannot be accessed because of permissions.</param>
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
-        public static Task<bool> SafeClearDirectoryAsync(string strPath, string strSearchPattern = "*", bool blnRecursive = true, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
+        public static Task<bool> SafeClearDirectoryAsync(string strPath, string strSearchPattern = "*", bool blnRecursive = true, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
         {
             return SafeClearDirectoryCoreAsync(false, strPath, strSearchPattern, blnRecursive, blnShowUnauthorizedAccess,
-                intTimeout);
+                intTimeout, token);
         }
 
         /// <summary>
@@ -527,9 +545,11 @@ namespace Chummer
         /// <param name="blnRecursive">Whether to a delete all subdirectories, too.</param>
         /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if a file cannot be accessed because of permissions.</param>
         /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <param name="token">Cancellation token to use</param>
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
-        private static async Task<bool> SafeClearDirectoryCoreAsync(bool blnSync, string strPath, string strSearchPattern, bool blnRecursive, bool blnShowUnauthorizedAccess, int intTimeout)
+        private static async Task<bool> SafeClearDirectoryCoreAsync(bool blnSync, string strPath, string strSearchPattern, bool blnRecursive, bool blnShowUnauthorizedAccess, int intTimeout, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strPath) || !Directory.Exists(strPath))
                 return true;
             if (!strPath.StartsWith(GetStartupPath, StringComparison.OrdinalIgnoreCase)
@@ -555,15 +575,17 @@ namespace Chummer
                     return false;
                 }
             }
+            token.ThrowIfCancellationRequested();
             string[] astrFilesToDelete = Directory.GetFiles(strPath, strSearchPattern,
                                                             blnRecursive
                                                                 ? SearchOption.AllDirectories
                                                                 : SearchOption.TopDirectoryOnly);
+            token.ThrowIfCancellationRequested();
             if (blnSync)
             {
                 object objSuccessLock = new object();
                 bool blnReturn = true;
-                Parallel.ForEach(astrFilesToDelete, () => true, (strToDelete, x, y) => SafeDeleteFile(strToDelete, false, intTimeout), blnLoop =>
+                Parallel.ForEach(astrFilesToDelete, () => true, (strToDelete, x, y) => SafeDeleteFile(strToDelete, false, intTimeout, token), blnLoop =>
                 {
                     if (!blnLoop)
                     {
@@ -581,7 +603,7 @@ namespace Chummer
             for (int i = 0; i < astrFilesToDelete.Length; i++)
             {
                 string strToDelete = astrFilesToDelete[i];
-                atskSuccesses[i] = SafeDeleteFileAsync(strToDelete, false, intTimeout);
+                atskSuccesses[i] = SafeDeleteFileAsync(strToDelete, false, intTimeout, token);
             }
             foreach (Task<bool> x in atskSuccesses)
             {

@@ -13919,26 +13919,26 @@ namespace Chummer
                     if (CharacterObject.Metatype == "Free Spirit" && !CharacterObject.IsCritter ||
                         CharacterObject.MetatypeCategory.EndsWith("Spirits", StringComparison.Ordinal))
                     {
-                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblCritterPowerPoints.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
                             x.Text = CharacterObject.CalculateFreeSpiritPowerPoints();
-                        });
+                        }, token);
                     }
                     else if (CharacterObject.IsFreeSprite)
                     {
-                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblCritterPowerPoints.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
                             x.Text = CharacterObject.CalculateFreeSpritePowerPoints();
-                        });
+                        }, token);
                     }
                     else
                     {
-                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblCritterPowerPoints.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblCritterPowerPoints.DoThreadSafeAsync(x => x.Visible = false, token);
                     }
                     token.ThrowIfCancellationRequested();
                     await Task.WhenAll(RefreshSelectedQuality(token), RefreshSelectedCyberware(token), RefreshSelectedArmor(token),

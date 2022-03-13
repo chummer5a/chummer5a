@@ -45,7 +45,7 @@ namespace Chummer
                 return false;
             Form frmToUse = treNode.TreeView.FindForm() ?? Program.MainForm;
 
-            DialogResult eResult = await frmToUse.DoThreadSafeFunc(async x =>
+            DialogResult eResult = await frmToUse.DoThreadSafeFuncAsync(async x =>
             {
                 using (EditNotes frmItemNotes = new EditNotes(objNotes.Notes, objNotes.NotesColor))
                 {

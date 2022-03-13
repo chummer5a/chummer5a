@@ -523,9 +523,9 @@ namespace Chummer
                                    {
                                        tsPrintPreview.Enabled = false;
                                        tsSaveAsHtml.Enabled = false;
-                                   }),
-                                   cmdPrint.DoThreadSafeAsync(x => x.Enabled = false),
-                                   cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false));
+                                   }, token),
+                                   cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token),
+                                   cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token));
                 token.ThrowIfCancellationRequested();
                 Character[] aobjCharacters = await _lstCharacters.ToArrayAsync();
                 token.ThrowIfCancellationRequested();
@@ -535,7 +535,7 @@ namespace Chummer
                                                                         aobjCharacters)
                     : null;
                 token.ThrowIfCancellationRequested();
-                await this.DoThreadSafeAsync(() => tsSaveAsXml.Enabled = _objCharacterXml != null);
+                await this.DoThreadSafeAsync(() => tsSaveAsXml.Enabled = _objCharacterXml != null, token);
                 token.ThrowIfCancellationRequested();
                 await RefreshSheet(token);
             }
@@ -553,9 +553,9 @@ namespace Chummer
                                    {
                                        tsPrintPreview.Enabled = false;
                                        tsSaveAsHtml.Enabled = false;
-                                   }),
-                                   cmdPrint.DoThreadSafeAsync(x => x.Enabled = false),
-                                   cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false));
+                                   }, token),
+                                   cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token),
+                                   cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token));
                 token.ThrowIfCancellationRequested();
                 await SetDocumentText(await LanguageManager.GetStringAsync("String_Generating_Sheet"));
                 token.ThrowIfCancellationRequested();
@@ -638,7 +638,7 @@ namespace Chummer
                         // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
 
                         // Delete any old versions of the file
-                        if (!await Utils.SafeDeleteFileAsync(_strTempSheetFilePath, true))
+                        if (!await Utils.SafeDeleteFileAsync(_strTempSheetFilePath, true, token: token))
                             return;
 
                         // Read in the resulting code and pass it to the browser.
@@ -649,9 +649,9 @@ namespace Chummer
                         }
 
                         token.ThrowIfCancellationRequested();
-                        await this.DoThreadSafeAsync(x => x.UseWaitCursor = true);
+                        await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, token);
                         await webViewer.DoThreadSafeAsync(
-                            x => x.Url = new Uri("file:///" + _strTempSheetFilePath));
+                            x => x.Url = new Uri("file:///" + _strTempSheetFilePath), token);
                         token.ThrowIfCancellationRequested();
                     }
                     else
@@ -662,8 +662,8 @@ namespace Chummer
                         {
                             string strOutput = await objReader.ReadToEndAsync();
                             token.ThrowIfCancellationRequested();
-                            await this.DoThreadSafeAsync(() => UseWaitCursor = true);
-                            await webViewer.DoThreadSafeAsync(x => x.DocumentText = strOutput);
+                            await this.DoThreadSafeAsync(() => UseWaitCursor = true, token);
+                            await webViewer.DoThreadSafeAsync(x => x.DocumentText = strOutput, token);
                             token.ThrowIfCancellationRequested();
                         }
                     }

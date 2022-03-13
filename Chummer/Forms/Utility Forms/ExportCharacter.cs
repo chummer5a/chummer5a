@@ -156,7 +156,7 @@ namespace Chummer
                                                                        ? FlagImageGetter.GetFlagFromCountryCode192Dpi(
                                                                            _strExportLanguage.Substring(3, 2))
                                                                        : FlagImageGetter.GetFlagFromCountryCode(
-                                                                           _strExportLanguage.Substring(3, 2))),
+                                                                           _strExportLanguage.Substring(3, 2)), token),
                     DoXsltUpdate(token));
                 token.ThrowIfCancellationRequested();
             }
@@ -176,14 +176,14 @@ namespace Chummer
                         {
                             token.ThrowIfCancellationRequested();
                             await txtText.DoThreadSafeAsync(
-                                async x => x.Text = await LanguageManager.GetStringAsync("String_Generating_Data"));
+                                async x => x.Text = await LanguageManager.GetStringAsync("String_Generating_Data"), token);
                             (bool blnSuccess, Tuple<string, string> strBoxText)
                                 = await _dicCache.TryGetValueAsync(
                                     new Tuple<string, string>(_strExportLanguage, _strXslt));
                             token.ThrowIfCancellationRequested();
                             if (blnSuccess)
                             {
-                                await txtText.DoThreadSafeAsync(x => x.Text = strBoxText.Item2);
+                                await txtText.DoThreadSafeAsync(x => x.Text = strBoxText.Item2, token);
                             }
                             else
                             {
@@ -261,10 +261,10 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
-                await Task.WhenAll(cmdOK.DoThreadSafeAsync(x => x.Enabled = false),
+                await Task.WhenAll(cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token),
                                    txtText.DoThreadSafeAsync(
                                        async x => x.Text
-                                           = await LanguageManager.GetStringAsync("String_Generating_Data")));
+                                           = await LanguageManager.GetStringAsync("String_Generating_Data"), token));
                 token.ThrowIfCancellationRequested();
                 _objCharacterXml = await _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
                                                                          _objCharacterXmlGeneratorCancellationTokenSource
@@ -326,7 +326,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
-                await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
+                await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -400,7 +400,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = true);
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = true, token);
                 }
             }
         }
@@ -410,7 +410,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
-                await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
+                await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -420,7 +420,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = true);
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = true, token);
                 }
             }
         }

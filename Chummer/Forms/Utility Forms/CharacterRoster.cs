@@ -255,8 +255,11 @@ namespace Chummer
             {
                 ResumeLayout();
             }
-            
-            await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache, _objWatchFolderRefreshCancellationTokenSource.Token));
+
+            await this.DoThreadSafeAsync(
+                () => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache,
+                                      _objWatchFolderRefreshCancellationTokenSource.Token),
+                _objWatchFolderRefreshCancellationTokenSource.Token);
             await PurgeUnusedCharacterCaches(_objWatchFolderRefreshCancellationTokenSource.Token);
         }
 
@@ -314,7 +317,7 @@ namespace Chummer
             }
             innerToken.ThrowIfCancellationRequested();
             token.ThrowIfCancellationRequested();
-            await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache, token));
+            await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache, token), token);
             await PurgeUnusedCharacterCaches(token);
         }
 
@@ -479,7 +482,7 @@ namespace Chummer
                                 if (objFavoriteNode.TreeView.IsDisposed)
                                     continue;
                                 await objFavoriteNode.TreeView.DoThreadSafeAsync(
-                                    () => objFavoriteNode.Nodes.Add(objNode));
+                                    () => objFavoriteNode.Nodes.Add(objNode), token);
                             }
                             else
                                 objFavoriteNode.Nodes.Add(objNode);
@@ -506,7 +509,7 @@ namespace Chummer
                                 if (objRecentNode.TreeView.IsDisposed)
                                     continue;
                                 await objRecentNode.TreeView.DoThreadSafeAsync(
-                                    () => objRecentNode.Nodes.Add(objNode));
+                                    () => objRecentNode.Nodes.Add(objNode), token);
                             }
                             else
                                 objRecentNode.Nodes.Add(objNode);
@@ -568,7 +571,7 @@ namespace Chummer
                     objRecentNode.ExpandAll();
                 }
                 treList.ResumeLayout();
-            });
+            }, token);
         }
 
         private async Task LoadWatchFolderCharacters(CancellationToken token = default)
@@ -619,7 +622,7 @@ namespace Chummer
             Dictionary<TreeNode, string> dicWatchNodes = new Dictionary<TreeNode, string>(dicWatch.Count);
             List<Task<TreeNode>> lstCachingTasks = new List<Task<TreeNode>>(dicWatch.Count);
             foreach (string strKey in dicWatch.Keys)
-                lstCachingTasks.Add(Task.Run(() => CacheCharacter(strKey),
+                lstCachingTasks.Add(Task.Run(() => CacheCharacter(strKey, token),
                                              _objMostRecentlyUsedsRefreshCancellationTokenSource.Token));
             token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstCachingTasks);
@@ -642,7 +645,7 @@ namespace Chummer
                     if (objWatchNode.TreeView.IsDisposed)
                         continue;
                     await objWatchNode.TreeView.DoThreadSafeAsync(
-                        () => objWatchNode.Nodes.Add(new TreeNode(s) {Tag = s}));
+                        () => objWatchNode.Nodes.Add(new TreeNode(s) {Tag = s}), token);
                 }
                 else
                     objWatchNode.Nodes.Add(new TreeNode(s) {Tag = s});
@@ -657,7 +660,7 @@ namespace Chummer
                     {
                         if (objWatchNode.TreeView.IsDisposed)
                             continue;
-                        await objWatchNode.TreeView.DoThreadSafeAsync(() => objWatchNode.Nodes.Add(kvtNode.Key));
+                        await objWatchNode.TreeView.DoThreadSafeAsync(() => objWatchNode.Nodes.Add(kvtNode.Key), token);
                     }
                     else
                         objWatchNode.Nodes.Add(kvtNode.Key);
@@ -673,7 +676,7 @@ namespace Chummer
                         {
                             if (objWatchNode.TreeView.IsDisposed)
                                 continue;
-                            await objWatchNode.TreeView.DoThreadSafeAsync(() => objWatchNode.Nodes.Add(kvtNode.Key));
+                            await objWatchNode.TreeView.DoThreadSafeAsync(() => objWatchNode.Nodes.Add(kvtNode.Key), token);
                         }
                         else
                             objNode.Nodes.Add(kvtNode.Key);
@@ -707,7 +710,7 @@ namespace Chummer
                     objWatchNode.ExpandAll();
                 }
                 treList.ResumeLayout();
-            });
+            }, token);
         }
 
         public Task RefreshPluginNodes(IPlugin objPluginToRefresh)
@@ -892,73 +895,69 @@ namespace Chummer
         public async Task UpdateCharacter(CharacterCache objCache, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (await this.DoThreadSafeFuncAsync(x => x.IsNullOrDisposed())) // Safety check for external calls
+            if (await this.DoThreadSafeFuncAsync(x => x.IsNullOrDisposed(), token)) // Safety check for external calls
                 return;
             using (CursorWait.New(this))
             {
-                await tlpRight.DoThreadSafeAsync(x => x.SuspendLayout());
+                await tlpRight.DoThreadSafeAsync(x => x.SuspendLayout(), token);
                 try
                 {
                     token.ThrowIfCancellationRequested();
                     if (objCache != null)
                     {
                         string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
-                        await txtCharacterBio.DoThreadSafeAsync(async x => x.Text = await objCache.Description.RtfToPlainTextAsync());
-                        await txtCharacterBackground.DoThreadSafeAsync(async x => x.Text = await objCache.Background.RtfToPlainTextAsync());
-                        await txtCharacterNotes.DoThreadSafeAsync(async x => x.Text = await objCache.CharacterNotes.RtfToPlainTextAsync());
-                        await txtGameNotes.DoThreadSafeAsync(async x => x.Text = await objCache.GameNotes.RtfToPlainTextAsync());
-                        await txtCharacterConcept.DoThreadSafeAsync(async x => x.Text = await objCache.Concept.RtfToPlainTextAsync());
-                        token.ThrowIfCancellationRequested();
+                        await txtCharacterBio.DoThreadSafeAsync(async x => x.Text = await objCache.Description.RtfToPlainTextAsync(), token);
+                        await txtCharacterBackground.DoThreadSafeAsync(async x => x.Text = await objCache.Background.RtfToPlainTextAsync(), token);
+                        await txtCharacterNotes.DoThreadSafeAsync(async x => x.Text = await objCache.CharacterNotes.RtfToPlainTextAsync(), token);
+                        await txtGameNotes.DoThreadSafeAsync(async x => x.Text = await objCache.GameNotes.RtfToPlainTextAsync(), token);
+                        await txtCharacterConcept.DoThreadSafeAsync(async x => x.Text = await objCache.Concept.RtfToPlainTextAsync(), token);
                         await lblCareerKarma.DoThreadSafeAsync(async x =>
                         {
                             x.Text = objCache.Karma;
                             if (string.IsNullOrEmpty(x.Text)
                                 || x.Text == 0.ToString(GlobalSettings.CultureInfo))
                                 x.Text = await LanguageManager.GetStringAsync("String_None");
-                        });
+                        }, token);
                         await lblPlayerName.DoThreadSafeAsync(x =>
                         {
                             x.Text = objCache.PlayerName;
                             if (string.IsNullOrEmpty(x.Text))
                                 x.Text = strUnknown;
-                        });
+                        }, token);
                         await lblCharacterName.DoThreadSafeAsync(x =>
                         {
                             x.Text = objCache.CharacterName;
                             if (string.IsNullOrEmpty(x.Text))
                                 x.Text = strUnknown;
-                        });
+                        }, token);
                         await lblCharacterAlias.DoThreadSafeAsync(x =>
                         {
                             x.Text = objCache.CharacterAlias;
                             if (string.IsNullOrEmpty(x.Text))
                                 x.Text = strUnknown;
-                        });
+                        }, token);
                         await lblEssence.DoThreadSafeAsync(x =>
                         {
                             x.Text = objCache.Essence;
                             if (string.IsNullOrEmpty(x.Text))
                                 x.Text = strUnknown;
-                        });
+                        }, token);
                         await lblFilePath.DoThreadSafeAsync(async x =>
                         {
                             x.Text = objCache.FileName;
                             if (string.IsNullOrEmpty(x.Text))
                                 x.Text = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound");
-                        });
-                        token.ThrowIfCancellationRequested();
+                        }, token);
                         await lblSettings.DoThreadSafeAsync(x =>
                         {
                             x.Text = objCache.SettingsFile;
                             if (string.IsNullOrEmpty(x.Text))
                                 x.Text = strUnknown;
-                        });
+                        }, token);
                         await lblFilePath.SetToolTipAsync(
                             await objCache.FilePath.CheapReplaceAsync(Utils.GetStartupPath,
-                                                                      () => '<' + Application.ProductName + '>'));
-                        token.ThrowIfCancellationRequested();
-                        await picMugshot.DoThreadSafeAsync(x => x.Image = objCache.Mugshot);
-                        token.ThrowIfCancellationRequested();
+                                                                      () => '<' + Application.ProductName + '>'), token);
+                        await picMugshot.DoThreadSafeAsync(x => x.Image = objCache.Mugshot, token);
                         // Populate character information fields.
                         if (objCache.Metatype != null)
                         {
@@ -991,13 +990,12 @@ namespace Chummer
                                         : objCache.Metavariant) + ')';
                             }
 
-                            await lblMetatype.DoThreadSafeAsync(x => x.Text = strMetatype);
+                            await lblMetatype.DoThreadSafeAsync(x => x.Text = strMetatype, token);
                         }
                         else
-                            await lblMetatype.DoThreadSafeFunc(
-                                async x => x.Text = await LanguageManager.GetStringAsync("String_MetatypeLoadError"));
-                        token.ThrowIfCancellationRequested();
-                        await tabCharacterText.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblMetatype.DoThreadSafeAsync(
+                                async x => x.Text = await LanguageManager.GetStringAsync("String_MetatypeLoadError"), token);
+                        await tabCharacterText.DoThreadSafeAsync(x => x.Visible = true, token);
                         if (!string.IsNullOrEmpty(objCache.ErrorText))
                         {
                             await txtCharacterBio.DoThreadSafeAsync(x =>
@@ -1005,50 +1003,47 @@ namespace Chummer
                                 x.Text = objCache.ErrorText;
                                 x.ForeColor = ColorManager.ErrorColor;
                                 x.BringToFront();
-                            });
+                            }, token);
                         }
                         else
-                            await txtCharacterBio.DoThreadSafeAsync(x => x.ForeColor = ColorManager.WindowText);
+                            await txtCharacterBio.DoThreadSafeAsync(x => x.ForeColor = ColorManager.WindowText, token);
                     }
                     else
                     {
-                        token.ThrowIfCancellationRequested();
-                        await tabCharacterText.DoThreadSafeAsync(x => x.Visible = false);
-                        await txtCharacterBio.DoThreadSafeAsync(x => x.Clear());
-                        await txtCharacterBackground.DoThreadSafeAsync(x => x.Clear());
-                        await txtCharacterNotes.DoThreadSafeAsync(x => x.Clear());
-                        await txtGameNotes.DoThreadSafeAsync(x => x.Clear());
-                        await txtCharacterConcept.DoThreadSafeAsync(x => x.Clear());
-                        await lblCareerKarma.DoThreadSafeAsync(x => x.Text = string.Empty);
-                        await lblMetatype.DoThreadSafeAsync(x => x.Text = string.Empty);
-                        await lblPlayerName.DoThreadSafeAsync(x => x.Text = string.Empty);
-                        await lblCharacterName.DoThreadSafeAsync(x => x.Text = string.Empty);
-                        await lblCharacterAlias.DoThreadSafeAsync(x => x.Text = string.Empty);
-                        await lblEssence.DoThreadSafeAsync(x => x.Text = string.Empty);
-                        await lblFilePath.DoThreadSafeAsync(x => x.Text = string.Empty);
-                        await lblFilePath.SetToolTipAsync(string.Empty);
-                        await lblSettings.DoThreadSafeAsync(x => x.Text = string.Empty);
-                        await picMugshot.DoThreadSafeAsync(x => x.Image = null);
+                        await tabCharacterText.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await txtCharacterBio.DoThreadSafeAsync(x => x.Clear(), token);
+                        await txtCharacterBackground.DoThreadSafeAsync(x => x.Clear(), token);
+                        await txtCharacterNotes.DoThreadSafeAsync(x => x.Clear(), token);
+                        await txtGameNotes.DoThreadSafeAsync(x => x.Clear(), token);
+                        await txtCharacterConcept.DoThreadSafeAsync(x => x.Clear(), token);
+                        await lblCareerKarma.DoThreadSafeAsync(x => x.Text = string.Empty, token);
+                        await lblMetatype.DoThreadSafeAsync(x => x.Text = string.Empty, token);
+                        await lblPlayerName.DoThreadSafeAsync(x => x.Text = string.Empty, token);
+                        await lblCharacterName.DoThreadSafeAsync(x => x.Text = string.Empty, token);
+                        await lblCharacterAlias.DoThreadSafeAsync(x => x.Text = string.Empty, token);
+                        await lblEssence.DoThreadSafeAsync(x => x.Text = string.Empty, token);
+                        await lblFilePath.DoThreadSafeAsync(x => x.Text = string.Empty, token);
+                        await lblFilePath.SetToolTipAsync(string.Empty, token);
+                        await lblSettings.DoThreadSafeAsync(x => x.Text = string.Empty, token);
+                        await picMugshot.DoThreadSafeAsync(x => x.Image = null, token);
                     }
-                    token.ThrowIfCancellationRequested();
                     await lblCareerKarmaLabel.DoThreadSafeAsync(
-                        x => x.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text));
-                    await lblMetatypeLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblMetatype.Text));
+                        x => x.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text), token);
+                    await lblMetatypeLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblMetatype.Text), token);
                     await lblPlayerNameLabel.DoThreadSafeAsync(
-                        x => x.Visible = !string.IsNullOrEmpty(lblPlayerName.Text));
+                        x => x.Visible = !string.IsNullOrEmpty(lblPlayerName.Text), token);
                     await lblCharacterNameLabel.DoThreadSafeAsync(
-                        x => x.Visible = !string.IsNullOrEmpty(lblCharacterName.Text));
+                        x => x.Visible = !string.IsNullOrEmpty(lblCharacterName.Text), token);
                     await lblCharacterAliasLabel.DoThreadSafeAsync(
-                        x => x.Visible = !string.IsNullOrEmpty(lblCharacterAlias.Text));
-                    await lblEssenceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblEssence.Text));
-                    await lblFilePathLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblFilePath.Text));
-                    await lblSettingsLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblSettings.Text));
-                    token.ThrowIfCancellationRequested();
-                    await ProcessMugshotSizeMode();
+                        x => x.Visible = !string.IsNullOrEmpty(lblCharacterAlias.Text), token);
+                    await lblEssenceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblEssence.Text), token);
+                    await lblFilePathLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblFilePath.Text), token);
+                    await lblSettingsLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblSettings.Text), token);
+                    await ProcessMugshotSizeMode(token);
                 }
                 finally
                 {
-                    await tlpRight.DoThreadSafeAsync(x => x.ResumeLayout());
+                    await tlpRight.DoThreadSafeAsync(x => x.ResumeLayout(), token);
                 }
             }
         }
@@ -1173,8 +1168,9 @@ namespace Chummer
             await ProcessMugshotSizeMode();
         }
 
-        private Task ProcessMugshotSizeMode()
+        private Task ProcessMugshotSizeMode(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (this.IsNullOrDisposed())
                 return Task.CompletedTask;
             return picMugshot.DoThreadSafeAsync(x =>
@@ -1191,7 +1187,7 @@ namespace Chummer
                 {
                     x.SizeMode = PictureBoxSizeMode.Zoom;
                 }
-            });
+            }, token);
         }
 
         #endregion Form Methods

@@ -541,13 +541,15 @@ namespace Chummer
         /// </summary>
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task DoThreadSafeAsync<T>(this T objControl, Action funcToRun) where T : Control
+        public static async Task DoThreadSafeAsync<T>(this T objControl, Action funcToRun, CancellationToken token = default) where T : Control
         {
+            token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return;
             if (objControl.IsNullOrDisposed())
-                await Task.Run(funcToRun);
+                await Task.Run(funcToRun, token);
             else
             {
                 try
@@ -556,7 +558,16 @@ namespace Chummer
                     if (myControlCopy.InvokeRequired)
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
-                        await Task.Factory.FromAsync(objResult, x => myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x));
+                        token.ThrowIfCancellationRequested();
+                        await Task.Factory.FromAsync(objResult, x =>
+                        {
+                            token.ThrowIfCancellationRequested();
+                            object objReturn = myControlCopy.IsNullOrDisposed()
+                                ? default
+                                : myControlCopy.EndInvoke(x);
+                            token.ThrowIfCancellationRequested();
+                            return objReturn;
+                        });
                     }
                     else
                         funcToRun.Invoke();
@@ -591,13 +602,15 @@ namespace Chummer
         /// </summary>
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task DoThreadSafeAsync<T>(this T objControl, Action<T> funcToRun) where T : Control
+        public static async Task DoThreadSafeAsync<T>(this T objControl, Action<T> funcToRun, CancellationToken token = default) where T : Control
         {
+            token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return;
             if (objControl.IsNullOrDisposed())
-                await Task.Run(() => funcToRun(objControl));
+                await Task.Run(() => funcToRun(objControl), token);
             else
             {
                 try
@@ -606,7 +619,16 @@ namespace Chummer
                     if (myControlCopy.InvokeRequired)
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
-                        await Task.Factory.FromAsync(objResult, x => myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x));
+                        token.ThrowIfCancellationRequested();
+                        await Task.Factory.FromAsync(objResult, x =>
+                        {
+                            token.ThrowIfCancellationRequested();
+                            object objReturn = myControlCopy.IsNullOrDisposed()
+                                ? default
+                                : myControlCopy.EndInvoke(x);
+                            token.ThrowIfCancellationRequested();
+                            return objReturn;
+                        });
                     }
                     else
                         funcToRun.Invoke(myControlCopy);
@@ -641,9 +663,11 @@ namespace Chummer
         /// </summary>
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task DoThreadSafeAsync<T>(this T objControl, Func<Task> funcToRun) where T : Control
+        public static async Task DoThreadSafeAsync<T>(this T objControl, Func<Task> funcToRun, CancellationToken token = default) where T : Control
         {
+            token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return;
             try
@@ -656,7 +680,16 @@ namespace Chummer
                     if (myControlCopy.InvokeRequired)
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
-                        await Task.Factory.FromAsync(objResult, x => myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x));
+                        token.ThrowIfCancellationRequested();
+                        await Task.Factory.FromAsync(objResult, x =>
+                        {
+                            token.ThrowIfCancellationRequested();
+                            object objReturn = myControlCopy.IsNullOrDisposed()
+                                ? default
+                                : myControlCopy.EndInvoke(x);
+                            token.ThrowIfCancellationRequested();
+                            return objReturn;
+                        });
                     }
                     else
                         await funcToRun.Invoke();
@@ -691,9 +724,11 @@ namespace Chummer
         /// </summary>
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task DoThreadSafeAsync<T>(this T objControl, Func<T, Task> funcToRun) where T : Control
+        public static async Task DoThreadSafeAsync<T>(this T objControl, Func<T, Task> funcToRun, CancellationToken token = default) where T : Control
         {
+            token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return;
             try
@@ -706,7 +741,16 @@ namespace Chummer
                     if (myControlCopy.InvokeRequired)
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
-                        await Task.Factory.FromAsync(objResult, x => myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x));
+                        token.ThrowIfCancellationRequested();
+                        await Task.Factory.FromAsync(objResult, x =>
+                        {
+                            token.ThrowIfCancellationRequested();
+                            object objReturn = myControlCopy.IsNullOrDisposed()
+                                ? default
+                                : myControlCopy.EndInvoke(x);
+                            token.ThrowIfCancellationRequested();
+                            return objReturn;
+                        });
                     }
                     else
                         await funcToRun.Invoke(myControlCopy);
@@ -740,10 +784,13 @@ namespace Chummer
         /// </summary>
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<T2> funcToRun) where T1 : Control
+        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<T2> funcToRun, CancellationToken token = default) where T1 : Control
         {
-            Task<T2> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun);
+            token.ThrowIfCancellationRequested();
+            Task<T2> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun, token);
+            token.ThrowIfCancellationRequested();
             if (objTask.Status == TaskStatus.Created)
                 objTask.RunSynchronously();
             if (objTask.Exception != null)
@@ -756,10 +803,13 @@ namespace Chummer
         /// </summary>
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<T1, T2> funcToRun) where T1 : Control
+        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<T1, T2> funcToRun, CancellationToken token = default) where T1 : Control
         {
-            Task<T2> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun);
+            token.ThrowIfCancellationRequested();
+            Task<T2> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun, token);
+            token.ThrowIfCancellationRequested();
             if (objTask.Status == TaskStatus.Created)
                 objTask.RunSynchronously();
             if (objTask.Exception != null)
@@ -772,10 +822,18 @@ namespace Chummer
         /// </summary>
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<T2> funcToRun) where T1 : Control
+        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<CancellationToken, T2> funcToRun, CancellationToken token = default) where T1 : Control
         {
-            return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun);
+            token.ThrowIfCancellationRequested();
+            Task<T2> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun, token);
+            token.ThrowIfCancellationRequested();
+            if (objTask.Status == TaskStatus.Created)
+                objTask.RunSynchronously();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+            return objTask.Result;
         }
 
         /// <summary>
@@ -783,10 +841,66 @@ namespace Chummer
         /// </summary>
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<T1, T2> funcToRun) where T1 : Control
+        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<T1, CancellationToken, T2> funcToRun, CancellationToken token = default) where T1 : Control
         {
-            return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun);
+            token.ThrowIfCancellationRequested();
+            Task<T2> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun, token);
+            token.ThrowIfCancellationRequested();
+            if (objTask.Status == TaskStatus.Created)
+                objTask.RunSynchronously();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+            return objTask.Result;
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<T2> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<T1, CancellationToken, T2> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<CancellationToken, T2> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<T1, T2> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
         }
 
         /// <summary>
@@ -795,26 +909,30 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         /// <param name="blnSync">Whether to wait for the invocation to complete (True) or to keep going without waiting (False).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static async Task<T2> DoThreadSafeFuncCoreAsync<T1, T2>(this T1 objControl, bool blnSync, Func<T2> funcToRun) where T1 : Control
+        private static async Task<T2> DoThreadSafeFuncCoreAsync<T1, T2>(this T1 objControl, bool blnSync, Func<T2> funcToRun, CancellationToken token = default) where T1 : Control
         {
+            token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return default;
             T2 objReturn = default;
             try
             {
                 if (objControl.IsNullOrDisposed())
-                    objReturn = blnSync ? funcToRun.Invoke() : await Task.Run(funcToRun);
+                    objReturn = blnSync ? funcToRun.Invoke() : await Task.Run(funcToRun, token);
                 else
                 {
                     T1 myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                     if (myControlCopy.InvokeRequired)
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
+                        token.ThrowIfCancellationRequested();
                         if (blnSync)
                         {
                             // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
                             objResult.AsyncWaitHandle.WaitOne();
+                            token.ThrowIfCancellationRequested();
                             object objReturnRaw = myControlCopy.EndInvoke(objResult);
                             if (objReturnRaw is T2 objReturnRawCast)
                                 objReturn = objReturnRawCast;
@@ -824,7 +942,9 @@ namespace Chummer
                         {
                             await Task.Factory.FromAsync(objResult, x =>
                             {
+                                token.ThrowIfCancellationRequested();
                                 object objReturnRaw = myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x);
+                                token.ThrowIfCancellationRequested();
                                 if (objReturnRaw is T2 objReturnRawCast)
                                     objReturn = objReturnRawCast;
                             });
@@ -865,26 +985,30 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         /// <param name="blnSync">Whether to wait for the invocation to complete (True) or to keep going without waiting (False).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static async Task<T2> DoThreadSafeFuncCoreAsync<T1, T2>(this T1 objControl, bool blnSync, Func<T1, T2> funcToRun) where T1 : Control
+        private static async Task<T2> DoThreadSafeFuncCoreAsync<T1, T2>(this T1 objControl, bool blnSync, Func<T1, T2> funcToRun, CancellationToken token = default) where T1 : Control
         {
+            token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return default;
             T2 objReturn = default;
             try
             {
                 if (objControl.IsNullOrDisposed())
-                    objReturn = blnSync ? funcToRun.Invoke(objControl) : await Task.Run(() => funcToRun(objControl));
+                    objReturn = blnSync ? funcToRun.Invoke(objControl) : await Task.Run(() => funcToRun(objControl), token);
                 else
                 {
                     T1 myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                     if (myControlCopy.InvokeRequired)
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
+                        token.ThrowIfCancellationRequested();
                         if (blnSync)
                         {
                             // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
                             objResult.AsyncWaitHandle.WaitOne();
+                            token.ThrowIfCancellationRequested();
                             object objReturnRaw = myControlCopy.EndInvoke(objResult);
                             if (objReturnRaw is T2 objReturnRawCast)
                                 objReturn = objReturnRawCast;
@@ -894,14 +1018,712 @@ namespace Chummer
                         {
                             await Task.Factory.FromAsync(objResult, x =>
                             {
+                                token.ThrowIfCancellationRequested();
                                 object objReturnRaw = myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x);
+                                if (objReturnRaw is T2 objReturnRawCast)
+                                    objReturn = objReturnRawCast;
+                                token.ThrowIfCancellationRequested();
+                            });
+                        }
+                    }
+                    else
+                        objReturn = funcToRun.Invoke(myControlCopy);
+                }
+            }
+            catch (ObjectDisposedException) // e)
+            {
+                //we really don't need to care about that.
+                //Log.Trace(e);
+            }
+            catch (InvalidAsynchronousStateException e)
+            {
+                //we really don't need to care about that.
+                Log.Trace(e);
+            }
+            catch (ThreadAbortException)
+            {
+                //no need to do anything here - actually we can't anyway...
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+#if DEBUG
+                Program.ShowMessageBox(objControl, e.ToString());
+#endif
+            }
+
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Runs code on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="blnSync">Whether to wait for the invocation to complete (True) or to keep going without waiting (False).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static async Task<T2> DoThreadSafeFuncCoreAsync<T1, T2>(this T1 objControl, bool blnSync, Func<CancellationToken, T2> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            token.ThrowIfCancellationRequested();
+            if (funcToRun == null)
+                return default;
+            T2 objReturn = default;
+            try
+            {
+                if (objControl.IsNullOrDisposed())
+                    objReturn = blnSync ? funcToRun.Invoke(token) : await Task.Run(() => funcToRun(token), token);
+                else
+                {
+                    T1 myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    if (myControlCopy.InvokeRequired)
+                    {
+                        IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, token);
+                        token.ThrowIfCancellationRequested();
+                        if (blnSync)
+                        {
+                            // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
+                            objResult.AsyncWaitHandle.WaitOne();
+                            token.ThrowIfCancellationRequested();
+                            object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                            if (objReturnRaw is T2 objReturnRawCast)
+                                objReturn = objReturnRawCast;
+                            objResult.AsyncWaitHandle.Close();
+                        }
+                        else
+                        {
+                            await Task.Factory.FromAsync(objResult, x =>
+                            {
+                                token.ThrowIfCancellationRequested();
+                                object objReturnRaw = myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x);
+                                token.ThrowIfCancellationRequested();
                                 if (objReturnRaw is T2 objReturnRawCast)
                                     objReturn = objReturnRawCast;
                             });
                         }
                     }
                     else
-                        objReturn = funcToRun.Invoke(myControlCopy);
+                        objReturn = funcToRun.Invoke(token);
+                }
+            }
+            catch (ObjectDisposedException) // e)
+            {
+                //we really don't need to care about that.
+                //Log.Trace(e);
+            }
+            catch (InvalidAsynchronousStateException e)
+            {
+                //we really don't need to care about that.
+                Log.Trace(e);
+            }
+            catch (ThreadAbortException)
+            {
+                //no need to do anything here - actually we can't anyway...
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+#if DEBUG
+                Program.ShowMessageBox(objControl, e.ToString());
+#endif
+            }
+
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Runs code on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="blnSync">Whether to wait for the invocation to complete (True) or to keep going without waiting (False).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static async Task<T2> DoThreadSafeFuncCoreAsync<T1, T2>(this T1 objControl, bool blnSync, Func<T1, CancellationToken, T2> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            token.ThrowIfCancellationRequested();
+            if (funcToRun == null)
+                return default;
+            T2 objReturn = default;
+            try
+            {
+                if (objControl.IsNullOrDisposed())
+                    objReturn = blnSync ? funcToRun.Invoke(objControl, token) : await Task.Run(() => funcToRun(objControl, token), token);
+                else
+                {
+                    T1 myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    if (myControlCopy.InvokeRequired)
+                    {
+                        IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy, token);
+                        token.ThrowIfCancellationRequested();
+                        if (blnSync)
+                        {
+                            // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
+                            objResult.AsyncWaitHandle.WaitOne();
+                            token.ThrowIfCancellationRequested();
+                            object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                            if (objReturnRaw is T2 objReturnRawCast)
+                                objReturn = objReturnRawCast;
+                            objResult.AsyncWaitHandle.Close();
+                        }
+                        else
+                        {
+                            await Task.Factory.FromAsync(objResult, x =>
+                            {
+                                token.ThrowIfCancellationRequested();
+                                object objReturnRaw = myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x);
+                                if (objReturnRaw is T2 objReturnRawCast)
+                                    objReturn = objReturnRawCast;
+                                token.ThrowIfCancellationRequested();
+                            });
+                        }
+                    }
+                    else
+                        objReturn = funcToRun.Invoke(myControlCopy, token);
+                }
+            }
+            catch (ObjectDisposedException) // e)
+            {
+                //we really don't need to care about that.
+                //Log.Trace(e);
+            }
+            catch (InvalidAsynchronousStateException e)
+            {
+                //we really don't need to care about that.
+                Log.Trace(e);
+            }
+            catch (ThreadAbortException)
+            {
+                //no need to do anything here - actually we can't anyway...
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+#if DEBUG
+                Program.ShowMessageBox(objControl, e.ToString());
+#endif
+            }
+
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<Task<T2>> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            token.ThrowIfCancellationRequested();
+            Task<T2> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun, token);
+            token.ThrowIfCancellationRequested();
+            if (objTask.Status == TaskStatus.Created)
+                objTask.RunSynchronously();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+            return objTask.Result;
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<T1, Task<T2>> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            token.ThrowIfCancellationRequested();
+            Task<T2> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun, token);
+            token.ThrowIfCancellationRequested();
+            if (objTask.Status == TaskStatus.Created)
+                objTask.RunSynchronously();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+            return objTask.Result;
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<CancellationToken, Task<T2>> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            token.ThrowIfCancellationRequested();
+            Task<T2> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun, token);
+            token.ThrowIfCancellationRequested();
+            if (objTask.Status == TaskStatus.Created)
+                objTask.RunSynchronously();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+            return objTask.Result;
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<T1, CancellationToken, Task<T2>> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            token.ThrowIfCancellationRequested();
+            Task<T2> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun, token);
+            token.ThrowIfCancellationRequested();
+            if (objTask.Status == TaskStatus.Created)
+                objTask.RunSynchronously();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+            return objTask.Result;
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<Task<T2>> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<T1, CancellationToken, Task<T2>> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<CancellationToken, Task<T2>> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<T1, Task<T2>> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
+        }
+
+        /// <summary>
+        /// Runs code on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="blnSync">Whether to wait for the invocation to complete (True) or to keep going without waiting (False).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static async Task<T2> DoThreadSafeFuncCoreAsync<T1, T2>(this T1 objControl, bool blnSync, Func<Task<T2>> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            token.ThrowIfCancellationRequested();
+            if (funcToRun == null)
+                return default;
+            T2 objReturn = default;
+            try
+            {
+                if (objControl.IsNullOrDisposed())
+                {
+                    if (blnSync)
+                    {
+                        Task<T2> tskReturn = funcToRun.Invoke();
+                        if (tskReturn.Status == TaskStatus.Created)
+                            tskReturn.RunSynchronously();
+                        if (tskReturn.Exception != null)
+                            throw tskReturn.Exception;
+                        objReturn = tskReturn.Result;
+                    }
+                    else
+                    {
+                        objReturn = await Task.Run(funcToRun, token);
+                    }
+                }
+                else
+                {
+                    T1 myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    if (myControlCopy.InvokeRequired)
+                    {
+                        IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
+                        token.ThrowIfCancellationRequested();
+                        if (blnSync)
+                        {
+                            // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
+                            objResult.AsyncWaitHandle.WaitOne();
+                            token.ThrowIfCancellationRequested();
+                            object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                            if (objReturnRaw is Task<T2> tskReturn)
+                            {
+                                if (tskReturn.Status == TaskStatus.Created)
+                                    tskReturn.RunSynchronously();
+                                if (tskReturn.Exception != null)
+                                    throw tskReturn.Exception;
+                                objReturn = tskReturn.Result;
+                            }
+                            objResult.AsyncWaitHandle.Close();
+                        }
+                        else
+                        {
+                            Task<T2> tskReturn = Task.FromResult<T2>(default);
+                            await Task.Factory.FromAsync(objResult, x =>
+                            {
+                                token.ThrowIfCancellationRequested();
+                                object objReturnRaw = myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x);
+                                token.ThrowIfCancellationRequested();
+                                if (objReturnRaw is Task<T2> objReturnRawCast)
+                                    tskReturn = objReturnRawCast;
+                            });
+                            objReturn = await tskReturn;
+                        }
+                    }
+                    else
+                    {
+                        Task<T2> tskReturn = funcToRun.Invoke();
+                        if (tskReturn.Status == TaskStatus.Created)
+                            tskReturn.RunSynchronously();
+                        if (tskReturn.Exception != null)
+                            throw tskReturn.Exception;
+                        objReturn = tskReturn.Result;
+                    }
+                }
+            }
+            catch (ObjectDisposedException) // e)
+            {
+                //we really don't need to care about that.
+                //Log.Trace(e);
+            }
+            catch (InvalidAsynchronousStateException e)
+            {
+                //we really don't need to care about that.
+                Log.Trace(e);
+            }
+            catch (ThreadAbortException)
+            {
+                //no need to do anything here - actually we can't anyway...
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+#if DEBUG
+                Program.ShowMessageBox(objControl, e.ToString());
+#endif
+            }
+
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Runs code on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="blnSync">Whether to wait for the invocation to complete (True) or to keep going without waiting (False).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static async Task<T2> DoThreadSafeFuncCoreAsync<T1, T2>(this T1 objControl, bool blnSync, Func<T1, Task<T2>> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            token.ThrowIfCancellationRequested();
+            if (funcToRun == null)
+                return default;
+            T2 objReturn = default;
+            try
+            {
+                if (objControl.IsNullOrDisposed())
+                {
+                    if (blnSync)
+                    {
+                        Task<T2> tskReturn = funcToRun.Invoke(objControl);
+                        if (tskReturn.Status == TaskStatus.Created)
+                            tskReturn.RunSynchronously();
+                        if (tskReturn.Exception != null)
+                            throw tskReturn.Exception;
+                        objReturn = tskReturn.Result;
+                    }
+                    else
+                    {
+                        objReturn = await Task.Run(() => funcToRun(objControl), token);
+                    }
+                }
+                else
+                {
+                    T1 myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    if (myControlCopy.InvokeRequired)
+                    {
+                        IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
+                        token.ThrowIfCancellationRequested();
+                        if (blnSync)
+                        {
+                            // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
+                            objResult.AsyncWaitHandle.WaitOne();
+                            token.ThrowIfCancellationRequested();
+                            object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                            if (objReturnRaw is Task<T2> tskReturn)
+                            {
+                                if (tskReturn.Status == TaskStatus.Created)
+                                    tskReturn.RunSynchronously();
+                                if (tskReturn.Exception != null)
+                                    throw tskReturn.Exception;
+                                objReturn = tskReturn.Result;
+                            }
+                            objResult.AsyncWaitHandle.Close();
+                        }
+                        else
+                        {
+                            Task<T2> tskReturn = Task.FromResult<T2>(default);
+                            await Task.Factory.FromAsync(objResult, x =>
+                            {
+                                token.ThrowIfCancellationRequested();
+                                object objReturnRaw = myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x);
+                                token.ThrowIfCancellationRequested();
+                                if (objReturnRaw is Task<T2> objReturnRawCast)
+                                    tskReturn = objReturnRawCast;
+                            });
+                            objReturn = await tskReturn;
+                        }
+                    }
+                    else
+                    {
+                        Task<T2> tskReturn = funcToRun.Invoke(objControl);
+                        if (tskReturn.Status == TaskStatus.Created)
+                            tskReturn.RunSynchronously();
+                        if (tskReturn.Exception != null)
+                            throw tskReturn.Exception;
+                        objReturn = tskReturn.Result;
+                    }
+                }
+            }
+            catch (ObjectDisposedException) // e)
+            {
+                //we really don't need to care about that.
+                //Log.Trace(e);
+            }
+            catch (InvalidAsynchronousStateException e)
+            {
+                //we really don't need to care about that.
+                Log.Trace(e);
+            }
+            catch (ThreadAbortException)
+            {
+                //no need to do anything here - actually we can't anyway...
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+#if DEBUG
+                Program.ShowMessageBox(objControl, e.ToString());
+#endif
+            }
+
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Runs code on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="blnSync">Whether to wait for the invocation to complete (True) or to keep going without waiting (False).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static async Task<T2> DoThreadSafeFuncCoreAsync<T1, T2>(this T1 objControl, bool blnSync, Func<CancellationToken, Task<T2>> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            token.ThrowIfCancellationRequested();
+            if (funcToRun == null)
+                return default;
+            T2 objReturn = default;
+            try
+            {
+                if (objControl.IsNullOrDisposed())
+                {
+                    if (blnSync)
+                    {
+                        Task<T2> tskReturn = funcToRun.Invoke(token);
+                        if (tskReturn.Status == TaskStatus.Created)
+                            tskReturn.RunSynchronously();
+                        if (tskReturn.Exception != null)
+                            throw tskReturn.Exception;
+                        objReturn = tskReturn.Result;
+                    }
+                    else
+                    {
+                        objReturn = await Task.Run(() => funcToRun(token), token);
+                    }
+                }
+                else
+                {
+                    T1 myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    if (myControlCopy.InvokeRequired)
+                    {
+                        IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, token);
+                        token.ThrowIfCancellationRequested();
+                        if (blnSync)
+                        {
+                            // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
+                            objResult.AsyncWaitHandle.WaitOne();
+                            token.ThrowIfCancellationRequested();
+                            object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                            if (objReturnRaw is Task<T2> tskReturn)
+                            {
+                                if (tskReturn.Status == TaskStatus.Created)
+                                    tskReturn.RunSynchronously();
+                                if (tskReturn.Exception != null)
+                                    throw tskReturn.Exception;
+                                objReturn = tskReturn.Result;
+                            }
+                            objResult.AsyncWaitHandle.Close();
+                        }
+                        else
+                        {
+                            Task<T2> tskReturn = Task.FromResult<T2>(default);
+                            await Task.Factory.FromAsync(objResult, x =>
+                            {
+                                token.ThrowIfCancellationRequested();
+                                object objReturnRaw = myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x);
+                                token.ThrowIfCancellationRequested();
+                                if (objReturnRaw is Task<T2> objReturnRawCast)
+                                    tskReturn = objReturnRawCast;
+                            });
+                            objReturn = await tskReturn;
+                        }
+                    }
+                    else
+                    {
+                        Task<T2> tskReturn = funcToRun.Invoke(token);
+                        if (tskReturn.Status == TaskStatus.Created)
+                            tskReturn.RunSynchronously();
+                        if (tskReturn.Exception != null)
+                            throw tskReturn.Exception;
+                        objReturn = tskReturn.Result;
+                    }
+                }
+            }
+            catch (ObjectDisposedException) // e)
+            {
+                //we really don't need to care about that.
+                //Log.Trace(e);
+            }
+            catch (InvalidAsynchronousStateException e)
+            {
+                //we really don't need to care about that.
+                Log.Trace(e);
+            }
+            catch (ThreadAbortException)
+            {
+                //no need to do anything here - actually we can't anyway...
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+#if DEBUG
+                Program.ShowMessageBox(objControl, e.ToString());
+#endif
+            }
+
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Runs code on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="blnSync">Whether to wait for the invocation to complete (True) or to keep going without waiting (False).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static async Task<T2> DoThreadSafeFuncCoreAsync<T1, T2>(this T1 objControl, bool blnSync, Func<T1, CancellationToken, Task<T2>> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            token.ThrowIfCancellationRequested();
+            if (funcToRun == null)
+                return default;
+            T2 objReturn = default;
+            try
+            {
+                if (objControl.IsNullOrDisposed())
+                {
+                    if (blnSync)
+                    {
+                        Task<T2> tskReturn = funcToRun.Invoke(objControl, token);
+                        if (tskReturn.Status == TaskStatus.Created)
+                            tskReturn.RunSynchronously();
+                        if (tskReturn.Exception != null)
+                            throw tskReturn.Exception;
+                        objReturn = tskReturn.Result;
+                    }
+                    else
+                    {
+                        objReturn = await Task.Run(() => funcToRun(objControl, token), token);
+                    }
+                }
+                else
+                {
+                    T1 myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    if (myControlCopy.InvokeRequired)
+                    {
+                        IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy, token);
+                        token.ThrowIfCancellationRequested();
+                        if (blnSync)
+                        {
+                            // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
+                            objResult.AsyncWaitHandle.WaitOne();
+                            token.ThrowIfCancellationRequested();
+                            object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                            if (objReturnRaw is Task<T2> tskReturn)
+                            {
+                                if (tskReturn.Status == TaskStatus.Created)
+                                    tskReturn.RunSynchronously();
+                                if (tskReturn.Exception != null)
+                                    throw tskReturn.Exception;
+                                objReturn = tskReturn.Result;
+                            }
+                            objResult.AsyncWaitHandle.Close();
+                        }
+                        else
+                        {
+                            Task<T2> tskReturn = Task.FromResult<T2>(default);
+                            await Task.Factory.FromAsync(objResult, x =>
+                            {
+                                token.ThrowIfCancellationRequested();
+                                object objReturnRaw = myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x);
+                                token.ThrowIfCancellationRequested();
+                                if (objReturnRaw is Task<T2> objReturnRawCast)
+                                    tskReturn = objReturnRawCast;
+                            });
+                            objReturn = await tskReturn;
+                        }
+                    }
+                    else
+                    {
+                        Task<T2> tskReturn = funcToRun.Invoke(objControl, token);
+                        if (tskReturn.Status == TaskStatus.Created)
+                            tskReturn.RunSynchronously();
+                        if (tskReturn.Exception != null)
+                            throw tskReturn.Exception;
+                        objReturn = tskReturn.Result;
+                    }
                 }
             }
             catch (ObjectDisposedException) // e)
