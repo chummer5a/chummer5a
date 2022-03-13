@@ -282,8 +282,8 @@ namespace Chummer
                                 if (MasterIndex != null)
                                 {
                                     if (CharacterRoster == null)
-                                        MasterIndex.WindowState = FormWindowState.Maximized;
-                                    MasterIndex.Show();
+                                        await MasterIndex.DoThreadSafeAsync(x => x.WindowState = FormWindowState.Maximized);
+                                    await MasterIndex.DoThreadSafeAsync(x => x.Show());
                                 }
 
                                 Program.MainProgressBar.PerformStep(
@@ -292,46 +292,51 @@ namespace Chummer
                                 if (CharacterRoster != null)
                                 {
                                     if (MasterIndex == null)
-                                        CharacterRoster.WindowState = FormWindowState.Maximized;
-                                    CharacterRoster.Show();
+                                        await CharacterRoster.DoThreadSafeAsync(x => x.WindowState = FormWindowState.Maximized);
+                                    await CharacterRoster.DoThreadSafeAsync(x => x.Show());
                                 }
 
                                 if (GlobalSettings.AllowEasterEggs)
                                 {
                                     Program.MainProgressBar.PerformStep(
                                         await LanguageManager.GetStringAsync("String_Chummy"));
-                                    _mascotChummy = new Chummy(null);
-                                    _mascotChummy.Show(this);
+                                    _mascotChummy = await this.DoThreadSafeFuncAsync(() => new Chummy(null));
+                                    await _mascotChummy.DoThreadSafeAsync(x => x.Show(this));
                                 }
 
                                 // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
                                 if (MasterIndex != null && CharacterRoster != null)
                                 {
-                                    MasterIndex.WindowState = FormWindowState.Maximized;
-                                    CharacterRoster.WindowState = FormWindowState.Maximized;
+                                    await MasterIndex.DoThreadSafeAsync(x => x.WindowState = FormWindowState.Maximized);
+                                    await CharacterRoster.DoThreadSafeAsync(x => x.WindowState = FormWindowState.Maximized);
                                 }
 
                                 if (blnShowTest)
                                 {
-                                    TestDataEntries frmTestData = new TestDataEntries();
-                                    frmTestData.Show();
+                                    TestDataEntries frmTestData = await this.DoThreadSafeFuncAsync(() => new TestDataEntries());
+                                    await frmTestData.DoThreadSafeAsync(x => x.Show());
                                 }
                             }
 
                             Program.PluginLoader.CallPlugins(toolsMenu, opFrmChummerMain);
 
                             // Set the Tag for each ToolStrip item so it can be translated.
-                            foreach (ToolStripMenuItem tssItem in menuStrip.Items.OfType<ToolStripMenuItem>())
+                            await menuStrip.DoThreadSafeAsync(x =>
                             {
-                                tssItem.UpdateLightDarkMode();
-                                tssItem.TranslateToolStripItemsRecursively();
-                            }
-
-                            foreach (ToolStripMenuItem tssItem in mnuProcessFile.Items.OfType<ToolStripMenuItem>())
+                                foreach (ToolStripMenuItem tssItem in x.Items.OfType<ToolStripMenuItem>())
+                                {
+                                    tssItem.UpdateLightDarkMode();
+                                    tssItem.TranslateToolStripItemsRecursively();
+                                }
+                            });
+                            await mnuProcessFile.DoThreadSafeAsync(x =>
                             {
-                                tssItem.UpdateLightDarkMode();
-                                tssItem.TranslateToolStripItemsRecursively();
-                            }
+                                foreach (ToolStripMenuItem tssItem in x.Items.OfType<ToolStripMenuItem>())
+                                {
+                                    tssItem.UpdateLightDarkMode();
+                                    tssItem.TranslateToolStripItemsRecursively();
+                                }
+                            });
 
                             if (objCharacterLoadingTask?.IsCompleted == false)
                                 await objCharacterLoadingTask;
@@ -386,24 +391,30 @@ namespace Chummer
                             intDefaultHeight = (int) (intDefaultHeight * g.DpiY / 96.0f);
                         }
 
-                        Size = new Size(intDefaultWidth, intDefaultHeight);
-                        StartPosition = FormStartPosition.CenterScreen;
+                        await this.DoThreadSafeAsync(x =>
+                        {
+                            x.Size = new Size(intDefaultWidth, intDefaultHeight);
+                            x.StartPosition = FormStartPosition.CenterScreen;
+                        });
                     }
                     else
                     {
-                        if (!Utils.IsUnitTest)
+                        await this.DoThreadSafeAsync(x =>
                         {
-                            WindowState = Properties.Settings.Default.WindowState;
-                            if (WindowState == FormWindowState.Minimized)
-                                WindowState = FormWindowState.Normal;
-                        }
+                            if (!Utils.IsUnitTest)
+                            {
+                                x.WindowState = Properties.Settings.Default.WindowState;
+                                if (x.WindowState == FormWindowState.Minimized)
+                                    x.WindowState = FormWindowState.Normal;
+                            }
 
-                        Location = Properties.Settings.Default.Location;
-                        Size = Properties.Settings.Default.Size;
+                            x.Location = Properties.Settings.Default.Location;
+                            x.Size = Properties.Settings.Default.Size;
+                        });
                     }
 
                     if (!Utils.IsUnitTest && GlobalSettings.StartupFullscreen)
-                        WindowState = FormWindowState.Maximized;
+                        await this.DoThreadSafeAsync(x => x.WindowState = FormWindowState.Maximized);
                 }
 
                 if (Utils.IsUnitTest)
@@ -587,18 +598,36 @@ namespace Chummer
 
         private void StartAutoUpdateChecker()
         {
-            _objVersionUpdaterCancellationTokenSource?.Cancel(false);
-            while (_tskVersionUpdate?.IsCompleted == false)
-                Utils.SafeSleep();
+            if (_objVersionUpdaterCancellationTokenSource?.IsCancellationRequested == false)
+            {
+                _objVersionUpdaterCancellationTokenSource.Cancel(false);
+                _objVersionUpdaterCancellationTokenSource.Dispose();
+                _objVersionUpdaterCancellationTokenSource = null;
+            }
+
+            try
+            {
+                if (_tskVersionUpdate != null)
+                {
+                    while (!_tskVersionUpdate.IsCompleted)
+                        Utils.SafeSleep();
+                    if (_tskVersionUpdate.Exception != null)
+                        throw _tskVersionUpdate.Exception;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Swallow this
+            }
             _objVersionUpdaterCancellationTokenSource = new CancellationTokenSource();
             CancellationToken token = _objVersionUpdaterCancellationTokenSource.Token;
             _tskVersionUpdate = Task.Run(async () =>
             {
                 while (true)
                 {
+                    token.ThrowIfCancellationRequested();
                     await DoCacheGitVersion(token);
-                    if (token.IsCancellationRequested)
-                        return;
+                    token.ThrowIfCancellationRequested();
                     if (Utils.GitUpdateAvailable > 0)
                     {
                         string strSpace = await LanguageManager.GetStringAsync("String_Space");
@@ -609,23 +638,21 @@ namespace Chummer
                                                             await LanguageManager.GetStringAsync(
                                                                 "String_Update_Available"),
                                                             Utils.CachedGitVersion);
-                        await this.DoThreadSafeAsync(() => Text = strNewText);
+                        await this.DoThreadSafeAsync(() => Text = strNewText, token);
                         if (GlobalSettings.AutomaticUpdate && _frmUpdate == null)
                         {
-                            _frmUpdate = await this.DoThreadSafeFuncAsync(() => new ChummerUpdater());
+                            _frmUpdate = await this.DoThreadSafeFuncAsync(() => new ChummerUpdater(), token);
                             await _frmUpdate.DoThreadSafeAsync(x =>
                             {
                                 x.FormClosed += ResetChummerUpdater;
                                 x.SilentMode = true;
-                            });
+                            }, token);
                         }
                     }
-                    if (token.IsCancellationRequested)
-                        return;
+                    token.ThrowIfCancellationRequested();
                     await Task.Delay(TimeSpan.FromHours(1), token);
-                    if (token.IsCancellationRequested)
-                        return;
                 }
+                // ReSharper disable once FunctionNeverReturns
             }, token);
         }
 #endif
@@ -662,7 +689,7 @@ namespace Chummer
         private async void mnuGlobalSettings_Click(object sender, EventArgs e)
         {
             using (CursorWait.New(this))
-            using (EditGlobalSettings frmOptions = new EditGlobalSettings())
+            using (EditGlobalSettings frmOptions = await this.DoThreadSafeFuncAsync(() => new EditGlobalSettings()))
                 await frmOptions.ShowDialogSafeAsync(this);
         }
 
@@ -670,8 +697,8 @@ namespace Chummer
         {
             using (CursorWait.New(this))
             using (EditCharacterSettings frmCharacterOptions
-                   = new EditCharacterSettings(
-                       (tabForms.SelectedTab?.Tag as CharacterShared)?.CharacterObject?.Settings))
+                   = await this.DoThreadSafeFuncAsync(() => new EditCharacterSettings(
+                                                          (tabForms.SelectedTab?.Tag as CharacterShared)?.CharacterObject?.Settings)))
                 await frmCharacterOptions.ShowDialogSafeAsync(this);
         }
 
@@ -703,7 +730,7 @@ namespace Chummer
 
         private async void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (About showAbout = new About())
+            using (About showAbout = await this.DoThreadSafeFuncAsync(() => new About()))
                 await showAbout.ShowDialogSafeAsync(this);
         }
 
@@ -735,7 +762,7 @@ namespace Chummer
 
         private async void mnuHelpRevisionHistory_Click(object sender, EventArgs e)
         {
-            using (VersionHistory frmShowHistory = new VersionHistory())
+            using (VersionHistory frmShowHistory = await this.DoThreadSafeFuncAsync(() => new VersionHistory()))
                 await frmShowHistory.ShowDialogSafeAsync(this);
         }
 
@@ -746,10 +773,10 @@ namespace Chummer
                 Character objCharacter = new Character();
                 try
                 {
-                    using (SelectBuildMethod frmPickSetting = new SelectBuildMethod(objCharacter))
+                    using (SelectBuildMethod frmPickSetting = await this.DoThreadSafeFuncAsync(() => new SelectBuildMethod(objCharacter)))
                     {
                         await frmPickSetting.ShowDialogSafeAsync(this);
-                        if (frmPickSetting.DialogResult == DialogResult.Cancel)
+                        if (await frmPickSetting.DoThreadSafeFuncAsync(x => x.DialogResult) == DialogResult.Cancel)
                             return;
                     }
 
@@ -760,11 +787,11 @@ namespace Chummer
 
                     // Show the Metatype selection window.
                     using (SelectMetatypeKarma frmSelectMetatype
-                           = new SelectMetatypeKarma(objCharacter, "critters.xml"))
+                           = await this.DoThreadSafeFuncAsync(() => new SelectMetatypeKarma(objCharacter, "critters.xml")))
                     {
                         await frmSelectMetatype.ShowDialogSafeAsync(this);
 
-                        if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                        if (await frmSelectMetatype.DoThreadSafeFuncAsync(x => x.DialogResult) == DialogResult.Cancel)
                             return;
                     }
 
@@ -811,26 +838,27 @@ namespace Chummer
         private async void ChummerMainForm_MdiChildActivate(object sender, EventArgs e)
         {
             // If there are no child forms, hide the tab control.
-            if (ActiveMdiChild != null)
+            Form objMdiChild = await this.DoThreadSafeFuncAsync(x => x.ActiveMdiChild);
+            if (objMdiChild != null)
             {
-                if (ActiveMdiChild.WindowState == FormWindowState.Minimized)
+                if (objMdiChild.WindowState == FormWindowState.Minimized)
                 {
-                    ActiveMdiChild.WindowState = FormWindowState.Normal;
+                    objMdiChild.WindowState = FormWindowState.Normal;
                 }
 
                 // If this is a new child form and does not have a tab page, create one.
-                if (!(ActiveMdiChild.Tag is TabPage))
+                if (!(objMdiChild.Tag is TabPage))
                 {
-                    TabPage tp = new TabPage
+                    TabPage tp = await this.DoThreadSafeFuncAsync(() => new TabPage
                     {
                         // Add a tab page.
-                        Tag = ActiveMdiChild,
+                        Tag = objMdiChild,
                         Parent = tabForms
-                    };
+                    });
 
-                    if (ActiveMdiChild is CharacterShared frmCharacterShared)
+                    if (objMdiChild is CharacterShared frmCharacterShared)
                     {
-                        tp.Text = frmCharacterShared.CharacterObject.CharacterName;
+                        await tp.DoThreadSafeAsync(x => x.Text = frmCharacterShared.CharacterObject.CharacterName);
                         if (GlobalSettings.AllowEasterEggs && _mascotChummy != null)
                         {
                             _mascotChummy.CharacterObject = frmCharacterShared.CharacterObject;
@@ -838,19 +866,22 @@ namespace Chummer
                     }
                     else
                     {
-                        string strTagText = await LanguageManager.GetStringAsync(ActiveMdiChild.Tag?.ToString(), GlobalSettings.Language, false);
+                        string strTagText = await LanguageManager.GetStringAsync(objMdiChild.Tag?.ToString(), GlobalSettings.Language, false);
                         if (!string.IsNullOrEmpty(strTagText))
-                            tp.Text = strTagText;
+                            await tp.DoThreadSafeAsync(x => x.Text = strTagText);
                     }
 
-                    tabForms.SelectedTab = tp;
+                    await tabForms.DoThreadSafeAsync(x => x.SelectedTab = tp);
 
-                    ActiveMdiChild.Tag = tp;
-                    ActiveMdiChild.FormClosed += ActiveMdiChild_FormClosed;
+                    await objMdiChild.DoThreadSafeAsync(x =>
+                    {
+                        x.Tag = tp;
+                        x.FormClosed += ActiveMdiChild_FormClosed;
+                    });
                 }
             }
             // Don't show the tab control if there is only one window open.
-            tabForms.Visible = tabForms.TabCount > 1;
+            await tabForms.DoThreadSafeAsync(x => x.Visible = x.TabCount > 1);
         }
 
         private void ActiveMdiChild_FormClosed(object sender, FormClosedEventArgs e)
@@ -878,9 +909,12 @@ namespace Chummer
                     objForm.Dispose();
             }
 
-            // Don't show the tab control if there is only one window open.
-            if (tabForms.TabCount <= 1)
-                tabForms.Visible = false;
+            tabForms.DoThreadSafe(x =>
+            {
+                // Don't show the tab control if there is only one window open.
+                if (x.TabCount <= 1)
+                    x.Visible = false;
+            });
         }
 
         private void tabForms_SelectedIndexChanged(object sender, EventArgs e)
@@ -1039,7 +1073,12 @@ namespace Chummer
             foreach (Character objCharacter in Program.OpenCharacters)
                 objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
 #if !DEBUG
-            _objVersionUpdaterCancellationTokenSource?.Cancel(false);
+            if (_objVersionUpdaterCancellationTokenSource?.IsCancellationRequested == false)
+            {
+                _objVersionUpdaterCancellationTokenSource.Cancel(false);
+                _objVersionUpdaterCancellationTokenSource.Dispose();
+                _objVersionUpdaterCancellationTokenSource = null;
+            }
 #endif
             Properties.Settings.Default.WindowState = WindowState;
             if (WindowState == FormWindowState.Normal)
@@ -1070,8 +1109,8 @@ namespace Chummer
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
-            HeroLabImporter frmImporter = new HeroLabImporter();
-            frmImporter.Show();
+            HeroLabImporter frmImporter = await this.DoThreadSafeFuncAsync(() => new HeroLabImporter());
+            await frmImporter.DoThreadSafeAsync(x => x.Show());
         }
 
         private void tabForms_MouseClick(object sender, MouseEventArgs e)
@@ -1144,31 +1183,31 @@ namespace Chummer
                 using (CursorWait.New(this))
                 {
                     // Show the BP selection window.
-                    using (SelectBuildMethod frmBP = new SelectBuildMethod(objCharacter))
+                    using (SelectBuildMethod frmBP = await this.DoThreadSafeFuncAsync(() => new SelectBuildMethod(objCharacter)))
                     {
                         await frmBP.ShowDialogSafeAsync(this);
-                        if (frmBP.DialogResult != DialogResult.OK)
+                        if (await frmBP.DoThreadSafeFuncAsync(x => x.DialogResult) != DialogResult.OK)
                             return;
                     }
 
                     // Show the Metatype selection window.
                     if (objCharacter.EffectiveBuildMethodUsesPriorityTables)
                     {
-                        using (SelectMetatypePriority frmSelectMetatype = new SelectMetatypePriority(objCharacter))
+                        using (SelectMetatypePriority frmSelectMetatype = await this.DoThreadSafeFuncAsync(() => new SelectMetatypePriority(objCharacter)))
                         {
                             await frmSelectMetatype.ShowDialogSafeAsync(this);
 
-                            if (frmSelectMetatype.DialogResult != DialogResult.OK)
+                            if (await frmSelectMetatype.DoThreadSafeFuncAsync(x => x.DialogResult) != DialogResult.OK)
                                 return;
                         }
                     }
                     else
                     {
-                        using (SelectMetatypeKarma frmSelectMetatype = new SelectMetatypeKarma(objCharacter))
+                        using (SelectMetatypeKarma frmSelectMetatype = await this.DoThreadSafeFuncAsync(() => new SelectMetatypeKarma(objCharacter)))
                         {
                             await frmSelectMetatype.ShowDialogSafeAsync(this);
 
-                            if (frmSelectMetatype.DialogResult != DialogResult.OK)
+                            if (await frmSelectMetatype.DoThreadSafeFuncAsync(x => x.DialogResult) != DialogResult.OK)
                                 return;
                         }
                     }
@@ -1178,16 +1217,19 @@ namespace Chummer
 
                 using (CursorWait.New(this))
                 {
-                    CharacterCreate frmNewCharacter = new CharacterCreate(objCharacter)
+                    CharacterCreate frmNewCharacter = await this.DoThreadSafeFuncAsync(() => new CharacterCreate(objCharacter)
                     {
                         MdiParent = this
-                    };
-                    if (MdiChildren.Length <= 1)
-                        frmNewCharacter.WindowState = FormWindowState.Maximized;
-                    frmNewCharacter.Show();
-                    // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
-                    if (MdiChildren.Length > 1)
-                        frmNewCharacter.WindowState = FormWindowState.Maximized;
+                    });
+                    await this.DoThreadSafeAsync(() =>
+                    {
+                        if (MdiChildren.Length <= 1)
+                            frmNewCharacter.WindowState = FormWindowState.Maximized;
+                        frmNewCharacter.Show();
+                        // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
+                        if (MdiChildren.Length > 1)
+                            frmNewCharacter.WindowState = FormWindowState.Maximized;
+                    });
                 }
             }
             finally
@@ -1467,11 +1509,12 @@ namespace Chummer
 
         private async ValueTask DoPopulateMruToolstripMenu(string strText = "")
         {
-            menuStrip.SuspendLayout();
+            await menuStrip.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
-                mnuFileMRUSeparator.Visible = GlobalSettings.FavoriteCharacters.Count > 0
-                                              || GlobalSettings.MostRecentlyUsedCharacters.Count > 0;
+                await menuStrip.DoThreadSafeAsync(() => mnuFileMRUSeparator.Visible = GlobalSettings.FavoriteCharacters.Count > 0
+                                                      || GlobalSettings.MostRecentlyUsedCharacters
+                                                                       .Count > 0);
 
                 if (strText != "mru")
                 {
@@ -1526,27 +1569,33 @@ namespace Chummer
 
                         if (i < GlobalSettings.FavoriteCharacters.Count)
                         {
-                            objItem.Text = GlobalSettings.FavoriteCharacters[i];
-                            objItem.Tag = GlobalSettings.FavoriteCharacters[i];
-                            objItem.Visible = true;
+                            await menuStrip.DoThreadSafeAsync(() =>
+                            {
+                                objItem.Text = GlobalSettings.FavoriteCharacters[i];
+                                objItem.Tag = GlobalSettings.FavoriteCharacters[i];
+                                objItem.Visible = true;
+                            });
                         }
                         else
                         {
-                            objItem.Visible = false;
+                            await menuStrip.DoThreadSafeAsync(() => objItem.Visible = false);
                         }
                     }
                 }
 
-                mnuMRU0.Visible = false;
-                mnuMRU1.Visible = false;
-                mnuMRU2.Visible = false;
-                mnuMRU3.Visible = false;
-                mnuMRU4.Visible = false;
-                mnuMRU5.Visible = false;
-                mnuMRU6.Visible = false;
-                mnuMRU7.Visible = false;
-                mnuMRU8.Visible = false;
-                mnuMRU9.Visible = false;
+                await menuStrip.DoThreadSafeAsync(() =>
+                {
+                    mnuMRU0.Visible = false;
+                    mnuMRU1.Visible = false;
+                    mnuMRU2.Visible = false;
+                    mnuMRU3.Visible = false;
+                    mnuMRU4.Visible = false;
+                    mnuMRU5.Visible = false;
+                    mnuMRU6.Visible = false;
+                    mnuMRU7.Visible = false;
+                    mnuMRU8.Visible = false;
+                    mnuMRU9.Visible = false;
+                });
 
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 int i2 = 0;
@@ -1611,20 +1660,22 @@ namespace Chummer
                         && i2 >= 0)
                     {
                         string strNumAsString = (i2 + 1).ToString(GlobalSettings.CultureInfo);
-                        objItem.Text = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace + strFile;
+                        await menuStrip.DoThreadSafeAsync(() => objItem.Text = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace + strFile);
                     }
                     else
-                        objItem.Text = (i2 + 1).ToString(GlobalSettings.CultureInfo) + strSpace + strFile;
+                        await menuStrip.DoThreadSafeAsync(() => objItem.Text = (i2 + 1).ToString(GlobalSettings.CultureInfo) + strSpace + strFile);
 
-                    objItem.Tag = strFile;
-                    objItem.Visible = true;
-
+                    await menuStrip.DoThreadSafeAsync(() =>
+                    {
+                        objItem.Tag = strFile;
+                        objItem.Visible = true;
+                    });
                     ++i2;
                 }
             }
             finally
             {
-                menuStrip.ResumeLayout();
+                await menuStrip.DoThreadSafeAsync(x => x.ResumeLayout());
             }
         }
 
