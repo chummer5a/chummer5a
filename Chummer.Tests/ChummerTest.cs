@@ -271,11 +271,16 @@ namespace Chummer.Tests
                 {
                     using (Character objCharacter = LoadCharacter(objFileInfo))
                     {
+                        string strDummyFileName = Path.Combine(TestPathInfo.FullName,
+                                                               "(UnitTest05Dummy) "
+                                                               + Path.GetFileNameWithoutExtension(objFileInfo.Name)
+                                                               + ".txt");
+                        File.Create(strDummyFileName); // Create this so that we can track how far along the Unit Test is even if we don't have a debugger attached
                         try
                         {
                             using (CharacterShared frmCharacterForm = objCharacter.Created
-                                ? (CharacterShared)new CharacterCareer(objCharacter)
-                                : new CharacterCreate(objCharacter))
+                                       ? (CharacterShared) new CharacterCareer(objCharacter)
+                                       : new CharacterCreate(objCharacter))
                             {
                                 frmCharacterForm.MdiParent = frmTestForm;
                                 frmCharacterForm.ShowInTaskbar = false;
@@ -284,13 +289,17 @@ namespace Chummer.Tests
 #endif
                                 frmCharacterForm.Show();
                                 Utils.DoEventsSafe(true);
-                                while (frmCharacterForm.IsLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                                while
+                                    (frmCharacterForm
+                                     .IsLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                                 {
                                     Utils.SafeSleep(true);
                                 }
+
                                 frmCharacterForm.Close();
                                 Utils.DoEventsSafe(true);
                             }
+
                             Utils.DoEventsSafe(true);
                         }
                         catch (Exception e)
@@ -300,6 +309,10 @@ namespace Chummer.Tests
                             Debug.WriteLine(strErrorMessage);
                             Console.WriteLine(strErrorMessage);
                             Assert.Fail(strErrorMessage);
+                        }
+                        finally
+                        {
+                            Utils.SafeDeleteFile(strDummyFileName);
                         }
                     }
                 }
