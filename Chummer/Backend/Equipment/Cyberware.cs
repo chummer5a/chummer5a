@@ -1939,7 +1939,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("category_english", Category);
 
                 await objWriter.WriteElementStringAsync("ess",
-                    CalculatedESS.ToString(_objCharacter.Settings.EssenceFormat, objCulture));
+                    (await CalculatedESSAsync).ToString(_objCharacter.Settings.EssenceFormat, objCulture));
                 await objWriter.WriteElementStringAsync("capacity", Capacity);
                 await objWriter.WriteElementStringAsync("avail", TotalAvail(objCulture, strLanguageToPrint));
                 await objWriter.WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
@@ -3940,11 +3940,31 @@ namespace Chummer.Backend.Equipment
         public decimal CalculatedESS => _objCharacter.IsPrototypeTranshuman && PrototypeTranshuman ? 0 : CalculatedESSPrototypeInvariant;
 
         /// <summary>
+        /// Calculated Essence cost of the Cyberware.
+        /// </summary>
+        public Task<decimal> CalculatedESSAsync => _objCharacter.IsPrototypeTranshuman && PrototypeTranshuman ? Task.FromResult(0.0m) : CalculatedESSPrototypeInvariantAsync;
+
+        /// <summary>
         /// Calculated Essence cost of the Cyberware if Prototype Transhuman is ignored.
         /// </summary>
         public decimal CalculatedESSPrototypeInvariant => GetCalculatedESSPrototypeInvariant(Rating, Grade);
 
+        /// <summary>
+        /// Calculated Essence cost of the Cyberware if Prototype Transhuman is ignored.
+        /// </summary>
+        public Task<decimal> CalculatedESSPrototypeInvariantAsync => GetCalculatedESSPrototypeInvariantAsync(Rating, Grade);
+
         public decimal GetCalculatedESSPrototypeInvariant(int intRating, Grade objGrade)
+        {
+            return GetCalculatedESSPrototypeInvariantCoreAsync(true, intRating, objGrade).GetAwaiter().GetResult();
+        }
+
+        public Task<decimal> GetCalculatedESSPrototypeInvariantAsync(int intRating, Grade objGrade)
+        {
+            return GetCalculatedESSPrototypeInvariantCoreAsync(false, intRating, objGrade);
+        }
+
+        private async Task<decimal> GetCalculatedESSPrototypeInvariantCoreAsync(bool blnSync, int intRating, Grade objGrade)
         {
             if (Parent != null && !AddToParentESS)
                 return 0;
@@ -4010,18 +4030,29 @@ namespace Chummer.Backend.Equipment
                 {
                     // Apply the character's Cyberware Essence cost multiplier if applicable.
                     case Improvement.ImprovementSource.Cyberware:
-                        UpdateMultipliers(Improvement.ImprovementType.CyberwareEssCost,
-                            Improvement.ImprovementType.CyberwareTotalEssMultiplier);
+                        if (blnSync)
+                            UpdateMultipliers(Improvement.ImprovementType.CyberwareEssCost,
+                                              Improvement.ImprovementType.CyberwareTotalEssMultiplier);
+                        else
+                            await UpdateMultipliersAsync(Improvement.ImprovementType.CyberwareEssCost,
+                                                         Improvement.ImprovementType.CyberwareTotalEssMultiplier);
                         break;
                     // Apply the character's Bioware Essence cost multiplier if applicable.
                     case Improvement.ImprovementSource.Bioware when !IsGeneware:
-                        UpdateMultipliers(Improvement.ImprovementType.BiowareEssCost,
-                            Improvement.ImprovementType.BiowareTotalEssMultiplier);
+                        if (blnSync)
+                            UpdateMultipliers(Improvement.ImprovementType.BiowareEssCost,
+                                              Improvement.ImprovementType.BiowareTotalEssMultiplier);
+                        else
+                            await UpdateMultipliersAsync(Improvement.ImprovementType.BiowareEssCost,
+                                                         Improvement.ImprovementType.BiowareTotalEssMultiplier);
                         // Apply the character's Basic Bioware Essence cost multiplier if applicable.
                         if (Category == "Basic")
                         {
-                            List<Improvement> lstUsedImprovements =
-                                ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
+                            List<Improvement> lstUsedImprovements = blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
+                                    Improvement.ImprovementType.BasicBiowareEssCost)
+                                : await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter,
                                     Improvement.ImprovementType.BasicBiowareEssCost);
                             if (lstUsedImprovements.Count != 0)
                             {
@@ -4033,8 +4064,12 @@ namespace Chummer.Backend.Equipment
                         break;
                     // Apply the character's Geneware Essence cost multiplier if applicable. Since Geneware does not use Grades, we only check the genetechessmultiplier improvement.
                     case Improvement.ImprovementSource.Bioware when IsGeneware:
-                        UpdateMultipliers(Improvement.ImprovementType.GenetechEssMultiplier,
-                            Improvement.ImprovementType.None);
+                        if (blnSync)
+                            UpdateMultipliers(Improvement.ImprovementType.GenetechEssMultiplier,
+                                              Improvement.ImprovementType.None);
+                        else
+                            await UpdateMultipliersAsync(Improvement.ImprovementType.GenetechEssMultiplier,
+                                                         Improvement.ImprovementType.None);
                         break;
                 }
                 void UpdateMultipliers(Improvement.ImprovementType eBaseMultiplier, Improvement.ImprovementType eTotalMultiplier)
@@ -4060,6 +4095,30 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                 }
+                async ValueTask UpdateMultipliersAsync(Improvement.ImprovementType eBaseMultiplier, Improvement.ImprovementType eTotalMultiplier)
+                {
+                    if (eBaseMultiplier != Improvement.ImprovementType.None)
+                    {
+                        List<Improvement> lstUsedImprovements =
+                            await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, eBaseMultiplier);
+                        if (lstUsedImprovements.Count != 0)
+                        {
+                            foreach (Improvement objImprovement in lstUsedImprovements)
+                                // ReSharper disable once AccessToModifiedClosure
+                                decESSMultiplier -= 1m - objImprovement.Value / 100m;
+                        }
+                    }
+                    if (eTotalMultiplier != Improvement.ImprovementType.None)
+                    {
+                        List<Improvement> lstUsedImprovements =
+                            await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, eTotalMultiplier);
+                        if (lstUsedImprovements.Count != 0)
+                        {
+                            foreach (Improvement objImprovement in lstUsedImprovements)
+                                decTotalESSMultiplier *= objImprovement.Value / 100m;
+                        }
+                    }
+                }
             }
 
             decReturn *= Math.Max(0, decESSMultiplier * decTotalESSMultiplier);
@@ -4067,16 +4126,30 @@ namespace Chummer.Backend.Equipment
             if (_objCharacter?.Settings.DontRoundEssenceInternally == false)
                 decReturn = decimal.Round(decReturn, _objCharacter.Settings.EssenceDecimals, MidpointRounding.AwayFromZero);
 
-            if (_objCharacter?.IsPrototypeTranshuman == true)
-                decReturn += Children.Sum(objChild => objChild.AddToParentESS && !objChild.PrototypeTranshuman,
-                                          objChild =>
-                                              objChild.GetCalculatedESSPrototypeInvariant(
-                                                  objChild.Rating, objGrade));
+            if (blnSync)
+            {
+                if (_objCharacter?.IsPrototypeTranshuman == true)
+                    decReturn += Children.Sum(objChild => objChild.AddToParentESS && !objChild.PrototypeTranshuman,
+                                              objChild =>
+                                                  objChild.GetCalculatedESSPrototypeInvariant(
+                                                      objChild.Rating, objGrade));
+                else
+                    decReturn += Children.Sum(objChild => objChild.AddToParentESS,
+                                              objChild =>
+                                                  objChild.GetCalculatedESSPrototypeInvariant(
+                                                      objChild.Rating, objGrade));
+            }
+            else if (_objCharacter?.IsPrototypeTranshuman == true)
+                decReturn += await Children.SumAsync(
+                    objChild => objChild.AddToParentESS && !objChild.PrototypeTranshuman,
+                    objChild =>
+                        objChild.GetCalculatedESSPrototypeInvariant(
+                            objChild.Rating, objGrade));
             else
-                decReturn += Children.Sum(objChild => objChild.AddToParentESS,
-                                          objChild =>
-                                              objChild.GetCalculatedESSPrototypeInvariant(
-                                                  objChild.Rating, objGrade));
+                decReturn += await Children.SumAsync(objChild => objChild.AddToParentESS,
+                                                     objChild =>
+                                                         objChild.GetCalculatedESSPrototypeInvariant(
+                                                             objChild.Rating, objGrade));
             return decReturn;
         }
 

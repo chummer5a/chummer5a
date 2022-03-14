@@ -14016,7 +14016,7 @@ namespace Chummer
                         await lblCyberwareEssence.DoThreadSafeAsync(x => x.Visible = true, token);
                         if (objCyberware.Parent == null || objCyberware.AddToParentESS)
                         {
-                            decimal decCalculatedEss = objCyberware.CalculatedESS;
+                            decimal decCalculatedEss = await objCyberware.CalculatedESSAsync;
                             await lblCyberwareEssence.DoThreadSafeAsync(x => x.Text = objCyberware.Parent == null
                                                                             ? decCalculatedEss.ToString(
                                                                                 strESSFormat,
