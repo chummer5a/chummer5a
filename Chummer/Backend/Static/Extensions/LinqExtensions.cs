@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Chummer.Annotations;
 
 namespace Chummer
@@ -341,6 +342,1156 @@ namespace Chummer
                 foreach (T objLoopSubchild in funcGetChildrenMethod(objLoopChild).GetAllDescendants(funcGetChildrenMethod))
                     yield return objLoopSubchild;
             }
+        }
+
+        public static int SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, int> funcSelector)
+        {
+            List<Task<int>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
+                    default:
+                        lstTasks = new List<Task<int>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<int>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                }
+            }
+            int[] aintReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            int intReturn = 0;
+            foreach (int intLoop in aintReturn)
+                intReturn += intLoop;
+            return intReturn;
+        }
+
+        public static int SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<int>> funcSelector)
+        {
+            List<Task<int>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)).GetAwaiter().GetResult();
+                    default:
+                        lstTasks = new List<Task<int>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<int>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                }
+            }
+            int[] aintReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            int intReturn = 0;
+            foreach (int intLoop in aintReturn)
+                intReturn += intLoop;
+            return intReturn;
+        }
+
+        public static long SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, long> funcSelector)
+        {
+            List<Task<long>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
+                    default:
+                        lstTasks = new List<Task<long>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<long>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                }
+            }
+            long[] alngReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            long lngReturn = 0;
+            foreach (long lngLoop in alngReturn)
+                lngReturn += lngLoop;
+            return lngReturn;
+        }
+
+        public static long SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<long>> funcSelector)
+        {
+            List<Task<long>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)).GetAwaiter().GetResult();
+                    default:
+                        lstTasks = new List<Task<long>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<long>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                }
+            }
+            long[] alngReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            long lngReturn = 0;
+            foreach (long lngLoop in alngReturn)
+                lngReturn += lngLoop;
+            return lngReturn;
+        }
+
+        public static float SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, float> funcSelector)
+        {
+            List<Task<float>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
+                    default:
+                        lstTasks = new List<Task<float>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<float>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                }
+            }
+            float[] afltReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            float fltReturn = 0;
+            foreach (float fltLoop in afltReturn)
+                fltReturn += fltLoop;
+            return fltReturn;
+        }
+
+        public static float SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<float>> funcSelector)
+        {
+            List<Task<float>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)).GetAwaiter().GetResult();
+                    default:
+                        lstTasks = new List<Task<float>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<float>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                }
+            }
+            float[] afltReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            float fltReturn = 0;
+            foreach (float fltLoop in afltReturn)
+                fltReturn += fltLoop;
+            return fltReturn;
+        }
+
+        public static double SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, double> funcSelector)
+        {
+            List<Task<double>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
+                    default:
+                        lstTasks = new List<Task<double>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<double>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                }
+            }
+            double[] adblReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            double dblReturn = 0;
+            foreach (double dblLoop in adblReturn)
+                dblReturn += dblLoop;
+            return dblReturn;
+        }
+
+        public static double SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<double>> funcSelector)
+        {
+            List<Task<double>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)).GetAwaiter().GetResult();
+                    default:
+                        lstTasks = new List<Task<double>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<double>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                }
+            }
+            double[] adblReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            double dblReturn = 0;
+            foreach (double dblLoop in adblReturn)
+                dblReturn += dblLoop;
+            return dblReturn;
+        }
+
+        public static decimal SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, decimal> funcSelector)
+        {
+            List<Task<decimal>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
+                    default:
+                        lstTasks = new List<Task<decimal>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<decimal>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                }
+            }
+            decimal[] adecReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            decimal decReturn = 0;
+            foreach (decimal decLoop in adecReturn)
+                decReturn += decLoop;
+            return decReturn;
+        }
+
+        public static decimal SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector)
+        {
+            List<Task<decimal>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)).GetAwaiter().GetResult();
+                    default:
+                        lstTasks = new List<Task<decimal>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<decimal>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                }
+            }
+            decimal[] adecReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            decimal decReturn = 0;
+            foreach (decimal decLoop in adecReturn)
+                decReturn += decLoop;
+            return decReturn;
+        }
+
+        public static int Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector)
+        {
+            int intReturn = 0;
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (funcPredicate(objEnumerator.Current))
+                        intReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return intReturn;
+        }
+
+        public static int Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector)
+        {
+            int intReturn = 0;
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (funcPredicate(objEnumerator.Current))
+                        intReturn += funcSelector.Invoke(objEnumerator.Current).GetAwaiter().GetResult();
+                }
+            }
+            return intReturn;
+        }
+
+        public static long Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector)
+        {
+            long lngReturn = 0;
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (funcPredicate(objEnumerator.Current))
+                        lngReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return lngReturn;
+        }
+
+        public static long Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector)
+        {
+            long lngReturn = 0;
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (funcPredicate(objEnumerator.Current))
+                        lngReturn += funcSelector.Invoke(objEnumerator.Current).GetAwaiter().GetResult();
+                }
+            }
+            return lngReturn;
+        }
+        
+        public static float Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector)
+        {
+            float fltReturn = 0;
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (funcPredicate(objEnumerator.Current))
+                        fltReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return fltReturn;
+        }
+
+        public static float Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector)
+        {
+            float fltReturn = 0;
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (funcPredicate(objEnumerator.Current))
+                        fltReturn += funcSelector.Invoke(objEnumerator.Current).GetAwaiter().GetResult();
+                }
+            }
+            return fltReturn;
+        }
+
+        public static double Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector)
+        {
+            double dblReturn = 0;
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (funcPredicate(objEnumerator.Current))
+                        dblReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return dblReturn;
+        }
+
+        public static double Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector)
+        {
+            double dblReturn = 0;
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (funcPredicate(objEnumerator.Current))
+                        dblReturn += funcSelector.Invoke(objEnumerator.Current).GetAwaiter().GetResult();
+                }
+            }
+            return dblReturn;
+        }
+
+        public static decimal Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector)
+        {
+            decimal decReturn = 0;
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (funcPredicate(objEnumerator.Current))
+                        decReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return decReturn;
+        }
+
+        public static decimal Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector)
+        {
+            decimal decReturn = 0;
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (funcPredicate(objEnumerator.Current))
+                        decReturn += funcSelector.Invoke(objEnumerator.Current).GetAwaiter().GetResult();
+                }
+            }
+            return decReturn;
+        }
+
+        public static int SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector)
+        {
+            List<Task<int>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement) : 0;
+                    default:
+                        lstTasks = new List<Task<int>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<int>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            int[] aintReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            int intReturn = 0;
+            foreach (int intLoop in aintReturn)
+                intReturn += intLoop;
+            return intReturn;
+        }
+
+        public static int SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector)
+        {
+            List<Task<int>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement).GetAwaiter().GetResult() : 0;
+                    default:
+                        lstTasks = new List<Task<int>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<int>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            int[] aintReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            int intReturn = 0;
+            foreach (int intLoop in aintReturn)
+                intReturn += intLoop;
+            return intReturn;
+        }
+
+        public static long SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector)
+        {
+            List<Task<long>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement) : 0;
+                    default:
+                        lstTasks = new List<Task<long>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<long>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            long[] alngReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            long lngReturn = 0;
+            foreach (long lngLoop in alngReturn)
+                lngReturn += lngLoop;
+            return lngReturn;
+        }
+
+        public static long SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector)
+        {
+            List<Task<long>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement).GetAwaiter().GetResult() : 0;
+                    default:
+                        lstTasks = new List<Task<long>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<long>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            long[] alngReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            long lngReturn = 0;
+            foreach (long lngLoop in alngReturn)
+                lngReturn += lngLoop;
+            return lngReturn;
+        }
+
+        public static float SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector)
+        {
+            List<Task<float>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement) : 0;
+                    default:
+                        lstTasks = new List<Task<float>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<float>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            float[] afltReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            float fltReturn = 0;
+            foreach (float fltLoop in afltReturn)
+                fltReturn += fltLoop;
+            return fltReturn;
+        }
+
+        public static float SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector)
+        {
+            List<Task<float>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement).GetAwaiter().GetResult() : 0;
+                    default:
+                        lstTasks = new List<Task<float>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<float>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            float[] afltReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            float fltReturn = 0;
+            foreach (float fltLoop in afltReturn)
+                fltReturn += fltLoop;
+            return fltReturn;
+        }
+
+        public static double SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector)
+        {
+            List<Task<double>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement) : 0;
+                    default:
+                        lstTasks = new List<Task<double>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<double>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            double[] adblReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            double dblReturn = 0;
+            foreach (double dblLoop in adblReturn)
+                dblReturn += dblLoop;
+            return dblReturn;
+        }
+
+        public static double SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector)
+        {
+            List<Task<double>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement).GetAwaiter().GetResult() : 0;
+                    default:
+                        lstTasks = new List<Task<double>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<double>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            double[] adblReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            double dblReturn = 0;
+            foreach (double dblLoop in adblReturn)
+                dblReturn += dblLoop;
+            return dblReturn;
+        }
+        
+        public static decimal SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector)
+        {
+            List<Task<decimal>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement) : 0;
+                    default:
+                        lstTasks = new List<Task<decimal>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<decimal>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            decimal[] adecReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            decimal decReturn = 0;
+            foreach (decimal decLoop in adecReturn)
+                decReturn += decLoop;
+            return decReturn;
+        }
+
+        public static decimal SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector)
+        {
+            List<Task<decimal>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement).GetAwaiter().GetResult() : 0;
+                    default:
+                        lstTasks = new List<Task<decimal>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<decimal>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            decimal[] adecReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            decimal decReturn = 0;
+            foreach (decimal decLoop in adecReturn)
+                decReturn += decLoop;
+            return decReturn;
+        }
+
+        public static int SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector)
+        {
+            List<Task<int>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        return funcPredicate(objFirstElement).GetAwaiter().GetResult() ? funcSelector.Invoke(objFirstElement) : 0;
+                    default:
+                        lstTasks = new List<Task<int>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<int>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            int[] aintReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            int intReturn = 0;
+            foreach (int intLoop in aintReturn)
+                intReturn += intLoop;
+            return intReturn;
+        }
+
+        public static int SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector)
+        {
+            List<Task<int>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        return funcPredicate(objFirstElement).GetAwaiter().GetResult() ? funcSelector.Invoke(objFirstElement).GetAwaiter().GetResult() : 0;
+                    default:
+                        lstTasks = new List<Task<int>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<int>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            int[] aintReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            int intReturn = 0;
+            foreach (int intLoop in aintReturn)
+                intReturn += intLoop;
+            return intReturn;
+        }
+
+        public static long SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector)
+        {
+            List<Task<long>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        return funcPredicate(objFirstElement).GetAwaiter().GetResult() ? funcSelector.Invoke(objFirstElement) : 0;
+                    default:
+                        lstTasks = new List<Task<long>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<long>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            long[] alngReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            long lngReturn = 0;
+            foreach (long lngLoop in alngReturn)
+                lngReturn += lngLoop;
+            return lngReturn;
+        }
+
+        public static long SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector)
+        {
+            List<Task<long>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        return funcPredicate(objFirstElement).GetAwaiter().GetResult() ? funcSelector.Invoke(objFirstElement).GetAwaiter().GetResult() : 0;
+                    default:
+                        lstTasks = new List<Task<long>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<long>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            long[] alngReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            long lngReturn = 0;
+            foreach (long lngLoop in alngReturn)
+                lngReturn += lngLoop;
+            return lngReturn;
+        }
+
+        public static float SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector)
+        {
+            List<Task<float>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        return funcPredicate(objFirstElement).GetAwaiter().GetResult() ? funcSelector.Invoke(objFirstElement) : 0;
+                    default:
+                        lstTasks = new List<Task<float>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<float>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            float[] afltReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            float fltReturn = 0;
+            foreach (float fltLoop in afltReturn)
+                fltReturn += fltLoop;
+            return fltReturn;
+        }
+
+        public static float SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector)
+        {
+            List<Task<float>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        return funcPredicate(objFirstElement).GetAwaiter().GetResult() ? funcSelector.Invoke(objFirstElement).GetAwaiter().GetResult() : 0;
+                    default:
+                        lstTasks = new List<Task<float>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<float>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            float[] afltReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            float fltReturn = 0;
+            foreach (float fltLoop in afltReturn)
+                fltReturn += fltLoop;
+            return fltReturn;
+        }
+
+        public static double SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector)
+        {
+            List<Task<double>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        return funcPredicate(objFirstElement).GetAwaiter().GetResult() ? funcSelector.Invoke(objFirstElement) : 0;
+                    default:
+                        lstTasks = new List<Task<double>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<double>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            double[] adblReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            double dblReturn = 0;
+            foreach (double dblLoop in adblReturn)
+                dblReturn += dblLoop;
+            return dblReturn;
+        }
+
+        public static double SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector)
+        {
+            List<Task<double>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        return funcPredicate(objFirstElement).GetAwaiter().GetResult() ? funcSelector.Invoke(objFirstElement).GetAwaiter().GetResult() : 0;
+                    default:
+                        lstTasks = new List<Task<double>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<double>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            double[] adblReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            double dblReturn = 0;
+            foreach (double dblLoop in adblReturn)
+                dblReturn += dblLoop;
+            return dblReturn;
+        }
+
+        public static decimal SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector)
+        {
+            List<Task<decimal>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        return funcPredicate(objFirstElement).GetAwaiter().GetResult() ? funcSelector.Invoke(objFirstElement) : 0;
+                    default:
+                        lstTasks = new List<Task<decimal>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<decimal>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            decimal[] adecReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            decimal decReturn = 0;
+            foreach (decimal decLoop in adecReturn)
+                decReturn += decLoop;
+            return decReturn;
+        }
+
+        public static decimal SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector)
+        {
+            List<Task<decimal>> lstTasks;
+            if (objEnumerable is IReadOnlyCollection<T> objTemp)
+            {
+                switch (objTemp.Count)
+                {
+                    case 0:
+                        return 0;
+                    case 1:
+                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        return funcPredicate(objFirstElement).GetAwaiter().GetResult() ? funcSelector.Invoke(objFirstElement).GetAwaiter().GetResult() : 0;
+                    default:
+                        lstTasks = new List<Task<decimal>>(objTemp.Count);
+                        break;
+                }
+            }
+            else
+                lstTasks = new List<Task<decimal>>();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            decimal[] adecReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            decimal decReturn = 0;
+            foreach (decimal decLoop in adecReturn)
+                decReturn += decLoop;
+            return decReturn;
         }
     }
 }

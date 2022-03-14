@@ -3040,7 +3040,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total weight of the Gear and its accessories.
         /// </summary>
-        public decimal TotalWeight => (OwnWeight + Children.Where(x => x.Equipped).Sum(x => x.TotalWeight)) * Quantity;
+        public decimal TotalWeight => (OwnWeight + Children.Sum(x => x.Equipped, x => x.TotalWeight)) * Quantity;
 
         /// <summary>
         /// The Gear's Capacity cost if used as a plugin.

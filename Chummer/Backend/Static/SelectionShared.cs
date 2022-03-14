@@ -812,11 +812,11 @@ namespace Chummer
                                     strEssNodeGradeAttributeText.SplitNoAlloc(
                                         ',', StringSplitOptions.RemoveEmptyEntries));
                                 decGrade =
-                                    objCharacter.Cyberware.Where(
-                                                    objCyberware =>
-                                                        setEssNodeGradeAttributeText.Any(
-                                                            func => objCyberware.Grade.Name.Contains(func)))
-                                                .Sum(objCyberware => objCyberware.CalculatedESS);
+                                    objCharacter.Cyberware
+                                                .Sum(objCyberware =>
+                                                         setEssNodeGradeAttributeText.Any(
+                                                             func => objCyberware.Grade.Name.Contains(func)),
+                                                     objCyberware => objCyberware.CalculatedESS);
                             }
 
                             if (strNodeInnerText.StartsWith('-'))

@@ -1013,6 +1013,45 @@ namespace Chummer
         /// </summary>
         /// <param name="afuncToRun">Codes to wait for.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T[] RunWithoutThreadLock<T>(Func<Task<T>[]> afuncToRun)
+        {
+            Task<T>[] atskToRun = afuncToRun.Invoke();
+            T[] aobjReturn = new T[atskToRun.Length];
+            if (!EverDoEvents)
+            {
+                Parallel.For(0, atskToRun.Length, i =>
+                {
+                    Task<T> objSyncTask = atskToRun[i];
+                    if (objSyncTask.Status == TaskStatus.Created)
+                        objSyncTask.RunSynchronously();
+                    if (objSyncTask.Exception != null)
+                        throw objSyncTask.Exception;
+                    aobjReturn[i] = objSyncTask.Result;
+                });
+                return aobjReturn;
+            }
+            Task<T>[] aobjTasks = new Task<T>[atskToRun.Length];
+            for (int i = 0; i < atskToRun.Length; ++i)
+            {
+                int intLocal = i;
+                aobjTasks[i] = Task.Run(() => atskToRun[intLocal]);
+            }
+            Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks));
+            while (!objTask.IsCompleted)
+                SafeSleep();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+            for (int i = 0; i < atskToRun.Length; ++i)
+                aobjReturn[i] = aobjTasks[i].Result;
+            return aobjReturn;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T[] RunWithoutThreadLock<T>(params Func<Task<T>>[] afuncToRun)
         {
             T[] aobjReturn = new T[afuncToRun.Length];
@@ -1060,6 +1099,42 @@ namespace Chummer
                 return;
             }
             Task objTask = Task.Run(funcToRun);
+            while (!objTask.IsCompleted)
+                SafeSleep();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(Func<Task[]> afuncToRun)
+        {
+            Task[] atskToRun;
+            if (!EverDoEvents)
+            {
+                atskToRun = afuncToRun.Invoke();
+                Parallel.For(0, atskToRun.Length, i =>
+                {
+                    Task objSyncTask = atskToRun[i];
+                    if (objSyncTask.Status == TaskStatus.Created)
+                        objSyncTask.RunSynchronously();
+                    if (objSyncTask.Exception != null)
+                        throw objSyncTask.Exception;
+                });
+                return;
+            }
+            atskToRun = afuncToRun.Invoke();
+            Task[] aobjTasks = new Task[atskToRun.Length];
+            for (int i = 0; i < atskToRun.Length; ++i)
+            {
+                int intLocal = i;
+                aobjTasks[i] = Task.Run(() => atskToRun[intLocal]);
+            }
+            Task objTask = Task.Run(() => Task.WhenAll(aobjTasks));
             while (!objTask.IsCompleted)
                 SafeSleep();
             if (objTask.Exception != null)

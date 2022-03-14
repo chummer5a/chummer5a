@@ -1302,9 +1302,8 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            return decReturn + Weapons.Where(x => x.ParentID != InternalId).Sum(objWeapon => objWeapon.TotalCost)
-                             + Cyberware.Where(x => x.ParentID != InternalId)
-                                        .Sum(objCyberware => objCyberware.TotalCost);
+            return decReturn + Weapons.Sum(x => x.ParentID != InternalId, objWeapon => objWeapon.TotalCost)
+                             + Cyberware.Sum(x => x.ParentID != InternalId, objCyberware => objCyberware.TotalCost);
         }
 
         /// <summary>

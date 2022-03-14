@@ -1559,10 +1559,10 @@ namespace Chummer.Backend.Equipment
                 if (Stolen) decTotalCost += OwnCost;
 
                 // Go through all of the Mods for this piece of Armor and add the Cost value.
-                decTotalCost += ArmorMods.Where(mod => mod.Stolen).Sum(mod => mod.StolenTotalCost);
+                decTotalCost += ArmorMods.Sum(mod => mod.Stolen, mod => mod.StolenTotalCost);
 
                 // Go through all of the Gear for this piece of Armor and add the Cost value.
-                decTotalCost += GearChildren.Where(g => g.Stolen).Sum(g => g.StolenTotalCost);
+                decTotalCost += GearChildren.Sum(g => g.Stolen, g => g.StolenTotalCost);
 
                 return decTotalCost;
             }
@@ -1637,8 +1637,8 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Armor's total Weight including Modifications.
         /// </summary>
-        public decimal TotalWeight => OwnWeight + ArmorMods.Where(x => x.Equipped).Sum(x => x.TotalWeight)
-                                                + GearChildren.Where(x => x.Equipped).Sum(x => x.TotalWeight);
+        public decimal TotalWeight => OwnWeight + ArmorMods.Sum(x => x.Equipped, x => x.TotalWeight)
+                                                + GearChildren.Sum(x => x.Equipped, x => x.TotalWeight);
 
         /// <summary>
         /// Weight for just the Armor.
@@ -2122,10 +2122,10 @@ namespace Chummer.Backend.Equipment
                 {
                     // Run through its Armor Mods and deduct the Capacity costs. Mods that confer capacity (ie negative values) are excluded, as they're processed in TotalArmorCapacity.
                     if (ArmorMods.Count > 0)
-                        decCapacity -= ArmorMods.Where(x => !x.IncludedInArmor).Sum(x => Math.Max(x.TotalCapacity, 0));
+                        decCapacity -= ArmorMods.Sum(x => !x.IncludedInArmor, x => Math.Max(x.TotalCapacity, 0));
                     // Run through its Gear and deduct the Armor Capacity costs.
                     if (GearChildren.Count > 0)
-                        decCapacity -= GearChildren.Where(x => !x.IncludedInParent).Sum(x => x.PluginArmorCapacity * x.Quantity);
+                        decCapacity -= GearChildren.Sum(x => !x.IncludedInParent, x => x.PluginArmorCapacity * x.Quantity);
                 }
                 // Calculate the remaining Capacity for a standard piece of Armor using the Maximum Armor Modifications rules.
                 else // if (_objCharacter.Settings.MaximumArmorModifications)

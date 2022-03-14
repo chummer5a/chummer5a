@@ -1362,7 +1362,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total weight of the Weapon Accessory.
         /// </summary>
-        public decimal TotalWeight => OwnWeight + GearChildren.Where(x => x.Equipped).Sum(x => x.TotalWeight);
+        public decimal TotalWeight => OwnWeight + GearChildren.Sum(x => x.Equipped, x => x.TotalWeight);
 
         /// <summary>
         /// The weight of just the Weapon Accessory itself.

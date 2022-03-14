@@ -702,8 +702,7 @@ namespace Chummer.Backend.Attributes
                                                         out List<Improvement> lstUsedImprovements,
                                                         strImprovedName: Abbrev) < 0)
                 {
-                    decimal decTotalCustomImprovements = lstUsedImprovements
-                                                         .Where(x => x.Custom).Sum(x => x.Augmented * x.Rating);
+                    decimal decTotalCustomImprovements = lstUsedImprovements.Sum(x => x.Custom, x => x.Augmented * x.Rating);
                     if (decTotalCustomImprovements < 0)
                         return 0;
                 }
@@ -718,9 +717,9 @@ namespace Chummer.Backend.Attributes
                     }
                     case "REA":
                     {
-                        decimal decTotalEncumbrance = lstUsedImprovements
-                                                      .Where(x => x.ImproveSource == Improvement.ImprovementSource
-                                                                 .ArmorEncumbrance).Sum(x => x.Augmented * x.Rating);
+                        decimal decTotalEncumbrance = lstUsedImprovements.Sum(
+                            x => x.ImproveSource == Improvement.ImprovementSource
+                                                               .ArmorEncumbrance, x => x.Augmented * x.Rating);
                         if (decTotalEncumbrance < 0)
                             return 0;
                         break;
@@ -730,9 +729,9 @@ namespace Chummer.Backend.Attributes
                         // Special case for cyberlimbs: if every limb has been replaced with a modular connector with an attribute of 0, we allow the augmented attribute to be 0
                         if (intLimbCount > 0 && intPureCyberValue == 0)
                             return 0;
-                        decimal decTotalEncumbrance = lstUsedImprovements
-                                                      .Where(x => x.ImproveSource == Improvement.ImprovementSource
-                                                                 .ArmorEncumbrance).Sum(x => x.Augmented * x.Rating);
+                        decimal decTotalEncumbrance = lstUsedImprovements.Sum(
+                            x => x.ImproveSource == Improvement.ImprovementSource
+                                                               .ArmorEncumbrance, x => x.Augmented * x.Rating);
                         if (decTotalEncumbrance < 0)
                             return 0;
                         break;

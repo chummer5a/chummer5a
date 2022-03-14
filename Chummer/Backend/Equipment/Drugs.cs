@@ -476,8 +476,9 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_decCachedCost != decimal.MinValue) return _decCachedCost;
-                _decCachedCost = Components.Where(d => d.ActiveDrugEffect != null).Sum(d => d.CostPerLevel);
+                if (_decCachedCost != decimal.MinValue)
+                    return _decCachedCost;
+                _decCachedCost = Components.Sum(d => d.ActiveDrugEffect != null, d => d.CostPerLevel);
                 return _decCachedCost;
             }
         }

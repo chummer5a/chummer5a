@@ -1986,12 +1986,12 @@ namespace Chummer.Backend.Equipment
                     else
                     {
                         // If the Mod is a part of the base config, check the items attached to it since their cost still counts.
-                        decCost += objMod.Weapons.Where(objGear => objGear.Stolen).Sum(objWeapon => objWeapon.StolenTotalCost);
-                        decCost += objMod.Cyberware.Where(objGear => objGear.Stolen).Sum(objCyberware => objCyberware.StolenTotalCost);
+                        decCost += objMod.Weapons.Sum(x => x.Stolen, objWeapon => objWeapon.StolenTotalCost);
+                        decCost += objMod.Cyberware.Sum(x => x.Stolen, objCyberware => objCyberware.StolenTotalCost);
                     }
                 }
-                decCost += WeaponMounts.Where(objGear => objGear.Stolen).Sum(wm => wm.StolenTotalCost);
-                decCost += GearChildren.Where(objGear => objGear.Stolen).Sum(objGear => objGear.StolenTotalCost);
+                decCost += WeaponMounts.Sum(x => x.Stolen, wm => wm.StolenTotalCost);
+                decCost += GearChildren.Sum(x => x.Stolen, objGear => objGear.StolenTotalCost);
 
                 return decCost;
             }

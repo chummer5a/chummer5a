@@ -15073,14 +15073,14 @@ namespace Chummer
                         return _decCachedCyberwareEssence;
                     // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately.
                     return _decCachedCyberwareEssence = Cyberware
-                                                        .Where(objCyberware =>
-                                                                   objCyberware.SourceType
-                                                                   == Improvement.ImprovementSource.Cyberware
-                                                                   && !objCyberware.SourceID.Equals(
-                                                                       Backend.Equipment.Cyberware.EssenceHoleGUID)
-                                                                   && !objCyberware.SourceID.Equals(
-                                                                       Backend.Equipment.Cyberware.EssenceAntiHoleGUID))
-                                                        .Sum(objCyberware => objCyberware.CalculatedESS);
+                        .Sum(objCyberware =>
+                                 objCyberware.SourceType
+                                 == Improvement.ImprovementSource.Cyberware
+                                 && !objCyberware.SourceID.Equals(
+                                     Backend.Equipment.Cyberware.EssenceHoleGUID)
+                                 && !objCyberware.SourceID.Equals(
+                                     Backend.Equipment.Cyberware.EssenceAntiHoleGUID),
+                             objCyberware => objCyberware.CalculatedESS);
                 }
             }
         }
@@ -15100,14 +15100,14 @@ namespace Chummer
                         return _decCachedBiowareEssence;
                     // Run through all of the pieces of Cyberware and include their Essence cost. Cyberware and Bioware costs are calculated separately.
                     return _decCachedBiowareEssence = Cyberware
-                                                      .Where(objCyberware =>
-                                                                 objCyberware.SourceType
-                                                                 == Improvement.ImprovementSource.Bioware
-                                                                 && !objCyberware.SourceID.Equals(
-                                                                     Backend.Equipment.Cyberware.EssenceHoleGUID)
-                                                                 && !objCyberware.SourceID.Equals(
-                                                                     Backend.Equipment.Cyberware.EssenceAntiHoleGUID))
-                                                      .Sum(objCyberware => objCyberware.CalculatedESS);
+                        .Sum(objCyberware =>
+                                 objCyberware.SourceType
+                                 == Improvement.ImprovementSource.Bioware
+                                 && !objCyberware.SourceID.Equals(
+                                     Backend.Equipment.Cyberware.EssenceHoleGUID)
+                                 && !objCyberware.SourceID.Equals(
+                                     Backend.Equipment.Cyberware.EssenceAntiHoleGUID),
+                             objCyberware => objCyberware.CalculatedESS);
                 }
             }
         }
@@ -15127,12 +15127,12 @@ namespace Chummer
                         return _decCachedEssenceHole;
                     // Find the total Essence Cost of all Essence Hole objects.
                     return _decCachedEssenceHole = Cyberware
-                                                   .Where(objCyberware =>
-                                                              objCyberware.SourceID.Equals(
-                                                                  Backend.Equipment.Cyberware.EssenceHoleGUID)
-                                                              || objCyberware.SourceID.Equals(
-                                                                  Backend.Equipment.Cyberware.EssenceAntiHoleGUID))
-                                                   .Sum(objCyberware => objCyberware.CalculatedESS);
+                        .Sum(objCyberware =>
+                                 objCyberware.SourceID.Equals(
+                                     Backend.Equipment.Cyberware.EssenceHoleGUID)
+                                 || objCyberware.SourceID.Equals(
+                                     Backend.Equipment.Cyberware.EssenceAntiHoleGUID),
+                             objCyberware => objCyberware.CalculatedESS);
                 }
             }
         }
@@ -15298,11 +15298,8 @@ namespace Chummer
                     if (!IsPrototypeTranshuman)
                         return _decCachedPrototypeTranshumanEssenceUsed = 0.0m;
                     return _decCachedPrototypeTranshumanEssenceUsed = Cyberware
-                                                                      .Where(objCyberware =>
-                                                                                 objCyberware.PrototypeTranshuman)
-                                                                      .Sum(objCyberware =>
-                                                                               objCyberware
-                                                                                   .CalculatedESSPrototypeInvariant);
+                        .Sum(objCyberware => objCyberware.PrototypeTranshuman,
+                             objCyberware => objCyberware.CalculatedESSPrototypeInvariant);
                 }
             }
         }
@@ -18856,11 +18853,10 @@ namespace Chummer
                 {
                     if (_decCachedTotalCarriedWeight == decimal.MinValue)
                     {
-                        _decCachedTotalCarriedWeight = Armor.Where(x => x.Equipped).Sum(x => x.TotalWeight)
-                                                       + Weapons.Where(x => x.Equipped).Sum(x => x.TotalWeight)
-                                                       + Gear.Where(x => x.Equipped).Sum(x => x.TotalWeight)
-                                                       + Cyberware.Where(x => x.IsModularCurrentlyEquipped)
-                                                                  .Sum(x => x.TotalWeight);
+                        _decCachedTotalCarriedWeight = Armor.Sum(x => x.Equipped, x => x.TotalWeight)
+                                                       + Weapons.Sum(x => x.Equipped, x => x.TotalWeight)
+                                                       + Gear.Sum(x => x.Equipped, x => x.TotalWeight)
+                                                       + Cyberware.Sum(x => x.IsModularCurrentlyEquipped, x => x.TotalWeight);
                     }
 
                     return _decCachedTotalCarriedWeight;

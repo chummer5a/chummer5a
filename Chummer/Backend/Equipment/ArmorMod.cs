@@ -1236,7 +1236,7 @@ namespace Chummer.Backend.Equipment
                     decReturn += OwnCost;
 
                 // Go through all of the Gear for this piece of Armor and add the Cost value.
-                decReturn += GearChildren.Where(g => g.Stolen).Sum(objGear => objGear.StolenTotalCost);
+                decReturn += GearChildren.Sum(g => g.Stolen, objGear => objGear.StolenTotalCost);
 
                 return decReturn;
             }
@@ -1292,7 +1292,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total weight of the Armor Mod.
         /// </summary>
-        public decimal TotalWeight => OwnWeight + GearChildren.Where(x => x.Equipped).Sum(x => x.TotalWeight);
+        public decimal TotalWeight => OwnWeight + GearChildren.Sum(x => x.Equipped, x => x.TotalWeight);
 
         /// <summary>
         /// Weight for just the Armor Mod.

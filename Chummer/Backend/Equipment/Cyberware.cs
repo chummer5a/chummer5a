@@ -4068,13 +4068,15 @@ namespace Chummer.Backend.Equipment
                 decReturn = decimal.Round(decReturn, _objCharacter.Settings.EssenceDecimals, MidpointRounding.AwayFromZero);
 
             if (_objCharacter?.IsPrototypeTranshuman == true)
-                decReturn += Children
-                             .Where(objChild => objChild.AddToParentESS && !objChild.PrototypeTranshuman).Sum(
-                                 objChild => objChild.GetCalculatedESSPrototypeInvariant(objChild.Rating, objGrade));
+                decReturn += Children.Sum(objChild => objChild.AddToParentESS && !objChild.PrototypeTranshuman,
+                                          objChild =>
+                                              objChild.GetCalculatedESSPrototypeInvariant(
+                                                  objChild.Rating, objGrade));
             else
-                decReturn += Children
-                             .Where(objChild => objChild.AddToParentESS).Sum(
-                                 objChild => objChild.GetCalculatedESSPrototypeInvariant(objChild.Rating, objGrade));
+                decReturn += Children.Sum(objChild => objChild.AddToParentESS,
+                                          objChild =>
+                                              objChild.GetCalculatedESSPrototypeInvariant(
+                                                  objChild.Rating, objGrade));
             return decReturn;
         }
 
@@ -4382,7 +4384,7 @@ namespace Chummer.Backend.Equipment
             }
 
             // Add in the cost of all Gear plugins.
-            decReturn += GearChildren.Where(g => g.Stolen).Sum(objGear => objGear.StolenTotalCost);
+            decReturn += GearChildren.Sum(g => g.Stolen, objGear => objGear.StolenTotalCost);
 
             if (_blnSuite)
                 decReturn *= 0.9m;
@@ -4515,7 +4517,7 @@ namespace Chummer.Backend.Equipment
             }
 
             // Add in the weight of all Gear plugins.
-            decReturn += GearChildren.Where(x => x.Equipped).Sum(objGear => objGear.TotalWeight);
+            decReturn += GearChildren.Sum(x => x.Equipped, objGear => objGear.TotalWeight);
 
             return decReturn;
         }

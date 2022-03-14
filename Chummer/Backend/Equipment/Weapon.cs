@@ -3864,8 +3864,8 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Weapon's total weight including Accessories and Modifications.
         /// </summary>
-        public decimal TotalWeight => OwnWeight + WeaponAccessories.Where(x => x.Equipped).Sum(x => x.TotalWeight)
-                                                + Children.Where(x => x.Equipped).Sum(x => x.TotalWeight);
+        public decimal TotalWeight => OwnWeight + WeaponAccessories.Sum(x => x.Equipped, x => x.TotalWeight)
+                                                + Children.Sum(x => x.Equipped, x => x.TotalWeight);
 
         /// <summary>
         /// The weight of just the Weapon itself.

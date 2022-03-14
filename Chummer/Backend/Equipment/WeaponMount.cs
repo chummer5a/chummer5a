@@ -980,7 +980,9 @@ namespace Chummer.Backend.Equipment
                 {
                     cost += OwnCost;
                 }
-                return cost + Weapons.Sum(w => w.TotalCost) + WeaponMountOptions.Sum(w => w.TotalCost) + Mods.Sum(m => m.TotalCost);
+
+                return cost + Weapons.Sum(w => w.TotalCost) + WeaponMountOptions.Sum(w => w.TotalCost)
+                       + Mods.Sum(m => m.TotalCost);
             }
         }
 
