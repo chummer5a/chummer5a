@@ -38,7 +38,7 @@ namespace Chummer.Backend.Attributes
     /// </summary>
     [HubClassTag("Abbrev", true, "TotalValue", "TotalValue")]
     [DebuggerDisplay("{" + nameof(_strAbbrev) + "}")]
-    public class CharacterAttrib : INotifyMultiplePropertyChanged
+    public class CharacterAttrib : INotifyMultiplePropertyChanged, IDisposable, IAsyncDisposable
     {
         private int _intMetatypeMin = 1;
         private int _intMetatypeMax = 6;
@@ -68,15 +68,6 @@ namespace Chummer.Backend.Attributes
             {
                 _objCharacter.PropertyChanged += OnCharacterChanged;
                 _objCharacter.Settings.PropertyChanged += OnCharacterSettingsPropertyChanged;
-            }
-        }
-
-        public void UnbindAttribute()
-        {
-            if (_objCharacter != null)
-            {
-                _objCharacter.PropertyChanged -= OnCharacterChanged;
-                _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
             }
         }
 
@@ -192,12 +183,12 @@ namespace Chummer.Backend.Attributes
             {
                 await objWriter.WriteElementStringAsync("name_english", Abbrev);
                 await objWriter.WriteElementStringAsync("name", await GetDisplayAbbrevAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("base", Value.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("total", TotalValue.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("min", TotalMinimum.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("max", TotalMaximum.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("aug", TotalAugmentedMaximum.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("bp", TotalKarmaCost.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("base", (await ValueAsync).ToString(objCulture));
+                await objWriter.WriteElementStringAsync("total", (await TotalValueAsync).ToString(objCulture));
+                await objWriter.WriteElementStringAsync("min", (await TotalMinimumAsync).ToString(objCulture));
+                await objWriter.WriteElementStringAsync("max", (await TotalMaximumAsync).ToString(objCulture));
+                await objWriter.WriteElementStringAsync("aug", (await TotalAugmentedMaximumAsync).ToString(objCulture));
+                await objWriter.WriteElementStringAsync("bp", (await TotalKarmaCostAsync).ToString(objCulture));
                 await objWriter.WriteElementStringAsync("metatypecategory", MetatypeCategory.ToString());
             }
             finally
@@ -263,6 +254,29 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
+        /// Minimum value for the CharacterAttribute as set by the character's Metatype or overwritten attributes nodes.
+        /// </summary>
+        public ValueTask<int> MetatypeMinimumAsync => GetMetatypeMinimumAsync();
+
+        /// <summary>
+        /// Minimum value for the CharacterAttribute as set by the character's Metatype or overwritten attributes nodes.
+        /// </summary>
+        private async ValueTask<int> GetMetatypeMinimumAsync()
+        {
+            if (MetatypeCategory == AttributeCategory.Shapeshifter)
+                return RawMetatypeMinimum;
+            int intReturn = RawMetatypeMinimum;
+            Improvement objImprovement = await _objCharacter.Improvements.LastOrDefaultAsync(
+                x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev
+                    && x.Enabled);
+            if (objImprovement != null)
+            {
+                intReturn = objImprovement.Minimum;
+            }
+            return intReturn;
+        }
+
+        /// <summary>
         /// Maximum value for the CharacterAttribute as set by the character's Metatype.
         /// </summary>
         public int RawMetatypeMaximum
@@ -305,6 +319,34 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
+        /// Maximum value for the CharacterAttribute as set by the character's Metatype or overwritten attributes nodes.
+        /// </summary>
+        public ValueTask<int> MetatypeMaximumAsync => GetMetatypeMaximumAsync();
+
+        /// <summary>
+        /// Maximum value for the CharacterAttribute as set by the character's Metatype or overwritten attributes nodes.
+        /// </summary>
+        private async ValueTask<int> GetMetatypeMaximumAsync()
+        {
+            if (Abbrev == "EDG" && _objCharacter.IsAI)
+                return _objCharacter.DEP.TotalValue;
+            if (MetatypeCategory == AttributeCategory.Shapeshifter)
+                return RawMetatypeMaximum;
+            int intReturn = RawMetatypeMaximum;
+            Improvement objImprovement = await _objCharacter.Improvements.LastOrDefaultAsync(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled);
+            if (objImprovement != null)
+            {
+                intReturn = objImprovement.Maximum;
+            }
+
+            if (Abbrev == "ESS")
+            {
+                intReturn += (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.EssenceMax)).StandardRound();
+            }
+            return intReturn;
+        }
+
+        /// <summary>
         /// Maximum augmented value for the CharacterAttribute as set by the character's Metatype.
         /// </summary>
         public int RawMetatypeAugmentedMaximum
@@ -340,6 +382,27 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
+        /// Maximum augmented value for the CharacterAttribute as set by the character's Metatype or overwritten attributes nodes.
+        /// </summary>
+        public ValueTask<int> MetatypeAugmentedMaximumAsync => GetMetatypeAugmentedMaximumAsync();
+
+        /// <summary>
+        /// Maximum augmented value for the CharacterAttribute as set by the character's Metatype or overwritten attributes nodes.
+        /// </summary>
+        private async ValueTask<int> GetMetatypeAugmentedMaximumAsync()
+        {
+            if (MetatypeCategory == AttributeCategory.Shapeshifter)
+                return RawMetatypeAugmentedMaximum;
+            int intReturn = RawMetatypeAugmentedMaximum;
+            Improvement objImprovement = await _objCharacter.Improvements.LastOrDefaultAsync(x => x.ImproveType == Improvement.ImprovementType.ReplaceAttribute && x.ImprovedName == Abbrev && x.Enabled);
+            if (objImprovement != null)
+            {
+                intReturn = objImprovement.AugmentedMaximum;
+            }
+            return intReturn;
+        }
+
+        /// <summary>
         /// Current base value (priority points spent) of the CharacterAttribute.
         /// </summary>
         public int Base
@@ -360,7 +423,33 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public int TotalBase => Math.Max(Base + FreeBase + RawMinimum, TotalMinimum);
 
-        public int FreeBase => Math.Min(ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Attributelevel, false, Abbrev), MetatypeMaximum - MetatypeMinimum).StandardRound();
+        /// <summary>
+        /// Total Value of Base Points as used by internal methods
+        /// </summary>
+        public ValueTask<int> TotalBaseAsync => GetTotalBaseAsync();
+
+        /// <summary>
+        /// Total Value of Base Points as used by internal methods
+        /// </summary>
+        private async ValueTask<int> GetTotalBaseAsync()
+        {
+            return Math.Max(Base + await FreeBaseAsync + await RawMinimumAsync, await TotalMinimumAsync);
+        }
+
+        public int FreeBase =>
+            Math.Min(
+                ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Attributelevel, false, Abbrev),
+                MetatypeMaximum - MetatypeMinimum).StandardRound();
+
+        public ValueTask<int> FreeBaseAsync => GetFreeBaseAsync();
+
+        private async ValueTask<int> GetFreeBaseAsync()
+        {
+            return Math.Min(
+                await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Attributelevel, false,
+                                                      Abbrev),
+                await MetatypeMaximumAsync - await MetatypeMinimumAsync).StandardRound();
+        }
 
         /// <summary>
         /// Current karma value of the CharacterAttribute.
@@ -379,6 +468,7 @@ namespace Chummer.Backend.Attributes
         }
 
         private int _intCachedValue = int.MinValue;
+        private readonly AsyncFriendlyReaderWriterLock _objCachedValueLock = new AsyncFriendlyReaderWriterLock();
 
         /// <summary>
         /// Current value of the CharacterAttribute before modifiers are applied.
@@ -387,10 +477,56 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                if (_intCachedValue == int.MinValue)
-                    _intCachedValue = Math.Min(Math.Max(Base + FreeBase + RawMinimum + AttributeValueModifiers, TotalMinimum) + Karma, TotalMaximum);
-                return _intCachedValue;
+                using (EnterReadLock.Enter(_objCachedValueLock))
+                {
+                    if (_intCachedValue == int.MinValue)
+                    {
+                        using (_objCachedValueLock.EnterWriteLock())
+                        {
+                            _intCachedValue
+                                = Math.Min(
+                                    Math.Max(Base + FreeBase + RawMinimum + AttributeValueModifiers, TotalMinimum)
+                                    + Karma,
+                                    TotalMaximum);
+                        }
+                    }
+                    return _intCachedValue;
+                }
             }
+        }
+
+        /// <summary>
+        /// Current value of the CharacterAttribute before modifiers are applied.
+        /// </summary>
+        public ValueTask<int> ValueAsync => GetValueAsync();
+
+        /// <summary>
+        /// Current value of the CharacterAttribute before modifiers are applied.
+        /// </summary>
+        private async ValueTask<int> GetValueAsync()
+        {
+            using (await EnterReadLock.EnterAsync(_objCachedValueLock))
+            {
+                if (_intCachedValue == int.MinValue)
+                {
+                    IAsyncDisposable objLocker = await _objCachedValueLock.EnterWriteLockAsync();
+                    try
+                    {
+                        _intCachedValue
+                            = await Task.Run(async () => Math.Min(
+                                                 Math.Max(
+                                                     Base + await FreeBaseAsync + await RawMinimumAsync
+                                                     + await AttributeValueModifiersAsync, await TotalMinimumAsync)
+                                                 + Karma,
+                                                 await TotalMaximumAsync));
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync();
+                    }
+                }
+            }
+            return _intCachedValue;
         }
 
         /// <summary>
@@ -447,7 +583,73 @@ namespace Chummer.Backend.Attributes
 
             if (intTotalMinimum < 1)
             {
-                if (_objCharacter.IsCritter || _intMetatypeMax == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
+                if (_objCharacter.IsCritter || MetatypeMaximum == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
+                    intTotalMinimum = 0;
+                else
+                    intTotalMinimum = 1;
+            }
+            if (intTotalMaximum < intTotalMinimum)
+                intTotalMaximum = intTotalMinimum;
+
+            return intTotalMaximum;
+        }
+
+        /// <summary>
+        /// Total Maximum value of the CharacterAttribute before essence modifiers are applied but .
+        /// </summary>
+        public async ValueTask<int> MaximumNoEssenceLossAsync(bool blnUseEssenceAtSpecialStart = false)
+        {
+            // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
+            if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
+            {
+                return 1;
+            }
+
+            int intRawMaximumBase = await MetatypeMaximumAsync;
+            int intRawMinimum = await MetatypeMinimumAsync;
+            int intRawMaximum = intRawMaximumBase;
+            int intMinimumLossFromEssence = 0;
+            int intMaximumLossFromEssence = 0;
+            List<Improvement> lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev);
+            foreach (Improvement objImprovement in lstModifiers)
+            {
+                if (objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLoss
+                    && objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLossChargen
+                    && objImprovement.ImproveSource != Improvement.ImprovementSource.CyberadeptDaemon)
+                {
+                    intRawMinimum += objImprovement.Minimum * objImprovement.Rating;
+                    intRawMaximum += objImprovement.Maximum * objImprovement.Rating;
+                }
+                else
+                {
+                    intMinimumLossFromEssence += objImprovement.Minimum * objImprovement.Rating;
+                    intMaximumLossFromEssence += objImprovement.Maximum * objImprovement.Rating;
+                }
+            }
+            lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base");
+            foreach (Improvement objImprovement in lstModifiers)
+            {
+                if (objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLoss
+                    && objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLossChargen
+                    && objImprovement.ImproveSource != Improvement.ImprovementSource.CyberadeptDaemon)
+                {
+                    intRawMinimum += objImprovement.Minimum * objImprovement.Rating;
+                    intRawMaximum += objImprovement.Maximum * objImprovement.Rating;
+                }
+                else
+                {
+                    intMinimumLossFromEssence += objImprovement.Minimum * objImprovement.Rating;
+                    intMaximumLossFromEssence += objImprovement.Maximum * objImprovement.Rating;
+                }
+            }
+
+            int intMaxLossFromEssence = blnUseEssenceAtSpecialStart ? CharacterObject.EssenceAtSpecialStart.StandardRound() - await CharacterObject.ESS.MetatypeMaximumAsync : 0;
+            int intTotalMinimum = intRawMinimum + Math.Max(intMinimumLossFromEssence, intMaxLossFromEssence);
+            int intTotalMaximum = intRawMaximum + Math.Max(intMaximumLossFromEssence, intMaxLossFromEssence);
+
+            if (intTotalMinimum < 1)
+            {
+                if (_objCharacter.IsCritter || intRawMaximumBase == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
                     intTotalMinimum = 0;
                 else
                     intTotalMinimum = 1;
@@ -464,6 +666,22 @@ namespace Chummer.Backend.Attributes
         public string DisplayValue => HasModifiers()
             ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", Value, LanguageManager.GetString("String_Space"), TotalValue)
             : Value.ToString(GlobalSettings.CultureInfo);
+
+        /// <summary>
+        /// Formatted Value of the attribute, including the sum of any modifiers in brackets.
+        /// </summary>
+        public ValueTask<string> DisplayValueAsync => GetDisplayValueAsync();
+
+        /// <summary>
+        /// Formatted Value of the attribute, including the sum of any modifiers in brackets.
+        /// </summary>
+        private async ValueTask<string> GetDisplayValueAsync()
+        {
+            int intValue = await ValueAsync;
+            return await HasModifiersAsync()
+                ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", intValue, await LanguageManager.GetStringAsync("String_Space"), await TotalValueAsync)
+                : intValue.ToString(GlobalSettings.CultureInfo);
+        }
 
         /// <summary>
         /// The total amount of the modifiers that affect the CharacterAttribute's value without affecting Karma costs.
@@ -486,9 +704,44 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
+        /// The total amount of the modifiers that affect the CharacterAttribute's value without affecting Karma costs.
+        /// </summary>
+        public ValueTask<int> AttributeModifiersAsync => GetAttributeModifiersAsync();
+
+        /// <summary>
+        /// The total amount of the modifiers that affect the CharacterAttribute's value without affecting Karma costs.
+        /// </summary>
+        private async ValueTask<int> GetAttributeModifiersAsync()
+        {
+            int intReturn = (await ImprovementManager
+                    .AugmentedValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, false, Abbrev))
+                            .StandardRound();
+            //The most that any attribute can be increased by is 4, plus/minus any improvements that affect the augmented max.
+            int intModifiersClamp = await MetatypeAugmentedMaximumAsync - await MetatypeMaximumAsync + await AugmentedMaximumModifiersAsync;
+            if ((await ImprovementManager
+                    .GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.AttributeMaxClamp,
+                                                             Abbrev)).Count > 0)
+                intModifiersClamp = Math.Min(intModifiersClamp, TotalMaximum - Value);
+            return Math.Min(intReturn, intModifiersClamp);
+        }
+
+        /// <summary>
         /// The total amount of the modifiers that raise the actual value of the CharacterAttribute and increase its Karma cost.
         /// </summary>
         public int AttributeValueModifiers => ImprovementManager.AugmentedValueOf(_objCharacter, Improvement.ImprovementType.Attribute, false, Abbrev + "Base").StandardRound();
+
+        /// <summary>
+        /// The total amount of the modifiers that raise the actual value of the CharacterAttribute and increase its Karma cost.
+        /// </summary>
+        public ValueTask<int> AttributeValueModifiersAsync => GetAttributeValueModifiersAsync();
+
+        /// <summary>
+        /// The total amount of the modifiers that raise the actual value of the CharacterAttribute and increase its Karma cost.
+        /// </summary>
+        private async ValueTask<int> GetAttributeValueModifiersAsync()
+        {
+            return (await ImprovementManager.AugmentedValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, false, Abbrev + "Base")).StandardRound();
+        }
 
         /// <summary>
         /// Whether or not the CharacterAttribute has any modifiers from Improvements.
@@ -599,6 +852,30 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
+        /// The total amount of the modifiers that affect the CharacterAttribute's Minimum value.
+        /// </summary>
+        public ValueTask<int> MinimumModifiersAsync => GetMinimumModifiersAsync();
+
+        /// <summary>
+        /// The total amount of the modifiers that affect the CharacterAttribute's Minimum value.
+        /// </summary>
+        private async ValueTask<int> GetMinimumModifiersAsync()
+        {
+            int intModifier = 0;
+            List<Improvement> lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev);
+            foreach (Improvement objImprovement in lstModifiers)
+            {
+                intModifier += objImprovement.Minimum * objImprovement.Rating;
+            }
+            lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base");
+            foreach (Improvement objImprovement in lstModifiers)
+            {
+                intModifier += objImprovement.Minimum * objImprovement.Rating;
+            }
+            return intModifier;
+        }
+
+        /// <summary>
         /// The total amount of the modifiers that affect the CharacterAttribute's Maximum value.
         /// </summary>
         public int MaximumModifiers
@@ -622,6 +899,30 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
+        /// The total amount of the modifiers that affect the CharacterAttribute's Maximum value.
+        /// </summary>
+        public ValueTask<int> MaximumModifiersAsync => GetMaximumModifiersAsync();
+
+        /// <summary>
+        /// The total amount of the modifiers that affect the CharacterAttribute's Maximum value.
+        /// </summary>
+        private async ValueTask<int> GetMaximumModifiersAsync()
+        {
+            int intModifier = 0;
+            List<Improvement> lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev);
+            foreach (Improvement objImprovement in lstModifiers)
+            {
+                intModifier += objImprovement.Maximum * objImprovement.Rating;
+            }
+            lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base");
+            foreach (Improvement objImprovement in lstModifiers)
+            {
+                intModifier += objImprovement.Maximum * objImprovement.Rating;
+            }
+            return intModifier;
+        }
+
+        /// <summary>
         /// The total amount of the modifiers that affect the CharacterAttribute's Augmented Maximum value.
         /// </summary>
         public int AugmentedMaximumModifiers
@@ -639,15 +940,50 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
+        /// The total amount of the modifiers that affect the CharacterAttribute's Augmented Maximum value.
+        /// </summary>
+        public ValueTask<int> AugmentedMaximumModifiersAsync => GetAugmentedMaximumModifiersAsync();
+
+        /// <summary>
+        /// The total amount of the modifiers that affect the CharacterAttribute's Augmented Maximum value.
+        /// </summary>
+        private async ValueTask<int> GetAugmentedMaximumModifiersAsync()
+        {
+            int intModifier = 0;
+            List<Improvement> lstModifiers = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.Attribute, Abbrev);
+            foreach (Improvement objImprovement in lstModifiers)
+            {
+                intModifier += objImprovement.AugmentedMaximum * objImprovement.Rating;
+            }
+            return intModifier;
+        }
+
+        /// <summary>
         /// The CharacterAttribute's total value (Value + Modifiers).
         /// </summary>
         public int CalculatedTotalValue(bool blnIncludeCyberlimbs = true)
+        {
+            return CalculatedTotalValueCore(true, blnIncludeCyberlimbs).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// The CharacterAttribute's total value (Value + Modifiers).
+        /// </summary>
+        public Task<int> CalculatedTotalValueAsync(bool blnIncludeCyberlimbs = true)
+        {
+            return CalculatedTotalValueCore(false, blnIncludeCyberlimbs);
+        }
+
+        /// <summary>
+        /// The CharacterAttribute's total value (Value + Modifiers).
+        /// </summary>
+        private async Task<int> CalculatedTotalValueCore(bool blnSync, bool blnIncludeCyberlimbs = true)
         {
             // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
             if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 return 1;
 
-            int intMeat = Value + AttributeModifiers;
+            int intMeat = blnSync ? Value + AttributeModifiers : await ValueAsync + await AttributeModifiersAsync;
             int intReturn = intMeat;
 
             int intPureCyberValue = 0;
@@ -655,11 +991,16 @@ namespace Chummer.Backend.Attributes
             // If this is AGI or STR, factor in any Cyberlimbs.
             if (blnIncludeCyberlimbs && !_objCharacter.Settings.DontUseCyberlimbCalculation && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
             {
-                int intLimbTotal = 0;
-                ProcessCyberlimbs(_objCharacter.Cyberware);
+                int intLimbTotal;
+                if (blnSync)
+                    (intLimbCount, intLimbTotal) = ProcessCyberlimbs(_objCharacter.Cyberware);
+                else
+                    (intLimbCount, intLimbTotal) = await ProcessCyberlimbsAsync(_objCharacter.Cyberware);
 
-                void ProcessCyberlimbs(IEnumerable<Cyberware> lstToCheck)
+                Tuple<int, int> ProcessCyberlimbs(IEnumerable<Cyberware> lstToCheck)
                 {
+                    int intLimbCountReturn = 0;
+                    int intLimbTotalReturn = 0;
                     foreach (Cyberware objCyberware in lstToCheck)
                     {
                         if (objCyberware.Category == "Cyberlimb")
@@ -668,20 +1009,50 @@ namespace Chummer.Backend.Attributes
                                 && !_objCharacter.Settings.ExcludeLimbSlot
                                                  .Contains(objCyberware.LimbSlot))
                             {
-                                intLimbCount += objCyberware.LimbSlotCount;
-                                intLimbTotal += objCyberware.GetAttributeTotalValue(Abbrev) * objCyberware.LimbSlotCount;
+                                intLimbCountReturn += objCyberware.LimbSlotCount;
+                                intLimbTotalReturn += objCyberware.GetAttributeTotalValue(Abbrev) * objCyberware.LimbSlotCount;
                             }
                         }
                         else
                         {
-                            ProcessCyberlimbs(objCyberware.Children);
+                            (int intLoop1, int intLoop2) = ProcessCyberlimbs(objCyberware.Children);
+                            intLimbCountReturn += intLoop1;
+                            intLimbTotalReturn += intLoop2;
                         }
                     }
+                    return new Tuple<int, int>(intLimbCountReturn, intLimbTotalReturn);
+                }
+
+                async ValueTask<Tuple<int, int>> ProcessCyberlimbsAsync(IEnumerable<Cyberware> lstToCheck)
+                {
+                    int intLimbCountReturn = 0;
+                    int intLimbTotalReturn = 0;
+                    foreach (Cyberware objCyberware in lstToCheck)
+                    {
+                        if (objCyberware.Category == "Cyberlimb")
+                        {
+                            if (!string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
+                                && !_objCharacter.Settings.ExcludeLimbSlot
+                                                 .Contains(objCyberware.LimbSlot))
+                            {
+                                intLimbCountReturn += objCyberware.LimbSlotCount;
+                                intLimbTotalReturn += await objCyberware.GetAttributeTotalValueAsync(Abbrev) * objCyberware.LimbSlotCount;
+                            }
+                        }
+                        else
+                        {
+                            (int intLoop1, int intLoop2) = await ProcessCyberlimbsAsync(objCyberware.Children);
+                            intLimbCountReturn += intLoop1;
+                            intLimbTotalReturn += intLoop2;
+                        }
+                    }
+                    return new Tuple<int, int>(intLimbCountReturn, intLimbTotalReturn);
                 }
 
                 if (intLimbCount > 0)
                 {
-                    int intMaxLimbs = _objCharacter.LimbCount();
+                    // ReSharper disable once MethodHasAsyncOverload
+                    int intMaxLimbs = blnSync ? _objCharacter.LimbCount() : await _objCharacter.LimbCountAsync();
                     int intMissingLimbCount = Math.Max(intMaxLimbs - intLimbCount, 0);
                     intPureCyberValue = intLimbTotal;
                     // Not all of the limbs have been replaced, so we need to place the Attribute in the other "limbs" to get the average value.
@@ -690,17 +1061,25 @@ namespace Chummer.Backend.Attributes
                 }
             }
             // Do not let the CharacterAttribute go above the Metatype's Augmented Maximum.
-            if (intReturn > TotalAugmentedMaximum)
-                intReturn = TotalAugmentedMaximum;
+            intReturn = Math.Min(intReturn, blnSync ? TotalAugmentedMaximum : await TotalAugmentedMaximumAsync);
 
             // An Attribute cannot go below 1 unless it is EDG, MAG, or RES, the character is a Critter, the Metatype Maximum is 0, or it is caused by encumbrance (or a custom improvement).
             if (intReturn < 1)
             {
-                if (_objCharacter.CritterEnabled || _intMetatypeMax == 0 || Abbrev == "EDG" || Abbrev == "RES" || Abbrev == "MAG" || Abbrev == "MAGAdept" || (_objCharacter.MetatypeCategory != "A.I." && Abbrev == "DEP"))
+                if (_objCharacter.CritterEnabled || (blnSync ? MetatypeMaximum : await MetatypeMaximumAsync) == 0 || Abbrev == "EDG" || Abbrev == "RES" || Abbrev == "MAG" || Abbrev == "MAGAdept" || (_objCharacter.MetatypeCategory != "A.I." && Abbrev == "DEP"))
                     return 0;
-                if (ImprovementManager.AugmentedValueOf(_objCharacter, Improvement.ImprovementType.Attribute,
-                                                        out List<Improvement> lstUsedImprovements,
-                                                        strImprovedName: Abbrev) < 0)
+                List<Improvement> lstUsedImprovements;
+                decimal decImprovementValue;
+                if (blnSync)
+                    decImprovementValue = ImprovementManager.AugmentedValueOf(
+                        _objCharacter, Improvement.ImprovementType.Attribute,
+                        out lstUsedImprovements,
+                        strImprovedName: Abbrev);
+                else
+                    (decImprovementValue, lstUsedImprovements)
+                        = await ImprovementManager.AugmentedValueOfTupleAsync(
+                            _objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: Abbrev);
+                if (decImprovementValue < 0)
                 {
                     decimal decTotalCustomImprovements = lstUsedImprovements.Sum(x => x.Custom, x => x.Augmented * x.Rating);
                     if (decTotalCustomImprovements < 0)
@@ -743,6 +1122,7 @@ namespace Chummer.Backend.Attributes
         }
 
         private int _intCachedTotalValue = int.MinValue;
+        private readonly AsyncFriendlyReaderWriterLock _objCachedTotalValueLock = new AsyncFriendlyReaderWriterLock();
 
         /// <summary>
         /// The CharacterAttribute's total value (Value + Modifiers).
@@ -752,8 +1132,42 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
+                using (EnterReadLock.Enter(_objCachedTotalValueLock))
+                {
+                    if (_intCachedTotalValue == int.MinValue)
+                    {
+                        using (_objCachedTotalValueLock.EnterWriteLock())
+                            _intCachedTotalValue = CalculatedTotalValue();
+                    }
+                    return _intCachedTotalValue;
+                }
+            }
+        }
+
+        /// <summary>
+        /// The CharacterAttribute's total value (Value + Modifiers).
+        /// </summary>
+        public ValueTask<int> TotalValueAsync => GetTotalValueAsync();
+
+        /// <summary>
+        /// The CharacterAttribute's total value (Value + Modifiers).
+        /// </summary>
+        private async ValueTask<int> GetTotalValueAsync()
+        {
+            using (await EnterReadLock.EnterAsync(_objCachedTotalValueLock))
+            {
                 if (_intCachedTotalValue == int.MinValue)
-                    _intCachedTotalValue = CalculatedTotalValue();
+                {
+                    IAsyncDisposable objLocker = await _objCachedTotalValueLock.EnterWriteLockAsync();
+                    try
+                    {
+                        _intCachedTotalValue = await Task.Run(() => CalculatedTotalValueAsync());
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync();
+                    }
+                }
                 return _intCachedTotalValue;
             }
         }
@@ -765,6 +1179,22 @@ namespace Chummer.Backend.Attributes
             CharacterObject.Settings.UnclampAttributeMinimum
                 ? MetatypeMinimum + MinimumModifiers
                 : Math.Max(MetatypeMinimum + MinimumModifiers, 0);
+
+        /// <summary>
+        /// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers), uncapped by its zero.
+        /// </summary>
+        public ValueTask<int> RawMinimumAsync => GetRawMinimumAsync();
+
+        /// <summary>
+        /// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers), uncapped by its zero.
+        /// </summary>
+        private async ValueTask<int> GetRawMinimumAsync()
+        {
+            int intReturn = await MetatypeMinimumAsync + await MinimumModifiersAsync;
+            if (!CharacterObject.Settings.UnclampAttributeMinimum && intReturn < 0)
+                intReturn = 0;
+            return intReturn;
+        }
 
         /// <summary>
         /// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers).
@@ -790,6 +1220,31 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
+        /// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers).
+        /// </summary>
+        public ValueTask<int> TotalMinimumAsync => GetTotalMinimumAsync();
+
+        /// <summary>
+        /// The CharacterAttribute's combined Minimum value (Metatype Minimum + Modifiers).
+        /// </summary>
+        private async ValueTask<int> GetTotalMinimumAsync()
+        {
+            // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
+            if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
+                return 1;
+
+            int intReturn = await RawMinimumAsync;
+            if (intReturn < 1)
+            {
+                if (_objCharacter.IsCritter || await TotalMaximumAsync == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
+                    intReturn = 0;
+                else
+                    intReturn = 1;
+            }
+            return intReturn;
+        }
+
+        /// <summary>
         /// The CharacterAttribute's combined Maximum value (Metatype Maximum + Modifiers).
         /// </summary>
         public int TotalMaximum
@@ -802,6 +1257,23 @@ namespace Chummer.Backend.Attributes
 
                 return Math.Max(0, MetatypeMaximum + MaximumModifiers);
             }
+        }
+
+        /// <summary>
+        /// The CharacterAttribute's combined Maximum value (Metatype Maximum + Modifiers).
+        /// </summary>
+        public ValueTask<int> TotalMaximumAsync => GetTotalMaximumAsync();
+
+        /// <summary>
+        /// The CharacterAttribute's combined Maximum value (Metatype Maximum + Modifiers).
+        /// </summary>
+        private async ValueTask<int> GetTotalMaximumAsync()
+        {
+            // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
+            if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
+                return 1;
+
+            return Math.Max(0, await MetatypeMaximumAsync + await MaximumModifiersAsync);
         }
 
         /// <summary>
@@ -819,6 +1291,25 @@ namespace Chummer.Backend.Attributes
                     ? TotalMaximum
                     : Math.Max(0, MetatypeAugmentedMaximum + MaximumModifiers + AugmentedMaximumModifiers);
             }
+        }
+
+        /// <summary>
+        /// The CharacterAttribute's combined Augmented Maximum value (Metatype Augmented Maximum + Modifiers).
+        /// </summary>
+        public ValueTask<int> TotalAugmentedMaximumAsync => GetTotalAugmentedMaximumAsync();
+
+        /// <summary>
+        /// The CharacterAttribute's combined Augmented Maximum value (Metatype Augmented Maximum + Modifiers).
+        /// </summary>
+        private async ValueTask<int> GetTotalAugmentedMaximumAsync()
+        {
+            // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
+            if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
+                return 1;
+
+            return (await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.AttributeMaxClamp, Abbrev)).Count > 0
+                ? await TotalMaximumAsync
+                : Math.Max(0, await MetatypeAugmentedMaximumAsync + await MaximumModifiersAsync + await AugmentedMaximumModifiersAsync);
         }
 
         /// <summary>
@@ -852,6 +1343,8 @@ namespace Chummer.Backend.Attributes
 
         public string DisplayNameFormatted => GetDisplayNameFormatted(GlobalSettings.Language);
 
+        public Task<string> DisplayNameFormattedAsync => GetDisplayNameFormattedAsync(GlobalSettings.Language);
+
         public string GetDisplayNameFormatted(string strLanguage)
         {
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
@@ -882,6 +1375,21 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public string AugmentedMetatypeLimits => string.Format(GlobalSettings.CultureInfo, "{1}{0}/{0}{2}{0}({3})",
             LanguageManager.GetString("String_Space"), TotalMinimum, TotalMaximum, TotalAugmentedMaximum);
+
+        /// <summary>
+        /// CharacterAttribute Limits
+        /// </summary>
+        public ValueTask<string> AugmentedMetatypeLimitsAsync => GetAugmentedMetatypeLimitsAsync();
+
+        /// <summary>
+        /// CharacterAttribute Limits
+        /// </summary>
+        private async ValueTask<string> GetAugmentedMetatypeLimitsAsync()
+        {
+            return string.Format(GlobalSettings.CultureInfo, "{1}{0}/{0}{2}{0}({3})",
+                                 await LanguageManager.GetStringAsync("String_Space"), await TotalMinimumAsync,
+                                 await TotalMaximumAsync, await TotalAugmentedMaximumAsync);
+        }
 
         #endregion Properties
 
@@ -1151,6 +1659,14 @@ namespace Chummer.Backend.Attributes
 
         public bool AtMetatypeMaximum => Value == TotalMaximum && TotalMaximum > 0;
 
+        public ValueTask<bool> AtMetatypeMaximumAsync => GetAtMetatypeMaximumAsync();
+
+        private async ValueTask<bool> GetAtMetatypeMaximumAsync()
+        {
+            int intTotalMaximum = await TotalMaximumAsync;
+            return intTotalMaximum > 0 && await ValueAsync == intTotalMaximum;
+        }
+
         public int KarmaMaximum => Math.Max(TotalMaximum - TotalBase, 0);
 
         public int PriorityMaximum => Math.Max(TotalMaximum - Karma - FreeBase - RawMinimum, 0);
@@ -1230,7 +1746,7 @@ namespace Chummer.Backend.Attributes
                     int intHumanMinimum = _objCharacter.Settings.ReverseAttributePriorityOrder ? FreeBase + 1 + MinimumModifiers : Base + FreeBase + 1 + MinimumModifiers;
                     if (intHumanMinimum < 1)
                     {
-                        if (_objCharacter.IsCritter || _intMetatypeMax == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
+                        if (_objCharacter.IsCritter || MetatypeMaximum == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
                             intHumanMinimum = 0;
                         else
                             intHumanMinimum = 1;
@@ -1269,6 +1785,66 @@ namespace Chummer.Backend.Attributes
 
                 return Math.Max(intCost, 0);
             }
+        }
+
+        public Task<int> TotalKarmaCostAsync => GetTotalKarmaCostAsync();
+
+        private async Task<int> GetTotalKarmaCostAsync()
+        {
+            if (Karma == 0)
+                return 0;
+
+            int intValue = await ValueAsync;
+            int intFreeBase = await FreeBaseAsync;
+            int intRawTotalBase = _objCharacter.Settings.ReverseAttributePriorityOrder
+                ? Math.Max(intFreeBase + await RawMinimumAsync, await TotalMinimumAsync)
+                : await TotalBaseAsync;
+            int intTotalBase = intRawTotalBase;
+            if (_objCharacter.Settings.AlternateMetatypeAttributeKarma)
+            {
+                int intHumanMinimum = intFreeBase + 1 + await MinimumModifiersAsync;
+                if (!_objCharacter.Settings.ReverseAttributePriorityOrder)
+                    intHumanMinimum += Base;
+                if (intHumanMinimum < 1)
+                {
+                    if (_objCharacter.IsCritter || await MetatypeMaximumAsync == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
+                        intHumanMinimum = 0;
+                    else
+                        intHumanMinimum = 1;
+                }
+                intTotalBase = intHumanMinimum;
+            }
+
+            // The expression below is a shortened version of n*(n+1)/2 when applied to karma costs. n*(n+1)/2 is the sum of all numbers from 1 to n.
+            // I'm taking n*(n+1)/2 where n = Base + Karma, then subtracting n*(n+1)/2 from it where n = Base. After removing all terms that cancel each other out, the expression below is what remains.
+            int intCost = (2 * intTotalBase + Karma + 1) * Karma / 2 * _objCharacter.Settings.KarmaAttribute;
+
+            decimal decExtra = 0;
+            decimal decMultiplier = 1.0m;
+            foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+            {
+                if ((objLoopImprovement.ImprovedName == Abbrev || string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
+                    (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _objCharacter.Created || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
+                        objLoopImprovement.Minimum <= intValue && objLoopImprovement.Enabled)
+                {
+                    switch (objLoopImprovement.ImproveType)
+                    {
+                        case Improvement.ImprovementType.AttributeKarmaCost:
+                            decExtra += objLoopImprovement.Value * (Math.Min(intValue, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intRawTotalBase, objLoopImprovement.Minimum - 1));
+                            break;
+
+                        case Improvement.ImprovementType.AttributeKarmaCostMultiplier:
+                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                            break;
+                    }
+                }
+            }
+            if (decMultiplier != 1.0m)
+                intCost = (intCost * decMultiplier + decExtra).StandardRound();
+            else
+                intCost += decExtra.StandardRound();
+
+            return Math.Max(intCost, 0);
         }
 
         // Caching the value prevents calling the event multiple times.
@@ -1389,9 +1965,17 @@ namespace Chummer.Backend.Attributes
                 if (setNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
                     _intCachedCanUpgradeCareer = int.MinValue;
                 if (setNamesOfChangedProperties.Contains(nameof(Value)))
-                    _intCachedValue = int.MinValue;
+                {
+                    using (_objCachedValueLock.EnterWriteLock())
+                        _intCachedValue = int.MinValue;
+                }
+
                 if (setNamesOfChangedProperties.Contains(nameof(TotalValue)))
-                    _intCachedTotalValue = int.MinValue;
+                {
+                    using (_objCachedTotalValueLock.EnterWriteLock())
+                        _intCachedTotalValue = int.MinValue;
+                }
+
                 if (setNamesOfChangedProperties.Contains(nameof(UpgradeKarmaCost)))
                     _intCachedUpgradeKarmaCost = int.MinValue;
                 if (setNamesOfChangedProperties.Contains(nameof(ToolTip)))
@@ -1650,5 +2234,29 @@ namespace Chummer.Backend.Attributes
         }
 
         #endregion static
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            if (_objCharacter != null)
+            {
+                _objCharacter.PropertyChanged -= OnCharacterChanged;
+                _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+            }
+            _objCachedValueLock.Dispose();
+            _objCachedTotalValueLock.Dispose();
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            if (_objCharacter != null)
+            {
+                _objCharacter.PropertyChanged -= OnCharacterChanged;
+                _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+            }
+            await _objCachedValueLock.DisposeAsync();
+            await _objCachedTotalValueLock.DisposeAsync();
+        }
     }
 }

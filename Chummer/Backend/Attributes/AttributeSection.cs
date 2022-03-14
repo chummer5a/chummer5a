@@ -227,7 +227,7 @@ namespace Chummer.Backend.Attributes
                 return;
             foreach (CharacterAttrib objAttribute in e.OldItems)
             {
-                objAttribute.UnbindAttribute();
+                objAttribute.Dispose();
                 if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
                     objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
             }
@@ -239,7 +239,7 @@ namespace Chummer.Backend.Attributes
                 return;
             foreach (CharacterAttrib objAttribute in e.OldItems)
             {
-                objAttribute.UnbindAttribute();
+                objAttribute.Dispose();
                 if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
                     objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
             }
@@ -261,7 +261,7 @@ namespace Chummer.Backend.Attributes
                 case NotifyCollectionChangedAction.Remove:
                     foreach (CharacterAttrib objAttribute in e.OldItems)
                     {
-                        objAttribute.UnbindAttribute();
+                        objAttribute.Dispose();
                         if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
                             objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
                     }
@@ -272,7 +272,7 @@ namespace Chummer.Backend.Attributes
                     {
                         if (setNewAttribs.Contains(objAttribute))
                             continue;
-                        objAttribute.UnbindAttribute();
+                        objAttribute.Dispose();
                         if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
                             objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
                     }
@@ -301,7 +301,7 @@ namespace Chummer.Backend.Attributes
                 case NotifyCollectionChangedAction.Remove:
                     foreach (CharacterAttrib objAttribute in e.OldItems)
                     {
-                        objAttribute.UnbindAttribute();
+                        objAttribute.Dispose();
                         if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
                             objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
                     }
@@ -312,7 +312,7 @@ namespace Chummer.Backend.Attributes
                     {
                         if (setNewAttribs.Contains(objAttribute))
                             continue;
-                        objAttribute.UnbindAttribute();
+                        objAttribute.Dispose();
                         if (_dicBindings.TryGetValue(objAttribute.Abbrev, out BindingSource objBindingSource))
                             objBindingSource.DataSource = GetAttributeByName(objAttribute.Abbrev);
                     }
@@ -325,16 +325,12 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public void UnbindAttributeSection()
-        {
-            AttributeList.Clear();
-            SpecialAttributeList.Clear();
-        }
-
         public void Dispose()
         {
             using (LockObject.EnterWriteLock())
             {
+                AttributeList.Clear();
+                SpecialAttributeList.Clear();
                 foreach (BindingSource objSource in _dicBindings.Values)
                     objSource.Dispose();
                 _dicBindings.Dispose();
@@ -351,6 +347,8 @@ namespace Chummer.Backend.Attributes
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
+                AttributeList.Clear();
+                SpecialAttributeList.Clear();
                 foreach (BindingSource objSource in _dicBindings.Values)
                     objSource.Dispose();
                 await _dicBindings.DisposeAsync();
@@ -1484,16 +1482,17 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         /// <param name="objAttribute">Attribute to raise to its metatype maximum.</param>
         /// <returns></returns>
-        public bool CanRaiseAttributeToMetatypeMax(CharacterAttrib objAttribute)
+        public async ValueTask<bool> CanRaiseAttributeToMetatypeMax(CharacterAttrib objAttribute)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 if (_objCharacter.Created || _objCharacter.IgnoreRules
                                           || objAttribute.MetatypeCategory == CharacterAttrib.AttributeCategory.Special
-                                          || _objCharacter.Settings.MaxNumberMaxAttributesCreate >= AttributeList.Count)
+                                          || _objCharacter.Settings.MaxNumberMaxAttributesCreate >= await AttributeList.CountAsync)
                     return true;
-                return AttributeList.Count(x => x.MetatypeCategory == objAttribute.MetatypeCategory && x != objAttribute
-                                               && x.AtMetatypeMaximum)
+                return await AttributeList.CountAsync(async x => x.MetatypeCategory == objAttribute.MetatypeCategory
+                                                                 && x != objAttribute
+                                                                 && await x.AtMetatypeMaximumAsync)
                        < _objCharacter.Settings.MaxNumberMaxAttributesCreate;
             }
         }

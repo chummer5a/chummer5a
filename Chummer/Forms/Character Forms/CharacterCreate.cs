@@ -9508,14 +9508,14 @@ namespace Chummer
         /// <summary>
         /// Calculate the BP used by Primary Attributes.
         /// </summary>
-        private static int CalculateAttributeBP(IEnumerable<CharacterAttrib> attribs, IEnumerable<CharacterAttrib> extraAttribs = null)
+        private static async ValueTask<int> CalculateAttributeBP(IAsyncEnumerable<CharacterAttrib> attribs, IAsyncEnumerable<CharacterAttrib> extraAttribs = null)
         {
             // Primary and Special Attributes are calculated separately since you can only spend a maximum of 1/2 your BP allotment on Primary Attributes.
             // Special Attributes are not subject to the 1/2 of max BP rule.
-            int intBP = attribs.Sum(att => att.TotalKarmaCost);
+            int intBP = await attribs.SumAsync(att => att.TotalKarmaCostAsync);
             if (extraAttribs != null)
             {
-                intBP += extraAttribs.Sum(att => att.TotalKarmaCost);
+                intBP += await extraAttribs.SumAsync(att => att.TotalKarmaCostAsync);
             }
             return intBP;
         }
@@ -9536,9 +9536,9 @@ namespace Chummer
             return intAtt;
         }
 
-        private async ValueTask<string> BuildAttributes(IReadOnlyCollection<CharacterAttrib> attribs, IReadOnlyCollection<CharacterAttrib> extraAttribs = null, bool special = false)
+        private async ValueTask<string> BuildAttributes(IAsyncReadOnlyCollection<CharacterAttrib> attribs, IAsyncReadOnlyCollection<CharacterAttrib> extraAttribs = null, bool special = false)
         {
-            int bp = CalculateAttributeBP(attribs, extraAttribs);
+            int bp = await CalculateAttributeBP(attribs, extraAttribs);
             string s = bp.ToString(GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_Space") + await LanguageManager.GetStringAsync("String_Karma");
             if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
             {
@@ -9715,8 +9715,8 @@ namespace Chummer
 
             // ------------------------------------------------------------------------------
             // Update Primary Attributes and Special Attributes values.
-            int intAttributePointsUsed = CalculateAttributeBP(CharacterObject.AttributeSection.AttributeList);
-            intAttributePointsUsed += CalculateAttributeBP(CharacterObject.AttributeSection.SpecialAttributeList);
+            int intAttributePointsUsed = await CalculateAttributeBP(CharacterObject.AttributeSection.AttributeList);
+            intAttributePointsUsed += await CalculateAttributeBP(CharacterObject.AttributeSection.SpecialAttributeList);
             intKarmaPointsRemain -= intAttributePointsUsed;
 
             token.ThrowIfCancellationRequested();
@@ -12720,7 +12720,7 @@ namespace Chummer
                                 intValue += intExistingValue;
                         }
 
-                        if (intValue >= CharacterObject.LimbCount(Cyberware.MountToLimbType(strKey)))
+                        if (intValue >= await CharacterObject.LimbCountAsync(Cyberware.MountToLimbType(strKey)))
                             sbdDisallowedMounts.Append(strKey).Append(',');
                     }
 
@@ -12748,7 +12748,7 @@ namespace Chummer
                                 intValue += intExistingValue;
                         }
 
-                        if (intValue >= CharacterObject.LimbCount(Cyberware.MountToLimbType(strKey)))
+                        if (intValue >= await CharacterObject.LimbCountAsync(Cyberware.MountToLimbType(strKey)))
                             sbdHasMounts.Append(strKey).Append(',');
                     }
 
@@ -14726,9 +14726,10 @@ namespace Chummer
                     if (CharacterObject.Settings.MaxNumberMaxAttributesCreate
                         < CharacterObject.AttributeSection.AttributeList.Count)
                     {
-                        int intCountAttributesAtMax = CharacterObject.AttributeSection.AttributeList.Count(
-                            x => x.MetatypeCategory == CharacterAttrib.AttributeCategory.Standard
-                                 && x.AtMetatypeMaximum);
+                        int intCountAttributesAtMax
+                            = await CharacterObject.AttributeSection.AttributeList.CountAsync(
+                                async x => x.MetatypeCategory == CharacterAttrib.AttributeCategory.Standard
+                                           && await x.AtMetatypeMaximumAsync);
                         if (intCountAttributesAtMax > CharacterObject.Settings.MaxNumberMaxAttributesCreate)
                         {
                             blnValid = false;
@@ -14842,7 +14843,7 @@ namespace Chummer
                     // Check if the character's Essence is above 0.
                     if (CharacterObject.ESS.MetatypeMaximum > 0)
                     {
-                        decimal decEss = CharacterObject.Essence();
+                        decimal decEss = await CharacterObject.EssenceAsync();
                         decimal decExcessEss = 0.0m;
                         // Need to split things up this way because without internal rounding, Essence can be as small as the player wants as long as it is positive
                         // And getting the smallest positive number supported by the decimal type is way trickier than just checking if it's zero or negative

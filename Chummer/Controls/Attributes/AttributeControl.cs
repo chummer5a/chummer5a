@@ -218,7 +218,7 @@ namespace Chummer.UI.Attributes
                 return;
             }
 
-            string confirmstring = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"), AttributeObject.DisplayNameFormatted, AttributeObject.Value + 1, intUpgradeKarmaCost);
+            string confirmstring = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"), await AttributeObject.DisplayNameFormattedAsync, await AttributeObject.ValueAsync + 1, intUpgradeKarmaCost);
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
@@ -306,7 +306,7 @@ namespace Chummer.UI.Attributes
             if (intValue < intTotalMaximum || intTotalMaximum == 0)
                 return true;
 
-            if (_objCharacter.AttributeSection.CanRaiseAttributeToMetatypeMax(AttributeObject))
+            if (await _objCharacter.AttributeSection.CanRaiseAttributeToMetatypeMax(AttributeObject))
                 return true;
 
             Program.ShowMessageBox(

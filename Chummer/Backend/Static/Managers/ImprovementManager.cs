@@ -429,6 +429,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Retrieve the total Improvement Augmented x Rating for the specified ImprovementType.
+        /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
+        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="strImprovedName">Name to assign to the Improvement.</param>
+        /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
+        /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
+        public static async Task<Tuple<decimal, List<Improvement>>> ValueOfTupleAsync(Character objCharacter, Improvement.ImprovementType objImprovementType,
+                                                                bool blnAddToRating = false, string strImprovedName = "",
+                                                                bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
+        {
+            (decimal decReturn, List<Improvement> lstUsedImprovements) = await MetaValueOfAsync(objCharacter, objImprovementType,
+                x => x.Value,
+                s_DictionaryCachedValues, blnAddToRating, strImprovedName,
+                blnUnconditionalOnly,
+                blnIncludeNonImproved);
+            if (decReturn != 0 && lstUsedImprovements.Count == 0)
+            {
+                Log.Warn("A cached value modifier somehow is not zero while having no used improvements in its list.");
+                Utils.BreakIfDebug();
+            }
+            return new Tuple<decimal, List<Improvement>>(decReturn, lstUsedImprovements);
+        }
+
+        /// <summary>
         /// Gets the cached list of active improvements that contribute to values of a given improvement type.
         /// </summary>
         /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
@@ -518,6 +544,32 @@ namespace Chummer
                 Utils.BreakIfDebug();
             }
             return decReturn;
+        }
+
+        /// <summary>
+        /// Retrieve the total Improvement Augmented x Rating for the specified ImprovementType.
+        /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="objImprovementType">ImprovementType to retrieve the value of.</param>
+        /// <param name="blnAddToRating">Whether or not we should only retrieve values that have AddToRating enabled.</param>
+        /// <param name="strImprovedName">Name to assign to the Improvement.</param>
+        /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
+        /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
+        public static async Task<Tuple<decimal, List<Improvement>>> AugmentedValueOfTupleAsync(Character objCharacter, Improvement.ImprovementType objImprovementType,
+                                                                bool blnAddToRating = false, string strImprovedName = "",
+                                                                bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
+        {
+            (decimal decReturn, List<Improvement> lstUsedImprovements) = await MetaValueOfAsync(objCharacter, objImprovementType,
+                x => x.Augmented * x.Rating,
+                s_DictionaryCachedAugmentedValues, blnAddToRating, strImprovedName,
+                blnUnconditionalOnly,
+                blnIncludeNonImproved);
+            if (decReturn != 0 && lstUsedImprovements.Count == 0)
+            {
+                Log.Warn("A cached augmented value modifier somehow is not zero while having no used improvements in its list.");
+                Utils.BreakIfDebug();
+            }
+            return new Tuple<decimal, List<Improvement>>(decReturn, lstUsedImprovements);
         }
 
         /// <summary>

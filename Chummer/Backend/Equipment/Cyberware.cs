@@ -1910,7 +1910,7 @@ namespace Chummer.Backend.Equipment
                         bool blnFirst = true;
                         foreach (string strAbbrev in CyberlimbAttributeAbbrevs)
                         {
-                            int intTotalValue = GetAttributeTotalValue(strAbbrev);
+                            int intTotalValue = await GetAttributeTotalValueAsync(strAbbrev);
                             if (!blnFirst)
                             {
                                 sbdName.Append(',').Append(strSpace);
@@ -4761,6 +4761,38 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Unaugmented Cyberlimb attribute value (before modifiers).
+        /// </summary>
+        public async ValueTask<int> GetAttributeValueAsync(string strAbbrev)
+        {
+            if (!CyberlimbAttributeAbbrevs.Contains(strAbbrev))
+                return 0;
+            int intValue = GetAttributeBaseValue(strAbbrev);
+            if (await Children.CountAsync > 0 && s_AttributeCustomizationCyberwares.TryGetValue(strAbbrev, out IReadOnlyCollection<string> setNamesToCheck))
+            {
+                List<Cyberware> lstCustomizationWare = new List<Cyberware>(await Children.CountAsync);
+                foreach (Cyberware objChild in Children)
+                {
+                    if (setNamesToCheck.Contains(objChild.Name))
+                        lstCustomizationWare.Add(objChild);
+                }
+                if (lstCustomizationWare.Count > 0)
+                {
+                    intValue = lstCustomizationWare.Count > 1
+                        ? lstCustomizationWare.Max(s => s.Rating)
+                        : lstCustomizationWare[0].Rating;
+                }
+            }
+
+            if (ParentVehicle == null)
+            {
+                CharacterAttrib objAttribute = _objCharacter.GetAttribute(strAbbrev);
+                return Math.Min(intValue, objAttribute != null ? await objAttribute.TotalMaximumAsync : 0);
+            }
+            return Math.Min(intValue, Math.Max(ParentVehicle.TotalBody * 2, 1));
+        }
+
+        /// <summary>
         /// Total value for an attribute on a cyberlimb.
         /// </summary>
         public int GetAttributeTotalValue(string strAbbrev)
@@ -4815,6 +4847,67 @@ namespace Chummer.Backend.Equipment
             return ParentVehicle == null
                 ? Math.Min(intReturn, _objCharacter.GetAttribute(strAbbrev)?.TotalAugmentedMaximum ?? 0)
                 : Math.Min(intReturn, Math.Max(ParentVehicle.TotalBody * 2, 1));
+        }
+
+        /// <summary>
+        /// Total value for an attribute on a cyberlimb.
+        /// </summary>
+        public async ValueTask<int> GetAttributeTotalValueAsync(string strAbbrev)
+        {
+            if (!CyberlimbAttributeAbbrevs.Contains(strAbbrev))
+                return 0;
+            if (InheritAttributes)
+            {
+                int intAverageAttribute = 0;
+                int intCyberlimbChildrenNumber = 0;
+                await Children.ForEachAsync(async objChild =>
+                {
+                    int intChildTotalValue = await objChild.GetAttributeTotalValueAsync(strAbbrev);
+                    if (intChildTotalValue <= 0)
+                        return;
+                    ++intCyberlimbChildrenNumber;
+                    intAverageAttribute += intChildTotalValue;
+                });
+
+                if (intCyberlimbChildrenNumber == 0)
+                    intCyberlimbChildrenNumber = 1;
+
+                return intAverageAttribute / intCyberlimbChildrenNumber;
+            }
+
+            if (Category != "Cyberlimb")
+                return 0;
+
+            int intBonus = 0;
+
+            if (await Children.CountAsync > 0 && s_AttributeEnhancementCyberwares.TryGetValue(strAbbrev, out IReadOnlyCollection<string> setNamesToCheck))
+            {
+                List<Cyberware> lstEnhancementWare = new List<Cyberware>(await Children.CountAsync);
+                await Children.ForEachAsync(objChild =>
+                {
+                    if (setNamesToCheck.Contains(objChild.Name))
+                        lstEnhancementWare.Add(objChild);
+                });
+                if (lstEnhancementWare.Count > 0)
+                {
+                    intBonus = lstEnhancementWare.Count > 1
+                        ? lstEnhancementWare.Max(s => s.Rating)
+                        : lstEnhancementWare[0].Rating;
+                }
+            }
+            if (ParentVehicle == null)
+            {
+                intBonus += _objCharacter.RedlinerBonus;
+            }
+            intBonus = Math.Min(intBonus, _objCharacter.Settings.CyberlimbAttributeBonusCap);
+
+            int intReturn = await GetAttributeValueAsync(strAbbrev) + intBonus;
+            if (ParentVehicle == null)
+            {
+                CharacterAttrib objAttribute = _objCharacter.GetAttribute(strAbbrev);
+                return Math.Min(intReturn, objAttribute != null ? await objAttribute.TotalAugmentedMaximumAsync : 0);
+            }
+            return Math.Min(intReturn, Math.Max(ParentVehicle.TotalBody * 2, 1));
         }
 
         public bool IsProgram => false;
