@@ -100,7 +100,9 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<int> GetCountAsync()
+        public ValueTask<int> CountAsync => GetCountAsync();
+
+        private async ValueTask<int> GetCountAsync()
         {
             using (await EnterReadLock.EnterAsync(LockObject))
                 return _lstData.Count;

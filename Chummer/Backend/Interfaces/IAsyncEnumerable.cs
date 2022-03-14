@@ -382,7 +382,7 @@ namespace Chummer
         public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, int> funcSelector)
         {
             List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<int>>(await objTemp.GetCountAsync())
+                ? new List<Task<int>>(await objTemp.CountAsync)
                 : new List<Task<int>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -402,7 +402,7 @@ namespace Chummer
         public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<int>> funcSelector)
         {
             List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<int>>(await objTemp.GetCountAsync())
+                ? new List<Task<int>>(await objTemp.CountAsync)
                 : new List<Task<int>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -432,7 +432,7 @@ namespace Chummer
         public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, long> funcSelector)
         {
             List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<long>>(await objTemp.GetCountAsync())
+                ? new List<Task<long>>(await objTemp.CountAsync)
                 : new List<Task<long>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -452,7 +452,7 @@ namespace Chummer
         public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<long>> funcSelector)
         {
             List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<long>>(await objTemp.GetCountAsync())
+                ? new List<Task<long>>(await objTemp.CountAsync)
                 : new List<Task<long>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -483,7 +483,7 @@ namespace Chummer
         public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, float> funcSelector)
         {
             List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<float>>(await objTemp.GetCountAsync())
+                ? new List<Task<float>>(await objTemp.CountAsync)
                 : new List<Task<float>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -503,7 +503,7 @@ namespace Chummer
         public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<float>> funcSelector)
         {
             List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<float>>(await objTemp.GetCountAsync())
+                ? new List<Task<float>>(await objTemp.CountAsync)
                 : new List<Task<float>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -533,7 +533,7 @@ namespace Chummer
         public static async Task<double> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, double> funcSelector)
         {
             List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<double>>(await objTemp.GetCountAsync())
+                ? new List<Task<double>>(await objTemp.CountAsync)
                 : new List<Task<double>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -553,7 +553,7 @@ namespace Chummer
         public static async Task<double> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<double>> funcSelector)
         {
             List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<double>>(await objTemp.GetCountAsync())
+                ? new List<Task<double>>(await objTemp.CountAsync)
                 : new List<Task<double>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -583,7 +583,7 @@ namespace Chummer
         public static async Task<decimal> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, decimal> funcSelector)
         {
             List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<decimal>>(await objTemp.GetCountAsync())
+                ? new List<Task<decimal>>(await objTemp.CountAsync)
                 : new List<Task<decimal>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -603,7 +603,7 @@ namespace Chummer
         public static async Task<decimal> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector)
         {
             List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<decimal>>(await objTemp.GetCountAsync())
+                ? new List<Task<decimal>>(await objTemp.CountAsync)
                 : new List<Task<decimal>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -823,7 +823,7 @@ namespace Chummer
         public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector)
         {
             List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<int>>(await objTemp.GetCountAsync())
+                ? new List<Task<int>>(await objTemp.CountAsync)
                 : new List<Task<int>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -843,7 +843,7 @@ namespace Chummer
         public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector)
         {
             List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<int>>(await objTemp.GetCountAsync())
+                ? new List<Task<int>>(await objTemp.CountAsync)
                 : new List<Task<int>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -873,7 +873,7 @@ namespace Chummer
         public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector)
         {
             List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<long>>(await objTemp.GetCountAsync())
+                ? new List<Task<long>>(await objTemp.CountAsync)
                 : new List<Task<long>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -893,7 +893,7 @@ namespace Chummer
         public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector)
         {
             List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<long>>(await objTemp.GetCountAsync())
+                ? new List<Task<long>>(await objTemp.CountAsync)
                 : new List<Task<long>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -924,7 +924,7 @@ namespace Chummer
         public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector)
         {
             List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<float>>(await objTemp.GetCountAsync())
+                ? new List<Task<float>>(await objTemp.CountAsync)
                 : new List<Task<float>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -944,7 +944,7 @@ namespace Chummer
         public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector)
         {
             List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<float>>(await objTemp.GetCountAsync())
+                ? new List<Task<float>>(await objTemp.CountAsync)
                 : new List<Task<float>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -974,7 +974,7 @@ namespace Chummer
         public static async Task<double> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector)
         {
             List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<double>>(await objTemp.GetCountAsync())
+                ? new List<Task<double>>(await objTemp.CountAsync)
                 : new List<Task<double>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -994,7 +994,7 @@ namespace Chummer
         public static async Task<double> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector)
         {
             List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<double>>(await objTemp.GetCountAsync())
+                ? new List<Task<double>>(await objTemp.CountAsync)
                 : new List<Task<double>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -1024,7 +1024,7 @@ namespace Chummer
         public static async Task<decimal> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector)
         {
             List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<decimal>>(await objTemp.GetCountAsync())
+                ? new List<Task<decimal>>(await objTemp.CountAsync)
                 : new List<Task<decimal>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -1044,7 +1044,7 @@ namespace Chummer
         public static async Task<decimal> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector)
         {
             List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<decimal>>(await objTemp.GetCountAsync())
+                ? new List<Task<decimal>>(await objTemp.CountAsync)
                 : new List<Task<decimal>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -1264,7 +1264,7 @@ namespace Chummer
         public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector)
         {
             List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<int>>(await objTemp.GetCountAsync())
+                ? new List<Task<int>>(await objTemp.CountAsync)
                 : new List<Task<int>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -1284,7 +1284,7 @@ namespace Chummer
         public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector)
         {
             List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<int>>(await objTemp.GetCountAsync())
+                ? new List<Task<int>>(await objTemp.CountAsync)
                 : new List<Task<int>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -1314,7 +1314,7 @@ namespace Chummer
         public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector)
         {
             List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<long>>(await objTemp.GetCountAsync())
+                ? new List<Task<long>>(await objTemp.CountAsync)
                 : new List<Task<long>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -1334,7 +1334,7 @@ namespace Chummer
         public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector)
         {
             List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<long>>(await objTemp.GetCountAsync())
+                ? new List<Task<long>>(await objTemp.CountAsync)
                 : new List<Task<long>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -1365,7 +1365,7 @@ namespace Chummer
         public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector)
         {
             List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<float>>(await objTemp.GetCountAsync())
+                ? new List<Task<float>>(await objTemp.CountAsync)
                 : new List<Task<float>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -1385,7 +1385,7 @@ namespace Chummer
         public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector)
         {
             List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<float>>(await objTemp.GetCountAsync())
+                ? new List<Task<float>>(await objTemp.CountAsync)
                 : new List<Task<float>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -1415,7 +1415,7 @@ namespace Chummer
         public static async Task<double> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector)
         {
             List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<double>>(await objTemp.GetCountAsync())
+                ? new List<Task<double>>(await objTemp.CountAsync)
                 : new List<Task<double>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -1435,7 +1435,7 @@ namespace Chummer
         public static async Task<double> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector)
         {
             List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<double>>(await objTemp.GetCountAsync())
+                ? new List<Task<double>>(await objTemp.CountAsync)
                 : new List<Task<double>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -1465,7 +1465,7 @@ namespace Chummer
         public static async Task<decimal> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector)
         {
             List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<decimal>>(await objTemp.GetCountAsync())
+                ? new List<Task<decimal>>(await objTemp.CountAsync)
                 : new List<Task<decimal>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
@@ -1485,7 +1485,7 @@ namespace Chummer
         public static async Task<decimal> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector)
         {
             List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<decimal>>(await objTemp.GetCountAsync())
+                ? new List<Task<decimal>>(await objTemp.CountAsync)
                 : new List<Task<decimal>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {

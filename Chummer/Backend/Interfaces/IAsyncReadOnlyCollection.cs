@@ -24,6 +24,6 @@ namespace Chummer
 {
     public interface IAsyncReadOnlyCollection<T> : IAsyncEnumerable<T>, IReadOnlyCollection<T>
     {
-        ValueTask<int> GetCountAsync();
+        ValueTask<int> CountAsync { get; }
     }
 }
