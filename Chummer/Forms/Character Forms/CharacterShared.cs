@@ -6912,7 +6912,7 @@ namespace Chummer
                 {
                     if (_objUpdateCharacterInfoCancellationTokenSource != null)
                     {
-                        if (_objUpdateCharacterInfoCancellationTokenSource.IsCancellationRequested == false)
+                        if (!_objUpdateCharacterInfoCancellationTokenSource.IsCancellationRequested)
                         {
                             _objUpdateCharacterInfoCancellationTokenSource.Cancel(false);
                             _objUpdateCharacterInfoCancellationTokenSource.Dispose();

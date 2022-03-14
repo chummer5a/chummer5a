@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Chummer.Annotations;
 
@@ -1764,6 +1765,126 @@ namespace Chummer
         public static async Task ForEachWithBreak<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate)
         {
             await ForEachWithBreak(await tskEnumerable, objFuncToRunWithPossibleTerminate);
+        }
+
+        public static async Task ForEachParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Action<T> objFuncToRun)
+        {
+            List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task>(await objTemp.CountAsync)
+                : new List<Task>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => objFuncToRun.Invoke(objCurrent)));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+        }
+
+        public static async Task ForEachParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task> objFuncToRun)
+        {
+            List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task>(await objTemp.CountAsync)
+                : new List<Task>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => objFuncToRun.Invoke(objCurrent)));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+        }
+
+        public static async Task ForEachParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Action<T> objFuncToRun)
+        {
+            await ForEachParallelAsync(await tskEnumerable, objFuncToRun);
+        }
+
+        public static async Task ForEachParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task> objFuncToRun)
+        {
+            await ForEachParallelAsync(await tskEnumerable, objFuncToRun);
+        }
+
+        public static async Task ForEachParallelWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate)
+        {
+            List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task>(await objTemp.CountAsync)
+                : new List<Task>();
+            using (CancellationTokenSource objSource = new CancellationTokenSource())
+            {
+                using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+                {
+                    while (objEnumerator.MoveNext())
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent),
+                                              objSource.Token).ContinueWith(
+                                         x =>
+                                         {
+                                             if (x.Result)
+                                                 // ReSharper disable once AccessToDisposedClosure
+                                                 objSource.Cancel(false);
+                                         }, objSource.Token));
+                    }
+                }
+
+                try
+                {
+                    await Task.WhenAll(lstTasks);
+                }
+                catch (OperationCanceledException)
+                {
+                    // Swallow this
+                }
+            }
+        }
+
+        public static async Task ForEachParallelWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate)
+        {
+            List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task>(await objTemp.CountAsync)
+                : new List<Task>();
+            using (CancellationTokenSource objSource = new CancellationTokenSource())
+            {
+                using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+                {
+                    while (objEnumerator.MoveNext())
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent),
+                                              objSource.Token).ContinueWith(
+                                         x =>
+                                         {
+                                             if (x.Result)
+                                                 // ReSharper disable once AccessToDisposedClosure
+                                                 objSource.Cancel(false);
+                                         }, objSource.Token));
+                    }
+                }
+
+                try
+                {
+                    await Task.WhenAll(lstTasks);
+                }
+                catch (OperationCanceledException)
+                {
+                    // Swallow this
+                }
+            }
+        }
+
+        public static async Task ForEachParallelWithBreak<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate)
+        {
+            await ForEachParallelWithBreak(await tskEnumerable, objFuncToRunWithPossibleTerminate);
+        }
+
+        public static async Task ForEachParallelWithBreak<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate)
+        {
+            await ForEachParallelWithBreak(await tskEnumerable, objFuncToRunWithPossibleTerminate);
         }
 
         /// <summary>
