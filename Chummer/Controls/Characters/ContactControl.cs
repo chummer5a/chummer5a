@@ -600,7 +600,7 @@ namespace Chummer
                         Text = "Family",
                         UseVisualStyleBackColor = true
                     };
-                    cmdLink = new ButtonWithToolTip
+                    cmdLink = new ButtonWithToolTip(components)
                     {
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,

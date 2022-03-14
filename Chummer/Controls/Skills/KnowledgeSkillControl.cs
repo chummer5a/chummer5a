@@ -94,7 +94,7 @@ namespace Chummer.UI.Skills
                         Text = "00",
                         TextAlign = ContentAlignment.MiddleCenter
                     };
-                    btnCareerIncrease = new ButtonWithToolTip
+                    btnCareerIncrease = new ButtonWithToolTip(components)
                     {
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
@@ -127,7 +127,7 @@ namespace Chummer.UI.Skills
                         Text = "[SPEC]",
                         TextAlign = ContentAlignment.MiddleLeft
                     };
-                    btnAddSpec = new ButtonWithToolTip
+                    btnAddSpec = new ButtonWithToolTip(components)
                     {
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,

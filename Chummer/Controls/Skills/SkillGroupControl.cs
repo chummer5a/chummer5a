@@ -31,10 +31,12 @@ namespace Chummer.UI.Skills
     {
         private readonly SkillGroup _skillGroup;
 
+        // ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
         private readonly NumericUpDownEx nudSkill;
         private readonly NumericUpDownEx nudKarma;
         private readonly Label lblGroupRating;
         private readonly ButtonWithToolTip btnCareerIncrease;
+        // ReSharper restore PrivateFieldCanBeConvertedToLocalVariable
 
         public SkillGroupControl(SkillGroup skillGroup)
         {
@@ -63,7 +65,7 @@ namespace Chummer.UI.Skills
                         Name = "lblGroupRating",
                         TextAlign = ContentAlignment.MiddleRight
                     };
-                    btnCareerIncrease = new ButtonWithToolTip
+                    btnCareerIncrease = new ButtonWithToolTip(components)
                     {
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,

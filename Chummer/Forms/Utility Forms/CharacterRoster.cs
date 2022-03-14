@@ -1450,7 +1450,7 @@ namespace Chummer
             //
             // tsToggleFav
             //
-            DpiFriendlyToolStripMenuItem tsToggleFav = new DpiFriendlyToolStripMenuItem
+            DpiFriendlyToolStripMenuItem tsToggleFav = new DpiFriendlyToolStripMenuItem(components)
             {
                 Image = Properties.Resources.asterisk_orange,
                 Name = "tsToggleFav",
@@ -1462,7 +1462,7 @@ namespace Chummer
             //
             // tsSort
             //
-            DpiFriendlyToolStripMenuItem tsSort = new DpiFriendlyToolStripMenuItem
+            DpiFriendlyToolStripMenuItem tsSort = new DpiFriendlyToolStripMenuItem(components)
             {
                 Image = Properties.Resources.page_refresh,
                 Name = "tsSort",
@@ -1474,7 +1474,7 @@ namespace Chummer
             //
             // tsOpen
             //
-            DpiFriendlyToolStripMenuItem tsOpen = new DpiFriendlyToolStripMenuItem
+            DpiFriendlyToolStripMenuItem tsOpen = new DpiFriendlyToolStripMenuItem(components)
             {
                 Image = Properties.Resources.folder_page,
                 Name = "tsOpen",
@@ -1486,7 +1486,7 @@ namespace Chummer
             //
             // tsOpenForPrinting
             //
-            DpiFriendlyToolStripMenuItem tsOpenForPrinting = new DpiFriendlyToolStripMenuItem
+            DpiFriendlyToolStripMenuItem tsOpenForPrinting = new DpiFriendlyToolStripMenuItem(components)
             {
                 Image = Properties.Resources.folder_print,
                 Name = "tsOpenForPrinting",
@@ -1498,7 +1498,7 @@ namespace Chummer
             //
             // tsOpenForExport
             //
-            DpiFriendlyToolStripMenuItem tsOpenForExport = new DpiFriendlyToolStripMenuItem
+            DpiFriendlyToolStripMenuItem tsOpenForExport = new DpiFriendlyToolStripMenuItem(components)
             {
                 Image = Properties.Resources.folder_script_go,
                 Name = "tsOpenForExport",
@@ -1510,7 +1510,7 @@ namespace Chummer
             //
             // tsDelete
             //
-            DpiFriendlyToolStripMenuItem tsDelete = new DpiFriendlyToolStripMenuItem
+            DpiFriendlyToolStripMenuItem tsDelete = new DpiFriendlyToolStripMenuItem(components)
             {
                 Image = Properties.Resources.delete,
                 Name = "tsDelete",
@@ -1522,7 +1522,7 @@ namespace Chummer
             //
             // cmsRoster
             //
-            ContextMenuStrip cmsRoster = new ContextMenuStrip
+            ContextMenuStrip cmsRoster = new ContextMenuStrip(components)
             {
                 Name = "cmsRoster",
                 Size = new Size(intToolStripWidth, intToolStripHeight * 5)
@@ -1549,7 +1549,7 @@ namespace Chummer
                 //
                 // tsCloseOpenCharacter
                 //
-                DpiFriendlyToolStripMenuItem tsCloseOpenCharacter = new DpiFriendlyToolStripMenuItem
+                DpiFriendlyToolStripMenuItem tsCloseOpenCharacter = new DpiFriendlyToolStripMenuItem(components)
                 {
                     Image = Properties.Resources.door_out,
                     Name = "tsCloseOpenCharacter",
