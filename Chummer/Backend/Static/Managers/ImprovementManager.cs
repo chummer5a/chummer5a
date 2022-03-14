@@ -685,36 +685,18 @@ namespace Chummer
                 bool blnFetchAndCacheResults = !blnAddToRating && blnUnconditionalOnly;
 
                 // If we've got a value cached for the default ValueOf call for an improvementType, let's just return that
-                List<Improvement> lstUsedImprovements;
+                List<Improvement> lstUsedImprovements = new List<Improvement>();
                 if (blnFetchAndCacheResults)
                 {
                     if (dicCachedValuesToUse != null)
                     {
-                        int intEmergencyRelease = 0;
-                        for (;
-                             !s_SetCurrentlyCalculatingValues.TryAdd(tupMyValueToCheck)
-                             && intEmergencyRelease <= Utils.SleepEmergencyReleaseMaxTicks;
-                             ++intEmergencyRelease)
+                        bool blnRepeatCheckCache;
+                        do
                         {
-                            if (blnSync)
-                                Utils.SafeSleep();
-                            else
-                                await Utils.SafeSleepAsync();
-                        }
-
-                        // Emergency exit, so break if we are debugging and return the default value (just in case)
-                        if (intEmergencyRelease > Utils.SleepEmergencyReleaseMaxTicks)
-                        {
-                            Utils.BreakIfDebug();
-                            return new Tuple<decimal, List<Improvement>>(0, new List<Improvement>());
-                        }
-
-                        // Also make sure we block off the conditionless check because we will be adding cached keys that will be used by the conditionless check
-                        if (!string.IsNullOrWhiteSpace(strImprovedName) && !blnIncludeNonImproved)
-                        {
-                            intEmergencyRelease = 0;
+                            blnRepeatCheckCache = false;
+                            int intEmergencyRelease = 0;
                             for (;
-                                 !s_SetCurrentlyCalculatingValues.TryAdd(tupBlankValueToCheck)
+                                 s_SetCurrentlyCalculatingValues.Contains(tupMyValueToCheck)
                                  && intEmergencyRelease <= Utils.SleepEmergencyReleaseMaxTicks;
                                  ++intEmergencyRelease)
                             {
@@ -728,64 +710,118 @@ namespace Chummer
                             if (intEmergencyRelease > Utils.SleepEmergencyReleaseMaxTicks)
                             {
                                 Utils.BreakIfDebug();
-                                s_SetCurrentlyCalculatingValues.Remove(tupMyValueToCheck);
                                 return new Tuple<decimal, List<Improvement>>(0, new List<Improvement>());
                             }
 
-                            ImprovementDictionaryKey objCacheKey
-                                = new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovedName);
-                            if (dicCachedValuesToUse.TryGetValue(objCacheKey,
-                                                                 out Tuple<decimal, List<Improvement>>
-                                                                     tupCachedValue)
-                                && tupCachedValue.Item1 != decimal.MinValue)
+                            // Also make sure we block off the conditionless check because we will be adding cached keys that will be used by the conditionless check
+                            if (!string.IsNullOrWhiteSpace(strImprovedName) && !blnIncludeNonImproved)
                             {
-                                s_SetCurrentlyCalculatingValues.Remove(tupMyValueToCheck);
-                                s_SetCurrentlyCalculatingValues.Remove(tupBlankValueToCheck);
-                                // To make sure we do not inadvertently alter the cached list
-                                return new Tuple<decimal, List<Improvement>>(
-                                    tupCachedValue.Item1, tupCachedValue.Item2.ToList());
-                            }
-
-                            lstUsedImprovements = new List<Improvement>();
-                        }
-                        else
-                        {
-                            lstUsedImprovements = new List<Improvement>();
-                            bool blnDoRecalculate = true;
-                            decimal decCachedValue = 0;
-                            // Only fetch based on cached values if the dictionary contains at least one element with matching characters and types and none of those elements have a "reset" value of decimal.MinValue
-                            foreach (KeyValuePair<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>
-                                         objLoopCachedEntry in dicCachedValuesToUse)
-                            {
-                                ImprovementDictionaryKey objLoopKey = objLoopCachedEntry.Key;
-                                if (objLoopKey.CharacterObject != objCharacter ||
-                                    objLoopKey.ImprovementType != eImprovementType)
-                                    continue;
-                                if (!string.IsNullOrWhiteSpace(strImprovedName)
-                                    && !string.IsNullOrWhiteSpace(objLoopKey.ImprovementName)
-                                    && strImprovedName != objLoopKey.ImprovementName)
-                                    continue;
-                                blnDoRecalculate = false;
-                                decimal decLoopCachedValue = objLoopCachedEntry.Value.Item1;
-                                if (decLoopCachedValue == decimal.MinValue)
+                                intEmergencyRelease = 0;
+                                for (;
+                                     s_SetCurrentlyCalculatingValues.Contains(tupBlankValueToCheck)
+                                     && intEmergencyRelease <= Utils.SleepEmergencyReleaseMaxTicks;
+                                     ++intEmergencyRelease)
                                 {
-                                    blnDoRecalculate = true;
-                                    break;
+                                    if (blnSync)
+                                        Utils.SafeSleep();
+                                    else
+                                        await Utils.SafeSleepAsync();
                                 }
 
-                                decCachedValue += decLoopCachedValue;
-                                lstUsedImprovements.AddRange(objLoopCachedEntry.Value.Item2);
-                            }
+                                // Emergency exit, so break if we are debugging and return the default value (just in case)
+                                if (intEmergencyRelease > Utils.SleepEmergencyReleaseMaxTicks)
+                                {
+                                    Utils.BreakIfDebug();
+                                    return new Tuple<decimal, List<Improvement>>(0, new List<Improvement>());
+                                }
 
-                            if (!blnDoRecalculate)
+                                ImprovementDictionaryKey objCacheKey
+                                    = new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovedName);
+                                if (dicCachedValuesToUse.TryGetValue(objCacheKey,
+                                                                     out Tuple<decimal, List<Improvement>>
+                                                                         tupCachedValue)
+                                    && tupCachedValue.Item1 != decimal.MinValue)
+                                {
+                                    // To make sure we do not inadvertently alter the cached list
+                                    return new Tuple<decimal, List<Improvement>>(
+                                        tupCachedValue.Item1, tupCachedValue.Item2.ToList());
+                                }
+
+                                if (!s_SetCurrentlyCalculatingValues.TryAdd(tupMyValueToCheck))
+                                    blnRepeatCheckCache = true;
+                                else if (!s_SetCurrentlyCalculatingValues.TryAdd(tupBlankValueToCheck))
+                                {
+                                    s_SetCurrentlyCalculatingValues.Remove(tupMyValueToCheck);
+                                    blnRepeatCheckCache = true;
+                                }
+                            }
+                            else
                             {
+                                bool blnDoRecalculate = true;
+                                decimal decCachedValue = 0;
+                                // Only fetch based on cached values if the dictionary contains at least one element with matching characters and types and none of those elements have a "reset" value of decimal.MinValue
+                                if (blnSync)
+                                {
+                                    foreach (KeyValuePair<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>
+                                                 objLoopCachedEntry in dicCachedValuesToUse)
+                                    {
+                                        ImprovementDictionaryKey objLoopKey = objLoopCachedEntry.Key;
+                                        if (objLoopKey.CharacterObject != objCharacter ||
+                                            objLoopKey.ImprovementType != eImprovementType)
+                                            continue;
+                                        if (!string.IsNullOrWhiteSpace(strImprovedName)
+                                            && !string.IsNullOrWhiteSpace(objLoopKey.ImprovementName)
+                                            && strImprovedName != objLoopKey.ImprovementName)
+                                            continue;
+                                        blnDoRecalculate = false;
+                                        decimal decLoopCachedValue = objLoopCachedEntry.Value.Item1;
+                                        if (decLoopCachedValue == decimal.MinValue)
+                                        {
+                                            blnDoRecalculate = true;
+                                            break;
+                                        }
 
-                                s_SetCurrentlyCalculatingValues.Remove(tupMyValueToCheck);
-                                return new Tuple<decimal, List<Improvement>>(decCachedValue, lstUsedImprovements);
+                                        decCachedValue += decLoopCachedValue;
+                                        lstUsedImprovements.AddRange(objLoopCachedEntry.Value.Item2);
+                                    }
+                                }
+                                else
+                                {
+                                    await dicCachedValuesToUse.ForEachWithBreak(x =>
+                                    {
+                                        ImprovementDictionaryKey objLoopKey = x.Key;
+                                        if (objLoopKey.CharacterObject != objCharacter
+                                            || objLoopKey.ImprovementType != eImprovementType)
+                                            return false;
+                                        if (!string.IsNullOrWhiteSpace(strImprovedName)
+                                            && !string.IsNullOrWhiteSpace(objLoopKey.ImprovementName)
+                                            && strImprovedName != objLoopKey.ImprovementName)
+                                            return false;
+                                        blnDoRecalculate = false;
+                                        decimal decLoopCachedValue = x.Value.Item1;
+                                        if (decLoopCachedValue == decimal.MinValue)
+                                        {
+                                            blnDoRecalculate = true;
+                                            return true;
+                                        }
+
+                                        decCachedValue += decLoopCachedValue;
+                                        lstUsedImprovements.AddRange(x.Value.Item2);
+
+                                        return false;
+                                    });
+                                }
+
+                                if (blnDoRecalculate)
+                                {
+                                    lstUsedImprovements.Clear();
+                                    if (!s_SetCurrentlyCalculatingValues.TryAdd(tupMyValueToCheck))
+                                        blnRepeatCheckCache = true;
+                                }
+                                else
+                                    return new Tuple<decimal, List<Improvement>>(decCachedValue, lstUsedImprovements);
                             }
-                            // ReSharper restore MethodHasAsyncOverload
-                        }
-                        lstUsedImprovements.Clear();
+                        } while (blnRepeatCheckCache);
                     }
                     else
                     {
@@ -1168,7 +1204,18 @@ namespace Chummer
                                 // ReSharper disable once MethodHasAsyncOverload
                                 if (!(blnSync ? dicCachedValuesToUse.TryAdd(objLoopCacheKey, tupNewValue) : await dicCachedValuesToUse.TryAddAsync(objLoopCacheKey, tupNewValue)))
                                 {
-                                    List<Improvement> lstTemp = dicCachedValuesToUse[objLoopCacheKey].Item2;
+                                    List<Improvement> lstTemp;
+                                    if (blnSync)
+                                    {
+                                        lstTemp = dicCachedValuesToUse.TryGetValue(
+                                            objLoopCacheKey, out Tuple<decimal, List<Improvement>> tupTemp)
+                                            ? tupTemp.Item2
+                                            : new List<Improvement>();
+                                    }
+                                    else
+                                    {
+                                        lstTemp = (await dicCachedValuesToUse.TryGetValueAsync(objLoopCacheKey)).Item2.Item2;
+                                    }
                                     if (!ReferenceEquals(lstTemp, tupNewValue.Item2))
                                     {
                                         lstTemp.Clear();
@@ -1176,7 +1223,13 @@ namespace Chummer
                                         tupNewValue = new Tuple<decimal, List<Improvement>>(decLoopValue, lstTemp);
                                     }
 
-                                    dicCachedValuesToUse[objLoopCacheKey] = tupNewValue;
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        dicCachedValuesToUse.AddOrUpdate(objLoopCacheKey, tupNewValue,
+                                                                         (x, y) => tupNewValue);
+                                    else
+                                        await dicCachedValuesToUse.AddOrUpdateAsync(objLoopCacheKey, tupNewValue,
+                                            (x, y) => tupNewValue);
                                 }
                             }
 
