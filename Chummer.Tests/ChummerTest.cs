@@ -142,12 +142,10 @@ namespace Chummer.Tests
             {
                 string strDestination = Path.Combine(TestPathInfo.FullName, objFileInfo.Name);
                 using (Character objCharacter = LoadCharacter(objFileInfo))
-                {
                     SaveCharacter(objCharacter, strDestination);
-                    using (Character _ = LoadCharacter(new FileInfo(strDestination)))
-                    {
-                        // Assert on failed load will already happen inside LoadCharacter
-                    }
+                using (LoadCharacter(new FileInfo(strDestination)))
+                {
+                    // Assert on failed load will already happen inside LoadCharacter
                 }
             }
         }
@@ -164,48 +162,48 @@ namespace Chummer.Tests
                 using (Character objCharacterControl = LoadCharacter(objBaseFileInfo))
                 {
                     SaveCharacter(objCharacterControl, strDestinationControl);
-                    // Second Load-Save cycle
-                    string strDestinationTest =
-                        Path.Combine(TestPathInfo.FullName, "(Test) " + objBaseFileInfo.Name);
-                    using (Character objCharacterTest = LoadCharacter(new FileInfo(strDestinationControl)))
-                    {
-                        SaveCharacter(objCharacterTest, strDestinationTest);
-                        // Check to see that character after first load cycle is consistent with character after second
-                        using (FileStream controlFileStream =
-                               File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
-                        {
-                            using (FileStream testFileStream =
-                                   File.Open(strDestinationTest, FileMode.Open, FileAccess.Read))
-                            {
-                                try
-                                {
-                                    Diff myDiff = DiffBuilder
-                                        .Compare(controlFileStream)
-                                        .WithTest(testFileStream)
-                                        .CheckForIdentical()
-                                        .WithNodeFilter(x =>
-                                            x.Name !=
-                                            "mugshot") // image loading and unloading is not going to be deterministic due to compression algorithms
-                                        .WithNodeMatcher(
-                                            new DefaultNodeMatcher(
-                                                ElementSelectors.Or(
-                                                    ElementSelectors.ByNameAndText,
-                                                    ElementSelectors.ByName)))
-                                        .IgnoreWhitespace()
-                                        .Build();
-                                    foreach (Difference diff in myDiff.Differences)
-                                    {
-                                        Console.WriteLine(diff.Comparison);
-                                        Console.WriteLine();
-                                    }
+                }
+                // Second Load-Save cycle
+                string strDestinationTest = Path.Combine(TestPathInfo.FullName, "(Test) " + objBaseFileInfo.Name);
+                using (Character objCharacterTest = LoadCharacter(new FileInfo(strDestinationControl)))
+                {
+                    SaveCharacter(objCharacterTest, strDestinationTest);
+                }
 
-                                    Assert.IsFalse(myDiff.HasDifferences(), myDiff.ToString());
-                                }
-                                catch (XmlSchemaException e)
-                                {
-                                    Assert.Fail("Unexpected validation failure: " + e.Message);
-                                }
+                // Check to see that character after first load cycle is consistent with character after second
+                using (FileStream controlFileStream =
+                       File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
+                {
+                    using (FileStream testFileStream =
+                           File.Open(strDestinationTest, FileMode.Open, FileAccess.Read))
+                    {
+                        try
+                        {
+                            Diff myDiff = DiffBuilder
+                                .Compare(controlFileStream)
+                                .WithTest(testFileStream)
+                                .CheckForIdentical()
+                                .WithNodeFilter(x =>
+                                    x.Name !=
+                                    "mugshot") // image loading and unloading is not going to be deterministic due to compression algorithms
+                                .WithNodeMatcher(
+                                    new DefaultNodeMatcher(
+                                        ElementSelectors.Or(
+                                            ElementSelectors.ByNameAndText,
+                                            ElementSelectors.ByName)))
+                                .IgnoreWhitespace()
+                                .Build();
+                            foreach (Difference diff in myDiff.Differences)
+                            {
+                                Console.WriteLine(diff.Comparison);
+                                Console.WriteLine();
                             }
+
+                            Assert.IsFalse(myDiff.HasDifferences(), myDiff.ToString());
+                        }
+                        catch (XmlSchemaException e)
+                        {
+                            Assert.Fail("Unexpected validation failure: " + e.Message);
                         }
                     }
                 }
@@ -222,7 +220,10 @@ namespace Chummer.Tests
                 string strExportLanguage = Path.GetFileNameWithoutExtension(strFilePath);
                 if (strExportLanguage.Contains("data"))
                     continue;
-                lstExportLanguages.Add(strExportLanguage);
+                if (strExportLanguage == GlobalSettings.DefaultLanguage)
+                    lstExportLanguages.Insert(0, strExportLanguage);
+                else
+                    lstExportLanguages.Add(strExportLanguage);
             }
             Debug.WriteLine("Started pre-loading language files");
             foreach (string strExportLanguage in lstExportLanguages)
