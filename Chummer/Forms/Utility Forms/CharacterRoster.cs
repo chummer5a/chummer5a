@@ -317,8 +317,19 @@ namespace Chummer
             }
             innerToken.ThrowIfCancellationRequested();
             token.ThrowIfCancellationRequested();
-            await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache, token), token);
-            await PurgeUnusedCharacterCaches(token);
+            try
+            {
+                await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache, token), token);
+                await PurgeUnusedCharacterCaches(token);
+            }
+            catch (ObjectDisposedException)
+            {
+                //swallow this
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void OpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

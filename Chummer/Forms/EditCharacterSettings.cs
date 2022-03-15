@@ -20,10 +20,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -117,16 +119,22 @@ namespace Chummer
 
         private async void cmdRename_Click(object sender, EventArgs e)
         {
-            using (SelectText frmSelectName = new SelectText
-            {
-                DefaultString = _objCharacterSettings.Name,
-                Description = await LanguageManager.GetStringAsync("Message_CharacterOptions_SettingRename")
-            })
+            string strRename = await LanguageManager.GetStringAsync("Message_CharacterOptions_SettingRename");
+            using (SelectText frmSelectName = await this.DoThreadSafeFuncAsync(() => new SelectText
+                   {
+                       DefaultString = _objCharacterSettings.Name,
+                       Description = strRename
+                   }))
             {
                 await frmSelectName.ShowDialogSafeAsync(this);
-                if (frmSelectName.DialogResult != DialogResult.OK)
+                if (await frmSelectName.DoThreadSafeFuncAsync(x =>
+                    {
+                        if (x.DialogResult != DialogResult.OK)
+                            return true;
+                        _objCharacterSettings.Name = x.SelectedValue;
+                        return false;
+                    }))
                     return;
-                _objCharacterSettings.Name = frmSelectName.SelectedValue;
             }
 
             using (CursorWait.New(this))
@@ -135,12 +143,12 @@ namespace Chummer
                 if (blnDoResumeLayout)
                 {
                     _blnIsLayoutSuspended = true;
-                    SuspendLayout();
+                    await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 }
 
                 try
                 {
-                    if (cboSetting.SelectedIndex >= 0)
+                    if (await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex) >= 0)
                     {
                         int intCurrentSelectedSettingIndex = cboSetting.SelectedIndex;
                         ListItem objNewListItem = new ListItem(_lstSettings[intCurrentSelectedSettingIndex].Value,
@@ -148,7 +156,7 @@ namespace Chummer
                         _blnLoading = true;
                         _lstSettings[intCurrentSelectedSettingIndex] = objNewListItem;
                         await cboSetting.PopulateWithListItemsAsync(_lstSettings);
-                        cboSetting.SelectedIndex = intCurrentSelectedSettingIndex;
+                        await cboSetting.DoThreadSafeAsync(x => x.SelectedIndex = intCurrentSelectedSettingIndex);
                         _blnLoading = false;
                     }
 
@@ -160,7 +168,7 @@ namespace Chummer
                     if (blnDoResumeLayout)
                     {
                         _blnIsLayoutSuspended = false;
-                        ResumeLayout();
+                        await this.DoThreadSafeAsync(x => x.ResumeLayout());
                     }
                 }
 
@@ -196,10 +204,10 @@ namespace Chummer
 
                 // Force repopulate character settings list in Master Index from here in lieu of event handling for concurrent dictionaries
                 _blnForceMasterIndexRepopulateOnClose = true;
-                KeyValuePair<string, CharacterSettings> kvpReplacementOption =
-                    SettingsManager.LoadedCharacterSettings.First(x => x.Value.BuiltInOption
-                                                                       && x.Value.BuildMethod ==
-                                                                       _objReferenceCharacterSettings.BuildMethod);
+                KeyValuePair<string, CharacterSettings> kvpReplacementOption
+                    = await SettingsManager.LoadedCharacterSettings.FirstOrDefaultAsync(
+                        x => x.Value.BuiltInOption
+                             && x.Value.BuildMethod == _objReferenceCharacterSettings.BuildMethod);
                 foreach (Character objCharacter in Program.OpenCharacters.Where(x =>
                              x.SettingsKey == _objReferenceCharacterSettings.FileName))
                     objCharacter.SettingsKey = kvpReplacementOption.Key;
@@ -207,7 +215,7 @@ namespace Chummer
                 if (blnDoResumeLayout)
                 {
                     _blnIsLayoutSuspended = true;
-                    SuspendLayout();
+                    await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 }
 
                 try
@@ -223,7 +231,7 @@ namespace Chummer
                     if (blnDoResumeLayout)
                     {
                         _blnIsLayoutSuspended = false;
-                        ResumeLayout();
+                        await this.DoThreadSafeAsync(x => x.ResumeLayout());
                     }
                 }
             }
@@ -231,24 +239,31 @@ namespace Chummer
 
         private async void cmdSaveAs_Click(object sender, EventArgs e)
         {
-            string strSelectedName;
+            string strSelectedName = string.Empty;
             string strSelectedFullFileName;
+            string strSelectSettingName
+                = await LanguageManager.GetStringAsync("Message_CharacterOptions_SelectSettingName");
             do
             {
                 do
                 {
-                    using (SelectText frmSelectName = new SelectText
-                    {
-                        DefaultString = _objCharacterSettings.BuiltInOption
-                            ? string.Empty
-                            : _objCharacterSettings.FileName.TrimEndOnce(".xml"),
-                        Description = await LanguageManager.GetStringAsync("Message_CharacterOptions_SelectSettingName")
-                    })
+                    using (SelectText frmSelectName = await this.DoThreadSafeFuncAsync(() => new SelectText
+                           {
+                               DefaultString = _objCharacterSettings.BuiltInOption
+                                   ? string.Empty
+                                   : _objCharacterSettings.FileName.TrimEndOnce(".xml"),
+                               Description = strSelectSettingName
+                           }))
                     {
                         await frmSelectName.ShowDialogSafeAsync(this);
-                        if (frmSelectName.DialogResult != DialogResult.OK)
+                        if (await frmSelectName.DoThreadSafeFuncAsync(x =>
+                            {
+                                if (x.DialogResult != DialogResult.OK)
+                                    return true;
+                                strSelectedName = x.SelectedValue;
+                                return false;
+                            }))
                             return;
-                        strSelectedName = frmSelectName.SelectedValue;
                     }
 
                     if (SettingsManager.LoadedCharacterSettings.Any(x => x.Value.Name == strSelectedName))
@@ -309,7 +324,7 @@ namespace Chummer
                 if (blnDoResumeLayout)
                 {
                     _blnIsLayoutSuspended = true;
-                    SuspendLayout();
+                    await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 }
 
                 try
@@ -343,7 +358,7 @@ namespace Chummer
                     if (blnDoResumeLayout)
                     {
                         _blnIsLayoutSuspended = false;
-                        ResumeLayout();
+                        await this.DoThreadSafeAsync(x => x.ResumeLayout());
                     }
                 }
             }
@@ -386,7 +401,7 @@ namespace Chummer
                 if (blnDoResumeLayout)
                 {
                     _blnIsLayoutSuspended = true;
-                    SuspendLayout();
+                    await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 }
 
                 try
@@ -399,7 +414,7 @@ namespace Chummer
                     if (blnDoResumeLayout)
                     {
                         _blnIsLayoutSuspended = false;
-                        ResumeLayout();
+                        await this.DoThreadSafeAsync(x => x.ResumeLayout());
                     }
                 }
             }
@@ -409,7 +424,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            string strSelectedFile = cboSetting.SelectedValue?.ToString();
+            string strSelectedFile = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             if (string.IsNullOrEmpty(strSelectedFile))
                 return;
             (bool blnSuccess, CharacterSettings objNewOption)
@@ -426,7 +441,7 @@ namespace Chummer
                     DialogResult.Yes)
                 {
                     _blnLoading = true;
-                    cboSetting.SelectedIndex = _intOldSelectedSettingIndex;
+                    await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex = _intOldSelectedSettingIndex);
                     _blnLoading = false;
                     return;
                 }
@@ -440,7 +455,7 @@ namespace Chummer
                 if (blnDoResumeLayout)
                 {
                     _blnIsLayoutSuspended = true;
-                    SuspendLayout();
+                    await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 }
 
                 try
@@ -453,7 +468,7 @@ namespace Chummer
                                          _objReferenceCharacterSettings.DisplayName);
                         _lstSettings[_intOldSelectedSettingIndex] = objNewListItem;
                         await cboSetting.PopulateWithListItemsAsync(_lstSettings);
-                        cboSetting.SelectedIndex = intCurrentSelectedSettingIndex;
+                        await cboSetting.DoThreadSafeAsync(x => x.SelectedIndex = intCurrentSelectedSettingIndex);
                     }
 
                     _objReferenceCharacterSettings = objNewOption;
@@ -468,7 +483,7 @@ namespace Chummer
                     if (blnDoResumeLayout)
                     {
                         _blnIsLayoutSuspended = false;
-                        ResumeLayout();
+                        await this.DoThreadSafeAsync(x => x.ResumeLayout());
                     }
                 }
 
@@ -492,7 +507,7 @@ namespace Chummer
                 if (blnDoResumeLayout)
                 {
                     _blnIsLayoutSuspended = true;
-                    SuspendLayout();
+                    await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 }
 
                 try
@@ -505,7 +520,7 @@ namespace Chummer
                                          _objReferenceCharacterSettings.DisplayName);
                         _lstSettings[intCurrentSelectedSettingIndex] = objNewListItem;
                         await cboSetting.PopulateWithListItemsAsync(_lstSettings);
-                        cboSetting.SelectedIndex = intCurrentSelectedSettingIndex;
+                        await cboSetting.DoThreadSafeAsync(x => x.SelectedIndex = intCurrentSelectedSettingIndex);
                     }
 
                     _objCharacterSettings.CopyValues(_objReferenceCharacterSettings);
@@ -519,7 +534,7 @@ namespace Chummer
                     if (blnDoResumeLayout)
                     {
                         _blnIsLayoutSuspended = false;
-                        ResumeLayout();
+                        await this.DoThreadSafeAsync(x => x.ResumeLayout());
                     }
                 }
 
@@ -633,7 +648,7 @@ namespace Chummer
 
         private async void cmdIncreaseCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
         {
-            TreeNode nodSelected = treCustomDataDirectories.SelectedNode;
+            TreeNode nodSelected = await treCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedNode);
             if (nodSelected == null)
                 return;
             int intIndex = nodSelected.Index;
@@ -647,7 +662,7 @@ namespace Chummer
 
         private async void cmdToTopCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
         {
-            TreeNode nodSelected = treCustomDataDirectories.SelectedNode;
+            TreeNode nodSelected = await treCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedNode);
             if (nodSelected == null)
                 return;
             int intIndex = nodSelected.Index;
@@ -664,7 +679,7 @@ namespace Chummer
 
         private async void cmdDecreaseCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
         {
-            TreeNode nodSelected = treCustomDataDirectories.SelectedNode;
+            TreeNode nodSelected = await treCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedNode);
             if (nodSelected == null)
                 return;
             int intIndex = nodSelected.Index;
@@ -678,7 +693,7 @@ namespace Chummer
 
         private async void cmdToBottomCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
         {
-            TreeNode nodSelected = treCustomDataDirectories.SelectedNode;
+            TreeNode nodSelected = await treCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedNode);
             if (nodSelected == null)
                 return;
             int intIndex = nodSelected.Index;
@@ -749,61 +764,82 @@ namespace Chummer
 
         private async void txtContactPoints_TextChanged(object sender, EventArgs e)
         {
-            txtContactPoints.ForeColor = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(txtContactPoints.Text)
-                ? ColorManager.WindowText
-                : ColorManager.ErrorColor;
+            Color objColor
+                = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
+                    await txtContactPoints.DoThreadSafeFuncAsync(x => x.Text))
+                    ? ColorManager.WindowText
+                    : ColorManager.ErrorColor;
+            await txtContactPoints.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
 
         private async void txtKnowledgePoints_TextChanged(object sender, EventArgs e)
         {
-            txtKnowledgePoints.ForeColor = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(txtKnowledgePoints.Text)
-                ? ColorManager.WindowText
-                : ColorManager.ErrorColor;
+            Color objColor
+                = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
+                    await txtKnowledgePoints.DoThreadSafeFuncAsync(x => x.Text))
+                    ? ColorManager.WindowText
+                    : ColorManager.ErrorColor;
+            await txtKnowledgePoints.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
 
         private async void txtNuyenExpression_TextChanged(object sender, EventArgs e)
         {
-            txtNuyenExpression.ForeColor = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(txtNuyenExpression.Text)
-                ? ColorManager.WindowText
-                : ColorManager.ErrorColor;
+            Color objColor
+                = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
+                    await txtNuyenExpression.DoThreadSafeFuncAsync(x => x.Text))
+                    ? ColorManager.WindowText
+                    : ColorManager.ErrorColor;
+            await txtNuyenExpression.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
 
         private async void txtBoundSpiritLimit_TextChanged(object sender, EventArgs e)
         {
-            txtBoundSpiritLimit.ForeColor
-                = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(txtBoundSpiritLimit.Text)
+            Color objColor
+                = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
+                    await txtBoundSpiritLimit.DoThreadSafeFuncAsync(x => x.Text))
                     ? ColorManager.WindowText
                     : ColorManager.ErrorColor;
+            await txtBoundSpiritLimit.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
 
         private async void txtRegisteredSpriteLimit_TextChanged(object sender, EventArgs e)
         {
-            txtRegisteredSpriteLimit.ForeColor
-                = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(txtRegisteredSpriteLimit.Text)
+            Color objColor
+                = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
+                    await txtRegisteredSpriteLimit.DoThreadSafeFuncAsync(x => x.Text))
                     ? ColorManager.WindowText
                     : ColorManager.ErrorColor;
+            await txtRegisteredSpriteLimit.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
 
         private async void txtLiftLimit_TextChanged(object sender, EventArgs e)
         {
-            txtLiftLimit.ForeColor = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(txtLiftLimit.Text)
-                ? ColorManager.WindowText
-                : ColorManager.ErrorColor;
+            Color objColor
+                = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
+                    await txtLiftLimit.DoThreadSafeFuncAsync(x => x.Text))
+                    ? ColorManager.WindowText
+                    : ColorManager.ErrorColor;
+            await txtLiftLimit.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
 
         private async void txtCarryLimit_TextChanged(object sender, EventArgs e)
         {
-            txtCarryLimit.ForeColor = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(txtCarryLimit.Text)
-                ? ColorManager.WindowText
-                : ColorManager.ErrorColor;
+            Color objColor
+                = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
+                    await txtCarryLimit.DoThreadSafeFuncAsync(x => x.Text))
+                    ? ColorManager.WindowText
+                    : ColorManager.ErrorColor;
+            await txtCarryLimit.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
 
         private async void txtEncumbranceInterval_TextChanged(object sender, EventArgs e)
         {
-            txtEncumbranceInterval.ForeColor
-                = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(txtEncumbranceInterval.Text)
+            Color objColor
+                = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
+                    await txtEncumbranceInterval.DoThreadSafeFuncAsync(x => x.Text))
                     ? ColorManager.WindowText
                     : ColorManager.ErrorColor;
+            await txtEncumbranceInterval.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
 
         private void chkGrade_CheckedChanged(object sender, EventArgs e)
@@ -846,224 +882,271 @@ namespace Chummer
             }
 
             gpbDirectoryInfo.SuspendLayout();
-            rtbDirectoryDescription.Text = objSelected.DisplayDescription;
-            lblDirectoryVersion.Text = objSelected.MyVersion.ToString();
-            lblDirectoryAuthors.Text = objSelected.DisplayAuthors;
-            lblDirectoryName.Text = objSelected.Name;
+            try
+            {
+                rtbDirectoryDescription.Text = objSelected.DisplayDescription;
+                lblDirectoryVersion.Text = objSelected.MyVersion.ToString();
+                lblDirectoryAuthors.Text = objSelected.DisplayAuthors;
+                lblDirectoryName.Text = objSelected.Name;
 
-            if (objSelected.DependenciesList.Count > 0)
-            {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdDependencies))
+                if (objSelected.DependenciesList.Count > 0)
                 {
-                    foreach (DirectoryDependency dependency in objSelected.DependenciesList)
-                        sbdDependencies.AppendLine(dependency.DisplayName);
-                    lblDependencies.Text = sbdDependencies.ToString();
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdDependencies))
+                    {
+                        foreach (DirectoryDependency dependency in objSelected.DependenciesList)
+                            sbdDependencies.AppendLine(dependency.DisplayName);
+                        lblDependencies.Text = sbdDependencies.ToString();
+                    }
                 }
-            }
-            else
-            {
-                //Make sure all old information is discarded
-                lblDependencies.Text = string.Empty;
-            }
+                else
+                {
+                    //Make sure all old information is discarded
+                    lblDependencies.Text = string.Empty;
+                }
 
-            if (objSelected.IncompatibilitiesList.Count > 0)
-            {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdIncompatibilities))
+                if (objSelected.IncompatibilitiesList.Count > 0)
                 {
-                    foreach (DirectoryDependency exclusivity in objSelected.IncompatibilitiesList)
-                        sbdIncompatibilities.AppendLine(exclusivity.DisplayName);
-                    lblIncompatibilities.Text = sbdIncompatibilities.ToString();
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdIncompatibilities))
+                    {
+                        foreach (DirectoryDependency exclusivity in objSelected.IncompatibilitiesList)
+                            sbdIncompatibilities.AppendLine(exclusivity.DisplayName);
+                        lblIncompatibilities.Text = sbdIncompatibilities.ToString();
+                    }
                 }
+                else
+                {
+                    //Make sure all old information is discarded
+                    lblIncompatibilities.Text = string.Empty;
+                }
+
+                gpbDirectoryInfo.Visible = true;
             }
-            else
+            finally
             {
-                //Make sure all old information is discarded
-                lblIncompatibilities.Text = string.Empty;
+                gpbDirectoryInfo.ResumeLayout();
             }
-            gpbDirectoryInfo.Visible = true;
-            gpbDirectoryInfo.ResumeLayout();
         }
 
         #endregion Control Events
 
         #region Methods
 
-        private async ValueTask PopulateSourcebookTreeView()
+        private async ValueTask PopulateSourcebookTreeView(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             // Load the Sourcebook information.
             // Put the Sourcebooks into a List so they can first be sorted.
-            object objOldSelected = treSourcebook.SelectedNode?.Tag;
-            treSourcebook.BeginUpdate();
-            treSourcebook.Nodes.Clear();
-            _setPermanentSourcebooks.Clear();
-            foreach (XPathNavigator objXmlBook in await (await XmlManager.LoadXPathAsync("books.xml", _objCharacterSettings.EnabledCustomDataDirectoryPaths)).SelectAndCacheExpressionAsync("/chummer/books/book"))
+            object objOldSelected = await treSourcebook.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token);
+            await treSourcebook.DoThreadSafeAsync(x => x.BeginUpdate(), token);
+            try
             {
-                if (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("hide") != null)
-                    continue;
-                string strCode = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("code"))?.Value;
-                if (string.IsNullOrEmpty(strCode))
-                    continue;
-                bool blnChecked = _objCharacterSettings.Books.Contains(strCode);
-                if (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("permanent") != null)
+                await treSourcebook.DoThreadSafeAsync(x => x.Nodes.Clear(), token);
+                _setPermanentSourcebooks.Clear();
+                foreach (XPathNavigator objXmlBook in await (await XmlManager.LoadXPathAsync(
+                                 "books.xml", _objCharacterSettings.EnabledCustomDataDirectoryPaths))
+                             .SelectAndCacheExpressionAsync("/chummer/books/book"))
                 {
-                    _setPermanentSourcebooks.Add(strCode);
-                    if (_objCharacterSettings.BooksWritable.Add(strCode))
-                        _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.Books));
-                    blnChecked = true;
-                }
-                TreeNode objNode = new TreeNode
-                {
-                    Text = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value ?? string.Empty,
-                    Tag = strCode,
-                    Checked = blnChecked
-                };
-                treSourcebook.Nodes.Add(objNode);
-            }
+                    if (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("hide") != null)
+                        continue;
+                    string strCode = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("code"))?.Value;
+                    if (string.IsNullOrEmpty(strCode))
+                        continue;
+                    bool blnChecked = _objCharacterSettings.Books.Contains(strCode);
+                    if (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("permanent") != null)
+                    {
+                        _setPermanentSourcebooks.Add(strCode);
+                        if (_objCharacterSettings.BooksWritable.Add(strCode))
+                            _objCharacterSettings.OnPropertyChanged(nameof(CharacterSettings.Books));
+                        blnChecked = true;
+                    }
 
-            treSourcebook.Sort();
-            if (objOldSelected != null)
-                treSourcebook.SelectedNode = treSourcebook.FindNodeByTag(objOldSelected);
-            treSourcebook.EndUpdate();
+                    string strTranslate = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value;
+                    string strName = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
+                    await treSourcebook.DoThreadSafeAsync(x =>
+                    {
+                        TreeNode objNode = new TreeNode
+                        {
+                            Text = strTranslate ?? strName ?? string.Empty,
+                            Tag = strCode,
+                            Checked = blnChecked
+                        };
+                        x.Nodes.Add(objNode);
+                    }, token);
+                }
+
+                await treSourcebook.DoThreadSafeAsync(x =>
+                {
+                    x.Sort();
+                    if (objOldSelected != null)
+                        x.SelectedNode = x.FindNodeByTag(objOldSelected);
+                }, token);
+            }
+            finally
+            {
+                await treSourcebook.DoThreadSafeAsync(x => x.EndUpdate(), token);
+            }
         }
 
-        private async ValueTask PopulateCustomDataDirectoryTreeView()
+        private async ValueTask PopulateCustomDataDirectoryTreeView(CancellationToken token = default)
         {
-            object objOldSelected = treCustomDataDirectories.SelectedNode?.Tag;
-            treCustomDataDirectories.BeginUpdate();
-            if (_dicCharacterCustomDataDirectoryInfos.Count != treCustomDataDirectories.Nodes.Count)
+            token.ThrowIfCancellationRequested();
+            object objOldSelected = await treCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token);
+            await treCustomDataDirectories.DoThreadSafeAsync(x => x.BeginUpdate(), token);
+            try
             {
-                treCustomDataDirectories.Nodes.Clear();
-
-                foreach (KeyValuePair<object, bool> kvpInfo in _dicCharacterCustomDataDirectoryInfos)
+                string strFileNotFound = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound");
+                if (_dicCharacterCustomDataDirectoryInfos.Count != treCustomDataDirectories.Nodes.Count)
                 {
-                    TreeNode objNode = new TreeNode
+                    await treCustomDataDirectories.DoThreadSafeAsync(x =>
                     {
-                        Tag = kvpInfo.Key,
-                        Checked = kvpInfo.Value
-                    };
-                    if (kvpInfo.Key is CustomDataDirectoryInfo objInfo)
-                    {
-                        objNode.Text = objInfo.DisplayName;
-                        if (objNode.Checked)
+                        x.Nodes.Clear();
+                        foreach (KeyValuePair<object, bool> kvpInfo in _dicCharacterCustomDataDirectoryInfos)
                         {
-                            // check dependencies and exclusivities only if they could exist at all instead of calling and running into empty an foreach.
-                            string missingDirectories = string.Empty;
-                            if (objInfo.DependenciesList.Count > 0)
-                                missingDirectories = objInfo.CheckDependency(_objCharacterSettings);
-
-                            string prohibitedDirectories = string.Empty;
-                            if (objInfo.IncompatibilitiesList.Count > 0)
-                                prohibitedDirectories = objInfo.CheckIncompatibility(_objCharacterSettings);
-
-                            if (!string.IsNullOrEmpty(missingDirectories) || !string.IsNullOrEmpty(prohibitedDirectories))
+                            TreeNode objNode = new TreeNode
                             {
-                                objNode.ToolTipText = CustomDataDirectoryInfo.BuildIncompatibilityDependencyString(missingDirectories, prohibitedDirectories);
-                                objNode.ForeColor = ColorManager.ErrorColor;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        objNode.Text = kvpInfo.Key.ToString();
-                        objNode.ForeColor = ColorManager.GrayText;
-                        objNode.ToolTipText = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound");
-                    }
-                    treCustomDataDirectories.Nodes.Add(objNode);
-                }
-            }
-            else
-            {
-                for (int i = 0; i < treCustomDataDirectories.Nodes.Count; ++i)
-                {
-                    TreeNode objNode = treCustomDataDirectories.Nodes[i];
-                    KeyValuePair<object, bool> kvpInfo = _dicCharacterCustomDataDirectoryInfos[i];
-                    if (!kvpInfo.Key.Equals(objNode.Tag))
-                        objNode.Tag = kvpInfo.Key;
-                    if (kvpInfo.Value != objNode.Checked)
-                        objNode.Checked = kvpInfo.Value;
-                    if (kvpInfo.Key is CustomDataDirectoryInfo objInfo)
-                    {
-                        objNode.Text = objInfo.DisplayName;
-                        if (objNode.Checked)
-                        {
-                            // check dependencies and exclusivities only if they could exist at all instead of calling and running into empty an foreach.
-                            string missingDirectories = string.Empty;
-                            if (objInfo.DependenciesList.Count > 0)
-                                missingDirectories = objInfo.CheckDependency(_objCharacterSettings);
-
-                            string prohibitedDirectories = string.Empty;
-                            if (objInfo.IncompatibilitiesList.Count > 0)
-                                prohibitedDirectories = objInfo.CheckIncompatibility(_objCharacterSettings);
-
-                            if (!string.IsNullOrEmpty(missingDirectories) || !string.IsNullOrEmpty(prohibitedDirectories))
+                                Tag = kvpInfo.Key,
+                                Checked = kvpInfo.Value
+                            };
+                            if (kvpInfo.Key is CustomDataDirectoryInfo objInfo)
                             {
-                                objNode.ToolTipText = CustomDataDirectoryInfo.BuildIncompatibilityDependencyString(missingDirectories, prohibitedDirectories);
-                                objNode.ForeColor = ColorManager.ErrorColor;
+                                objNode.Text = objInfo.DisplayName;
+                                if (objNode.Checked)
+                                {
+                                    // check dependencies and exclusivities only if they could exist at all instead of calling and running into empty an foreach.
+                                    string missingDirectories = string.Empty;
+                                    if (objInfo.DependenciesList.Count > 0)
+                                        missingDirectories = objInfo.CheckDependency(_objCharacterSettings);
+
+                                    string prohibitedDirectories = string.Empty;
+                                    if (objInfo.IncompatibilitiesList.Count > 0)
+                                        prohibitedDirectories = objInfo.CheckIncompatibility(_objCharacterSettings);
+
+                                    if (!string.IsNullOrEmpty(missingDirectories)
+                                        || !string.IsNullOrEmpty(prohibitedDirectories))
+                                    {
+                                        objNode.ToolTipText
+                                            = CustomDataDirectoryInfo.BuildIncompatibilityDependencyString(
+                                                missingDirectories, prohibitedDirectories);
+                                        objNode.ForeColor = ColorManager.ErrorColor;
+                                    }
+                                }
                             }
                             else
                             {
-                                objNode.ToolTipText = string.Empty;
-                                objNode.ForeColor = ColorManager.WindowText;
+                                objNode.Text = kvpInfo.Key.ToString();
+                                objNode.ForeColor = ColorManager.GrayText;
+                                objNode.ToolTipText = strFileNotFound;
+                            }
+
+                            x.Nodes.Add(objNode);
+                        }
+                    }, token);
+                }
+                else
+                {
+                    await treCustomDataDirectories.DoThreadSafeAsync(x =>
+                    {
+                        for (int i = 0; i < x.Nodes.Count; ++i)
+                        {
+                            TreeNode objNode = x.Nodes[i];
+                            KeyValuePair<object, bool> kvpInfo = _dicCharacterCustomDataDirectoryInfos[i];
+                            if (!kvpInfo.Key.Equals(objNode.Tag))
+                                objNode.Tag = kvpInfo.Key;
+                            if (kvpInfo.Value != objNode.Checked)
+                                objNode.Checked = kvpInfo.Value;
+                            if (kvpInfo.Key is CustomDataDirectoryInfo objInfo)
+                            {
+                                objNode.Text = objInfo.DisplayName;
+                                if (objNode.Checked)
+                                {
+                                    // check dependencies and exclusivities only if they could exist at all instead of calling and running into empty an foreach.
+                                    string missingDirectories = string.Empty;
+                                    if (objInfo.DependenciesList.Count > 0)
+                                        missingDirectories = objInfo.CheckDependency(_objCharacterSettings);
+
+                                    string prohibitedDirectories = string.Empty;
+                                    if (objInfo.IncompatibilitiesList.Count > 0)
+                                        prohibitedDirectories = objInfo.CheckIncompatibility(_objCharacterSettings);
+
+                                    if (!string.IsNullOrEmpty(missingDirectories)
+                                        || !string.IsNullOrEmpty(prohibitedDirectories))
+                                    {
+                                        objNode.ToolTipText
+                                            = CustomDataDirectoryInfo.BuildIncompatibilityDependencyString(
+                                                missingDirectories, prohibitedDirectories);
+                                        objNode.ForeColor = ColorManager.ErrorColor;
+                                    }
+                                    else
+                                    {
+                                        objNode.ToolTipText = string.Empty;
+                                        objNode.ForeColor = ColorManager.WindowText;
+                                    }
+                                }
+                                else
+                                {
+                                    objNode.ToolTipText = string.Empty;
+                                    objNode.ForeColor = ColorManager.WindowText;
+                                }
+                            }
+                            else
+                            {
+                                objNode.Text = kvpInfo.Key.ToString();
+                                objNode.ForeColor = ColorManager.GrayText;
+                                objNode.ToolTipText = strFileNotFound;
                             }
                         }
-                        else
-                        {
-                            objNode.ToolTipText = string.Empty;
-                            objNode.ForeColor = ColorManager.WindowText;
-                        }
-                    }
-                    else
-                    {
-                        objNode.Text = kvpInfo.Key.ToString();
-                        objNode.ForeColor = ColorManager.GrayText;
-                        objNode.ToolTipText = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound");
-                    }
+
+                        if (objOldSelected != null)
+                            x.SelectedNode = x.FindNodeByTag(objOldSelected);
+                        x.ShowNodeToolTips = true;
+                    }, token: token);
                 }
             }
-
-            if (objOldSelected != null)
-                treCustomDataDirectories.SelectedNode = treCustomDataDirectories.FindNodeByTag(objOldSelected);
-            treCustomDataDirectories.ShowNodeToolTips = true;
-            treCustomDataDirectories.EndUpdate();
+            finally
+            {
+                await treCustomDataDirectories.DoThreadSafeAsync(x => x.EndUpdate(), token);
+            }
         }
 
         /// <summary>
         /// Set the values for all of the controls based on the Options for the selected Setting.
         /// </summary>
-        private async ValueTask PopulateOptions()
+        private async ValueTask PopulateOptions(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
                 if (blnDoResumeLayout)
                 {
                     _blnIsLayoutSuspended = true;
-                    SuspendLayout();
+                    await this.DoThreadSafeAsync(x => x.SuspendLayout(), token);
                 }
 
                 try
                 {
-                    await PopulateSourcebookTreeView();
-                    await PopulatePriorityTableList();
-                    await PopulateLimbCountList();
-                    await PopulateAllowedGrades();
-                    await PopulateCustomDataDirectoryTreeView();
+                    await PopulateSourcebookTreeView(token);
+                    await PopulatePriorityTableList(token);
+                    await PopulateLimbCountList(token);
+                    await PopulateAllowedGrades(token);
+                    await PopulateCustomDataDirectoryTreeView(token);
                 }
                 finally
                 {
                     if (blnDoResumeLayout)
                     {
                         _blnIsLayoutSuspended = false;
-                        ResumeLayout();
+                        await this.DoThreadSafeAsync(x => x.ResumeLayout(), token);
                     }
                 }
             }
         }
 
-        private async ValueTask PopulatePriorityTableList()
+        private async ValueTask PopulatePriorityTableList(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
@@ -1089,24 +1172,28 @@ namespace Chummer
                     bool blnOldLoading = _blnLoading;
                     _blnLoading = true;
                     await cboPriorityTable.PopulateWithListItemsAsync(lstPriorityTables);
-                    if (!string.IsNullOrEmpty(strOldSelected))
-                        cboPriorityTable.SelectedValue = strOldSelected;
-                    if (cboPriorityTable.SelectedIndex == -1 && lstPriorityTables.Count > 0)
-                        cboPriorityTable.SelectedValue = _objReferenceCharacterSettings.PriorityTable;
-                    if (cboPriorityTable.SelectedIndex == -1 && lstPriorityTables.Count > 0)
-                        cboPriorityTable.SelectedIndex = 0;
+                    await cboPriorityTable.DoThreadSafeAsync(x =>
+                    {
+                        if (!string.IsNullOrEmpty(strOldSelected))
+                            x.SelectedValue = strOldSelected;
+                        if (x.SelectedIndex == -1 && lstPriorityTables.Count > 0)
+                            x.SelectedValue = _objReferenceCharacterSettings.PriorityTable;
+                        if (x.SelectedIndex == -1 && lstPriorityTables.Count > 0)
+                            x.SelectedIndex = 0;
+                    }, token);
                     _blnLoading = blnOldLoading;
                 }
 
-                string strSelectedTable = cboPriorityTable.SelectedValue?.ToString();
+                string strSelectedTable = await cboPriorityTable.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
                 if (!string.IsNullOrWhiteSpace(strSelectedTable) &&
                     _objCharacterSettings.PriorityTable != strSelectedTable)
                     _objCharacterSettings.PriorityTable = strSelectedTable;
             }
         }
 
-        private async ValueTask PopulateLimbCountList()
+        private async ValueTask PopulateLimbCountList(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
@@ -1138,18 +1225,22 @@ namespace Chummer
 
                     _blnSkipLimbCountUpdate = true;
                     await cboLimbCount.PopulateWithListItemsAsync(lstLimbCount);
-                    if (!string.IsNullOrEmpty(strLimbSlot))
-                        cboLimbCount.SelectedValue = strLimbSlot;
-                    if (cboLimbCount.SelectedIndex == -1 && lstLimbCount.Count > 0)
-                        cboLimbCount.SelectedIndex = 0;
+                    await cboLimbCount.DoThreadSafeAsync(x =>
+                    {
+                        if (!string.IsNullOrEmpty(strLimbSlot))
+                            x.SelectedValue = strLimbSlot;
+                        if (x.SelectedIndex == -1 && lstLimbCount.Count > 0)
+                            x.SelectedIndex = 0;
+                    }, token);
                 }
 
                 _blnSkipLimbCountUpdate = false;
             }
         }
 
-        private async ValueTask PopulateAllowedGrades()
+        private async ValueTask PopulateAllowedGrades(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
@@ -1209,24 +1300,33 @@ namespace Chummer
                         }
                     }
 
-                    flpAllowedCyberwareGrades.SuspendLayout();
-                    flpAllowedCyberwareGrades.Controls.Clear();
-                    foreach (ListItem objGrade in lstGrades)
+                    await flpAllowedCyberwareGrades.DoThreadSafeAsync(x =>
                     {
-                        CheckBox chkGrade = new CheckBox
+                        x.SuspendLayout();
+                        try
                         {
-                            UseVisualStyleBackColor = true,
-                            Text = objGrade.Name,
-                            Tag = objGrade.Value,
-                            AutoSize = true,
-                            Anchor = AnchorStyles.Left,
-                            Checked = !_objCharacterSettings.BannedWareGrades.Contains(objGrade.Value.ToString())
-                        };
-                        chkGrade.CheckedChanged += chkGrade_CheckedChanged;
-                        flpAllowedCyberwareGrades.Controls.Add(chkGrade);
-                    }
-
-                    flpAllowedCyberwareGrades.ResumeLayout();
+                            x.Controls.Clear();
+                            foreach (ListItem objGrade in lstGrades)
+                            {
+                                CheckBox chkGrade = new CheckBox
+                                {
+                                    UseVisualStyleBackColor = true,
+                                    Text = objGrade.Name,
+                                    Tag = objGrade.Value,
+                                    AutoSize = true,
+                                    Anchor = AnchorStyles.Left,
+                                    Checked = !_objCharacterSettings.BannedWareGrades.Contains(
+                                        objGrade.Value.ToString())
+                                };
+                                chkGrade.CheckedChanged += chkGrade_CheckedChanged;
+                                x.Controls.Add(chkGrade);
+                            }
+                        }
+                        finally
+                        {
+                            x.ResumeLayout();
+                        }
+                    }, token);
                 }
             }
         }
@@ -1438,8 +1538,9 @@ namespace Chummer
             nudKarmaWeaponFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaWeaponFocus));
         }
 
-        private async ValueTask PopulateSettingsList()
+        private async ValueTask PopulateSettingsList(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
                 string strSelect = string.Empty;
@@ -1457,13 +1558,16 @@ namespace Chummer
 
                 _lstSettings.Sort(CompareListItems.CompareNames);
                 await cboSetting.PopulateWithListItemsAsync(_lstSettings);
-                if (!string.IsNullOrEmpty(strSelect))
-                    cboSetting.SelectedValue = strSelect;
-                if (cboSetting.SelectedIndex == -1 && _lstSettings.Count > 0)
-                    cboSetting.SelectedValue = cboSetting.FindStringExact(GlobalSettings.DefaultCharacterSetting);
-                if (cboSetting.SelectedIndex == -1 && _lstSettings.Count > 0)
-                    cboSetting.SelectedIndex = 0;
-                _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
+                await cboSetting.DoThreadSafeAsync(x =>
+                {
+                    if (!string.IsNullOrEmpty(strSelect))
+                        x.SelectedValue = strSelect;
+                    if (x.SelectedIndex == -1 && _lstSettings.Count > 0)
+                        x.SelectedValue = x.FindStringExact(GlobalSettings.DefaultCharacterSetting);
+                    if (x.SelectedIndex == -1 && _lstSettings.Count > 0)
+                        x.SelectedIndex = 0;
+                }, token);
+                _intOldSelectedSettingIndex = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex, token);
             }
         }
 

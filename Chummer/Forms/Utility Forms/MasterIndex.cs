@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
@@ -88,8 +89,9 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private async ValueTask PopulateCharacterSettings()
+        private async ValueTask PopulateCharacterSettings(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             // Populate the Character Settings list.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstCharacterSettings))
@@ -102,7 +104,7 @@ namespace Chummer
 
                 lstCharacterSettings.Sort(CompareListItems.CompareNames);
 
-                string strOldSettingKey = (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue) as CharacterSettings)?.DictionaryKey
+                string strOldSettingKey = (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, token) as CharacterSettings)?.DictionaryKey
                                           ?? _objSelectedSetting?.DictionaryKey;
 
                 bool blnOldSkipRefresh = _blnSkipRefresh;
@@ -116,26 +118,26 @@ namespace Chummer
                     (blnSuccess, objSettings)
                         = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(strOldSettingKey);
                     if (blnSuccess)
-                        await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings);
+                        await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings, token);
                 }
 
                 _blnSkipRefresh = blnOldSkipRefresh;
 
-                if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex) != -1)
+                if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) != -1)
                     return;
                 (blnSuccess, objSettings)
                     = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(GlobalSettings.DefaultMasterIndexSetting);
                 if (blnSuccess)
-                    await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings);
+                    await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings, token);
                 else
                 {
                     (blnSuccess, objSettings)
                         = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(GlobalSettings.DefaultMasterIndexSettingDefaultValue);
                     if (blnSuccess)
-                        await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings);
+                        await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings, token);
                 }
-                if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex) == -1 && lstCharacterSettings.Count > 0)
-                    await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedIndex = 0);
+                if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) == -1 && lstCharacterSettings.Count > 0)
+                    await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedIndex = 0, token);
             }
         }
 
@@ -204,8 +206,9 @@ namespace Chummer
             }
         }
 
-        private async ValueTask LoadContent()
+        private async ValueTask LoadContent(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CustomActivity opLoadMasterindex = await Timekeeper.StartSyncronAsync("op_load_frm_masterindex", null,
                        CustomActivity.OperationType.RequestOperation, null))
             {
@@ -420,8 +423,8 @@ namespace Chummer
                                     {
                                         x.SelectedIndex = -1;
                                     }
-                                })),
-                            lstItems.PopulateWithListItemsAsync(_lstItems).ContinueWith(y => lstItems.DoThreadSafe(x => x.SelectedIndex = -1)));
+                                }), token),
+                            lstItems.PopulateWithListItemsAsync(_lstItems).ContinueWith(y => lstItems.DoThreadSafe(x => x.SelectedIndex = -1), token));
                     }
                 }
                 finally
@@ -584,18 +587,19 @@ namespace Chummer
             }
         }
 
-        public async ValueTask ForceRepopulateCharacterSettings()
+        public async ValueTask ForceRepopulateCharacterSettings(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
-                SuspendLayout();
+                await this.DoThreadSafeAsync(x => x.SuspendLayout(), token);
                 try
                 {
-                    await PopulateCharacterSettings();
+                    await PopulateCharacterSettings(token);
                 }
                 finally
                 {
-                    ResumeLayout();
+                    await this.DoThreadSafeAsync(x => x.ResumeLayout(), token);
                 }
             }
         }
