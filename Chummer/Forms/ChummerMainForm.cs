@@ -1239,12 +1239,12 @@ namespace Chummer
 
                 using (CursorWait.New(this))
                 {
-                    CharacterCreate frmNewCharacter = await this.DoThreadSafeFuncAsync(() => new CharacterCreate(objCharacter)
-                    {
-                        MdiParent = this
-                    });
                     await this.DoThreadSafeAsync(() =>
                     {
+                        CharacterCreate frmNewCharacter = new CharacterCreate(objCharacter)
+                        {
+                            MdiParent = this
+                        };
                         if (MdiChildren.Length <= 1)
                             frmNewCharacter.WindowState = FormWindowState.Maximized;
                         frmNewCharacter.Show();
