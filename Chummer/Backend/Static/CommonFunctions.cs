@@ -1672,8 +1672,9 @@ namespace Chummer
                     try
                     {
                         strPageText = PdfTextExtractor.GetTextFromPage(objPdfDocument.GetPage(intPage),
-                                new SimpleTextExtractionStrategy())
-                            .CleanStylisticLigatures().NormalizeWhiteSpace().NormalizeLineEndings();
+                                                                       new SimpleTextExtractionStrategy())
+                                                      .CleanStylisticLigatures().NormalizeWhiteSpace()
+                                                      .NormalizeLineEndings().CleanOfInvalidUnicodeChars();
                     }
                     catch (IndexOutOfRangeException)
                     {

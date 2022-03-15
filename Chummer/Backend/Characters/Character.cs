@@ -2761,9 +2761,7 @@ namespace Chummer
                             // <concept />
                             objWriter.WriteElementString("concept", _strConcept);
                             // <notes />
-                            objWriter.WriteElementString("notes",
-                                System.Text.RegularExpressions.Regex.Replace(_strNotes,
-                                    @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", string.Empty));
+                            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
                             // <alias />
                             objWriter.WriteElementString("alias", _strAlias);
                             // <playername />
@@ -3507,9 +3505,7 @@ namespace Chummer
                             // <concept />
                             await objWriter.WriteElementStringAsync("concept", _strConcept);
                             // <notes />
-                            await objWriter.WriteElementStringAsync("notes",
-                                System.Text.RegularExpressions.Regex.Replace(_strNotes,
-                                    @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", string.Empty));
+                            await objWriter.WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars());
                             // <alias />
                             await objWriter.WriteElementStringAsync("alias", _strAlias);
                             // <playername />

@@ -333,10 +333,7 @@ namespace Chummer
                 objWriter.WriteElementString("type", _eContactType.ToString());
                 objWriter.WriteElementString("file", _strFileName);
                 objWriter.WriteElementString("relative", _strRelativeName);
-                objWriter.WriteElementString(
-                    "notes",
-                    System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
-                                                                 string.Empty));
+                objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
                 objWriter.WriteElementString("groupname", _strGroupName);
                 objWriter.WriteElementString(
@@ -382,10 +379,7 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("type", _eContactType.ToString());
                     await objWriter.WriteElementStringAsync("file", _strFileName);
                     await objWriter.WriteElementStringAsync("relative", _strRelativeName);
-                    await objWriter.WriteElementStringAsync(
-                        "notes",
-                        System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
-                                                                     string.Empty));
+                    await objWriter.WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars());
                     await objWriter.WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes));
                     await objWriter.WriteElementStringAsync("groupname", _strGroupName);
                     await objWriter.WriteElementStringAsync(

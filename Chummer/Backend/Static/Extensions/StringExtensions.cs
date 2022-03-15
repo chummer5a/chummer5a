@@ -1528,6 +1528,18 @@ namespace Chummer
             return !string.IsNullOrEmpty(strInput) && s_RgxHtmlTagExpression.IsMatch(strInput);
         }
 
+        /// <summary>
+        /// Cleans a string of characters that could cause issues when saved in an xml file and then loaded back in
+        /// </summary>
+        /// <param name="strInput"></param>
+        /// <returns></returns>
+        public static string CleanOfInvalidUnicodeChars(this string strInput)
+        {
+            return string.IsNullOrEmpty(strInput)
+                ? string.Empty
+                : s_RgxInvalidUnicodeCharsExpression.Replace(strInput, string.Empty);
+        }
+
         private static readonly Regex s_RgxHtmlTagExpression = new Regex(@"/<\/?[a-z][\s\S]*>/i",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
@@ -1535,6 +1547,9 @@ namespace Chummer
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         private static readonly Regex s_RgxEscapedLineEndingsExpression = new Regex(@"\\r\\n|\\n\\r|\\n|\\r",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
+        private static readonly Regex s_RgxInvalidUnicodeCharsExpression = new Regex(@"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         private static readonly SemaphoreSlim s_RtbRtfManipulatorLock = new SemaphoreSlim(1, 1);

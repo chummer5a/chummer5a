@@ -222,7 +222,7 @@ namespace Chummer
                 objWriter.WriteRaw("<choice2>" + _nodChoice2.InnerXml + "</choice2>");
             else
                 objWriter.WriteElementString("choice2", string.Empty);
-            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
 
             if (SourceID != Guid.Empty && !string.IsNullOrEmpty(SourceIDString))
             {
@@ -322,10 +322,7 @@ namespace Chummer
                 await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
                 await objWriter.WriteElementStringAsync("mentormask", MentorMask.ToString(GlobalSettings.InvariantCultureInfo));
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync(
-                        "notes",
-                        System.Text.RegularExpressions.Regex.Replace(
-                            _strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", string.Empty));
+                    await objWriter.WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars());
             }
             finally
             {

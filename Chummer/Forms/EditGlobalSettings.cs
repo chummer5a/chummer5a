@@ -1804,7 +1804,7 @@ namespace Chummer
                                                       objPdfDocument.GetPage(intPage),
                                                       new SimpleTextExtractionStrategy())
                                                   .CleanStylisticLigatures().NormalizeWhiteSpace()
-                                                  .NormalizeLineEndings();
+                                                  .NormalizeLineEndings().CleanOfInvalidUnicodeChars();
 
                         // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
                         lstStringFromPdf.AddRange(
