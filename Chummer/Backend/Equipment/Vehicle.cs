@@ -444,8 +444,6 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                List<Weapon> lstWeapons = new List<Weapon>(1);
-
                 // If there is any Gear that comes with the Vehicle, add them.
                 XmlNode xmlGears = objXmlVehicle["gears"];
                 if (xmlGears != null)
@@ -456,6 +454,8 @@ namespace Chummer.Backend.Equipment
                     {
                         if (objXmlGearList?.Count > 0)
                         {
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+
                             foreach (XmlNode objXmlVehicleGear in objXmlGearList)
                             {
                                 Gear objGear = new Gear(_objCharacter);
@@ -464,12 +464,13 @@ namespace Chummer.Backend.Equipment
                                     objGear.Parent = this;
                                     objGear.ParentID = InternalId;
                                     GearChildren.Add(objGear);
-                                    foreach (Weapon objWeapon in lstWeapons)
-                                    {
-                                        objWeapon.ParentVehicle = this;
-                                        Weapons.Add(objWeapon);
-                                    }
                                 }
+                            }
+
+                            foreach (Weapon objWeapon in lstWeapons)
+                            {
+                                objWeapon.ParentVehicle = this;
+                                Weapons.Add(objWeapon);
                             }
                         }
                     }
@@ -563,12 +564,6 @@ namespace Chummer.Backend.Equipment
                             }
                         }
                     }
-                }
-
-                foreach (Weapon objWeapon in lstWeapons)
-                {
-                    objWeapon.ParentVehicle = this;
-                    Weapons.Add(objWeapon);
                 }
             }
         }
