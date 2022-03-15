@@ -95,13 +95,16 @@ namespace Chummer
                 await cboAmmo.PopulateWithListItemsAsync(lstAmmo);
             }
 
-            cboType.BeginUpdate();
-            cboType.DataSource = null;
-            cboType.DataSource = _lstCount;
-            cboType.EndUpdate();
+            await cboType.DoThreadSafeAsync(x =>
+            {
+                x.BeginUpdate();
+                x.DataSource = null;
+                x.DataSource = _lstCount;
+                x.EndUpdate();
+            });
 
             // If there's only 1 value in each list, the character doesn't have a choice, so just accept it.
-            if (cboAmmo.Items.Count == 1 && cboType.Items.Count == 1)
+            if (await cboAmmo.DoThreadSafeFuncAsync(x => x.Items.Count) == 1 && await cboType.DoThreadSafeFuncAsync(x => x.Items.Count) == 1)
                 AcceptForm();
         }
 

@@ -166,6 +166,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_Notes";
             this.Text = "Notes";
+            this.Load += new System.EventHandler(this.EditNotes_Load);
             this.Shown += new System.EventHandler(this.EditNotes_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
             this.Resize += new System.EventHandler(this.EditNotes_Resize);

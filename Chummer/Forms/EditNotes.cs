@@ -19,6 +19,8 @@
 
 using System;
 using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -70,8 +72,11 @@ namespace Chummer
             _colNotes = colNotes;
             if (_colNotes.IsEmpty)
                 _colNotes = ColorManager.HasNotesColor;
+        }
 
-            UpdateColorRepresentation();
+        private async void EditNotes_Load(object sender, EventArgs e)
+        {
+            await UpdateColorRepresentation();
         }
 
         private void txtNotes_KeyDown(object sender, KeyEventArgs e)
@@ -118,15 +123,14 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void btnColorSelect_Click(object sender, EventArgs e)
+        private async void btnColorSelect_Click(object sender, EventArgs e)
         {
             _colNotes = colorDialog1.Color; //Selected color is always how it is shown in light mode, use the stored one for it.
             DialogResult resNewColor = colorDialog1.ShowDialog();
-            if (resNewColor == DialogResult.OK)
-            {
-                _colNotes = ColorManager.GenerateModeIndependentColor(colorDialog1.Color);
-                UpdateColorRepresentation();
-            }
+            if (resNewColor != DialogResult.OK)
+                return;
+            _colNotes = await ColorManager.GenerateModeIndependentColorAsync(colorDialog1.Color);
+            await UpdateColorRepresentation();
         }
 
         private void txtNotes_TextChanged(object sender, EventArgs e)
@@ -147,9 +151,11 @@ namespace Chummer
 
         #endregion Properties
 
-        private void UpdateColorRepresentation()
+        private async ValueTask UpdateColorRepresentation(CancellationToken token = default)
         {
-            txtNotes.ForeColor = ColorManager.GenerateCurrentModeColor(_colNotes);
+            token.ThrowIfCancellationRequested();
+            Color objColor = await ColorManager.GenerateCurrentModeColorAsync(_colNotes);
+            await txtNotes.DoThreadSafeAsync(x => x.ForeColor = objColor, token);
         }
     }
 }
