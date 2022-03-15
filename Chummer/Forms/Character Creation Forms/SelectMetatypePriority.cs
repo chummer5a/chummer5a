@@ -1671,67 +1671,68 @@ namespace Chummer
                     await cmdOK.DoThreadSafeAsync(x => x.Enabled = true);
                 }
 
-                lblBOD.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "bodmin"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "bodmax"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "bodaug"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblAGI.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "agimin"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "agimax"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "agiaug"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblREA.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "reamin"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "reamax"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "reaaug"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblSTR.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "strmin"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "strmax"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "straug"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblCHA.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "chamin"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "chamax"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "chaaug"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblINT.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "intmin"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "intmax"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "intaug"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblLOG.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "logmin"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "logmax"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "logaug"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblWIL.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "wilmin"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "wilmax"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
-                                                "wilaug"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
+                string strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("bodmin"))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("bodmax"))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("bodaug"))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblBOD.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug));
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agimin"))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agimax"))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("agiaug"))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblAGI.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug));
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reamin"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reamax"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("reaaug"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblREA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug));
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("strmin"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("strmax"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("straug"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblSTR.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug));
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chamin"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chamax"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("chaaug"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblCHA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug));
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intmin"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intmax"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("intaug"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblINT.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug));
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logmin"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logmax"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("logaug"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblLOG.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug));
+                strMin = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilmin"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strMax = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilmax"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strAug = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("wilaug"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblWIL.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug));
 
-                lblMetavariantKarma.Text
+                string strKarmaText
                     = (await objXmlMetavariantPriorityNode.SelectSingleNodeAndCacheExpressionAsync("karma"))
                       ?.Value
                       ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblMetavariantKarma.DoThreadSafeAsync(x => x.Text = strKarmaText);
 
                 string strSource = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("source"))
                     ?.Value;
@@ -1745,20 +1746,20 @@ namespace Chummer
                         SourceString objSource = await SourceString.GetSourceStringAsync(
                             strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo,
                             _objCharacter);
-                        lblSource.Text = objSource.ToString();
+                        await lblSource.DoThreadSafeAsync(x => x.Text = objSource.ToString());
                         await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
                     }
                     else
                     {
                         string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
-                        lblSource.Text = strUnknown;
+                        await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown);
                         await lblSource.SetToolTipAsync(strUnknown);
                     }
                 }
                 else
                 {
                     string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
-                    lblSource.Text = strUnknown;
+                    await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown);
                     await lblSource.SetToolTipAsync(strUnknown);
                 }
 
@@ -1863,87 +1864,68 @@ namespace Chummer
             }
             else if (objXmlMetatype != null)
             {
-                cmdOK.Enabled = true;
-                lblBOD.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "bodmin"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "bodmax"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "bodaug"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblAGI.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "agimin"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "agimax"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "agiaug"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblREA.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "reamin"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "reamax"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "reaaug"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblSTR.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "strmin"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "strmax"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "straug"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblCHA.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "chamin"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "chamax"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "chaaug"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblINT.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "intmin"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "intmax"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "intaug"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblLOG.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "logmin"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "logmax"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "logaug"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblWIL.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "wilmin"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "wilmax"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
-                                                "wilaug"))
-                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
+                await cmdOK.DoThreadSafeAsync(x => x.Enabled = true);
+                string strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("bodmin"))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("bodmax"))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                string strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("bodaug"))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblBOD.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug));
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agimin"))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agimax"))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("agiaug"))?.Value
+                                ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblAGI.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug));
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reamin"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reamax"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("reaaug"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblREA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug));
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("strmin"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("strmax"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("straug"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblSTR.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug));
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chamin"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chamax"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("chaaug"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblCHA.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug));
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intmin"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intmax"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("intaug"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblINT.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug));
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logmin"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logmax"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("logaug"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblLOG.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug));
+                strMin = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilmin"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilmax"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                strAug = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("wilaug"))?.Value
+                         ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblWIL.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, strMin, strMax, strAug));
+
+                string strKarmaText
+                    = (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync("karma"))?.Value
+                      ?? 0.ToString(GlobalSettings.CultureInfo);
+                await lblMetavariantKarma.DoThreadSafeAsync(x => x.Text = strKarmaText);
 
                 Dictionary<string, int> dicQualities = new Dictionary<string, int>(5);
                 // Build a list of the Metatype's Qualities.
@@ -2008,10 +1990,6 @@ namespace Chummer
                     string strNone = await LanguageManager.GetStringAsync("String_None");
                     await lblMetavariantQualities.DoThreadSafeAsync(x => x.Text = strNone);
                 }
-
-                lblMetavariantKarma.Text
-                    = (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync("karma"))?.Value
-                      ?? 0.ToString(GlobalSettings.CultureInfo);
 
                 string strSource = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("source"))
                     ?.Value;
