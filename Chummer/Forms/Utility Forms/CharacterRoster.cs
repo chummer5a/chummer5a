@@ -167,7 +167,7 @@ namespace Chummer
 
                 SetMyEventHandlers(true);
 
-                await DisposeTagNodes(treCharacterList.Nodes);
+                await DisposeTagNodes(await treCharacterList.DoThreadSafeFuncAsync(x => x.Nodes));
 
                 async ValueTask DisposeTagNodes(TreeNodeCollection lstNodes)
                 {
@@ -234,7 +234,7 @@ namespace Chummer
             if (this.IsNullOrDisposed())
                 return;
 
-            SuspendLayout();
+            await this.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
                 _tskWatchFolderRefresh = LoadWatchFolderCharacters(_objWatchFolderRefreshCancellationTokenSource.Token);
@@ -253,7 +253,7 @@ namespace Chummer
             }
             finally
             {
-                ResumeLayout();
+                await this.DoThreadSafeAsync(x => x.ResumeLayout());
             }
 
             await this.DoThreadSafeAsync(
@@ -293,7 +293,7 @@ namespace Chummer
                 return;
 
             CancellationToken innerToken = _objMostRecentlyUsedsRefreshCancellationTokenSource.Token;
-            SuspendLayout();
+            await this.DoThreadSafeAsync(x => x.SuspendLayout(), token);
             try
             {
                 _tskMostRecentlyUsedsRefresh
@@ -313,7 +313,7 @@ namespace Chummer
             }
             finally
             {
-                ResumeLayout();
+                await this.DoThreadSafeAsync(x => x.ResumeLayout(), token);
             }
             innerToken.ThrowIfCancellationRequested();
             token.ThrowIfCancellationRequested();
@@ -379,14 +379,15 @@ namespace Chummer
             }
         }
 
-        public async ValueTask RefreshNodeTexts()
+        public async ValueTask RefreshNodeTexts(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (treCharacterList.IsNullOrDisposed())
                 return;
 
-            foreach (TreeNode objCharacterNode in treCharacterList.Nodes.Cast<TreeNode>().GetAllDescendants(x => x.Nodes.Cast<TreeNode>()))
+            foreach (TreeNode objCharacterNode in await treCharacterList.DoThreadSafeFuncAsync(y => y.Nodes.Cast<TreeNode>().GetAllDescendants(x => x.Nodes.Cast<TreeNode>()), token))
             {
-                if (!(objCharacterNode.Tag is CharacterCache objCache))
+                if (!(await treCharacterList.DoThreadSafeFuncAsync(() => objCharacterNode.Tag, token) is CharacterCache objCache))
                     continue;
                 string strCalculatedName = objCache.CalculatedName();
                 treCharacterList.QueueThreadSafe(() => objCharacterNode.Text = strCalculatedName);
@@ -415,7 +416,7 @@ namespace Chummer
 
             List<string> lstFavorites = (await GlobalSettings.FavoriteCharacters.ToArrayAsync()).ToList();
             bool blnAddFavoriteNode = false;
-            TreeNode objFavoriteNode = treCharacterList.FindNode("Favorite", false);
+            TreeNode objFavoriteNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.FindNode("Favorite", false), token);
             if (objFavoriteNode == null && blnRefreshFavorites)
             {
                 objFavoriteNode = new TreeNode(await LanguageManager.GetStringAsync("Treenode_Roster_FavoriteCharacters"))
@@ -439,7 +440,7 @@ namespace Chummer
                 lstRecents.Remove(strFavorite);
             if (!blnRefreshFavorites)
                 lstFavorites.Clear();
-            TreeNode objRecentNode = treCharacterList.FindNode("Recent", false);
+            TreeNode objRecentNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.FindNode("Recent", false), token);
             if (objRecentNode == null && lstRecents.Count > 0)
             {
                 objRecentNode = new TreeNode(await LanguageManager.GetStringAsync("Treenode_Roster_RecentCharacters"))
@@ -623,7 +624,7 @@ namespace Chummer
                 }
             }
             bool blnAddWatchNode = dicWatch?.Count > 0;
-            TreeNode objWatchNode = treCharacterList.FindNode("Watch", false);
+            TreeNode objWatchNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.FindNode("Watch", false), token);
             if (blnAddWatchNode)
             {
                 if (objWatchNode != null)
@@ -1084,7 +1085,7 @@ namespace Chummer
             CharacterCache objCache = objSelectedNode.Tag as CharacterCache;
             objCache?.OnMyAfterSelect?.Invoke(sender, e);
             await UpdateCharacter(objCache);
-            treCharacterList.ClearNodeBackground(treCharacterList.SelectedNode);
+            await treCharacterList.DoThreadSafeAsync(x => x.ClearNodeBackground(x.SelectedNode));
         }
 
         private void treCharacterList_DoubleClick(object sender, EventArgs e)
@@ -1272,7 +1273,7 @@ namespace Chummer
             if (treCharacterList.IsNullOrDisposed())
                 return;
 
-            TreeNode t = treCharacterList.SelectedNode;
+            TreeNode t = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode);
 
             if (t?.Tag is CharacterCache objCache)
             {
@@ -1292,7 +1293,7 @@ namespace Chummer
             if (treCharacterList.IsNullOrDisposed())
                 return;
 
-            TreeNode t = treCharacterList.SelectedNode;
+            TreeNode t = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode);
 
             if (t?.Tag is CharacterCache objCache)
             {
@@ -1321,7 +1322,7 @@ namespace Chummer
             if (treCharacterList.IsNullOrDisposed())
                 return;
 
-            TreeNode t = treCharacterList.SelectedNode;
+            TreeNode t = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode);
 
             if (t?.Tag is CharacterCache objCache)
             {
