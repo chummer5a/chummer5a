@@ -15030,29 +15030,24 @@ namespace Chummer
         /// <param name="blnForMAGPenalty">Whether fetched Essence is to be used to calculate the penalty MAG should receive from lost Essence (true) or not (false).</param>
         public decimal Essence(bool blnForMAGPenalty = false)
         {
+            if (blnForMAGPenalty)
+                return EssenceForMagPenalty();
             using (EnterReadLock.Enter(LockObject))
             {
-                if (!blnForMAGPenalty)
-                    _objCachedEssenceLock.EnterReadLock();
-                try
+                using (EnterReadLock.Enter(_objCachedEssenceLock))
                 {
-                    IDisposable objLocker = null;
-                    if (!blnForMAGPenalty)
+                    if (_decCachedEssence != decimal.MinValue)
+                        return _decCachedEssence;
+                    using (_objCachedEssenceLock.EnterWriteLock())
                     {
+                        // Another check in case this was already cached in between requesting the lock and obtaining the lock
                         if (_decCachedEssence != decimal.MinValue)
                             return _decCachedEssence;
-                        objLocker = _objCachedEssenceLock.EnterWriteLock();
-                    }
-
-                    try
-                    {
                         // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
                         if (ImprovementManager
                             .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.CyborgEssence).Count
                             > 0)
                         {
-                            if (blnForMAGPenalty)
-                                return 0.1m;
                             return _decCachedEssence = 0.1m;
                         }
 
@@ -15060,30 +15055,15 @@ namespace Chummer
                         decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenalty);
                         decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyT100)
                                   / 100.0m;
-                        if (blnForMAGPenalty)
-                            decESS += ImprovementManager.ValueOf(
-                                          this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100)
-                                      / 100.0m;
 
                         // Run through all of the pieces of Cyberware and include their Essence cost.
                         decESS -= Cyberware.Sum(objCyberware => objCyberware.CalculatedESS);
 
                         //1781 Essence is not printing
                         //ESS.Base = Convert.ToInt32(decESS); -- Disabled because this messes up Character Validity, and it really shouldn't be what "Base" of an attribute is supposed to be (it's supposed to be extra levels gained)
-
-                        if (blnForMAGPenalty)
-                            return decESS;
+                        
                         return _decCachedEssence = decESS;
                     }
-                    finally
-                    {
-                        objLocker?.Dispose();
-                    }
-                }
-                finally
-                {
-                    if (!blnForMAGPenalty)
-                        _objCachedEssenceLock.ExitReadLock();
                 }
             }
         }
@@ -15094,29 +15074,25 @@ namespace Chummer
         /// <param name="blnForMAGPenalty">Whether fetched Essence is to be used to calculate the penalty MAG should receive from lost Essence (true) or not (false).</param>
         public async ValueTask<decimal> EssenceAsync(bool blnForMAGPenalty = false)
         {
+            if (blnForMAGPenalty)
+                return await EssenceForMagPenaltyAsync();
             using (await EnterReadLock.EnterAsync(LockObject))
             {
-                if (!blnForMAGPenalty)
-                    await _objCachedEssenceLock.EnterReadLockAsync();
-                try
+                using (await EnterReadLock.EnterAsync(_objCachedEssenceLock))
                 {
-                    IAsyncDisposable objLocker = null;
-                    if (!blnForMAGPenalty)
-                    {
-                        if (_decCachedEssence != decimal.MinValue)
-                            return _decCachedEssence;
-                        objLocker = await _objCachedEssenceLock.EnterWriteLockAsync();
-                    }
-
+                    if (_decCachedEssence != decimal.MinValue)
+                        return _decCachedEssence;
+                    IAsyncDisposable objLocker = await _objCachedEssenceLock.EnterWriteLockAsync();
                     try
                     {
+                        // Another check in case this was already cached in between requesting the lock and obtaining the lock
+                        if (_decCachedEssence != decimal.MinValue)
+                            return _decCachedEssence;
                         // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
                         if ((await ImprovementManager
                                 .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.CyborgEssence)).Count
                             > 0)
                         {
-                            if (blnForMAGPenalty)
-                                return 0.1m;
                             return _decCachedEssence = 0.1m;
                         }
 
@@ -15124,36 +15100,90 @@ namespace Chummer
                         decESS += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.EssencePenalty);
                         decESS += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.EssencePenaltyT100)
                                   / 100.0m;
-                        if (blnForMAGPenalty)
-                            decESS += await ImprovementManager.ValueOfAsync(
-                                          this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100)
-                                      / 100.0m;
 
                         // Run through all of the pieces of Cyberware and include their Essence cost.
                         decESS -= await Cyberware.SumAsync(objCyberware => objCyberware.CalculatedESSAsync);
 
                         //1781 Essence is not printing
                         //ESS.Base = Convert.ToInt32(decESS); -- Disabled because this messes up Character Validity, and it really shouldn't be what "Base" of an attribute is supposed to be (it's supposed to be extra levels gained)
-
-                        if (blnForMAGPenalty)
-                            return decESS;
+                        
                         return _decCachedEssence = decESS;
                     }
                     finally
                     {
-                        if (objLocker != null)
-                            await objLocker.DisposeAsync();
+                        await objLocker.DisposeAsync();
                     }
-                }
-                finally
-                {
-                    if (!blnForMAGPenalty)
-                        _objCachedEssenceLock.ExitReadLock();
                 }
             }
         }
 
         private decimal _decCachedCyberwareEssence = decimal.MinValue;
+
+        /// <summary>
+        /// Character's Essence to be used to calculate the penalty MAG should receive from lost Essence.
+        /// </summary>
+        public decimal EssenceForMagPenalty()
+        {
+            using (EnterReadLock.Enter(LockObject))
+            {
+                // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
+                if (ImprovementManager
+                    .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.CyborgEssence).Count
+                    > 0)
+                {
+                    return 0.1m;
+                }
+
+                decimal decESS = ESS.MetatypeMaximum;
+                decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenalty);
+                decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyT100)
+                          / 100.0m;
+                decESS += ImprovementManager.ValueOf(
+                              this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100)
+                          / 100.0m;
+
+                // Run through all of the pieces of Cyberware and include their Essence cost.
+                decESS -= Cyberware.Sum(objCyberware => objCyberware.CalculatedESS);
+
+                //1781 Essence is not printing
+                //ESS.Base = Convert.ToInt32(decESS); -- Disabled because this messes up Character Validity, and it really shouldn't be what "Base" of an attribute is supposed to be (it's supposed to be extra levels gained)
+
+                return decESS;
+            }
+        }
+
+        /// <summary>
+        /// Character's Essence to be used to calculate the penalty MAG should receive from lost Essence.
+        /// </summary>
+        public async ValueTask<decimal> EssenceForMagPenaltyAsync()
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+            {
+                // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
+                if ((await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.CyborgEssence)).Count
+                    > 0)
+                {
+                    return 0.1m;
+                }
+
+                decimal decESS = await ESS.MetatypeMaximumAsync;
+                decESS += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.EssencePenalty);
+                decESS += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.EssencePenaltyT100)
+                          / 100.0m;
+                decESS += await ImprovementManager.ValueOfAsync(
+                              this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100)
+                          / 100.0m;
+
+                // Run through all of the pieces of Cyberware and include their Essence cost.
+                decESS -= await Cyberware.SumAsync(objCyberware => objCyberware.CalculatedESS);
+
+                //1781 Essence is not printing
+                //ESS.Base = Convert.ToInt32(decESS); -- Disabled because this messes up Character Validity, and it really shouldn't be what "Base" of an attribute is supposed to be (it's supposed to be extra levels gained)
+
+                return decESS;
+            }
+        }
 
         /// <summary>
         /// Essence consumed by Cyberware.
