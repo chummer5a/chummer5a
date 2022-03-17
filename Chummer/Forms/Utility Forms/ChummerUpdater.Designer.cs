@@ -19,6 +19,7 @@ namespace Chummer
                 _objConnectionLoaderCancellationTokenSource?.Dispose();
                 _clientDownloader?.Dispose();
                 _clientChangelogDownloader?.Dispose();
+                _objGenericFormClosingCancellationTokenSource.Dispose();
             }
             base.Dispose(disposing);
         }

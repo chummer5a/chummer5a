@@ -41,6 +41,8 @@ namespace Chummer
         private readonly LockingDictionary<Tuple<string, string>, Tuple<string, string>> _dicCache = new LockingDictionary<Tuple<string, string>, Tuple<string, string>>();
         private CancellationTokenSource _objCharacterXmlGeneratorCancellationTokenSource;
         private CancellationTokenSource _objXmlGeneratorCancellationTokenSource;
+        private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationToken _objGenericToken;
         private Task _tskCharacterXmlGenerator;
         private Task _tskXmlGenerator;
         private XmlDocument _objCharacterXml;
@@ -54,6 +56,7 @@ namespace Chummer
 
         public ExportCharacter(Character objCharacter)
         {
+            _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
             _objCharacter = objCharacter;
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -88,15 +91,49 @@ namespace Chummer
 
             _blnLoading = false;
             string strText = await LanguageManager.GetStringAsync("String_Space") + _objCharacter?.Name;
-            await Task.WhenAll(
-                this.DoThreadSafeAsync(x => x.Text += strText),
-                DoLanguageUpdate());
+            try
+            {
+                await Task.WhenAll(
+                    this.DoThreadSafeAsync(x => x.Text += strText, _objGenericToken),
+                    DoLanguageUpdate(_objGenericToken));
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
-        private void ExportCharacter_FormClosing(object sender, FormClosingEventArgs e)
+        private async void ExportCharacter_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _objXmlGeneratorCancellationTokenSource?.Cancel(false);
-            _objCharacterXmlGeneratorCancellationTokenSource?.Cancel(false);
+            if (_objXmlGeneratorCancellationTokenSource?.IsCancellationRequested == false)
+            {
+                _objXmlGeneratorCancellationTokenSource.Cancel(false);
+                _objXmlGeneratorCancellationTokenSource.Dispose();
+                _objXmlGeneratorCancellationTokenSource = null;
+            }
+            if (_objCharacterXmlGeneratorCancellationTokenSource?.IsCancellationRequested == false)
+            {
+                _objCharacterXmlGeneratorCancellationTokenSource.Cancel(false);
+                _objCharacterXmlGeneratorCancellationTokenSource.Dispose();
+                _objCharacterXmlGeneratorCancellationTokenSource = null;
+            }
+            try
+            {
+                await _tskXmlGenerator;
+            }
+            catch (OperationCanceledException)
+            {
+                // Swallow this
+            }
+            try
+            {
+                await _tskCharacterXmlGenerator;
+            }
+            catch (OperationCanceledException)
+            {
+                // Swallow this
+            }
+            _objGenericFormClosingCancellationTokenSource?.Cancel(false);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -124,12 +161,26 @@ namespace Chummer
 
         private async void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            await DoLanguageUpdate();
+            try
+            {
+                await DoLanguageUpdate(_objGenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cboXSLT_SelectedIndexChanged(object sender, EventArgs e)
         {
-            await DoXsltUpdate();
+            try
+            {
+                await DoXsltUpdate(_objGenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async Task DoLanguageUpdate(CancellationToken token = default)
@@ -428,7 +479,7 @@ namespace Chummer
         private void SetTextToWorkerResult(string strText)
         {
             string strDisplayText = strText;
-            // Displayed text has all mugshots data removed because it's unreadable as Base64 strings, but massie enough to slow down the program
+            // Displayed text has all mugshots data removed because it's unreadable as Base64 strings, but massive enough to slow down the program
             strDisplayText = s_RgxMainMugshotReplaceExpression.Replace(strDisplayText, "<mainmugshotbase64>[...]</mainmugshotbase64>");
             strDisplayText = s_RgxStringBase64ReplaceExpression.Replace(strDisplayText, "<stringbase64>[...]</stringbase64>");
             strDisplayText = s_RgxBase64ReplaceExpression.Replace(strDisplayText, "base64\": \"[...]\",");

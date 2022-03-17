@@ -21,6 +21,7 @@ namespace Chummer
                     ((MasterIndexEntry)objExistingItem.Value).Dispose();
                 Utils.ListItemListPool.Return(_lstFileNamesWithItems);
                 Utils.ListItemListPool.Return(_lstItems);
+                _objGenericFormClosingCancellationTokenSource.Dispose();
             }
             base.Dispose(disposing);
         }

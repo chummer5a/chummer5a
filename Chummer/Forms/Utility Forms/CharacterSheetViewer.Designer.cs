@@ -21,6 +21,7 @@ namespace Chummer
                 _lstCharacters.Dispose();
                 _objRefresherCancellationTokenSource?.Dispose();
                 _objOutputGeneratorCancellationTokenSource?.Dispose();
+                _objGenericFormClosingCancellationTokenSource.Dispose();
             }
             base.Dispose(disposing);
         }

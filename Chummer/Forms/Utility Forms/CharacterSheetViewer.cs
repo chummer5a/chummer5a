@@ -49,6 +49,8 @@ namespace Chummer
         private string _strPrintLanguage = GlobalSettings.Language;
         private CancellationTokenSource _objRefresherCancellationTokenSource;
         private CancellationTokenSource _objOutputGeneratorCancellationTokenSource;
+        private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationToken _objGenericToken;
         private Task _tskRefresher;
         private Task _tskOutputGenerator;
         private readonly string _strTempSheetFilePath = Path.Combine(Utils.GetTempPath(), Path.GetRandomFileName() + ".htm");
@@ -57,6 +59,7 @@ namespace Chummer
 
         public CharacterSheetViewer()
         {
+            _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
             if (_strSelectedSheet.StartsWith("Shadowrun 4", StringComparison.Ordinal))
             {
                 _strSelectedSheet = GlobalSettings.DefaultCharacterSheetDefaultValue;
@@ -130,7 +133,15 @@ namespace Chummer
                 }
             }
             _blnLoading = false;
-            await SetDocumentText(await LanguageManager.GetStringAsync("String_Loading_Characters"));
+            try
+            {
+                await SetDocumentText(await LanguageManager.GetStringAsync("String_Loading_Characters"),
+                                      _objGenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cboXSLT_SelectedIndexChanged(object sender, EventArgs e)
@@ -139,7 +150,14 @@ namespace Chummer
             if (!_blnLoading)
             {
                 _strSelectedSheet = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
-                await RefreshSheet();
+                try
+                {
+                    await RefreshSheet(_objGenericToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
         }
 
@@ -216,12 +234,37 @@ namespace Chummer
             }
 
             // Remove the mugshots directory when the form closes.
-            await Utils.SafeDeleteDirectoryAsync(Path.Combine(Utils.GetStartupPath, "mugshots"));
+            try
+            {
+                await Utils.SafeDeleteDirectoryAsync(Path.Combine(Utils.GetStartupPath, "mugshots"), token: _objGenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
 
             // Clear the reference to the character's Print window.
             foreach (CharacterShared objCharacterShared in Program.MainForm.OpenCharacterForms)
                 if (objCharacterShared.PrintWindow == this)
                     objCharacterShared.PrintWindow = null;
+
+            try
+            {
+                await _tskRefresher;
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+            try
+            {
+                await _tskOutputGenerator;
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+            _objGenericFormClosingCancellationTokenSource?.Cancel(false);
         }
 
         private async void cmdSaveAsPdf_Click(object sender, EventArgs e)
@@ -284,12 +327,19 @@ namespace Chummer
                     return;
                 }
 
-                if (!await Utils.SafeDeleteFileAsync(strSaveFile, true))
+                try
                 {
-                    Program.ShowMessageBox(this,
-                                           string.Format(GlobalSettings.CultureInfo,
-                                                         await LanguageManager.GetStringAsync(
-                                                             "Message_File_Cannot_Be_Accessed"), strSaveFile));
+                    if (!await Utils.SafeDeleteFileAsync(strSaveFile, true, token: _objGenericToken))
+                    {
+                        Program.ShowMessageBox(this,
+                                               string.Format(GlobalSettings.CultureInfo,
+                                                             await LanguageManager.GetStringAsync(
+                                                                 "Message_File_Cannot_Be_Accessed"), strSaveFile));
+                        return;
+                    }
+                }
+                catch (OperationCanceledException)
+                {
                     return;
                 }
 
@@ -400,31 +450,45 @@ namespace Chummer
                 }
 
                 _blnLoading = false;
-                await RefreshCharacters();
+                try
+                {
+                    await RefreshCharacters(_objGenericToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
         }
 
         private async void CharacterSheetViewer_CursorChanged(object sender, EventArgs e)
         {
-            if (Cursor == Cursors.WaitCursor)
+            try
             {
-                await Task.WhenAll(this.DoThreadSafeAsync(() =>
-                    {
-                        tsPrintPreview.Enabled = false;
-                        tsSaveAsHtml.Enabled = false;
-                    }),
-                    cmdPrint.DoThreadSafeAsync(x => x.Enabled = false),
-                    cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false));
+                if (UseWaitCursor)
+                {
+                    await Task.WhenAll(this.DoThreadSafeAsync(() =>
+                                       {
+                                           tsPrintPreview.Enabled = false;
+                                           tsSaveAsHtml.Enabled = false;
+                                       }, _objGenericToken),
+                                       cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, _objGenericToken),
+                                       cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, _objGenericToken));
+                }
+                else
+                {
+                    await Task.WhenAll(this.DoThreadSafeAsync(() =>
+                                       {
+                                           tsPrintPreview.Enabled = true;
+                                           tsSaveAsHtml.Enabled = true;
+                                       }, _objGenericToken),
+                                       cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
+                                       cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken));
+                }
             }
-            else
+            catch (OperationCanceledException)
             {
-                await Task.WhenAll(this.DoThreadSafeAsync(() =>
-                    {
-                        tsPrintPreview.Enabled = true;
-                        tsSaveAsHtml.Enabled = true;
-                    }),
-                    cmdPrint.DoThreadSafeAsync(x => x.Enabled = true),
-                    cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = true));
+                //swallow this
             }
         }
 
@@ -435,9 +499,9 @@ namespace Chummer
         /// <summary>
         /// Set the text of the viewer to something descriptive. Also disables the Print, Print Preview, Save as HTML, and Save as PDF buttons.
         /// </summary>
-        private async ValueTask SetDocumentText(string strText)
+        private async ValueTask SetDocumentText(string strText, CancellationToken token = default)
         {
-            int intHeight = await webViewer.DoThreadSafeFuncAsync(x => x.Height);
+            int intHeight = await webViewer.DoThreadSafeFuncAsync(x => x.Height, token);
             string strDocumentText
                 = "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\"><head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head><body style=\"width:100%;height:"
                   +
@@ -445,7 +509,7 @@ namespace Chummer
                   ";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">"
                   +
                   strText.CleanForHtml() + "</body></html>";
-            await webViewer.DoThreadSafeAsync(x => x.DocumentText = strDocumentText);
+            await webViewer.DoThreadSafeAsync(x => x.DocumentText = strDocumentText, token);
         }
 
         /// <summary>
@@ -673,16 +737,23 @@ namespace Chummer
 
         private async void webViewer_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            await this.DoThreadSafeAsync(x => x.UseWaitCursor = false);
-            if (_tskOutputGenerator?.IsCompleted == true && _tskRefresher?.IsCompleted == true)
+            try
             {
-                await Task.WhenAll(this.DoThreadSafeAsync(() =>
-                    {
-                        tsPrintPreview.Enabled = true;
-                        tsSaveAsHtml.Enabled = true;
-                    }),
-                    cmdPrint.DoThreadSafeAsync(x => x.Enabled = true),
-                    cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = true));
+                await this.DoThreadSafeAsync(x => x.UseWaitCursor = false, _objGenericToken);
+                if (_tskOutputGenerator?.IsCompleted == true && _tskRefresher?.IsCompleted == true)
+                {
+                    await Task.WhenAll(this.DoThreadSafeAsync(() =>
+                                       {
+                                           tsPrintPreview.Enabled = true;
+                                           tsSaveAsHtml.Enabled = true;
+                                       }, _objGenericToken),
+                                       cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
+                                       cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken));
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -798,10 +869,10 @@ namespace Chummer
         /// <summary>
         /// Set the XSL sheet that will be selected by default.
         /// </summary>
-        public ValueTask SetSelectedSheet(string strSheet)
+        public ValueTask SetSelectedSheet(string strSheet, CancellationToken token = default)
         {
             _strSelectedSheet = strSheet;
-            return RefreshSheet();
+            return RefreshSheet(token);
         }
 
         /// <summary>
@@ -855,7 +926,14 @@ namespace Chummer
 
         private async void ObjCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            await RefreshCharacters();
+            try
+            {
+                await RefreshCharacters(_objGenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         #endregion Methods

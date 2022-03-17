@@ -39,7 +39,8 @@ namespace Chummer
             // Display the contents of the changelog.txt file in the TextBox.
             try
             {
-                txtHistory.Text = File.ReadAllText(Path.Combine(Utils.GetStartupPath, "changelog.txt"));
+                await txtHistory.DoThreadSafeAsync(
+                    x => x.Text = File.ReadAllText(Path.Combine(Utils.GetStartupPath, "changelog.txt")));
             }
             catch
             {
@@ -50,8 +51,12 @@ namespace Chummer
                 Close();
                 return;
             }
-            txtHistory.SelectionStart = 0;
-            txtHistory.SelectionLength = 0;
+
+            await txtHistory.DoThreadSafeAsync(x =>
+            {
+                x.SelectionStart = 0;
+                x.SelectionLength = 0;
+            });
         }
 
         #endregion Control Events

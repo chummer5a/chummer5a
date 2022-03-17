@@ -37,6 +37,8 @@ namespace Chummer
         private readonly LockingDictionary<MasterIndexEntry, Task<string>> _dicCachedNotes = new LockingDictionary<MasterIndexEntry, Task<string>>();
         private readonly List<ListItem> _lstFileNamesWithItems = Utils.ListItemListPool.Get();
         private readonly List<ListItem> _lstItems = Utils.ListItemListPool.Get();
+        private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationToken _objGenericToken;
 
         private static CharacterSettings GetInitialSetting()
         {
@@ -84,6 +86,7 @@ namespace Chummer
 
         public MasterIndex()
         {
+            _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -112,7 +115,7 @@ namespace Chummer
                 CharacterSettings objSettings;
                 bool blnSuccess;
                 
-                await cboCharacterSetting.DoThreadSafeFunc(x => x.PopulateWithListItemsAsync(lstCharacterSettings));
+                await cboCharacterSetting.DoThreadSafeFunc(x => x.PopulateWithListItemsAsync(lstCharacterSettings), token);
                 if (!string.IsNullOrEmpty(strOldSettingKey))
                 {
                     (blnSuccess, objSettings)
@@ -143,17 +146,37 @@ namespace Chummer
 
         private async void MasterIndex_Load(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            try
             {
-                await PopulateCharacterSettings();
-                await LoadContent().AsTask().ContinueWith(x => IsFinishedLoading = true);
-                _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
+                using (CursorWait.New(this))
+                {
+                    await PopulateCharacterSettings(_objGenericToken);
+                    await LoadContent(_objGenericToken).AsTask()
+                                                       .ContinueWith(x => IsFinishedLoading = true, _objGenericToken);
+                    _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
-        private void MasterIndex_FormClosing(object sender, FormClosingEventArgs e)
+        private async void MasterIndex_FormClosing(object sender, FormClosingEventArgs e)
         {
             _objSelectedSetting.PropertyChanged -= OnSelectedSettingChanged;
+            _objGenericFormClosingCancellationTokenSource?.Cancel(false);
+            foreach (Task<string> tskLoop in _dicCachedNotes.Values)
+            {
+                try
+                {
+                    await tskLoop;
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+            }
         }
 
         private async void OnSelectedSettingChanged(object sender, PropertyChangedEventArgs e)
@@ -162,7 +185,16 @@ namespace Chummer
                 || e.PropertyName == nameof(CharacterSettings.EnabledCustomDataDirectoryPaths))
             {
                 using (CursorWait.New(this))
-                    await LoadContent();
+                {
+                    try
+                    {
+                        await LoadContent(_objGenericToken);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
+                }
             }
         }
 
@@ -172,36 +204,46 @@ namespace Chummer
                 return;
             using (CursorWait.New(this))
             {
-                string strSelectedSetting = (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue) as CharacterSettings)?.DictionaryKey;
-                CharacterSettings objSettings = null;
-                bool blnSuccess = false;
-                if (!string.IsNullOrEmpty(strSelectedSetting))
+                try
                 {
-                    (blnSuccess, objSettings)
-                        = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(strSelectedSetting);
-                }
-                if (!blnSuccess)
-                {
-                    (blnSuccess, objSettings)
-                        = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
-                            GlobalSettings.DefaultMasterIndexSetting);
+                    string strSelectedSetting
+                        = (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, _objGenericToken) as
+                            CharacterSettings)?.DictionaryKey;
+                    CharacterSettings objSettings = null;
+                    bool blnSuccess = false;
+                    if (!string.IsNullOrEmpty(strSelectedSetting))
+                    {
+                        (blnSuccess, objSettings)
+                            = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(strSelectedSetting);
+                    }
+
                     if (!blnSuccess)
                     {
                         (blnSuccess, objSettings)
                             = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
-                                GlobalSettings.DefaultMasterIndexSettingDefaultValue);
+                                GlobalSettings.DefaultMasterIndexSetting);
                         if (!blnSuccess)
-                            objSettings = SettingsManager.LoadedCharacterSettings.Values.First();
+                        {
+                            (blnSuccess, objSettings)
+                                = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                    GlobalSettings.DefaultMasterIndexSettingDefaultValue);
+                            if (!blnSuccess)
+                                objSettings = SettingsManager.LoadedCharacterSettings.Values.First();
+                        }
+                    }
+
+                    if (objSettings != _objSelectedSetting)
+                    {
+                        _objSelectedSetting.PropertyChanged -= OnSelectedSettingChanged;
+                        _objSelectedSetting = objSettings;
+                        _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
+
+                        await LoadContent(_objGenericToken);
                     }
                 }
-
-                if (objSettings != _objSelectedSetting)
+                catch (OperationCanceledException)
                 {
-                    _objSelectedSetting.PropertyChanged -= OnSelectedSettingChanged;
-                    _objSelectedSetting = objSettings;
-                    _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
-
-                    await LoadContent();
+                    //swallow this
                 }
             }
         }
@@ -408,7 +450,7 @@ namespace Chummer
                         _lstFileNamesWithItems.Insert(
                             0, new ListItem(string.Empty, await LanguageManager.GetStringAsync("String_All")));
 
-                        int intOldSelectedIndex = cboFile.DoThreadSafeFunc(x => x.SelectedIndex);
+                        int intOldSelectedIndex = cboFile.DoThreadSafeFunc(x => x.SelectedIndex, token);
                         await Task.WhenAll(
                             cboFile.PopulateWithListItemsAsync(_lstFileNamesWithItems).ContinueWith(
                                 y => cboFile.DoThreadSafe
@@ -499,52 +541,68 @@ namespace Chummer
                 return;
             using (CursorWait.New(this))
             {
-                if (lstItems.DoThreadSafeFunc(x => x.SelectedValue) is MasterIndexEntry objEntry)
+                try
                 {
-                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblSource.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblSourceClickReminder.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblSource.DoThreadSafeAsync(x => x.Text = objEntry.DisplaySource.ToString());
-                    await lblSource.DoThreadSafeAsync(x => x.ToolTipText = objEntry.DisplaySource.LanguageBookTooltip);
-                    (bool blnSuccess, Task<string> tskNotes) = await _dicCachedNotes.TryGetValueAsync(objEntry);
-                    if (!blnSuccess)
+                    if (lstItems.DoThreadSafeFunc(x => x.SelectedValue, _objGenericToken) is MasterIndexEntry objEntry)
                     {
-                        if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
-                                StringComparison.OrdinalIgnoreCase)
-                            && (objEntry.TranslatedNameOnPage != objEntry.EnglishNameOnPage
-                                || objEntry.Source.Page != objEntry.DisplaySource.Page))
+                        await Task.WhenAll(lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true, _objGenericToken),
+                                           lblSourceClickReminder.DoThreadSafeAsync(
+                                               x => x.Visible = true, _objGenericToken),
+                                           lblSource.DoThreadSafeAsync(
+                                               x =>
+                                               {
+                                                   x.Visible = true;
+                                                   x.Text = objEntry.DisplaySource.ToString();
+                                                   x.ToolTipText = objEntry.DisplaySource.LanguageBookTooltip;
+                                               }, _objGenericToken));
+                        (bool blnSuccess, Task<string> tskNotes) = await _dicCachedNotes.TryGetValueAsync(objEntry);
+                        if (!blnSuccess)
                         {
-                            // don't check again it is not translated
-                            tskNotes = Task.Run(async () =>
+                            if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                                                                StringComparison.OrdinalIgnoreCase)
+                                && (objEntry.TranslatedNameOnPage != objEntry.EnglishNameOnPage
+                                    || objEntry.Source.Page != objEntry.DisplaySource.Page))
                             {
-                                string strReturn = await CommonFunctions.GetTextFromPdfAsync(objEntry.Source.ToString(),
-                                    objEntry.EnglishNameOnPage);
-                                if (string.IsNullOrEmpty(strReturn))
-                                    strReturn = await CommonFunctions.GetTextFromPdfAsync(
-                                        objEntry.DisplaySource.ToString(), objEntry.TranslatedNameOnPage);
-                                return strReturn;
-                            });
+                                // don't check again it is not translated
+                                tskNotes = Task.Run(async () =>
+                                {
+                                    string strReturn = await CommonFunctions.GetTextFromPdfAsync(
+                                        objEntry.Source.ToString(),
+                                        objEntry.EnglishNameOnPage);
+                                    if (string.IsNullOrEmpty(strReturn))
+                                        strReturn = await CommonFunctions.GetTextFromPdfAsync(
+                                            objEntry.DisplaySource.ToString(), objEntry.TranslatedNameOnPage);
+                                    return strReturn;
+                                }, _objGenericToken);
+                            }
+                            else
+                            {
+                                tskNotes = Task.Run(() =>
+                                                        CommonFunctions.GetTextFromPdfAsync(objEntry.Source.ToString(),
+                                                            objEntry.EnglishNameOnPage), _objGenericToken);
+                            }
+
+                            await _dicCachedNotes.TryAddAsync(objEntry, tskNotes);
                         }
-                        else
+
+                        string strNotes = await tskNotes;
+                        await txtNotes.DoThreadSafeAsync(x =>
                         {
-                            tskNotes = Task.Run(() =>
-                                CommonFunctions.GetTextFromPdfAsync(objEntry.Source.ToString(),
-                                    objEntry.EnglishNameOnPage));
-                        }
-
-                        await _dicCachedNotes.TryAddAsync(objEntry, tskNotes);
+                            x.Text = strNotes;
+                            x.Visible = true;
+                        }, _objGenericToken);
                     }
-
-                    string strNotes = await tskNotes;
-                    await txtNotes.DoThreadSafeAsync(x => x.Text = strNotes);
-                    await txtNotes.DoThreadSafeAsync(x => x.Visible = true);
+                    else
+                    {
+                        await Task.WhenAll(lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken),
+                                           lblSource.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken),
+                                           lblSourceClickReminder.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken),
+                                           txtNotes.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken));
+                    }
                 }
-                else
+                catch (OperationCanceledException)
                 {
-                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
-                    await lblSource.DoThreadSafeAsync(x => x.Visible = false);
-                    await lblSourceClickReminder.DoThreadSafeAsync(x => x.Visible = false);
-                    await txtNotes.DoThreadSafeAsync(x => x.Visible = false);
+                    //swallow this
                 }
             }
         }

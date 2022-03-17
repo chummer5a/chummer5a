@@ -50,6 +50,8 @@ namespace Chummer
         private CancellationTokenSource _objChangelogDownloaderCancellationTokenSource;
         private CancellationTokenSource _objConnectionLoaderCancellationTokenSource;
         private CancellationTokenSource _objUpdatesDownloaderCancellationTokenSource;
+        private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationToken _objGenericToken;
         private readonly WebClient _clientDownloader;
         private readonly WebClient _clientChangelogDownloader;
         private string _strExceptionString;
@@ -57,6 +59,7 @@ namespace Chummer
         public ChummerUpdater()
         {
             Log.Info("ChummerUpdater");
+            _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -143,6 +146,7 @@ namespace Chummer
                     // Swallow this
                 }
             }
+            _objGenericFormClosingCancellationTokenSource?.Cancel(false);
             Log.Info("ChummerUpdater_Load exit");
         }
 
@@ -576,13 +580,27 @@ namespace Chummer
         private async void cmdRestart_Click(object sender, EventArgs e)
         {
             Log.Info("cmdRestart_Click");
-            await DoUpdate();
+            try
+            {
+                await DoUpdate(_objGenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdCleanReinstall_Click(object sender, EventArgs e)
         {
             Log.Info("cmdCleanReinstall_Click");
-            await DoCleanReinstall();
+            try
+            {
+                await DoCleanReinstall(_objGenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async ValueTask<bool> CreateBackupZip(CancellationToken token = default)
@@ -685,24 +703,25 @@ namespace Chummer
                         lstFilesToDelete.Add(strFileToDelete);
                     }
 
-                    await InstallUpdateFromZip(_strTempLatestVersionZipPath, lstFilesToDelete);
+                    await InstallUpdateFromZip(_strTempLatestVersionZipPath, lstFilesToDelete, token);
                 }
             }
         }
 
-        private async ValueTask DoCleanReinstall()
+        private async ValueTask DoCleanReinstall(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Updater_CleanReinstallPrompt"),
-                await LanguageManager.GetStringAsync("MessageTitle_Updater_CleanReinstallPrompt"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                                       await LanguageManager.GetStringAsync("MessageTitle_Updater_CleanReinstallPrompt"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempLatestVersionZipPath))
             {
                 using (CursorWait.New(this))
                 {
-                    cmdUpdate.Enabled = false;
-                    cmdRestart.Enabled = false;
-                    cmdCleanReinstall.Enabled = false;
-                    if (!(await CreateBackupZip()))
+                    await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = false, token);
+                    await cmdRestart.DoThreadSafeAsync(x => x.Enabled = false, token);
+                    await cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = false, token);
+                    if (!await CreateBackupZip(token))
                         return;
 
                     string[] astrAllFiles = Directory.GetFiles(_strAppPath, "*", SearchOption.AllDirectories);
@@ -728,13 +747,14 @@ namespace Chummer
                         lstFilesToDelete.Add(strFileToDelete);
                     }
 
-                    await InstallUpdateFromZip(_strTempLatestVersionZipPath, lstFilesToDelete);
+                    await InstallUpdateFromZip(_strTempLatestVersionZipPath, lstFilesToDelete, token);
                 }
             }
         }
 
-        private async ValueTask InstallUpdateFromZip(string strZipPath, ICollection<string> lstFilesToDelete)
+        private async ValueTask InstallUpdateFromZip(string strZipPath, ICollection<string> lstFilesToDelete, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             bool blnDoRestart = true;
             // Copy over the archive from the temp directory.
             Log.Info("Extracting downloaded archive into application path: " + strZipPath);
@@ -744,6 +764,7 @@ namespace Chummer
                 {
                     foreach (ZipArchiveEntry entry in archive.Entries)
                     {
+                        token.ThrowIfCancellationRequested();
                         // Skip directories because they already get handled with Directory.CreateDirectory
                         if (entry.FullName.Length > 0 && entry.FullName[entry.FullName.Length - 1] == '/')
                             continue;
@@ -755,7 +776,7 @@ namespace Chummer
                                 Directory.CreateDirectory(strLoopDirectory);
                             if (File.Exists(strLoopPath))
                             {
-                                if (!await Utils.SafeDeleteFileAsync(strLoopPath + ".old", !SilentMode))
+                                if (!await Utils.SafeDeleteFileAsync(strLoopPath + ".old", !SilentMode, token: token))
                                 {
                                     blnDoRestart = false;
                                     break;
@@ -831,7 +852,7 @@ namespace Chummer
                 Dictionary<string, Task<bool>> dicTasks = new Dictionary<string, Task<bool>>(lstFilesToDelete.Count);
                 foreach (string strFileToDelete in lstFilesToDelete)
                 {
-                    dicTasks.Add(strFileToDelete, Utils.SafeDeleteFileAsync(strFileToDelete));
+                    dicTasks.Add(strFileToDelete, Utils.SafeDeleteFileAsync(strFileToDelete, token: token));
                 }
                 await Task.WhenAll(dicTasks.Values);
                 List<string> lstBlocked = new List<string>(lstFilesToDelete.Count);
@@ -963,7 +984,14 @@ namespace Chummer
                         await LanguageManager.GetStringAsync("Title_Update"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==
                     DialogResult.Yes)
                 {
-                    await DoUpdate();
+                    try
+                    {
+                        await DoUpdate(_objGenericToken);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
                 }
                 else
                 {
