@@ -59,7 +59,7 @@ namespace Chummer
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && nudAmount.Value % _objCharacterSettings.NuyenPerBPWftP != 0)
+            if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && await nudAmount.DoThreadSafeFuncAsync(x => x.Value) % _objCharacterSettings.NuyenPerBPWftP != 0)
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_KarmaNuyenExchange"),
                     await LanguageManager.GetStringAsync("MessageTitle_KarmaNuyenExchange"), MessageBoxButtons.OK,
@@ -213,10 +213,14 @@ namespace Chummer
 
         private async void CreateExpanse_Load(object sender, EventArgs e)
         {
-            txtDescription.Text = await LanguageManager.GetStringAsync("String_ExpenseDefault");
-            chkKarmaNuyenExchange.Visible = !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);
-            chkKarmaNuyenExchange.Text = KarmaNuyenExchangeString;
-            chkForceCareerVisible.Enabled = chkKarmaNuyenExchange.Checked;
+            string strText = await LanguageManager.GetStringAsync("String_ExpenseDefault");
+            await txtDescription.DoThreadSafeAsync(x => x.Text = strText);
+            await chkKarmaNuyenExchange.DoThreadSafeAsync(x =>
+            {
+                x.Visible = !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);
+                x.Text = KarmaNuyenExchangeString;
+            });
+            await chkForceCareerVisible.DoThreadSafeAsync(x => x.Enabled = chkKarmaNuyenExchange.Checked);
         }
     }
 }

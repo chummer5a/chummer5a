@@ -629,17 +629,17 @@ namespace Chummer
         private async ValueTask AcceptForm()
         {
             // Make sure a value has been selected if necessary.
-            if (txtTranslateSelection.Visible && string.IsNullOrEmpty(txtSelect.Text))
+            if (await txtTranslateSelection.DoThreadSafeFuncAsync(x => x.Visible) && string.IsNullOrEmpty(await txtSelect.DoThreadSafeFuncAsync(x => x.Text)))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectItem"), await LanguageManager.GetStringAsync("MessageTitle_SelectItem"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             // Make sure a value has been provided for the name.
-            if (string.IsNullOrEmpty(txtName.Text))
+            if (string.IsNullOrEmpty(await txtName.DoThreadSafeFuncAsync(x => x.Text)))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ImprovementName"), await LanguageManager.GetStringAsync("MessageTitle_ImprovementName"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                txtName.Focus();
+                await txtName.DoThreadSafeAsync(x => x.Focus());
                 return;
             }
 
@@ -649,7 +649,7 @@ namespace Chummer
                 using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {
                     // Build the XML for the Improvement.
-                    XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = " + cboImprovemetType.SelectedValue.ToString().CleanXPath() + ']');
+                    XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = " + (await cboImprovemetType.DoThreadSafeFuncAsync(x => x.SelectedValue)).ToString().CleanXPath() + ']');
                     string strInternal = objFetchNode?["internal"]?.InnerText;
                     if (string.IsNullOrEmpty(strInternal))
                         return;
@@ -660,7 +660,7 @@ namespace Chummer
                     await objWriter.WriteStartElementAsync(strInternal);
 
                     string strRating = string.Empty;
-                    if (chkApplyToRating.Checked)
+                    if (await chkApplyToRating.DoThreadSafeFuncAsync(x => x.Checked))
                         strRating = "<applytorating>True</applytorating>";
 
                     // Retrieve the XML data from the document and replace the values as necessary.
@@ -674,13 +674,29 @@ namespace Chummer
                     }
                     // ReSharper disable once PossibleNullReferenceException
                     string strXml = objFetchNode["xml"].InnerText
-                        .Replace("{val}", nudVal.Value.ToString(GlobalSettings.InvariantCultureInfo))
-                        .Replace("{min}", nudMin.Value.ToString(GlobalSettings.InvariantCultureInfo))
-                        .Replace("{max}", nudMax.Value.ToString(GlobalSettings.InvariantCultureInfo))
-                        .Replace("{aug}", nudAug.Value.ToString(GlobalSettings.InvariantCultureInfo))
-                        .Replace("{free}", chkFree.Checked.ToString(GlobalSettings.InvariantCultureInfo).ToLowerInvariant())
-                        .Replace("{select}", txtSelect.Text)
-                        .Replace("{applytorating}", strRating);
+                                                       .Replace("{val}",
+                                                                await nudVal.DoThreadSafeFuncAsync(
+                                                                    x => x.Value.ToString(
+                                                                        GlobalSettings.InvariantCultureInfo)))
+                                                       .Replace("{min}",
+                                                                await nudMin.DoThreadSafeFuncAsync(
+                                                                    x => x.Value.ToString(
+                                                                        GlobalSettings.InvariantCultureInfo)))
+                                                       .Replace("{max}",
+                                                                await nudMax.DoThreadSafeFuncAsync(
+                                                                    x => x.Value.ToString(
+                                                                        GlobalSettings.InvariantCultureInfo)))
+                                                       .Replace("{aug}",
+                                                                await nudAug.DoThreadSafeFuncAsync(
+                                                                    x => x.Value.ToString(
+                                                                        GlobalSettings.InvariantCultureInfo)))
+                                                       .Replace("{free}",
+                                                                await chkFree.DoThreadSafeFuncAsync(
+                                                                    x => x.Checked.ToString(
+                                                                        GlobalSettings.InvariantCultureInfo)))
+                                                       .Replace("{select}",
+                                                                await txtSelect.DoThreadSafeFuncAsync(x => x.Text))
+                                                       .Replace("{applytorating}", strRating);
                     await objWriter.WriteRawAsync(strXml);
 
                     // Write the rest of the document.
