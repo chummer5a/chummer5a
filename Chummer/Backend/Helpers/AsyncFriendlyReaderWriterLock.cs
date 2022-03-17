@@ -72,6 +72,7 @@ namespace Chummer
             if (_blnIsDisposed || _blnIsDisposing)
                 throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
 
+            token.ThrowIfCancellationRequested();
             SemaphoreSlim objCurrentSemaphore = _objCurrentWriterSemaphore.Value ?? _objTopLevelWriterSemaphore;
             SemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
             _objCurrentWriterSemaphore.Value = objNextSemaphore;
@@ -85,6 +86,7 @@ namespace Chummer
                 }
                 else
                     objCurrentSemaphore.Wait(token);
+                token.ThrowIfCancellationRequested();
                 if (Interlocked.Increment(ref _intCountActiveReaders) == 1 && !IsWriteLockHeldRecursively)
                 {
                     try
@@ -120,6 +122,7 @@ namespace Chummer
         {
             if (_blnIsDisposed || _blnIsDisposing)
                 return Task.FromException<IAsyncDisposable>(new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock)));
+            token.ThrowIfCancellationRequested();
             SemaphoreSlim objCurrentSemaphore = _objCurrentWriterSemaphore.Value ?? _objTopLevelWriterSemaphore;
             SemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
             _objCurrentWriterSemaphore.Value = objNextSemaphore;
@@ -194,6 +197,7 @@ namespace Chummer
             if (_blnIsDisposed || _blnIsDisposing)
                 throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
 
+            token.ThrowIfCancellationRequested();
             // Temporarily acquiring a write lock just to mess with the read locks is a bottleneck, so don't do any such setting unless we need it
             bool blnDoWriterLock = false;
             SemaphoreSlim objCurrentSemaphore = _objCurrentWriterSemaphore.Value ?? _objTopLevelWriterSemaphore;
@@ -247,6 +251,7 @@ namespace Chummer
         {
             if (_blnIsDisposed || _blnIsDisposing)
                 return Task.FromException(new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock)));
+            token.ThrowIfCancellationRequested();
             SemaphoreSlim objCurrentSemaphore = _objCurrentWriterSemaphore.Value ?? _objTopLevelWriterSemaphore;
             SemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
             _objCurrentWriterSemaphore.Value = objNextSemaphore;

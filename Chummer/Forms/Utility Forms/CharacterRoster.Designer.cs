@@ -22,6 +22,7 @@ namespace Chummer
                 _watcherCharacterRosterFolder?.Dispose();
                 _objMostRecentlyUsedsRefreshCancellationTokenSource?.Dispose();
                 _objWatchFolderRefreshCancellationTokenSource?.Dispose();
+                _objGenericFormClosingCancellationTokenSource.Dispose();
             }
             base.Dispose(disposing);
         }
