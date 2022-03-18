@@ -7011,30 +7011,30 @@ namespace Chummer
         /// <summary>
         /// Save the Character.
         /// </summary>
-        public virtual async ValueTask<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false)
+        public virtual async ValueTask<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false, CancellationToken token = default)
         {
             using (CursorWait.New(this))
             {
                 // If the Character does not have a file name, trigger the Save As menu item instead.
                 if (string.IsNullOrEmpty(CharacterObject.FileName))
                 {
-                    return await SaveCharacterAs(blnDoCreated);
+                    return await SaveCharacterAs(blnDoCreated, token);
                 }
 
                 if (blnDoCreated)
                 {
                     // If the Created is checked, make sure the user wants to actually save this character.
-                    if (blnNeedConfirm && !await ConfirmSaveCreatedCharacter())
+                    if (blnNeedConfirm && !await ConfirmSaveCreatedCharacter(token))
                         return false;
                     // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
-                    return await SaveCharacterAsCreated();
+                    return await SaveCharacterAsCreated(token);
                 }
 
                 using (LoadingBar frmProgressBar = await Program.CreateAndShowProgressBarAsync())
                 {
                     frmProgressBar.PerformStep(CharacterObject.CharacterName,
                                                LoadingBar.ProgressBarTextPatterns.Saving);
-                    if (!await CharacterObject.SaveAsync())
+                    if (!await CharacterObject.SaveAsync(token: token))
                         return false;
                     GlobalSettings.MostRecentlyUsedCharacters.Insert(0, CharacterObject.FileName);
                     IsDirty = false;
@@ -7047,12 +7047,12 @@ namespace Chummer
         /// <summary>
         /// Save the Character using the Save As dialogue box.
         /// </summary>
-        public virtual async ValueTask<bool> SaveCharacterAs(bool blnDoCreated = false)
+        public virtual async ValueTask<bool> SaveCharacterAs(bool blnDoCreated = false, CancellationToken token = default)
         {
             using (CursorWait.New(this))
             {
                 // If the Created is checked, make sure the user wants to actually save this character.
-                if (blnDoCreated && !await ConfirmSaveCreatedCharacter())
+                if (blnDoCreated && !await ConfirmSaveCreatedCharacter(token))
                 {
                     return false;
                 }
@@ -7080,19 +7080,19 @@ namespace Chummer
                     CharacterObject.FileName = saveFileDialog.FileName;
                 }
 
-                return await SaveCharacter(false, blnDoCreated);
+                return await SaveCharacter(false, blnDoCreated, token);
             }
         }
 
         /// <summary>
         /// Save the character as Created and re-open it in Career Mode.
         /// </summary>
-        public virtual Task<bool> SaveCharacterAsCreated() { return Task.FromResult(false); }
+        public virtual Task<bool> SaveCharacterAsCreated(CancellationToken token = default) { return Task.FromResult(false); }
 
         /// <summary>
         /// Verify that the user wants to save this character as Created.
         /// </summary>
-        public virtual Task<bool> ConfirmSaveCreatedCharacter() { return Task.FromResult(true); }
+        public virtual Task<bool> ConfirmSaveCreatedCharacter(CancellationToken token = default) { return Task.FromResult(true); }
 
         /// <summary>
         /// The frmViewer window being used by the character.

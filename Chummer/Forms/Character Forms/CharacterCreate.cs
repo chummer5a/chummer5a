@@ -12332,24 +12332,25 @@ namespace Chummer
         /// <summary>
         /// Save the Character.
         /// </summary>
-        public override ValueTask<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false)
+        public override ValueTask<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false, CancellationToken token = default)
         {
-            return base.SaveCharacter(blnNeedConfirm, blnDoCreated || chkCharacterCreated.Checked);
+            return base.SaveCharacter(blnNeedConfirm, blnDoCreated || chkCharacterCreated.Checked, token);
         }
 
         /// <summary>
         /// Save the Character using the Save As dialogue box.
         /// </summary>
         /// <param name="blnDoCreated">If True, forces the character to be saved in Career Mode (if possible to do so).</param>
-        public override ValueTask<bool> SaveCharacterAs(bool blnDoCreated = false)
+        /// <param name="token">Cancellation token to use.</param>
+        public override ValueTask<bool> SaveCharacterAs(bool blnDoCreated = false, CancellationToken token = default)
         {
-            return base.SaveCharacterAs(blnDoCreated || chkCharacterCreated.Checked);
+            return base.SaveCharacterAs(blnDoCreated || chkCharacterCreated.Checked, token);
         }
 
         /// <summary>
         /// Save the character as Created and re-open it in Career Mode.
         /// </summary>
-        public override async Task<bool> SaveCharacterAsCreated()
+        public override async Task<bool> SaveCharacterAsCreated(CancellationToken token = default)
         {
             using (CursorWait.New(this))
             {
@@ -12414,7 +12415,7 @@ namespace Chummer
                 {
                     frmProgressBar.PerformStep(CharacterObject.CharacterName,
                                                LoadingBar.ProgressBarTextPatterns.Saving);
-                    if (!await CharacterObject.SaveAsync())
+                    if (!await CharacterObject.SaveAsync(token: token))
                     {
                         CharacterObject.ExpenseEntries.Clear();
                         if (lstAttributesToAdd != null)
@@ -15480,11 +15481,11 @@ namespace Chummer
         /// <summary>
         /// Verify that the user wants to save this character as Created.
         /// </summary>
-        public override async Task<bool> ConfirmSaveCreatedCharacter()
+        public override async Task<bool> ConfirmSaveCreatedCharacter(CancellationToken token = default)
         {
             return Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ConfirmCreate"),
                 await LanguageManager.GetStringAsync("MessageTitle_ConfirmCreate"), MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question) != DialogResult.No && await ValidateCharacter();
+                MessageBoxIcon.Question) != DialogResult.No && await ValidateCharacter(token);
         }
 
         /// <summary>
