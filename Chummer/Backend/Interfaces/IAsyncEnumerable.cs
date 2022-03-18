@@ -1733,6 +1733,11 @@ namespace Chummer
             await ForEachAsync(await tskEnumerable, objFuncToRun);
         }
 
+        /// <summary>
+        /// Perform a synchronous action on every element in an enumerable with support for breaking out of the loop.
+        /// </summary>
+        /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
+        /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         public static async Task ForEachWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate)
         {
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
@@ -1745,6 +1750,11 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Perform an asynchronous action on every element in an enumerable with support for breaking out of the loop.
+        /// </summary>
+        /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
+        /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         public static async Task ForEachWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate)
         {
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
@@ -1757,11 +1767,21 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Perform a synchronous action on every element in an enumerable with support for breaking out of the loop.
+        /// </summary>
+        /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
+        /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         public static async Task ForEachWithBreak<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate)
         {
             await ForEachWithBreak(await tskEnumerable, objFuncToRunWithPossibleTerminate);
         }
 
+        /// <summary>
+        /// Perform an asynchronous action on every element in an enumerable with support for breaking out of the loop.
+        /// </summary>
+        /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
+        /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         public static async Task ForEachWithBreak<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate)
         {
             await ForEachWithBreak(await tskEnumerable, objFuncToRunWithPossibleTerminate);

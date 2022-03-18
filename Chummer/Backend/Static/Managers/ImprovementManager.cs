@@ -844,23 +844,23 @@ namespace Chummer
                                         ImprovementDictionaryKey objLoopKey = x.Key;
                                         if (objLoopKey.CharacterObject != objCharacter
                                             || objLoopKey.ImprovementType != eImprovementType)
-                                            return false;
+                                            return true;
                                         if (!string.IsNullOrWhiteSpace(strImprovedName)
                                             && !string.IsNullOrWhiteSpace(objLoopKey.ImprovementName)
                                             && strImprovedName != objLoopKey.ImprovementName)
-                                            return false;
+                                            return true;
                                         blnDoRecalculate = false;
                                         decimal decLoopCachedValue = x.Value.Item1;
                                         if (decLoopCachedValue == decimal.MinValue)
                                         {
                                             blnDoRecalculate = true;
-                                            return true;
+                                            return false;
                                         }
 
                                         decCachedValue += decLoopCachedValue;
                                         lstUsedImprovements.AddRange(x.Value.Item2);
 
-                                        return false;
+                                        return true;
                                     });
                                 }
 
