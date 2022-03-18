@@ -7125,7 +7125,7 @@ namespace Chummer
 
         public async ValueTask DoExport()
         {
-            using (ExportCharacter frmExportCharacter = new ExportCharacter(CharacterObject))
+            using (ExportCharacter frmExportCharacter = await this.DoThreadSafeFuncAsync(() => new ExportCharacter(CharacterObject)))
                 await frmExportCharacter.ShowDialogSafeAsync(this);
         }
 

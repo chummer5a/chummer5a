@@ -1330,27 +1330,30 @@ namespace Chummer
         /// </summary>
         /// <param name="strInput">String to process</param>
         /// <returns>Version of <paramref name="strInput"/> surrounded with RTF formatting codes</returns>
-        public static async ValueTask<string> PlainTextToRtfAsync(this string strInput)
+        public static Task<string> PlainTextToRtfAsync(this string strInput)
         {
-            if (string.IsNullOrEmpty(strInput))
-                return string.Empty;
-            if (await strInput.IsRtfAsync())
-                return strInput;
-            strInput = strInput.NormalizeWhiteSpace();
-            await s_RtbRtfManipulatorLock.WaitAsync();
-            try
+            return string.IsNullOrEmpty(strInput) ? Task.FromResult(string.Empty) : InnerDo();
+
+            async Task<string> InnerDo()
             {
-                if (!s_RtbRtfManipulator.IsHandleCreated)
-                    s_RtbRtfManipulator.CreateControl();
-                return await s_RtbRtfManipulator.DoThreadSafeFuncAsync(x =>
+                if (await strInput.IsRtfAsync())
+                    return strInput;
+                strInput = strInput.NormalizeWhiteSpace();
+                await s_RtbRtfManipulatorLock.WaitAsync();
+                try
                 {
-                    x.Text = strInput;
-                    return x.Rtf;
-                });
-            }
-            finally
-            {
-                s_RtbRtfManipulatorLock.Release();
+                    if (!s_RtbRtfManipulator.IsHandleCreated)
+                        s_RtbRtfManipulator.CreateControl();
+                    return await s_RtbRtfManipulator.DoThreadSafeFuncAsync(x =>
+                    {
+                        x.Text = strInput;
+                        return x.Rtf;
+                    });
+                }
+                finally
+                {
+                    s_RtbRtfManipulatorLock.Release();
+                }
             }
         }
 
@@ -1396,36 +1399,40 @@ namespace Chummer
         /// </summary>
         /// <param name="strInput">String to process</param>
         /// <returns>Version of <paramref name="strInput"/> without RTF formatting codes</returns>
-        public static async ValueTask<string> RtfToPlainTextAsync(this string strInput)
+        public static Task<string> RtfToPlainTextAsync(this string strInput)
         {
-            if (string.IsNullOrEmpty(strInput))
-                return string.Empty;
-            string strInputTrimmed = strInput.TrimStart();
-            if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
-                || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
+            return string.IsNullOrEmpty(strInput) ? Task.FromResult(string.Empty) : InnerDo();
+
+            async Task<string> InnerDo()
             {
-                await s_RtbRtfManipulatorLock.WaitAsync();
-                try
+                string strInputTrimmed = strInput.TrimStart();
+                if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
+                    || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
                 {
-                    if (!s_RtbRtfManipulator.IsHandleCreated)
-                        s_RtbRtfManipulator.CreateControl();
+                    await s_RtbRtfManipulatorLock.WaitAsync();
                     try
                     {
-                        await s_RtbRtfManipulator.DoThreadSafeAsync(x => x.Rtf = strInput);
-                    }
-                    catch (ArgumentException)
-                    {
-                        return strInput.NormalizeWhiteSpace();
-                    }
+                        if (!s_RtbRtfManipulator.IsHandleCreated)
+                            s_RtbRtfManipulator.CreateControl();
+                        try
+                        {
+                            await s_RtbRtfManipulator.DoThreadSafeAsync(x => x.Rtf = strInput);
+                        }
+                        catch (ArgumentException)
+                        {
+                            return strInput.NormalizeWhiteSpace();
+                        }
 
-                    return (await s_RtbRtfManipulator.DoThreadSafeFuncAsync(x => x.Text)).NormalizeWhiteSpace();
+                        return (await s_RtbRtfManipulator.DoThreadSafeFuncAsync(x => x.Text)).NormalizeWhiteSpace();
+                    }
+                    finally
+                    {
+                        s_RtbRtfManipulatorLock.Release();
+                    }
                 }
-                finally
-                {
-                    s_RtbRtfManipulatorLock.Release();
-                }
+
+                return strInput.NormalizeWhiteSpace();
             }
-            return strInput.NormalizeWhiteSpace();
         }
 
         public static string RtfToHtml(this string strInput)
@@ -1435,11 +1442,13 @@ namespace Chummer
             return strInput.IsRtf() ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
         }
 
-        public static async ValueTask<string> RtfToHtmlAsync(this string strInput)
+        public static Task<string> RtfToHtmlAsync(this string strInput)
         {
-            if (string.IsNullOrEmpty(strInput))
-                return string.Empty;
-            return await strInput.IsRtfAsync() ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
+            return string.IsNullOrEmpty(strInput) ? Task.FromResult(string.Empty) : InnerDo();
+            async Task<string> InnerDo()
+            {
+                return await strInput.IsRtfAsync() ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
+            }
         }
 
         /// <summary>
