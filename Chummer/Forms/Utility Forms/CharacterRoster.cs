@@ -145,7 +145,7 @@ namespace Chummer
                     CharacterCache objSelectedCache = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, _objGenericToken) as CharacterCache;
                     await this.DoThreadSafeAsync(
                         () => UpdateCharacter(objSelectedCache, _objGenericToken)
-                            .ContinueWith(x => IsFinishedLoading = true), _objGenericToken);
+                            .ContinueWith(x => IsFinishedLoading = true, _objGenericToken), _objGenericToken);
                 }
                 catch (OperationCanceledException)
                 {

@@ -348,7 +348,7 @@ namespace Chummer
 
                                 if (blnLoopFileNameHasItems)
                                     lstFileNamesWithItemsForLoading.Add(new ListItem(strFileName, strFileName));
-                            })));
+                            }, token)));
                             _lstFileNamesWithItems.AddRange(lstFileNamesWithItemsForLoading);
                         }
 

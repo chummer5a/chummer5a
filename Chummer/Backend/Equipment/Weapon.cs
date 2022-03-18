@@ -4306,16 +4306,20 @@ namespace Chummer.Backend.Equipment
                             if (objWeaponParent != null)
                             {
                                 Cyberware objAttributeSource = objWeaponParent;
-                                int intSTR = objAttributeSource.GetAttributeTotalValue("STR");
-                                int intAGI = objAttributeSource.GetAttributeTotalValue("AGI");
+                                // ReSharper disable once MethodHasAsyncOverload
+                                int intSTR = blnSync ? objAttributeSource.GetAttributeTotalValue("STR") : await objAttributeSource.GetAttributeTotalValueAsync("STR");
+                                // ReSharper disable once MethodHasAsyncOverload
+                                int intAGI = blnSync ? objAttributeSource.GetAttributeTotalValue("AGI") : await objAttributeSource.GetAttributeTotalValueAsync("AGI");
                                 while (objAttributeSource != null)
                                 {
                                     if (intSTR != 0 || intAGI != 0)
                                         break;
                                     objAttributeSource = objAttributeSource.Parent;
                                     if (objAttributeSource == null) continue;
-                                    intSTR = objAttributeSource.GetAttributeTotalValue("STR");
-                                    intAGI = objAttributeSource.GetAttributeTotalValue("AGI");
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    intSTR = blnSync ? objAttributeSource.GetAttributeTotalValue("STR") : await objAttributeSource.GetAttributeTotalValueAsync("STR");
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    intAGI = blnSync ? objAttributeSource.GetAttributeTotalValue("AGI") : await objAttributeSource.GetAttributeTotalValueAsync("AGI");
                                 }
 
                                 intUseSTR = intSTR;
@@ -4334,8 +4338,10 @@ namespace Chummer.Backend.Equipment
                         if (objWeaponParent != null)
                         {
                             Cyberware objAttributeSource = objWeaponParent;
-                            int intSTR = objAttributeSource.GetAttributeTotalValue("STR");
-                            int intAGI = objAttributeSource.GetAttributeTotalValue("AGI");
+                            // ReSharper disable once MethodHasAsyncOverload
+                            int intSTR = blnSync ? objAttributeSource.GetAttributeTotalValue("STR") : await objAttributeSource.GetAttributeTotalValueAsync("STR");
+                            // ReSharper disable once MethodHasAsyncOverload
+                            int intAGI = blnSync ? objAttributeSource.GetAttributeTotalValue("AGI") : await objAttributeSource.GetAttributeTotalValueAsync("AGI");
                             while (objAttributeSource != null)
                             {
                                 if (intSTR != 0 || intAGI != 0)
@@ -4343,7 +4349,8 @@ namespace Chummer.Backend.Equipment
                                 objAttributeSource = objAttributeSource.Parent;
                                 if (objAttributeSource == null)
                                     continue;
-                                intSTR = objAttributeSource.GetAttributeTotalValue("STR");
+                                // ReSharper disable once MethodHasAsyncOverload
+                                intSTR = blnSync ? objAttributeSource.GetAttributeTotalValue("STR") : await objAttributeSource.GetAttributeTotalValueAsync("STR");
                             }
 
                             intUseSTR = intSTR;

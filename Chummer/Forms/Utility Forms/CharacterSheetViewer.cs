@@ -621,7 +621,7 @@ namespace Chummer
                                    cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token),
                                    cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token));
                 token.ThrowIfCancellationRequested();
-                await SetDocumentText(await LanguageManager.GetStringAsync("String_Generating_Sheet"));
+                await SetDocumentText(await LanguageManager.GetStringAsync("String_Generating_Sheet"), token);
                 token.ThrowIfCancellationRequested();
                 string strXslPath = Path.Combine(Utils.GetStartupPath, "sheets", _strSelectedSheet + ".xsl");
                 if (!File.Exists(strXslPath))
@@ -873,14 +873,6 @@ namespace Chummer
         {
             _strSelectedSheet = strSheet;
             return RefreshSheet(token);
-        }
-
-        /// <summary>
-        /// Set List of Characters to print.
-        /// </summary>
-        public Task SetCharacters(params Character[] lstCharacters)
-        {
-            return SetCharacters(default, lstCharacters);
         }
 
         /// <summary>

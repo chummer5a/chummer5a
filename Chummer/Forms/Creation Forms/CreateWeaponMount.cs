@@ -525,7 +525,7 @@ namespace Chummer
             {
                 xmlSelectedMount = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedMount.CleanXPath() + ']');
                 if (xmlSelectedMount == null)
-                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token);
                 else
                 {
                     string strSelectedControl = await cboControl.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);

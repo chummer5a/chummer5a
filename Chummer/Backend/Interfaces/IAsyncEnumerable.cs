@@ -1811,24 +1811,24 @@ namespace Chummer
 
         public static async Task ForEachParallelWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate)
         {
-            List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task>(await objTemp.CountAsync)
-                : new List<Task>();
             using (CancellationTokenSource objSource = new CancellationTokenSource())
             {
+                List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                    ? new List<Task>(await objTemp.CountAsync)
+                    : new List<Task>();
+                CancellationToken objToken = objSource.Token;
                 using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
                 {
                     while (objEnumerator.MoveNext())
                     {
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent),
-                                              objSource.Token).ContinueWith(
+                        lstTasks.Add(Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent), objToken).ContinueWith(
                                          x =>
                                          {
                                              if (x.Result)
                                                  // ReSharper disable once AccessToDisposedClosure
                                                  objSource.Cancel(false);
-                                         }, objSource.Token));
+                                         }, objToken));
                     }
                 }
 
@@ -1845,24 +1845,25 @@ namespace Chummer
 
         public static async Task ForEachParallelWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate)
         {
-            List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task>(await objTemp.CountAsync)
-                : new List<Task>();
             using (CancellationTokenSource objSource = new CancellationTokenSource())
             {
+                List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                    ? new List<Task>(await objTemp.CountAsync)
+                    : new List<Task>();
+                CancellationToken objToken = objSource.Token;
                 using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
                 {
                     while (objEnumerator.MoveNext())
                     {
                         T objCurrent = objEnumerator.Current;
                         lstTasks.Add(Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent),
-                                              objSource.Token).ContinueWith(
+                                              objToken).ContinueWith(
                                          x =>
                                          {
                                              if (x.Result)
                                                  // ReSharper disable once AccessToDisposedClosure
                                                  objSource.Cancel(false);
-                                         }, objSource.Token));
+                                         }, objToken));
                     }
                 }
 

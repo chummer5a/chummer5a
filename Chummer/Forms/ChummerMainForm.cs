@@ -1454,7 +1454,7 @@ namespace Chummer
                 {
                     using (CharacterSheetViewer frmViewer = this.DoThreadSafeFunc(() => new CharacterSheetViewer()))
                     {
-                        await frmViewer.SetCharacters(objCharacter);
+                        await frmViewer.SetCharacters(default, objCharacter);
                         await frmViewer.ShowDialogSafeAsync(this);
                     }
                 }

@@ -2618,7 +2618,7 @@ namespace Chummer
             }
 
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? EnterReadLock.Enter(LockObject) : await EnterReadLock.EnterAsync(LockObject, token))
+            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token))
             {
                 bool blnErrorFree = true;
 
@@ -4118,15 +4118,9 @@ namespace Chummer
                 if (blnSync)
                 {
                     // ReSharper disable once MethodHasAsyncOverload
-                    IDisposable objLocker = LockObject.EnterWriteLock();
-                    try
+                    using (LockObject.EnterWriteLock(token))
                     {
                         _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
-                    }
-                    finally
-                    {
-                        // ReSharper disable once MethodHasAsyncOverload
-                        objLocker.Dispose();
                     }
                 }
                 else

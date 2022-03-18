@@ -530,12 +530,12 @@ namespace Chummer
                                             await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString())))
                                     {
                                         if (await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex) + 1 >= await cboSkill2.DoThreadSafeFuncAsync(x => x.Items.Count))
-                                            cboSkill2.DoThreadSafe(x => x.SelectedIndex = 0);
+                                            await cboSkill2.DoThreadSafeAsync(x => x.SelectedIndex = 0);
                                         else
                                         {
                                             int intSkill1Index
                                                 = await cboSkill1.DoThreadSafeFuncAsync(x => x.SelectedIndex);
-                                            cboSkill2.DoThreadSafe(x => x.SelectedIndex = intSkill1Index + 1);
+                                            await cboSkill2.DoThreadSafeAsync(x => x.SelectedIndex = intSkill1Index + 1);
                                         }
                                     }
 
