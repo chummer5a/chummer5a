@@ -5215,7 +5215,7 @@ namespace Chummer
                                 {
                                     if (panContacts == null)
                                         break;
-                                    ContactControl objContactControl = new ContactControl(objContact);
+                                    ContactControl objContactControl = this.DoThreadSafeFunc(() => new ContactControl(objContact));
                                     // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                     objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                     objContactControl.DeleteContact += DeleteContact;
@@ -5229,7 +5229,7 @@ namespace Chummer
                                 {
                                     if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
                                         break;
-                                    ContactControl objContactControl = new ContactControl(objContact);
+                                    ContactControl objContactControl = this.DoThreadSafeFunc(() => new ContactControl(objContact));
                                     // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                     objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                     objContactControl.DeleteContact += DeleteEnemy;
@@ -5243,7 +5243,7 @@ namespace Chummer
                                 {
                                     if (panPets == null)
                                         break;
-                                    PetControl objContactControl = new PetControl(objContact);
+                                    PetControl objContactControl = this.DoThreadSafeFunc(() => new PetControl(objContact));
                                     // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                     objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                     objContactControl.DeleteContact += DeletePet;
@@ -5273,7 +5273,7 @@ namespace Chummer
                                             {
                                                 if (panContacts == null)
                                                     break;
-                                                ContactControl objContactControl = new ContactControl(objLoopContact);
+                                                ContactControl objContactControl = this.DoThreadSafeFunc(() => new ContactControl(objLoopContact));
                                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                                 objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                                 objContactControl.DeleteContact += DeleteContact;
@@ -5287,7 +5287,7 @@ namespace Chummer
                                             {
                                                 if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
                                                     break;
-                                                ContactControl objContactControl = new ContactControl(objLoopContact);
+                                                ContactControl objContactControl = this.DoThreadSafeFunc(() => new ContactControl(objLoopContact));
                                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                                 objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                                 objContactControl.DeleteContact += DeleteEnemy;
@@ -5301,7 +5301,7 @@ namespace Chummer
                                             {
                                                 if (panPets == null)
                                                     break;
-                                                PetControl objPetControl = new PetControl(objLoopContact);
+                                                PetControl objPetControl = this.DoThreadSafeFunc(() => new PetControl(objLoopContact));
                                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                                 objPetControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                                 objPetControl.DeleteContact += DeletePet;
@@ -5451,7 +5451,7 @@ namespace Chummer
                                             {
                                                 if (panContacts == null)
                                                     break;
-                                                ContactControl objContactControl = new ContactControl(objLoopContact);
+                                                ContactControl objContactControl = this.DoThreadSafeFunc(() => new ContactControl(objLoopContact));
                                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                                 objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                                 objContactControl.DeleteContact += DeleteContact;
@@ -5465,7 +5465,7 @@ namespace Chummer
                                             {
                                                 if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
                                                     break;
-                                                ContactControl objContactControl = new ContactControl(objLoopContact);
+                                                ContactControl objContactControl = this.DoThreadSafeFunc(() => new ContactControl(objLoopContact));
                                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                                 objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                                 objContactControl.DeleteContact += DeleteEnemy;
@@ -5479,7 +5479,7 @@ namespace Chummer
                                             {
                                                 if (panPets == null)
                                                     break;
-                                                PetControl objPetControl = new PetControl(objLoopContact);
+                                                PetControl objPetControl = this.DoThreadSafeFunc(() => new PetControl(objLoopContact));
                                                 // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
                                                 objPetControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                                 objPetControl.DeleteContact += DeletePet;
@@ -5578,7 +5578,7 @@ namespace Chummer
 
                         int intSustainedObjects = refreshingPanel.Controls.Count;
 
-                        SustainedObjectControl objSustainedObjectControl = new SustainedObjectControl(objSustained);
+                        SustainedObjectControl objSustainedObjectControl = this.DoThreadSafeFunc(() => new SustainedObjectControl(objSustained));
 
                         objSustainedObjectControl.SustainedObjectDetailChanged += MakeDirtyWithCharacterUpdate;
                         objSustainedObjectControl.UnsustainObject += DeleteSustainedObject;
@@ -5618,8 +5618,8 @@ namespace Chummer
 
                                     int intSustainedObjects = refreshingPanel.Controls.Count;
 
-                                    SustainedObjectControl objSustainedObjectControl =
-                                        new SustainedObjectControl(objSustained);
+                                    SustainedObjectControl objSustainedObjectControl
+                                        = this.DoThreadSafeFunc(() => new SustainedObjectControl(objSustained));
 
                                     objSustainedObjectControl.SustainedObjectDetailChanged += MakeDirtyWithCharacterUpdate;
                                     objSustainedObjectControl.UnsustainObject += DeleteSustainedObject;
