@@ -754,11 +754,15 @@ namespace Chummer
                 }
                 return DialogResult.OK;
             }
-            if (owner == null)
-                owner = MainProgressBar.IsNullOrDisposed() ? MainForm as Control : MainProgressBar;
-            if (owner != null)
+            Form frmOwnerForm = owner as Form ?? owner?.FindForm();
+            if (frmOwnerForm.IsNullOrDisposed())
             {
-                if (owner.InvokeRequired)
+                frmOwnerForm = MainProgressBar.IsNullOrDisposed() ? (Form) MainForm : MainProgressBar;
+            }
+
+            if (frmOwnerForm != null)
+            {
+                if (frmOwnerForm.InvokeRequired)
                 {
 #if DEBUG
                     if (_blnShowDevWarningAboutDebuggingOnlyOnce && Debugger.IsAttached)
@@ -779,8 +783,8 @@ namespace Chummer
 
                     try
                     {
-                        return (DialogResult)owner.Invoke(new PassControlStringStringReturnDialogResultDelegate(ShowMessageBox),
-                            owner, message, caption, buttons, icon, defaultButton);
+                        return (DialogResult)frmOwnerForm.Invoke(new PassControlStringStringReturnDialogResultDelegate(ShowMessageBox),
+                                                                 owner, message, caption, buttons, icon, defaultButton);
                     }
                     catch (ObjectDisposedException)
                     {
@@ -794,7 +798,7 @@ namespace Chummer
                     }
                 }
 
-                return CenterableMessageBox.Show(MainProgressBar.IsNullOrDisposed() ? owner.FindForm() : MainProgressBar, message, caption, buttons, icon, defaultButton);
+                return CenterableMessageBox.Show(frmOwnerForm, message, caption, buttons, icon, defaultButton);
             }
             MainFormOnAssignActions.Add(x => ShowMessageBox(owner, message, caption, buttons, icon, defaultButton));
             return DialogResult.Cancel;
