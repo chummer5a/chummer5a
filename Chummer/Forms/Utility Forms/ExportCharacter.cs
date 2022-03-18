@@ -84,9 +84,12 @@ namespace Chummer
                 lstExportMethods.Sort();
                 lstExportMethods.Insert(0, new ListItem("JSON", await LanguageManager.GetStringAsync("String_Export_JSON")));
 
-                await cboXSLT.PopulateWithListItemsAsync(lstExportMethods);
-                if (cboXSLT.Items.Count > 0)
-                    cboXSLT.SelectedIndex = 0;
+                await cboXSLT.PopulateWithListItemsAsync(lstExportMethods, _objGenericToken);
+                await cboXSLT.DoThreadSafeAsync(x =>
+                {
+                    if (x.Items.Count > 0)
+                        x.SelectedIndex = 0;
+                }, _objGenericToken);
             }
 
             _blnLoading = false;

@@ -20586,9 +20586,9 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<int> LimbCountAsync(string strLimbSlot = "")
+        public async ValueTask<int> LimbCountAsync(string strLimbSlot = "", CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 if (string.IsNullOrEmpty(strLimbSlot))
                 {

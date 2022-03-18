@@ -1844,18 +1844,19 @@ namespace Chummer
 
         #region ComboBox Extensions
 
-        public static void PopulateWithListItems(this ListBox lsbThis, IEnumerable<ListItem> lstItems)
+        public static void PopulateWithListItems(this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            lsbThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems));
+            lsbThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token));
         }
 
-        public static Task PopulateWithListItemsAsync(this ListBox lsbThis, IEnumerable<ListItem> lstItems)
+        public static Task PopulateWithListItemsAsync(this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            return lsbThis?.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems)) ?? Task.CompletedTask;
+            return lsbThis?.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems, token), token) ?? Task.CompletedTask;
         }
 
-        private static void PopulateWithListItemsCore(this ListBox lsbThis, IEnumerable<ListItem> lstItems)
+        private static void PopulateWithListItemsCore(this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (ReferenceEquals(lsbThis.DataSource, lstItems))
                 return;
             // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
@@ -1870,6 +1871,7 @@ namespace Chummer
             lsbThis.BeginUpdate();
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (!(lsbThis.DataSource is IEnumerable<ListItem> lstCurrentList))
                 {
                     lsbThis.ValueMember = nameof(ListItem.Value);
@@ -1879,6 +1881,7 @@ namespace Chummer
                 else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
                     return;
 
+                token.ThrowIfCancellationRequested();
                 List<ListItem> lstOldItems = null;
                 if (lsbThis.DataSource != null)
                 {
@@ -1888,8 +1891,9 @@ namespace Chummer
                             List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
                     lsbThis.BindingContext = new BindingContext();
                 }
-
+                token.ThrowIfCancellationRequested();
                 lsbThis.DataSource = lstItemsToSet;
+                token.ThrowIfCancellationRequested();
                 if (lstOldItems != null)
                     Utils.ListItemListPool.Return(lstOldItems);
             }
@@ -1899,18 +1903,19 @@ namespace Chummer
             }
         }
 
-        public static void PopulateWithListItems(this ComboBox cboThis, IEnumerable<ListItem> lstItems)
+        public static void PopulateWithListItems(this ComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems));
+            cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token));
         }
 
-        public static Task PopulateWithListItemsAsync(this ComboBox cboThis, IEnumerable<ListItem> lstItems)
+        public static Task PopulateWithListItemsAsync(this ComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            return cboThis?.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems)) ?? Task.CompletedTask;
+            return cboThis?.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems, token), token) ?? Task.CompletedTask;
         }
 
-        private static void PopulateWithListItemsCore(this ComboBox cboThis, IEnumerable<ListItem> lstItems)
+        private static void PopulateWithListItemsCore(this ComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (ReferenceEquals(cboThis.DataSource, lstItems))
                 return;
             // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
@@ -1925,6 +1930,7 @@ namespace Chummer
             cboThis.BeginUpdate();
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (!(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
                 {
                     cboThis.ValueMember = nameof(ListItem.Value);
@@ -1934,6 +1940,7 @@ namespace Chummer
                 else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
                     return;
 
+                token.ThrowIfCancellationRequested();
                 List<ListItem> lstOldItems = null;
                 if (cboThis.DataSource != null)
                 {
@@ -1943,8 +1950,9 @@ namespace Chummer
                             List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
                     cboThis.BindingContext = new BindingContext();
                 }
-
+                token.ThrowIfCancellationRequested();
                 cboThis.DataSource = lstItemsToSet;
+                token.ThrowIfCancellationRequested();
                 if (lstOldItems != null)
                     Utils.ListItemListPool.Return(lstOldItems);
             }
@@ -1954,18 +1962,19 @@ namespace Chummer
             }
         }
 
-        public static void PopulateWithListItems(this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems)
+        public static void PopulateWithListItems(this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems));
+            cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token));
         }
 
-        public static Task PopulateWithListItemsAsync(this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems)
+        public static Task PopulateWithListItemsAsync(this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            return cboThis?.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems)) ?? Task.CompletedTask;
+            return cboThis?.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems, token), token) ?? Task.CompletedTask;
         }
 
-        private static void PopulateWithListItemsCore(this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems)
+        private static void PopulateWithListItemsCore(this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (ReferenceEquals(cboThis.DataSource, lstItems))
                 return;
             // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
@@ -1980,6 +1989,7 @@ namespace Chummer
             cboThis.BeginUpdate();
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (!(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
                 {
                     cboThis.ValueMember = nameof(ListItem.Value);
@@ -1989,6 +1999,7 @@ namespace Chummer
                 else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
                     return;
 
+                token.ThrowIfCancellationRequested();
                 List<ListItem> lstOldItems = null;
                 if (cboThis.DataSource != null)
                 {
@@ -1998,8 +2009,9 @@ namespace Chummer
                             List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
                     cboThis.BindingContext = new BindingContext();
                 }
-
+                token.ThrowIfCancellationRequested();
                 cboThis.DataSource = lstItemsToSet;
+                token.ThrowIfCancellationRequested();
                 if (lstOldItems != null)
                     Utils.ListItemListPool.Return(lstOldItems);
             }

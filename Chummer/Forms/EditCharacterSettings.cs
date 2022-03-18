@@ -1171,7 +1171,7 @@ namespace Chummer
 
                     bool blnOldLoading = _blnLoading;
                     _blnLoading = true;
-                    await cboPriorityTable.PopulateWithListItemsAsync(lstPriorityTables);
+                    await cboPriorityTable.PopulateWithListItemsAsync(lstPriorityTables, token);
                     await cboPriorityTable.DoThreadSafeAsync(x =>
                     {
                         if (!string.IsNullOrEmpty(strOldSelected))
@@ -1224,7 +1224,7 @@ namespace Chummer
                         strLimbSlot += '<' + _objCharacterSettings.ExcludeLimbSlot;
 
                     _blnSkipLimbCountUpdate = true;
-                    await cboLimbCount.PopulateWithListItemsAsync(lstLimbCount);
+                    await cboLimbCount.PopulateWithListItemsAsync(lstLimbCount, token);
                     await cboLimbCount.DoThreadSafeAsync(x =>
                     {
                         if (!string.IsNullOrEmpty(strLimbSlot))
@@ -1557,7 +1557,7 @@ namespace Chummer
                 }
 
                 _lstSettings.Sort(CompareListItems.CompareNames);
-                await cboSetting.PopulateWithListItemsAsync(_lstSettings);
+                await cboSetting.PopulateWithListItemsAsync(_lstSettings, token);
                 await cboSetting.DoThreadSafeAsync(x =>
                 {
                     if (!string.IsNullOrEmpty(strSelect))

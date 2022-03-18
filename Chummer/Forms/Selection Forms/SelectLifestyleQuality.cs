@@ -761,7 +761,7 @@ namespace Chummer
                                             if (objXmlRequired.InnerText.StartsWith('-'))
                                             {
                                                 // Essence must be less than the value.
-                                                if (_objCharacter.Essence() < Convert.ToDecimal(
+                                                if (await _objCharacter.EssenceAsync() < Convert.ToDecimal(
                                                         objXmlRequired.InnerText.TrimStart('-'),
                                                         GlobalSettings.InvariantCultureInfo))
                                                     blnOneOfMet = true;
@@ -769,7 +769,7 @@ namespace Chummer
                                             else
                                             {
                                                 // Essence must be equal to or greater than the value.
-                                                if (_objCharacter.Essence()
+                                                if (await _objCharacter.EssenceAsync()
                                                     >= Convert.ToDecimal(objXmlRequired.InnerText,
                                                                          GlobalSettings.InvariantCultureInfo))
                                                     blnOneOfMet = true;
@@ -1096,7 +1096,7 @@ namespace Chummer
                                             if (objXmlRequired.InnerText.StartsWith('-'))
                                             {
                                                 // Essence must be less than the value.
-                                                if (_objCharacter.Essence() < Convert.ToDecimal(
+                                                if (await _objCharacter.EssenceAsync() < Convert.ToDecimal(
                                                         objXmlRequired.InnerText.TrimStart('-'),
                                                         GlobalSettings.InvariantCultureInfo))
                                                     blnFound = true;
@@ -1104,7 +1104,7 @@ namespace Chummer
                                             else
                                             {
                                                 // Essence must be equal to or greater than the value.
-                                                if (_objCharacter.Essence()
+                                                if (await _objCharacter.EssenceAsync()
                                                     >= Convert.ToDecimal(objXmlRequired.InnerText,
                                                                          GlobalSettings.InvariantCultureInfo))
                                                     blnFound = true;

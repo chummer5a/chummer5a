@@ -14168,7 +14168,7 @@ namespace Chummer
                                 lstOverclocker.Add(
                                     new ListItem("Firewall", await LanguageManager.GetStringAsync("String_Firewall")));
 
-                                await cboCyberwareOverclocker.PopulateWithListItemsAsync(lstOverclocker);
+                                await cboCyberwareOverclocker.PopulateWithListItemsAsync(lstOverclocker, token);
                                 await cboCyberwareOverclocker.DoThreadSafeAsync(x =>
                                 {
                                     x.SelectedValue = objGear.Overclocked;
@@ -14591,7 +14591,7 @@ namespace Chummer
                                 }
                                 token.ThrowIfCancellationRequested();
                                 objWeapon.ActiveAmmoSlot = intCurrentSlot;
-                                await cboWeaponAmmo.PopulateWithListItemsAsync(lstAmmo);
+                                await cboWeaponAmmo.PopulateWithListItemsAsync(lstAmmo, token);
                                 await cboWeaponAmmo.DoThreadSafeAsync(x =>
                                 {
                                     x.SelectedValue
@@ -14955,7 +14955,7 @@ namespace Chummer
                                 lstOverclocker.Add(
                                     new ListItem("Firewall", await LanguageManager.GetStringAsync("String_Firewall")));
                                 token.ThrowIfCancellationRequested();
-                                await cboWeaponOverclocker.PopulateWithListItemsAsync(lstOverclocker);
+                                await cboWeaponOverclocker.PopulateWithListItemsAsync(lstOverclocker, token);
                                 await cboWeaponOverclocker.DoThreadSafeAsync(x =>
                                 {
                                     x.SelectedValue = objGear.Overclocked;
@@ -15354,7 +15354,7 @@ namespace Chummer
                             lstOverclocker.Add(
                                 new ListItem("Firewall", await LanguageManager.GetStringAsync("String_Firewall")));
                             token.ThrowIfCancellationRequested();
-                            await cboArmorOverclocker.PopulateWithListItemsAsync(lstOverclocker);
+                            await cboArmorOverclocker.PopulateWithListItemsAsync(lstOverclocker, token);
                             await cboArmorOverclocker.DoThreadSafeAsync(x =>
                             {
                                 x.SelectedValue = objHasMatrixAttributes.Overclocked;
@@ -15601,7 +15601,7 @@ namespace Chummer
                             lstOverclocker.Add(
                                 new ListItem("Firewall", await LanguageManager.GetStringAsync("String_Firewall")));
 
-                            await cboGearOverclocker.PopulateWithListItemsAsync(lstOverclocker);
+                            await cboGearOverclocker.PopulateWithListItemsAsync(lstOverclocker, token);
                             await cboGearOverclocker.DoThreadSafeAsync(x =>
                             {
                                 x.SelectedValue = objGear.Overclocked;
@@ -15929,7 +15929,7 @@ namespace Chummer
                                 intValue += intExistingValue;
                         }
 
-                        if (intValue >= CharacterObject.LimbCount(Cyberware.MountToLimbType(strKey)))
+                        if (intValue >= await CharacterObject.LimbCountAsync(Cyberware.MountToLimbType(strKey)))
                             sbdDisallowedMounts.Append(strKey).Append(',');
                     }
 
@@ -15957,7 +15957,7 @@ namespace Chummer
                                 intValue += intExistingValue;
                         }
 
-                        if (intValue >= CharacterObject.LimbCount(Cyberware.MountToLimbType(strKey)))
+                        if (intValue >= await CharacterObject.LimbCountAsync(Cyberware.MountToLimbType(strKey)))
                             sbdHasMounts.Append(strKey).Append(',');
                     }
 
@@ -17257,7 +17257,7 @@ namespace Chummer
                                 }
                                 token.ThrowIfCancellationRequested();
                                 objWeapon.ActiveAmmoSlot = intCurrentSlot;
-                                await cboVehicleWeaponAmmo.PopulateWithListItemsAsync(lstAmmo);
+                                await cboVehicleWeaponAmmo.PopulateWithListItemsAsync(lstAmmo, token);
                                 await cboVehicleWeaponAmmo.DoThreadSafeAsync(x =>
                                 {
                                     x.SelectedValue

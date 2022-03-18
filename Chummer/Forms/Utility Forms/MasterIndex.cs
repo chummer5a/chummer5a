@@ -115,7 +115,7 @@ namespace Chummer
                 CharacterSettings objSettings;
                 bool blnSuccess;
                 
-                await cboCharacterSetting.DoThreadSafeFunc(x => x.PopulateWithListItemsAsync(lstCharacterSettings), token);
+                await cboCharacterSetting.DoThreadSafeFunc(x => x.PopulateWithListItemsAsync(lstCharacterSettings, token), token);
                 if (!string.IsNullOrEmpty(strOldSettingKey))
                 {
                     (blnSuccess, objSettings)
@@ -452,7 +452,7 @@ namespace Chummer
 
                         int intOldSelectedIndex = cboFile.DoThreadSafeFunc(x => x.SelectedIndex, token);
                         await Task.WhenAll(
-                            cboFile.PopulateWithListItemsAsync(_lstFileNamesWithItems).ContinueWith(
+                            cboFile.PopulateWithListItemsAsync(_lstFileNamesWithItems, token).ContinueWith(
                                 y => cboFile.DoThreadSafe
                                 (x =>
                                 {
@@ -466,7 +466,7 @@ namespace Chummer
                                         x.SelectedIndex = -1;
                                     }
                                 }), token),
-                            lstItems.PopulateWithListItemsAsync(_lstItems).ContinueWith(y => lstItems.DoThreadSafe(x => x.SelectedIndex = -1), token));
+                            lstItems.PopulateWithListItemsAsync(_lstItems, token).ContinueWith(y => lstItems.DoThreadSafe(x => x.SelectedIndex = -1), token));
                     }
                 }
                 finally
@@ -519,7 +519,7 @@ namespace Chummer
 
                     object objOldSelectedValue = lstItems.SelectedValue;
                     _blnSkipRefresh = true;
-                    await lstItems.PopulateWithListItemsAsync(lstFilteredItems);
+                    await lstItems.PopulateWithListItemsAsync(lstFilteredItems, _objGenericToken);
                     _blnSkipRefresh = false;
                     if (objOldSelectedValue is MasterIndexEntry objOldSelectedEntry)
                         lstItems.SelectedIndex

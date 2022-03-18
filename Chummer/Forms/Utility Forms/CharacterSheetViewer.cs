@@ -104,7 +104,7 @@ namespace Chummer
             _blnLoading = true;
             // Populate the XSLT list with all of the XSL files found in the sheets directory.
             await LanguageManager.PopulateSheetLanguageListAsync(cboLanguage, _strSelectedSheet, _lstCharacters);
-            await PopulateXsltList();
+            await PopulateXsltList(_objGenericToken);
 
             cboXSLT.SelectedValue = _strSelectedSheet;
             // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
@@ -413,7 +413,7 @@ namespace Chummer
                 if (strOldSelected.Contains(Path.DirectorySeparatorChar))
                     strOldSelected
                         = strOldSelected.Substring(strOldSelected.LastIndexOf(Path.DirectorySeparatorChar) + 1);
-                await PopulateXsltList();
+                await PopulateXsltList(_objGenericToken);
                 string strNewLanguage = cboLanguage.SelectedValue?.ToString() ?? strOldSelected;
                 if (strNewLanguage == strOldSelected)
                 {
@@ -853,12 +853,12 @@ namespace Chummer
             return true;
         }
 
-        private async ValueTask PopulateXsltList()
+        private async ValueTask PopulateXsltList(CancellationToken token = default)
         {
             List<ListItem> lstFiles = await XmlManager.GetXslFilesFromLocalDirectoryAsync(cboLanguage.SelectedValue?.ToString() ?? GlobalSettings.DefaultLanguage, _lstCharacters, true);
             try
             {
-                await cboXSLT.PopulateWithListItemsAsync(lstFiles);
+                await cboXSLT.PopulateWithListItemsAsync(lstFiles, token);
             }
             finally
             {
@@ -907,7 +907,7 @@ namespace Chummer
                 _blnLoading = true;
                 // Populate the XSLT list with all of the XSL files found in the sheets directory.
                 await LanguageManager.PopulateSheetLanguageListAsync(cboLanguage, _strSelectedSheet, _lstCharacters);
-                await PopulateXsltList();
+                await PopulateXsltList(token);
                 await RefreshCharacters(token);
             }
             finally
