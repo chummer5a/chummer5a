@@ -139,8 +139,12 @@ namespace Chummer
                     if (blnSuccess)
                         await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings, token);
                 }
-                if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) == -1 && lstCharacterSettings.Count > 0)
-                    await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedIndex = 0, token);
+
+                await cboCharacterSetting.DoThreadSafeAsync(x =>
+                {
+                    if (x.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
+                        x.SelectedIndex = 0;
+                }, token);
             }
         }
 
@@ -151,8 +155,7 @@ namespace Chummer
                 using (CursorWait.New(this))
                 {
                     await PopulateCharacterSettings(_objGenericToken);
-                    await LoadContent(_objGenericToken).AsTask()
-                                                       .ContinueWith(x => IsFinishedLoading = true, _objGenericToken);
+                    await LoadContent(_objGenericToken).ContinueWith(x => IsFinishedLoading = true, _objGenericToken);
                     _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
                 }
             }
@@ -248,7 +251,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask LoadContent(CancellationToken token = default)
+        private async Task LoadContent(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (CustomActivity opLoadMasterindex = await Timekeeper.StartSyncronAsync("op_load_frm_masterindex", null,
@@ -488,14 +491,17 @@ namespace Chummer
                 return;
             using (CursorWait.New(this))
             {
-                bool blnCustomList = !(txtSearch.TextLength == 0 && string.IsNullOrEmpty(cboFile.SelectedValue?.ToString()));
+                bool blnCustomList = !(await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, _objGenericToken) == 0
+                                       && string.IsNullOrEmpty(
+                                           await cboFile.DoThreadSafeFuncAsync(
+                                               x => x.SelectedValue?.ToString(), _objGenericToken)));
                 List<ListItem> lstFilteredItems = blnCustomList ? Utils.ListItemListPool.Get() : _lstItems;
                 try
                 {
                     if (blnCustomList)
                     {
-                        string strFileFilter = cboFile.SelectedValue?.ToString() ?? string.Empty;
-                        string strSearchFilter = txtSearch.Text;
+                        string strFileFilter = await cboFile.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), _objGenericToken) ?? string.Empty;
+                        string strSearchFilter = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, _objGenericToken);
                         foreach (ListItem objItem in _lstItems)
                         {
                             if (!(objItem.Value is MasterIndexEntry objItemEntry))
@@ -517,15 +523,17 @@ namespace Chummer
                         }
                     }
 
-                    object objOldSelectedValue = lstItems.SelectedValue;
+                    object objOldSelectedValue = await lstItems.DoThreadSafeFuncAsync(x => x.SelectedValue, _objGenericToken);
                     _blnSkipRefresh = true;
                     await lstItems.PopulateWithListItemsAsync(lstFilteredItems, _objGenericToken);
                     _blnSkipRefresh = false;
                     if (objOldSelectedValue is MasterIndexEntry objOldSelectedEntry)
-                        lstItems.SelectedIndex
-                            = lstFilteredItems.FindIndex(x => objOldSelectedEntry.Equals(x.Value as MasterIndexEntry));
+                        await lstItems.DoThreadSafeFuncAsync(
+                            x => x.SelectedIndex
+                                = lstFilteredItems.FindIndex(
+                                    y => objOldSelectedEntry.Equals(y.Value as MasterIndexEntry)), _objGenericToken);
                     else
-                        lstItems.SelectedIndex = -1;
+                        await lstItems.DoThreadSafeFuncAsync(x => x.SelectedIndex = -1, _objGenericToken);
                 }
                 finally
                 {
@@ -639,8 +647,9 @@ namespace Chummer
         {
             using (CursorWait.New(this))
             {
-                using (EditCharacterSettings frmOptions
-                       = new EditCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings))
+                using (EditCharacterSettings frmOptions = await this.DoThreadSafeFuncAsync(
+                           () => new EditCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings),
+                           _objGenericToken))
                     await frmOptions.ShowDialogSafeAsync(this);
                 // Do not repopulate the character settings list because that will happen from frmCharacterSettings where appropriate
             }

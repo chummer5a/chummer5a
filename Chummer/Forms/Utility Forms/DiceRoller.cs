@@ -54,24 +54,24 @@ namespace Chummer
                 lstMethod.Add(new ListItem("ReallyLarge", await LanguageManager.GetStringAsync("String_DiceRoller_ReallyLarge")));
                 
                 await cboMethod.PopulateWithListItemsAsync(lstMethod);
-                cboMethod.SelectedIndex = 0;
+                await cboMethod.DoThreadSafeAsync(x => x.SelectedIndex = 0);
             }
         }
 
         private async void cmdRollDice_Click(object sender, EventArgs e)
         {
-            List<int> lstRandom = new List<int>(nudDice.ValueAsInt);
+            List<int> lstRandom = new List<int>(await nudDice.DoThreadSafeFuncAsync(x => x.ValueAsInt));
             int intGlitchMin = 1;
 
             // If Rushed Job is checked, the minimum die result for a Glitch becomes 2.
-            if (chkRushJob.Checked)
+            if (await chkRushJob.DoThreadSafeFuncAsync(x => x.Checked))
                 intGlitchMin = 2;
 
             int intTarget = 5;
             // If Cinematic Gameplay is turned on, Hits occur on 4, 5, or 6 instead.
-            if (chkCinematicGameplay.Checked)
+            if (await chkCinematicGameplay.DoThreadSafeFuncAsync(x => x.Checked))
                 intTarget = 4;
-            switch (cboMethod.SelectedValue.ToString())
+            switch (await cboMethod.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()))
             {
                 case "Large":
                     {
@@ -88,7 +88,7 @@ namespace Chummer
 
             for (int intCounter = 1; intCounter <= nudDice.Value; intCounter++)
             {
-                if (chkRuleOf6.Checked)
+                if (await chkRuleOf6.DoThreadSafeFuncAsync(x => x.Checked))
                 {
                     int intResult;
                     do
@@ -111,23 +111,23 @@ namespace Chummer
                 _lstResults.Add(lviCur);
             }
 
-            int intHitCount = cboMethod.SelectedValue?.ToString() == "ReallyLarge" ? _lstResults.Sum(x => x.Result) : _lstResults.Count(x => x.IsHit);
+            int intHitCount = await cboMethod.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) == "ReallyLarge" ? _lstResults.Sum(x => x.Result) : _lstResults.Count(x => x.IsHit);
             int intGlitchCount = _lstResults.Count(x => x.IsGlitch);
 
-            int intGlitchThreshold = chkVariableGlitch.Checked
+            int intGlitchThreshold = await chkVariableGlitch.DoThreadSafeFuncAsync(x => x.Checked)
                 ? intHitCount + 1
-                : ((nudDice.Value + 1) / 2).StandardRound();
+                : ((await nudDice.DoThreadSafeFuncAsync(x => x.Value) + 1) / 2).StandardRound();
             // Deduct the Gremlins Rating from the Glitch Threshold.
-            intGlitchThreshold -= nudGremlins.ValueAsInt;
+            intGlitchThreshold -= await nudGremlins.DoThreadSafeFuncAsync(x => x.ValueAsInt);
             if (intGlitchThreshold < 1)
                 intGlitchThreshold = 1;
 
             string strSpace = await LanguageManager.GetStringAsync("String_Space");
 
-            if (chkBubbleDie.Checked
-                && (chkVariableGlitch.Checked
+            if (await chkBubbleDie.DoThreadSafeFuncAsync(x => x.Checked)
+                && (await chkVariableGlitch.DoThreadSafeFuncAsync(x => x.Checked)
                     || (intGlitchCount == intGlitchThreshold - 1
-                        && (nudDice.ValueAsInt & 1) == 0)))
+                        && (await nudDice.DoThreadSafeFuncAsync(x => x.ValueAsInt) & 1) == 0)))
             {
                 int intBubbleDieResult = await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
                 DiceRollerListViewItem lviCur = new DiceRollerListViewItem(intBubbleDieResult, intTarget, intGlitchMin, true);
@@ -136,7 +136,7 @@ namespace Chummer
                 _lstResults.Add(lviCur);
             }
 
-            lblResultsLabel.Visible = true;
+            await lblResultsLabel.DoThreadSafeAsync(x => x.Visible = true);
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdResults))
             {
@@ -144,48 +144,62 @@ namespace Chummer
                 {
                     if (intHitCount > 0)
                     {
-                        if (nudThreshold.Value > 0)
+                        int intThreshold = await nudThreshold.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+                        if (intThreshold > 0)
                         {
                             sbdResults.Append(await LanguageManager.GetStringAsync(
-                                intHitCount >= nudThreshold.Value
+                                intHitCount >= intThreshold
                                     ? "String_DiceRoller_Success"
                                     : "String_DiceRoller_Failure")).Append(strSpace).Append('(');
                         }
 
                         sbdResults.AppendFormat(GlobalSettings.CultureInfo,
                                                 await LanguageManager.GetStringAsync("String_DiceRoller_Glitch"), intHitCount);
-                        if (nudThreshold.Value > 0)
+                        if (intThreshold > 0)
                             sbdResults.Append(')');
                     }
                     else
                         sbdResults.Append(await LanguageManager.GetStringAsync("String_DiceRoller_CriticalGlitch"));
                 }
-                else if (nudThreshold.Value > 0)
-                {
-                    sbdResults
-                        .Append(await LanguageManager.GetStringAsync(intHitCount >= nudThreshold.Value
-                            ? "String_DiceRoller_Success"
-                            : "String_DiceRoller_Failure")).Append(strSpace)
-                        .Append('(')
-                        .AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_DiceRoller_Hits"),
-                                      intHitCount + ')');
-                }
                 else
-                    sbdResults.AppendFormat(GlobalSettings.CultureInfo,
-                                            await LanguageManager.GetStringAsync("String_DiceRoller_Hits"), intHitCount);
+                {
+                    int intThreshold = await nudThreshold.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+                    if (intThreshold > 0)
+                    {
+                        sbdResults
+                            .Append(await LanguageManager.GetStringAsync(intHitCount >= intThreshold
+                                                                             ? "String_DiceRoller_Success"
+                                                                             : "String_DiceRoller_Failure")).Append(strSpace)
+                            .Append('(')
+                            .AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_DiceRoller_Hits"),
+                                          intHitCount + ')');
+                    }
+                    else
+                        sbdResults.AppendFormat(GlobalSettings.CultureInfo,
+                                                await LanguageManager.GetStringAsync("String_DiceRoller_Hits"), intHitCount);
+                }
 
                 sbdResults.AppendLine().AppendLine().Append(await LanguageManager.GetStringAsync("Label_DiceRoller_Sum"))
                           .Append(strSpace).Append(_lstResults.Sum(x => x.Result).ToString(GlobalSettings.CultureInfo));
-                lblResults.Text = sbdResults.ToString();
+                await lblResults.DoThreadSafeAsync(x => x.Text = sbdResults.ToString());
             }
 
-            lstResults.BeginUpdate();
-            lstResults.Items.Clear();
-            foreach (DiceRollerListViewItem objItem in _lstResults)
+            await lstResults.DoThreadSafeAsync(x =>
             {
-                lstResults.Items.Add(objItem);
-            }
-            lstResults.EndUpdate();
+                x.BeginUpdate();
+                try
+                {
+                    x.Items.Clear();
+                    foreach (DiceRollerListViewItem objItem in _lstResults)
+                    {
+                        x.Items.Add(objItem);
+                    }
+                }
+                finally
+                {
+                    x.EndUpdate();
+                }
+            });
         }
 
         private void cboMethod_SelectedIndexChanged(object sender, EventArgs e)
@@ -212,14 +226,14 @@ namespace Chummer
 
             // If Rushed Job is checked, the minimum die result for a Glitch becomes 2.
             int intGlitchMin = 1;
-            if (chkRushJob.Checked)
+            if (await chkRushJob.DoThreadSafeFuncAsync(x => x.Checked))
                 intGlitchMin = 2;
 
             int intTarget = 5;
             // If Cinematic Gameplay is turned on, Hits occur on 4, 5, or 6 instead.
-            if (chkCinematicGameplay.Checked)
+            if (await chkCinematicGameplay.DoThreadSafeFuncAsync(x => x.Checked))
                 intTarget = 4;
-            switch (cboMethod.SelectedValue.ToString())
+            switch (await cboMethod.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()))
             {
                 case "Large":
                     {
@@ -250,13 +264,13 @@ namespace Chummer
                 return;
             }
 
-            int intHitCount = cboMethod.SelectedValue?.ToString() == "ReallyLarge" ? _lstResults.Sum(x => x.Result) : _lstResults.Count(x => x.IsHit);
+            int intHitCount = await cboMethod.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) == "ReallyLarge" ? _lstResults.Sum(x => x.Result) : _lstResults.Count(x => x.IsHit);
             int intGlitchCount = _lstResults.Count(x => x.IsGlitch);
             List<int> lstRandom = new List<int>(intNewDicePool);
 
             for (int intCounter = 1; intCounter <= intNewDicePool; intCounter++)
             {
-                if (chkRuleOf6.Checked)
+                if (await chkRuleOf6.DoThreadSafeFuncAsync(x => x.Checked))
                 {
                     int intLoopResult;
                     do
@@ -278,20 +292,20 @@ namespace Chummer
                 _lstResults.Add(lviCur);
             }
 
-            int intGlitchThreshold = chkVariableGlitch.Checked
+            int intGlitchThreshold = await chkVariableGlitch.DoThreadSafeFuncAsync(x => x.Checked)
                 ? intHitCount + 1
-                : ((nudDice.Value + 1) / 2).StandardRound();
+                : ((await nudDice.DoThreadSafeFuncAsync(x => x.Value) + 1) / 2).StandardRound();
             // Deduct the Gremlins Rating from the Glitch Threshold.
-            intGlitchThreshold -= nudGremlins.ValueAsInt;
+            intGlitchThreshold -= await nudGremlins.DoThreadSafeFuncAsync(x => x.ValueAsInt);
             if (intGlitchThreshold < 1)
                 intGlitchThreshold = 1;
 
             string strSpace = await LanguageManager.GetStringAsync("String_Space");
 
-            if (chkBubbleDie.Checked
-                && (chkVariableGlitch.Checked
+            if (await chkBubbleDie.DoThreadSafeFuncAsync(x => x.Checked)
+                && (await chkVariableGlitch.DoThreadSafeFuncAsync(x => x.Checked)
                     || (intGlitchCount == intGlitchThreshold - 1
-                        && (nudDice.ValueAsInt & 1) == 0)))
+                        && (await nudDice.DoThreadSafeFuncAsync(x => x.ValueAsInt) & 1) == 0)))
             {
                 int intBubbleDieResult = await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
                 DiceRollerListViewItem lviCur = new DiceRollerListViewItem(intBubbleDieResult, intTarget, intGlitchMin, true);
@@ -300,7 +314,7 @@ namespace Chummer
                 _lstResults.Add(lviCur);
             }
 
-            lblResultsLabel.Visible = true;
+            await lblResultsLabel.DoThreadSafeAsync(x => x.Visible = true);
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdResults))
             {
@@ -308,48 +322,62 @@ namespace Chummer
                 {
                     if (intHitCount > 0)
                     {
-                        if (nudThreshold.Value > 0)
+                        int intThreshold = await nudThreshold.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+                        if (intThreshold > 0)
                         {
                             sbdResults.Append(await LanguageManager.GetStringAsync(
-                                intHitCount >= nudThreshold.Value
+                                intHitCount >= intThreshold
                                     ? "String_DiceRoller_Success"
                                     : "String_DiceRoller_Failure")).Append(strSpace).Append('(');
                         }
 
                         sbdResults.AppendFormat(GlobalSettings.CultureInfo,
                                                 await LanguageManager.GetStringAsync("String_DiceRoller_Glitch"), intHitCount);
-                        if (nudThreshold.Value > 0)
+                        if (intThreshold > 0)
                             sbdResults.Append(')');
                     }
                     else
                         sbdResults.Append(await LanguageManager.GetStringAsync("String_DiceRoller_CriticalGlitch"));
                 }
-                else if (nudThreshold.Value > 0)
-                {
-                    sbdResults
-                        .Append(await LanguageManager.GetStringAsync(intHitCount >= nudThreshold.Value
-                            ? "String_DiceRoller_Success"
-                            : "String_DiceRoller_Failure")).Append(strSpace)
-                        .Append('(')
-                        .AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_DiceRoller_Hits"),
-                                      intHitCount).Append(')');
-                }
                 else
-                    sbdResults.AppendFormat(GlobalSettings.CultureInfo,
-                                            await LanguageManager.GetStringAsync("String_DiceRoller_Hits"), intHitCount);
+                {
+                    int intThreshold = await nudThreshold.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+                    if (intThreshold > 0)
+                    {
+                        sbdResults
+                            .Append(await LanguageManager.GetStringAsync(intHitCount >= intThreshold
+                                                                             ? "String_DiceRoller_Success"
+                                                                             : "String_DiceRoller_Failure")).Append(strSpace)
+                            .Append('(')
+                            .AppendFormat(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_DiceRoller_Hits"),
+                                          intHitCount).Append(')');
+                    }
+                    else
+                        sbdResults.AppendFormat(GlobalSettings.CultureInfo,
+                                                await LanguageManager.GetStringAsync("String_DiceRoller_Hits"), intHitCount);
+                }
 
                 sbdResults.AppendLine().AppendLine().Append(await LanguageManager.GetStringAsync("Label_DiceRoller_Sum"))
                           .Append(strSpace).Append(_lstResults.Sum(x => x.Result).ToString(GlobalSettings.CultureInfo));
-                lblResults.Text = sbdResults.ToString();
+                await lblResults.DoThreadSafeAsync(x => x.Text = sbdResults.ToString());
             }
 
-            lstResults.BeginUpdate();
-            lstResults.Items.Clear();
-            foreach (DiceRollerListViewItem objItem in _lstResults)
+            await lstResults.DoThreadSafeAsync(x =>
             {
-                lstResults.Items.Add(objItem);
-            }
-            lstResults.EndUpdate();
+                x.BeginUpdate();
+                try
+                {
+                    x.Items.Clear();
+                    foreach (DiceRollerListViewItem objItem in _lstResults)
+                    {
+                        x.Items.Add(objItem);
+                    }
+                }
+                finally
+                {
+                    x.EndUpdate();
+                }
+            });
         }
 
         #endregion Control Events

@@ -24,6 +24,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -61,9 +62,12 @@ namespace Chummer
                     TreeNode objNode = await CacheCharacters(strSelectedFile);
                     if (objNode != null)
                     {
-                        treCharacterList.Nodes.Clear();
-                        treCharacterList.Nodes.Add(objNode);
-                        treCharacterList.SelectedNode = objNode.Nodes.Count > 0 ? objNode.Nodes[0] : objNode;
+                        await treCharacterList.DoThreadSafeAsync(x =>
+                        {
+                            x.Nodes.Clear();
+                            x.Nodes.Add(objNode);
+                            x.SelectedNode = objNode.Nodes.Count > 0 ? objNode.Nodes[0] : objNode;
+                        });
                     }
                 }
             }
@@ -406,41 +410,57 @@ namespace Chummer
         {
             if (objCache != null)
             {
-                txtCharacterBio.Text = objCache.Description;
+                await txtCharacterBio.DoThreadSafeAsync(x => x.Text = objCache.Description);
 
                 string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
 
-                lblCharacterName.Text = objCache.CharacterName;
-                if (string.IsNullOrEmpty(lblCharacterName.Text))
-                    lblCharacterName.Text = strUnknown;
-                lblCharacterNameLabel.Visible = !string.IsNullOrEmpty(lblCharacterName.Text);
-                lblCharacterName.Visible = !string.IsNullOrEmpty(lblCharacterName.Text);
+                await lblCharacterName.DoThreadSafeAsync(x =>
+                {
+                    x.Text = objCache.CharacterName;
+                    if (string.IsNullOrEmpty(x.Text))
+                        x.Text = strUnknown;
+                    x.Visible = true;
+                });
+                await lblCharacterNameLabel.DoThreadSafeAsync(x => x.Visible = true);
 
-                lblCharacterAlias.Text = objCache.CharacterAlias;
-                if (string.IsNullOrEmpty(lblCharacterAlias.Text))
-                    lblCharacterAlias.Text = strUnknown;
-                lblCharacterAliasLabel.Visible = !string.IsNullOrEmpty(lblCharacterAlias.Text);
-                lblCharacterAlias.Visible = !string.IsNullOrEmpty(lblCharacterAlias.Text);
+                await lblCharacterAlias.DoThreadSafeAsync(x =>
+                {
+                    x.Text = objCache.CharacterAlias;
+                    if (string.IsNullOrEmpty(x.Text))
+                        x.Text = strUnknown;
+                    x.Visible = true;
+                });
+                await lblCharacterAliasLabel.DoThreadSafeAsync(x => x.Visible = true);
 
-                lblPlayerName.Text = objCache.PlayerName;
-                if (string.IsNullOrEmpty(lblPlayerName.Text))
-                    lblPlayerName.Text = strUnknown;
-                lblPlayerNameLabel.Visible = !string.IsNullOrEmpty(lblPlayerName.Text);
-                lblPlayerName.Visible = !string.IsNullOrEmpty(lblPlayerName.Text);
+                await lblPlayerName.DoThreadSafeAsync(x =>
+                {
+                    x.Text = objCache.PlayerName;
+                    if (string.IsNullOrEmpty(x.Text))
+                        x.Text = strUnknown;
+                    x.Visible = true;
+                });
+                await lblPlayerNameLabel.DoThreadSafeAsync(x => x.Visible = true);
 
-                lblCareerKarma.Text = objCache.Karma;
-                if (string.IsNullOrEmpty(lblCareerKarma.Text) || lblCareerKarma.Text == 0.ToString(GlobalSettings.CultureInfo))
-                    lblCareerKarma.Text = await LanguageManager.GetStringAsync("String_None");
-                lblCareerKarmaLabel.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text);
-                lblCareerKarma.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text);
+                string strNone = await LanguageManager.GetStringAsync("String_None");
+                await lblCareerKarma.DoThreadSafeAsync(x =>
+                {
+                    x.Text = objCache.Karma;
+                    if (string.IsNullOrEmpty(x.Text) || x.Text == 0.ToString(GlobalSettings.CultureInfo))
+                        x.Text = strNone;
+                    x.Visible = true;
+                });
+                await lblCareerKarmaLabel.DoThreadSafeAsync(x => x.Visible = true);
 
-                lblEssence.Text = objCache.Essence;
-                if (string.IsNullOrEmpty(lblEssence.Text))
-                    lblEssence.Text = strUnknown;
-                lblEssenceLabel.Visible = !string.IsNullOrEmpty(lblEssence.Text);
-                lblEssence.Visible = !string.IsNullOrEmpty(lblEssence.Text);
+                await lblEssence.DoThreadSafeAsync(x =>
+                {
+                    x.Text = objCache.Essence;
+                    if (string.IsNullOrEmpty(x.Text))
+                        x.Text = strUnknown;
+                    x.Visible = true;
+                });
+                await lblEssenceLabel.DoThreadSafeAsync(x => x.Visible = true);
 
-                picMugshot.Image = objCache.Mugshot;
+                await picMugshot.DoThreadSafeAsync(x => x.Image = objCache.Mugshot);
 
                 // Populate character information fields.
                 XPathNavigator objMetatypeDoc = await XmlManager.LoadXPathAsync("metatypes.xml");
@@ -465,34 +485,37 @@ namespace Chummer
                           ?? objCache.Metavariant
                         : objCache.Metavariant) + ')';
                 }
-                lblMetatype.Text = strMetatype;
-                if (string.IsNullOrEmpty(lblMetatype.Text))
-                    lblMetatype.Text = strUnknown;
 
-                lblMetatypeLabel.Visible = !string.IsNullOrEmpty(lblMetatype.Text);
-                lblMetatype.Visible = !string.IsNullOrEmpty(lblMetatype.Text);
+                await lblMetatype.DoThreadSafeAsync(x =>
+                {
+                    x.Text = strMetatype;
+                    if (string.IsNullOrEmpty(x.Text))
+                        x.Text = strUnknown;
+                    x.Visible = true;
+                });
+                await lblMetatypeLabel.DoThreadSafeAsync(x => x.Visible = true);
 
-                cmdImport.Enabled = true;
+                await cmdImport.DoThreadSafeAsync(x => x.Enabled = true);
             }
             else
             {
-                txtCharacterBio.Text = string.Empty;
+                await txtCharacterBio.DoThreadSafeAsync(x => x.Text = string.Empty);
 
-                lblCharacterNameLabel.Visible = false;
-                lblCharacterName.Visible = false;
-                lblCharacterAliasLabel.Visible = false;
-                lblCharacterAlias.Visible = false;
-                lblPlayerNameLabel.Visible = false;
-                lblPlayerName.Visible = false;
-                lblMetatypeLabel.Visible = false;
-                lblMetatype.Visible = false;
-                lblCareerKarmaLabel.Visible = false;
-                lblCareerKarma.Visible = false;
-                lblEssenceLabel.Visible = false;
-                lblEssence.Visible = false;
+                await lblCharacterNameLabel.DoThreadSafeAsync(x => x.Visible = false);
+                await lblCharacterName.DoThreadSafeAsync(x => x.Visible = false);
+                await lblCharacterAliasLabel.DoThreadSafeAsync(x => x.Visible = false);
+                await lblCharacterAlias.DoThreadSafeAsync(x => x.Visible = false);
+                await lblPlayerNameLabel.DoThreadSafeAsync(x => x.Visible = false);
+                await lblPlayerName.DoThreadSafeAsync(x => x.Visible = false);
+                await lblMetatypeLabel.DoThreadSafeAsync(x => x.Visible = false);
+                await lblMetatype.DoThreadSafeAsync(x => x.Visible = false);
+                await lblCareerKarmaLabel.DoThreadSafeAsync(x => x.Visible = false);
+                await lblCareerKarma.DoThreadSafeAsync(x => x.Visible = false);
+                await lblEssenceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                await lblEssence.DoThreadSafeAsync(x => x.Visible = false);
 
-                picMugshot.Image = null;
-                cmdImport.Enabled = false;
+                await picMugshot.DoThreadSafeAsync(x => x.Image = null);
+                await cmdImport.DoThreadSafeAsync(x => x.Enabled = false);
             }
             picMugshot_SizeChanged(null, EventArgs.Empty);
         }
@@ -502,7 +525,7 @@ namespace Chummer
         private async void treCharacterList_AfterSelect(object sender, TreeViewEventArgs e)
         {
             HeroLabCharacterCache objCache = null;
-            TreeNode objSelectedNode = treCharacterList.SelectedNode;
+            TreeNode objSelectedNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode);
             if (objSelectedNode?.Level > 0)
             {
                 int intIndex = Convert.ToInt32(objSelectedNode.Tag, GlobalSettings.InvariantCultureInfo);
@@ -510,7 +533,7 @@ namespace Chummer
                     objCache = _lstCharacterCache[intIndex];
             }
             await UpdateCharacter(objCache);
-            treCharacterList.ClearNodeBackground(treCharacterList.SelectedNode);
+            await treCharacterList.DoThreadSafeAsync(x => x.ClearNodeBackground(x.SelectedNode));
         }
 
         private async void cmdImport_Click(object sender, EventArgs e)
@@ -522,23 +545,27 @@ namespace Chummer
         {
             if (this.IsNullOrDisposed() || picMugshot.IsNullOrDisposed())
                 return;
-            try
+            picMugshot.DoThreadSafe(x =>
             {
-                picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
-                    ? PictureBoxSizeMode.CenterImage
-                    : PictureBoxSizeMode.Zoom;
-            }
-            catch (ArgumentException) // No other way to catch when the Image is not null, but is disposed
-            {
-                picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
-            }
+                try
+                {
+                    x.SizeMode = x.Image != null && x.Height >= x.Image.Height
+                                                 && x.Width >= x.Image.Width
+                        ? PictureBoxSizeMode.CenterImage
+                        : PictureBoxSizeMode.Zoom;
+                }
+                catch (ArgumentException) // No other way to catch when the Image is not null, but is disposed
+                {
+                    x.SizeMode = PictureBoxSizeMode.Zoom;
+                }
+            });
         }
 
         #endregion Form Methods
 
-        private async Task DoImport()
+        private async Task DoImport(CancellationToken token = default)
         {
-            TreeNode objSelectedNode = treCharacterList.SelectedNode;
+            TreeNode objSelectedNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
             if (objSelectedNode == null || objSelectedNode.Level <= 0)
                 return;
             int intIndex = Convert.ToInt32(objSelectedNode.Tag, GlobalSettings.InvariantCultureInfo);
@@ -603,7 +630,7 @@ namespace Chummer
                         }
                     }
                     
-                    using (SelectBuildMethod frmPickBP = await this.DoThreadSafeFuncAsync(() => new SelectBuildMethod(objCharacter, true)))
+                    using (SelectBuildMethod frmPickBP = await this.DoThreadSafeFuncAsync(() => new SelectBuildMethod(objCharacter, true), token))
                     {
                         await frmPickBP.ShowDialogSafeAsync(this);
                         if (frmPickBP.DialogResult != DialogResult.OK)
@@ -619,8 +646,8 @@ namespace Chummer
                 }
                 finally
                 {
-                    cmdImport.Enabled = true;
-                    cmdSelectFile.Enabled = true;
+                    await cmdImport.DoThreadSafeAsync(x => x.Enabled = true, token);
+                    await cmdSelectFile.DoThreadSafeAsync(x => x.Enabled = true, token);
                     if (!blnLoaded)
                         Program.OpenCharacters.Remove(objCharacter);
                 }

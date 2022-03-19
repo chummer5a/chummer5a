@@ -99,27 +99,28 @@ namespace Chummer
             string strReturn = await LanguageManager.GetStringAsync("Label_About", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = "About";
-            Text = strReturn + strSpace + AssemblyTitle;
-            lblProductName.Text = AssemblyProduct;
+            await this.DoThreadSafeAsync(x => x.Text = strReturn + strSpace + AssemblyTitle);
+            await lblProductName.DoThreadSafeAsync(x => x.Text = AssemblyProduct);
             strReturn = await LanguageManager.GetStringAsync("String_Version", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = "Version";
-            lblVersion.Text = strReturn + strSpace + AssemblyVersion;
+            await lblVersion.DoThreadSafeAsync(x => x.Text = strReturn + strSpace + AssemblyVersion);
             strReturn = await LanguageManager.GetStringAsync("About_Copyright_Text", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = AssemblyCopyright;
-            lblCopyright.Text = strReturn;
+            await lblCopyright.DoThreadSafeAsync(x => x.Text = strReturn);
             strReturn = await LanguageManager.GetStringAsync("About_Company_Text", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = AssemblyCompany;
-            lblCompanyName.Text = strReturn;
+            await lblCompanyName.DoThreadSafeAsync(x => x.Text = strReturn);
             strReturn = await LanguageManager.GetStringAsync("About_Description_Text", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = AssemblyDescription;
-            txtDescription.Text = strReturn;
-            txtContributors.Text += Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, Properties.Contributors.Usernames)
-                                    + Environment.NewLine + "/u/Iridios";
-            txtDisclaimer.Text = await LanguageManager.GetStringAsync("About_Label_Disclaimer_Text");
+            await txtDescription.DoThreadSafeAsync(x => x.Text = strReturn);
+            await txtContributors.DoThreadSafeAsync(x => x.Text += Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, Properties.Contributors.Usernames)
+                                                                   + Environment.NewLine + "/u/Iridios");
+            string strDisclaimer = await LanguageManager.GetStringAsync("About_Label_Disclaimer_Text");
+            await txtDisclaimer.DoThreadSafeAsync(x => x.Text = strDisclaimer);
         }
 
         private void txt_KeyDown(object sender, KeyEventArgs e)

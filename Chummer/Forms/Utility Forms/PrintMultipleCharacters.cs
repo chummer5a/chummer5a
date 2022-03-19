@@ -71,7 +71,7 @@ namespace Chummer
                         Text = Path.GetFileName(strFileName) ?? await LanguageManager.GetStringAsync("String_Unknown"),
                         Tag = strFileName
                     };
-                    treCharacters.Nodes.Add(objNode);
+                    await treCharacters.DoThreadSafeAsync(x => x.Nodes.Add(objNode));
                 }
 
                 if (_frmPrintView != null)
@@ -81,7 +81,7 @@ namespace Chummer
 
         private async void cmdDelete_Click(object sender, EventArgs e)
         {
-            if (treCharacters.SelectedNode != null)
+            if (await treCharacters.DoThreadSafeFuncAsync(x => x.SelectedNode) != null)
             {
                 await CancelPrint();
                 treCharacters.SelectedNode.Remove();
@@ -137,19 +137,20 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
+                    int intNodesCount = await treCharacters.DoThreadSafeFuncAsync(x => x.Nodes.Count, token);
                     await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token),
                                        prgProgress.DoThreadSafeAsync(objBar =>
                                        {
                                            objBar.Value = 0;
-                                           objBar.Maximum = treCharacters.Nodes.Count;
+                                           objBar.Maximum = intNodesCount;
                                        }, token));
                     token.ThrowIfCancellationRequested();
                     // Parallelized load because this is one major bottleneck.
-                    Character[] lstCharacters = new Character[treCharacters.Nodes.Count];
-                    Task<Character>[] tskLoadingTasks = new Task<Character>[treCharacters.Nodes.Count];
+                    Character[] lstCharacters = new Character[intNodesCount];
+                    Task<Character>[] tskLoadingTasks = new Task<Character>[intNodesCount];
                     for (int i = 0; i < tskLoadingTasks.Length; ++i)
                     {
-                        string strLoopFile = treCharacters.Nodes[i].Tag.ToString();
+                        string strLoopFile = await treCharacters.DoThreadSafeFuncAsync(x => x.Nodes[i].Tag.ToString(), token);
                         tskLoadingTasks[i]
                             = Task.Run(() => InnerLoad(strLoopFile, token), token);
                     }
