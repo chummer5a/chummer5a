@@ -829,7 +829,7 @@ namespace Chummer
 
         private async void mnuMRU_Click(object sender, EventArgs e)
         {
-            string strFileName = ((ToolStripMenuItem)sender).Tag as string;
+            string strFileName = await mnuProcessFile.DoThreadSafeFuncAsync(() => ((ToolStripMenuItem)sender).Tag) as string;
             if (string.IsNullOrEmpty(strFileName))
                 return;
             using (CursorWait.New(this))
@@ -949,43 +949,55 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacter"></param>
         /// <returns></returns>
-        public bool SwitchToOpenCharacter(Character objCharacter)
+        public async Task<bool> SwitchToOpenCharacter(Character objCharacter)
         {
             using (CursorWait.New(this))
             {
                 if (objCharacter == null)
                     return false;
-                CharacterShared objCharacterForm = OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objCharacter);
+                CharacterShared objCharacterForm = await OpenCharacterForms.FirstOrDefaultAsync(x => x.CharacterObject == objCharacter);
                 if (objCharacterForm == null)
                     return false;
-                foreach (TabPage objTabPage in tabForms.TabPages)
+                await objCharacterForm.DoThreadSafeAsync(x =>
                 {
-                    if (objTabPage.Tag != objCharacterForm)
-                        continue;
-                    tabForms.SelectTab(objTabPage);
-                    if (_mascotChummy != null)
-                        _mascotChummy.CharacterObject = objCharacter;
-                    return true;
-                }
-                objCharacterForm.BringToFront();
+                    foreach (TabPage objTabPage in tabForms.TabPages)
+                    {
+                        if (objTabPage.Tag != x)
+                            continue;
+                        tabForms.SelectTab(objTabPage);
+                        if (_mascotChummy != null)
+                            _mascotChummy.CharacterObject = objCharacter;
+                        return;
+                    }
+                    x.BringToFront();
+                });
                 return true;
             }
         }
 
-        public void UpdateCharacterTabTitle(object sender, PropertyChangedEventArgs e)
+        public async void UpdateCharacterTabTitle(object sender, PropertyChangedEventArgs e)
         {
             // Change the TabPage's text to match the character's name (or "Unnamed Character" if they are currently unnamed).
-            if (tabForms.TabCount > 0 && e?.PropertyName == nameof(Character.CharacterName) && sender is Character objCharacter)
+            if (e?.PropertyName == nameof(Character.CharacterName) && sender is Character objCharacter && await tabForms.DoThreadSafeFuncAsync(x => x.TabCount) > 0)
             {
-                foreach (TabPage objTabPage in tabForms.TabPages)
+                await UpdateCharacterTabTitle(objCharacter, objCharacter.CharacterName.Trim());
+            }
+        }
+
+        private Task UpdateCharacterTabTitle(Character objCharacter, string strCharacterName)
+        {
+            return tabForms.DoThreadSafeAsync(x =>
+            {
+                foreach (TabPage objTabPage in x.TabPages)
                 {
-                    if (objTabPage.Tag is CharacterShared objCharacterForm && objCharacterForm.CharacterObject == objCharacter)
+                    if (objTabPage.Tag is CharacterShared objCharacterForm
+                        && objCharacterForm.CharacterObject == objCharacter)
                     {
-                        objTabPage.QueueThreadSafe(() => objTabPage.Text = objCharacter.CharacterName.Trim());
+                        objTabPage.Text = strCharacterName;
                         return;
                     }
                 }
-            }
+            });
         }
 
         private void mnuToolsDiceRoller_Click(object sender, EventArgs e)
@@ -1154,7 +1166,7 @@ namespace Chummer
 
         private async void tsSave_Click(object sender, EventArgs e)
         {
-            if (tabForms.SelectedTab.Tag is CharacterShared objShared)
+            if (await tabForms.DoThreadSafeFuncAsync(x => x.SelectedTab.Tag) is CharacterShared objShared)
             {
                 await objShared.SaveCharacter();
             }
@@ -1162,7 +1174,7 @@ namespace Chummer
 
         private async void tsSaveAs_Click(object sender, EventArgs e)
         {
-            if (tabForms.SelectedTab.Tag is CharacterShared objShared)
+            if (await tabForms.DoThreadSafeFuncAsync(x => x.SelectedTab.Tag) is CharacterShared objShared)
             {
                 await objShared.SaveCharacterAs();
             }
@@ -1178,7 +1190,7 @@ namespace Chummer
 
         private async void tsPrint_Click(object sender, EventArgs e)
         {
-            if (tabForms.SelectedTab.Tag is CharacterShared objShared)
+            if (await tabForms.DoThreadSafeFuncAsync(x => x.SelectedTab.Tag) is CharacterShared objShared)
             {
                 await objShared.DoPrint();
             }
@@ -1283,10 +1295,10 @@ namespace Chummer
                     lstFilesToOpen = new List<string>(openFileDialog.FileNames.Length);
                     foreach (string strFile in openFileDialog.FileNames)
                     {
-                        Character objLoopCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+                        Character objLoopCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile);
                         if (objLoopCharacter != null)
                         {
-                            if (!SwitchToOpenCharacter(objLoopCharacter))
+                            if (!await SwitchToOpenCharacter(objLoopCharacter))
                                 await OpenCharacter(objLoopCharacter);
                         }
                         else
@@ -1366,7 +1378,7 @@ namespace Chummer
                                 await LanguageManager.GetStringAsync("MessageTitle_TooManyHandlesWarning"),
                                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                         {
-                            if (Program.OpenCharacters.All(
+                            if (await Program.OpenCharacters.AllAsync(
                                     x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
                                 Program.OpenCharacters.Remove(objCharacter);
                             continue;
@@ -1387,8 +1399,7 @@ namespace Chummer
                                             && File.Exists(objCharacter.FileName))
                             GlobalSettings.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
 
-                        UpdateCharacterTabTitle(objCharacter,
-                                                new PropertyChangedEventArgs(nameof(Character.CharacterName)));
+                        await UpdateCharacterTabTitle(objCharacter, objCharacter.CharacterName.Trim());
                         //Timekeeper.Finish("load_event_time");
                     }
                 }
@@ -1420,7 +1431,7 @@ namespace Chummer
                 if (!File.Exists(strFile))
                     return;
 
-                Character objCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == strFile)
+                Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile)
                                          ?? await Task.Run(() => Program.LoadCharacterAsync(strFile));
                 try
                 {
@@ -1444,9 +1455,9 @@ namespace Chummer
             using (CursorWait.New(this))
             {
                 // Character is already open in an existing form, so switch to it and make it open up its print viewer
-                if (SwitchToOpenCharacter(objCharacter))
+                if (await SwitchToOpenCharacter(objCharacter))
                 {
-                    CharacterShared objOpenForm = OpenCharacterForms.Find(x => x.CharacterObject == objCharacter);
+                    CharacterShared objOpenForm = await OpenCharacterForms.FirstOrDefaultAsync(x => x.CharacterObject == objCharacter);
                     if (objOpenForm != null)
                         await objOpenForm.DoPrint();
                 }
@@ -1482,7 +1493,7 @@ namespace Chummer
                 if (!File.Exists(strFile))
                     return;
 
-                Character objCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == strFile)
+                Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile)
                                          ?? await Task.Run(() => Program.LoadCharacterAsync(strFile));
                 try
                 {
@@ -1506,9 +1517,9 @@ namespace Chummer
             using (CursorWait.New(this))
             {
                 // Character is already open in an existing form, so switch to it and make it open up its exporter
-                if (SwitchToOpenCharacter(objCharacter))
+                if (await SwitchToOpenCharacter(objCharacter))
                 {
-                    CharacterShared objOpenForm = OpenCharacterForms.Find(x => x.CharacterObject == objCharacter);
+                    CharacterShared objOpenForm = await OpenCharacterForms.FirstOrDefaultAsync(x => x.CharacterObject == objCharacter);
                     if (objOpenForm != null)
                         await objOpenForm.DoExport();
                 }

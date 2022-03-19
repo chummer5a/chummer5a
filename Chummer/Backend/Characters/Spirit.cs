@@ -1107,7 +1107,7 @@ namespace Chummer
                 string strFile = blnUseRelative ? Path.GetFullPath(RelativeFileName) : FileName;
                 if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
                 {
-                    Character objOpenCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+                    Character objOpenCharacter = Program.OpenCharacters.Find(x => x.FileName == strFile);
                     _objLinkedCharacter = objOpenCharacter ?? Program.LoadCharacter(strFile, string.Empty, false, false);
                     if (_objLinkedCharacter != null)
                         CharacterObject.LinkedCharacters.Add(_objLinkedCharacter);

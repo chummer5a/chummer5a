@@ -1165,7 +1165,7 @@ namespace ChummerHub.Client.Backend
 
         private static async ValueTask SwitchToCharacter(Character objOpenCharacter)
         {
-            if (!Program.SwitchToOpenCharacter(objOpenCharacter))
+            if (!await Program.SwitchToOpenCharacter(objOpenCharacter))
                 await Program.OpenCharacter(objOpenCharacter);
         }
 

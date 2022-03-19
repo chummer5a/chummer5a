@@ -620,9 +620,9 @@ namespace Chummer
 
         public async void OnDefaultDoubleClick(object sender, EventArgs e)
         {
-            Character objOpenCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == FileName)
+            Character objOpenCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == FileName)
                                          ?? await Program.LoadCharacterAsync(FilePath);
-            if (!Program.SwitchToOpenCharacter(objOpenCharacter))
+            if (!await Program.SwitchToOpenCharacter(objOpenCharacter))
                 await Program.OpenCharacter(objOpenCharacter);
         }
 

@@ -1320,13 +1320,9 @@ namespace Chummer.Plugins
             }
             using (CursorWait.New(MainForm))
             {
-                await MainForm.DoThreadSafeFunc(async x =>
-                {
-                    ChummerMainForm frmMain = (ChummerMainForm) x;
-                    if (!frmMain.SwitchToOpenCharacter(objCharacter))
-                        await frmMain.OpenCharacter(objCharacter, false);
-                    frmMain.BringToFront();
-                });
+                if (!await Program.SwitchToOpenCharacter(objCharacter))
+                    await Program.OpenCharacter(objCharacter, false);
+                await MainForm.DoThreadSafeAsync(x => x.BringToFront());
             }
         }
 

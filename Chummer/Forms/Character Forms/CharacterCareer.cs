@@ -1430,7 +1430,7 @@ namespace Chummer
                     }
 
                     // Trash the global variables and dispose of the Form.
-                    if (Program.OpenCharacters.All(
+                    if (await Program.OpenCharacters.AllAsync(
                             x => x == CharacterObject || !x.LinkedCharacters.Contains(CharacterObject)))
                         Program.OpenCharacters.Remove(CharacterObject);
                 }

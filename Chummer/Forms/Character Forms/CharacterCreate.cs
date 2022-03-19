@@ -1227,7 +1227,7 @@ namespace Chummer
 
                     // Trash the global variables and dispose of the Form.
                     if (!_blnIsReopenQueued
-                        && Program.OpenCharacters.All(
+                        && await Program.OpenCharacters.AllAsync(
                             x => x == CharacterObject || !x.LinkedCharacters.Contains(CharacterObject)))
                         Program.OpenCharacters.Remove(CharacterObject);
                 }

@@ -1335,9 +1335,9 @@ namespace Chummer
                     using (CursorWait.New(this))
                     {
                         Character objOpenCharacter
-                            = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName)
+                            = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName)
                               ?? await Program.LoadCharacterAsync(objCache.FilePath);
-                        if (!Program.SwitchToOpenCharacter(objOpenCharacter))
+                        if (!await Program.SwitchToOpenCharacter(objOpenCharacter))
                             await Program.OpenCharacter(objOpenCharacter);
                     }
                 }
@@ -1361,7 +1361,7 @@ namespace Chummer
                 using (CursorWait.New(this))
                 {
                     Character objCharacter
-                        = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName)
+                        = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName)
                           ?? await Program.LoadCharacterAsync(objCache.FilePath);
                     try
                     {
@@ -1397,7 +1397,7 @@ namespace Chummer
                 using (CursorWait.New(this))
                 {
                     Character objCharacter
-                        = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName)
+                        = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName)
                           ?? await Program.LoadCharacterAsync(objCache.FilePath);
                     try
                     {
@@ -1483,21 +1483,31 @@ namespace Chummer
             }
         }
 
-        private void tsCloseOpenCharacter_Click(object sender, EventArgs e)
+        private async void tsCloseOpenCharacter_Click(object sender, EventArgs e)
         {
             if (treCharacterList.IsNullOrDisposed())
                 return;
-            TreeNode objSelectedNode = treCharacterList.SelectedNode;
-            if (objSelectedNode?.Tag == null || objSelectedNode.Level <= 0)
-                return;
-            string strFile = objSelectedNode.Tag.ToString();
-            if (string.IsNullOrEmpty(strFile))
-                return;
-            Character objOpenCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-            if (objOpenCharacter != null)
+            try
             {
-                using (CursorWait.New(this))
-                    Program.MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objOpenCharacter)?.Close();
+                TreeNode objSelectedNode
+                    = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken);
+                if (objSelectedNode?.Tag == null || objSelectedNode.Level <= 0)
+                    return;
+                string strFile = objSelectedNode.Tag.ToString();
+                if (string.IsNullOrEmpty(strFile))
+                    return;
+                Character objOpenCharacter
+                    = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile);
+                if (objOpenCharacter != null)
+                {
+                    using (CursorWait.New(this))
+                        (await Program.MainForm.OpenCharacterForms.FirstOrDefaultAsync(
+                            x => x.CharacterObject == objOpenCharacter))?.Close();
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 

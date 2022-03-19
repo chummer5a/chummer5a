@@ -1412,7 +1412,7 @@ namespace Chummer
                     break;
                 }
 
-                objLoopControl = objLoopControl.Parent;
+                objLoopControl = await objLoopControl.DoThreadSafeFuncAsync(x => x.Parent);
             }
             
             using (CursorWait.New(objControl.FindForm() ?? objControl))

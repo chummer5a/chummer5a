@@ -305,7 +305,7 @@ namespace Chummer
                 {
                     if (objOpenCharacter == null)
                         objOpenCharacter = await Program.LoadCharacterAsync(_objContact.LinkedCharacter.FileName);
-                    if (!Program.SwitchToOpenCharacter(objOpenCharacter))
+                    if (!await Program.SwitchToOpenCharacter(objOpenCharacter))
                         await Program.OpenCharacter(objOpenCharacter);
                 }
             }

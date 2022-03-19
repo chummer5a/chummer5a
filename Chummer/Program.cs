@@ -911,7 +911,7 @@ namespace Chummer
                 string strAutosavesPath = Utils.GetAutosavesFolderPath;
                 if (string.IsNullOrEmpty(strNewName) && !blnClearFileName)
                 {
-                    objCharacter = OpenCharacters.FirstOrDefault(x => x.FileName == strFileName);
+                    objCharacter = await OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFileName);
                     if (objCharacter != null)
                         return objCharacter;
                 }
@@ -1035,11 +1035,11 @@ namespace Chummer
             return objCharacter;
         }
 
-        public static bool SwitchToOpenCharacter(Character objCharacter)
+        public static Task<bool> SwitchToOpenCharacter(Character objCharacter)
         {
             if (objCharacter == null || MainForm == null)
-                return false;
-            return MainForm.DoThreadSafeFunc(x => x.SwitchToOpenCharacter(objCharacter));
+                return Task.FromResult(false);
+            return MainForm.SwitchToOpenCharacter(objCharacter);
         }
 
         /// <summary>

@@ -113,7 +113,7 @@ namespace Chummer
         private async void cmdGlobalOptionsCustomData_Click(object sender, EventArgs e)
         {
             using (CursorWait.New(this))
-            using (EditGlobalSettings frmOptions = new EditGlobalSettings("tabCustomDataDirectories"))
+            using (EditGlobalSettings frmOptions = await this.DoThreadSafeFuncAsync(() => new EditGlobalSettings("tabCustomDataDirectories")))
                 await frmOptions.ShowDialogSafeAsync(this);
         }
 
@@ -148,9 +148,9 @@ namespace Chummer
 
                 try
                 {
-                    if (await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex) >= 0)
+                    int intCurrentSelectedSettingIndex = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex);
+                    if (intCurrentSelectedSettingIndex >= 0)
                     {
-                        int intCurrentSelectedSettingIndex = cboSetting.SelectedIndex;
                         ListItem objNewListItem = new ListItem(_lstSettings[intCurrentSelectedSettingIndex].Value,
                                                                _objCharacterSettings.DisplayName);
                         _blnLoading = true;
@@ -172,7 +172,7 @@ namespace Chummer
                     }
                 }
 
-                _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
+                _intOldSelectedSettingIndex = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex);
             }
         }
 
@@ -462,7 +462,7 @@ namespace Chummer
                 {
                     if (_blnWasRenamed && _intOldSelectedSettingIndex >= 0)
                     {
-                        int intCurrentSelectedSettingIndex = cboSetting.SelectedIndex;
+                        int intCurrentSelectedSettingIndex = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex);
                         ListItem objNewListItem =
                             new ListItem(_lstSettings[_intOldSelectedSettingIndex].Value,
                                          _objReferenceCharacterSettings.DisplayName);
@@ -512,9 +512,9 @@ namespace Chummer
 
                 try
                 {
-                    if (_blnWasRenamed && cboSetting.SelectedIndex >= 0)
+                    int intCurrentSelectedSettingIndex = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex);
+                    if (_blnWasRenamed && intCurrentSelectedSettingIndex >= 0)
                     {
-                        int intCurrentSelectedSettingIndex = cboSetting.SelectedIndex;
                         ListItem objNewListItem =
                             new ListItem(_lstSettings[intCurrentSelectedSettingIndex].Value,
                                          _objReferenceCharacterSettings.DisplayName);
@@ -1101,7 +1101,7 @@ namespace Chummer
                         if (objOldSelected != null)
                             x.SelectedNode = x.FindNodeByTag(objOldSelected);
                         x.ShowNodeToolTips = true;
-                    }, token: token);
+                    }, token);
                 }
             }
             finally
@@ -1594,16 +1594,23 @@ namespace Chummer
                     switch (e.PropertyName)
                     {
                         case nameof(CharacterSettings.BuiltInOption):
-                            cmdSave.Enabled = IsDirty && await IsAllTextBoxesLegalAsync()
-                                                      && !_objCharacterSettings.BuiltInOption;
+                        {
+                            bool blnAllTextBoxesLegal = await IsAllTextBoxesLegalAsync();
+                            await cmdSave.DoThreadSafeAsync(
+                                x => x.Enabled = IsDirty && blnAllTextBoxesLegal
+                                                         && !_objCharacterSettings.BuiltInOption);
                             break;
-
+                        }
                         case nameof(CharacterSettings.PriorityArray):
                         case nameof(CharacterSettings.BuildMethod):
-                            cmdSaveAs.Enabled = IsDirty && await IsAllTextBoxesLegalAsync();
-                            cmdSave.Enabled = cmdSaveAs.Enabled
-                                              && !_objCharacterSettings.BuiltInOption;
+                        {
+                            bool blnAllTextBoxesLegal = await IsAllTextBoxesLegalAsync();
+                            await cmdSaveAs.DoThreadSafeAsync(x => x.Enabled = IsDirty && blnAllTextBoxesLegal);
+                            await cmdSave.DoThreadSafeAsync(
+                                x => x.Enabled = IsDirty && blnAllTextBoxesLegal
+                                                         && !_objCharacterSettings.BuiltInOption);
                             break;
+                        }
                     }
                 }
             }
@@ -1665,18 +1672,18 @@ namespace Chummer
                 if (_blnDirty == value)
                     return;
                 _blnDirty = value;
-                cmdOK.Text = LanguageManager.GetString(value ? "String_Cancel" : "String_OK");
+                cmdOK.DoThreadSafe(x => x.Text = LanguageManager.GetString(value ? "String_Cancel" : "String_OK"));
                 if (value)
                 {
                     bool blnIsAllTextBoxesLegal = IsAllTextBoxesLegal();
-                    cmdSaveAs.Enabled = blnIsAllTextBoxesLegal;
-                    cmdSave.Enabled = blnIsAllTextBoxesLegal && !_objCharacterSettings.BuiltInOption;
+                    cmdSaveAs.DoThreadSafe(x => x.Enabled = blnIsAllTextBoxesLegal);
+                    cmdSave.DoThreadSafe(x => x.Enabled = blnIsAllTextBoxesLegal && !_objCharacterSettings.BuiltInOption);
                 }
                 else
                 {
                     _blnWasRenamed = false;
-                    cmdSaveAs.Enabled = false;
-                    cmdSave.Enabled = false;
+                    cmdSaveAs.DoThreadSafe(x => x.Enabled = false);
+                    cmdSave.DoThreadSafe(x => x.Enabled = false);
                 }
             }
         }
