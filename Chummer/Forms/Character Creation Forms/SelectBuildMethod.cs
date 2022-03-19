@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -46,7 +47,7 @@ namespace Chummer
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            if (!(cboCharacterSetting.SelectedValue is CharacterSettings objSelectedGameplayOption))
+            if (!(await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue) is CharacterSettings objSelectedGameplayOption))
                 return;
             CharacterBuildMethod eSelectedBuildMethod = objSelectedGameplayOption.BuildMethod;
             if (_blnForExistingCharacter && !_objCharacter.Created && _objCharacter.Settings.BuildMethod == _objCharacter.EffectiveBuildMethod && eSelectedBuildMethod != _eStartingBuildMethod)
@@ -87,15 +88,15 @@ namespace Chummer
         {
             using (CursorWait.New(this))
             {
+                object objOldSelected = await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue);
                 using (EditCharacterSettings frmOptions = await this.DoThreadSafeFuncAsync(
-                           () => new EditCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings)))
+                           () => new EditCharacterSettings(objOldSelected as CharacterSettings)))
                     await frmOptions.ShowDialogSafeAsync(this);
 
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
                 {
                     // Populate the Gameplay Settings list.
-                    object objOldSelected = await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue);
                     using (new FetchSafelyFromPool<List<ListItem>>(
                                Utils.ListItemListPool, out List<ListItem> lstGameplayOptions))
                     {
@@ -113,13 +114,15 @@ namespace Chummer
                             (bool blnSuccess, CharacterSettings objSetting)
                                 = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
                                     GlobalSettings.DefaultCharacterSetting);
-                            if (blnSuccess)
-                                await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSetting);
-                            if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex) == -1
-                                && lstGameplayOptions.Count > 0)
+                            await cboCharacterSetting.DoThreadSafeAsync(x =>
                             {
-                                await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedIndex = 0);
-                            }
+                                if (blnSuccess)
+                                    x.SelectedValue = objSetting;
+                                if (x.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
+                                {
+                                    x.SelectedIndex = 0;
+                                }
+                            });
                         }
                     }
                 }
@@ -209,13 +212,14 @@ namespace Chummer
             }
         }
 
-        private async ValueTask ProcessGameplayIndexChanged()
+        private async ValueTask ProcessGameplayIndexChanged(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             // Load the Priority information.
-            if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue) is CharacterSettings objSelectedGameplayOption)
+            if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, token) is CharacterSettings objSelectedGameplayOption)
             {
                 string strText = await LanguageManager.GetStringAsync("String_" + objSelectedGameplayOption.BuildMethod);
-                await lblBuildMethod.DoThreadSafeAsync(x => x.Text = strText);
+                await lblBuildMethod.DoThreadSafeAsync(x => x.Text = strText, token);
                 switch (objSelectedGameplayOption.BuildMethod)
                 {
                     case CharacterBuildMethod.Priority:
@@ -224,12 +228,12 @@ namespace Chummer
                         {
                             x.Text = strText;
                             x.Visible = true;
-                        });
+                        }, token);
                         await lblBuildMethodParam.DoThreadSafeAsync(x =>
                         {
                             x.Text = objSelectedGameplayOption.PriorityArray;
                             x.Visible = true;
-                        });
+                        }, token);
                         break;
 
                     case CharacterBuildMethod.SumtoTen:
@@ -238,26 +242,26 @@ namespace Chummer
                         {
                             x.Text = strText;
                             x.Visible = true;
-                        });
+                        }, token);
                         await lblBuildMethodParam.DoThreadSafeAsync(x =>
                         {
                             x.Text = objSelectedGameplayOption.SumtoTen.ToString(GlobalSettings.CultureInfo);
                             x.Visible = true;
-                        });
+                        }, token);
                         break;
 
                     default:
-                        await lblBuildMethodParamLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblBuildMethodParam.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblBuildMethodParamLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblBuildMethodParam.DoThreadSafeAsync(x => x.Visible = false, token);
                         break;
                 }
 
                 string strNone = await LanguageManager.GetStringAsync("String_None");
 
-                await lblMaxAvail.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.MaximumAvailability.ToString(GlobalSettings.CultureInfo));
-                await lblKarma.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.BuildKarma.ToString(GlobalSettings.CultureInfo));
-                await lblMaxNuyen.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.NuyenMaximumBP.ToString(GlobalSettings.CultureInfo));
-                await lblQualityKarma.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo));
+                await lblMaxAvail.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.MaximumAvailability.ToString(GlobalSettings.CultureInfo), token);
+                await lblKarma.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.BuildKarma.ToString(GlobalSettings.CultureInfo), token);
+                await lblMaxNuyen.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.NuyenMaximumBP.ToString(GlobalSettings.CultureInfo), token);
+                await lblQualityKarma.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo), token);
 
                 await lblBooks.DoThreadSafeAsync(x =>
                 {
@@ -265,7 +269,7 @@ namespace Chummer
                                                                           objSelectedGameplayOption.Books));
                     if (string.IsNullOrEmpty(x.Text))
                         x.Text = strNone;
-                });
+                }, token);
 
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdCustomDataDirectories))
@@ -279,7 +283,7 @@ namespace Chummer
                         x.Text = sbdCustomDataDirectories.ToString();
                         if (string.IsNullOrEmpty(x.Text))
                             x.Text = strNone;
-                    });
+                    }, token);
                 }
             }
         }
