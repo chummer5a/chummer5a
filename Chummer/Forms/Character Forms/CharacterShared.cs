@@ -7030,10 +7030,10 @@ namespace Chummer
                     return await SaveCharacterAsCreated(token);
                 }
 
-                using (LoadingBar frmProgressBar = await Program.CreateAndShowProgressBarAsync())
+                using (Program.MainProgressBar = await Program.CreateAndShowProgressBarAsync())
                 {
-                    frmProgressBar.PerformStep(CharacterObject.CharacterName,
-                                               LoadingBar.ProgressBarTextPatterns.Saving);
+                    Program.MainProgressBar.PerformStep(CharacterObject.CharacterName,
+                                                        LoadingBar.ProgressBarTextPatterns.Saving);
                     if (!await CharacterObject.SaveAsync(token: token))
                         return false;
                     GlobalSettings.MostRecentlyUsedCharacters.Insert(0, CharacterObject.FileName);

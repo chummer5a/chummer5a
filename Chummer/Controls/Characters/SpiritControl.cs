@@ -580,10 +580,10 @@ namespace Chummer
                     objCharacter.Create(objXmlMetatype["category"]?.InnerText, objXmlMetatype["id"]?.InnerText,
                                         string.Empty, objXmlMetatype, intForce);
                     objCharacter.MetatypeBP = 0;
-                    using (LoadingBar frmProgressBar = await Program.CreateAndShowProgressBarAsync())
+                    using (Program.MainProgressBar = await Program.CreateAndShowProgressBarAsync())
                     {
-                        frmProgressBar.PerformStep(objCharacter.CharacterName,
-                                                   LoadingBar.ProgressBarTextPatterns.Saving);
+                        Program.MainProgressBar.PerformStep(objCharacter.CharacterName,
+                                                            LoadingBar.ProgressBarTextPatterns.Saving);
                         if (!await objCharacter.SaveAsync())
                             return;
                     }

@@ -10411,15 +10411,14 @@ namespace Chummer
                 using (CursorWait.New(this, true))
                 {
                     using (CursorWait.New(this))
-                    using (LoadingBar frmLoadingForm
-                           = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName),
+                    using (Program.MainProgressBar = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName),
                                                                          Character.NumLoadingSections))
                     {
                         SkipUpdate = true;
                         try
                         {
-                            await CharacterObject.LoadAsync(frmLoadingForm);
-                            frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
+                            await CharacterObject.LoadAsync(Program.MainProgressBar);
+                            Program.MainProgressBar.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
 
                             // Select the Magician's Tradition.
                             if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
@@ -12411,10 +12410,10 @@ namespace Chummer
 
                 CharacterObject.Created = true;
 
-                using (LoadingBar frmProgressBar = await Program.CreateAndShowProgressBarAsync())
+                using (Program.MainProgressBar = await Program.CreateAndShowProgressBarAsync())
                 {
-                    frmProgressBar.PerformStep(CharacterObject.CharacterName,
-                                               LoadingBar.ProgressBarTextPatterns.Saving);
+                    Program.MainProgressBar.PerformStep(CharacterObject.CharacterName,
+                                                        LoadingBar.ProgressBarTextPatterns.Saving);
                     if (!await CharacterObject.SaveAsync(token: token))
                     {
                         CharacterObject.ExpenseEntries.Clear();
@@ -15418,10 +15417,10 @@ namespace Chummer
 
                     using (CursorWait.New(this))
                     {
-                        using (LoadingBar frmProgressBar = await Program.CreateAndShowProgressBarAsync())
+                        using (Program.MainProgressBar = await Program.CreateAndShowProgressBarAsync())
                         {
-                            frmProgressBar.PerformStep(CharacterObject.CharacterName,
-                                                       LoadingBar.ProgressBarTextPatterns.Saving);
+                            Program.MainProgressBar.PerformStep(CharacterObject.CharacterName,
+                                                                LoadingBar.ProgressBarTextPatterns.Saving);
                             if (!await CharacterObject.SaveAsync(strNewName, token: token))
                                 return false;
                         }

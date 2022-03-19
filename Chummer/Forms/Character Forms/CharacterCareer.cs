@@ -3298,11 +3298,11 @@ namespace Chummer
                     Character objVessel = new Character {FileName = strFileName};
                     try
                     {
-                        using (LoadingBar frmLoadingForm
+                        using (Program.MainProgressBar
                                = await Program.CreateAndShowProgressBarAsync(
                                    Path.GetFileName(objVessel.FileName), Character.NumLoadingSections * 2 + 7))
                         {
-                            bool blnSuccess = await objVessel.LoadAsync(frmLoadingForm);
+                            bool blnSuccess = await objVessel.LoadAsync(Program.MainProgressBar);
                             if (!blnSuccess)
                             {
                                 Program.ShowMessageBox(this,
@@ -3327,8 +3327,8 @@ namespace Chummer
                             }
 
                             // Load the Spirit's save file into a new Merge character.
-                            frmLoadingForm.CharacterFile = objMerge.FileName;
-                            blnSuccess = await objMerge.LoadAsync(frmLoadingForm);
+                            Program.MainProgressBar.CharacterFile = objMerge.FileName;
+                            blnSuccess = await objMerge.LoadAsync(Program.MainProgressBar);
                             if (!blnSuccess)
                             {
                                 Program.ShowMessageBox(this,
@@ -3380,13 +3380,13 @@ namespace Chummer
                             objMerge.STR.Value = objVessel.STR.Value + objMerge.MAG.TotalValue;
                             */
 
-                            frmLoadingForm.PerformStep(
+                            Program.MainProgressBar.PerformStep(
                                 await LanguageManager.GetStringAsync("String_SelectPACKSKit_Lifestyles"));
                             // Copy any Lifestyles the Vessel has.
                             foreach (Lifestyle objLifestyle in objVessel.Lifestyles)
                                 objMerge.Lifestyles.Add(objLifestyle);
 
-                            frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("Tab_Armor"));
+                            Program.MainProgressBar.PerformStep(await LanguageManager.GetStringAsync("Tab_Armor"));
                             // Copy any Armor the Vessel has.
                             foreach (Armor objArmor in objVessel.Armor)
                             {
@@ -3394,7 +3394,7 @@ namespace Chummer
                                 CopyArmorImprovements(objVessel, objMerge, objArmor);
                             }
 
-                            frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("Tab_Gear"));
+                            Program.MainProgressBar.PerformStep(await LanguageManager.GetStringAsync("Tab_Gear"));
                             // Copy any Gear the Vessel has.
                             foreach (Gear objGear in objVessel.Gear)
                             {
@@ -3402,7 +3402,7 @@ namespace Chummer
                                 CopyGearImprovements(objVessel, objMerge, objGear);
                             }
 
-                            frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("Tab_Cyberware"));
+                            Program.MainProgressBar.PerformStep(await LanguageManager.GetStringAsync("Tab_Cyberware"));
                             // Copy any Cyberware/Bioware the Vessel has.
                             foreach (Cyberware objCyberware in objVessel.Cyberware)
                             {
@@ -3410,17 +3410,17 @@ namespace Chummer
                                 CopyCyberwareImprovements(objVessel, objMerge, objCyberware);
                             }
 
-                            frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("Tab_Weapons"));
+                            Program.MainProgressBar.PerformStep(await LanguageManager.GetStringAsync("Tab_Weapons"));
                             // Copy any Weapons the Vessel has.
                             foreach (Weapon objWeapon in objVessel.Weapons)
                                 objMerge.Weapons.Add(objWeapon);
 
-                            frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("Tab_Vehicles"));
+                            Program.MainProgressBar.PerformStep(await LanguageManager.GetStringAsync("Tab_Vehicles"));
                             // Copy and Vehicles the Vessel has.
                             foreach (Vehicle objVehicle in objVessel.Vehicles)
                                 objMerge.Vehicles.Add(objVehicle);
 
-                            frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_Settings"));
+                            Program.MainProgressBar.PerformStep(await LanguageManager.GetStringAsync("String_Settings"));
                             // Copy the character info.
                             objMerge.Gender = objVessel.Gender;
                             objMerge.Age = objVessel.Age;
@@ -3460,10 +3460,10 @@ namespace Chummer
                     {
                         if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                             return;
-                        using (LoadingBar frmProgressBar = await Program.CreateAndShowProgressBarAsync())
+                        using (Program.MainProgressBar = await Program.CreateAndShowProgressBarAsync())
                         {
-                            frmProgressBar.PerformStep(objMerge.CharacterName,
-                                                       LoadingBar.ProgressBarTextPatterns.Saving);
+                            Program.MainProgressBar.PerformStep(objMerge.CharacterName,
+                                                                LoadingBar.ProgressBarTextPatterns.Saving);
                             objMerge.FileName = saveFileDialog.FileName;
                             if (await objMerge.SaveAsync())
                             {
@@ -3545,12 +3545,12 @@ namespace Chummer
                 Character objMerge = new Character {FileName = CharacterObject.FileName};
                 try
                 {
-                    using (LoadingBar frmLoadingForm = new LoadingBar {CharacterFile = objMerge.FileName})
+                    using (Program.MainProgressBar = new LoadingBar {CharacterFile = objMerge.FileName})
                     {
-                        await frmLoadingForm.ResetAsync(36);
-                        frmLoadingForm.Show();
+                        await Program.MainProgressBar.ResetAsync(36);
+                        Program.MainProgressBar.Show();
                         await objMerge.LoadAsync();
-                        frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
+                        Program.MainProgressBar.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
                         objMerge.Possessed = true;
                         objMerge.Alias = strSelectedVessel + await LanguageManager.GetStringAsync("String_Space") + '('
                                          + await LanguageManager.GetStringAsync("String_Possessed") + ')';
@@ -3670,10 +3670,10 @@ namespace Chummer
                     {
                         if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                             return;
-                        using (LoadingBar frmProgressBar = await Program.CreateAndShowProgressBarAsync())
+                        using (Program.MainProgressBar = await Program.CreateAndShowProgressBarAsync())
                         {
-                            frmProgressBar.PerformStep(objMerge.CharacterName,
-                                                       LoadingBar.ProgressBarTextPatterns.Saving);
+                            Program.MainProgressBar.PerformStep(objMerge.CharacterName,
+                                                                LoadingBar.ProgressBarTextPatterns.Saving);
                             objMerge.FileName = saveFileDialog.FileName;
                             if (await objMerge.SaveAsync())
                             {
@@ -13833,15 +13833,15 @@ namespace Chummer
                 using (CursorWait.New(this, true))
                 {
                     using (CursorWait.New(this))
-                    using (LoadingBar frmLoadingForm
+                    using (Program.MainProgressBar
                            = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName),
                                                                          Character.NumLoadingSections))
                     {
                         SkipUpdate = true;
                         try
                         {
-                            await CharacterObject.LoadAsync(frmLoadingForm);
-                            frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
+                            await CharacterObject.LoadAsync(Program.MainProgressBar);
+                            Program.MainProgressBar.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
                         }
                         finally
                         {

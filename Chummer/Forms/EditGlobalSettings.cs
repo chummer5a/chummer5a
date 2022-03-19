@@ -1778,11 +1778,11 @@ namespace Chummer
                     XPathNavigator books = await tskLoadBooks;
                     XPathNodeIterator matches = books.Select("/chummer/books/book/matches/match[language = "
                                                              + _strSelectedLanguage.CleanXPath() + ']');
-                    using (LoadingBar frmProgressBar
+                    using (Program.MainProgressBar
                            = await Program.CreateAndShowProgressBarAsync(fbd.SelectedPath, files.Length))
                     {
                         List<SourcebookInfo> list = null;
-                        await Task.Run(() => list = ScanFilesForPDFTexts(files, matches, frmProgressBar).ToList());
+                        await Task.Run(() => list = ScanFilesForPDFTexts(files, matches, Program.MainProgressBar).ToList());
                         sw.Stop();
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdFeedback))
