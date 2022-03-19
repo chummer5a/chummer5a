@@ -163,7 +163,7 @@ namespace Chummer
                         GlobalSettings.MruChanged += PopulateMruToolstripMenu;
 
                         // Populate the MRU list.
-                        await this.DoThreadSafeFunc(x => x.DoPopulateMruToolstripMenu());
+                        await DoPopulateMruToolstripMenu();
 
                         Program.MainForm = this;
 
