@@ -210,7 +210,7 @@ namespace Chummer
                     Application.SetCompatibleTextRenderingDefault(false);
 
                     sw.TaskEnd("languagefreestartup");
-
+                    
                     void HandleCrash(object o, UnhandledExceptionEventArgs exa)
                     {
                         if (exa.ExceptionObject is Exception ex)

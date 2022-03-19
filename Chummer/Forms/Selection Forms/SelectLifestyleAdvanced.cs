@@ -147,13 +147,12 @@ namespace Chummer
                                     Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids",
                                     Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
                                 };
+                                // ReSharper disable once AssignNullToNotNullAttribute
+                                treLifestyleQualities.Nodes.Insert(
+                                    (nodPositiveQualityRoot == null ? 0 : 1)
+                                    + (nodNegativeQualityRoot == null ? 0 : 1)
                                     // ReSharper disable once AssignNullToNotNullAttribute
-                                    treLifestyleQualities.Nodes.Insert(
-                                        (nodPositiveQualityRoot == null ? 0 : 1)
-                                        + (nodNegativeQualityRoot == null ? 0 : 1)
-                                        // ReSharper disable once AssignNullToNotNullAttribute
-                                        + (nodEntertainmentsRoot == null ? 0 : 1), nodFreeGridsRoot);
-                                    treLifestyleQualities.Nodes.Add(nodFreeGridsRoot);
+                                    + (nodEntertainmentsRoot == null ? 0 : 1), nodFreeGridsRoot);
                                 nodFreeGridsRoot.Expand();
                             }
                             objParentNode = nodFreeGridsRoot;

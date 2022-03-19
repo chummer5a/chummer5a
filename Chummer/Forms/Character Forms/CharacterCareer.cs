@@ -13951,7 +13951,7 @@ namespace Chummer
             await flpCyberware.DoThreadSafeAsync(x => x.SuspendLayout(), token);
             try
             {
-                object objSelectedNodeTag = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token);
+                object objSelectedNodeTag = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token);
                 if (objSelectedNodeTag == null || await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode.Level == 0, token))
                 {
                     await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = false, token);

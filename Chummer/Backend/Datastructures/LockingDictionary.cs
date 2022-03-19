@@ -22,6 +22,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,7 +36,7 @@ namespace Chummer
     /// </summary>
     /// <typeparam name="TKey">Key to use for the dictionary.</typeparam>
     /// <typeparam name="TValue">Values to use for the dictionary.</typeparam>
-    public sealed class LockingDictionary<TKey, TValue> : IDictionary, IDictionary<TKey, TValue>, IAsyncReadOnlyDictionary<TKey, TValue>, IProducerConsumerCollection<KeyValuePair<TKey, TValue>>, IHasLockObject
+    public sealed class LockingDictionary<TKey, TValue> : IDictionary, IDictionary<TKey, TValue>, IAsyncReadOnlyDictionary<TKey, TValue>, IProducerConsumerCollection<KeyValuePair<TKey, TValue>>, IHasLockObject, ISerializable, IDeserializationCallback
     {
         private readonly Dictionary<TKey, TValue> _dicData;
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
@@ -729,5 +730,19 @@ namespace Chummer
         }
 
         public bool IsDisposed { get; private set; }
+
+        /// <inheritdoc />
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            using (EnterReadLock.Enter(LockObject))
+                _dicData.GetObjectData(info, context);
+        }
+
+        /// <inheritdoc />
+        public void OnDeserialization(object sender)
+        {
+            using (EnterReadLock.Enter(LockObject))
+                _dicData.OnDeserialization(sender);
+        }
     }
 }

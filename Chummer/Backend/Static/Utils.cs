@@ -1340,7 +1340,7 @@ namespace Chummer
         }
 
         private static readonly XmlWriterSettings _objXslTransformXmlWriterSettings = new XmlWriterSettings
-            { Async = true, Encoding = Encoding.UTF8, Indent = true, IndentChars = "\t", ConformanceLevel = ConformanceLevel.Auto };
+            { Async = true, Encoding = Encoding.UTF8, Indent = true, IndentChars = "\t", CheckCharacters = false, ConformanceLevel = ConformanceLevel.Fragment };
 
         public static XmlWriter GetXslTransformXmlWriter(Stream output)
         {

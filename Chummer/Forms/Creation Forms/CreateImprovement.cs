@@ -655,55 +655,74 @@ namespace Chummer
                         return;
                     await objWriter.WriteStartDocumentAsync();
                     // <bonus>
-                    await objWriter.WriteStartElementAsync("bonus");
-                    // <whatever element>
-                    await objWriter.WriteStartElementAsync(strInternal);
-
-                    string strRating = string.Empty;
-                    if (await chkApplyToRating.DoThreadSafeFuncAsync(x => x.Checked))
-                        strRating = "<applytorating>True</applytorating>";
-
-                    // Retrieve the XML data from the document and replace the values as necessary.
-                    XmlAttributeCollection xmlAttributeCollection = objFetchNode["xml"]?.Attributes;
-                    if (xmlAttributeCollection != null)
+                    XmlElementWriteHelper objBonusNode = await objWriter.StartElementAsync("bonus");
+                    try
                     {
-                        foreach (XmlAttribute xmlAttribute in xmlAttributeCollection)
+                        // <whatever element>
+                        XmlElementWriteHelper objInternalNode = await objWriter.StartElementAsync(strInternal);
+                        try
                         {
-                            await objWriter.WriteAttributeStringAsync(xmlAttribute.LocalName, xmlAttribute.Value);
+                            // Retrieve the XML data from the document and replace the values as necessary.
+                            XmlAttributeCollection xmlAttributeCollection = objFetchNode["xml"]?.Attributes;
+                            if (xmlAttributeCollection != null)
+                            {
+                                foreach (XmlAttribute xmlAttribute in xmlAttributeCollection)
+                                {
+                                    await objWriter.WriteAttributeStringAsync(
+                                        xmlAttribute.LocalName, xmlAttribute.Value);
+                                }
+                            }
+
+                            // ReSharper disable once PossibleNullReferenceException
+                            string strXml = await objFetchNode["xml"].InnerText
+                                                                     .CheapReplaceAsync("{val}",
+                                                                         async () => await nudVal.DoThreadSafeFuncAsync(
+                                                                             x => x.Value.ToString(
+                                                                                 GlobalSettings.InvariantCultureInfo)))
+                                                                     .CheapReplaceAsync("{min}",
+                                                                         async () => await nudMin.DoThreadSafeFuncAsync(
+                                                                             x => x.Value.ToString(
+                                                                                 GlobalSettings.InvariantCultureInfo)))
+                                                                     .CheapReplaceAsync("{max}",
+                                                                         async () => await nudMax.DoThreadSafeFuncAsync(
+                                                                             x => x.Value.ToString(
+                                                                                 GlobalSettings.InvariantCultureInfo)))
+                                                                     .CheapReplaceAsync("{aug}",
+                                                                         async () => await nudAug.DoThreadSafeFuncAsync(
+                                                                             x => x.Value.ToString(
+                                                                                 GlobalSettings.InvariantCultureInfo)))
+                                                                     .CheapReplaceAsync("{free}",
+                                                                         async () =>
+                                                                             await chkFree.DoThreadSafeFuncAsync(
+                                                                                 x => x.Checked.ToString(
+                                                                                     GlobalSettings
+                                                                                         .InvariantCultureInfo)))
+                                                                     .CheapReplaceAsync("{select}",
+                                                                         async () => await txtSelect
+                                                                             .DoThreadSafeFuncAsync(
+                                                                                 x => x.Text))
+                                                                     .CheapReplaceAsync(
+                                                                         "{applytorating}",
+                                                                         async () =>
+                                                                             await chkApplyToRating
+                                                                                 .DoThreadSafeFuncAsync(x => x.Checked)
+                                                                                 ? "<applytorating>True</applytorating>"
+                                                                                 : string.Empty);
+                            await objWriter.WriteRawAsync(strXml);
+
+                            // Write the rest of the document.
+                        }
+                        finally
+                        {
+                            // </whatever element>
+                            await objInternalNode.DisposeAsync();
                         }
                     }
-                    // ReSharper disable once PossibleNullReferenceException
-                    string strXml = objFetchNode["xml"].InnerText
-                                                       .Replace("{val}",
-                                                                await nudVal.DoThreadSafeFuncAsync(
-                                                                    x => x.Value.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo)))
-                                                       .Replace("{min}",
-                                                                await nudMin.DoThreadSafeFuncAsync(
-                                                                    x => x.Value.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo)))
-                                                       .Replace("{max}",
-                                                                await nudMax.DoThreadSafeFuncAsync(
-                                                                    x => x.Value.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo)))
-                                                       .Replace("{aug}",
-                                                                await nudAug.DoThreadSafeFuncAsync(
-                                                                    x => x.Value.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo)))
-                                                       .Replace("{free}",
-                                                                await chkFree.DoThreadSafeFuncAsync(
-                                                                    x => x.Checked.ToString(
-                                                                        GlobalSettings.InvariantCultureInfo)))
-                                                       .Replace("{select}",
-                                                                await txtSelect.DoThreadSafeFuncAsync(x => x.Text))
-                                                       .Replace("{applytorating}", strRating);
-                    await objWriter.WriteRawAsync(strXml);
-
-                    // Write the rest of the document.
-                    // </whatever element>
-                    await objWriter.WriteEndElementAsync();
-                    // </bonus>
-                    await objWriter.WriteEndElementAsync();
+                    finally
+                    {
+                        // </bonus>
+                        await objBonusNode.DisposeAsync();
+                    }
                     await objWriter.WriteEndDocumentAsync();
                     await objWriter.FlushAsync();
                 }

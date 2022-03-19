@@ -433,14 +433,18 @@ namespace Chummer
 
                     token.ThrowIfCancellationRequested();
 
-                    XmlWriterSettings objSettings = objXslTransform.OutputSettings.Clone();
-                    objSettings.CheckCharacters = false;
-                    objSettings.ConformanceLevel = ConformanceLevel.Fragment;
+                    XmlWriterSettings objSettings = objXslTransform.OutputSettings?.Clone();
+                    if (objSettings != null)
+                    {
+                        objSettings.Async = true;
+                        objSettings.CheckCharacters = false;
+                        objSettings.ConformanceLevel = ConformanceLevel.Fragment;
+                    }
 
                     string strText;
                     using (MemoryStream objStream = new MemoryStream())
                     {
-                        using (XmlWriter objWriter = XmlWriter.Create(objStream, objSettings))
+                        using (XmlWriter objWriter = objSettings != null ? XmlWriter.Create(objStream, objSettings) : Utils.GetXslTransformXmlWriter(objStream))
                             objXslTransform.Transform(_objCharacterXml, null, objWriter);
                         token.ThrowIfCancellationRequested();
                         objStream.Position = 0;
