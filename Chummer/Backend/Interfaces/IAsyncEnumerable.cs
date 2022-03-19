@@ -1770,7 +1770,7 @@ namespace Chummer
         /// <summary>
         /// Perform a synchronous action on every element in an enumerable with support for breaking out of the loop.
         /// </summary>
-        /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
+        /// <param name="tskEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         public static async Task ForEachWithBreak<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate)
         {
@@ -1780,7 +1780,7 @@ namespace Chummer
         /// <summary>
         /// Perform an asynchronous action on every element in an enumerable with support for breaking out of the loop.
         /// </summary>
-        /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
+        /// <param name="tskEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         public static async Task ForEachWithBreak<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate)
         {

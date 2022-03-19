@@ -228,7 +228,7 @@ namespace Chummer
                                     //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
                                     foreach (DictionaryEntry d in ex.Data)
                                     {
-                                        if ((d.Key != null) && (d.Value != null))
+                                        if (d.Key != null && d.Value != null)
                                             et.Properties.Add(d.Key.ToString(), d.Value.ToString());
                                     }
 

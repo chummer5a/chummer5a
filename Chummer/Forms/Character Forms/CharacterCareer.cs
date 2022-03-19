@@ -2069,7 +2069,7 @@ namespace Chummer
                     }
                 case nameof(Character.FirstMentorSpiritDisplayName):
                     {
-                        MentorSpirit objMentor = CharacterObject.MentorSpirits.FirstOrDefault();
+                        MentorSpirit objMentor = await CharacterObject.MentorSpirits.FirstOrDefaultAsync();
                         if (objMentor != null)
                         {
                             await objMentor.SetSourceDetailAsync(lblMentorSpiritSource);
