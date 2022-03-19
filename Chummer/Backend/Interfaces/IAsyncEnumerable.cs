@@ -1600,7 +1600,7 @@ namespace Chummer
         {
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
-                while (objEnumerator.MoveNext())
+                if (objEnumerator.MoveNext())
                 {
                     return objEnumerator.Current;
                 }

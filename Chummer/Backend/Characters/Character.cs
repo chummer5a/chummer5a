@@ -7511,6 +7511,7 @@ namespace Chummer
                                         return false;
                                 }
 
+                                // ReSharper disable once MethodHasAsyncOverload
                                 PostLoadMethodsAsync.Clear();
                             }
                             else
