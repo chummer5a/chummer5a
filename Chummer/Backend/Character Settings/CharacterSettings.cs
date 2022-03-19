@@ -26,6 +26,8 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -52,7 +54,7 @@ namespace Chummer
         }
     }
 
-    public sealed class CharacterSettings : INotifyMultiplePropertyChanged, IDisposable
+    public sealed class CharacterSettings : INotifyMultiplePropertyChanged, IHasLockObject
     {
         private Guid _guiSourceId = Guid.Empty;
         private string _strFileName = string.Empty;
@@ -156,6 +158,8 @@ namespace Chummer
         private int _intMaxKnowledgeSkillRatingCreate = 6;
         private int _intMaxSkillRating = 12;
         private int _intMaxKnowledgeSkillRating = 12;
+        private readonly HashSet<string> _setBannedWareGrades = Utils.StringHashSetPool.Get();
+        private readonly HashSet<string> _setRedlinerExcludes = Utils.StringHashSetPool.Get();
 
         // Initiative variables
         private int _intMinInitiativeDice = 1;
@@ -232,6 +236,13 @@ namespace Chummer
         // Weapon
         private int _intKarmaWeaponFocus = 3;
 
+        private decimal _decKarmaMAGInitiationGroupPercent = 0.1m;
+        private decimal _decKarmaRESInitiationGroupPercent = 0.1m;
+        private decimal _decKarmaMAGInitiationOrdealPercent = 0.1m;
+        private decimal _decKarmaRESInitiationOrdealPercent = 0.2m;
+        private decimal _decKarmaMAGInitiationSchoolingPercent = 0.1m;
+        private decimal _decKarmaRESInitiationSchoolingPercent = 0.1m;
+
         //Sustaining
         private int _intDicePenaltySustaining = 2;
 
@@ -247,7 +258,7 @@ namespace Chummer
         private int _intAvailability = 12;
 
         // Dictionary of id (or names) of custom data directories, ordered by load order with the second value element being whether or not it's enabled
-        private readonly TypedOrderedDictionary<string, bool> _dicCustomDataDirectoryKeys = new TypedOrderedDictionary<string, bool>();
+        private readonly LockingTypedOrderedDictionary<string, bool> _dicCustomDataDirectoryKeys = new LockingTypedOrderedDictionary<string, bool>();
 
         // Cached lists that should be updated every time _dicCustomDataDirectoryKeys is updated
         private readonly OrderedSet<CustomDataDirectoryInfo> _setEnabledCustomDataDirectories = new OrderedSet<CustomDataDirectoryInfo>();
@@ -269,48 +280,51 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            if (_blnDoingCopy)
-                return;
-            HashSet<string> setNamesOfChangedProperties = null;
-            try
+            using (EnterReadLock.Enter(LockObject))
             {
-                foreach (string strPropertyName in lstPropertyNames)
+                if (_blnDoingCopy)
+                    return;
+                HashSet<string> setNamesOfChangedProperties = null;
+                try
                 {
-                    if (setNamesOfChangedProperties == null)
-                        setNamesOfChangedProperties
-                            = s_CharacterSettingsDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
-                    else
+                    foreach (string strPropertyName in lstPropertyNames)
                     {
-                        foreach (string strLoopChangedProperty in s_CharacterSettingsDependencyGraph
-                                     .GetWithAllDependentsEnumerable(this, strPropertyName))
-                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                        if (setNamesOfChangedProperties == null)
+                            setNamesOfChangedProperties
+                                = s_CharacterSettingsDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                        else
+                        {
+                            foreach (string strLoopChangedProperty in s_CharacterSettingsDependencyGraph
+                                         .GetWithAllDependentsEnumerable(this, strPropertyName))
+                                setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                        }
+                    }
+
+                    if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                        return;
+
+                    if (setNamesOfChangedProperties.Contains(nameof(MaxNuyenDecimals)))
+                        _intCachedMaxNuyenDecimals = int.MinValue;
+                    if (setNamesOfChangedProperties.Contains(nameof(MinNuyenDecimals)))
+                        _intCachedMinNuyenDecimals = int.MinValue;
+                    if (setNamesOfChangedProperties.Contains(nameof(EssenceDecimals)))
+                        _intCachedEssenceDecimals = int.MinValue;
+                    if (setNamesOfChangedProperties.Contains(nameof(WeightDecimals)))
+                        _intCachedWeightDecimals = int.MinValue;
+                    if (setNamesOfChangedProperties.Contains(nameof(CustomDataDirectoryKeys)))
+                        RecalculateEnabledCustomDataDirectories();
+                    if (setNamesOfChangedProperties.Contains(nameof(Books)))
+                        RecalculateBookXPath();
+                    foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                    {
+                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                     }
                 }
-
-                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
-                    return;
-
-                if (setNamesOfChangedProperties.Contains(nameof(MaxNuyenDecimals)))
-                    _intCachedMaxNuyenDecimals = -1;
-                if (setNamesOfChangedProperties.Contains(nameof(MinNuyenDecimals)))
-                    _intCachedMinNuyenDecimals = -1;
-                if (setNamesOfChangedProperties.Contains(nameof(EssenceDecimals)))
-                    _intCachedEssenceDecimals = -1;
-                if (setNamesOfChangedProperties.Contains(nameof(WeightDecimals)))
-                    _intCachedWeightDecimals = -1;
-                if (setNamesOfChangedProperties.Contains(nameof(CustomDataDirectoryKeys)))
-                    RecalculateEnabledCustomDataDirectories();
-                if (setNamesOfChangedProperties.Contains(nameof(Books)))
-                    RecalculateBookXPath();
-                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                finally
                 {
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                    if (setNamesOfChangedProperties != null)
+                        Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
                 }
-            }
-            finally
-            {
-                if (setNamesOfChangedProperties != null)
-                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
             }
         }
 
@@ -380,94 +394,192 @@ namespace Chummer
 
         public CharacterSettings(CharacterSettings objOther = null, bool blnCopySourceId = true, string strOverrideFileName = "")
         {
-            BannedWareGrades.Add("Betaware");
-            BannedWareGrades.Add("Deltaware");
-            BannedWareGrades.Add("Gammaware");
-            RedlinerExcludes.Add("skull");
-            RedlinerExcludes.Add("torso");
+            _setBannedWareGrades.Add("Betaware");
+            _setBannedWareGrades.Add("Deltaware");
+            _setBannedWareGrades.Add("Gammaware");
+            _setRedlinerExcludes.Add("skull");
+            _setRedlinerExcludes.Add("torso");
             if (objOther != null)
                 CopyValues(objOther, blnCopySourceId, strOverrideFileName);
         }
 
         public void CopyValues(CharacterSettings objOther, bool blnCopySourceId = true, string strOverrideFileName = "")
         {
-            if (objOther == null)
+            if (objOther == null || objOther == this)
                 return;
-            _blnDoingCopy = true;
-            List<string> lstPropertiesToUpdate;
+            using (LockObject.EnterWriteLock())
+            {
+                _blnDoingCopy = true;
+                List<string> lstPropertiesToUpdate;
+                try
+                {
+                    PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
+                    lstPropertiesToUpdate = new List<string>(aobjProperties.Length);
+                    using (EnterReadLock.Enter(objOther))
+                    {
+                        if (blnCopySourceId && !_guiSourceId.Equals(objOther._guiSourceId))
+                        {
+                            lstPropertiesToUpdate.Add(nameof(SourceId));
+                            _guiSourceId = objOther._guiSourceId;
+                        }
+
+                        if (string.IsNullOrEmpty(strOverrideFileName))
+                        {
+                            if (!_strFileName.Equals(objOther._strFileName))
+                            {
+                                lstPropertiesToUpdate.Add(nameof(FileName));
+                                _strFileName = objOther._strFileName;
+                            }
+                        }
+                        else if (!_strFileName.Equals(strOverrideFileName))
+                        {
+                            lstPropertiesToUpdate.Add(nameof(FileName));
+                            _strFileName = strOverrideFileName;
+                        }
+
+                        // Copy over via properties in order to trigger OnPropertyChanged as appropriate
+                        foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
+                        {
+                            object objMyValue = objProperty.GetValue(this);
+                            object objOtherValue = objProperty.GetValue(objOther);
+                            if (objMyValue.Equals(objOtherValue))
+                                continue;
+                            lstPropertiesToUpdate.Add(objProperty.Name);
+                            objProperty.SetValue(this, objOtherValue);
+                        }
+
+                        if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther.CustomDataDirectoryKeys))
+                        {
+                            lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
+                            _dicCustomDataDirectoryKeys.Clear();
+                            foreach (KeyValuePair<string, bool> kvpOther in objOther.CustomDataDirectoryKeys)
+                            {
+                                _dicCustomDataDirectoryKeys.Add(kvpOther.Key, kvpOther.Value);
+                            }
+                        }
+
+                        if (!_setBooks.SetEquals(objOther._setBooks))
+                        {
+                            lstPropertiesToUpdate.Add(nameof(Books));
+                            _setBooks.Clear();
+                            foreach (string strBook in objOther._setBooks)
+                            {
+                                _setBooks.Add(strBook);
+                            }
+                        }
+
+                        if (!_setBannedWareGrades.SetEquals(objOther._setBannedWareGrades))
+                        {
+                            lstPropertiesToUpdate.Add(nameof(BannedWareGrades));
+                            _setBannedWareGrades.Clear();
+                            foreach (string strGrade in objOther._setBannedWareGrades)
+                            {
+                                _setBannedWareGrades.Add(strGrade);
+                            }
+                        }
+                    }
+
+                    // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
+                }
+                finally
+                {
+                    _blnDoingCopy = false;
+                }
+
+                OnMultiplePropertyChanged(lstPropertiesToUpdate);
+            }
+        }
+
+        public async ValueTask CopyValuesAsync(CharacterSettings objOther, bool blnCopySourceId = true, string strOverrideFileName = "")
+        {
+            if (objOther == null || objOther == this)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
-                PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
-                lstPropertiesToUpdate = new List<string>(aobjProperties.Length);
-                if (blnCopySourceId && !_guiSourceId.Equals(objOther._guiSourceId))
+                _blnDoingCopy = true;
+                List<string> lstPropertiesToUpdate;
+                try
                 {
-                    lstPropertiesToUpdate.Add(nameof(SourceId));
-                    _guiSourceId = objOther._guiSourceId;
-                }
-
-                if (string.IsNullOrEmpty(strOverrideFileName))
-                {
-                    if (!_strFileName.Equals(objOther._strFileName))
+                    PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
+                    lstPropertiesToUpdate = new List<string>(aobjProperties.Length);
+                    using (await EnterReadLock.EnterAsync(objOther))
                     {
-                        lstPropertiesToUpdate.Add(nameof(FileName));
-                        _strFileName = objOther._strFileName;
+                        if (blnCopySourceId && !_guiSourceId.Equals(objOther._guiSourceId))
+                        {
+                            lstPropertiesToUpdate.Add(nameof(SourceId));
+                            _guiSourceId = objOther._guiSourceId;
+                        }
+
+                        if (string.IsNullOrEmpty(strOverrideFileName))
+                        {
+                            if (!_strFileName.Equals(objOther._strFileName))
+                            {
+                                lstPropertiesToUpdate.Add(nameof(FileName));
+                                _strFileName = objOther._strFileName;
+                            }
+                        }
+                        else if (!_strFileName.Equals(strOverrideFileName))
+                        {
+                            lstPropertiesToUpdate.Add(nameof(FileName));
+                            _strFileName = strOverrideFileName;
+                        }
+
+                        // Copy over via properties in order to trigger OnPropertyChanged as appropriate
+                        foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
+                        {
+                            object objMyValue = objProperty.GetValue(this);
+                            object objOtherValue = objProperty.GetValue(objOther);
+                            if (objMyValue.Equals(objOtherValue))
+                                continue;
+                            lstPropertiesToUpdate.Add(objProperty.Name);
+                            objProperty.SetValue(this, objOtherValue);
+                        }
+
+                        if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther.CustomDataDirectoryKeys))
+                        {
+                            lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
+                            _dicCustomDataDirectoryKeys.Clear();
+                            foreach (KeyValuePair<string, bool> kvpOther in objOther.CustomDataDirectoryKeys)
+                            {
+                                await _dicCustomDataDirectoryKeys.AddAsync(kvpOther.Key, kvpOther.Value);
+                            }
+                        }
+
+                        if (!_setBooks.SetEquals(objOther._setBooks))
+                        {
+                            lstPropertiesToUpdate.Add(nameof(Books));
+                            _setBooks.Clear();
+                            foreach (string strBook in objOther._setBooks)
+                            {
+                                _setBooks.Add(strBook);
+                            }
+                        }
+
+                        if (!_setBannedWareGrades.SetEquals(objOther._setBannedWareGrades))
+                        {
+                            lstPropertiesToUpdate.Add(nameof(BannedWareGrades));
+                            _setBannedWareGrades.Clear();
+                            foreach (string strGrade in objOther._setBannedWareGrades)
+                            {
+                                _setBannedWareGrades.Add(strGrade);
+                            }
+                        }
                     }
+
+                    // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
                 }
-                else if (!_strFileName.Equals(strOverrideFileName))
+                finally
                 {
-                    lstPropertiesToUpdate.Add(nameof(FileName));
-                    _strFileName = strOverrideFileName;
+                    _blnDoingCopy = false;
                 }
 
-                // Copy over via properties in order to trigger OnPropertyChanged as appropriate
-                foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
-                {
-                    object objMyValue = objProperty.GetValue(this);
-                    object objOtherValue = objProperty.GetValue(objOther);
-                    if (objMyValue.Equals(objOtherValue))
-                        continue;
-                    lstPropertiesToUpdate.Add(objProperty.Name);
-                    objProperty.SetValue(this, objOtherValue);
-                }
-
-                if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther.CustomDataDirectoryKeys))
-                {
-                    lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
-                    _dicCustomDataDirectoryKeys.Clear();
-                    foreach (KeyValuePair<string, bool> kvpOther in objOther.CustomDataDirectoryKeys)
-                    {
-                        _dicCustomDataDirectoryKeys.Add(kvpOther.Key, kvpOther.Value);
-                    }
-                }
-
-                if (!_setBooks.SetEquals(objOther._setBooks))
-                {
-                    lstPropertiesToUpdate.Add(nameof(Books));
-                    _setBooks.Clear();
-                    foreach (string strBook in objOther._setBooks)
-                    {
-                        _setBooks.Add(strBook);
-                    }
-                }
-
-                if (!BannedWareGrades.SetEquals(objOther.BannedWareGrades))
-                {
-                    lstPropertiesToUpdate.Add(nameof(BannedWareGrades));
-                    BannedWareGrades.Clear();
-                    foreach (string strGrade in objOther.BannedWareGrades)
-                    {
-                        BannedWareGrades.Add(strGrade);
-                    }
-                }
-
-                // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
+                OnMultiplePropertyChanged(lstPropertiesToUpdate);
             }
             finally
             {
-                _blnDoingCopy = false;
+                await objLocker.DisposeAsync();
             }
-
-            OnMultiplePropertyChanged(lstPropertiesToUpdate);
         }
 
         public IEnumerable<string> GetDifferingPropertyNames(CharacterSettings objOther)
@@ -484,38 +596,47 @@ namespace Chummer
                 yield return nameof(BannedWareGrades);
                 yield break;
             }
-            if (!_guiSourceId.Equals(objOther._guiSourceId))
-            {
-                yield return nameof(SourceId);
-            }
-            if (!_strFileName.Equals(objOther._strFileName))
-            {
-                yield return nameof(FileName);
-            }
 
-            // Copy over via properties in order to trigger OnPropertyChanged as appropriate
-            foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
-            {
-                object objMyValue = objProperty.GetValue(this);
-                object objOtherValue = objProperty.GetValue(objOther);
-                if (objMyValue.Equals(objOtherValue))
-                    continue;
-                yield return objProperty.Name;
-            }
+            if (objOther == this)
+                yield break;
 
-            if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther.CustomDataDirectoryKeys))
+            using (EnterReadLock.Enter(objOther))
+            using (EnterReadLock.Enter(LockObject))
             {
-                yield return nameof(CustomDataDirectoryKeys);
-            }
+                if (!_guiSourceId.Equals(objOther._guiSourceId))
+                {
+                    yield return nameof(SourceId);
+                }
 
-            if (!_setBooks.SetEquals(objOther._setBooks))
-            {
-                yield return nameof(Books);
-            }
+                if (!_strFileName.Equals(objOther._strFileName))
+                {
+                    yield return nameof(FileName);
+                }
 
-            if (!BannedWareGrades.SetEquals(objOther.BannedWareGrades))
-            {
-                yield return nameof(BannedWareGrades);
+                // Copy over via properties in order to trigger OnPropertyChanged as appropriate
+                foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
+                {
+                    object objMyValue = objProperty.GetValue(this);
+                    object objOtherValue = objProperty.GetValue(objOther);
+                    if (objMyValue.Equals(objOtherValue))
+                        continue;
+                    yield return objProperty.Name;
+                }
+
+                if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther.CustomDataDirectoryKeys))
+                {
+                    yield return nameof(CustomDataDirectoryKeys);
+                }
+
+                if (!_setBooks.SetEquals(objOther._setBooks))
+                {
+                    yield return nameof(Books);
+                }
+
+                if (!_setBannedWareGrades.SetEquals(objOther._setBannedWareGrades))
+                {
+                    yield return nameof(BannedWareGrades);
+                }
             }
         }
 
@@ -523,28 +644,32 @@ namespace Chummer
         {
             if (objOther == null)
                 return false;
-            if (_guiSourceId != objOther._guiSourceId)
-                return false;
-            if (_strFileName != objOther._strFileName)
-                return false;
-            if (GetEquatableHashCode() != objOther.GetEquatableHashCode())
-                return false;
-
-            PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
-            foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.PropertyType.IsValueType && x.CanRead))
+            using (EnterReadLock.Enter(objOther))
+            using (EnterReadLock.Enter(LockObject))
             {
-                object objMyValue = objProperty.GetValue(this);
-                object objOtherValue = objProperty.GetValue(objOther);
-                if (!objMyValue.Equals(objOtherValue))
+                if (_guiSourceId != objOther._guiSourceId)
                     return false;
+                if (_strFileName != objOther._strFileName)
+                    return false;
+                if (GetEquatableHashCode() != objOther.GetEquatableHashCode())
+                    return false;
+
+                PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
+                foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.PropertyType.IsValueType && x.CanRead))
+                {
+                    object objMyValue = objProperty.GetValue(this);
+                    object objOtherValue = objProperty.GetValue(objOther);
+                    if (!objMyValue.Equals(objOtherValue))
+                        return false;
+                }
+
+                if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther._dicCustomDataDirectoryKeys))
+                    return false;
+
+                // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
+
+                return _setBooks.SetEquals(objOther._setBooks) && _setBannedWareGrades.SetEquals(objOther._setBannedWareGrades);
             }
-
-            if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther._dicCustomDataDirectoryKeys))
-                return false;
-
-            // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
-
-            return _setBooks.SetEquals(objOther._setBooks) && BannedWareGrades.SetEquals(objOther.BannedWareGrades);
         }
 
         /// <summary>
@@ -555,182 +680,186 @@ namespace Chummer
         /// <returns></returns>
         public int GetEquatableHashCode()
         {
-            unchecked
+            using (EnterReadLock.Enter(LockObject))
             {
-                int hashCode = _guiSourceId.GetHashCode();
-                hashCode = (hashCode * 397) ^ (_strFileName?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (_strName?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ _blnAllowBiowareSuites.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnAllowCyberwareESSDiscounts.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnAllowEditPartOfBaseWeapon.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnAllowHigherStackedFoci.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnAllowInitiationInCreateMode.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnAllowObsolescentUpgrade.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnDontUseCyberlimbCalculation.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnAllowSkillRegrouping.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnSpecializationsBreakSkillGroups.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnAlternateMetatypeAttributeKarma.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnArmorDegradation.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnStrictSkillGroupsInCreateMode.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnAllowPointBuySpecializationsOnKarmaSkills.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnCyberlegMovement.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnDontDoubleQualityPurchaseCost.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnDontDoubleQualityRefundCost.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnEnforceCapacity.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnESSLossReducesMaximumOnly.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnExceedNegativeQualities.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnExceedNegativeQualitiesLimit.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnExceedPositiveQualities.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnExceedPositiveQualitiesCostDoubled.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnExtendAnyDetectionSpell.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnDroneArmorMultiplierEnabled.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnFreeSpiritPowerPointsMAG.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnNoArmorEncumbrance.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnIgnoreArt.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnIgnoreComplexFormLimit.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnUnarmedImprovementsApplyToWeapons.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnLicenseRestrictedItems.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnMaximumArmorModifications.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnMetatypeCostsKarma.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnMoreLethalGameplay.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnMultiplyForbiddenCost.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnMultiplyRestrictedCost.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnNoSingleArmorEncumbrance.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnRestrictRecoil.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnSpecialKarmaCostBasedOnShownValue.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnSpiritForceBasedOnTotalMAG.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnUnrestrictedNuyen.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnUseCalculatedPublicAwareness.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnUsePointsOnBrokenGroups.GetHashCode();
-                hashCode = (hashCode * 397) ^ (_strContactPointsExpression?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (_strKnowledgePointsExpression?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (_strChargenKarmaToNuyenExpression?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (_strBoundSpiritExpression?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (_strRegisteredSpriteExpression?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (_strLiftLimitExpression?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (_strCarryLimitExpression?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (_strEncumbranceIntervalExpression?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ _blnDoEncumbrancePenaltyPhysicalLimit.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnDoEncumbrancePenaltyMovementSpeed.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnDoEncumbrancePenaltyAgility.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnDoEncumbrancePenaltyReaction.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnDoEncumbrancePenaltyWoundModifier.GetHashCode();
-                hashCode = (hashCode * 397) ^ _intEncumbrancePenaltyPhysicalLimit.GetHashCode();
-                hashCode = (hashCode * 397) ^ _intEncumbrancePenaltyMovementSpeed.GetHashCode();
-                hashCode = (hashCode * 397) ^ _intEncumbrancePenaltyAgility.GetHashCode();
-                hashCode = (hashCode * 397) ^ _intEncumbrancePenaltyReaction.GetHashCode();
-                hashCode = (hashCode * 397) ^ _intEncumbrancePenaltyWoundModifier.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnDoNotRoundEssenceInternally.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnEnableEnemyTracking.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnEnemyKarmaQualityLimit.GetHashCode();
-                hashCode = (hashCode * 397) ^ (_strEssenceFormat?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ _intForbiddenCostMultiplier;
-                hashCode = (hashCode * 397) ^ _intDroneArmorMultiplier;
-                hashCode = (hashCode * 397) ^ _intLimbCount;
-                hashCode = (hashCode * 397) ^ _intMetatypeCostMultiplier;
-                hashCode = (hashCode * 397) ^ _decNuyenPerBPWftM.GetHashCode();
-                hashCode = (hashCode * 397) ^ _decNuyenPerBPWftP.GetHashCode();
-                hashCode = (hashCode * 397) ^ _intRestrictedCostMultiplier;
-                hashCode = (hashCode * 397) ^ _blnAutomaticBackstory.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnFreeMartialArtSpecialization.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnPrioritySpellsAsAdeptPowers.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnMysAdeptAllowPpCareer.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnMysAdeptSecondMAGAttribute.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnReverseAttributePriorityOrder.GetHashCode();
-                hashCode = (hashCode * 397) ^ (_strNuyenFormat?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (_strWeightFormat?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ _blnCompensateSkillGroupKarmaDifference.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnIncreasedImprovedAbilityMultiplier.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnAllowFreeGrids.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnAllowTechnomancerSchooling.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnCyberlimbAttributeBonusCapOverride.GetHashCode();
-                hashCode = (hashCode * 397) ^ (_strBookXPath?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (_strExcludeLimbSlot?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ _intCyberlimbAttributeBonusCap;
-                hashCode = (hashCode * 397) ^ _blnUnclampAttributeMinimum.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnDroneMods.GetHashCode();
-                hashCode = (hashCode * 397) ^ _blnDroneModsMaximumPilot.GetHashCode();
-                hashCode = (hashCode * 397) ^ _intMaxNumberMaxAttributesCreate;
-                hashCode = (hashCode * 397) ^ _intMaxSkillRatingCreate;
-                hashCode = (hashCode * 397) ^ _intMaxKnowledgeSkillRatingCreate;
-                hashCode = (hashCode * 397) ^ _intMaxSkillRating;
-                hashCode = (hashCode * 397) ^ _intMaxKnowledgeSkillRating;
-                hashCode = (hashCode * 397) ^ _intMinInitiativeDice;
-                hashCode = (hashCode * 397) ^ _intMaxInitiativeDice;
-                hashCode = (hashCode * 397) ^ _intMinAstralInitiativeDice;
-                hashCode = (hashCode * 397) ^ _intMaxAstralInitiativeDice;
-                hashCode = (hashCode * 397) ^ _intMinColdSimInitiativeDice;
-                hashCode = (hashCode * 397) ^ _intMaxColdSimInitiativeDice;
-                hashCode = (hashCode * 397) ^ _intMinHotSimInitiativeDice;
-                hashCode = (hashCode * 397) ^ _intMaxHotSimInitiativeDice;
-                hashCode = (hashCode * 397) ^ _intKarmaAttribute;
-                hashCode = (hashCode * 397) ^ _intKarmaCarryover;
-                hashCode = (hashCode * 397) ^ _intKarmaContact;
-                hashCode = (hashCode * 397) ^ _intKarmaEnemy;
-                hashCode = (hashCode * 397) ^ _intKarmaEnhancement;
-                hashCode = (hashCode * 397) ^ _intKarmaImproveActiveSkill;
-                hashCode = (hashCode * 397) ^ _intKarmaImproveKnowledgeSkill;
-                hashCode = (hashCode * 397) ^ _intKarmaImproveSkillGroup;
-                hashCode = (hashCode * 397) ^ _intKarmaInitiation;
-                hashCode = (hashCode * 397) ^ _intKarmaInitiationFlat;
-                hashCode = (hashCode * 397) ^ _intKarmaJoinGroup;
-                hashCode = (hashCode * 397) ^ _intKarmaLeaveGroup;
-                hashCode = (hashCode * 397) ^ _intKarmaTechnique;
-                hashCode = (hashCode * 397) ^ _intKarmaMetamagic;
-                hashCode = (hashCode * 397) ^ _intKarmaNewActiveSkill;
-                hashCode = (hashCode * 397) ^ _intKarmaNewComplexForm;
-                hashCode = (hashCode * 397) ^ _intKarmaNewKnowledgeSkill;
-                hashCode = (hashCode * 397) ^ _intKarmaNewSkillGroup;
-                hashCode = (hashCode * 397) ^ _intKarmaQuality;
-                hashCode = (hashCode * 397) ^ _intKarmaSpecialization;
-                hashCode = (hashCode * 397) ^ _intKarmaKnoSpecialization;
-                hashCode = (hashCode * 397) ^ _intKarmaSpell;
-                hashCode = (hashCode * 397) ^ _intKarmaSpirit;
-                hashCode = (hashCode * 397) ^ _intKarmaNewAIProgram;
-                hashCode = (hashCode * 397) ^ _intKarmaNewAIAdvancedProgram;
-                hashCode = (hashCode * 397) ^ _intKarmaMysticAdeptPowerPoint;
-                hashCode = (hashCode * 397) ^ _intKarmaSpiritFettering;
-                hashCode = (hashCode * 397) ^ _intKarmaAlchemicalFocus;
-                hashCode = (hashCode * 397) ^ _intKarmaDisenchantingFocus;
-                hashCode = (hashCode * 397) ^ _intKarmaCenteringFocus;
-                hashCode = (hashCode * 397) ^ _intKarmaFlexibleSignatureFocus;
-                hashCode = (hashCode * 397) ^ _intKarmaMaskingFocus;
-                hashCode = (hashCode * 397) ^ _intKarmaSpellShapingFocus;
-                hashCode = (hashCode * 397) ^ _intKarmaPowerFocus;
-                hashCode = (hashCode * 397) ^ _intKarmaQiFocus;
-                hashCode = (hashCode * 397) ^ _intKarmaCounterspellingFocus;
-                hashCode = (hashCode * 397) ^ _intKarmaRitualSpellcastingFocus;
-                hashCode = (hashCode * 397) ^ _intKarmaSpellcastingFocus;
-                hashCode = (hashCode * 397) ^ _intKarmaSustainingFocus;
-                hashCode = (hashCode * 397) ^ _intKarmaBanishingFocus;
-                hashCode = (hashCode * 397) ^ _intKarmaBindingFocus;
-                hashCode = (hashCode * 397) ^ _intKarmaSummoningFocus;
-                hashCode = (hashCode * 397) ^ _intKarmaWeaponFocus;
-                hashCode = (hashCode * 397) ^ _intDicePenaltySustaining;
-                hashCode = (hashCode * 397) ^ (int) _eBuildMethod;
-                hashCode = (hashCode * 397) ^ _intBuildPoints;
-                hashCode = (hashCode * 397) ^ _intQualityKarmaLimit;
-                hashCode = (hashCode * 397) ^ (_strPriorityArray?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (_strPriorityTable?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ _intSumtoTen;
-                hashCode = (hashCode * 397) ^ _decNuyenMaximumBP.GetHashCode();
-                hashCode = (hashCode * 397) ^ _intAvailability;
-                hashCode = (hashCode * 397) ^ (_dicCustomDataDirectoryKeys?.GetEnsembleHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (_setEnabledCustomDataDirectories?.GetEnsembleHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (_setEnabledCustomDataDirectoryGuids?.GetOrderInvariantEnsembleHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (_lstEnabledCustomDataDirectoryPaths?.GetEnsembleHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (_setBooks?.GetOrderInvariantEnsembleHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (BannedWareGrades?.GetOrderInvariantEnsembleHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (RedlinerExcludes?.GetOrderInvariantEnsembleHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ KarmaMAGInitiationGroupPercent.GetHashCode();
-                hashCode = (hashCode * 397) ^ KarmaRESInitiationGroupPercent.GetHashCode();
-                hashCode = (hashCode * 397) ^ KarmaMAGInitiationOrdealPercent.GetHashCode();
-                hashCode = (hashCode * 397) ^ KarmaRESInitiationOrdealPercent.GetHashCode();
-                hashCode = (hashCode * 397) ^ KarmaMAGInitiationSchoolingPercent.GetHashCode();
-                hashCode = (hashCode * 397) ^ KarmaRESInitiationSchoolingPercent.GetHashCode();
-                hashCode = (hashCode * 397) ^ SpecializationBonus;
-                hashCode = (hashCode * 397) ^ ExpertiseBonus;
-                return hashCode;
+                unchecked
+                {
+                    int hashCode = _guiSourceId.GetHashCode();
+                    hashCode = (hashCode * 397) ^ (_strFileName?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (_strName?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ _blnAllowBiowareSuites.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnAllowCyberwareESSDiscounts.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnAllowEditPartOfBaseWeapon.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnAllowHigherStackedFoci.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnAllowInitiationInCreateMode.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnAllowObsolescentUpgrade.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnDontUseCyberlimbCalculation.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnAllowSkillRegrouping.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnSpecializationsBreakSkillGroups.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnAlternateMetatypeAttributeKarma.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnArmorDegradation.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnStrictSkillGroupsInCreateMode.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnAllowPointBuySpecializationsOnKarmaSkills.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnCyberlegMovement.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnDontDoubleQualityPurchaseCost.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnDontDoubleQualityRefundCost.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnEnforceCapacity.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnESSLossReducesMaximumOnly.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnExceedNegativeQualities.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnExceedNegativeQualitiesLimit.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnExceedPositiveQualities.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnExceedPositiveQualitiesCostDoubled.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnExtendAnyDetectionSpell.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnDroneArmorMultiplierEnabled.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnFreeSpiritPowerPointsMAG.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnNoArmorEncumbrance.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnIgnoreArt.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnIgnoreComplexFormLimit.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnUnarmedImprovementsApplyToWeapons.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnLicenseRestrictedItems.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnMaximumArmorModifications.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnMetatypeCostsKarma.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnMoreLethalGameplay.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnMultiplyForbiddenCost.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnMultiplyRestrictedCost.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnNoSingleArmorEncumbrance.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnRestrictRecoil.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnSpecialKarmaCostBasedOnShownValue.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnSpiritForceBasedOnTotalMAG.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnUnrestrictedNuyen.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnUseCalculatedPublicAwareness.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnUsePointsOnBrokenGroups.GetHashCode();
+                    hashCode = (hashCode * 397) ^ (_strContactPointsExpression?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (_strKnowledgePointsExpression?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (_strChargenKarmaToNuyenExpression?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (_strBoundSpiritExpression?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (_strRegisteredSpriteExpression?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (_strLiftLimitExpression?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (_strCarryLimitExpression?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (_strEncumbranceIntervalExpression?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ _blnDoEncumbrancePenaltyPhysicalLimit.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnDoEncumbrancePenaltyMovementSpeed.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnDoEncumbrancePenaltyAgility.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnDoEncumbrancePenaltyReaction.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnDoEncumbrancePenaltyWoundModifier.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _intEncumbrancePenaltyPhysicalLimit.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _intEncumbrancePenaltyMovementSpeed.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _intEncumbrancePenaltyAgility.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _intEncumbrancePenaltyReaction.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _intEncumbrancePenaltyWoundModifier.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnDoNotRoundEssenceInternally.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnEnableEnemyTracking.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnEnemyKarmaQualityLimit.GetHashCode();
+                    hashCode = (hashCode * 397) ^ (_strEssenceFormat?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ _intForbiddenCostMultiplier;
+                    hashCode = (hashCode * 397) ^ _intDroneArmorMultiplier;
+                    hashCode = (hashCode * 397) ^ _intLimbCount;
+                    hashCode = (hashCode * 397) ^ _intMetatypeCostMultiplier;
+                    hashCode = (hashCode * 397) ^ _decNuyenPerBPWftM.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _decNuyenPerBPWftP.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _intRestrictedCostMultiplier;
+                    hashCode = (hashCode * 397) ^ _blnAutomaticBackstory.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnFreeMartialArtSpecialization.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnPrioritySpellsAsAdeptPowers.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnMysAdeptAllowPpCareer.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnMysAdeptSecondMAGAttribute.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnReverseAttributePriorityOrder.GetHashCode();
+                    hashCode = (hashCode * 397) ^ (_strNuyenFormat?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (_strWeightFormat?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ _blnCompensateSkillGroupKarmaDifference.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnIncreasedImprovedAbilityMultiplier.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnAllowFreeGrids.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnAllowTechnomancerSchooling.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnCyberlimbAttributeBonusCapOverride.GetHashCode();
+                    hashCode = (hashCode * 397) ^ (_strBookXPath?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (_strExcludeLimbSlot?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ _intCyberlimbAttributeBonusCap;
+                    hashCode = (hashCode * 397) ^ _blnUnclampAttributeMinimum.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnDroneMods.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnDroneModsMaximumPilot.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _intMaxNumberMaxAttributesCreate;
+                    hashCode = (hashCode * 397) ^ _intMaxSkillRatingCreate;
+                    hashCode = (hashCode * 397) ^ _intMaxKnowledgeSkillRatingCreate;
+                    hashCode = (hashCode * 397) ^ _intMaxSkillRating;
+                    hashCode = (hashCode * 397) ^ _intMaxKnowledgeSkillRating;
+                    hashCode = (hashCode * 397) ^ _intMinInitiativeDice;
+                    hashCode = (hashCode * 397) ^ _intMaxInitiativeDice;
+                    hashCode = (hashCode * 397) ^ _intMinAstralInitiativeDice;
+                    hashCode = (hashCode * 397) ^ _intMaxAstralInitiativeDice;
+                    hashCode = (hashCode * 397) ^ _intMinColdSimInitiativeDice;
+                    hashCode = (hashCode * 397) ^ _intMaxColdSimInitiativeDice;
+                    hashCode = (hashCode * 397) ^ _intMinHotSimInitiativeDice;
+                    hashCode = (hashCode * 397) ^ _intMaxHotSimInitiativeDice;
+                    hashCode = (hashCode * 397) ^ _intKarmaAttribute;
+                    hashCode = (hashCode * 397) ^ _intKarmaCarryover;
+                    hashCode = (hashCode * 397) ^ _intKarmaContact;
+                    hashCode = (hashCode * 397) ^ _intKarmaEnemy;
+                    hashCode = (hashCode * 397) ^ _intKarmaEnhancement;
+                    hashCode = (hashCode * 397) ^ _intKarmaImproveActiveSkill;
+                    hashCode = (hashCode * 397) ^ _intKarmaImproveKnowledgeSkill;
+                    hashCode = (hashCode * 397) ^ _intKarmaImproveSkillGroup;
+                    hashCode = (hashCode * 397) ^ _intKarmaInitiation;
+                    hashCode = (hashCode * 397) ^ _intKarmaInitiationFlat;
+                    hashCode = (hashCode * 397) ^ _intKarmaJoinGroup;
+                    hashCode = (hashCode * 397) ^ _intKarmaLeaveGroup;
+                    hashCode = (hashCode * 397) ^ _intKarmaTechnique;
+                    hashCode = (hashCode * 397) ^ _intKarmaMetamagic;
+                    hashCode = (hashCode * 397) ^ _intKarmaNewActiveSkill;
+                    hashCode = (hashCode * 397) ^ _intKarmaNewComplexForm;
+                    hashCode = (hashCode * 397) ^ _intKarmaNewKnowledgeSkill;
+                    hashCode = (hashCode * 397) ^ _intKarmaNewSkillGroup;
+                    hashCode = (hashCode * 397) ^ _intKarmaQuality;
+                    hashCode = (hashCode * 397) ^ _intKarmaSpecialization;
+                    hashCode = (hashCode * 397) ^ _intKarmaKnoSpecialization;
+                    hashCode = (hashCode * 397) ^ _intKarmaSpell;
+                    hashCode = (hashCode * 397) ^ _intKarmaSpirit;
+                    hashCode = (hashCode * 397) ^ _intKarmaNewAIProgram;
+                    hashCode = (hashCode * 397) ^ _intKarmaNewAIAdvancedProgram;
+                    hashCode = (hashCode * 397) ^ _intKarmaMysticAdeptPowerPoint;
+                    hashCode = (hashCode * 397) ^ _intKarmaSpiritFettering;
+                    hashCode = (hashCode * 397) ^ _intKarmaAlchemicalFocus;
+                    hashCode = (hashCode * 397) ^ _intKarmaDisenchantingFocus;
+                    hashCode = (hashCode * 397) ^ _intKarmaCenteringFocus;
+                    hashCode = (hashCode * 397) ^ _intKarmaFlexibleSignatureFocus;
+                    hashCode = (hashCode * 397) ^ _intKarmaMaskingFocus;
+                    hashCode = (hashCode * 397) ^ _intKarmaSpellShapingFocus;
+                    hashCode = (hashCode * 397) ^ _intKarmaPowerFocus;
+                    hashCode = (hashCode * 397) ^ _intKarmaQiFocus;
+                    hashCode = (hashCode * 397) ^ _intKarmaCounterspellingFocus;
+                    hashCode = (hashCode * 397) ^ _intKarmaRitualSpellcastingFocus;
+                    hashCode = (hashCode * 397) ^ _intKarmaSpellcastingFocus;
+                    hashCode = (hashCode * 397) ^ _intKarmaSustainingFocus;
+                    hashCode = (hashCode * 397) ^ _intKarmaBanishingFocus;
+                    hashCode = (hashCode * 397) ^ _intKarmaBindingFocus;
+                    hashCode = (hashCode * 397) ^ _intKarmaSummoningFocus;
+                    hashCode = (hashCode * 397) ^ _intKarmaWeaponFocus;
+                    hashCode = (hashCode * 397) ^ _intDicePenaltySustaining;
+                    hashCode = (hashCode * 397) ^ (int) _eBuildMethod;
+                    hashCode = (hashCode * 397) ^ _intBuildPoints;
+                    hashCode = (hashCode * 397) ^ _intQualityKarmaLimit;
+                    hashCode = (hashCode * 397) ^ (_strPriorityArray?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (_strPriorityTable?.GetHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ _intSumtoTen;
+                    hashCode = (hashCode * 397) ^ _decNuyenMaximumBP.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _intAvailability;
+                    hashCode = (hashCode * 397) ^ (_dicCustomDataDirectoryKeys?.GetEnsembleHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (_setEnabledCustomDataDirectories?.GetEnsembleHashCode() ?? 0);
+                    hashCode = (hashCode * 397)
+                               ^ (_setEnabledCustomDataDirectoryGuids?.GetOrderInvariantEnsembleHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (_lstEnabledCustomDataDirectoryPaths?.GetEnsembleHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (_setBooks?.GetOrderInvariantEnsembleHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (_setBannedWareGrades?.GetOrderInvariantEnsembleHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ (_setRedlinerExcludes?.GetOrderInvariantEnsembleHashCode() ?? 0);
+                    hashCode = (hashCode * 397) ^ _decKarmaMAGInitiationGroupPercent.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _decKarmaRESInitiationGroupPercent.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _decKarmaMAGInitiationOrdealPercent.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _decKarmaRESInitiationOrdealPercent.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _decKarmaMAGInitiationSchoolingPercent.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _decKarmaRESInitiationSchoolingPercent.GetHashCode();
+                    hashCode = (hashCode * 397) ^ SpecializationBonus;
+                    hashCode = (hashCode * 397) ^ ExpertiseBonus;
+                    return hashCode;
+                }
             }
         }
 
@@ -755,413 +884,681 @@ namespace Chummer
                     return false;
                 }
             }
-            if (!string.IsNullOrEmpty(strNewFileName))
-                _strFileName = strNewFileName;
-            string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
-            using (FileStream objStream = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+
+            using (EnterReadLock.Enter(LockObject))
             {
-                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                if (!string.IsNullOrEmpty(strNewFileName))
+                    _strFileName = strNewFileName;
+                string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
+                using (FileStream objStream
+                       = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                 {
-                    objWriter.WriteStartDocument();
-
-                    // <settings>
-                    objWriter.WriteStartElement("settings");
-
-                    // <id />
-                    objWriter.WriteElementString("id", (blnClearSourceGuid ? Guid.Empty : _guiSourceId).ToString("D", GlobalSettings.InvariantCultureInfo));
-                    // <name />
-                    objWriter.WriteElementString("name", _strName);
-
-                    // <licenserestricted />
-                    objWriter.WriteElementString("licenserestricted", _blnLicenseRestrictedItems.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <morelethalgameplay />
-                    objWriter.WriteElementString("morelethalgameplay", _blnMoreLethalGameplay.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <spiritforcebasedontotalmag />
-                    objWriter.WriteElementString("spiritforcebasedontotalmag", _blnSpiritForceBasedOnTotalMAG.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <nuyenperbpwftm />
-                    objWriter.WriteElementString("nuyenperbpwftm", _decNuyenPerBPWftM.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <nuyenperbpwftp />
-                    objWriter.WriteElementString("nuyenperbpwftp", _decNuyenPerBPWftP.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <UnarmedImprovementsApplyToWeapons />
-                    objWriter.WriteElementString("unarmedimprovementsapplytoweapons", _blnUnarmedImprovementsApplyToWeapons.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <allowinitiationincreatemode />
-                    objWriter.WriteElementString("allowinitiationincreatemode", _blnAllowInitiationInCreateMode.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <usepointsonbrokengroups />
-                    objWriter.WriteElementString("usepointsonbrokengroups", _blnUsePointsOnBrokenGroups.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <dontdoublequalities />
-                    objWriter.WriteElementString("dontdoublequalities", _blnDontDoubleQualityPurchaseCost.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <dontdoublequalities />
-                    objWriter.WriteElementString("dontdoublequalityrefunds", _blnDontDoubleQualityRefundCost.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <ignoreart />
-                    objWriter.WriteElementString("ignoreart", _blnIgnoreArt.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <cyberlegmovement />
-                    objWriter.WriteElementString("cyberlegmovement", _blnCyberlegMovement.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <contactpointsexpression />
-                    objWriter.WriteElementString("contactpointsexpression", _strContactPointsExpression);
-                    // <knowledgepointsexpression />
-                    objWriter.WriteElementString("knowledgepointsexpression", _strKnowledgePointsExpression);
-                    // <chargenkarmatonuyenexpression />
-                    objWriter.WriteElementString("chargenkarmatonuyenexpression", _strChargenKarmaToNuyenExpression);
-                    // <boundspiritexpression />
-                    objWriter.WriteElementString("boundspiritexpression", _strBoundSpiritExpression);
-                    // <compiledspriteexpression />
-                    objWriter.WriteElementString("compiledspriteexpression", _strRegisteredSpriteExpression);
-                    // <liftlimitexpression />
-                    objWriter.WriteElementString("liftlimitexpression", _strLiftLimitExpression);
-                    // <carrylimitexpression />
-                    objWriter.WriteElementString("carrylimitexpression", _strCarryLimitExpression);
-                    // <encumbranceintervalexpression />
-                    objWriter.WriteElementString("encumbranceintervalexpression", _strEncumbranceIntervalExpression);
-                    // <doencumbrancepenaltyphysicallimit />
-                    objWriter.WriteElementString("doencumbrancepenaltyphysicallimit", _blnDoEncumbrancePenaltyPhysicalLimit.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <doencumbrancepenaltymovementspeed />
-                    objWriter.WriteElementString("doencumbrancepenaltymovementspeed", _blnDoEncumbrancePenaltyMovementSpeed.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <doencumbrancepenaltyagility />
-                    objWriter.WriteElementString("doencumbrancepenaltyagility", _blnDoEncumbrancePenaltyAgility.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <doencumbrancepenaltyreaction />
-                    objWriter.WriteElementString("doencumbrancepenaltyreaction", _blnDoEncumbrancePenaltyReaction.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <doencumbrancepenaltywoundmodifier />
-                    objWriter.WriteElementString("doencumbrancepenaltywoundmodifier", _blnDoEncumbrancePenaltyWoundModifier.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <encumbrancepenaltyphysicallimit />
-                    objWriter.WriteElementString("encumbrancepenaltyphysicallimit", _intEncumbrancePenaltyPhysicalLimit.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <encumbrancepenaltymovementspeed />
-                    objWriter.WriteElementString("encumbrancepenaltymovementspeed", _intEncumbrancePenaltyMovementSpeed.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <encumbrancepenaltyagility />
-                    objWriter.WriteElementString("encumbrancepenaltyagility", _intEncumbrancePenaltyAgility.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <encumbrancepenaltyreaction />
-                    objWriter.WriteElementString("encumbrancepenaltyreaction", _intEncumbrancePenaltyReaction.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <encumbrancepenaltywoundmodifier />
-                    objWriter.WriteElementString("encumbrancepenaltywoundmodifier", _intEncumbrancePenaltyWoundModifier.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <dronearmormultiplierenabled />
-                    objWriter.WriteElementString("dronearmormultiplierenabled", _blnDroneArmorMultiplierEnabled.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <dronearmorflatnumber />
-                    objWriter.WriteElementString("dronearmorflatnumber", _intDroneArmorMultiplier.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <nosinglearmorencumbrance />
-                    objWriter.WriteElementString("nosinglearmorencumbrance", _blnNoSingleArmorEncumbrance.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <ignorecomplexformlimit />
-                    objWriter.WriteElementString("ignorecomplexformlimit", _blnIgnoreComplexFormLimit.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <NoArmorEncumbrance />
-                    objWriter.WriteElementString("noarmorencumbrance", _blnNoArmorEncumbrance.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <esslossreducesmaximumonly />
-                    objWriter.WriteElementString("esslossreducesmaximumonly", _blnESSLossReducesMaximumOnly.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <allowskillregrouping />
-                    objWriter.WriteElementString("allowskillregrouping", _blnAllowSkillRegrouping.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <specializationsbreakskillgroups />
-                    objWriter.WriteElementString("specializationsbreakskillgroups", _blnSpecializationsBreakSkillGroups.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <metatypecostskarma />
-                    objWriter.WriteElementString("metatypecostskarma", _blnMetatypeCostsKarma.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <metatypecostskarmamultiplier />
-                    objWriter.WriteElementString("metatypecostskarmamultiplier", _intMetatypeCostMultiplier.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <limbcount />
-                    objWriter.WriteElementString("limbcount", _intLimbCount.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <excludelimbslot />
-                    objWriter.WriteElementString("excludelimbslot", _strExcludeLimbSlot);
-                    // <allowcyberwareessdiscounts />
-                    objWriter.WriteElementString("allowcyberwareessdiscounts", _blnAllowCyberwareESSDiscounts.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <maximumarmormodifications />
-                    objWriter.WriteElementString("maximumarmormodifications", _blnMaximumArmorModifications.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <armordegredation />
-                    objWriter.WriteElementString("armordegredation", _blnArmorDegradation.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <specialkarmacostbasedonshownvalue />
-                    objWriter.WriteElementString("specialkarmacostbasedonshownvalue", _blnSpecialKarmaCostBasedOnShownValue.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <exceedpositivequalities />
-                    objWriter.WriteElementString("exceedpositivequalities", _blnExceedPositiveQualities.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <exceedpositivequalitiescostdoubled />
-                    objWriter.WriteElementString("exceedpositivequalitiescostdoubled", _blnExceedPositiveQualitiesCostDoubled.ToString(GlobalSettings.InvariantCultureInfo));
-
-                    objWriter.WriteElementString("mysaddppcareer", MysAdeptAllowPpCareer.ToString(GlobalSettings.InvariantCultureInfo));
-
-                    // <mysadeptsecondmagattribute />
-                    objWriter.WriteElementString("mysadeptsecondmagattribute", MysAdeptSecondMAGAttribute.ToString(GlobalSettings.InvariantCultureInfo));
-
-                    // <exceednegativequalities />
-                    objWriter.WriteElementString("exceednegativequalities", _blnExceedNegativeQualities.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <exceednegativequalitieslimit />
-                    objWriter.WriteElementString("exceednegativequalitieslimit", _blnExceedNegativeQualitiesLimit.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <multiplyrestrictedcost />
-                    objWriter.WriteElementString("multiplyrestrictedcost", _blnMultiplyRestrictedCost.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <multiplyforbiddencost />
-                    objWriter.WriteElementString("multiplyforbiddencost", _blnMultiplyForbiddenCost.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <restrictedcostmultiplier />
-                    objWriter.WriteElementString("restrictedcostmultiplier", _intRestrictedCostMultiplier.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <forbiddencostmultiplier />
-                    objWriter.WriteElementString("forbiddencostmultiplier", _intForbiddenCostMultiplier.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <donotroundessenceinternally />
-                    objWriter.WriteElementString("donotroundessenceinternally", _blnDoNotRoundEssenceInternally.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <enableenemytracking />
-                    objWriter.WriteElementString("enableenemytracking", _blnEnableEnemyTracking.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <enemykarmaqualitylimit />
-                    objWriter.WriteElementString("enemykarmaqualitylimit", _blnEnemyKarmaQualityLimit.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <nuyenformat />
-                    objWriter.WriteElementString("nuyenformat", _strNuyenFormat);
-                    // <weightformat />
-                    objWriter.WriteElementString("weightformat", _strWeightFormat);
-                    // <essencedecimals />
-                    objWriter.WriteElementString("essenceformat", _strEssenceFormat);
-                    // <enforcecapacity />
-                    objWriter.WriteElementString("enforcecapacity", _blnEnforceCapacity.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <restrictrecoil />
-                    objWriter.WriteElementString("restrictrecoil", _blnRestrictRecoil.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <unrestrictednuyen />
-                    objWriter.WriteElementString("unrestrictednuyen", _blnUnrestrictedNuyen.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <allowhigherstackedfoci />
-                    objWriter.WriteElementString("allowhigherstackedfoci", _blnAllowHigherStackedFoci.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <alloweditpartofbaseweapon />
-                    objWriter.WriteElementString("alloweditpartofbaseweapon", _blnAllowEditPartOfBaseWeapon.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <breakskillgroupsincreatemode />
-                    objWriter.WriteElementString("breakskillgroupsincreatemode", _blnStrictSkillGroupsInCreateMode.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <allowpointbuyspecializationsonkarmaskills />
-                    objWriter.WriteElementString("allowpointbuyspecializationsonkarmaskills", _blnAllowPointBuySpecializationsOnKarmaSkills.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <extendanydetectionspell />
-                    objWriter.WriteElementString("extendanydetectionspell", _blnExtendAnyDetectionSpell.ToString(GlobalSettings.InvariantCultureInfo));
-                    //<dontusecyberlimbcalculation />
-                    objWriter.WriteElementString("dontusecyberlimbcalculation", _blnDontUseCyberlimbCalculation.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <alternatemetatypeattributekarma />
-                    objWriter.WriteElementString("alternatemetatypeattributekarma", _blnAlternateMetatypeAttributeKarma.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <reversekarmapriorityorder />
-                    objWriter.WriteElementString("reverseattributepriorityorder", ReverseAttributePriorityOrder.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <allowobsolescentupgrade />
-                    objWriter.WriteElementString("allowobsolescentupgrade", _blnAllowObsolescentUpgrade.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <allowbiowaresuites />
-                    objWriter.WriteElementString("allowbiowaresuites", _blnAllowBiowareSuites.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <freespiritpowerpointsmag />
-                    objWriter.WriteElementString("freespiritpowerpointsmag", _blnFreeSpiritPowerPointsMAG.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <compensateskillgroupkarmadifference />
-                    objWriter.WriteElementString("compensateskillgroupkarmadifference", _blnCompensateSkillGroupKarmaDifference.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <autobackstory />
-                    objWriter.WriteElementString("autobackstory", _blnAutomaticBackstory.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <freemartialartspecialization />
-                    objWriter.WriteElementString("freemartialartspecialization", _blnFreeMartialArtSpecialization.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <priorityspellsasadeptpowers />
-                    objWriter.WriteElementString("priorityspellsasadeptpowers", _blnPrioritySpellsAsAdeptPowers.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <usecalculatedpublicawareness />
-                    objWriter.WriteElementString("usecalculatedpublicawareness", _blnUseCalculatedPublicAwareness.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <increasedimprovedabilitymodifier />
-                    objWriter.WriteElementString("increasedimprovedabilitymodifier", _blnIncreasedImprovedAbilityMultiplier.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <allowfreegrids />
-                    objWriter.WriteElementString("allowfreegrids", _blnAllowFreeGrids.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <allowtechnomancerschooling />
-                    objWriter.WriteElementString("allowtechnomancerschooling", _blnAllowTechnomancerSchooling.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <cyberlimbattributebonuscapoverride />
-                    objWriter.WriteElementString("cyberlimbattributebonuscapoverride", _blnCyberlimbAttributeBonusCapOverride.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <cyberlimbattributebonuscap />
-                    objWriter.WriteElementString("cyberlimbattributebonuscap", _intCyberlimbAttributeBonusCap.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <unclampattributeminimum />
-                    objWriter.WriteElementString("unclampattributeminimum", _blnUnclampAttributeMinimum.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <dronemods />
-                    objWriter.WriteElementString("dronemods", _blnDroneMods.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <dronemodsmaximumpilot />
-                    objWriter.WriteElementString("dronemodsmaximumpilot", _blnDroneModsMaximumPilot.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <maxnumbermaxattributescreate />
-                    objWriter.WriteElementString("maxnumbermaxattributescreate", _intMaxNumberMaxAttributesCreate.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <maxskillratingcreate />
-                    objWriter.WriteElementString("maxskillratingcreate", _intMaxSkillRatingCreate.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <maxknowledgeskillratingcreate />
-                    objWriter.WriteElementString("maxknowledgeskillratingcreate", _intMaxKnowledgeSkillRatingCreate.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <maxskillrating />
-                    objWriter.WriteElementString("maxskillrating", _intMaxSkillRating.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <maxknowledgeskillrating />
-                    objWriter.WriteElementString("maxknowledgeskillrating", _intMaxKnowledgeSkillRating.ToString(GlobalSettings.InvariantCultureInfo));
-
-                    // <dicepenaltysustaining />
-                    objWriter.WriteElementString("dicepenaltysustaining", _intDicePenaltySustaining.ToString(GlobalSettings.InvariantCultureInfo));
-
-                    // <mininitiativedice />
-                    objWriter.WriteElementString("mininitiativedice", _intMinInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <maxinitiativedice />
-                    objWriter.WriteElementString("maxinitiativedice", _intMaxInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <minastralinitiativedice />
-                    objWriter.WriteElementString("minastralinitiativedice", _intMinAstralInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <maxastralinitiativedice />
-                    objWriter.WriteElementString("maxastralinitiativedice", _intMaxAstralInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <mincoldsiminitiativedice />
-                    objWriter.WriteElementString("mincoldsiminitiativedice", _intMinColdSimInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <maxcoldsiminitiativedice />
-                    objWriter.WriteElementString("maxcoldsiminitiativedice", _intMaxColdSimInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <minhotsiminitiativedice />
-                    objWriter.WriteElementString("minhotsiminitiativedice", _intMinHotSimInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <maxhotsiminitiativedice />
-                    objWriter.WriteElementString("maxhotsiminitiativedice", _intMaxHotSimInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
-
-                    // <karmacost>
-                    objWriter.WriteStartElement("karmacost");
-                    // <karmaattribute />
-                    objWriter.WriteElementString("karmaattribute", _intKarmaAttribute.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaquality />
-                    objWriter.WriteElementString("karmaquality", _intKarmaQuality.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaspecialization />
-                    objWriter.WriteElementString("karmaspecialization", _intKarmaSpecialization.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaknospecialization />
-                    objWriter.WriteElementString("karmaknospecialization", _intKarmaKnoSpecialization.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmanewknowledgeskill />
-                    objWriter.WriteElementString("karmanewknowledgeskill", _intKarmaNewKnowledgeSkill.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmanewactiveskill />
-                    objWriter.WriteElementString("karmanewactiveskill", _intKarmaNewActiveSkill.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmanewskillgroup />
-                    objWriter.WriteElementString("karmanewskillgroup", _intKarmaNewSkillGroup.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaimproveknowledgeskill />
-                    objWriter.WriteElementString("karmaimproveknowledgeskill", _intKarmaImproveKnowledgeSkill.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaimproveactiveskill />
-                    objWriter.WriteElementString("karmaimproveactiveskill", _intKarmaImproveActiveSkill.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaimproveskillgroup />
-                    objWriter.WriteElementString("karmaimproveskillgroup", _intKarmaImproveSkillGroup.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaspell />
-                    objWriter.WriteElementString("karmaspell", _intKarmaSpell.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaenhancement />
-                    objWriter.WriteElementString("karmaenhancement", _intKarmaEnhancement.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmanewcomplexform />
-                    objWriter.WriteElementString("karmanewcomplexform", _intKarmaNewComplexForm.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmanewaiprogram />
-                    objWriter.WriteElementString("karmanewaiprogram", _intKarmaNewAIProgram.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmanewaiadvancedprogram />
-                    objWriter.WriteElementString("karmanewaiadvancedprogram", _intKarmaNewAIAdvancedProgram.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmacontact />
-                    objWriter.WriteElementString("karmacontact", _intKarmaContact.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaenemy />
-                    objWriter.WriteElementString("karmaenemy", _intKarmaEnemy.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmacarryover />
-                    objWriter.WriteElementString("karmacarryover", _intKarmaCarryover.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaspirit />
-                    objWriter.WriteElementString("karmaspirit", _intKarmaSpirit.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmamaneuver />
-                    objWriter.WriteElementString("karmatechnique", _intKarmaTechnique.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmainitiation />
-                    objWriter.WriteElementString("karmainitiation", _intKarmaInitiation.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmainitiationflat />
-                    objWriter.WriteElementString("karmainitiationflat", _intKarmaInitiationFlat.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmametamagic />
-                    objWriter.WriteElementString("karmametamagic", _intKarmaMetamagic.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmajoingroup />
-                    objWriter.WriteElementString("karmajoingroup", _intKarmaJoinGroup.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaleavegroup />
-                    objWriter.WriteElementString("karmaleavegroup", _intKarmaLeaveGroup.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaalchemicalfocus />
-                    objWriter.WriteElementString("karmaalchemicalfocus", _intKarmaAlchemicalFocus.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmabanishingfocus />
-                    objWriter.WriteElementString("karmabanishingfocus", _intKarmaBanishingFocus.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmabindingfocus />
-                    objWriter.WriteElementString("karmabindingfocus", _intKarmaBindingFocus.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmacenteringfocus />
-                    objWriter.WriteElementString("karmacenteringfocus", _intKarmaCenteringFocus.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmacounterspellingfocus />
-                    objWriter.WriteElementString("karmacounterspellingfocus", _intKarmaCounterspellingFocus.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmadisenchantingfocus />
-                    objWriter.WriteElementString("karmadisenchantingfocus", _intKarmaDisenchantingFocus.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaflexiblesignaturefocus />
-                    objWriter.WriteElementString("karmaflexiblesignaturefocus", _intKarmaFlexibleSignatureFocus.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmamaskingfocus />
-                    objWriter.WriteElementString("karmamaskingfocus", _intKarmaMaskingFocus.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmapowerfocus />
-                    objWriter.WriteElementString("karmapowerfocus", _intKarmaPowerFocus.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaqifocus />
-                    objWriter.WriteElementString("karmaqifocus", _intKarmaQiFocus.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaritualspellcastingfocus />
-                    objWriter.WriteElementString("karmaritualspellcastingfocus", _intKarmaRitualSpellcastingFocus.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaspellcastingfocus />
-                    objWriter.WriteElementString("karmaspellcastingfocus", _intKarmaSpellcastingFocus.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaspellshapingfocus />
-                    objWriter.WriteElementString("karmaspellshapingfocus", _intKarmaSpellShapingFocus.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmasummoningfocus />
-                    objWriter.WriteElementString("karmasummoningfocus", _intKarmaSummoningFocus.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmasustainingfocus />
-                    objWriter.WriteElementString("karmasustainingfocus", _intKarmaSustainingFocus.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaweaponfocus />
-                    objWriter.WriteElementString("karmaweaponfocus", _intKarmaWeaponFocus.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaweaponfocus />
-                    objWriter.WriteElementString("karmamysadpp", _intKarmaMysticAdeptPowerPoint.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <karmaspiritfettering />
-                    objWriter.WriteElementString("karmaspiritfettering", _intKarmaSpiritFettering.ToString(GlobalSettings.InvariantCultureInfo));
-                    // </karmacost>
-                    objWriter.WriteEndElement();
-
-                    XPathNodeIterator lstAllowedBooksCodes = XmlManager
-                        .LoadXPath("books.xml", EnabledCustomDataDirectoryPaths)
-                        .SelectAndCacheExpression("/chummer/books/book[not(hide)]/code");
-                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                    out HashSet<string> setAllowedBooks))
+                    using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                     {
-                        foreach (XPathNavigator objAllowedBook in lstAllowedBooksCodes)
+                        objWriter.WriteStartDocument();
+
+                        // <settings>
+                        objWriter.WriteStartElement("settings");
+
+                        // <id />
+                        objWriter.WriteElementString(
+                            "id",
+                            (blnClearSourceGuid ? Guid.Empty : _guiSourceId).ToString(
+                                "D", GlobalSettings.InvariantCultureInfo));
+                        // <name />
+                        objWriter.WriteElementString("name", _strName);
+
+                        // <licenserestricted />
+                        objWriter.WriteElementString("licenserestricted",
+                                                     _blnLicenseRestrictedItems.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <morelethalgameplay />
+                        objWriter.WriteElementString("morelethalgameplay",
+                                                     _blnMoreLethalGameplay.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <spiritforcebasedontotalmag />
+                        objWriter.WriteElementString("spiritforcebasedontotalmag",
+                                                     _blnSpiritForceBasedOnTotalMAG.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <nuyenperbpwftm />
+                        objWriter.WriteElementString("nuyenperbpwftm",
+                                                     _decNuyenPerBPWftM.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <nuyenperbpwftp />
+                        objWriter.WriteElementString("nuyenperbpwftp",
+                                                     _decNuyenPerBPWftP.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <UnarmedImprovementsApplyToWeapons />
+                        objWriter.WriteElementString("unarmedimprovementsapplytoweapons",
+                                                     _blnUnarmedImprovementsApplyToWeapons.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <allowinitiationincreatemode />
+                        objWriter.WriteElementString("allowinitiationincreatemode",
+                                                     _blnAllowInitiationInCreateMode.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <usepointsonbrokengroups />
+                        objWriter.WriteElementString("usepointsonbrokengroups",
+                                                     _blnUsePointsOnBrokenGroups.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <dontdoublequalities />
+                        objWriter.WriteElementString("dontdoublequalities",
+                                                     _blnDontDoubleQualityPurchaseCost.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <dontdoublequalities />
+                        objWriter.WriteElementString("dontdoublequalityrefunds",
+                                                     _blnDontDoubleQualityRefundCost.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <ignoreart />
+                        objWriter.WriteElementString("ignoreart",
+                                                     _blnIgnoreArt.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <cyberlegmovement />
+                        objWriter.WriteElementString("cyberlegmovement",
+                                                     _blnCyberlegMovement.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <contactpointsexpression />
+                        objWriter.WriteElementString("contactpointsexpression", _strContactPointsExpression);
+                        // <knowledgepointsexpression />
+                        objWriter.WriteElementString("knowledgepointsexpression", _strKnowledgePointsExpression);
+                        // <chargenkarmatonuyenexpression />
+                        objWriter.WriteElementString("chargenkarmatonuyenexpression",
+                                                     _strChargenKarmaToNuyenExpression);
+                        // <boundspiritexpression />
+                        objWriter.WriteElementString("boundspiritexpression", _strBoundSpiritExpression);
+                        // <compiledspriteexpression />
+                        objWriter.WriteElementString("compiledspriteexpression", _strRegisteredSpriteExpression);
+                        // <liftlimitexpression />
+                        objWriter.WriteElementString("liftlimitexpression", _strLiftLimitExpression);
+                        // <carrylimitexpression />
+                        objWriter.WriteElementString("carrylimitexpression", _strCarryLimitExpression);
+                        // <encumbranceintervalexpression />
+                        objWriter.WriteElementString("encumbranceintervalexpression",
+                                                     _strEncumbranceIntervalExpression);
+                        // <doencumbrancepenaltyphysicallimit />
+                        objWriter.WriteElementString("doencumbrancepenaltyphysicallimit",
+                                                     _blnDoEncumbrancePenaltyPhysicalLimit.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <doencumbrancepenaltymovementspeed />
+                        objWriter.WriteElementString("doencumbrancepenaltymovementspeed",
+                                                     _blnDoEncumbrancePenaltyMovementSpeed.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <doencumbrancepenaltyagility />
+                        objWriter.WriteElementString("doencumbrancepenaltyagility",
+                                                     _blnDoEncumbrancePenaltyAgility.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <doencumbrancepenaltyreaction />
+                        objWriter.WriteElementString("doencumbrancepenaltyreaction",
+                                                     _blnDoEncumbrancePenaltyReaction.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <doencumbrancepenaltywoundmodifier />
+                        objWriter.WriteElementString("doencumbrancepenaltywoundmodifier",
+                                                     _blnDoEncumbrancePenaltyWoundModifier.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <encumbrancepenaltyphysicallimit />
+                        objWriter.WriteElementString("encumbrancepenaltyphysicallimit",
+                                                     _intEncumbrancePenaltyPhysicalLimit.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <encumbrancepenaltymovementspeed />
+                        objWriter.WriteElementString("encumbrancepenaltymovementspeed",
+                                                     _intEncumbrancePenaltyMovementSpeed.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <encumbrancepenaltyagility />
+                        objWriter.WriteElementString("encumbrancepenaltyagility",
+                                                     _intEncumbrancePenaltyAgility.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <encumbrancepenaltyreaction />
+                        objWriter.WriteElementString("encumbrancepenaltyreaction",
+                                                     _intEncumbrancePenaltyReaction.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <encumbrancepenaltywoundmodifier />
+                        objWriter.WriteElementString("encumbrancepenaltywoundmodifier",
+                                                     _intEncumbrancePenaltyWoundModifier.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <dronearmormultiplierenabled />
+                        objWriter.WriteElementString("dronearmormultiplierenabled",
+                                                     _blnDroneArmorMultiplierEnabled.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <dronearmorflatnumber />
+                        objWriter.WriteElementString("dronearmorflatnumber",
+                                                     _intDroneArmorMultiplier.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <nosinglearmorencumbrance />
+                        objWriter.WriteElementString("nosinglearmorencumbrance",
+                                                     _blnNoSingleArmorEncumbrance.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <ignorecomplexformlimit />
+                        objWriter.WriteElementString("ignorecomplexformlimit",
+                                                     _blnIgnoreComplexFormLimit.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <NoArmorEncumbrance />
+                        objWriter.WriteElementString("noarmorencumbrance",
+                                                     _blnNoArmorEncumbrance.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <esslossreducesmaximumonly />
+                        objWriter.WriteElementString("esslossreducesmaximumonly",
+                                                     _blnESSLossReducesMaximumOnly.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <allowskillregrouping />
+                        objWriter.WriteElementString("allowskillregrouping",
+                                                     _blnAllowSkillRegrouping.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <specializationsbreakskillgroups />
+                        objWriter.WriteElementString("specializationsbreakskillgroups",
+                                                     _blnSpecializationsBreakSkillGroups.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <metatypecostskarma />
+                        objWriter.WriteElementString("metatypecostskarma",
+                                                     _blnMetatypeCostsKarma.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <metatypecostskarmamultiplier />
+                        objWriter.WriteElementString("metatypecostskarmamultiplier",
+                                                     _intMetatypeCostMultiplier.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <limbcount />
+                        objWriter.WriteElementString("limbcount",
+                                                     _intLimbCount.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <excludelimbslot />
+                        objWriter.WriteElementString("excludelimbslot", _strExcludeLimbSlot);
+                        // <allowcyberwareessdiscounts />
+                        objWriter.WriteElementString("allowcyberwareessdiscounts",
+                                                     _blnAllowCyberwareESSDiscounts.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <maximumarmormodifications />
+                        objWriter.WriteElementString("maximumarmormodifications",
+                                                     _blnMaximumArmorModifications.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <armordegredation />
+                        objWriter.WriteElementString("armordegredation",
+                                                     _blnArmorDegradation.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <specialkarmacostbasedonshownvalue />
+                        objWriter.WriteElementString("specialkarmacostbasedonshownvalue",
+                                                     _blnSpecialKarmaCostBasedOnShownValue.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <exceedpositivequalities />
+                        objWriter.WriteElementString("exceedpositivequalities",
+                                                     _blnExceedPositiveQualities.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <exceedpositivequalitiescostdoubled />
+                        objWriter.WriteElementString("exceedpositivequalitiescostdoubled",
+                                                     _blnExceedPositiveQualitiesCostDoubled.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+
+                        objWriter.WriteElementString("mysaddppcareer",
+                                                     MysAdeptAllowPpCareer.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+
+                        // <mysadeptsecondmagattribute />
+                        objWriter.WriteElementString("mysadeptsecondmagattribute",
+                                                     MysAdeptSecondMAGAttribute.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+
+                        // <exceednegativequalities />
+                        objWriter.WriteElementString("exceednegativequalities",
+                                                     _blnExceedNegativeQualities.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <exceednegativequalitieslimit />
+                        objWriter.WriteElementString("exceednegativequalitieslimit",
+                                                     _blnExceedNegativeQualitiesLimit.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <multiplyrestrictedcost />
+                        objWriter.WriteElementString("multiplyrestrictedcost",
+                                                     _blnMultiplyRestrictedCost.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <multiplyforbiddencost />
+                        objWriter.WriteElementString("multiplyforbiddencost",
+                                                     _blnMultiplyForbiddenCost.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <restrictedcostmultiplier />
+                        objWriter.WriteElementString("restrictedcostmultiplier",
+                                                     _intRestrictedCostMultiplier.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <forbiddencostmultiplier />
+                        objWriter.WriteElementString("forbiddencostmultiplier",
+                                                     _intForbiddenCostMultiplier.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <donotroundessenceinternally />
+                        objWriter.WriteElementString("donotroundessenceinternally",
+                                                     _blnDoNotRoundEssenceInternally.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <enableenemytracking />
+                        objWriter.WriteElementString("enableenemytracking",
+                                                     _blnEnableEnemyTracking.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <enemykarmaqualitylimit />
+                        objWriter.WriteElementString("enemykarmaqualitylimit",
+                                                     _blnEnemyKarmaQualityLimit.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <nuyenformat />
+                        objWriter.WriteElementString("nuyenformat", _strNuyenFormat);
+                        // <weightformat />
+                        objWriter.WriteElementString("weightformat", _strWeightFormat);
+                        // <essencedecimals />
+                        objWriter.WriteElementString("essenceformat", _strEssenceFormat);
+                        // <enforcecapacity />
+                        objWriter.WriteElementString("enforcecapacity",
+                                                     _blnEnforceCapacity.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <restrictrecoil />
+                        objWriter.WriteElementString("restrictrecoil",
+                                                     _blnRestrictRecoil.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <unrestrictednuyen />
+                        objWriter.WriteElementString("unrestrictednuyen",
+                                                     _blnUnrestrictedNuyen.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <allowhigherstackedfoci />
+                        objWriter.WriteElementString("allowhigherstackedfoci",
+                                                     _blnAllowHigherStackedFoci.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <alloweditpartofbaseweapon />
+                        objWriter.WriteElementString("alloweditpartofbaseweapon",
+                                                     _blnAllowEditPartOfBaseWeapon.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <breakskillgroupsincreatemode />
+                        objWriter.WriteElementString("breakskillgroupsincreatemode",
+                                                     _blnStrictSkillGroupsInCreateMode.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <allowpointbuyspecializationsonkarmaskills />
+                        objWriter.WriteElementString("allowpointbuyspecializationsonkarmaskills",
+                                                     _blnAllowPointBuySpecializationsOnKarmaSkills.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <extendanydetectionspell />
+                        objWriter.WriteElementString("extendanydetectionspell",
+                                                     _blnExtendAnyDetectionSpell.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        //<dontusecyberlimbcalculation />
+                        objWriter.WriteElementString("dontusecyberlimbcalculation",
+                                                     _blnDontUseCyberlimbCalculation.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <alternatemetatypeattributekarma />
+                        objWriter.WriteElementString("alternatemetatypeattributekarma",
+                                                     _blnAlternateMetatypeAttributeKarma.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <reversekarmapriorityorder />
+                        objWriter.WriteElementString("reverseattributepriorityorder",
+                                                     ReverseAttributePriorityOrder.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <allowobsolescentupgrade />
+                        objWriter.WriteElementString("allowobsolescentupgrade",
+                                                     _blnAllowObsolescentUpgrade.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <allowbiowaresuites />
+                        objWriter.WriteElementString("allowbiowaresuites",
+                                                     _blnAllowBiowareSuites.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <freespiritpowerpointsmag />
+                        objWriter.WriteElementString("freespiritpowerpointsmag",
+                                                     _blnFreeSpiritPowerPointsMAG.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <compensateskillgroupkarmadifference />
+                        objWriter.WriteElementString("compensateskillgroupkarmadifference",
+                                                     _blnCompensateSkillGroupKarmaDifference.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <autobackstory />
+                        objWriter.WriteElementString("autobackstory",
+                                                     _blnAutomaticBackstory.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <freemartialartspecialization />
+                        objWriter.WriteElementString("freemartialartspecialization",
+                                                     _blnFreeMartialArtSpecialization.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <priorityspellsasadeptpowers />
+                        objWriter.WriteElementString("priorityspellsasadeptpowers",
+                                                     _blnPrioritySpellsAsAdeptPowers.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <usecalculatedpublicawareness />
+                        objWriter.WriteElementString("usecalculatedpublicawareness",
+                                                     _blnUseCalculatedPublicAwareness.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <increasedimprovedabilitymodifier />
+                        objWriter.WriteElementString("increasedimprovedabilitymodifier",
+                                                     _blnIncreasedImprovedAbilityMultiplier.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <allowfreegrids />
+                        objWriter.WriteElementString("allowfreegrids",
+                                                     _blnAllowFreeGrids.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <allowtechnomancerschooling />
+                        objWriter.WriteElementString("allowtechnomancerschooling",
+                                                     _blnAllowTechnomancerSchooling.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <cyberlimbattributebonuscapoverride />
+                        objWriter.WriteElementString("cyberlimbattributebonuscapoverride",
+                                                     _blnCyberlimbAttributeBonusCapOverride.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <cyberlimbattributebonuscap />
+                        objWriter.WriteElementString("cyberlimbattributebonuscap",
+                                                     _intCyberlimbAttributeBonusCap.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <unclampattributeminimum />
+                        objWriter.WriteElementString("unclampattributeminimum",
+                                                     _blnUnclampAttributeMinimum.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <dronemods />
+                        objWriter.WriteElementString("dronemods",
+                                                     _blnDroneMods.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <dronemodsmaximumpilot />
+                        objWriter.WriteElementString("dronemodsmaximumpilot",
+                                                     _blnDroneModsMaximumPilot.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <maxnumbermaxattributescreate />
+                        objWriter.WriteElementString("maxnumbermaxattributescreate",
+                                                     _intMaxNumberMaxAttributesCreate.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <maxskillratingcreate />
+                        objWriter.WriteElementString("maxskillratingcreate",
+                                                     _intMaxSkillRatingCreate.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <maxknowledgeskillratingcreate />
+                        objWriter.WriteElementString("maxknowledgeskillratingcreate",
+                                                     _intMaxKnowledgeSkillRatingCreate.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <maxskillrating />
+                        objWriter.WriteElementString("maxskillrating",
+                                                     _intMaxSkillRating.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <maxknowledgeskillrating />
+                        objWriter.WriteElementString("maxknowledgeskillrating",
+                                                     _intMaxKnowledgeSkillRating.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+
+                        // <dicepenaltysustaining />
+                        objWriter.WriteElementString("dicepenaltysustaining",
+                                                     _intDicePenaltySustaining.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+
+                        // <mininitiativedice />
+                        objWriter.WriteElementString("mininitiativedice",
+                                                     _intMinInitiativeDice.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <maxinitiativedice />
+                        objWriter.WriteElementString("maxinitiativedice",
+                                                     _intMaxInitiativeDice.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <minastralinitiativedice />
+                        objWriter.WriteElementString("minastralinitiativedice",
+                                                     _intMinAstralInitiativeDice.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <maxastralinitiativedice />
+                        objWriter.WriteElementString("maxastralinitiativedice",
+                                                     _intMaxAstralInitiativeDice.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <mincoldsiminitiativedice />
+                        objWriter.WriteElementString("mincoldsiminitiativedice",
+                                                     _intMinColdSimInitiativeDice.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <maxcoldsiminitiativedice />
+                        objWriter.WriteElementString("maxcoldsiminitiativedice",
+                                                     _intMaxColdSimInitiativeDice.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <minhotsiminitiativedice />
+                        objWriter.WriteElementString("minhotsiminitiativedice",
+                                                     _intMinHotSimInitiativeDice.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <maxhotsiminitiativedice />
+                        objWriter.WriteElementString("maxhotsiminitiativedice",
+                                                     _intMaxHotSimInitiativeDice.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+
+                        // <karmacost>
+                        objWriter.WriteStartElement("karmacost");
+                        // <karmaattribute />
+                        objWriter.WriteElementString("karmaattribute",
+                                                     _intKarmaAttribute.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <karmaquality />
+                        objWriter.WriteElementString("karmaquality",
+                                                     _intKarmaQuality.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <karmaspecialization />
+                        objWriter.WriteElementString("karmaspecialization",
+                                                     _intKarmaSpecialization.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmaknospecialization />
+                        objWriter.WriteElementString("karmaknospecialization",
+                                                     _intKarmaKnoSpecialization.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmanewknowledgeskill />
+                        objWriter.WriteElementString("karmanewknowledgeskill",
+                                                     _intKarmaNewKnowledgeSkill.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmanewactiveskill />
+                        objWriter.WriteElementString("karmanewactiveskill",
+                                                     _intKarmaNewActiveSkill.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmanewskillgroup />
+                        objWriter.WriteElementString("karmanewskillgroup",
+                                                     _intKarmaNewSkillGroup.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmaimproveknowledgeskill />
+                        objWriter.WriteElementString("karmaimproveknowledgeskill",
+                                                     _intKarmaImproveKnowledgeSkill.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmaimproveactiveskill />
+                        objWriter.WriteElementString("karmaimproveactiveskill",
+                                                     _intKarmaImproveActiveSkill.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmaimproveskillgroup />
+                        objWriter.WriteElementString("karmaimproveskillgroup",
+                                                     _intKarmaImproveSkillGroup.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmaspell />
+                        objWriter.WriteElementString("karmaspell",
+                                                     _intKarmaSpell.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <karmaenhancement />
+                        objWriter.WriteElementString("karmaenhancement",
+                                                     _intKarmaEnhancement.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmanewcomplexform />
+                        objWriter.WriteElementString("karmanewcomplexform",
+                                                     _intKarmaNewComplexForm.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmanewaiprogram />
+                        objWriter.WriteElementString("karmanewaiprogram",
+                                                     _intKarmaNewAIProgram.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmanewaiadvancedprogram />
+                        objWriter.WriteElementString("karmanewaiadvancedprogram",
+                                                     _intKarmaNewAIAdvancedProgram.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmacontact />
+                        objWriter.WriteElementString("karmacontact",
+                                                     _intKarmaContact.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <karmaenemy />
+                        objWriter.WriteElementString("karmaenemy",
+                                                     _intKarmaEnemy.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <karmacarryover />
+                        objWriter.WriteElementString("karmacarryover",
+                                                     _intKarmaCarryover.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <karmaspirit />
+                        objWriter.WriteElementString("karmaspirit",
+                                                     _intKarmaSpirit.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <karmamaneuver />
+                        objWriter.WriteElementString("karmatechnique",
+                                                     _intKarmaTechnique.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <karmainitiation />
+                        objWriter.WriteElementString("karmainitiation",
+                                                     _intKarmaInitiation.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <karmainitiationflat />
+                        objWriter.WriteElementString("karmainitiationflat",
+                                                     _intKarmaInitiationFlat.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmametamagic />
+                        objWriter.WriteElementString("karmametamagic",
+                                                     _intKarmaMetamagic.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <karmajoingroup />
+                        objWriter.WriteElementString("karmajoingroup",
+                                                     _intKarmaJoinGroup.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <karmaleavegroup />
+                        objWriter.WriteElementString("karmaleavegroup",
+                                                     _intKarmaLeaveGroup.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <karmaalchemicalfocus />
+                        objWriter.WriteElementString("karmaalchemicalfocus",
+                                                     _intKarmaAlchemicalFocus.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmabanishingfocus />
+                        objWriter.WriteElementString("karmabanishingfocus",
+                                                     _intKarmaBanishingFocus.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmabindingfocus />
+                        objWriter.WriteElementString("karmabindingfocus",
+                                                     _intKarmaBindingFocus.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmacenteringfocus />
+                        objWriter.WriteElementString("karmacenteringfocus",
+                                                     _intKarmaCenteringFocus.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmacounterspellingfocus />
+                        objWriter.WriteElementString("karmacounterspellingfocus",
+                                                     _intKarmaCounterspellingFocus.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmadisenchantingfocus />
+                        objWriter.WriteElementString("karmadisenchantingfocus",
+                                                     _intKarmaDisenchantingFocus.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmaflexiblesignaturefocus />
+                        objWriter.WriteElementString("karmaflexiblesignaturefocus",
+                                                     _intKarmaFlexibleSignatureFocus.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmamaskingfocus />
+                        objWriter.WriteElementString("karmamaskingfocus",
+                                                     _intKarmaMaskingFocus.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmapowerfocus />
+                        objWriter.WriteElementString("karmapowerfocus",
+                                                     _intKarmaPowerFocus.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <karmaqifocus />
+                        objWriter.WriteElementString("karmaqifocus",
+                                                     _intKarmaQiFocus.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <karmaritualspellcastingfocus />
+                        objWriter.WriteElementString("karmaritualspellcastingfocus",
+                                                     _intKarmaRitualSpellcastingFocus.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmaspellcastingfocus />
+                        objWriter.WriteElementString("karmaspellcastingfocus",
+                                                     _intKarmaSpellcastingFocus.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmaspellshapingfocus />
+                        objWriter.WriteElementString("karmaspellshapingfocus",
+                                                     _intKarmaSpellShapingFocus.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmasummoningfocus />
+                        objWriter.WriteElementString("karmasummoningfocus",
+                                                     _intKarmaSummoningFocus.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmasustainingfocus />
+                        objWriter.WriteElementString("karmasustainingfocus",
+                                                     _intKarmaSustainingFocus.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmaweaponfocus />
+                        objWriter.WriteElementString("karmaweaponfocus",
+                                                     _intKarmaWeaponFocus.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmaweaponfocus />
+                        objWriter.WriteElementString("karmamysadpp",
+                                                     _intKarmaMysticAdeptPowerPoint.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <karmaspiritfettering />
+                        objWriter.WriteElementString("karmaspiritfettering",
+                                                     _intKarmaSpiritFettering.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // </karmacost>
+                        objWriter.WriteEndElement();
+
+                        XPathNodeIterator lstAllowedBooksCodes = XmlManager
+                                                                 .LoadXPath("books.xml",
+                                                                            EnabledCustomDataDirectoryPaths)
+                                                                 .SelectAndCacheExpression(
+                                                                     "/chummer/books/book[not(hide)]/code");
+                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                        out HashSet<string> setAllowedBooks))
                         {
-                            if (_setBooks.Contains(objAllowedBook.Value))
-                                setAllowedBooks.Add(objAllowedBook.Value);
+                            foreach (XPathNavigator objAllowedBook in lstAllowedBooksCodes)
+                            {
+                                if (_setBooks.Contains(objAllowedBook.Value))
+                                    setAllowedBooks.Add(objAllowedBook.Value);
+                            }
+
+                            // <books>
+                            objWriter.WriteStartElement("books");
+                            foreach (string strBook in setAllowedBooks)
+                                objWriter.WriteElementString("book", strBook);
+                            // </books>
                         }
 
-                        // <books>
-                        objWriter.WriteStartElement("books");
-                        foreach (string strBook in setAllowedBooks)
-                            objWriter.WriteElementString("book", strBook);
-                        // </books>
-                    }
-
-                    objWriter.WriteEndElement();
-
-                    string strCustomDataRootPath = Path.Combine(Utils.GetStartupPath, "customdata");
-
-                    // <customdatadirectorynames>
-                    objWriter.WriteStartElement("customdatadirectorynames");
-                    for (int i = 0; i < _dicCustomDataDirectoryKeys.Count; ++i)
-                    {
-                        KeyValuePair<string, bool> kvpDirectoryInfo = _dicCustomDataDirectoryKeys[i];
-                        string strDirectoryName = kvpDirectoryInfo.Key;
-                        bool blnDirectoryIsEnabled = kvpDirectoryInfo.Value;
-                        if (!blnDirectoryIsEnabled && GlobalSettings.CustomDataDirectoryInfos.Any(
-                            x => x.DirectoryPath.StartsWith(strCustomDataRootPath)
-                                 && x.CharacterSettingsSaveKey.Equals(strDirectoryName, StringComparison.OrdinalIgnoreCase)))
-                            continue; // Do not save disabled custom data directories that are in the customdata folder and would be auto-populated anyway
-                        objWriter.WriteStartElement("customdatadirectoryname");
-                        objWriter.WriteElementString("directoryname", strDirectoryName);
-                        objWriter.WriteElementString("order", i.ToString(GlobalSettings.InvariantCultureInfo));
-                        objWriter.WriteElementString("enabled", blnDirectoryIsEnabled.ToString(GlobalSettings.InvariantCultureInfo));
                         objWriter.WriteEndElement();
+
+                        string strCustomDataRootPath = Path.Combine(Utils.GetStartupPath, "customdata");
+
+                        // <customdatadirectorynames>
+                        objWriter.WriteStartElement("customdatadirectorynames");
+                        for (int i = 0; i < _dicCustomDataDirectoryKeys.Count; ++i)
+                        {
+                            KeyValuePair<string, bool> kvpDirectoryInfo = _dicCustomDataDirectoryKeys[i];
+                            string strDirectoryName = kvpDirectoryInfo.Key;
+                            bool blnDirectoryIsEnabled = kvpDirectoryInfo.Value;
+                            if (!blnDirectoryIsEnabled && GlobalSettings.CustomDataDirectoryInfos.Any(
+                                    x => x.DirectoryPath.StartsWith(strCustomDataRootPath)
+                                         && x.CharacterSettingsSaveKey.Equals(
+                                             strDirectoryName, StringComparison.OrdinalIgnoreCase)))
+                                continue; // Do not save disabled custom data directories that are in the customdata folder and would be auto-populated anyway
+                            objWriter.WriteStartElement("customdatadirectoryname");
+                            objWriter.WriteElementString("directoryname", strDirectoryName);
+                            objWriter.WriteElementString("order", i.ToString(GlobalSettings.InvariantCultureInfo));
+                            objWriter.WriteElementString(
+                                "enabled", blnDirectoryIsEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+                            objWriter.WriteEndElement();
+                        }
+
+                        // </customdatadirectorynames>
+                        objWriter.WriteEndElement();
+
+                        // <buildmethod />
+                        objWriter.WriteElementString("buildmethod", _eBuildMethod.ToString());
+                        // <buildpoints />
+                        objWriter.WriteElementString("buildpoints",
+                                                     _intBuildPoints.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <qualitykarmalimit />
+                        objWriter.WriteElementString("qualitykarmalimit",
+                                                     _intQualityKarmaLimit.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                        // <priorityarray />
+                        objWriter.WriteElementString("priorityarray", _strPriorityArray);
+                        // <prioritytable />
+                        objWriter.WriteElementString("prioritytable", _strPriorityTable);
+                        // <sumtoten />
+                        objWriter.WriteElementString(
+                            "sumtoten", _intSumtoTen.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <availability />
+                        objWriter.WriteElementString("availability",
+                                                     _intAvailability.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <nuyenmaxbp />
+                        objWriter.WriteElementString("nuyenmaxbp",
+                                                     _decNuyenMaximumBP.ToString(GlobalSettings.InvariantCultureInfo));
+
+                        // <bannedwaregrades>
+                        objWriter.WriteStartElement("bannedwaregrades");
+                        foreach (string strGrade in _setBannedWareGrades)
+                        {
+                            objWriter.WriteElementString("grade", strGrade);
+                        }
+
+                        // </bannedwaregrades>
+                        objWriter.WriteEndElement();
+
+                        // <redlinerexclusion>
+                        objWriter.WriteStartElement("redlinerexclusion");
+                        foreach (string strLimb in _setRedlinerExcludes)
+                        {
+                            objWriter.WriteElementString("limb", strLimb);
+                        }
+
+                        // </redlinerexclusion>
+                        objWriter.WriteEndElement();
+
+                        // </settings>
+                        objWriter.WriteEndElement();
+
+                        objWriter.WriteEndDocument();
                     }
-                    // </customdatadirectorynames>
-                    objWriter.WriteEndElement();
-
-                    // <buildmethod />
-                    objWriter.WriteElementString("buildmethod", _eBuildMethod.ToString());
-                    // <buildpoints />
-                    objWriter.WriteElementString("buildpoints", _intBuildPoints.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <qualitykarmalimit />
-                    objWriter.WriteElementString("qualitykarmalimit", _intQualityKarmaLimit.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <priorityarray />
-                    objWriter.WriteElementString("priorityarray", _strPriorityArray);
-                    // <prioritytable />
-                    objWriter.WriteElementString("prioritytable", _strPriorityTable);
-                    // <sumtoten />
-                    objWriter.WriteElementString("sumtoten", _intSumtoTen.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <availability />
-                    objWriter.WriteElementString("availability", _intAvailability.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <nuyenmaxbp />
-                    objWriter.WriteElementString("nuyenmaxbp", _decNuyenMaximumBP.ToString(GlobalSettings.InvariantCultureInfo));
-
-                    // <bannedwaregrades>
-                    objWriter.WriteStartElement("bannedwaregrades");
-                    foreach (string strGrade in BannedWareGrades)
-                    {
-                        objWriter.WriteElementString("grade", strGrade);
-                    }
-                    // </bannedwaregrades>
-                    objWriter.WriteEndElement();
-
-                    // <redlinerexclusion>
-                    objWriter.WriteStartElement("redlinerexclusion");
-                    foreach (string strLimb in RedlinerExcludes)
-                    {
-                        objWriter.WriteElementString("limb", strLimb);
-                    }
-                    // </redlinerexclusion>
-                    objWriter.WriteEndElement();
-
-                    // </settings>
-                    objWriter.WriteEndElement();
-
-                    objWriter.WriteEndDocument();
                 }
-            }
 
-            if (blnClearSourceGuid)
-                _guiSourceId = Guid.Empty;
-            return true;
+                if (blnClearSourceGuid)
+                    _guiSourceId = Guid.Empty;
+                return true;
+            }
         }
 
         /// <summary>
@@ -1171,42 +1568,55 @@ namespace Chummer
         /// <param name="blnShowDialogs">Whether or not to show message boxes on failures to load.</param>
         public bool Load(string strFileName, bool blnShowDialogs = true)
         {
-            _strFileName = strFileName;
-            string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
-            XPathDocument objXmlDocument;
-            // Make sure the settings file exists. If not, ask the user if they would like to use the default settings file instead. A character cannot be loaded without a settings file.
-            if (File.Exists(strFilePath))
+            using (LockObject.EnterWriteLock())
             {
-                try
+                _strFileName = strFileName;
+                string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
+                XPathDocument objXmlDocument;
+                // Make sure the settings file exists. If not, ask the user if they would like to use the default settings file instead. A character cannot be loaded without a settings file.
+                if (File.Exists(strFilePath))
                 {
-                    using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                        objXmlDocument = new XPathDocument(objXmlReader);
+                    try
+                    {
+                        using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
+                        using (XmlReader objXmlReader
+                               = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
+                            objXmlDocument = new XPathDocument(objXmlReader);
+                    }
+                    catch (IOException)
+                    {
+                        if (blnShowDialogs)
+                            Program.ShowMessageBox(
+                                LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"),
+                                LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"),
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        return false;
+                    }
+                    catch (XmlException)
+                    {
+                        if (blnShowDialogs)
+                            Program.ShowMessageBox(
+                                LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"),
+                                LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"),
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        return false;
+                    }
                 }
-                catch (IOException)
+                else
                 {
                     if (blnShowDialogs)
-                        Program.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK,
+                        Program.ShowMessageBox(
+                            LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"),
+                            LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"),
+                            MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                     return false;
                 }
-                catch (XmlException)
-                {
-                    if (blnShowDialogs)
-                        Program.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
-                    return false;
-                }
-            }
-            else
-            {
-                if (blnShowDialogs)
-                    Program.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
-                return false;
-            }
 
-            return Load(objXmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression(".//settings"));
+                return Load(objXmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression(".//settings"));
+            }
         }
 
         /// <summary>
@@ -1220,366 +1630,383 @@ namespace Chummer
             string strTemp = string.Empty;
             // Setting id.
             string strId = string.Empty;
-            if (objXmlNode.TryGetStringFieldQuickly("id", ref strId) && Guid.TryParse(strId, out Guid guidTemp))
-                _guiSourceId = guidTemp;
-            // Setting name.
-            objXmlNode.TryGetStringFieldQuickly("name", ref _strName);
-            // License Restricted items.
-            objXmlNode.TryGetBoolFieldQuickly("licenserestricted", ref _blnLicenseRestrictedItems);
-            // More Lethal Gameplay.
-            objXmlNode.TryGetBoolFieldQuickly("morelethalgameplay", ref _blnMoreLethalGameplay);
-            // Spirit Force Based on Total MAG.
-            objXmlNode.TryGetBoolFieldQuickly("spiritforcebasedontotalmag", ref _blnSpiritForceBasedOnTotalMAG);
-            // Nuyen per Build Point
-            if (!objXmlNode.TryGetDecFieldQuickly("nuyenperbpwftm", ref _decNuyenPerBPWftM))
+            using (LockObject.EnterWriteLock())
             {
-                objXmlNode.TryGetDecFieldQuickly("nuyenperbp", ref _decNuyenPerBPWftM);
-                _decNuyenPerBPWftP = _decNuyenPerBPWftM;
-            }
-            else
-                objXmlNode.TryGetDecFieldQuickly("nuyenperbpwftp", ref _decNuyenPerBPWftP);
-            // Knucks use Unarmed
-            objXmlNode.TryGetBoolFieldQuickly("unarmedimprovementsapplytoweapons", ref _blnUnarmedImprovementsApplyToWeapons);
-            // Allow Initiation in Create Mode
-            objXmlNode.TryGetBoolFieldQuickly("allowinitiationincreatemode", ref _blnAllowInitiationInCreateMode);
-            // Use Points on Broken Groups
-            objXmlNode.TryGetBoolFieldQuickly("usepointsonbrokengroups", ref _blnUsePointsOnBrokenGroups);
-            // Don't Double the Cost of purchasing Qualities in Career Mode
-            objXmlNode.TryGetBoolFieldQuickly("dontdoublequalities", ref _blnDontDoubleQualityPurchaseCost);
-            // Don't Double the Cost of removing Qualities in Career Mode
-            objXmlNode.TryGetBoolFieldQuickly("dontdoublequalityrefunds", ref _blnDontDoubleQualityRefundCost);
-            // Ignore Art Requirements from Street Grimoire
-            objXmlNode.TryGetBoolFieldQuickly("ignoreart", ref _blnIgnoreArt);
-            // Use Cyberleg Stats for Movement
-            objXmlNode.TryGetBoolFieldQuickly("cyberlegmovement", ref _blnCyberlegMovement);
-            // XPath expression for contact points
-            if (!objXmlNode.TryGetStringFieldQuickly("contactpointsexpression", ref _strContactPointsExpression))
-            {
-                // Legacy shim
-                int intTemp = 3;
-                bool blnTemp = false;
-                strTemp = "{CHAUnaug}";
-                if (objXmlNode.TryGetBoolFieldQuickly("usetotalvalueforcontacts", ref blnTemp) && blnTemp)
-                    strTemp = "{CHA}";
-                if (objXmlNode.TryGetBoolFieldQuickly("freecontactsmultiplierenabled", ref blnTemp) && blnTemp)
-                    objXmlNode.TryGetInt32FieldQuickly("freekarmacontactsmultiplier", ref intTemp);
-                _strContactPointsExpression = strTemp + " * " + intTemp.ToString(GlobalSettings.InvariantCultureInfo);
-            }
-            // XPath expression for knowledge points
-            if (!objXmlNode.TryGetStringFieldQuickly("knowledgepointsexpression", ref _strKnowledgePointsExpression))
-            {
-                // Legacy shim
-                int intTemp = 2;
-                bool blnTemp = false;
-                strTemp = "({INTUnaug} + {LOGUnaug})";
-                if (objXmlNode.TryGetBoolFieldQuickly("usetotalvalueforknowledge", ref blnTemp) && blnTemp)
-                    strTemp = "({INT} + {LOG})";
-                if (objXmlNode.TryGetBoolFieldQuickly("freekarmaknowledgemultiplierenabled", ref blnTemp) && blnTemp)
-                    objXmlNode.TryGetInt32FieldQuickly("freekarmaknowledgemultiplier", ref intTemp);
-                _strKnowledgePointsExpression = strTemp + " * " + intTemp.ToString(GlobalSettings.InvariantCultureInfo);
-            }
-            // XPath expression for nuyen at chargen
-            if (!objXmlNode.TryGetStringFieldQuickly("chargenkarmatonuyenexpression", ref _strChargenKarmaToNuyenExpression))
-            {
-                // Legacy shim
-                _strChargenKarmaToNuyenExpression = "{Karma} * " + _decNuyenPerBPWftM.ToString(GlobalSettings.InvariantCultureInfo) + " + {PriorityNuyen}";
-            }
-            // A very hacky legacy shim, but also works as a bit of a sanity check
-            else if (!_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}"))
-            {
-                _strChargenKarmaToNuyenExpression = '(' + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
-            }
-            // Various expressions used to determine certain character stats
-            objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression);
-            objXmlNode.TryGetStringFieldQuickly("boundspiritexpression", ref _strBoundSpiritExpression);
-            objXmlNode.TryGetStringFieldQuickly("liftlimitexpression", ref _strLiftLimitExpression);
-            objXmlNode.TryGetStringFieldQuickly("carrylimitexpression", ref _strCarryLimitExpression);
-            objXmlNode.TryGetStringFieldQuickly("encumbranceintervalexpression", ref _strEncumbranceIntervalExpression);
-            // Whether to apply certain penalties to encumbrance and, if so, how much per tick
-            objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyphysicallimit", ref _blnDoEncumbrancePenaltyPhysicalLimit);
-            objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltymovementspeed", ref _blnDoEncumbrancePenaltyMovementSpeed);
-            objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyagility", ref _blnDoEncumbrancePenaltyAgility);
-            objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyreaction", ref _blnDoEncumbrancePenaltyReaction);
-            objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltywoundmodifier", ref _blnDoEncumbrancePenaltyWoundModifier);
-            objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyphysicallimit", ref _intEncumbrancePenaltyPhysicalLimit);
-            objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltymovementspeed", ref _intEncumbrancePenaltyMovementSpeed);
-            objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyagility", ref _intEncumbrancePenaltyAgility);
-            objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyreaction", ref _intEncumbrancePenaltyReaction);
-            objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltywoundmodifier", ref _intEncumbrancePenaltyWoundModifier);
-            // Drone Armor Multiplier Enabled
-            objXmlNode.TryGetBoolFieldQuickly("dronearmormultiplierenabled", ref _blnDroneArmorMultiplierEnabled);
-            // Drone Armor Multiplier Value
-            objXmlNode.TryGetInt32FieldQuickly("dronearmorflatnumber", ref _intDroneArmorMultiplier);
-            // No Single Armor Encumbrance
-            objXmlNode.TryGetBoolFieldQuickly("nosinglearmorencumbrance", ref _blnNoSingleArmorEncumbrance);
-            // Ignore Armor Encumbrance
-            objXmlNode.TryGetBoolFieldQuickly("noarmorencumbrance", ref _blnNoArmorEncumbrance);
-            // Ignore Complex Form Limit
-            objXmlNode.TryGetBoolFieldQuickly("ignorecomplexformlimit", ref _blnIgnoreComplexFormLimit);
-            // Essence Loss Reduces Maximum Only.
-            objXmlNode.TryGetBoolFieldQuickly("esslossreducesmaximumonly", ref _blnESSLossReducesMaximumOnly);
-            // Allow Skill Regrouping.
-            objXmlNode.TryGetBoolFieldQuickly("allowskillregrouping", ref _blnAllowSkillRegrouping);
-            // Whether skill specializations break skill groups.
-            objXmlNode.TryGetBoolFieldQuickly("specializationsbreakskillgroups", ref _blnSpecializationsBreakSkillGroups);
-            // Metatype Costs Karma.
-            objXmlNode.TryGetBoolFieldQuickly("metatypecostskarma", ref _blnMetatypeCostsKarma);
-            // Allow characters to spend karma before attribute points.
-            objXmlNode.TryGetBoolFieldQuickly("reverseattributepriorityorder", ref _blnReverseAttributePriorityOrder);
-            // Metatype Costs Karma Multiplier.
-            objXmlNode.TryGetInt32FieldQuickly("metatypecostskarmamultiplier", ref _intMetatypeCostMultiplier);
-            // Limb Count.
-            objXmlNode.TryGetInt32FieldQuickly("limbcount", ref _intLimbCount);
-            // Exclude Limb Slot.
-            objXmlNode.TryGetStringFieldQuickly("excludelimbslot", ref _strExcludeLimbSlot);
-            // Allow Cyberware Essence Cost Discounts.
-            objXmlNode.TryGetBoolFieldQuickly("allowcyberwareessdiscounts", ref _blnAllowCyberwareESSDiscounts);
-            // Use Maximum Armor Modifications.
-            objXmlNode.TryGetBoolFieldQuickly("maximumarmormodifications", ref _blnMaximumArmorModifications);
-            // Allow Armor Degradation.
-            objXmlNode.TryGetBoolFieldQuickly("armordegredation", ref _blnArmorDegradation);
-            // Whether or not Karma costs for increasing Special Attributes is based on the shown value instead of actual value.
-            objXmlNode.TryGetBoolFieldQuickly("specialkarmacostbasedonshownvalue", ref _blnSpecialKarmaCostBasedOnShownValue);
-            // Allow more than 35 BP in Positive Qualities.
-            objXmlNode.TryGetBoolFieldQuickly("exceedpositivequalities", ref _blnExceedPositiveQualities);
-            // Double all positive qualities in excess of the limit
-            objXmlNode.TryGetBoolFieldQuickly("exceedpositivequalitiescostdoubled", ref _blnExceedPositiveQualitiesCostDoubled);
-
-            objXmlNode.TryGetBoolFieldQuickly("mysaddppcareer", ref _blnMysAdeptAllowPpCareer);
-
-            // Split MAG for Mystic Adepts so that they have a separate MAG rating for Adept Powers instead of using the special PP rules for mystic adepts
-            objXmlNode.TryGetBoolFieldQuickly("mysadeptsecondmagattribute", ref _blnMysAdeptSecondMAGAttribute);
-
-            // Grant a free specialization when taking a martial art.
-            objXmlNode.TryGetBoolFieldQuickly("freemartialartspecialization", ref _blnFreeMartialArtSpecialization);
-            // Can spend spells from Magic priority as power points
-            objXmlNode.TryGetBoolFieldQuickly("priorityspellsasadeptpowers", ref _blnPrioritySpellsAsAdeptPowers);
-            // Allow more than 35 BP in Negative Qualities.
-            objXmlNode.TryGetBoolFieldQuickly("exceednegativequalities", ref _blnExceedNegativeQualities);
-            // Character can still only receive 35 BP from Negative Qualities (though they can still add as many as they'd like).
-            objXmlNode.TryGetBoolFieldQuickly("exceednegativequalitieslimit", ref _blnExceedNegativeQualitiesLimit);
-            // Whether or not Restricted items have their cost multiplied.
-            objXmlNode.TryGetBoolFieldQuickly("multiplyrestrictedcost", ref _blnMultiplyRestrictedCost);
-            // Whether or not Forbidden items have their cost multiplied.
-            objXmlNode.TryGetBoolFieldQuickly("multiplyforbiddencost", ref _blnMultiplyForbiddenCost);
-            // Restricted cost multiplier.
-            objXmlNode.TryGetInt32FieldQuickly("restrictedcostmultiplier", ref _intRestrictedCostMultiplier);
-            // Forbidden cost multiplier.
-            objXmlNode.TryGetInt32FieldQuickly("forbiddencostmultiplier", ref _intForbiddenCostMultiplier);
-            // Only round essence when its value is displayed
-            objXmlNode.TryGetBoolFieldQuickly("donotroundessenceinternally", ref _blnDoNotRoundEssenceInternally);
-            // Allow use of enemies
-            objXmlNode.TryGetBoolFieldQuickly("enableenemytracking", ref _blnEnableEnemyTracking);
-            // Have enemies contribute to negative quality limit
-            objXmlNode.TryGetBoolFieldQuickly("enemykarmaqualitylimit", ref _blnEnemyKarmaQualityLimit);
-            // Format in which nuyen values are displayed
-            objXmlNode.TryGetStringFieldQuickly("nuyenformat", ref _strNuyenFormat);
-            // Format in which weight values are displayed
-            if (objXmlNode.TryGetStringFieldQuickly("weightformat", ref _strWeightFormat))
-            {
-                int intDecimalPlaces = _strWeightFormat.IndexOf('.');
-                if (intDecimalPlaces == -1)
-                    _strWeightFormat += ".###";
-            }
-            // Format in which essence values should be displayed (and to which they should be rounded)
-            if (!objXmlNode.TryGetStringFieldQuickly("essenceformat", ref _strEssenceFormat))
-            {
-                int intTemp = 2;
-                // Number of decimal places to round to when calculating Essence.
-                objXmlNode.TryGetInt32FieldQuickly("essencedecimals", ref intTemp);
-                EssenceDecimals = intTemp;
-            }
-            else
-            {
-                int intDecimalPlaces = _strEssenceFormat.IndexOf('.');
-                if (intDecimalPlaces < 2)
+                if (objXmlNode.TryGetStringFieldQuickly("id", ref strId) && Guid.TryParse(strId, out Guid guidTemp))
+                    _guiSourceId = guidTemp;
+                // Setting name.
+                objXmlNode.TryGetStringFieldQuickly("name", ref _strName);
+                // License Restricted items.
+                objXmlNode.TryGetBoolFieldQuickly("licenserestricted", ref _blnLicenseRestrictedItems);
+                // More Lethal Gameplay.
+                objXmlNode.TryGetBoolFieldQuickly("morelethalgameplay", ref _blnMoreLethalGameplay);
+                // Spirit Force Based on Total MAG.
+                objXmlNode.TryGetBoolFieldQuickly("spiritforcebasedontotalmag", ref _blnSpiritForceBasedOnTotalMAG);
+                // Nuyen per Build Point
+                if (!objXmlNode.TryGetDecFieldQuickly("nuyenperbpwftm", ref _decNuyenPerBPWftM))
                 {
+                    objXmlNode.TryGetDecFieldQuickly("nuyenperbp", ref _decNuyenPerBPWftM);
+                    _decNuyenPerBPWftP = _decNuyenPerBPWftM;
+                }
+                else
+                    objXmlNode.TryGetDecFieldQuickly("nuyenperbpwftp", ref _decNuyenPerBPWftP);
+
+                // Knucks use Unarmed
+                objXmlNode.TryGetBoolFieldQuickly("unarmedimprovementsapplytoweapons",
+                                                  ref _blnUnarmedImprovementsApplyToWeapons);
+                // Allow Initiation in Create Mode
+                objXmlNode.TryGetBoolFieldQuickly("allowinitiationincreatemode", ref _blnAllowInitiationInCreateMode);
+                // Use Points on Broken Groups
+                objXmlNode.TryGetBoolFieldQuickly("usepointsonbrokengroups", ref _blnUsePointsOnBrokenGroups);
+                // Don't Double the Cost of purchasing Qualities in Career Mode
+                objXmlNode.TryGetBoolFieldQuickly("dontdoublequalities", ref _blnDontDoubleQualityPurchaseCost);
+                // Don't Double the Cost of removing Qualities in Career Mode
+                objXmlNode.TryGetBoolFieldQuickly("dontdoublequalityrefunds", ref _blnDontDoubleQualityRefundCost);
+                // Ignore Art Requirements from Street Grimoire
+                objXmlNode.TryGetBoolFieldQuickly("ignoreart", ref _blnIgnoreArt);
+                // Use Cyberleg Stats for Movement
+                objXmlNode.TryGetBoolFieldQuickly("cyberlegmovement", ref _blnCyberlegMovement);
+                // XPath expression for contact points
+                if (!objXmlNode.TryGetStringFieldQuickly("contactpointsexpression", ref _strContactPointsExpression))
+                {
+                    // Legacy shim
+                    int intTemp = 3;
+                    bool blnTemp = false;
+                    strTemp = "{CHAUnaug}";
+                    if (objXmlNode.TryGetBoolFieldQuickly("usetotalvalueforcontacts", ref blnTemp) && blnTemp)
+                        strTemp = "{CHA}";
+                    if (objXmlNode.TryGetBoolFieldQuickly("freecontactsmultiplierenabled", ref blnTemp) && blnTemp)
+                        objXmlNode.TryGetInt32FieldQuickly("freekarmacontactsmultiplier", ref intTemp);
+                    _strContactPointsExpression
+                        = strTemp + " * " + intTemp.ToString(GlobalSettings.InvariantCultureInfo);
+                }
+
+                // XPath expression for knowledge points
+                if (!objXmlNode.TryGetStringFieldQuickly("knowledgepointsexpression",
+                                                         ref _strKnowledgePointsExpression))
+                {
+                    // Legacy shim
+                    int intTemp = 2;
+                    bool blnTemp = false;
+                    strTemp = "({INTUnaug} + {LOGUnaug})";
+                    if (objXmlNode.TryGetBoolFieldQuickly("usetotalvalueforknowledge", ref blnTemp) && blnTemp)
+                        strTemp = "({INT} + {LOG})";
+                    if (objXmlNode.TryGetBoolFieldQuickly("freekarmaknowledgemultiplierenabled", ref blnTemp)
+                        && blnTemp)
+                        objXmlNode.TryGetInt32FieldQuickly("freekarmaknowledgemultiplier", ref intTemp);
+                    _strKnowledgePointsExpression
+                        = strTemp + " * " + intTemp.ToString(GlobalSettings.InvariantCultureInfo);
+                }
+
+                // XPath expression for nuyen at chargen
+                if (!objXmlNode.TryGetStringFieldQuickly("chargenkarmatonuyenexpression",
+                                                         ref _strChargenKarmaToNuyenExpression))
+                {
+                    // Legacy shim
+                    _strChargenKarmaToNuyenExpression = "{Karma} * "
+                                                        + _decNuyenPerBPWftM.ToString(
+                                                            GlobalSettings.InvariantCultureInfo) + " + {PriorityNuyen}";
+                }
+                // A very hacky legacy shim, but also works as a bit of a sanity check
+                else if (!_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}"))
+                {
+                    _strChargenKarmaToNuyenExpression = '(' + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
+                }
+
+                // Various expressions used to determine certain character stats
+                objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression);
+                objXmlNode.TryGetStringFieldQuickly("boundspiritexpression", ref _strBoundSpiritExpression);
+                objXmlNode.TryGetStringFieldQuickly("liftlimitexpression", ref _strLiftLimitExpression);
+                objXmlNode.TryGetStringFieldQuickly("carrylimitexpression", ref _strCarryLimitExpression);
+                objXmlNode.TryGetStringFieldQuickly("encumbranceintervalexpression",
+                                                    ref _strEncumbranceIntervalExpression);
+                // Whether to apply certain penalties to encumbrance and, if so, how much per tick
+                objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyphysicallimit",
+                                                  ref _blnDoEncumbrancePenaltyPhysicalLimit);
+                objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltymovementspeed",
+                                                  ref _blnDoEncumbrancePenaltyMovementSpeed);
+                objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyagility", ref _blnDoEncumbrancePenaltyAgility);
+                objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyreaction", ref _blnDoEncumbrancePenaltyReaction);
+                objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltywoundmodifier",
+                                                  ref _blnDoEncumbrancePenaltyWoundModifier);
+                objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyphysicallimit",
+                                                   ref _intEncumbrancePenaltyPhysicalLimit);
+                objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltymovementspeed",
+                                                   ref _intEncumbrancePenaltyMovementSpeed);
+                objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyagility", ref _intEncumbrancePenaltyAgility);
+                objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyreaction", ref _intEncumbrancePenaltyReaction);
+                objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltywoundmodifier",
+                                                   ref _intEncumbrancePenaltyWoundModifier);
+                // Drone Armor Multiplier Enabled
+                objXmlNode.TryGetBoolFieldQuickly("dronearmormultiplierenabled", ref _blnDroneArmorMultiplierEnabled);
+                // Drone Armor Multiplier Value
+                objXmlNode.TryGetInt32FieldQuickly("dronearmorflatnumber", ref _intDroneArmorMultiplier);
+                // No Single Armor Encumbrance
+                objXmlNode.TryGetBoolFieldQuickly("nosinglearmorencumbrance", ref _blnNoSingleArmorEncumbrance);
+                // Ignore Armor Encumbrance
+                objXmlNode.TryGetBoolFieldQuickly("noarmorencumbrance", ref _blnNoArmorEncumbrance);
+                // Ignore Complex Form Limit
+                objXmlNode.TryGetBoolFieldQuickly("ignorecomplexformlimit", ref _blnIgnoreComplexFormLimit);
+                // Essence Loss Reduces Maximum Only.
+                objXmlNode.TryGetBoolFieldQuickly("esslossreducesmaximumonly", ref _blnESSLossReducesMaximumOnly);
+                // Allow Skill Regrouping.
+                objXmlNode.TryGetBoolFieldQuickly("allowskillregrouping", ref _blnAllowSkillRegrouping);
+                // Whether skill specializations break skill groups.
+                objXmlNode.TryGetBoolFieldQuickly("specializationsbreakskillgroups",
+                                                  ref _blnSpecializationsBreakSkillGroups);
+                // Metatype Costs Karma.
+                objXmlNode.TryGetBoolFieldQuickly("metatypecostskarma", ref _blnMetatypeCostsKarma);
+                // Allow characters to spend karma before attribute points.
+                objXmlNode.TryGetBoolFieldQuickly("reverseattributepriorityorder",
+                                                  ref _blnReverseAttributePriorityOrder);
+                // Metatype Costs Karma Multiplier.
+                objXmlNode.TryGetInt32FieldQuickly("metatypecostskarmamultiplier", ref _intMetatypeCostMultiplier);
+                // Limb Count.
+                objXmlNode.TryGetInt32FieldQuickly("limbcount", ref _intLimbCount);
+                // Exclude Limb Slot.
+                objXmlNode.TryGetStringFieldQuickly("excludelimbslot", ref _strExcludeLimbSlot);
+                // Allow Cyberware Essence Cost Discounts.
+                objXmlNode.TryGetBoolFieldQuickly("allowcyberwareessdiscounts", ref _blnAllowCyberwareESSDiscounts);
+                // Use Maximum Armor Modifications.
+                objXmlNode.TryGetBoolFieldQuickly("maximumarmormodifications", ref _blnMaximumArmorModifications);
+                // Allow Armor Degradation.
+                objXmlNode.TryGetBoolFieldQuickly("armordegredation", ref _blnArmorDegradation);
+                // Whether or not Karma costs for increasing Special Attributes is based on the shown value instead of actual value.
+                objXmlNode.TryGetBoolFieldQuickly("specialkarmacostbasedonshownvalue",
+                                                  ref _blnSpecialKarmaCostBasedOnShownValue);
+                // Allow more than 35 BP in Positive Qualities.
+                objXmlNode.TryGetBoolFieldQuickly("exceedpositivequalities", ref _blnExceedPositiveQualities);
+                // Double all positive qualities in excess of the limit
+                objXmlNode.TryGetBoolFieldQuickly("exceedpositivequalitiescostdoubled",
+                                                  ref _blnExceedPositiveQualitiesCostDoubled);
+
+                objXmlNode.TryGetBoolFieldQuickly("mysaddppcareer", ref _blnMysAdeptAllowPpCareer);
+
+                // Split MAG for Mystic Adepts so that they have a separate MAG rating for Adept Powers instead of using the special PP rules for mystic adepts
+                objXmlNode.TryGetBoolFieldQuickly("mysadeptsecondmagattribute", ref _blnMysAdeptSecondMAGAttribute);
+
+                // Grant a free specialization when taking a martial art.
+                objXmlNode.TryGetBoolFieldQuickly("freemartialartspecialization", ref _blnFreeMartialArtSpecialization);
+                // Can spend spells from Magic priority as power points
+                objXmlNode.TryGetBoolFieldQuickly("priorityspellsasadeptpowers", ref _blnPrioritySpellsAsAdeptPowers);
+                // Allow more than 35 BP in Negative Qualities.
+                objXmlNode.TryGetBoolFieldQuickly("exceednegativequalities", ref _blnExceedNegativeQualities);
+                // Character can still only receive 35 BP from Negative Qualities (though they can still add as many as they'd like).
+                objXmlNode.TryGetBoolFieldQuickly("exceednegativequalitieslimit", ref _blnExceedNegativeQualitiesLimit);
+                // Whether or not Restricted items have their cost multiplied.
+                objXmlNode.TryGetBoolFieldQuickly("multiplyrestrictedcost", ref _blnMultiplyRestrictedCost);
+                // Whether or not Forbidden items have their cost multiplied.
+                objXmlNode.TryGetBoolFieldQuickly("multiplyforbiddencost", ref _blnMultiplyForbiddenCost);
+                // Restricted cost multiplier.
+                objXmlNode.TryGetInt32FieldQuickly("restrictedcostmultiplier", ref _intRestrictedCostMultiplier);
+                // Forbidden cost multiplier.
+                objXmlNode.TryGetInt32FieldQuickly("forbiddencostmultiplier", ref _intForbiddenCostMultiplier);
+                // Only round essence when its value is displayed
+                objXmlNode.TryGetBoolFieldQuickly("donotroundessenceinternally", ref _blnDoNotRoundEssenceInternally);
+                // Allow use of enemies
+                objXmlNode.TryGetBoolFieldQuickly("enableenemytracking", ref _blnEnableEnemyTracking);
+                // Have enemies contribute to negative quality limit
+                objXmlNode.TryGetBoolFieldQuickly("enemykarmaqualitylimit", ref _blnEnemyKarmaQualityLimit);
+                // Format in which nuyen values are displayed
+                objXmlNode.TryGetStringFieldQuickly("nuyenformat", ref _strNuyenFormat);
+                // Format in which weight values are displayed
+                if (objXmlNode.TryGetStringFieldQuickly("weightformat", ref _strWeightFormat))
+                {
+                    int intDecimalPlaces = _strWeightFormat.IndexOf('.');
                     if (intDecimalPlaces == -1)
-                        _strEssenceFormat += ".00";
-                    else
+                        _strWeightFormat += ".###";
+                }
+
+                // Format in which essence values should be displayed (and to which they should be rounded)
+                if (!objXmlNode.TryGetStringFieldQuickly("essenceformat", ref _strEssenceFormat))
+                {
+                    int intTemp = 2;
+                    // Number of decimal places to round to when calculating Essence.
+                    objXmlNode.TryGetInt32FieldQuickly("essencedecimals", ref intTemp);
+                    EssenceDecimals = intTemp;
+                }
+                else
+                {
+                    int intDecimalPlaces = _strEssenceFormat.IndexOf('.');
+                    if (intDecimalPlaces < 2)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdZeros))
+                        if (intDecimalPlaces == -1)
+                            _strEssenceFormat += ".00";
+                        else
                         {
-                            for (int i = _strEssenceFormat.Length - 1 - intDecimalPlaces; i < intDecimalPlaces; ++i)
-                                sbdZeros.Append('0');
-                            _strEssenceFormat += sbdZeros.ToString();
+                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                          out StringBuilder sbdZeros))
+                            {
+                                for (int i = _strEssenceFormat.Length - 1 - intDecimalPlaces; i < intDecimalPlaces; ++i)
+                                    sbdZeros.Append('0');
+                                _strEssenceFormat += sbdZeros.ToString();
+                            }
                         }
                     }
                 }
-            }
-            // Whether or not Capacity limits should be enforced.
-            objXmlNode.TryGetBoolFieldQuickly("enforcecapacity", ref _blnEnforceCapacity);
-            // Whether or not Recoil modifiers are restricted (AR 148).
-            objXmlNode.TryGetBoolFieldQuickly("restrictrecoil", ref _blnRestrictRecoil);
-            // Whether or not character are not restricted to the number of points they can invest in Nuyen.
-            objXmlNode.TryGetBoolFieldQuickly("unrestrictednuyen", ref _blnUnrestrictedNuyen);
-            // Whether or not Stacked Foci can go a combined Force higher than 6.
-            objXmlNode.TryGetBoolFieldQuickly("allowhigherstackedfoci", ref _blnAllowHigherStackedFoci);
-            // Whether or not the user can change the status of a Weapon Mod or Accessory being part of the base Weapon.
-            objXmlNode.TryGetBoolFieldQuickly("alloweditpartofbaseweapon", ref _blnAllowEditPartOfBaseWeapon);
-            // Whether or not the user can break Skill Groups while in Create Mode.
-            objXmlNode.TryGetBoolFieldQuickly("breakskillgroupsincreatemode", ref _blnStrictSkillGroupsInCreateMode);
-            // Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
-            objXmlNode.TryGetBoolFieldQuickly("allowpointbuyspecializationsonkarmaskills", ref _blnAllowPointBuySpecializationsOnKarmaSkills);
-            // Whether or not any Detection Spell can be taken as Extended range version.
-            objXmlNode.TryGetBoolFieldQuickly("extendanydetectionspell", ref _blnExtendAnyDetectionSpell);
-            // Whether or not cyberlimbs are used for augmented attribute calculation.
-            objXmlNode.TryGetBoolFieldQuickly("dontusecyberlimbcalculation", ref _blnDontUseCyberlimbCalculation);
-            // House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
-            objXmlNode.TryGetBoolFieldQuickly("alternatemetatypeattributekarma", ref _blnAlternateMetatypeAttributeKarma);
-            // Whether or not Obsolescent can be removed/upgrade in the same manner as Obsolete.
-            objXmlNode.TryGetBoolFieldQuickly("allowobsolescentupgrade", ref _blnAllowObsolescentUpgrade);
-            // Whether or not Bioware Suites can be created and added.
-            objXmlNode.TryGetBoolFieldQuickly("allowbiowaresuites", ref _blnAllowBiowareSuites);
-            // House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
-            objXmlNode.TryGetBoolFieldQuickly("freespiritpowerpointsmag", ref _blnFreeSpiritPowerPointsMAG);
-            // House rule: Whether to compensate for the karma cost difference between raising skill ratings and skill groups when increasing the rating of the last skill in the group
-            objXmlNode.TryGetBoolFieldQuickly("compensateskillgroupkarmadifference", ref _blnCompensateSkillGroupKarmaDifference);
-            // Optional Rule: Whether Life Modules should automatically create a character back story.
-            objXmlNode.TryGetBoolFieldQuickly("autobackstory", ref _blnAutomaticBackstory);
-            // House Rule: Whether Public Awareness should be a calculated attribute based on Street Cred and Notoriety.
-            objXmlNode.TryGetBoolFieldQuickly("usecalculatedpublicawareness", ref _blnUseCalculatedPublicAwareness);
-            // House Rule: Whether Improved Ability should be capped at 0.5 (false) or 1.5 (true) of the target skill's Learned Rating.
-            objXmlNode.TryGetBoolFieldQuickly("increasedimprovedabilitymodifier", ref _blnIncreasedImprovedAbilityMultiplier);
-            // House Rule: Whether lifestyles will give free grid subscriptions found in HT to players.
-            objXmlNode.TryGetBoolFieldQuickly("allowfreegrids", ref _blnAllowFreeGrids);
-            // House Rule: Whether Technomancers should be allowed to receive Schooling discounts in the same manner as Awakened.
-            objXmlNode.TryGetBoolFieldQuickly("allowtechnomancerschooling", ref _blnAllowTechnomancerSchooling);
-            // House Rule: Maximum value that cyberlimbs can have as a bonus on top of their Customization.
-            objXmlNode.TryGetInt32FieldQuickly("cyberlimbattributebonuscap", ref _intCyberlimbAttributeBonusCap);
-            if (!objXmlNode.TryGetBoolFieldQuickly("cyberlimbattributebonuscapoverride", ref _blnCyberlimbAttributeBonusCapOverride))
-                _blnCyberlimbAttributeBonusCapOverride = _intCyberlimbAttributeBonusCap == 4;
-            // House/Optional Rule: Attribute values are allowed to go below 0 due to Essence Loss.
-            objXmlNode.TryGetBoolFieldQuickly("unclampattributeminimum", ref _blnUnclampAttributeMinimum);
-            // Following two settings used to be stored in global options, so they are fetched from the registry if they are not present
-            // Use Rigger 5.0 drone mods
-            if (!objXmlNode.TryGetBoolFieldQuickly("dronemods", ref _blnDroneMods))
-                GlobalSettings.LoadBoolFromRegistry(ref _blnDroneMods, "dronemods", string.Empty, true);
-            // Apply maximum drone attribute improvement rule to Pilot, too
-            if (!objXmlNode.TryGetBoolFieldQuickly("dronemodsmaximumpilot", ref _blnDroneModsMaximumPilot))
-                GlobalSettings.LoadBoolFromRegistry(ref _blnDroneModsMaximumPilot, "dronemodsPilot", string.Empty, true);
 
-            // Maximum number of attributes at metatype maximum in character creation
-            if (!objXmlNode.TryGetInt32FieldQuickly("maxnumbermaxattributescreate",
-                                                    ref _intMaxNumberMaxAttributesCreate))
-            {
-                // Legacy shim
-                bool blnTemp = false;
-                if (objXmlNode.TryGetBoolFieldQuickly("allow2ndmaxattribute", ref blnTemp) && blnTemp)
-                    _intMaxNumberMaxAttributesCreate = 2;
-            }
-            // Maximum skill rating in character creation
-            objXmlNode.TryGetInt32FieldQuickly("maxskillratingcreate", ref _intMaxSkillRatingCreate);
-            // Maximum knowledge skill rating in character creation
-            objXmlNode.TryGetInt32FieldQuickly("maxknowledgeskillratingcreate", ref _intMaxKnowledgeSkillRatingCreate);
-            // Maximum skill rating
-            if (objXmlNode.TryGetInt32FieldQuickly("maxskillrating", ref _intMaxSkillRating)
-                && _intMaxSkillRatingCreate > _intMaxSkillRating)
-                _intMaxSkillRatingCreate = _intMaxSkillRating;
-            // Maximum knowledge skill rating
-            if (objXmlNode.TryGetInt32FieldQuickly("maxknowledgeskillrating", ref _intMaxKnowledgeSkillRating)
-                && _intMaxKnowledgeSkillRatingCreate > _intMaxKnowledgeSkillRating)
-                _intMaxKnowledgeSkillRatingCreate = _intMaxKnowledgeSkillRating;
+                // Whether or not Capacity limits should be enforced.
+                objXmlNode.TryGetBoolFieldQuickly("enforcecapacity", ref _blnEnforceCapacity);
+                // Whether or not Recoil modifiers are restricted (AR 148).
+                objXmlNode.TryGetBoolFieldQuickly("restrictrecoil", ref _blnRestrictRecoil);
+                // Whether or not character are not restricted to the number of points they can invest in Nuyen.
+                objXmlNode.TryGetBoolFieldQuickly("unrestrictednuyen", ref _blnUnrestrictedNuyen);
+                // Whether or not Stacked Foci can go a combined Force higher than 6.
+                objXmlNode.TryGetBoolFieldQuickly("allowhigherstackedfoci", ref _blnAllowHigherStackedFoci);
+                // Whether or not the user can change the status of a Weapon Mod or Accessory being part of the base Weapon.
+                objXmlNode.TryGetBoolFieldQuickly("alloweditpartofbaseweapon", ref _blnAllowEditPartOfBaseWeapon);
+                // Whether or not the user can break Skill Groups while in Create Mode.
+                objXmlNode.TryGetBoolFieldQuickly("breakskillgroupsincreatemode",
+                                                  ref _blnStrictSkillGroupsInCreateMode);
+                // Whether or not the user is allowed to buy specializations with skill points for skills only bought with karma.
+                objXmlNode.TryGetBoolFieldQuickly("allowpointbuyspecializationsonkarmaskills",
+                                                  ref _blnAllowPointBuySpecializationsOnKarmaSkills);
+                // Whether or not any Detection Spell can be taken as Extended range version.
+                objXmlNode.TryGetBoolFieldQuickly("extendanydetectionspell", ref _blnExtendAnyDetectionSpell);
+                // Whether or not cyberlimbs are used for augmented attribute calculation.
+                objXmlNode.TryGetBoolFieldQuickly("dontusecyberlimbcalculation", ref _blnDontUseCyberlimbCalculation);
+                // House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
+                objXmlNode.TryGetBoolFieldQuickly("alternatemetatypeattributekarma",
+                                                  ref _blnAlternateMetatypeAttributeKarma);
+                // Whether or not Obsolescent can be removed/upgrade in the same manner as Obsolete.
+                objXmlNode.TryGetBoolFieldQuickly("allowobsolescentupgrade", ref _blnAllowObsolescentUpgrade);
+                // Whether or not Bioware Suites can be created and added.
+                objXmlNode.TryGetBoolFieldQuickly("allowbiowaresuites", ref _blnAllowBiowareSuites);
+                // House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
+                objXmlNode.TryGetBoolFieldQuickly("freespiritpowerpointsmag", ref _blnFreeSpiritPowerPointsMAG);
+                // House rule: Whether to compensate for the karma cost difference between raising skill ratings and skill groups when increasing the rating of the last skill in the group
+                objXmlNode.TryGetBoolFieldQuickly("compensateskillgroupkarmadifference",
+                                                  ref _blnCompensateSkillGroupKarmaDifference);
+                // Optional Rule: Whether Life Modules should automatically create a character back story.
+                objXmlNode.TryGetBoolFieldQuickly("autobackstory", ref _blnAutomaticBackstory);
+                // House Rule: Whether Public Awareness should be a calculated attribute based on Street Cred and Notoriety.
+                objXmlNode.TryGetBoolFieldQuickly("usecalculatedpublicawareness", ref _blnUseCalculatedPublicAwareness);
+                // House Rule: Whether Improved Ability should be capped at 0.5 (false) or 1.5 (true) of the target skill's Learned Rating.
+                objXmlNode.TryGetBoolFieldQuickly("increasedimprovedabilitymodifier",
+                                                  ref _blnIncreasedImprovedAbilityMultiplier);
+                // House Rule: Whether lifestyles will give free grid subscriptions found in HT to players.
+                objXmlNode.TryGetBoolFieldQuickly("allowfreegrids", ref _blnAllowFreeGrids);
+                // House Rule: Whether Technomancers should be allowed to receive Schooling discounts in the same manner as Awakened.
+                objXmlNode.TryGetBoolFieldQuickly("allowtechnomancerschooling", ref _blnAllowTechnomancerSchooling);
+                // House Rule: Maximum value that cyberlimbs can have as a bonus on top of their Customization.
+                objXmlNode.TryGetInt32FieldQuickly("cyberlimbattributebonuscap", ref _intCyberlimbAttributeBonusCap);
+                if (!objXmlNode.TryGetBoolFieldQuickly("cyberlimbattributebonuscapoverride",
+                                                       ref _blnCyberlimbAttributeBonusCapOverride))
+                    _blnCyberlimbAttributeBonusCapOverride = _intCyberlimbAttributeBonusCap == 4;
+                // House/Optional Rule: Attribute values are allowed to go below 0 due to Essence Loss.
+                objXmlNode.TryGetBoolFieldQuickly("unclampattributeminimum", ref _blnUnclampAttributeMinimum);
+                // Following two settings used to be stored in global options, so they are fetched from the registry if they are not present
+                // Use Rigger 5.0 drone mods
+                if (!objXmlNode.TryGetBoolFieldQuickly("dronemods", ref _blnDroneMods))
+                    GlobalSettings.LoadBoolFromRegistry(ref _blnDroneMods, "dronemods", string.Empty, true);
+                // Apply maximum drone attribute improvement rule to Pilot, too
+                if (!objXmlNode.TryGetBoolFieldQuickly("dronemodsmaximumpilot", ref _blnDroneModsMaximumPilot))
+                    GlobalSettings.LoadBoolFromRegistry(ref _blnDroneModsMaximumPilot, "dronemodsPilot", string.Empty,
+                                                        true);
 
-            //House Rule: The DicePenalty per sustained spell or form
-            objXmlNode.TryGetInt32FieldQuickly("dicepenaltysustaining", ref _intDicePenaltySustaining);
-
-            // Initiative dice
-            objXmlNode.TryGetInt32FieldQuickly("mininitiativedice", ref _intMinInitiativeDice);
-            objXmlNode.TryGetInt32FieldQuickly("maxinitiativedice", ref _intMaxInitiativeDice);
-            objXmlNode.TryGetInt32FieldQuickly("minastralinitiativedice", ref _intMinAstralInitiativeDice);
-            objXmlNode.TryGetInt32FieldQuickly("maxastralinitiativedice", ref _intMaxAstralInitiativeDice);
-            objXmlNode.TryGetInt32FieldQuickly("mincoldsiminitiativedice", ref _intMinColdSimInitiativeDice);
-            objXmlNode.TryGetInt32FieldQuickly("maxcoldsiminitiativedice", ref _intMaxColdSimInitiativeDice);
-            objXmlNode.TryGetInt32FieldQuickly("minhotsiminitiativedice", ref _intMinHotSimInitiativeDice);
-            objXmlNode.TryGetInt32FieldQuickly("maxhotsiminitiativedice", ref _intMaxHotSimInitiativeDice);
-
-            XPathNavigator xmlKarmaCostNode = objXmlNode.SelectSingleNodeAndCacheExpression("karmacost");
-            // Attempt to populate the Karma values.
-            if (xmlKarmaCostNode != null)
-            {
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaattribute", ref _intKarmaAttribute);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaquality", ref _intKarmaQuality);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspecialization", ref _intKarmaSpecialization);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaknospecialization", ref _intKarmaKnoSpecialization);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewknowledgeskill", ref _intKarmaNewKnowledgeSkill);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewactiveskill", ref _intKarmaNewActiveSkill);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewskillgroup", ref _intKarmaNewSkillGroup);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaimproveknowledgeskill", ref _intKarmaImproveKnowledgeSkill);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaimproveactiveskill", ref _intKarmaImproveActiveSkill);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaimproveskillgroup", ref _intKarmaImproveSkillGroup);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspell", ref _intKarmaSpell);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewcomplexform", ref _intKarmaNewComplexForm);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewaiprogram", ref _intKarmaNewAIProgram);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewaiadvancedprogram", ref _intKarmaNewAIAdvancedProgram);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacontact", ref _intKarmaContact);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaenemy", ref _intKarmaEnemy);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacarryover", ref _intKarmaCarryover);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspirit", ref _intKarmaSpirit);
-                if (!xmlKarmaCostNode.TryGetInt32FieldQuickly("karmatechnique", ref _intKarmaTechnique))
-                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamaneuver", ref _intKarmaTechnique);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmainitiation", ref _intKarmaInitiation);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmainitiationflat", ref _intKarmaInitiationFlat);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmametamagic", ref _intKarmaMetamagic);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmajoingroup", ref _intKarmaJoinGroup);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaleavegroup", ref _intKarmaLeaveGroup);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaenhancement", ref _intKarmaEnhancement);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamysadpp", ref _intKarmaMysticAdeptPowerPoint);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspiritfettering", ref _intKarmaSpiritFettering);
-
-                // Attempt to load the Karma costs for Foci.
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaalchemicalfocus", ref _intKarmaAlchemicalFocus);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmabanishingfocus", ref _intKarmaBanishingFocus);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmabindingfocus", ref _intKarmaBindingFocus);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacenteringfocus", ref _intKarmaCenteringFocus);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacounterspellingfocus", ref _intKarmaCounterspellingFocus);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmadisenchantingfocus", ref _intKarmaDisenchantingFocus);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaflexiblesignaturefocus", ref _intKarmaFlexibleSignatureFocus);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamaskingfocus", ref _intKarmaMaskingFocus);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmapowerfocus", ref _intKarmaPowerFocus);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaqifocus", ref _intKarmaQiFocus);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaritualspellcastingfocus", ref _intKarmaRitualSpellcastingFocus);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspellcastingfocus", ref _intKarmaSpellcastingFocus);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspellshapingfocus", ref _intKarmaSpellShapingFocus);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmasummoningfocus", ref _intKarmaSummoningFocus);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmasustainingfocus", ref _intKarmaSustainingFocus);
-                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaweaponfocus", ref _intKarmaWeaponFocus);
-            }
-
-            XPathNavigator xmlLegacyCharacterNavigator = null;
-            // Legacy sweep by looking at MRU
-            if (!BuiltInOption && objXmlNode.SelectSingleNodeAndCacheExpression("books/book") == null && objXmlNode.SelectSingleNodeAndCacheExpression("customdatadirectorynames/directoryname") == null)
-            {
-                foreach (string strMruCharacterFile in GlobalSettings.MostRecentlyUsedCharacters)
+                // Maximum number of attributes at metatype maximum in character creation
+                if (!objXmlNode.TryGetInt32FieldQuickly("maxnumbermaxattributescreate",
+                                                        ref _intMaxNumberMaxAttributesCreate))
                 {
-                    XPathDocument objXmlDocument;
-                    if (!File.Exists(strMruCharacterFile))
-                        continue;
-                    try
-                    {
-                        using (StreamReader sr = new StreamReader(strMruCharacterFile, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
-                            objXmlDocument = new XPathDocument(objXmlReader);
-                    }
-                    catch (XmlException)
-                    {
-                        continue;
-                    }
-                    xmlLegacyCharacterNavigator = objXmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression("/character");
-
-                    if (xmlLegacyCharacterNavigator == null)
-                        continue;
-
-                    string strLoopSettingsFile = xmlLegacyCharacterNavigator.SelectSingleNodeAndCacheExpression("settings")?.Value;
-                    if (strLoopSettingsFile == _strFileName)
-                        break;
-                    xmlLegacyCharacterNavigator = null;
+                    // Legacy shim
+                    bool blnTemp = false;
+                    if (objXmlNode.TryGetBoolFieldQuickly("allow2ndmaxattribute", ref blnTemp) && blnTemp)
+                        _intMaxNumberMaxAttributesCreate = 2;
                 }
 
-                if (xmlLegacyCharacterNavigator == null)
+                // Maximum skill rating in character creation
+                objXmlNode.TryGetInt32FieldQuickly("maxskillratingcreate", ref _intMaxSkillRatingCreate);
+                // Maximum knowledge skill rating in character creation
+                objXmlNode.TryGetInt32FieldQuickly("maxknowledgeskillratingcreate",
+                                                   ref _intMaxKnowledgeSkillRatingCreate);
+                // Maximum skill rating
+                if (objXmlNode.TryGetInt32FieldQuickly("maxskillrating", ref _intMaxSkillRating)
+                    && _intMaxSkillRatingCreate > _intMaxSkillRating)
+                    _intMaxSkillRatingCreate = _intMaxSkillRating;
+                // Maximum knowledge skill rating
+                if (objXmlNode.TryGetInt32FieldQuickly("maxknowledgeskillrating", ref _intMaxKnowledgeSkillRating)
+                    && _intMaxKnowledgeSkillRatingCreate > _intMaxKnowledgeSkillRating)
+                    _intMaxKnowledgeSkillRatingCreate = _intMaxKnowledgeSkillRating;
+
+                //House Rule: The DicePenalty per sustained spell or form
+                objXmlNode.TryGetInt32FieldQuickly("dicepenaltysustaining", ref _intDicePenaltySustaining);
+
+                // Initiative dice
+                objXmlNode.TryGetInt32FieldQuickly("mininitiativedice", ref _intMinInitiativeDice);
+                objXmlNode.TryGetInt32FieldQuickly("maxinitiativedice", ref _intMaxInitiativeDice);
+                objXmlNode.TryGetInt32FieldQuickly("minastralinitiativedice", ref _intMinAstralInitiativeDice);
+                objXmlNode.TryGetInt32FieldQuickly("maxastralinitiativedice", ref _intMaxAstralInitiativeDice);
+                objXmlNode.TryGetInt32FieldQuickly("mincoldsiminitiativedice", ref _intMinColdSimInitiativeDice);
+                objXmlNode.TryGetInt32FieldQuickly("maxcoldsiminitiativedice", ref _intMaxColdSimInitiativeDice);
+                objXmlNode.TryGetInt32FieldQuickly("minhotsiminitiativedice", ref _intMinHotSimInitiativeDice);
+                objXmlNode.TryGetInt32FieldQuickly("maxhotsiminitiativedice", ref _intMaxHotSimInitiativeDice);
+
+                XPathNavigator xmlKarmaCostNode = objXmlNode.SelectSingleNodeAndCacheExpression("karmacost");
+                // Attempt to populate the Karma values.
+                if (xmlKarmaCostNode != null)
                 {
-                    foreach (string strMruCharacterFile in GlobalSettings.FavoriteCharacters)
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaattribute", ref _intKarmaAttribute);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaquality", ref _intKarmaQuality);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspecialization", ref _intKarmaSpecialization);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaknospecialization", ref _intKarmaKnoSpecialization);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewknowledgeskill", ref _intKarmaNewKnowledgeSkill);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewactiveskill", ref _intKarmaNewActiveSkill);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewskillgroup", ref _intKarmaNewSkillGroup);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaimproveknowledgeskill",
+                                                             ref _intKarmaImproveKnowledgeSkill);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaimproveactiveskill",
+                                                             ref _intKarmaImproveActiveSkill);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaimproveskillgroup", ref _intKarmaImproveSkillGroup);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspell", ref _intKarmaSpell);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewcomplexform", ref _intKarmaNewComplexForm);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewaiprogram", ref _intKarmaNewAIProgram);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmanewaiadvancedprogram",
+                                                             ref _intKarmaNewAIAdvancedProgram);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacontact", ref _intKarmaContact);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaenemy", ref _intKarmaEnemy);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacarryover", ref _intKarmaCarryover);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspirit", ref _intKarmaSpirit);
+                    if (!xmlKarmaCostNode.TryGetInt32FieldQuickly("karmatechnique", ref _intKarmaTechnique))
+                        xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamaneuver", ref _intKarmaTechnique);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmainitiation", ref _intKarmaInitiation);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmainitiationflat", ref _intKarmaInitiationFlat);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmametamagic", ref _intKarmaMetamagic);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmajoingroup", ref _intKarmaJoinGroup);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaleavegroup", ref _intKarmaLeaveGroup);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaenhancement", ref _intKarmaEnhancement);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamysadpp", ref _intKarmaMysticAdeptPowerPoint);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspiritfettering", ref _intKarmaSpiritFettering);
+
+                    // Attempt to load the Karma costs for Foci.
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaalchemicalfocus", ref _intKarmaAlchemicalFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmabanishingfocus", ref _intKarmaBanishingFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmabindingfocus", ref _intKarmaBindingFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacenteringfocus", ref _intKarmaCenteringFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmacounterspellingfocus",
+                                                             ref _intKarmaCounterspellingFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmadisenchantingfocus",
+                                                             ref _intKarmaDisenchantingFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaflexiblesignaturefocus",
+                                                             ref _intKarmaFlexibleSignatureFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamaskingfocus", ref _intKarmaMaskingFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmapowerfocus", ref _intKarmaPowerFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaqifocus", ref _intKarmaQiFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaritualspellcastingfocus",
+                                                             ref _intKarmaRitualSpellcastingFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspellcastingfocus", ref _intKarmaSpellcastingFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspellshapingfocus", ref _intKarmaSpellShapingFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmasummoningfocus", ref _intKarmaSummoningFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmasustainingfocus", ref _intKarmaSustainingFocus);
+                    xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaweaponfocus", ref _intKarmaWeaponFocus);
+                }
+
+                XPathNavigator xmlLegacyCharacterNavigator = null;
+                // Legacy sweep by looking at MRU
+                if (!BuiltInOption && objXmlNode.SelectSingleNodeAndCacheExpression("books/book") == null
+                                   && objXmlNode.SelectSingleNodeAndCacheExpression(
+                                       "customdatadirectorynames/directoryname") == null)
+                {
+                    foreach (string strMruCharacterFile in GlobalSettings.MostRecentlyUsedCharacters)
                     {
                         XPathDocument objXmlDocument;
                         if (!File.Exists(strMruCharacterFile))
@@ -1594,99 +2021,117 @@ namespace Chummer
                         {
                             continue;
                         }
-                        xmlLegacyCharacterNavigator = objXmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression("/character");
+
+                        xmlLegacyCharacterNavigator = objXmlDocument.CreateNavigator()
+                                                                    .SelectSingleNodeAndCacheExpression("/character");
 
                         if (xmlLegacyCharacterNavigator == null)
                             continue;
 
-                        string strLoopSettingsFile = xmlLegacyCharacterNavigator.SelectSingleNodeAndCacheExpression("settings")?.Value;
+                        string strLoopSettingsFile = xmlLegacyCharacterNavigator
+                                                     .SelectSingleNodeAndCacheExpression("settings")?.Value;
                         if (strLoopSettingsFile == _strFileName)
                             break;
                         xmlLegacyCharacterNavigator = null;
                     }
-                }
-            }
 
-            // Load Books.
-            _setBooks.Clear();
-            foreach (XPathNavigator xmlBook in objXmlNode.SelectAndCacheExpression("books/book"))
-                _setBooks.Add(xmlBook.Value);
-            // Legacy sweep for sourcebooks
-            if (xmlLegacyCharacterNavigator != null)
-            {
-                foreach (XPathNavigator xmlBook in xmlLegacyCharacterNavigator.SelectAndCacheExpression("sources/source"))
-                {
-                    if (!string.IsNullOrEmpty(xmlBook.Value))
-                        _setBooks.Add(xmlBook.Value);
-                }
-            }
-
-            // Load Custom Data Directory names.
-            int intTopMostOrder = 0;
-            int intBottomMostOrder = 0;
-            Dictionary<int, Tuple<string, bool>> dicLoadingCustomDataDirectories =
-                new Dictionary<int, Tuple<string, bool>>(GlobalSettings.CustomDataDirectoryInfos.Count);
-            bool blnNeedToProcessInfosWithoutLoadOrder = false;
-            foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression("customdatadirectorynames/customdatadirectoryname"))
-            {
-                string strDirectoryKey = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("directoryname")?.Value;
-                if (string.IsNullOrEmpty(strDirectoryKey))
-                    continue;
-                string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
-                // Only load in directories that are either present in our GlobalSettings or are enabled
-                bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("enabled")?.Value == bool.TrueString;
-                if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
-                    ? GlobalSettings.CustomDataDirectoryInfos.Any(x => x.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
-                    : GlobalSettings.CustomDataDirectoryInfos.Any(x => x.InternalId.Equals(strLoopId, StringComparison.OrdinalIgnoreCase))))
-                {
-                    string strOrder = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("order")?.Value;
-                    if (!string.IsNullOrEmpty(strOrder)
-                        && int.TryParse(strOrder, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intOrder))
+                    if (xmlLegacyCharacterNavigator == null)
                     {
-                        while (dicLoadingCustomDataDirectories.ContainsKey(intOrder))
-                            ++intOrder;
-                        intTopMostOrder = Math.Max(intOrder, intTopMostOrder);
-                        intBottomMostOrder = Math.Min(intOrder, intBottomMostOrder);
-                        dicLoadingCustomDataDirectories.Add(intOrder,
-                            new Tuple<string, bool>(strDirectoryKey, blnLoopEnabled));
-                    }
-                    else
-                        blnNeedToProcessInfosWithoutLoadOrder = true;
-                }
-            }
+                        foreach (string strMruCharacterFile in GlobalSettings.FavoriteCharacters)
+                        {
+                            XPathDocument objXmlDocument;
+                            if (!File.Exists(strMruCharacterFile))
+                                continue;
+                            try
+                            {
+                                using (StreamReader sr = new StreamReader(strMruCharacterFile, Encoding.UTF8, true))
+                                using (XmlReader objXmlReader
+                                       = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
+                                    objXmlDocument = new XPathDocument(objXmlReader);
+                            }
+                            catch (XmlException)
+                            {
+                                continue;
+                            }
 
-            _dicCustomDataDirectoryKeys.Clear();
-            for (int i = intBottomMostOrder; i <= intTopMostOrder; ++i)
-            {
-                if (!dicLoadingCustomDataDirectories.ContainsKey(i))
-                    continue;
-                string strDirectoryKey = dicLoadingCustomDataDirectories[i].Item1;
-                string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
-                if (string.IsNullOrEmpty(strLoopId))
+                            xmlLegacyCharacterNavigator = objXmlDocument.CreateNavigator()
+                                                                        .SelectSingleNodeAndCacheExpression(
+                                                                            "/character");
+
+                            if (xmlLegacyCharacterNavigator == null)
+                                continue;
+
+                            string strLoopSettingsFile = xmlLegacyCharacterNavigator
+                                                         .SelectSingleNodeAndCacheExpression("settings")?.Value;
+                            if (strLoopSettingsFile == _strFileName)
+                                break;
+                            xmlLegacyCharacterNavigator = null;
+                        }
+                    }
+                }
+
+                // Load Books.
+                _setBooks.Clear();
+                foreach (XPathNavigator xmlBook in objXmlNode.SelectAndCacheExpression("books/book"))
+                    _setBooks.Add(xmlBook.Value);
+                // Legacy sweep for sourcebooks
+                if (xmlLegacyCharacterNavigator != null)
                 {
-                    CustomDataDirectoryInfo objExistingInfo = null;
-                    foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
+                    foreach (XPathNavigator xmlBook in xmlLegacyCharacterNavigator.SelectAndCacheExpression(
+                                 "sources/source"))
                     {
-                        if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
-                            continue;
-                        if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
-                            objExistingInfo = objLoopInfo;
+                        if (!string.IsNullOrEmpty(xmlBook.Value))
+                            _setBooks.Add(xmlBook.Value);
                     }
-                    if (objExistingInfo != null)
-                        strDirectoryKey = objExistingInfo.CharacterSettingsSaveKey;
                 }
-                if (!_dicCustomDataDirectoryKeys.ContainsKey(strDirectoryKey))
-                    _dicCustomDataDirectoryKeys.Add(strDirectoryKey, dicLoadingCustomDataDirectories[i].Item2);
-            }
 
-            // Legacy sweep for custom data directories
-            if (xmlLegacyCharacterNavigator != null)
-            {
-                foreach (XPathNavigator xmlCustomDataDirectoryName in xmlLegacyCharacterNavigator.SelectAndCacheExpression("customdatadirectorynames/directoryname"))
+                // Load Custom Data Directory names.
+                int intTopMostOrder = 0;
+                int intBottomMostOrder = 0;
+                Dictionary<int, Tuple<string, bool>> dicLoadingCustomDataDirectories =
+                    new Dictionary<int, Tuple<string, bool>>(GlobalSettings.CustomDataDirectoryInfos.Count);
+                bool blnNeedToProcessInfosWithoutLoadOrder = false;
+                foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression(
+                             "customdatadirectorynames/customdatadirectoryname"))
                 {
-                    string strDirectoryKey = xmlCustomDataDirectoryName.Value;
+                    string strDirectoryKey
+                        = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("directoryname")?.Value;
                     if (string.IsNullOrEmpty(strDirectoryKey))
                         continue;
+                    string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
+                    // Only load in directories that are either present in our GlobalSettings or are enabled
+                    bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("enabled")?.Value
+                                          == bool.TrueString;
+                    if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
+                            ? GlobalSettings.CustomDataDirectoryInfos.Any(
+                                x => x.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                            : GlobalSettings.CustomDataDirectoryInfos.Any(
+                                x => x.InternalId.Equals(strLoopId, StringComparison.OrdinalIgnoreCase))))
+                    {
+                        string strOrder = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("order")?.Value;
+                        if (!string.IsNullOrEmpty(strOrder)
+                            && int.TryParse(strOrder, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo,
+                                            out int intOrder))
+                        {
+                            while (dicLoadingCustomDataDirectories.ContainsKey(intOrder))
+                                ++intOrder;
+                            intTopMostOrder = Math.Max(intOrder, intTopMostOrder);
+                            intBottomMostOrder = Math.Min(intOrder, intBottomMostOrder);
+                            dicLoadingCustomDataDirectories.Add(intOrder,
+                                                                new Tuple<string, bool>(
+                                                                    strDirectoryKey, blnLoopEnabled));
+                        }
+                        else
+                            blnNeedToProcessInfosWithoutLoadOrder = true;
+                    }
+                }
+
+                _dicCustomDataDirectoryKeys.Clear();
+                for (int i = intBottomMostOrder; i <= intTopMostOrder; ++i)
+                {
+                    if (!dicLoadingCustomDataDirectories.ContainsKey(i))
+                        continue;
+                    string strDirectoryKey = dicLoadingCustomDataDirectories[i].Item1;
                     string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
                     if (string.IsNullOrEmpty(strLoopId))
                     {
@@ -1698,33 +2143,25 @@ namespace Chummer
                             if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
                                 objExistingInfo = objLoopInfo;
                         }
+
                         if (objExistingInfo != null)
                             strDirectoryKey = objExistingInfo.CharacterSettingsSaveKey;
                     }
-                    if (!_dicCustomDataDirectoryKeys.ContainsKey(strDirectoryKey))
-                        _dicCustomDataDirectoryKeys.Add(strDirectoryKey, true);
-                }
-            }
 
-            // Add in the stragglers that didn't have any load order info
-            if (blnNeedToProcessInfosWithoutLoadOrder)
-            {
-                foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression("customdatadirectorynames/customdatadirectoryname"))
+                    if (!_dicCustomDataDirectoryKeys.ContainsKey(strDirectoryKey))
+                        _dicCustomDataDirectoryKeys.Add(strDirectoryKey, dicLoadingCustomDataDirectories[i].Item2);
+                }
+
+                // Legacy sweep for custom data directories
+                if (xmlLegacyCharacterNavigator != null)
                 {
-                    string strDirectoryKey = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("directoryname")?.Value;
-                    if (string.IsNullOrEmpty(strDirectoryKey))
-                        continue;
-                    string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
-                    string strOrder = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("order")?.Value;
-                    if (!string.IsNullOrEmpty(strOrder) && int.TryParse(strOrder, NumberStyles.Integer,
-                        GlobalSettings.InvariantCultureInfo, out int _))
-                        continue;
-                    // Only load in directories that are either present in our GlobalSettings or are enabled
-                    bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("enabled")?.Value == bool.TrueString;
-                    if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
-                        ? GlobalSettings.CustomDataDirectoryInfos.Any(x => x.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
-                        : GlobalSettings.CustomDataDirectoryInfos.Any(x => x.InternalId.Equals(strLoopId, StringComparison.OrdinalIgnoreCase))))
+                    foreach (XPathNavigator xmlCustomDataDirectoryName in xmlLegacyCharacterNavigator
+                                 .SelectAndCacheExpression("customdatadirectorynames/directoryname"))
                     {
+                        string strDirectoryKey = xmlCustomDataDirectoryName.Value;
+                        if (string.IsNullOrEmpty(strDirectoryKey))
+                            continue;
+                        string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
                         if (string.IsNullOrEmpty(strLoopId))
                         {
                             CustomDataDirectoryInfo objExistingInfo = null;
@@ -1735,90 +2172,142 @@ namespace Chummer
                                 if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
                                     objExistingInfo = objLoopInfo;
                             }
+
+                            if (objExistingInfo != null)
+                                strDirectoryKey = objExistingInfo.CharacterSettingsSaveKey;
+                        }
+
+                        if (!_dicCustomDataDirectoryKeys.ContainsKey(strDirectoryKey))
+                            _dicCustomDataDirectoryKeys.Add(strDirectoryKey, true);
+                    }
+                }
+
+                // Add in the stragglers that didn't have any load order info
+                if (blnNeedToProcessInfosWithoutLoadOrder)
+                {
+                    foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression(
+                                 "customdatadirectorynames/customdatadirectoryname"))
+                    {
+                        string strDirectoryKey = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("directoryname")
+                                                                    ?.Value;
+                        if (string.IsNullOrEmpty(strDirectoryKey))
+                            continue;
+                        string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
+                        string strOrder = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("order")?.Value;
+                        if (!string.IsNullOrEmpty(strOrder) && int.TryParse(strOrder, NumberStyles.Integer,
+                                                                            GlobalSettings.InvariantCultureInfo,
+                                                                            out int _))
+                            continue;
+                        // Only load in directories that are either present in our GlobalSettings or are enabled
+                        bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("enabled")?.Value
+                                              == bool.TrueString;
+                        if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
+                                ? GlobalSettings.CustomDataDirectoryInfos.Any(
+                                    x => x.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                : GlobalSettings.CustomDataDirectoryInfos.Any(
+                                    x => x.InternalId.Equals(strLoopId, StringComparison.OrdinalIgnoreCase))))
+                        {
+                            if (string.IsNullOrEmpty(strLoopId))
+                            {
+                                CustomDataDirectoryInfo objExistingInfo = null;
+                                foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
+                                {
+                                    if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                        continue;
+                                    if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
+                                        objExistingInfo = objLoopInfo;
+                                }
+
+                                if (objExistingInfo != null)
+                                    strDirectoryKey = objExistingInfo.InternalId;
+                            }
+
+                            if (!_dicCustomDataDirectoryKeys.ContainsKey(strDirectoryKey))
+                                _dicCustomDataDirectoryKeys.Add(strDirectoryKey, blnLoopEnabled);
+                        }
+                    }
+                }
+
+                if (_dicCustomDataDirectoryKeys.Count == 0)
+                {
+                    foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression(
+                                 "customdatadirectorynames/directoryname"))
+                    {
+                        string strDirectoryKey = objXmlDirectoryName.Value;
+                        if (string.IsNullOrEmpty(strDirectoryKey))
+                            continue;
+                        string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
+                        if (string.IsNullOrEmpty(strLoopId))
+                        {
+                            CustomDataDirectoryInfo objExistingInfo = null;
+                            foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
+                            {
+                                if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                    continue;
+                                if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
+                                    objExistingInfo = objLoopInfo;
+                            }
+
                             if (objExistingInfo != null)
                                 strDirectoryKey = objExistingInfo.InternalId;
                         }
+
                         if (!_dicCustomDataDirectoryKeys.ContainsKey(strDirectoryKey))
-                            _dicCustomDataDirectoryKeys.Add(strDirectoryKey, blnLoopEnabled);
+                            _dicCustomDataDirectoryKeys.Add(strDirectoryKey, true);
                     }
                 }
-            }
 
-            if (_dicCustomDataDirectoryKeys.Count == 0)
-            {
-                foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression("customdatadirectorynames/directoryname"))
+                // Add in any directories that are in GlobalSettings but are not present in the settings so that we may enable them if we want to
+                foreach (string strCharacterSettingsSaveKey in GlobalSettings.CustomDataDirectoryInfos.Select(
+                             x => x.CharacterSettingsSaveKey))
                 {
-                    string strDirectoryKey = objXmlDirectoryName.Value;
-                    if (string.IsNullOrEmpty(strDirectoryKey))
-                        continue;
-                    string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
-                    if (string.IsNullOrEmpty(strLoopId))
+                    if (!_dicCustomDataDirectoryKeys.ContainsKey(strCharacterSettingsSaveKey))
                     {
-                        CustomDataDirectoryInfo objExistingInfo = null;
-                        foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
-                        {
-                            if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
-                                continue;
-                            if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
-                                objExistingInfo = objLoopInfo;
-                        }
-
-                        if (objExistingInfo != null)
-                            strDirectoryKey = objExistingInfo.InternalId;
+                        _dicCustomDataDirectoryKeys.Add(strCharacterSettingsSaveKey, false);
                     }
-                    if (!_dicCustomDataDirectoryKeys.ContainsKey(strDirectoryKey))
-                        _dicCustomDataDirectoryKeys.Add(strDirectoryKey, true);
                 }
-            }
 
-            // Add in any directories that are in GlobalSettings but are not present in the settings so that we may enable them if we want to
-            foreach (string strCharacterSettingsSaveKey in GlobalSettings.CustomDataDirectoryInfos.Select(x => x.CharacterSettingsSaveKey))
-            {
-                if (!_dicCustomDataDirectoryKeys.ContainsKey(strCharacterSettingsSaveKey))
+                RecalculateEnabledCustomDataDirectories();
+
+                foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml", EnabledCustomDataDirectoryPaths)
+                                                             .SelectAndCacheExpression(
+                                                                 "/chummer/books/book[permanent]/code"))
                 {
-                    _dicCustomDataDirectoryKeys.Add(strCharacterSettingsSaveKey, false);
+                    if (!string.IsNullOrEmpty(xmlBook.Value))
+                        _setBooks.Add(xmlBook.Value);
                 }
+
+                RecalculateBookXPath();
+
+                // Used to legacy sweep build settings.
+                XPathNavigator xmlDefaultBuildNode = objXmlNode.SelectSingleNodeAndCacheExpression("defaultbuild");
+                if (objXmlNode.TryGetStringFieldQuickly("buildmethod", ref strTemp)
+                    && Enum.TryParse(strTemp, true, out CharacterBuildMethod eBuildMethod)
+                    || xmlDefaultBuildNode?.TryGetStringFieldQuickly("buildmethod", ref strTemp) == true
+                    && Enum.TryParse(strTemp, true, out eBuildMethod))
+                    _eBuildMethod = eBuildMethod;
+                if (!objXmlNode.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints))
+                    xmlDefaultBuildNode?.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints);
+                if (!objXmlNode.TryGetInt32FieldQuickly("qualitykarmalimit", ref _intQualityKarmaLimit)
+                    && BuildMethodUsesPriorityTables)
+                    _intQualityKarmaLimit = _intBuildPoints;
+                objXmlNode.TryGetStringFieldQuickly("priorityarray", ref _strPriorityArray);
+                objXmlNode.TryGetStringFieldQuickly("prioritytable", ref _strPriorityTable);
+                objXmlNode.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
+                if (!objXmlNode.TryGetInt32FieldQuickly("availability", ref _intAvailability))
+                    xmlDefaultBuildNode?.TryGetInt32FieldQuickly("availability", ref _intAvailability);
+                objXmlNode.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
+
+                _setBannedWareGrades.Clear();
+                foreach (XPathNavigator xmlGrade in objXmlNode.SelectAndCacheExpression("bannedwaregrades/grade"))
+                    _setBannedWareGrades.Add(xmlGrade.Value);
+
+                _setRedlinerExcludes.Clear();
+                foreach (XPathNavigator xmlLimb in objXmlNode.SelectAndCacheExpression("redlinerexclusion/limb"))
+                    _setRedlinerExcludes.Add(xmlLimb.Value);
+
+                return true;
             }
-
-            RecalculateEnabledCustomDataDirectories();
-
-            foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml", EnabledCustomDataDirectoryPaths)
-                                                         .SelectAndCacheExpression(
-                                                             "/chummer/books/book[permanent]/code"))
-            {
-                if (!string.IsNullOrEmpty(xmlBook.Value))
-                    _setBooks.Add(xmlBook.Value);
-            }
-
-            RecalculateBookXPath();
-
-            // Used to legacy sweep build settings.
-            XPathNavigator xmlDefaultBuildNode = objXmlNode.SelectSingleNodeAndCacheExpression("defaultbuild");
-            if (objXmlNode.TryGetStringFieldQuickly("buildmethod", ref strTemp)
-                && Enum.TryParse(strTemp, true, out CharacterBuildMethod eBuildMethod)
-                || xmlDefaultBuildNode?.TryGetStringFieldQuickly("buildmethod", ref strTemp) == true
-                && Enum.TryParse(strTemp, true, out eBuildMethod))
-                _eBuildMethod = eBuildMethod;
-            if (!objXmlNode.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints))
-                xmlDefaultBuildNode?.TryGetInt32FieldQuickly("buildpoints", ref _intBuildPoints);
-            if (!objXmlNode.TryGetInt32FieldQuickly("qualitykarmalimit", ref _intQualityKarmaLimit) && BuildMethodUsesPriorityTables)
-                _intQualityKarmaLimit = _intBuildPoints;
-            objXmlNode.TryGetStringFieldQuickly("priorityarray", ref _strPriorityArray);
-            objXmlNode.TryGetStringFieldQuickly("prioritytable", ref _strPriorityTable);
-            objXmlNode.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
-            if (!objXmlNode.TryGetInt32FieldQuickly("availability", ref _intAvailability))
-                xmlDefaultBuildNode?.TryGetInt32FieldQuickly("availability", ref _intAvailability);
-            objXmlNode.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
-
-            BannedWareGrades.Clear();
-            foreach (XPathNavigator xmlGrade in objXmlNode.SelectAndCacheExpression("bannedwaregrades/grade"))
-                BannedWareGrades.Add(xmlGrade.Value);
-
-            RedlinerExcludes.Clear();
-            foreach (XPathNavigator xmlLimb in objXmlNode.SelectAndCacheExpression("redlinerexclusion/limb"))
-                RedlinerExcludes.Add(xmlLimb.Value);
-
-            return true;
         }
 
         #endregion Initialization, Save, and Load Methods
@@ -1830,18 +2319,34 @@ namespace Chummer
         /// </summary>
         public CharacterBuildMethod BuildMethod
         {
-            get => _eBuildMethod;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _eBuildMethod;
+            }
             set
             {
-                if (value != _eBuildMethod)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _eBuildMethod = value;
-                    OnPropertyChanged();
+                    if (value == _eBuildMethod)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _eBuildMethod = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
 
-        public bool BuildMethodUsesPriorityTables => BuildMethod.UsesPriorityTables();
+        public bool BuildMethodUsesPriorityTables
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return BuildMethod.UsesPriorityTables();
+            }
+        }
 
         public bool BuildMethodIsPriority => BuildMethod == CharacterBuildMethod.Priority;
 
@@ -1854,13 +2359,22 @@ namespace Chummer
         /// </summary>
         public string PriorityArray
         {
-            get => _strPriorityArray;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strPriorityArray;
+            }
             set
             {
-                if (_strPriorityArray != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _strPriorityArray = value;
-                    OnPropertyChanged();
+                    if (_strPriorityArray == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _strPriorityArray = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1870,13 +2384,22 @@ namespace Chummer
         /// </summary>
         public string PriorityTable
         {
-            get => _strPriorityTable;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strPriorityTable;
+            }
             set
             {
-                if (_strPriorityTable != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _strPriorityTable = value;
-                    OnPropertyChanged();
+                    if (_strPriorityTable == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _strPriorityTable = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1886,13 +2409,22 @@ namespace Chummer
         /// </summary>
         public int SumtoTen
         {
-            get => _intSumtoTen;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intSumtoTen;
+            }
             set
             {
-                if (_intSumtoTen != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intSumtoTen = value;
-                    OnPropertyChanged();
+                    if (_intSumtoTen == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intSumtoTen = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1902,13 +2434,22 @@ namespace Chummer
         /// </summary>
         public int BuildKarma
         {
-            get => _intBuildPoints;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intBuildPoints;
+            }
             set
             {
-                if (_intBuildPoints != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intBuildPoints = value;
-                    OnPropertyChanged();
+                    if (_intBuildPoints == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intBuildPoints = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1918,10 +2459,16 @@ namespace Chummer
         /// </summary>
         public int QualityKarmaLimit
         {
-            get => _intQualityKarmaLimit;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intQualityKarmaLimit;
+            }
             set
             {
-                if (_intQualityKarmaLimit != value)
+                if (_intQualityKarmaLimit == value)
+                    return;
+                using (LockObject.EnterWriteLock())
                 {
                     _intQualityKarmaLimit = value;
                     OnPropertyChanged();
@@ -1934,13 +2481,22 @@ namespace Chummer
         /// </summary>
         public int MaximumAvailability
         {
-            get => _intAvailability;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intAvailability;
+            }
             set
             {
-                if (_intAvailability != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intAvailability = value;
-                    OnPropertyChanged();
+                    if (_intAvailability == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intAvailability = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1950,13 +2506,22 @@ namespace Chummer
         /// </summary>
         public decimal NuyenMaximumBP
         {
-            get => _decNuyenMaximumBP;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _decNuyenMaximumBP;
+            }
             set
             {
-                if (_decNuyenMaximumBP != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _decNuyenMaximumBP = value;
-                    OnPropertyChanged();
+                    if (_decNuyenMaximumBP == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _decNuyenMaximumBP = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1964,32 +2529,57 @@ namespace Chummer
         /// <summary>
         /// Blocked grades of cyber/bioware in Create mode.
         /// </summary>
-        public HashSet<string> BannedWareGrades { get; } = Utils.StringHashSetPool.Get();
+        public HashSet<string> BannedWareGrades
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _setBannedWareGrades;
+            }
+        }
 
         /// <summary>
         /// Limb types excluded by redliner.
         /// </summary>
-        public HashSet<string> RedlinerExcludes { get; } = Utils.StringHashSetPool.Get();
+        public HashSet<string> RedlinerExcludes
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _setRedlinerExcludes;
+            }
+        }
 
         public bool RedlinerExcludesSkull
         {
-            get => RedlinerExcludes.Contains("skull");
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _setRedlinerExcludes.Contains("skull");
+            }
             set
             {
-                if (value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    if (!RedlinerExcludes.Contains("skull"))
+                    if (value)
                     {
-                        RedlinerExcludes.Add("skull");
-                        OnPropertyChanged(nameof(RedlinerExcludes));
+                        if (_setRedlinerExcludes.Contains("skull"))
+                            return;
+                        using (LockObject.EnterWriteLock())
+                        {
+                            _setRedlinerExcludes.Add("skull");
+                            OnPropertyChanged(nameof(RedlinerExcludes));
+                        }
                     }
-                }
-                else
-                {
-                    if (RedlinerExcludes.Contains("skull"))
+                    else
                     {
-                        RedlinerExcludes.Remove("skull");
-                        OnPropertyChanged(nameof(RedlinerExcludes));
+                        if (!_setRedlinerExcludes.Contains("skull"))
+                            return;
+                        using (LockObject.EnterWriteLock())
+                        {
+                            _setRedlinerExcludes.Remove("skull");
+                            OnPropertyChanged(nameof(RedlinerExcludes));
+                        }
                     }
                 }
             }
@@ -1997,23 +2587,34 @@ namespace Chummer
 
         public bool RedlinerExcludesTorso
         {
-            get => RedlinerExcludes.Contains("torso");
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return RedlinerExcludes.Contains("torso");
+            }
             set
             {
-                if (value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    if (!RedlinerExcludes.Contains("torso"))
+                    if (value)
                     {
-                        RedlinerExcludes.Add("torso");
-                        OnPropertyChanged(nameof(RedlinerExcludes));
+                        if (_setRedlinerExcludes.Contains("torso"))
+                            return;
+                        using (LockObject.EnterWriteLock())
+                        {
+                            _setRedlinerExcludes.Add("torso");
+                            OnPropertyChanged(nameof(RedlinerExcludes));
+                        }
                     }
-                }
-                else
-                {
-                    if (RedlinerExcludes.Contains("torso"))
+                    else
                     {
-                        RedlinerExcludes.Remove("torso");
-                        OnPropertyChanged(nameof(RedlinerExcludes));
+                        if (!_setRedlinerExcludes.Contains("torso"))
+                            return;
+                        using (LockObject.EnterWriteLock())
+                        {
+                            _setRedlinerExcludes.Remove("torso");
+                            OnPropertyChanged(nameof(RedlinerExcludes));
+                        }
                     }
                 }
             }
@@ -2021,23 +2622,34 @@ namespace Chummer
 
         public bool RedlinerExcludesArms
         {
-            get => RedlinerExcludes.Contains("arm");
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return RedlinerExcludes.Contains("arm");
+            }
             set
             {
-                if (value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    if (!RedlinerExcludes.Contains("arm"))
+                    if (value)
                     {
-                        RedlinerExcludes.Add("arm");
-                        OnPropertyChanged(nameof(RedlinerExcludes));
+                        if (_setRedlinerExcludes.Contains("arm"))
+                            return;
+                        using (LockObject.EnterWriteLock())
+                        {
+                            _setRedlinerExcludes.Add("arm");
+                            OnPropertyChanged(nameof(RedlinerExcludes));
+                        }
                     }
-                }
-                else
-                {
-                    if (RedlinerExcludes.Contains("arm"))
+                    else
                     {
-                        RedlinerExcludes.Remove("arm");
-                        OnPropertyChanged(nameof(RedlinerExcludes));
+                        if (!_setRedlinerExcludes.Contains("arm"))
+                            return;
+                        using (LockObject.EnterWriteLock())
+                        {
+                            _setRedlinerExcludes.Remove("arm");
+                            OnPropertyChanged(nameof(RedlinerExcludes));
+                        }
                     }
                 }
             }
@@ -2045,23 +2657,34 @@ namespace Chummer
 
         public bool RedlinerExcludesLegs
         {
-            get => RedlinerExcludes.Contains("leg");
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return RedlinerExcludes.Contains("leg");
+            }
             set
             {
-                if (value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    if (!RedlinerExcludes.Contains("leg"))
+                    if (value)
                     {
-                        RedlinerExcludes.Add("leg");
-                        OnPropertyChanged(nameof(RedlinerExcludes));
+                        if (_setRedlinerExcludes.Contains("leg"))
+                            return;
+                        using (LockObject.EnterWriteLock())
+                        {
+                            _setRedlinerExcludes.Add("leg");
+                            OnPropertyChanged(nameof(RedlinerExcludes));
+                        }
                     }
-                }
-                else
-                {
-                    if (RedlinerExcludes.Contains("leg"))
+                    else
                     {
-                        RedlinerExcludes.Remove("leg");
-                        OnPropertyChanged(nameof(RedlinerExcludes));
+                        if (!_setRedlinerExcludes.Contains("leg"))
+                            return;
+                        using (LockObject.EnterWriteLock())
+                        {
+                            _setRedlinerExcludes.Remove("leg");
+                            OnPropertyChanged(nameof(RedlinerExcludes));
+                        }
                     }
                 }
             }
@@ -2078,7 +2701,8 @@ namespace Chummer
         /// <param name="strCode">Book code to search for.</param>
         public bool BookEnabled(string strCode)
         {
-            return _setBooks.Contains(strCode);
+            using (EnterReadLock.Enter(LockObject))
+                return _setBooks.Contains(strCode);
         }
 
         /// <summary>
@@ -2091,28 +2715,31 @@ namespace Chummer
             {
                 if (excludeHidden)
                     sbdPath.Append("not(hide)");
-                if (string.IsNullOrWhiteSpace(_strBookXPath) && _setBooks.Count > 0)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    RecalculateBookXPath();
-                }
+                    if (string.IsNullOrWhiteSpace(_strBookXPath) && _setBooks.Count > 0)
+                    {
+                        RecalculateBookXPath();
+                    }
 
-                if (!string.IsNullOrEmpty(_strBookXPath))
-                {
-                    if (sbdPath.Length != 0)
-                        sbdPath.Append(" and ");
-                    sbdPath.Append("(ignoresourcedisabled or ").Append(_strBookXPath).Append(')');
-                }
-                else
-                {
-                    // Should not ever have a situation where BookXPath remains empty after recalculation, but it's here just in case
-                    Utils.BreakIfDebug();
-                }
+                    if (!string.IsNullOrEmpty(_strBookXPath))
+                    {
+                        if (sbdPath.Length != 0)
+                            sbdPath.Append(" and ");
+                        sbdPath.Append("(ignoresourcedisabled or ").Append(_strBookXPath).Append(')');
+                    }
+                    else
+                    {
+                        // Should not ever have a situation where BookXPath remains empty after recalculation, but it's here just in case
+                        Utils.BreakIfDebug();
+                    }
 
-                if (!DroneMods)
-                {
-                    if (sbdPath.Length != 0)
-                        sbdPath.Append(" and ");
-                    sbdPath.Append("not(optionaldrone)");
+                    if (!DroneMods)
+                    {
+                        if (sbdPath.Length != 0)
+                            sbdPath.Append(" and ");
+                        sbdPath.Append("not(optionaldrone)");
+                    }
                 }
 
                 if (sbdPath.Length > 1)
@@ -2130,111 +2757,173 @@ namespace Chummer
         /// </summary>
         public void RecalculateBookXPath()
         {
-            _strBookXPath = string.Empty;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                          out StringBuilder sbdBookXPath))
+            using (EnterReadLock.Enter(LockObject))
             {
-                sbdBookXPath.Append('(');
-                foreach (string strBook in _setBooks)
+                _strBookXPath = string.Empty;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdBookXPath))
                 {
-                    if (!string.IsNullOrWhiteSpace(strBook))
+                    sbdBookXPath.Append('(');
+                    foreach (string strBook in _setBooks)
                     {
-                        sbdBookXPath.Append("source = ").Append(strBook.CleanXPath()).Append(" or ");
+                        if (!string.IsNullOrWhiteSpace(strBook))
+                        {
+                            sbdBookXPath.Append("source = ").Append(strBook.CleanXPath()).Append(" or ");
+                        }
+                    }
+
+                    if (sbdBookXPath.Length >= 4)
+                    {
+                        sbdBookXPath.Length -= 4;
+                        sbdBookXPath.Append(')');
+                        Interlocked.CompareExchange(ref _strBookXPath, sbdBookXPath.ToString(), string.Empty);
                     }
                 }
-
-                if (sbdBookXPath.Length >= 4)
-                {
-                    sbdBookXPath.Length -= 4;
-                    sbdBookXPath.Append(')');
-                    _strBookXPath = sbdBookXPath.ToString();
-                }
-                else
-                    _strBookXPath = string.Empty;
             }
         }
 
-        public TypedOrderedDictionary<string, bool> CustomDataDirectoryKeys => _dicCustomDataDirectoryKeys;
+        public LockingTypedOrderedDictionary<string, bool> CustomDataDirectoryKeys
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _dicCustomDataDirectoryKeys;
+            }
+        }
 
-        public IReadOnlyList<string> EnabledCustomDataDirectoryPaths => _lstEnabledCustomDataDirectoryPaths;
+        public IReadOnlyList<string> EnabledCustomDataDirectoryPaths
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _lstEnabledCustomDataDirectoryPaths;
+            }
+        }
 
-        public IReadOnlyList<CustomDataDirectoryInfo> EnabledCustomDataDirectoryInfos => _setEnabledCustomDataDirectories;
+        public IReadOnlyList<CustomDataDirectoryInfo> EnabledCustomDataDirectoryInfos
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _setEnabledCustomDataDirectories;
+            }
+        }
 
         /// <summary>
         /// A HashSet that can be used for fast queries, which content is (and should) always identical to the IReadOnlyList EnabledCustomDataDirectoryInfos
         /// </summary>
-        public IReadOnlyCollection<Guid> EnabledCustomDataDirectoryInfoGuids => _setEnabledCustomDataDirectoryGuids;
-
-        public void RecalculateEnabledCustomDataDirectories()
+        public IReadOnlyCollection<Guid> EnabledCustomDataDirectoryInfoGuids
         {
-            _setEnabledCustomDataDirectoryGuids.Clear();
-            _setEnabledCustomDataDirectories.Clear();
-            _lstEnabledCustomDataDirectoryPaths.Clear();
-            foreach (KeyValuePair<string, bool> kvpCustomDataDirectoryName in _dicCustomDataDirectoryKeys)
+            get
             {
-                if (!kvpCustomDataDirectoryName.Value)
-                    continue;
-                string strKey = kvpCustomDataDirectoryName.Key;
-                string strId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strKey, out Version objPreferredVersion);
-                CustomDataDirectoryInfo objInfoToAdd = null;
-                if (string.IsNullOrEmpty(strId))
-                {
-                    foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
-                    {
-                        if (!objLoopInfo.Name.Equals(strKey, StringComparison.OrdinalIgnoreCase))
-                            continue;
-                        if (objInfoToAdd == null || objLoopInfo.MyVersion > objInfoToAdd.MyVersion)
-                            objInfoToAdd = objLoopInfo;
-                    }
-                }
-                else
-                {
-                    foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
-                    {
-                        if (!objLoopInfo.InternalId.Equals(strId, StringComparison.OrdinalIgnoreCase))
-                            continue;
-                        if (objInfoToAdd == null || VersionMatchScore(objLoopInfo.MyVersion) > VersionMatchScore(objInfoToAdd.MyVersion))
-                            objInfoToAdd = objLoopInfo;
-                    }
-
-                    int VersionMatchScore(Version objVersion)
-                    {
-                        int intReturn = int.MaxValue;
-                        intReturn -= (objPreferredVersion.Build - objVersion.Build).RaiseToPower(2) * 2.RaiseToPower(24);
-                        intReturn -= (objPreferredVersion.Major - objVersion.Major).RaiseToPower(2) * 2.RaiseToPower(16);
-                        intReturn -= (objPreferredVersion.Minor - objVersion.Minor).RaiseToPower(2) * 2.RaiseToPower(8);
-                        intReturn -= (objPreferredVersion.Revision - objVersion.Revision).RaiseToPower(2);
-                        return intReturn;
-                    }
-                }
-                if (objInfoToAdd != null)
-                {
-                    if (!_setEnabledCustomDataDirectoryGuids.Contains(objInfoToAdd.Guid))
-                        _setEnabledCustomDataDirectoryGuids.Add(objInfoToAdd.Guid);
-                    _setEnabledCustomDataDirectories.Add(objInfoToAdd);
-                    _lstEnabledCustomDataDirectoryPaths.Add(objInfoToAdd.DirectoryPath);
-                }
-                else
-                    Utils.BreakIfDebug();
+                using (EnterReadLock.Enter(LockObject))
+                    return _setEnabledCustomDataDirectoryGuids;
             }
         }
 
-        public string SourceId => _guiSourceId.ToString("D", GlobalSettings.InvariantCultureInfo);
+        public void RecalculateEnabledCustomDataDirectories()
+        {
+            using (LockObject.EnterWriteLock())
+            {
+                _setEnabledCustomDataDirectoryGuids.Clear();
+                _setEnabledCustomDataDirectories.Clear();
+                _lstEnabledCustomDataDirectoryPaths.Clear();
+                foreach (KeyValuePair<string, bool> kvpCustomDataDirectoryName in _dicCustomDataDirectoryKeys)
+                {
+                    if (!kvpCustomDataDirectoryName.Value)
+                        continue;
+                    string strKey = kvpCustomDataDirectoryName.Key;
+                    string strId
+                        = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(
+                            strKey, out Version objPreferredVersion);
+                    CustomDataDirectoryInfo objInfoToAdd = null;
+                    if (string.IsNullOrEmpty(strId))
+                    {
+                        foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
+                        {
+                            if (!objLoopInfo.Name.Equals(strKey, StringComparison.OrdinalIgnoreCase))
+                                continue;
+                            if (objInfoToAdd == null || objLoopInfo.MyVersion > objInfoToAdd.MyVersion)
+                                objInfoToAdd = objLoopInfo;
+                        }
+                    }
+                    else
+                    {
+                        foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
+                        {
+                            if (!objLoopInfo.InternalId.Equals(strId, StringComparison.OrdinalIgnoreCase))
+                                continue;
+                            if (objInfoToAdd == null || VersionMatchScore(objLoopInfo.MyVersion)
+                                > VersionMatchScore(objInfoToAdd.MyVersion))
+                                objInfoToAdd = objLoopInfo;
+                        }
 
-        public bool BuiltInOption => _guiSourceId != Guid.Empty;
+                        int VersionMatchScore(Version objVersion)
+                        {
+                            int intReturn = int.MaxValue;
+                            intReturn -= (objPreferredVersion.Build - objVersion.Build).RaiseToPower(2)
+                                         * 2.RaiseToPower(24);
+                            intReturn -= (objPreferredVersion.Major - objVersion.Major).RaiseToPower(2)
+                                         * 2.RaiseToPower(16);
+                            intReturn -= (objPreferredVersion.Minor - objVersion.Minor).RaiseToPower(2)
+                                         * 2.RaiseToPower(8);
+                            intReturn -= (objPreferredVersion.Revision - objVersion.Revision).RaiseToPower(2);
+                            return intReturn;
+                        }
+                    }
+
+                    if (objInfoToAdd != null)
+                    {
+                        if (!_setEnabledCustomDataDirectoryGuids.Contains(objInfoToAdd.Guid))
+                            _setEnabledCustomDataDirectoryGuids.Add(objInfoToAdd.Guid);
+                        _setEnabledCustomDataDirectories.Add(objInfoToAdd);
+                        _lstEnabledCustomDataDirectoryPaths.Add(objInfoToAdd.DirectoryPath);
+                    }
+                    else
+                        Utils.BreakIfDebug();
+                }
+            }
+        }
+
+        public string SourceId
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _guiSourceId.ToString("D", GlobalSettings.InvariantCultureInfo);
+            }
+        }
+
+        public bool BuiltInOption
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _guiSourceId != Guid.Empty;
+            }
+        }
 
         /// <summary>
         /// Whether or not the More Lethal Gameplay optional rule is enabled.
         /// </summary>
         public bool MoreLethalGameplay
         {
-            get => _blnMoreLethalGameplay;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnMoreLethalGameplay;
+            }
             set
             {
-                if (_blnMoreLethalGameplay != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnMoreLethalGameplay = value;
-                    OnPropertyChanged();
+                    if (_blnMoreLethalGameplay == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnMoreLethalGameplay = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2244,13 +2933,22 @@ namespace Chummer
         /// </summary>
         public bool LicenseRestricted
         {
-            get => _blnLicenseRestrictedItems;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnLicenseRestrictedItems;
+            }
             set
             {
-                if (_blnLicenseRestrictedItems != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnLicenseRestrictedItems = value;
-                    OnPropertyChanged();
+                    if (_blnLicenseRestrictedItems == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnLicenseRestrictedItems = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2260,13 +2958,22 @@ namespace Chummer
         /// </summary>
         public bool SpiritForceBasedOnTotalMAG
         {
-            get => _blnSpiritForceBasedOnTotalMAG;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnSpiritForceBasedOnTotalMAG;
+            }
             set
             {
-                if (_blnSpiritForceBasedOnTotalMAG != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnSpiritForceBasedOnTotalMAG = value;
-                    OnPropertyChanged();
+                    if (_blnSpiritForceBasedOnTotalMAG == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnSpiritForceBasedOnTotalMAG = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2276,13 +2983,22 @@ namespace Chummer
         /// </summary>
         public decimal NuyenPerBPWftM
         {
-            get => _decNuyenPerBPWftM;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _decNuyenPerBPWftM;
+            }
             set
             {
-                if (_decNuyenPerBPWftM != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _decNuyenPerBPWftM = value;
-                    OnPropertyChanged();
+                    if (_decNuyenPerBPWftM == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _decNuyenPerBPWftM = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2292,13 +3008,22 @@ namespace Chummer
         /// </summary>
         public decimal NuyenPerBPWftP
         {
-            get => _decNuyenPerBPWftP;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _decNuyenPerBPWftP;
+            }
             set
             {
-                if (_decNuyenPerBPWftP != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _decNuyenPerBPWftP = value;
-                    OnPropertyChanged();
+                    if (_decNuyenPerBPWftP == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _decNuyenPerBPWftP = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2308,13 +3033,22 @@ namespace Chummer
         /// </summary>
         public bool UnarmedImprovementsApplyToWeapons
         {
-            get => _blnUnarmedImprovementsApplyToWeapons;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnUnarmedImprovementsApplyToWeapons;
+            }
             set
             {
-                if (_blnUnarmedImprovementsApplyToWeapons != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnUnarmedImprovementsApplyToWeapons = value;
-                    OnPropertyChanged();
+                    if (_blnUnarmedImprovementsApplyToWeapons == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnUnarmedImprovementsApplyToWeapons = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2324,13 +3058,22 @@ namespace Chummer
         /// </summary>
         public bool AllowInitiationInCreateMode
         {
-            get => _blnAllowInitiationInCreateMode;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnAllowInitiationInCreateMode;
+            }
             set
             {
-                if (_blnAllowInitiationInCreateMode != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnAllowInitiationInCreateMode = value;
-                    OnPropertyChanged();
+                    if (_blnAllowInitiationInCreateMode == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnAllowInitiationInCreateMode = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2340,13 +3083,22 @@ namespace Chummer
         /// </summary>
         public bool UsePointsOnBrokenGroups
         {
-            get => _blnUsePointsOnBrokenGroups;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnUsePointsOnBrokenGroups;
+            }
             set
             {
-                if (_blnUsePointsOnBrokenGroups != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnUsePointsOnBrokenGroups = value;
-                    OnPropertyChanged();
+                    if (_blnUsePointsOnBrokenGroups == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnUsePointsOnBrokenGroups = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2356,13 +3108,22 @@ namespace Chummer
         /// </summary>
         public bool DontDoubleQualityPurchases
         {
-            get => _blnDontDoubleQualityPurchaseCost;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnDontDoubleQualityPurchaseCost;
+            }
             set
             {
-                if (_blnDontDoubleQualityPurchaseCost != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnDontDoubleQualityPurchaseCost = value;
-                    OnPropertyChanged();
+                    if (_blnDontDoubleQualityPurchaseCost == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnDontDoubleQualityPurchaseCost = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2372,13 +3133,22 @@ namespace Chummer
         /// </summary>
         public bool DontDoubleQualityRefunds
         {
-            get => _blnDontDoubleQualityRefundCost;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnDontDoubleQualityRefundCost;
+            }
             set
             {
-                if (_blnDontDoubleQualityRefundCost != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnDontDoubleQualityRefundCost = value;
-                    OnPropertyChanged();
+                    if (_blnDontDoubleQualityRefundCost == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnDontDoubleQualityRefundCost = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2388,13 +3158,22 @@ namespace Chummer
         /// </summary>
         public bool IgnoreArt
         {
-            get => _blnIgnoreArt;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnIgnoreArt;
+            }
             set
             {
-                if (_blnIgnoreArt != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnIgnoreArt = value;
-                    OnPropertyChanged();
+                    if (_blnIgnoreArt == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnIgnoreArt = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2404,13 +3183,22 @@ namespace Chummer
         /// </summary>
         public bool IgnoreComplexFormLimit
         {
-            get => _blnIgnoreComplexFormLimit;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnIgnoreComplexFormLimit;
+            }
             set
             {
-                if (_blnIgnoreComplexFormLimit != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnIgnoreComplexFormLimit = value;
-                    OnPropertyChanged();
+                    if (_blnIgnoreComplexFormLimit == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnIgnoreComplexFormLimit = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2420,13 +3208,22 @@ namespace Chummer
         /// </summary>
         public bool CyberlegMovement
         {
-            get => _blnCyberlegMovement;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnCyberlegMovement;
+            }
             set
             {
-                if (_blnCyberlegMovement != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnCyberlegMovement = value;
-                    OnPropertyChanged();
+                    if (_blnCyberlegMovement == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnCyberlegMovement = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2436,15 +3233,24 @@ namespace Chummer
         /// </summary>
         public bool MysAdeptAllowPpCareer
         {
-            get => _blnMysAdeptAllowPpCareer;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnMysAdeptAllowPpCareer;
+            }
             set
             {
-                if (_blnMysAdeptAllowPpCareer != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnMysAdeptAllowPpCareer = value;
-                    OnPropertyChanged();
-                    if (value)
-                        MysAdeptSecondMAGAttribute = false;
+                    if (_blnMysAdeptAllowPpCareer == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnMysAdeptAllowPpCareer = value;
+                        OnPropertyChanged();
+                        if (value)
+                            MysAdeptSecondMAGAttribute = false;
+                    }
                 }
             }
         }
@@ -2454,37 +3260,62 @@ namespace Chummer
         /// </summary>
         public bool MysAdeptSecondMAGAttribute
         {
-            get => _blnMysAdeptSecondMAGAttribute;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnMysAdeptSecondMAGAttribute;
+            }
             set
             {
-                if (_blnMysAdeptSecondMAGAttribute != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnMysAdeptSecondMAGAttribute = value;
-                    OnPropertyChanged();
-                    if (value)
+                    if (_blnMysAdeptSecondMAGAttribute == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
                     {
-                        PrioritySpellsAsAdeptPowers = false;
-                        MysAdeptAllowPpCareer = false;
+                        _blnMysAdeptSecondMAGAttribute = value;
+                        OnPropertyChanged();
+                        if (value)
+                        {
+                            PrioritySpellsAsAdeptPowers = false;
+                            MysAdeptAllowPpCareer = false;
+                        }
                     }
                 }
             }
         }
 
-        public bool MysAdeptSecondMAGAttributeEnabled => !PrioritySpellsAsAdeptPowers && !MysAdeptAllowPpCareer;
+        public bool MysAdeptSecondMAGAttributeEnabled
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return !PrioritySpellsAsAdeptPowers && !MysAdeptAllowPpCareer;
+            }
+        }
 
         /// <summary>
         /// The XPath expression to use to determine how many contact points the character has
         /// </summary>
         public string ContactPointsExpression
         {
-            get => _strContactPointsExpression;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strContactPointsExpression;
+            }
             set
             {
                 string strNewValue = value.CleanXPath().Trim('\"');
-                if (_strContactPointsExpression != strNewValue)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _strContactPointsExpression = strNewValue;
-                    OnPropertyChanged();
+                    if (_strContactPointsExpression == strNewValue)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _strContactPointsExpression = strNewValue;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2494,14 +3325,23 @@ namespace Chummer
         /// </summary>
         public string KnowledgePointsExpression
         {
-            get => _strKnowledgePointsExpression;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strKnowledgePointsExpression;
+            }
             set
             {
                 string strNewValue = value.CleanXPath().Trim('\"');
-                if (_strKnowledgePointsExpression != strNewValue)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _strKnowledgePointsExpression = strNewValue;
-                    OnPropertyChanged();
+                    if (_strKnowledgePointsExpression == strNewValue)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _strKnowledgePointsExpression = strNewValue;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2511,19 +3351,31 @@ namespace Chummer
         /// </summary>
         public string ChargenKarmaToNuyenExpression
         {
-            get => _strChargenKarmaToNuyenExpression;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strChargenKarmaToNuyenExpression;
+            }
             set
             {
                 string strNewValue = value.CleanXPath().Trim('\"');
-                if (_strChargenKarmaToNuyenExpression != strNewValue)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _strChargenKarmaToNuyenExpression = strNewValue;
-                    // A safety check to make sure that we always still account for Priority-given Nuyen
-                    if (SettingsManager.LoadedCharacterSettings.ContainsKey(DictionaryKey) && !_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}"))
+                    if (_strChargenKarmaToNuyenExpression == strNewValue)
+                        return;
+                    using (LockObject.EnterWriteLock())
                     {
-                        _strChargenKarmaToNuyenExpression = '(' + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
+                        _strChargenKarmaToNuyenExpression = strNewValue;
+                        // A safety check to make sure that we always still account for Priority-given Nuyen
+                        if (SettingsManager.LoadedCharacterSettings.ContainsKey(DictionaryKey)
+                            && !_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}"))
+                        {
+                            _strChargenKarmaToNuyenExpression
+                                = '(' + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
+                        }
+
+                        OnPropertyChanged();
                     }
-                    OnPropertyChanged();
                 }
             }
         }
@@ -2533,14 +3385,23 @@ namespace Chummer
         /// </summary>
         public string BoundSpiritExpression
         {
-            get => _strBoundSpiritExpression;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strBoundSpiritExpression;
+            }
             set
             {
                 string strNewValue = value.CleanXPath().Trim('\"');
-                if (_strBoundSpiritExpression != strNewValue)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _strBoundSpiritExpression = strNewValue;
-                    OnPropertyChanged();
+                    if (_strBoundSpiritExpression == strNewValue)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _strBoundSpiritExpression = strNewValue;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2550,14 +3411,23 @@ namespace Chummer
         /// </summary>
         public string RegisteredSpriteExpression
         {
-            get => _strRegisteredSpriteExpression;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strRegisteredSpriteExpression;
+            }
             set
             {
                 string strNewValue = value.CleanXPath().Trim('\"');
-                if (_strRegisteredSpriteExpression != strNewValue)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _strRegisteredSpriteExpression = strNewValue;
-                    OnPropertyChanged();
+                    if (_strRegisteredSpriteExpression == strNewValue)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _strRegisteredSpriteExpression = strNewValue;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2567,13 +3437,22 @@ namespace Chummer
         /// </summary>
         public int DroneArmorMultiplier
         {
-            get => _intDroneArmorMultiplier;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intDroneArmorMultiplier;
+            }
             set
             {
-                if (_intDroneArmorMultiplier != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intDroneArmorMultiplier = value;
-                    OnPropertyChanged();
+                    if (_intDroneArmorMultiplier == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intDroneArmorMultiplier = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2583,15 +3462,24 @@ namespace Chummer
         /// </summary>
         public bool DroneArmorMultiplierEnabled
         {
-            get => _blnDroneArmorMultiplierEnabled;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnDroneArmorMultiplierEnabled;
+            }
             set
             {
-                if (_blnDroneArmorMultiplierEnabled != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnDroneArmorMultiplierEnabled = value;
-                    OnPropertyChanged();
-                    if (!value)
-                        DroneArmorMultiplier = 2;
+                    if (_blnDroneArmorMultiplierEnabled == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnDroneArmorMultiplierEnabled = value;
+                        OnPropertyChanged();
+                        if (!value)
+                            DroneArmorMultiplier = 2;
+                    }
                 }
             }
         }
@@ -2601,13 +3489,22 @@ namespace Chummer
         /// </summary>
         public bool NoArmorEncumbrance
         {
-            get => _blnNoArmorEncumbrance;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnNoArmorEncumbrance;
+            }
             set
             {
-                if (_blnNoArmorEncumbrance != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnNoArmorEncumbrance = value;
-                    OnPropertyChanged();
+                    if (_blnNoArmorEncumbrance == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnNoArmorEncumbrance = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2617,13 +3514,22 @@ namespace Chummer
         /// </summary>
         public bool ESSLossReducesMaximumOnly
         {
-            get => _blnESSLossReducesMaximumOnly;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnESSLossReducesMaximumOnly;
+            }
             set
             {
-                if (_blnESSLossReducesMaximumOnly != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnESSLossReducesMaximumOnly = value;
-                    OnPropertyChanged();
+                    if (_blnESSLossReducesMaximumOnly == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnESSLossReducesMaximumOnly = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2633,13 +3539,22 @@ namespace Chummer
         /// </summary>
         public bool AllowSkillRegrouping
         {
-            get => _blnAllowSkillRegrouping;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnAllowSkillRegrouping;
+            }
             set
             {
-                if (_blnAllowSkillRegrouping != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnAllowSkillRegrouping = value;
-                    OnPropertyChanged();
+                    if (_blnAllowSkillRegrouping == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnAllowSkillRegrouping = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2649,13 +3564,22 @@ namespace Chummer
         /// </summary>
         public bool SpecializationsBreakSkillGroups
         {
-            get => _blnSpecializationsBreakSkillGroups;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnSpecializationsBreakSkillGroups;
+            }
             set
             {
-                if (_blnSpecializationsBreakSkillGroups != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnSpecializationsBreakSkillGroups = value;
-                    OnPropertyChanged();
+                    if (_blnSpecializationsBreakSkillGroups == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnSpecializationsBreakSkillGroups = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2663,30 +3587,60 @@ namespace Chummer
         /// <summary>
         /// Sourcebooks.
         /// </summary>
-        public HashSet<string> BooksWritable => _setBooks;
+        public HashSet<string> BooksWritable
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _setBooks;
+            }
+        }
 
         /// <summary>
         /// Sourcebooks.
         /// </summary>
-        public IReadOnlyCollection<string> Books => _setBooks;
+        public IReadOnlyCollection<string> Books
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _setBooks;
+            }
+        }
 
         /// <summary>
         /// File name of the option (if it is not a built-in one).
         /// </summary>
-        public string FileName => _strFileName;
+        public string FileName
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strFileName;
+            }
+        }
 
         /// <summary>
         /// Setting name.
         /// </summary>
         public string Name
         {
-            get => _strName;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strName;
+            }
             set
             {
-                if (_strName != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _strName = value;
-                    OnPropertyChanged();
+                    if (_strName == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _strName = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2698,16 +3652,23 @@ namespace Chummer
         {
             get
             {
-                string strReturn = Name;
-                if (BuiltInOption)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    strReturn = XmlManager.LoadXPath("settings.xml").SelectSingleNode("/chummer/settings/setting[id = '" + SourceId + "']/translate")?.Value ?? strReturn;
+                    string strReturn = Name;
+                    if (BuiltInOption)
+                    {
+                        strReturn = XmlManager.LoadXPath("settings.xml")
+                                              .SelectSingleNode(
+                                                  "/chummer/settings/setting[id = '" + SourceId + "']/translate")?.Value
+                                    ?? strReturn;
+                    }
+                    else
+                    {
+                        strReturn += LanguageManager.GetString("String_Space") + '[' + FileName + ']';
+                    }
+
+                    return strReturn;
                 }
-                else
-                {
-                    strReturn += LanguageManager.GetString("String_Space") + '[' + FileName + ']';
-                }
-                return strReturn;
             }
         }
 
@@ -2716,13 +3677,22 @@ namespace Chummer
         /// </summary>
         public bool MetatypeCostsKarma
         {
-            get => _blnMetatypeCostsKarma;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnMetatypeCostsKarma;
+            }
             set
             {
-                if (_blnMetatypeCostsKarma != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnMetatypeCostsKarma = value;
-                    OnPropertyChanged();
+                    if (_blnMetatypeCostsKarma == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnMetatypeCostsKarma = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2732,13 +3702,22 @@ namespace Chummer
         /// </summary>
         public int MetatypeCostsKarmaMultiplier
         {
-            get => _intMetatypeCostMultiplier;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intMetatypeCostMultiplier;
+            }
             set
             {
-                if (_intMetatypeCostMultiplier != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intMetatypeCostMultiplier = value;
-                    OnPropertyChanged();
+                    if (_intMetatypeCostMultiplier == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intMetatypeCostMultiplier = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2748,13 +3727,22 @@ namespace Chummer
         /// </summary>
         public int LimbCount
         {
-            get => _intLimbCount;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intLimbCount;
+            }
             set
             {
-                if (_intLimbCount != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intLimbCount = value;
-                    OnPropertyChanged();
+                    if (_intLimbCount == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intLimbCount = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2764,13 +3752,22 @@ namespace Chummer
         /// </summary>
         public string ExcludeLimbSlot
         {
-            get => _strExcludeLimbSlot;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strExcludeLimbSlot;
+            }
             set
             {
-                if (_strExcludeLimbSlot != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _strExcludeLimbSlot = value;
-                    OnPropertyChanged();
+                    if (_strExcludeLimbSlot == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _strExcludeLimbSlot = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2780,13 +3777,22 @@ namespace Chummer
         /// </summary>
         public bool AllowCyberwareESSDiscounts
         {
-            get => _blnAllowCyberwareESSDiscounts;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnAllowCyberwareESSDiscounts;
+            }
             set
             {
-                if (_blnAllowCyberwareESSDiscounts != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnAllowCyberwareESSDiscounts = value;
-                    OnPropertyChanged();
+                    if (_blnAllowCyberwareESSDiscounts == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnAllowCyberwareESSDiscounts = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2796,13 +3802,22 @@ namespace Chummer
         /// </summary>
         public bool ArmorDegradation
         {
-            get => _blnArmorDegradation;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnArmorDegradation;
+            }
             set
             {
-                if (_blnArmorDegradation != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnArmorDegradation = value;
-                    OnPropertyChanged();
+                    if (_blnArmorDegradation == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnArmorDegradation = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2812,13 +3827,22 @@ namespace Chummer
         /// </summary>
         public bool SpecialKarmaCostBasedOnShownValue
         {
-            get => _blnSpecialKarmaCostBasedOnShownValue;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnSpecialKarmaCostBasedOnShownValue;
+            }
             set
             {
-                if (_blnSpecialKarmaCostBasedOnShownValue != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnSpecialKarmaCostBasedOnShownValue = value;
-                    OnPropertyChanged();
+                    if (_blnSpecialKarmaCostBasedOnShownValue == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnSpecialKarmaCostBasedOnShownValue = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2828,15 +3852,24 @@ namespace Chummer
         /// </summary>
         public bool ExceedPositiveQualities
         {
-            get => _blnExceedPositiveQualities;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnExceedPositiveQualities;
+            }
             set
             {
-                if (_blnExceedPositiveQualities != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnExceedPositiveQualities = value;
-                    OnPropertyChanged();
-                    if (!value)
-                        ExceedPositiveQualitiesCostDoubled = false;
+                    if (_blnExceedPositiveQualities == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnExceedPositiveQualities = value;
+                        OnPropertyChanged();
+                        if (!value)
+                            ExceedPositiveQualitiesCostDoubled = false;
+                    }
                 }
             }
         }
@@ -2846,13 +3879,22 @@ namespace Chummer
         /// </summary>
         public bool ExceedPositiveQualitiesCostDoubled
         {
-            get => _blnExceedPositiveQualitiesCostDoubled;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnExceedPositiveQualitiesCostDoubled;
+            }
             set
             {
-                if (_blnExceedPositiveQualitiesCostDoubled != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnExceedPositiveQualitiesCostDoubled = value;
-                    OnPropertyChanged();
+                    if (_blnExceedPositiveQualitiesCostDoubled == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnExceedPositiveQualitiesCostDoubled = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2862,15 +3904,24 @@ namespace Chummer
         /// </summary>
         public bool ExceedNegativeQualities
         {
-            get => _blnExceedNegativeQualities;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnExceedNegativeQualities;
+            }
             set
             {
-                if (_blnExceedNegativeQualities != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnExceedNegativeQualities = value;
-                    OnPropertyChanged();
-                    if (!value)
-                        ExceedNegativeQualitiesLimit = false;
+                    if (_blnExceedNegativeQualities == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnExceedNegativeQualities = value;
+                        OnPropertyChanged();
+                        if (!value)
+                            ExceedNegativeQualitiesLimit = false;
+                    }
                 }
             }
         }
@@ -2880,13 +3931,22 @@ namespace Chummer
         /// </summary>
         public bool ExceedNegativeQualitiesLimit
         {
-            get => _blnExceedNegativeQualitiesLimit;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnExceedNegativeQualitiesLimit;
+            }
             set
             {
-                if (_blnExceedNegativeQualitiesLimit != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnExceedNegativeQualitiesLimit = value;
-                    OnPropertyChanged();
+                    if (_blnExceedNegativeQualitiesLimit == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnExceedNegativeQualitiesLimit = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2896,13 +3956,22 @@ namespace Chummer
         /// </summary>
         public bool MultiplyRestrictedCost
         {
-            get => _blnMultiplyRestrictedCost;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnMultiplyRestrictedCost;
+            }
             set
             {
-                if (_blnMultiplyRestrictedCost != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnMultiplyRestrictedCost = value;
-                    OnPropertyChanged();
+                    if (_blnMultiplyRestrictedCost == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnMultiplyRestrictedCost = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2912,13 +3981,22 @@ namespace Chummer
         /// </summary>
         public bool MultiplyForbiddenCost
         {
-            get => _blnMultiplyForbiddenCost;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnMultiplyForbiddenCost;
+            }
             set
             {
-                if (_blnMultiplyForbiddenCost != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnMultiplyForbiddenCost = value;
-                    OnPropertyChanged();
+                    if (_blnMultiplyForbiddenCost == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnMultiplyForbiddenCost = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2928,13 +4006,22 @@ namespace Chummer
         /// </summary>
         public int RestrictedCostMultiplier
         {
-            get => _intRestrictedCostMultiplier;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intRestrictedCostMultiplier;
+            }
             set
             {
-                if (_intRestrictedCostMultiplier != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intRestrictedCostMultiplier = value;
-                    OnPropertyChanged();
+                    if (_intRestrictedCostMultiplier == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intRestrictedCostMultiplier = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -2944,18 +4031,27 @@ namespace Chummer
         /// </summary>
         public int ForbiddenCostMultiplier
         {
-            get => _intForbiddenCostMultiplier;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intForbiddenCostMultiplier;
+            }
             set
             {
-                if (_intForbiddenCostMultiplier != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intForbiddenCostMultiplier = value;
-                    OnPropertyChanged();
+                    if (_intForbiddenCostMultiplier == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intForbiddenCostMultiplier = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
 
-        private int _intCachedMaxNuyenDecimals = -1;
+        private int _intCachedMaxNuyenDecimals = int.MinValue;
 
         /// <summary>
         /// Maximum number of decimal places to round to when displaying nuyen values.
@@ -2964,52 +4060,58 @@ namespace Chummer
         {
             get
             {
-                if (_intCachedMaxNuyenDecimals >= 0)
-                    return _intCachedMaxNuyenDecimals;
-                string strNuyenFormat = NuyenFormat;
-                int intDecimalPlaces = strNuyenFormat.IndexOf('.');
-                if (intDecimalPlaces == -1)
-                    intDecimalPlaces = 0;
-                else
-                    intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
-
-                return _intCachedMaxNuyenDecimals = intDecimalPlaces;
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_intCachedMaxNuyenDecimals >= 0)
+                        return _intCachedMaxNuyenDecimals;
+                    string strNuyenFormat = NuyenFormat;
+                    int intDecimalPlaces = strNuyenFormat.IndexOf('.');
+                    if (intDecimalPlaces == -1)
+                        intDecimalPlaces = 0;
+                    else
+                        intDecimalPlaces = strNuyenFormat.Length - intDecimalPlaces - 1;
+                    Interlocked.CompareExchange(ref _intCachedMaxNuyenDecimals, intDecimalPlaces, int.MinValue);
+                    return _intCachedMaxNuyenDecimals = intDecimalPlaces;
+                }
             }
             set
             {
                 int intNewNuyenDecimals = Math.Max(value, 0);
-                if (MinNuyenDecimals > intNewNuyenDecimals)
-                    MinNuyenDecimals = intNewNuyenDecimals;
-                if (intNewNuyenDecimals == 0)
-                    return; // Already taken care of by MinNuyenDecimals
-                int intCurrentNuyenDecimals = MaxNuyenDecimals;
-                if (intNewNuyenDecimals < intCurrentNuyenDecimals)
+                using (LockObject.EnterWriteLock())
                 {
-                    NuyenFormat = NuyenFormat.Substring(0, NuyenFormat.Length - (intNewNuyenDecimals - intCurrentNuyenDecimals));
-                }
-                else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
-                {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdNuyenFormat))
+                    if (MinNuyenDecimals > intNewNuyenDecimals)
+                        MinNuyenDecimals = intNewNuyenDecimals;
+                    if (intNewNuyenDecimals == 0)
+                        return; // Already taken care of by MinNuyenDecimals
+                    int intCurrentNuyenDecimals = MaxNuyenDecimals;
+                    if (intNewNuyenDecimals < intCurrentNuyenDecimals)
                     {
-                        sbdNuyenFormat.Append(string.IsNullOrEmpty(NuyenFormat) ? "#,0" : NuyenFormat);
-                        if (intCurrentNuyenDecimals == 0)
+                        NuyenFormat = NuyenFormat.Substring(
+                            0, NuyenFormat.Length - (intNewNuyenDecimals - intCurrentNuyenDecimals));
+                    }
+                    else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
+                    {
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdNuyenFormat))
                         {
-                            sbdNuyenFormat.Append('.');
-                        }
+                            sbdNuyenFormat.Append(string.IsNullOrEmpty(NuyenFormat) ? "#,0" : NuyenFormat);
+                            if (intCurrentNuyenDecimals == 0)
+                            {
+                                sbdNuyenFormat.Append('.');
+                            }
 
-                        for (int i = intCurrentNuyenDecimals; i < intNewNuyenDecimals; ++i)
-                        {
-                            sbdNuyenFormat.Append('#');
+                            for (int i = intCurrentNuyenDecimals; i < intNewNuyenDecimals; ++i)
+                            {
+                                sbdNuyenFormat.Append('#');
+                            }
+                            NuyenFormat = sbdNuyenFormat.ToString();
                         }
-
-                        NuyenFormat = sbdNuyenFormat.ToString();
                     }
                 }
             }
         }
 
-        private int _intCachedMinNuyenDecimals = -1;
+        private int _intCachedMinNuyenDecimals = int.MinValue;
 
         /// <summary>
         /// Minimum number of decimal places to round to when displaying nuyen values.
@@ -3018,48 +4120,55 @@ namespace Chummer
         {
             get
             {
-                if (_intCachedMinNuyenDecimals >= 0)
-                    return _intCachedMinNuyenDecimals;
-                string strNuyenFormat = NuyenFormat;
-                int intDecimalPlaces = strNuyenFormat.IndexOf('.');
-                if (intDecimalPlaces == -1)
-                    intDecimalPlaces = 0;
-                else
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    int intStartOptionalDecimalPlaces = strNuyenFormat.IndexOf('#', intDecimalPlaces);
-                    if (intStartOptionalDecimalPlaces < 0)
-                        intStartOptionalDecimalPlaces = strNuyenFormat.Length;
-                    intDecimalPlaces = intStartOptionalDecimalPlaces - intDecimalPlaces - 1;
+                    if (_intCachedMinNuyenDecimals >= 0)
+                        return _intCachedMinNuyenDecimals;
+                    string strNuyenFormat = NuyenFormat;
+                    int intDecimalPlaces = strNuyenFormat.IndexOf('.');
+                    if (intDecimalPlaces == -1)
+                        intDecimalPlaces = 0;
+                    else
+                    {
+                        int intStartOptionalDecimalPlaces = strNuyenFormat.IndexOf('#', intDecimalPlaces);
+                        if (intStartOptionalDecimalPlaces < 0)
+                            intStartOptionalDecimalPlaces = strNuyenFormat.Length;
+                        intDecimalPlaces = intStartOptionalDecimalPlaces - intDecimalPlaces - 1;
+                    }
+                    Interlocked.CompareExchange(ref _intCachedMinNuyenDecimals, intDecimalPlaces, int.MinValue);
+                    return _intCachedMinNuyenDecimals;
                 }
-
-                return _intCachedMinNuyenDecimals = intDecimalPlaces;
             }
             set
             {
                 int intNewNuyenDecimals = Math.Max(value, 0);
-                if (MaxNuyenDecimals < intNewNuyenDecimals)
-                    MaxNuyenDecimals = intNewNuyenDecimals;
-                int intDecimalPlaces = NuyenFormat.IndexOf('.');
-                if (intNewNuyenDecimals == 0)
+                using (LockObject.EnterWriteLock())
                 {
-                    if (intDecimalPlaces != -1)
-                        NuyenFormat = NuyenFormat.Substring(0, intDecimalPlaces);
-                    return;
-                }
-                int intCurrentNuyenDecimals = MinNuyenDecimals;
-                if (intNewNuyenDecimals < intCurrentNuyenDecimals)
-                {
-                    char[] achrNuyenFormat = NuyenFormat.ToCharArray();
-                    for (int i = intDecimalPlaces + 1 + intNewNuyenDecimals; i < achrNuyenFormat.Length; ++i)
-                        achrNuyenFormat[i] = '0';
-                    NuyenFormat = new string(achrNuyenFormat);
-                }
-                else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
-                {
-                    char[] achrNuyenFormat = NuyenFormat.ToCharArray();
-                    for (int i = 1; i < intNewNuyenDecimals; ++i)
-                        achrNuyenFormat[intDecimalPlaces + i] = '0';
-                    NuyenFormat = new string(achrNuyenFormat);
+                    if (MaxNuyenDecimals < intNewNuyenDecimals)
+                        MaxNuyenDecimals = intNewNuyenDecimals;
+                    int intDecimalPlaces = NuyenFormat.IndexOf('.');
+                    if (intNewNuyenDecimals == 0)
+                    {
+                        if (intDecimalPlaces != -1)
+                            NuyenFormat = NuyenFormat.Substring(0, intDecimalPlaces);
+                        return;
+                    }
+
+                    int intCurrentNuyenDecimals = MinNuyenDecimals;
+                    if (intNewNuyenDecimals < intCurrentNuyenDecimals)
+                    {
+                        char[] achrNuyenFormat = NuyenFormat.ToCharArray();
+                        for (int i = intDecimalPlaces + 1 + intNewNuyenDecimals; i < achrNuyenFormat.Length; ++i)
+                            achrNuyenFormat[i] = '0';
+                        NuyenFormat = new string(achrNuyenFormat);
+                    }
+                    else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
+                    {
+                        char[] achrNuyenFormat = NuyenFormat.ToCharArray();
+                        for (int i = 1; i < intNewNuyenDecimals; ++i)
+                            achrNuyenFormat[intDecimalPlaces + i] = '0';
+                        NuyenFormat = new string(achrNuyenFormat);
+                    }
                 }
             }
         }
@@ -3069,13 +4178,22 @@ namespace Chummer
         /// </summary>
         public string NuyenFormat
         {
-            get => _strNuyenFormat;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strNuyenFormat;
+            }
             set
             {
-                if (_strNuyenFormat != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _strNuyenFormat = value;
-                    OnPropertyChanged();
+                    if (_strNuyenFormat == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _strNuyenFormat = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3085,18 +4203,27 @@ namespace Chummer
         /// </summary>
         public string WeightFormat
         {
-            get => _strWeightFormat;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strWeightFormat;
+            }
             set
             {
-                if (_strWeightFormat != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _strWeightFormat = value;
-                    OnPropertyChanged();
+                    if (_strWeightFormat == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _strWeightFormat = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
 
-        private int _intCachedWeightDecimals = -1;
+        private int _intCachedWeightDecimals = int.MinValue;
 
         /// <summary>
         /// Number of decimal places to round to when calculating Essence.
@@ -3105,37 +4232,49 @@ namespace Chummer
         {
             get
             {
-                if (_intCachedWeightDecimals >= 0)
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_intCachedWeightDecimals >= 0)
+                        return _intCachedWeightDecimals;
+                    string strWeightFormat = WeightFormat;
+                    int intDecimalPlaces = strWeightFormat.IndexOf('.');
+                    intDecimalPlaces = strWeightFormat.Length - intDecimalPlaces - 1;
+                    Interlocked.CompareExchange(ref _intCachedWeightDecimals, intDecimalPlaces, int.MinValue);
                     return _intCachedWeightDecimals;
-                string strWeightFormat = WeightFormat;
-                int intDecimalPlaces = strWeightFormat.IndexOf('.');
-                intDecimalPlaces = strWeightFormat.Length - intDecimalPlaces - 1;
-
-                return _intCachedWeightDecimals = intDecimalPlaces;
+                }
             }
             set
             {
-                int intCurrentWeightDecimals = WeightDecimals;
                 int intNewWeightDecimals = Math.Max(value, 0);
-                if (intNewWeightDecimals < intCurrentWeightDecimals)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    WeightFormat = EssenceFormat.Substring(0, EssenceFormat.Length - (intCurrentWeightDecimals - intNewWeightDecimals));
-                }
-                else if (intNewWeightDecimals > intCurrentWeightDecimals)
-                {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdWeightFormat))
+                    int intCurrentWeightDecimals = WeightDecimals;
+                    if (intNewWeightDecimals < intCurrentWeightDecimals)
                     {
-                        sbdWeightFormat.Append(string.IsNullOrEmpty(WeightFormat) ? "#,0" : WeightFormat);
-                        if (intCurrentWeightDecimals == 0)
+                        using (LockObject.EnterWriteLock())
+                            WeightFormat
+                                = EssenceFormat.Substring(
+                                    0, EssenceFormat.Length - (intCurrentWeightDecimals - intNewWeightDecimals));
+                    }
+                    else if (intNewWeightDecimals > intCurrentWeightDecimals)
+                    {
+                        using (LockObject.EnterWriteLock())
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdWeightFormat))
                         {
-                            sbdWeightFormat.Append('.');
+                            sbdWeightFormat.Append(string.IsNullOrEmpty(WeightFormat) ? "#,0" : WeightFormat);
+                            if (intCurrentWeightDecimals == 0)
+                            {
+                                sbdWeightFormat.Append('.');
+                            }
+
+                            for (int i = intCurrentWeightDecimals; i < intNewWeightDecimals; ++i)
+                            {
+                                sbdWeightFormat.Append('#');
+                            }
+
+                            WeightFormat = sbdWeightFormat.ToString();
                         }
-                        for (int i = intCurrentWeightDecimals; i < intNewWeightDecimals; ++i)
-                        {
-                            sbdWeightFormat.Append('#');
-                        }
-                        WeightFormat = sbdWeightFormat.ToString();
                     }
                 }
             }
@@ -3146,14 +4285,23 @@ namespace Chummer
         /// </summary>
         public string LiftLimitExpression
         {
-            get => _strLiftLimitExpression;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strLiftLimitExpression;
+            }
             set
             {
                 string strNewValue = value.CleanXPath().Trim('\"');
-                if (_strLiftLimitExpression != strNewValue)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _strLiftLimitExpression = strNewValue;
-                    OnPropertyChanged();
+                    if (_strLiftLimitExpression == strNewValue)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _strLiftLimitExpression = strNewValue;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3163,14 +4311,23 @@ namespace Chummer
         /// </summary>
         public string CarryLimitExpression
         {
-            get => _strCarryLimitExpression;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strCarryLimitExpression;
+            }
             set
             {
                 string strNewValue = value.CleanXPath().Trim('\"');
-                if (_strCarryLimitExpression != strNewValue)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _strCarryLimitExpression = strNewValue;
-                    OnPropertyChanged();
+                    if (_strCarryLimitExpression == strNewValue)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _strCarryLimitExpression = strNewValue;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3180,14 +4337,23 @@ namespace Chummer
         /// </summary>
         public string EncumbranceIntervalExpression
         {
-            get => _strEncumbranceIntervalExpression;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strEncumbranceIntervalExpression;
+            }
             set
             {
                 string strNewValue = value.CleanXPath().Trim('\"');
-                if (_strEncumbranceIntervalExpression != strNewValue)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _strEncumbranceIntervalExpression = strNewValue;
-                    OnPropertyChanged();
+                    if (_strEncumbranceIntervalExpression == strNewValue)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _strEncumbranceIntervalExpression = strNewValue;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3197,13 +4363,22 @@ namespace Chummer
         /// </summary>
         public bool DoEncumbrancePenaltyPhysicalLimit
         {
-            get => _blnDoEncumbrancePenaltyPhysicalLimit;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnDoEncumbrancePenaltyPhysicalLimit;
+            }
             set
             {
-                if (_blnDoEncumbrancePenaltyPhysicalLimit != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnDoEncumbrancePenaltyPhysicalLimit = value;
-                    OnPropertyChanged();
+                    if (_blnDoEncumbrancePenaltyPhysicalLimit == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnDoEncumbrancePenaltyPhysicalLimit = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3213,13 +4388,22 @@ namespace Chummer
         /// </summary>
         public int EncumbrancePenaltyPhysicalLimit
         {
-            get => _intEncumbrancePenaltyPhysicalLimit;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intEncumbrancePenaltyPhysicalLimit;
+            }
             set
             {
-                if (_intEncumbrancePenaltyPhysicalLimit != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intEncumbrancePenaltyPhysicalLimit = value;
-                    OnPropertyChanged();
+                    if (_intEncumbrancePenaltyPhysicalLimit == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intEncumbrancePenaltyPhysicalLimit = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3229,13 +4413,22 @@ namespace Chummer
         /// </summary>
         public bool DoEncumbrancePenaltyMovementSpeed
         {
-            get => _blnDoEncumbrancePenaltyMovementSpeed;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnDoEncumbrancePenaltyMovementSpeed;
+            }
             set
             {
-                if (_blnDoEncumbrancePenaltyMovementSpeed != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnDoEncumbrancePenaltyMovementSpeed = value;
-                    OnPropertyChanged();
+                    if (_blnDoEncumbrancePenaltyMovementSpeed == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnDoEncumbrancePenaltyMovementSpeed = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3245,13 +4438,22 @@ namespace Chummer
         /// </summary>
         public int EncumbrancePenaltyMovementSpeed
         {
-            get => _intEncumbrancePenaltyMovementSpeed;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intEncumbrancePenaltyMovementSpeed;
+            }
             set
             {
-                if (_intEncumbrancePenaltyMovementSpeed != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intEncumbrancePenaltyMovementSpeed = value;
-                    OnPropertyChanged();
+                    if (_intEncumbrancePenaltyMovementSpeed == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intEncumbrancePenaltyMovementSpeed = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3261,13 +4463,22 @@ namespace Chummer
         /// </summary>
         public bool DoEncumbrancePenaltyAgility
         {
-            get => _blnDoEncumbrancePenaltyAgility;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnDoEncumbrancePenaltyAgility;
+            }
             set
             {
-                if (_blnDoEncumbrancePenaltyAgility != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnDoEncumbrancePenaltyAgility = value;
-                    OnPropertyChanged();
+                    if (_blnDoEncumbrancePenaltyAgility == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnDoEncumbrancePenaltyAgility = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3277,13 +4488,22 @@ namespace Chummer
         /// </summary>
         public int EncumbrancePenaltyAgility
         {
-            get => _intEncumbrancePenaltyAgility;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intEncumbrancePenaltyAgility;
+            }
             set
             {
-                if (_intEncumbrancePenaltyAgility != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intEncumbrancePenaltyAgility = value;
-                    OnPropertyChanged();
+                    if (_intEncumbrancePenaltyAgility == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intEncumbrancePenaltyAgility = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3293,13 +4513,22 @@ namespace Chummer
         /// </summary>
         public bool DoEncumbrancePenaltyReaction
         {
-            get => _blnDoEncumbrancePenaltyReaction;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnDoEncumbrancePenaltyReaction;
+            }
             set
             {
-                if (_blnDoEncumbrancePenaltyReaction != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnDoEncumbrancePenaltyReaction = value;
-                    OnPropertyChanged();
+                    if (_blnDoEncumbrancePenaltyReaction == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnDoEncumbrancePenaltyReaction = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3309,13 +4538,22 @@ namespace Chummer
         /// </summary>
         public int EncumbrancePenaltyReaction
         {
-            get => _intEncumbrancePenaltyReaction;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intEncumbrancePenaltyReaction;
+            }
             set
             {
-                if (_intEncumbrancePenaltyReaction != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intEncumbrancePenaltyReaction = value;
-                    OnPropertyChanged();
+                    if (_intEncumbrancePenaltyReaction == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intEncumbrancePenaltyReaction = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3325,13 +4563,22 @@ namespace Chummer
         /// </summary>
         public bool DoEncumbrancePenaltyWoundModifier
         {
-            get => _blnDoEncumbrancePenaltyWoundModifier;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnDoEncumbrancePenaltyWoundModifier;
+            }
             set
             {
-                if (_blnDoEncumbrancePenaltyWoundModifier != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnDoEncumbrancePenaltyWoundModifier = value;
-                    OnPropertyChanged();
+                    if (_blnDoEncumbrancePenaltyWoundModifier == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnDoEncumbrancePenaltyWoundModifier = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3341,18 +4588,27 @@ namespace Chummer
         /// </summary>
         public int EncumbrancePenaltyWoundModifier
         {
-            get => _intEncumbrancePenaltyWoundModifier;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intEncumbrancePenaltyWoundModifier;
+            }
             set
             {
-                if (_intEncumbrancePenaltyWoundModifier != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intEncumbrancePenaltyWoundModifier = value;
-                    OnPropertyChanged();
+                    if (_intEncumbrancePenaltyWoundModifier == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intEncumbrancePenaltyWoundModifier = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
 
-        private int _intCachedEssenceDecimals = -1;
+        private int _intCachedEssenceDecimals = int.MinValue;
 
         /// <summary>
         /// Number of decimal places to round to when calculating Essence.
@@ -3361,39 +4617,49 @@ namespace Chummer
         {
             get
             {
-                if (_intCachedEssenceDecimals >= 0)
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_intCachedEssenceDecimals >= 0)
+                        return _intCachedEssenceDecimals;
+                    string strEssenceFormat = EssenceFormat;
+                    int intDecimalPlaces = strEssenceFormat.IndexOf('.');
+                    intDecimalPlaces = strEssenceFormat.Length - intDecimalPlaces - 1;
+                    Interlocked.CompareExchange(ref _intCachedEssenceDecimals, intDecimalPlaces, int.MinValue);
                     return _intCachedEssenceDecimals;
-                string strEssenceFormat = EssenceFormat;
-                int intDecimalPlaces = strEssenceFormat.IndexOf('.');
-                intDecimalPlaces = strEssenceFormat.Length - intDecimalPlaces - 1;
-
-                return _intCachedEssenceDecimals = intDecimalPlaces;
+                }
             }
             set
             {
-                int intCurrentEssenceDecimals = EssenceDecimals;
                 int intNewEssenceDecimals = Math.Max(value, 2);
-                if (intNewEssenceDecimals < intCurrentEssenceDecimals)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    EssenceFormat = EssenceFormat.Substring(0, EssenceFormat.Length - (intCurrentEssenceDecimals - intNewEssenceDecimals));
-                }
-                else if (intNewEssenceDecimals > intCurrentEssenceDecimals)
-                {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdEssenceFormat))
+                    int intCurrentEssenceDecimals = EssenceDecimals;
+                    if (intNewEssenceDecimals < intCurrentEssenceDecimals)
                     {
-                        sbdEssenceFormat.Append(string.IsNullOrEmpty(EssenceFormat) ? "#,0" : EssenceFormat);
-                        if (intCurrentEssenceDecimals == 0)
+                        using (LockObject.EnterWriteLock())
+                            EssenceFormat
+                                = EssenceFormat.Substring(
+                                    0, EssenceFormat.Length - (intCurrentEssenceDecimals - intNewEssenceDecimals));
+                    }
+                    else if (intNewEssenceDecimals > intCurrentEssenceDecimals)
+                    {
+                        using (LockObject.EnterWriteLock())
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdEssenceFormat))
                         {
-                            sbdEssenceFormat.Append('.');
-                        }
+                            sbdEssenceFormat.Append(string.IsNullOrEmpty(EssenceFormat) ? "#,0" : EssenceFormat);
+                            if (intCurrentEssenceDecimals == 0)
+                            {
+                                sbdEssenceFormat.Append('.');
+                            }
 
-                        for (int i = intCurrentEssenceDecimals; i < intNewEssenceDecimals; ++i)
-                        {
-                            sbdEssenceFormat.Append('0');
-                        }
+                            for (int i = intCurrentEssenceDecimals; i < intNewEssenceDecimals; ++i)
+                            {
+                                sbdEssenceFormat.Append('0');
+                            }
 
-                        EssenceFormat = sbdEssenceFormat.ToString();
+                            EssenceFormat = sbdEssenceFormat.ToString();
+                        }
                     }
                 }
             }
@@ -3404,7 +4670,11 @@ namespace Chummer
         /// </summary>
         public string EssenceFormat
         {
-            get => _strEssenceFormat;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strEssenceFormat;
+            }
             set
             {
                 string strNewValue = value;
@@ -3425,10 +4695,16 @@ namespace Chummer
                         }
                     }
                 }
-                if (_strEssenceFormat != strNewValue)
+
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _strEssenceFormat = strNewValue;
-                    OnPropertyChanged();
+                    if (_strEssenceFormat == strNewValue)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _strEssenceFormat = strNewValue;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3438,13 +4714,22 @@ namespace Chummer
         /// </summary>
         public bool DontRoundEssenceInternally
         {
-            get => _blnDoNotRoundEssenceInternally;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnDoNotRoundEssenceInternally;
+            }
             set
             {
-                if (_blnDoNotRoundEssenceInternally != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnDoNotRoundEssenceInternally = value;
-                    OnPropertyChanged();
+                    if (_blnDoNotRoundEssenceInternally == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnDoNotRoundEssenceInternally = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3454,13 +4739,22 @@ namespace Chummer
         /// </summary>
         public bool EnableEnemyTracking
         {
-            get => _blnEnableEnemyTracking;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnEnableEnemyTracking;
+            }
             set
             {
-                if (_blnEnableEnemyTracking != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnEnableEnemyTracking = value;
-                    OnPropertyChanged();
+                    if (_blnEnableEnemyTracking == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnEnableEnemyTracking = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3470,13 +4764,22 @@ namespace Chummer
         /// </summary>
         public bool EnemyKarmaQualityLimit
         {
-            get => _blnEnemyKarmaQualityLimit;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnEnemyKarmaQualityLimit;
+            }
             set
             {
-                if (_blnEnemyKarmaQualityLimit != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnEnemyKarmaQualityLimit = value;
-                    OnPropertyChanged();
+                    if (_blnEnemyKarmaQualityLimit == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnEnemyKarmaQualityLimit = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3486,13 +4789,22 @@ namespace Chummer
         /// </summary>
         public bool EnforceCapacity
         {
-            get => _blnEnforceCapacity;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnEnforceCapacity;
+            }
             set
             {
-                if (_blnEnforceCapacity != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnEnforceCapacity = value;
-                    OnPropertyChanged();
+                    if (_blnEnforceCapacity == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnEnforceCapacity = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3502,13 +4814,22 @@ namespace Chummer
         /// </summary>
         public bool RestrictRecoil
         {
-            get => _blnRestrictRecoil;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnRestrictRecoil;
+            }
             set
             {
-                if (_blnRestrictRecoil != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnRestrictRecoil = value;
-                    OnPropertyChanged();
+                    if (_blnRestrictRecoil == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnRestrictRecoil = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3518,13 +4839,22 @@ namespace Chummer
         /// </summary>
         public bool UnrestrictedNuyen
         {
-            get => _blnUnrestrictedNuyen;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnUnrestrictedNuyen;
+            }
             set
             {
-                if (_blnUnrestrictedNuyen != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnUnrestrictedNuyen = value;
-                    OnPropertyChanged();
+                    if (_blnUnrestrictedNuyen == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnUnrestrictedNuyen = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3534,13 +4864,22 @@ namespace Chummer
         /// </summary>
         public bool AllowHigherStackedFoci
         {
-            get => _blnAllowHigherStackedFoci;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnAllowHigherStackedFoci;
+            }
             set
             {
-                if (_blnAllowHigherStackedFoci != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnAllowHigherStackedFoci = value;
-                    OnPropertyChanged();
+                    if (_blnAllowHigherStackedFoci == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnAllowHigherStackedFoci = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3550,13 +4889,22 @@ namespace Chummer
         /// </summary>
         public bool AllowEditPartOfBaseWeapon
         {
-            get => _blnAllowEditPartOfBaseWeapon;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnAllowEditPartOfBaseWeapon;
+            }
             set
             {
-                if (_blnAllowEditPartOfBaseWeapon != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnAllowEditPartOfBaseWeapon = value;
-                    OnPropertyChanged();
+                    if (_blnAllowEditPartOfBaseWeapon == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnAllowEditPartOfBaseWeapon = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3566,13 +4914,22 @@ namespace Chummer
         /// </summary>
         public bool StrictSkillGroupsInCreateMode
         {
-            get => _blnStrictSkillGroupsInCreateMode;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnStrictSkillGroupsInCreateMode;
+            }
             set
             {
-                if (_blnStrictSkillGroupsInCreateMode != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnStrictSkillGroupsInCreateMode = value;
-                    OnPropertyChanged();
+                    if (_blnStrictSkillGroupsInCreateMode == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnStrictSkillGroupsInCreateMode = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3582,13 +4939,22 @@ namespace Chummer
         /// </summary>
         public bool AllowPointBuySpecializationsOnKarmaSkills
         {
-            get => _blnAllowPointBuySpecializationsOnKarmaSkills;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnAllowPointBuySpecializationsOnKarmaSkills;
+            }
             set
             {
-                if (_blnAllowPointBuySpecializationsOnKarmaSkills != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnAllowPointBuySpecializationsOnKarmaSkills = value;
-                    OnPropertyChanged();
+                    if (_blnAllowPointBuySpecializationsOnKarmaSkills == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnAllowPointBuySpecializationsOnKarmaSkills = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3598,13 +4964,22 @@ namespace Chummer
         /// </summary>
         public bool ExtendAnyDetectionSpell
         {
-            get => _blnExtendAnyDetectionSpell;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnExtendAnyDetectionSpell;
+            }
             set
             {
-                if (_blnExtendAnyDetectionSpell != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnExtendAnyDetectionSpell = value;
-                    OnPropertyChanged();
+                    if (_blnExtendAnyDetectionSpell == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnExtendAnyDetectionSpell = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3614,13 +4989,22 @@ namespace Chummer
         /// </summary>
         public bool DontUseCyberlimbCalculation
         {
-            get => _blnDontUseCyberlimbCalculation;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnDontUseCyberlimbCalculation;
+            }
             set
             {
-                if (_blnDontUseCyberlimbCalculation != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnDontUseCyberlimbCalculation = value;
-                    OnPropertyChanged();
+                    if (_blnDontUseCyberlimbCalculation == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnDontUseCyberlimbCalculation = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3630,13 +5014,22 @@ namespace Chummer
         /// </summary>
         public bool AlternateMetatypeAttributeKarma
         {
-            get => _blnAlternateMetatypeAttributeKarma;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnAlternateMetatypeAttributeKarma;
+            }
             set
             {
-                if (_blnAlternateMetatypeAttributeKarma != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnAlternateMetatypeAttributeKarma = value;
-                    OnPropertyChanged();
+                    if (_blnAlternateMetatypeAttributeKarma == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnAlternateMetatypeAttributeKarma = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3646,13 +5039,22 @@ namespace Chummer
         /// </summary>
         public bool CompensateSkillGroupKarmaDifference
         {
-            get => _blnCompensateSkillGroupKarmaDifference;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnCompensateSkillGroupKarmaDifference;
+            }
             set
             {
-                if (_blnCompensateSkillGroupKarmaDifference != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnCompensateSkillGroupKarmaDifference = value;
-                    OnPropertyChanged();
+                    if (_blnCompensateSkillGroupKarmaDifference == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnCompensateSkillGroupKarmaDifference = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3662,13 +5064,22 @@ namespace Chummer
         /// </summary>
         public bool AllowObsolescentUpgrade
         {
-            get => _blnAllowObsolescentUpgrade;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnAllowObsolescentUpgrade;
+            }
             set
             {
-                if (_blnAllowObsolescentUpgrade != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnAllowObsolescentUpgrade = value;
-                    OnPropertyChanged();
+                    if (_blnAllowObsolescentUpgrade == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnAllowObsolescentUpgrade = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3678,13 +5089,22 @@ namespace Chummer
         /// </summary>
         public bool AllowBiowareSuites
         {
-            get => _blnAllowBiowareSuites;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnAllowBiowareSuites;
+            }
             set
             {
-                if (_blnAllowBiowareSuites != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnAllowBiowareSuites = value;
-                    OnPropertyChanged();
+                    if (_blnAllowBiowareSuites == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnAllowBiowareSuites = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3694,13 +5114,22 @@ namespace Chummer
         /// </summary>
         public bool FreeSpiritPowerPointsMAG
         {
-            get => _blnFreeSpiritPowerPointsMAG;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnFreeSpiritPowerPointsMAG;
+            }
             set
             {
-                if (_blnFreeSpiritPowerPointsMAG != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnFreeSpiritPowerPointsMAG = value;
-                    OnPropertyChanged();
+                    if (_blnFreeSpiritPowerPointsMAG == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnFreeSpiritPowerPointsMAG = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3710,13 +5139,22 @@ namespace Chummer
         /// </summary>
         public bool UnclampAttributeMinimum
         {
-            get => _blnUnclampAttributeMinimum;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnUnclampAttributeMinimum;
+            }
             set
             {
-                if (_blnUnclampAttributeMinimum != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnUnclampAttributeMinimum = value;
-                    OnPropertyChanged();
+                    if (_blnUnclampAttributeMinimum == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnUnclampAttributeMinimum = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3726,13 +5164,22 @@ namespace Chummer
         /// </summary>
         public bool DroneMods
         {
-            get => _blnDroneMods;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnDroneMods;
+            }
             set
             {
-                if (_blnDroneMods != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnDroneMods = value;
-                    OnPropertyChanged();
+                    if (_blnDroneMods == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnDroneMods = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3742,13 +5189,22 @@ namespace Chummer
         /// </summary>
         public bool DroneModsMaximumPilot
         {
-            get => _blnDroneModsMaximumPilot;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnDroneModsMaximumPilot;
+            }
             set
             {
-                if (_blnDroneModsMaximumPilot != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnDroneModsMaximumPilot = value;
-                    OnPropertyChanged();
+                    if (_blnDroneModsMaximumPilot == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnDroneModsMaximumPilot = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3758,13 +5214,22 @@ namespace Chummer
         /// </summary>
         public int MaxNumberMaxAttributesCreate
         {
-            get => _intMaxNumberMaxAttributesCreate;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intMaxNumberMaxAttributesCreate;
+            }
             set
             {
-                if (_intMaxNumberMaxAttributesCreate != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intMaxNumberMaxAttributesCreate = value;
-                    OnPropertyChanged();
+                    if (_intMaxNumberMaxAttributesCreate == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intMaxNumberMaxAttributesCreate = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3774,13 +5239,22 @@ namespace Chummer
         /// </summary>
         public int MaxSkillRatingCreate
         {
-            get => _intMaxSkillRatingCreate;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intMaxSkillRatingCreate;
+            }
             set
             {
-                if (_intMaxSkillRatingCreate != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intMaxSkillRatingCreate = value;
-                    OnPropertyChanged();
+                    if (_intMaxSkillRatingCreate == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intMaxSkillRatingCreate = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3790,13 +5264,22 @@ namespace Chummer
         /// </summary>
         public int MaxKnowledgeSkillRatingCreate
         {
-            get => _intMaxKnowledgeSkillRatingCreate;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intMaxKnowledgeSkillRatingCreate;
+            }
             set
             {
-                if (_intMaxKnowledgeSkillRatingCreate != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intMaxKnowledgeSkillRatingCreate = value;
-                    OnPropertyChanged();
+                    if (_intMaxKnowledgeSkillRatingCreate == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intMaxKnowledgeSkillRatingCreate = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3806,15 +5289,24 @@ namespace Chummer
         /// </summary>
         public int MaxSkillRating
         {
-            get => _intMaxSkillRating;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intMaxSkillRating;
+            }
             set
             {
-                if (_intMaxSkillRating != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intMaxSkillRating = value;
-                    if (MaxSkillRatingCreate > value)
-                        MaxSkillRatingCreate = value;
-                    OnPropertyChanged();
+                    if (_intMaxSkillRating == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intMaxSkillRating = value;
+                        if (MaxSkillRatingCreate > value)
+                            MaxSkillRatingCreate = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3824,15 +5316,24 @@ namespace Chummer
         /// </summary>
         public int MaxKnowledgeSkillRating
         {
-            get => _intMaxKnowledgeSkillRating;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intMaxKnowledgeSkillRating;
+            }
             set
             {
-                if (_intMaxKnowledgeSkillRating != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intMaxKnowledgeSkillRating = value;
-                    if (MaxKnowledgeSkillRatingCreate > value)
-                        MaxKnowledgeSkillRatingCreate = value;
-                    OnPropertyChanged();
+                    if (_intMaxKnowledgeSkillRating == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intMaxKnowledgeSkillRating = value;
+                        if (MaxKnowledgeSkillRatingCreate > value)
+                            MaxKnowledgeSkillRatingCreate = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3842,13 +5343,22 @@ namespace Chummer
         /// </summary>
         public bool AutomaticBackstory
         {
-            get => _blnAutomaticBackstory;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnAutomaticBackstory;
+            }
             set
             {
-                if (_blnAutomaticBackstory != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnAutomaticBackstory = value;
-                    OnPropertyChanged();
+                    if (_blnAutomaticBackstory == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnAutomaticBackstory = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3858,13 +5368,22 @@ namespace Chummer
         /// </summary>
         public bool UseCalculatedPublicAwareness
         {
-            get => _blnUseCalculatedPublicAwareness;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnUseCalculatedPublicAwareness;
+            }
             set
             {
-                if (_blnUseCalculatedPublicAwareness != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnUseCalculatedPublicAwareness = value;
-                    OnPropertyChanged();
+                    if (_blnUseCalculatedPublicAwareness == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnUseCalculatedPublicAwareness = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3874,13 +5393,22 @@ namespace Chummer
         /// </summary>
         public bool FreeMartialArtSpecialization
         {
-            get => _blnFreeMartialArtSpecialization;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnFreeMartialArtSpecialization;
+            }
             set
             {
-                if (_blnFreeMartialArtSpecialization != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnFreeMartialArtSpecialization = value;
-                    OnPropertyChanged();
+                    if (_blnFreeMartialArtSpecialization == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnFreeMartialArtSpecialization = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3890,15 +5418,24 @@ namespace Chummer
         /// </summary>
         public bool PrioritySpellsAsAdeptPowers
         {
-            get => _blnPrioritySpellsAsAdeptPowers;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnPrioritySpellsAsAdeptPowers;
+            }
             set
             {
-                if (_blnPrioritySpellsAsAdeptPowers != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnPrioritySpellsAsAdeptPowers = value;
-                    OnPropertyChanged();
-                    if (value)
-                        MysAdeptSecondMAGAttribute = false;
+                    if (_blnPrioritySpellsAsAdeptPowers == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnPrioritySpellsAsAdeptPowers = value;
+                        OnPropertyChanged();
+                        if (value)
+                            MysAdeptSecondMAGAttribute = false;
+                    }
                 }
             }
         }
@@ -3908,13 +5445,22 @@ namespace Chummer
         /// </summary>
         public bool ReverseAttributePriorityOrder
         {
-            get => _blnReverseAttributePriorityOrder;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnReverseAttributePriorityOrder;
+            }
             set
             {
-                if (_blnReverseAttributePriorityOrder != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnReverseAttributePriorityOrder = value;
-                    OnPropertyChanged();
+                    if (_blnReverseAttributePriorityOrder == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnReverseAttributePriorityOrder = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3924,13 +5470,22 @@ namespace Chummer
         /// </summary>
         public bool IncreasedImprovedAbilityMultiplier
         {
-            get => _blnIncreasedImprovedAbilityMultiplier;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnIncreasedImprovedAbilityMultiplier;
+            }
             set
             {
-                if (_blnIncreasedImprovedAbilityMultiplier != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnIncreasedImprovedAbilityMultiplier = value;
-                    OnPropertyChanged();
+                    if (_blnIncreasedImprovedAbilityMultiplier == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnIncreasedImprovedAbilityMultiplier = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3940,13 +5495,22 @@ namespace Chummer
         /// </summary>
         public bool AllowFreeGrids
         {
-            get => _blnAllowFreeGrids;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnAllowFreeGrids;
+            }
             set
             {
-                if (_blnAllowFreeGrids != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnAllowFreeGrids = value;
-                    OnPropertyChanged();
+                    if (_blnAllowFreeGrids == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnAllowFreeGrids = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3956,13 +5520,22 @@ namespace Chummer
         /// </summary>
         public bool AllowTechnomancerSchooling
         {
-            get => _blnAllowTechnomancerSchooling;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnAllowTechnomancerSchooling;
+            }
             set
             {
-                if (_blnAllowTechnomancerSchooling != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnAllowTechnomancerSchooling = value;
-                    OnPropertyChanged();
+                    if (_blnAllowTechnomancerSchooling == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnAllowTechnomancerSchooling = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -3972,15 +5545,24 @@ namespace Chummer
         /// </summary>
         public bool CyberlimbAttributeBonusCapOverride
         {
-            get => _blnCyberlimbAttributeBonusCapOverride;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnCyberlimbAttributeBonusCapOverride;
+            }
             set
             {
-                if (_blnCyberlimbAttributeBonusCapOverride != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _blnCyberlimbAttributeBonusCapOverride = value;
-                    OnPropertyChanged();
-                    if (!value)
-                        CyberlimbAttributeBonusCap = 4;
+                    if (_blnCyberlimbAttributeBonusCapOverride == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _blnCyberlimbAttributeBonusCapOverride = value;
+                        OnPropertyChanged();
+                        if (!value)
+                            CyberlimbAttributeBonusCap = 4;
+                    }
                 }
             }
         }
@@ -3990,13 +5572,22 @@ namespace Chummer
         /// </summary>
         public int CyberlimbAttributeBonusCap
         {
-            get => _intCyberlimbAttributeBonusCap;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intCyberlimbAttributeBonusCap;
+            }
             set
             {
-                if (_intCyberlimbAttributeBonusCap != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intCyberlimbAttributeBonusCap = value;
-                    OnPropertyChanged();
+                    if (_intCyberlimbAttributeBonusCap == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intCyberlimbAttributeBonusCap = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4006,13 +5597,22 @@ namespace Chummer
         /// </summary>
         public int DicePenaltySustaining
         {
-            get => _intDicePenaltySustaining;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intDicePenaltySustaining;
+            }
             set
             {
-                if (_intDicePenaltySustaining != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intDicePenaltySustaining = value;
-                    OnPropertyChanged();
+                    if (_intDicePenaltySustaining == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intDicePenaltySustaining = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4026,13 +5626,22 @@ namespace Chummer
         /// </summary>
         public int MinInitiativeDice
         {
-            get => _intMinInitiativeDice;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intMinInitiativeDice;
+            }
             set
             {
-                if (_intMinInitiativeDice != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intMinInitiativeDice = value;
-                    OnPropertyChanged();
+                    if (_intMinInitiativeDice == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intMinInitiativeDice = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4042,13 +5651,22 @@ namespace Chummer
         /// </summary>
         public int MaxInitiativeDice
         {
-            get => _intMaxInitiativeDice;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intMaxInitiativeDice;
+            }
             set
             {
-                if (_intMaxInitiativeDice != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intMaxInitiativeDice = value;
-                    OnPropertyChanged();
+                    if (_intMaxInitiativeDice == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intMaxInitiativeDice = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4058,13 +5676,22 @@ namespace Chummer
         /// </summary>
         public int MinAstralInitiativeDice
         {
-            get => _intMinAstralInitiativeDice;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intMinAstralInitiativeDice;
+            }
             set
             {
-                if (_intMinAstralInitiativeDice != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intMinAstralInitiativeDice = value;
-                    OnPropertyChanged();
+                    if (_intMinAstralInitiativeDice == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intMinAstralInitiativeDice = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4074,13 +5701,22 @@ namespace Chummer
         /// </summary>
         public int MaxAstralInitiativeDice
         {
-            get => _intMaxAstralInitiativeDice;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intMaxAstralInitiativeDice;
+            }
             set
             {
-                if (_intMaxAstralInitiativeDice != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intMaxAstralInitiativeDice = value;
-                    OnPropertyChanged();
+                    if (_intMaxAstralInitiativeDice == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intMaxAstralInitiativeDice = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4090,13 +5726,22 @@ namespace Chummer
         /// </summary>
         public int MinColdSimInitiativeDice
         {
-            get => _intMinColdSimInitiativeDice;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intMinColdSimInitiativeDice;
+            }
             set
             {
-                if (_intMinColdSimInitiativeDice != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intMinColdSimInitiativeDice = value;
-                    OnPropertyChanged();
+                    if (_intMinColdSimInitiativeDice == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intMinColdSimInitiativeDice = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4106,13 +5751,22 @@ namespace Chummer
         /// </summary>
         public int MaxColdSimInitiativeDice
         {
-            get => _intMaxColdSimInitiativeDice;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intMaxColdSimInitiativeDice;
+            }
             set
             {
-                if (_intMaxColdSimInitiativeDice != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intMaxColdSimInitiativeDice = value;
-                    OnPropertyChanged();
+                    if (_intMaxColdSimInitiativeDice == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intMaxColdSimInitiativeDice = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4122,13 +5776,22 @@ namespace Chummer
         /// </summary>
         public int MinHotSimInitiativeDice
         {
-            get => _intMinHotSimInitiativeDice;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intMinHotSimInitiativeDice;
+            }
             set
             {
-                if (_intMinHotSimInitiativeDice != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intMinHotSimInitiativeDice = value;
-                    OnPropertyChanged();
+                    if (_intMinHotSimInitiativeDice == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intMinHotSimInitiativeDice = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4138,13 +5801,22 @@ namespace Chummer
         /// </summary>
         public int MaxHotSimInitiativeDice
         {
-            get => _intMaxHotSimInitiativeDice;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intMaxHotSimInitiativeDice;
+            }
             set
             {
-                if (_intMaxHotSimInitiativeDice != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intMaxHotSimInitiativeDice = value;
-                    OnPropertyChanged();
+                    if (_intMaxHotSimInitiativeDice == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intMaxHotSimInitiativeDice = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4158,13 +5830,22 @@ namespace Chummer
         /// </summary>
         public int KarmaAttribute
         {
-            get => _intKarmaAttribute;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaAttribute;
+            }
             set
             {
-                if (_intKarmaAttribute != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaAttribute = value;
-                    OnPropertyChanged();
+                    if (_intKarmaAttribute == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaAttribute = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4174,13 +5855,22 @@ namespace Chummer
         /// </summary>
         public int KarmaQuality
         {
-            get => _intKarmaQuality;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaQuality;
+            }
             set
             {
-                if (_intKarmaQuality != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaQuality = value;
-                    OnPropertyChanged();
+                    if (_intKarmaQuality == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaQuality = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4190,13 +5880,22 @@ namespace Chummer
         /// </summary>
         public int KarmaSpecialization
         {
-            get => _intKarmaSpecialization;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaSpecialization;
+            }
             set
             {
-                if (_intKarmaSpecialization != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaSpecialization = value;
-                    OnPropertyChanged();
+                    if (_intKarmaSpecialization == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaSpecialization = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4206,13 +5905,22 @@ namespace Chummer
         /// </summary>
         public int KarmaKnowledgeSpecialization
         {
-            get => _intKarmaKnoSpecialization;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaKnoSpecialization;
+            }
             set
             {
-                if (_intKarmaKnoSpecialization != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaKnoSpecialization = value;
-                    OnPropertyChanged();
+                    if (_intKarmaKnoSpecialization == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaKnoSpecialization = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4222,13 +5930,22 @@ namespace Chummer
         /// </summary>
         public int KarmaNewKnowledgeSkill
         {
-            get => _intKarmaNewKnowledgeSkill;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaNewKnowledgeSkill;
+            }
             set
             {
-                if (_intKarmaNewKnowledgeSkill != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaNewKnowledgeSkill = value;
-                    OnPropertyChanged();
+                    if (_intKarmaNewKnowledgeSkill == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaNewKnowledgeSkill = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4238,13 +5955,22 @@ namespace Chummer
         /// </summary>
         public int KarmaNewActiveSkill
         {
-            get => _intKarmaNewActiveSkill;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaNewActiveSkill;
+            }
             set
             {
-                if (_intKarmaNewActiveSkill != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaNewActiveSkill = value;
-                    OnPropertyChanged();
+                    if (_intKarmaNewActiveSkill == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaNewActiveSkill = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4254,13 +5980,22 @@ namespace Chummer
         /// </summary>
         public int KarmaNewSkillGroup
         {
-            get => _intKarmaNewSkillGroup;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaNewSkillGroup;
+            }
             set
             {
-                if (_intKarmaNewSkillGroup != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaNewSkillGroup = value;
-                    OnPropertyChanged();
+                    if (_intKarmaNewSkillGroup == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaNewSkillGroup = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4270,13 +6005,22 @@ namespace Chummer
         /// </summary>
         public int KarmaImproveKnowledgeSkill
         {
-            get => _intKarmaImproveKnowledgeSkill;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaImproveKnowledgeSkill;
+            }
             set
             {
-                if (_intKarmaImproveKnowledgeSkill != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaImproveKnowledgeSkill = value;
-                    OnPropertyChanged();
+                    if (_intKarmaImproveKnowledgeSkill == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaImproveKnowledgeSkill = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4286,13 +6030,22 @@ namespace Chummer
         /// </summary>
         public int KarmaImproveActiveSkill
         {
-            get => _intKarmaImproveActiveSkill;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaImproveActiveSkill;
+            }
             set
             {
-                if (_intKarmaImproveActiveSkill != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaImproveActiveSkill = value;
-                    OnPropertyChanged();
+                    if (_intKarmaImproveActiveSkill == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaImproveActiveSkill = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4302,13 +6055,22 @@ namespace Chummer
         /// </summary>
         public int KarmaImproveSkillGroup
         {
-            get => _intKarmaImproveSkillGroup;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaImproveSkillGroup;
+            }
             set
             {
-                if (_intKarmaImproveSkillGroup != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaImproveSkillGroup = value;
-                    OnPropertyChanged();
+                    if (_intKarmaImproveSkillGroup == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaImproveSkillGroup = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4318,13 +6080,22 @@ namespace Chummer
         /// </summary>
         public int KarmaSpell
         {
-            get => _intKarmaSpell;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaSpell;
+            }
             set
             {
-                if (_intKarmaSpell != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaSpell = value;
-                    OnPropertyChanged();
+                    if (_intKarmaSpell == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaSpell = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4334,13 +6105,22 @@ namespace Chummer
         /// </summary>
         public int KarmaEnhancement
         {
-            get => _intKarmaEnhancement;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaEnhancement;
+            }
             set
             {
-                if (_intKarmaEnhancement != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaEnhancement = value;
-                    OnPropertyChanged();
+                    if (_intKarmaEnhancement == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaEnhancement = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4350,13 +6130,22 @@ namespace Chummer
         /// </summary>
         public int KarmaNewComplexForm
         {
-            get => _intKarmaNewComplexForm;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaNewComplexForm;
+            }
             set
             {
-                if (_intKarmaNewComplexForm != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaNewComplexForm = value;
-                    OnPropertyChanged();
+                    if (_intKarmaNewComplexForm == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaNewComplexForm = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4366,13 +6155,22 @@ namespace Chummer
         /// </summary>
         public int KarmaNewAIProgram
         {
-            get => _intKarmaNewAIProgram;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaNewAIProgram;
+            }
             set
             {
-                if (_intKarmaNewAIProgram != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaNewAIProgram = value;
-                    OnPropertyChanged();
+                    if (_intKarmaNewAIProgram == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaNewAIProgram = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4382,13 +6180,22 @@ namespace Chummer
         /// </summary>
         public int KarmaNewAIAdvancedProgram
         {
-            get => _intKarmaNewAIAdvancedProgram;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaNewAIAdvancedProgram;
+            }
             set
             {
-                if (_intKarmaNewAIAdvancedProgram != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaNewAIAdvancedProgram = value;
-                    OnPropertyChanged();
+                    if (_intKarmaNewAIAdvancedProgram == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaNewAIAdvancedProgram = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4398,13 +6205,22 @@ namespace Chummer
         /// </summary>
         public int KarmaContact
         {
-            get => _intKarmaContact;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaContact;
+            }
             set
             {
-                if (_intKarmaContact != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaContact = value;
-                    OnPropertyChanged();
+                    if (_intKarmaContact == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaContact = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4414,13 +6230,22 @@ namespace Chummer
         /// </summary>
         public int KarmaEnemy
         {
-            get => _intKarmaEnemy;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaEnemy;
+            }
             set
             {
-                if (_intKarmaEnemy != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaEnemy = value;
-                    OnPropertyChanged();
+                    if (_intKarmaEnemy == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaEnemy = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4430,13 +6255,22 @@ namespace Chummer
         /// </summary>
         public int KarmaCarryover
         {
-            get => _intKarmaCarryover;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaCarryover;
+            }
             set
             {
-                if (_intKarmaCarryover != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaCarryover = value;
-                    OnPropertyChanged();
+                    if (_intKarmaCarryover == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaCarryover = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4446,13 +6280,22 @@ namespace Chummer
         /// </summary>
         public int KarmaSpirit
         {
-            get => _intKarmaSpirit;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaSpirit;
+            }
             set
             {
-                if (_intKarmaSpirit != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaSpirit = value;
-                    OnPropertyChanged();
+                    if (_intKarmaSpirit == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaSpirit = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4462,13 +6305,22 @@ namespace Chummer
         /// </summary>
         public int KarmaTechnique
         {
-            get => _intKarmaTechnique;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaTechnique;
+            }
             set
             {
-                if (_intKarmaTechnique != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaTechnique = value;
-                    OnPropertyChanged();
+                    if (_intKarmaTechnique == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaTechnique = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4478,13 +6330,22 @@ namespace Chummer
         /// </summary>
         public int KarmaInitiation
         {
-            get => _intKarmaInitiation;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaInitiation;
+            }
             set
             {
-                if (_intKarmaInitiation != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaInitiation = value;
-                    OnPropertyChanged();
+                    if (_intKarmaInitiation == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaInitiation = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4494,13 +6355,22 @@ namespace Chummer
         /// </summary>
         public int KarmaInitiationFlat
         {
-            get => _intKarmaInitiationFlat;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaInitiationFlat;
+            }
             set
             {
-                if (_intKarmaInitiationFlat != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaInitiationFlat = value;
-                    OnPropertyChanged();
+                    if (_intKarmaInitiationFlat == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaInitiationFlat = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4510,13 +6380,22 @@ namespace Chummer
         /// </summary>
         public int KarmaMetamagic
         {
-            get => _intKarmaMetamagic;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaMetamagic;
+            }
             set
             {
-                if (_intKarmaMetamagic != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaMetamagic = value;
-                    OnPropertyChanged();
+                    if (_intKarmaMetamagic == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaMetamagic = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4526,13 +6405,22 @@ namespace Chummer
         /// </summary>
         public int KarmaJoinGroup
         {
-            get => _intKarmaJoinGroup;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaJoinGroup;
+            }
             set
             {
-                if (_intKarmaJoinGroup != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaJoinGroup = value;
-                    OnPropertyChanged();
+                    if (_intKarmaJoinGroup == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaJoinGroup = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4542,13 +6430,22 @@ namespace Chummer
         /// </summary>
         public int KarmaLeaveGroup
         {
-            get => _intKarmaLeaveGroup;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaLeaveGroup;
+            }
             set
             {
-                if (_intKarmaLeaveGroup != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaLeaveGroup = value;
-                    OnPropertyChanged();
+                    if (_intKarmaLeaveGroup == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaLeaveGroup = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4558,13 +6455,22 @@ namespace Chummer
         /// </summary>
         public int KarmaAlchemicalFocus
         {
-            get => _intKarmaAlchemicalFocus;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaAlchemicalFocus;
+            }
             set
             {
-                if (_intKarmaAlchemicalFocus != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaAlchemicalFocus = value;
-                    OnPropertyChanged();
+                    if (_intKarmaAlchemicalFocus == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaAlchemicalFocus = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4574,13 +6480,22 @@ namespace Chummer
         /// </summary>
         public int KarmaBanishingFocus
         {
-            get => _intKarmaBanishingFocus;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaBanishingFocus;
+            }
             set
             {
-                if (_intKarmaBanishingFocus != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaBanishingFocus = value;
-                    OnPropertyChanged();
+                    if (_intKarmaBanishingFocus == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaBanishingFocus = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4590,13 +6505,22 @@ namespace Chummer
         /// </summary>
         public int KarmaBindingFocus
         {
-            get => _intKarmaBindingFocus;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaBindingFocus;
+            }
             set
             {
-                if (_intKarmaBindingFocus != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaBindingFocus = value;
-                    OnPropertyChanged();
+                    if (_intKarmaBindingFocus == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaBindingFocus = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4606,13 +6530,22 @@ namespace Chummer
         /// </summary>
         public int KarmaCenteringFocus
         {
-            get => _intKarmaCenteringFocus;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaCenteringFocus;
+            }
             set
             {
-                if (_intKarmaCenteringFocus != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaCenteringFocus = value;
-                    OnPropertyChanged();
+                    if (_intKarmaCenteringFocus == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaCenteringFocus = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4622,13 +6555,22 @@ namespace Chummer
         /// </summary>
         public int KarmaCounterspellingFocus
         {
-            get => _intKarmaCounterspellingFocus;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaCounterspellingFocus;
+            }
             set
             {
-                if (_intKarmaCounterspellingFocus != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaCounterspellingFocus = value;
-                    OnPropertyChanged();
+                    if (_intKarmaCounterspellingFocus == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaCounterspellingFocus = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4638,13 +6580,22 @@ namespace Chummer
         /// </summary>
         public int KarmaDisenchantingFocus
         {
-            get => _intKarmaDisenchantingFocus;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaDisenchantingFocus;
+            }
             set
             {
-                if (_intKarmaDisenchantingFocus != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaDisenchantingFocus = value;
-                    OnPropertyChanged();
+                    if (_intKarmaDisenchantingFocus == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaDisenchantingFocus = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4654,13 +6605,22 @@ namespace Chummer
         /// </summary>
         public int KarmaFlexibleSignatureFocus
         {
-            get => _intKarmaFlexibleSignatureFocus;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaFlexibleSignatureFocus;
+            }
             set
             {
-                if (_intKarmaFlexibleSignatureFocus != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaFlexibleSignatureFocus = value;
-                    OnPropertyChanged();
+                    if (_intKarmaFlexibleSignatureFocus == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaFlexibleSignatureFocus = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4670,13 +6630,22 @@ namespace Chummer
         /// </summary>
         public int KarmaMaskingFocus
         {
-            get => _intKarmaMaskingFocus;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaMaskingFocus;
+            }
             set
             {
-                if (_intKarmaMaskingFocus != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaMaskingFocus = value;
-                    OnPropertyChanged();
+                    if (_intKarmaMaskingFocus == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaMaskingFocus = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4686,13 +6655,22 @@ namespace Chummer
         /// </summary>
         public int KarmaPowerFocus
         {
-            get => _intKarmaPowerFocus;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaPowerFocus;
+            }
             set
             {
-                if (_intKarmaPowerFocus != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaPowerFocus = value;
-                    OnPropertyChanged();
+                    if (_intKarmaPowerFocus == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaPowerFocus = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4702,13 +6680,22 @@ namespace Chummer
         /// </summary>
         public int KarmaQiFocus
         {
-            get => _intKarmaQiFocus;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaQiFocus;
+            }
             set
             {
-                if (_intKarmaQiFocus != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaQiFocus = value;
-                    OnPropertyChanged();
+                    if (_intKarmaQiFocus == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaQiFocus = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4718,13 +6705,22 @@ namespace Chummer
         /// </summary>
         public int KarmaRitualSpellcastingFocus
         {
-            get => _intKarmaRitualSpellcastingFocus;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaRitualSpellcastingFocus;
+            }
             set
             {
-                if (_intKarmaRitualSpellcastingFocus != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaRitualSpellcastingFocus = value;
-                    OnPropertyChanged();
+                    if (_intKarmaRitualSpellcastingFocus == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaRitualSpellcastingFocus = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4734,13 +6730,22 @@ namespace Chummer
         /// </summary>
         public int KarmaSpellcastingFocus
         {
-            get => _intKarmaSpellcastingFocus;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaSpellcastingFocus;
+            }
             set
             {
-                if (_intKarmaSpellcastingFocus != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaSpellcastingFocus = value;
-                    OnPropertyChanged();
+                    if (_intKarmaSpellcastingFocus == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaSpellcastingFocus = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4750,13 +6755,22 @@ namespace Chummer
         /// </summary>
         public int KarmaSpellShapingFocus
         {
-            get => _intKarmaSpellShapingFocus;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaSpellShapingFocus;
+            }
             set
             {
-                if (_intKarmaSpellShapingFocus != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaSpellShapingFocus = value;
-                    OnPropertyChanged();
+                    if (_intKarmaSpellShapingFocus == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaSpellShapingFocus = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4766,13 +6780,22 @@ namespace Chummer
         /// </summary>
         public int KarmaSummoningFocus
         {
-            get => _intKarmaSummoningFocus;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaSummoningFocus;
+            }
             set
             {
-                if (_intKarmaSummoningFocus != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaSummoningFocus = value;
-                    OnPropertyChanged();
+                    if (_intKarmaSummoningFocus == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaSummoningFocus = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4782,13 +6805,22 @@ namespace Chummer
         /// </summary>
         public int KarmaSustainingFocus
         {
-            get => _intKarmaSustainingFocus;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaSustainingFocus;
+            }
             set
             {
-                if (_intKarmaSustainingFocus != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaSustainingFocus = value;
-                    OnPropertyChanged();
+                    if (_intKarmaSustainingFocus == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaSustainingFocus = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4798,13 +6830,22 @@ namespace Chummer
         /// </summary>
         public int KarmaWeaponFocus
         {
-            get => _intKarmaWeaponFocus;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaWeaponFocus;
+            }
             set
             {
-                if (_intKarmaWeaponFocus != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaWeaponFocus = value;
-                    OnPropertyChanged();
+                    if (_intKarmaWeaponFocus == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaWeaponFocus = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4814,13 +6855,22 @@ namespace Chummer
         /// </summary>
         public int KarmaMysticAdeptPowerPoint
         {
-            get => _intKarmaMysticAdeptPowerPoint;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaMysticAdeptPowerPoint;
+            }
             set
             {
-                if (_intKarmaMysticAdeptPowerPoint != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaMysticAdeptPowerPoint = value;
-                    OnPropertyChanged();
+                    if (_intKarmaMysticAdeptPowerPoint == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaMysticAdeptPowerPoint = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4830,13 +6880,22 @@ namespace Chummer
         /// </summary>
         public int KarmaSpiritFettering
         {
-            get => _intKarmaSpiritFettering;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaSpiritFettering;
+            }
             set
             {
-                if (_intKarmaSpiritFettering != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _intKarmaSpiritFettering = value;
-                    OnPropertyChanged();
+                    if (_intKarmaSpiritFettering == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _intKarmaSpiritFettering = value;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -4848,32 +6907,152 @@ namespace Chummer
         /// <summary>
         /// Percentage by which adding an Initiate Grade to an Awakened is discounted if a member of a Group.
         /// </summary>
-        public decimal KarmaMAGInitiationGroupPercent { get; set; } = 0.1m;
+        public decimal KarmaMAGInitiationGroupPercent
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _decKarmaMAGInitiationGroupPercent;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_decKarmaMAGInitiationGroupPercent == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _decKarmaMAGInitiationGroupPercent = value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if a member of a Group.
         /// </summary>
-        public decimal KarmaRESInitiationGroupPercent { get; set; } = 0.1m;
+        public decimal KarmaRESInitiationGroupPercent
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _decKarmaRESInitiationGroupPercent;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_decKarmaRESInitiationGroupPercent == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _decKarmaRESInitiationGroupPercent = value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Percentage by which adding an Initiate Grade to an Awakened is discounted if performing an Ordeal.
         /// </summary>
-        public decimal KarmaMAGInitiationOrdealPercent { get; set; } = 0.1m;
+        public decimal KarmaMAGInitiationOrdealPercent
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _decKarmaMAGInitiationOrdealPercent;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_decKarmaMAGInitiationOrdealPercent == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _decKarmaMAGInitiationOrdealPercent = value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if performing an Ordeal.
         /// </summary>
-        public decimal KarmaRESInitiationOrdealPercent { get; set; } = 0.2m;
+        public decimal KarmaRESInitiationOrdealPercent
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _decKarmaRESInitiationOrdealPercent;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_decKarmaRESInitiationOrdealPercent == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _decKarmaRESInitiationOrdealPercent = value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Percentage by which adding an Initiate Grade to an Awakened is discounted if performing an Ordeal.
         /// </summary>
-        public decimal KarmaMAGInitiationSchoolingPercent { get; set; } = 0.1m;
+        public decimal KarmaMAGInitiationSchoolingPercent
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _decKarmaMAGInitiationSchoolingPercent;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_decKarmaMAGInitiationSchoolingPercent == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _decKarmaMAGInitiationSchoolingPercent = value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Percentage by which adding a Submersion Grade to a Technomancer is discounted if performing an Ordeal.
         /// </summary>
-        public decimal KarmaRESInitiationSchoolingPercent { get; set; } = 0.1m;
+        public decimal KarmaRESInitiationSchoolingPercent
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _decKarmaRESInitiationSchoolingPercent;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_decKarmaRESInitiationSchoolingPercent == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _decKarmaRESInitiationSchoolingPercent = value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
 
         #endregion Default Build
 
@@ -4882,21 +7061,62 @@ namespace Chummer
         /// <summary>
         /// The value by which Specializations add to dicepool.
         /// </summary>
-        public int SpecializationBonus => 2;
+        public int SpecializationBonus
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return 2;
+            }
+        }
 
         /// <summary>
         /// The value by which Expertise Specializations add to dicepool (does not stack with SpecializationBonus).
         /// </summary>
-        public int ExpertiseBonus => 3;
+        public int ExpertiseBonus
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return 3;
+            }
+        }
 
         #endregion Constant Values
 
         /// <inheritdoc />
         public void Dispose()
         {
-            Utils.StringHashSetPool.Return(_setBooks);
-            Utils.StringHashSetPool.Return(BannedWareGrades);
-            Utils.StringHashSetPool.Return(RedlinerExcludes);
+            using (LockObject.EnterWriteLock())
+            {
+                Utils.StringHashSetPool.Return(_setBooks);
+                Utils.StringHashSetPool.Return(_setBannedWareGrades);
+                Utils.StringHashSetPool.Return(_setRedlinerExcludes);
+                _dicCustomDataDirectoryKeys.Dispose();
+            }
+
+            LockObject.Dispose();
         }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            try
+            {
+                Utils.StringHashSetPool.Return(_setBooks);
+                Utils.StringHashSetPool.Return(_setBannedWareGrades);
+                Utils.StringHashSetPool.Return(_setRedlinerExcludes);
+                await _dicCustomDataDirectoryKeys.DisposeAsync();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+            await LockObject.DisposeAsync();
+        }
+
+        /// <inheritdoc />
+        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
     }
 }

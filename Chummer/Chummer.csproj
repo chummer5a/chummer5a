@@ -308,6 +308,7 @@
     <Compile Include="Backend\Datastructures\LockingEnumerator.cs" />
     <Compile Include="Backend\Datastructures\LockingHashSet.cs" />
     <Compile Include="Backend\Datastructures\LockingOrderedSet.cs" />
+    <Compile Include="Backend\Datastructures\LockingTypedOrderedDictionary.cs" />
     <Compile Include="Backend\Datastructures\OrderedSet.cs" />
     <Compile Include="Backend\Datastructures\PropertyDependencyGraph.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeBindingList.cs" />

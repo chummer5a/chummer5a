@@ -221,7 +221,7 @@ namespace Chummer
                 try
                 {
                     _objReferenceCharacterSettings = kvpReplacementOption.Value;
-                    _objCharacterSettings.CopyValues(_objReferenceCharacterSettings);
+                    await _objCharacterSettings.CopyValuesAsync(_objReferenceCharacterSettings);
                     RebuildCustomDataDirectoryInfos();
                     IsDirty = false;
                     await PopulateSettingsList();
@@ -334,7 +334,7 @@ namespace Chummer
                     if (!await SettingsManager.LoadedCharacterSettingsAsModifiable.TryAddAsync(
                             objNewCharacterSettings.DictionaryKey, objNewCharacterSettings))
                     {
-                        objNewCharacterSettings.Dispose();
+                        await objNewCharacterSettings.DisposeAsync();
                         return;
                     }
 
@@ -343,7 +343,7 @@ namespace Chummer
                         // Revert addition of settings if we cannot create a file
                         await SettingsManager.LoadedCharacterSettingsAsModifiable.RemoveAsync(
                             objNewCharacterSettings.DictionaryKey);
-                        objNewCharacterSettings.Dispose();
+                        await objNewCharacterSettings.DisposeAsync();
                         return;
                     }
 
@@ -406,7 +406,7 @@ namespace Chummer
 
                 try
                 {
-                    _objReferenceCharacterSettings.CopyValues(_objCharacterSettings);
+                    await _objReferenceCharacterSettings.CopyValuesAsync(_objCharacterSettings);
                     IsDirty = false;
                 }
                 finally
@@ -472,7 +472,7 @@ namespace Chummer
                     }
 
                     _objReferenceCharacterSettings = objNewOption;
-                    _objCharacterSettings.CopyValues(objNewOption);
+                    await _objCharacterSettings.CopyValuesAsync(objNewOption);
                     RebuildCustomDataDirectoryInfos();
                     await PopulateOptions();
                     _blnLoading = false;
@@ -523,7 +523,7 @@ namespace Chummer
                         await cboSetting.DoThreadSafeAsync(x => x.SelectedIndex = intCurrentSelectedSettingIndex);
                     }
 
-                    _objCharacterSettings.CopyValues(_objReferenceCharacterSettings);
+                    await _objCharacterSettings.CopyValuesAsync(_objReferenceCharacterSettings);
                     RebuildCustomDataDirectoryInfos();
                     await PopulateOptions();
                     _blnLoading = false;

@@ -8933,7 +8933,7 @@ namespace Chummer
                     if (_stkPushText.IsValueCreated)
                         await _stkPushText.Value.DisposeAsync();
                     if (!SettingsManager.LoadedCharacterSettings.ContainsKey(_objSettings.DictionaryKey))
-                        _objSettings.Dispose();
+                        await _objSettings.DisposeAsync();
                     await _objCachedEssenceLock.DisposeAsync();
                 }
                 finally
