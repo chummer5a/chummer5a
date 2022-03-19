@@ -553,8 +553,9 @@ namespace Chummer
                                                {
                                                    x.Visible = true;
                                                    x.Text = objEntry.DisplaySource.ToString();
-                                                   x.ToolTipText = objEntry.DisplaySource.LanguageBookTooltip;
-                                               }, _objGenericToken));
+                                               }, _objGenericToken),
+                                           lblSource.SetToolTipAsync(objEntry.DisplaySource.LanguageBookTooltip,
+                                                                     _objGenericToken));
                         (bool blnSuccess, Task<string> tskNotes) = await _dicCachedNotes.TryGetValueAsync(objEntry);
                         if (!blnSuccess)
                         {

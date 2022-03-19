@@ -667,6 +667,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
         public static async Task DoThreadSafeAsync<T>(this T objControl, Func<Task> funcToRun, CancellationToken token = default) where T : Control
         {
             token.ThrowIfCancellationRequested();
@@ -1217,6 +1218,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
         public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<Task<T2>> funcToRun, CancellationToken token = default) where T1 : Control
         {
             token.ThrowIfCancellationRequested();
@@ -1236,6 +1238,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
         public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<T1, Task<T2>> funcToRun, CancellationToken token = default) where T1 : Control
         {
             token.ThrowIfCancellationRequested();
@@ -1255,6 +1258,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
         public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<CancellationToken, Task<T2>> funcToRun, CancellationToken token = default) where T1 : Control
         {
             token.ThrowIfCancellationRequested();
@@ -1274,6 +1278,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
         public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<T1, CancellationToken, Task<T2>> funcToRun, CancellationToken token = default) where T1 : Control
         {
             token.ThrowIfCancellationRequested();
@@ -1293,6 +1298,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
         public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<Task<T2>> funcToRun, CancellationToken token = default) where T1 : Control
         {
             return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
@@ -1305,6 +1311,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
         public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<T1, CancellationToken, Task<T2>> funcToRun, CancellationToken token = default) where T1 : Control
         {
             return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
@@ -1317,6 +1324,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
         public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<CancellationToken, Task<T2>> funcToRun, CancellationToken token = default) where T1 : Control
         {
             return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
@@ -1329,6 +1337,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
         public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<T1, Task<T2>> funcToRun, CancellationToken token = default) where T1 : Control
         {
             return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);

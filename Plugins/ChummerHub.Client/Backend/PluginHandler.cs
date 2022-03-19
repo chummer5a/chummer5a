@@ -642,21 +642,22 @@ namespace Chummer.Plugins
                     SINSearchGroupResult ssgr = result.MySearchGroupResult;
                     if (ssgr != null && ssgr.SinGroups?.Count > 0)
                     {
-                        await MainForm.CharacterRoster.DoThreadSafeAsync(async () =>
+                        List<TreeNode> nodelist = await MainForm.CharacterRoster.DoThreadSafeFuncAsync(
+                            () => ChummerHub.Client.Backend.Utils
+                                            .CharacterRosterTreeNodifyGroupList(
+                                                ssgr.SinGroups.Where(a => a.Groupname == "Archetypes")).ToList());
+                        foreach (TreeNode node in nodelist)
                         {
-                            List<TreeNode> nodelist = ChummerHub.Client.Backend.Utils
-                                                                .CharacterRosterTreeNodifyGroupList(
-                                                                    ssgr.SinGroups.Where(a => a.Groupname == "Archetypes")).ToList();
-                            foreach (TreeNode node in nodelist)
-                            {
-                                await MyTreeNodes2Add.AddOrUpdateAsync(node.Name, node,
-                                                                       (key, oldValue) => node);
-                            }
+                            await MyTreeNodes2Add.AddOrUpdateAsync(node.Name, node,
+                                                                   (key, oldValue) => node);
+                        }
 
-                            await MainForm.CharacterRoster.RefreshPluginNodes(this);
-                            MainForm.CharacterRoster.treCharacterList.SelectedNode =
+                        await MainForm.CharacterRoster.RefreshPluginNodes(this);
+                        await MainForm.DoThreadSafeAsync(x =>
+                        {
+                            x.CharacterRoster.treCharacterList.SelectedNode =
                                 nodelist.Find(a => a.Name == "Archetypes");
-                            MainForm.BringToFront();
+                            x.BringToFront();
                         });
                     }
                     else

@@ -228,13 +228,13 @@ namespace Chummer.UI.Attributes
 
         private async void nudBase_ValueChanged(object sender, EventArgs e)
         {
-            int intValue = ((NumericUpDownEx)sender).ValueAsInt;
+            int intValue = await ((NumericUpDownEx)sender).DoThreadSafeFuncAsync(x => x.ValueAsInt);
             if (intValue == _oldBase)
                 return;
             if (!await CanBeMetatypeMax(
                 Math.Max(
-                    nudKarma.DoThreadSafeFunc(x => x.ValueAsInt) + AttributeObject.FreeBase + AttributeObject.RawMinimum +
-                    AttributeObject.AttributeValueModifiers, AttributeObject.TotalMinimum) + intValue))
+                    await nudKarma.DoThreadSafeFuncAsync(x => x.ValueAsInt) + await AttributeObject.FreeBaseAsync + await AttributeObject.RawMinimumAsync +
+                    await AttributeObject.AttributeValueModifiersAsync, await AttributeObject.TotalMinimumAsync) + intValue))
             {
                 await nudBase.DoThreadSafeAsync(x =>
                 {
@@ -257,18 +257,19 @@ namespace Chummer.UI.Attributes
 
         private async void nudKarma_ValueChanged(object sender, EventArgs e)
         {
-            int intValue = ((NumericUpDownEx)sender).ValueAsInt;
+            int intValue = await ((NumericUpDownEx)sender).DoThreadSafeFuncAsync(x => x.ValueAsInt);
             if (intValue == _oldKarma)
                 return;
             if (!await CanBeMetatypeMax(
                 Math.Max(
-                    nudBase.DoThreadSafeFunc(x => x.ValueAsInt) + AttributeObject.FreeBase + AttributeObject.RawMinimum +
-                    AttributeObject.AttributeValueModifiers, AttributeObject.TotalMinimum) + intValue))
+                    await nudBase.DoThreadSafeFuncAsync(x => x.ValueAsInt) + await AttributeObject.FreeBaseAsync + await AttributeObject.RawMinimumAsync +
+                    await AttributeObject.AttributeValueModifiersAsync, await AttributeObject.TotalMinimumAsync) + intValue))
             {
                 // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to.
-                if (_oldKarma > AttributeObject.KarmaMaximum)
+                int intKarmaMaximum = await AttributeObject.KarmaMaximumAsync;
+                if (_oldKarma > intKarmaMaximum)
                 {
-                    _oldKarma = AttributeObject.KarmaMaximum - 1;
+                    _oldKarma = intKarmaMaximum - 1;
                 }
                 if (_oldKarma < 0)
                 {
@@ -302,7 +303,7 @@ namespace Chummer.UI.Attributes
         /// </summary>
         private async ValueTask<bool> CanBeMetatypeMax(int intValue)
         {
-            int intTotalMaximum = AttributeObject.TotalMaximum;
+            int intTotalMaximum = await AttributeObject.TotalMaximumAsync;
             if (intValue < intTotalMaximum || intTotalMaximum == 0)
                 return true;
 
@@ -331,7 +332,7 @@ namespace Chummer.UI.Attributes
         private async void cmdBurnEdge_Click(object sender, EventArgs e)
         {
             // Edge cannot go below 1.
-            if (AttributeObject.Value <= 0)
+            if (await AttributeObject.ValueAsync <= 0)
             {
                 Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_CannotBurnEdge"), await LanguageManager.GetStringAsync("MessageTitle_CannotBurnEdge"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;

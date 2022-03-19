@@ -92,7 +92,7 @@ namespace Chummer.UI.Shared
 
         private async void cmdAddLimitModifier_Click(object sender, EventArgs e)
         {
-            using (SelectLimitModifier frmPickLimitModifier = new SelectLimitModifier(null, "Physical", "Mental", "Social"))
+            using (SelectLimitModifier frmPickLimitModifier = await this.DoThreadSafeFuncAsync(() => new SelectLimitModifier(null, "Physical", "Mental", "Social")))
             {
                 await frmPickLimitModifier.ShowDialogSafeAsync(this);
 
@@ -130,10 +130,12 @@ namespace Chummer.UI.Shared
 
         private async void tssLimitModifierNotes_Click(object sender, EventArgs e)
         {
-            if (treLimit.SelectedNode == null) return;
-            if (treLimit.SelectedNode?.Tag is IHasNotes objNotes)
+            object objSelectedNodeTag = await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+            if (objSelectedNodeTag == null)
+                return;
+            if (objSelectedNodeTag is IHasNotes objNotes)
             {
-                await WriteNotes(objNotes, treLimit.SelectedNode);
+                await WriteNotes(objNotes, await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode));
             }
             else
             {
@@ -141,7 +143,7 @@ namespace Chummer.UI.Shared
                 foreach (Improvement objImprovement in _objCharacter.Improvements)
                 {
                     if (objImprovement.ImproveType != Improvement.ImprovementType.LimitModifier ||
-                        objImprovement.SourceName != treLimit.SelectedNode?.Tag.ToString())
+                        objImprovement.SourceName != objSelectedNodeTag.ToString())
                         continue;
                     using (EditNotes frmItemNotes = new EditNotes(objImprovement.Notes, objImprovement.NotesColor))
                     {
@@ -151,8 +153,11 @@ namespace Chummer.UI.Shared
 
                         objImprovement.Notes = frmItemNotes.Notes;
                     }
-                    treLimit.SelectedNode.ForeColor = objImprovement.PreferredColor;
-                    treLimit.SelectedNode.ToolTipText = objImprovement.Notes.WordWrap();
+                    await treLimit.DoThreadSafeAsync(x =>
+                    {
+                        x.SelectedNode.ForeColor = objImprovement.PreferredColor;
+                        x.SelectedNode.ToolTipText = objImprovement.Notes.WordWrap();
+                    });
                     MakeDirty?.Invoke(this, EventArgs.Empty);
                 }
             }
@@ -175,7 +180,7 @@ namespace Chummer.UI.Shared
         /// <param name="treNode"></param>
         private async ValueTask WriteNotes(IHasNotes objNotes, TreeNode treNode)
         {
-            using (EditNotes frmItemNotes = new EditNotes(objNotes.Notes, objNotes.NotesColor))
+            using (EditNotes frmItemNotes = await this.DoThreadSafeFuncAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor)))
             {
                 await frmItemNotes.ShowDialogSafeAsync(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
@@ -184,8 +189,18 @@ namespace Chummer.UI.Shared
                 objNotes.Notes = frmItemNotes.Notes;
                 objNotes.NotesColor = frmItemNotes.NotesColor;
             }
-            treNode.ForeColor = objNotes.PreferredColor;
-            treNode.ToolTipText = objNotes.Notes.WordWrap();
+            TreeView objTreeView = treNode.TreeView;
+            if (objTreeView != null)
+                await objTreeView.DoThreadSafeAsync(() =>
+                {
+                    treNode.ForeColor = objNotes.PreferredColor;
+                    treNode.ToolTipText = objNotes.Notes.WordWrap();
+                });
+            else
+            {
+                treNode.ForeColor = objNotes.PreferredColor;
+                treNode.ToolTipText = objNotes.Notes.WordWrap();
+            }
             MakeDirty?.Invoke(this, EventArgs.Empty);
         }
 
@@ -435,9 +450,10 @@ namespace Chummer.UI.Shared
         /// </summary>
         protected async ValueTask UpdateLimitModifier()
         {
-            if (treLimit.SelectedNode.Level <= 0) return;
-            TreeNode objSelectedNode = treLimit.SelectedNode;
-            string strGuid = (objSelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+            TreeNode objSelectedNode = await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode);
+            if (objSelectedNode == null || objSelectedNode.Level <= 0)
+                return;
+            string strGuid = (objSelectedNode.Tag as IHasInternalId)?.InternalId ?? string.Empty;
             if (string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())
                 return;
             LimitModifier objLimitModifier = _objCharacter.LimitModifiers.FindById(strGuid);
@@ -448,7 +464,7 @@ namespace Chummer.UI.Shared
                 return;
             }
 
-            using (SelectLimitModifier frmPickLimitModifier = new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
+            using (SelectLimitModifier frmPickLimitModifier = await this.DoThreadSafeFuncAsync(() => new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social")))
             {
                 await frmPickLimitModifier.ShowDialogSafeAsync(this);
 

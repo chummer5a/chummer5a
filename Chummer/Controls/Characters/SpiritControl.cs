@@ -212,7 +212,9 @@ namespace Chummer
             {
                 _objSpirit.FileName = string.Empty;
                 _objSpirit.RelativeFileName = string.Empty;
-                cmdLink.ToolTipText = await LanguageManager.GetStringAsync(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_LinkSpirit" : "Tip_Sprite_LinkSprite");
+                string strText = await LanguageManager.GetStringAsync(
+                    _objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_LinkSpirit" : "Tip_Sprite_LinkSprite");
+                await cmdLink.SetToolTipTextAsync(strText);
 
                 // Set the relative path.
                 Uri uriApplication = new Uri(Utils.GetStartupPath);
@@ -241,7 +243,9 @@ namespace Chummer
                 if (openFileDialog.ShowDialog(this) == DialogResult.OK)
                 {
                     _objSpirit.FileName = openFileDialog.FileName;
-                    cmdLink.ToolTipText = await LanguageManager.GetStringAsync(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile");
+                    string strText = await LanguageManager.GetStringAsync(
+                        _objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile");
+                    await cmdLink.SetToolTipTextAsync(strText);
                     ContactDetailChanged?.Invoke(this, e);
                 }
             }
@@ -249,7 +253,7 @@ namespace Chummer
 
         private async void tsCreateCharacter_Click(object sender, EventArgs e)
         {
-            string strSpiritName = cboSpiritName.SelectedValue?.ToString();
+            string strSpiritName = await cboSpiritName.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             if (string.IsNullOrEmpty(strSpiritName))
             {
                 Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_SelectCritterType"), await LanguageManager.GetStringAsync("MessageTitle_SelectCritterType"), MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -293,7 +297,7 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(_objSpirit.Notes))
                 strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
-            cmdNotes.ToolTipText = strTooltip.WordWrap();
+            await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap());
 
             ContactDetailChanged?.Invoke(this, e);
         }
@@ -325,7 +329,7 @@ namespace Chummer
         {
             if (objTradition == null)
                 return;
-            string strCurrentValue = cboSpiritName.SelectedValue?.ToString() ?? _objSpirit.Name;
+            string strCurrentValue = await cboSpiritName.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) ?? _objSpirit.Name;
 
             XPathNavigator objXmlDocument = await _objSpirit.CharacterObject.LoadDataXPathAsync(_objSpirit.EntityType == SpiritType.Spirit
                 ? "traditions.xml"
@@ -515,7 +519,7 @@ namespace Chummer
                     
                     await cboSpiritName.PopulateWithListItemsAsync(lstCritters);
                     // Set the control back to its original value.
-                    cboSpiritName.SelectedValue = strCurrentValue;
+                    await cboSpiritName.DoThreadSafeAsync(x => x.SelectedValue = strCurrentValue);
                 }
             }
         }
@@ -553,8 +557,9 @@ namespace Chummer
                 };
                 try
                 {
-                    if (!string.IsNullOrEmpty(txtCritterName.Text))
-                        objCharacter.Name = txtCritterName.Text;
+                    string strCritterCharacterName = await txtCritterName.DoThreadSafeFuncAsync(x => x.Text);
+                    if (!string.IsNullOrEmpty(strCritterCharacterName))
+                        objCharacter.Name = strCritterCharacterName;
 
                     string strSpace = await LanguageManager.GetStringAsync("String_Space");
                     using (SaveFileDialog saveFileDialog = new SaveFileDialog
@@ -584,8 +589,9 @@ namespace Chummer
                     }
 
                     // Link the newly-created Critter to the Spirit.
-                    cmdLink.ToolTipText = await LanguageManager.GetStringAsync(
+                    string strText = await LanguageManager.GetStringAsync(
                         _objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile");
+                    await cmdLink.SetToolTipTextAsync(strText);
                     ContactDetailChanged?.Invoke(this, EventArgs.Empty);
 
                     await Program.OpenCharacter(objCharacter);

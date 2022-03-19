@@ -1669,7 +1669,21 @@ namespace Chummer.Backend.Attributes
 
         public int KarmaMaximum => Math.Max(TotalMaximum - TotalBase, 0);
 
+        public ValueTask<int> KarmaMaximumAsync => GetKarmaMaximumAsync();
+
+        private async ValueTask<int> GetKarmaMaximumAsync()
+        {
+            return Math.Max(await TotalMaximumAsync - await TotalBaseAsync, 0);
+        }
+
         public int PriorityMaximum => Math.Max(TotalMaximum - Karma - FreeBase - RawMinimum, 0);
+
+        public ValueTask<int> PriorityMaximumAsync => GetPriorityMaximumAsync();
+
+        private async ValueTask<int> GetPriorityMaximumAsync()
+        {
+            return Math.Max(await TotalMaximumAsync - Karma - await FreeBaseAsync - await RawMinimumAsync, 0);
+        }
 
         private int _intCachedUpgradeKarmaCost = int.MinValue;
 

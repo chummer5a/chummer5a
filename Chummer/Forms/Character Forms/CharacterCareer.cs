@@ -14456,7 +14456,72 @@ namespace Chummer
                             await lblWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), token);
                             await cmdFireWeapon.DoThreadSafeAsync(x => x.Enabled = objWeapon.AmmoRemaining != 0, token);
                             token.ThrowIfCancellationRequested();
-                            await cmsAmmoExpense.DoThreadSafeAsync(async () =>
+                            string strSingleShotText
+                                = objWeapon.AllowSingleShot || (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
+                                    ? string.Format(GlobalSettings.CultureInfo,
+                                                    await LanguageManager.GetStringAsync(
+                                                        "String_SingleShot")
+                                                    , objWeapon.SingleShot.ToString(GlobalSettings.CultureInfo),
+                                                    objWeapon.SingleShot == 1
+                                                        ? await LanguageManager.GetStringAsync(
+                                                            "String_Bullet")
+                                                        : await LanguageManager.GetStringAsync(
+                                                            "String_Bullets"))
+                                    : await
+                                        LanguageManager.GetStringAsync("String_SingleShotNA");
+                            string strShortBurstText
+                                = objWeapon.AllowShortBurst
+                                    ? string.Format(GlobalSettings.CultureInfo,
+                                                    await LanguageManager.GetStringAsync(
+                                                        "String_ShortBurst")
+                                                    , objWeapon.ShortBurst.ToString(GlobalSettings.CultureInfo),
+                                                    objWeapon.ShortBurst == 1
+                                                        ? await LanguageManager.GetStringAsync(
+                                                            "String_Bullet")
+                                                        : await LanguageManager.GetStringAsync(
+                                                            "String_Bullets"))
+                                    : await
+                                        LanguageManager.GetStringAsync("String_ShortBurstNA");
+                            string strLongBurstText
+                                = objWeapon.AllowLongBurst
+                                    ? string.Format(GlobalSettings.CultureInfo,
+                                                    await LanguageManager.GetStringAsync(
+                                                        "String_LongBurst")
+                                                    , objWeapon.LongBurst.ToString(GlobalSettings.CultureInfo),
+                                                    objWeapon.LongBurst == 1
+                                                        ? await LanguageManager.GetStringAsync(
+                                                            "String_Bullet")
+                                                        : await LanguageManager.GetStringAsync(
+                                                            "String_Bullets"))
+                                    : await
+                                        LanguageManager.GetStringAsync("String_LongBurstNA");
+                            string strFullBurstText
+                                = objWeapon.AllowFullBurst
+                                    ? string.Format(GlobalSettings.CultureInfo,
+                                                    await LanguageManager.GetStringAsync(
+                                                        "String_FullBurst")
+                                                    , objWeapon.FullBurst.ToString(GlobalSettings.CultureInfo),
+                                                    objWeapon.FullBurst == 1
+                                                        ? await LanguageManager.GetStringAsync(
+                                                            "String_Bullet")
+                                                        : await LanguageManager.GetStringAsync(
+                                                            "String_Bullets"))
+                                    : await
+                                        LanguageManager.GetStringAsync("String_FullBurstNA");
+                            string strSuppressiveFireText
+                                = objWeapon.AllowSuppressive
+                                    ? string.Format(GlobalSettings.CultureInfo,
+                                                    await LanguageManager.GetStringAsync(
+                                                        "String_SuppressiveFire")
+                                                    , objWeapon.Suppressive.ToString(GlobalSettings.CultureInfo),
+                                                    objWeapon.Suppressive == 1
+                                                        ? await LanguageManager.GetStringAsync(
+                                                            "String_Bullet")
+                                                        : await LanguageManager.GetStringAsync(
+                                                            "String_Bullets"))
+                                    : await
+                                        LanguageManager.GetStringAsync("String_SuppressiveFireNA");
+                            await cmsAmmoExpense.DoThreadSafeAsync(() =>
                             {
                                 cmsAmmoSingleShot.Enabled = objWeapon.AllowSingleShot;
                                 cmsAmmoShortBurst.Enabled = objWeapon.AllowShortBurst;
@@ -14468,72 +14533,11 @@ namespace Chummer
                                 if (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
                                     cmsAmmoSingleShot.Enabled = true;
 
-                                if (cmsAmmoSingleShot.Enabled)
-                                    cmsAmmoSingleShot.Text = string.Format(GlobalSettings.CultureInfo,
-                                                                           await LanguageManager.GetStringAsync(
-                                                                               "String_SingleShot")
-                                                                           , objWeapon.SingleShot.ToString(GlobalSettings.CultureInfo),
-                                                                           objWeapon.SingleShot == 1
-                                                                               ? await LanguageManager.GetStringAsync(
-                                                                                   "String_Bullet")
-                                                                               : await LanguageManager.GetStringAsync(
-                                                                                   "String_Bullets"));
-                                else
-                                    cmsAmmoSingleShot.Text
-                                        = await LanguageManager.GetStringAsync("String_SingleShotNA");
-
-                                if (cmsAmmoShortBurst.Enabled)
-                                    cmsAmmoShortBurst.Text = string.Format(GlobalSettings.CultureInfo,
-                                                                           await LanguageManager.GetStringAsync(
-                                                                               "String_ShortBurst")
-                                                                           , objWeapon.ShortBurst.ToString(GlobalSettings.CultureInfo),
-                                                                           objWeapon.ShortBurst == 1
-                                                                               ? await LanguageManager.GetStringAsync(
-                                                                                   "String_Bullet")
-                                                                               : await LanguageManager.GetStringAsync(
-                                                                                   "String_Bullets"));
-                                else
-                                    cmsAmmoShortBurst.Text
-                                        = await LanguageManager.GetStringAsync("String_ShortBurstNA");
-
-                                if (cmsAmmoLongBurst.Enabled)
-                                    cmsAmmoLongBurst.Text = string.Format(GlobalSettings.CultureInfo,
-                                                                          await LanguageManager.GetStringAsync(
-                                                                              "String_LongBurst")
-                                                                          , objWeapon.LongBurst.ToString(GlobalSettings.CultureInfo),
-                                                                          objWeapon.LongBurst == 1
-                                                                              ? await LanguageManager.GetStringAsync(
-                                                                                  "String_Bullet")
-                                                                              : await LanguageManager.GetStringAsync(
-                                                                                  "String_Bullets"));
-                                else
-                                    cmsAmmoLongBurst.Text = await LanguageManager.GetStringAsync("String_LongBurstNA");
-
-                                if (cmsAmmoFullBurst.Enabled)
-                                    cmsAmmoFullBurst.Text = string.Format(GlobalSettings.CultureInfo,
-                                                                          await LanguageManager.GetStringAsync(
-                                                                              "String_FullBurst")
-                                                                          , objWeapon.FullBurst.ToString(GlobalSettings.CultureInfo),
-                                                                          objWeapon.FullBurst == 1
-                                                                              ? await LanguageManager.GetStringAsync(
-                                                                                  "String_Bullet")
-                                                                              : await LanguageManager.GetStringAsync(
-                                                                                  "String_Bullets"));
-                                else
-                                    cmsAmmoFullBurst.Text = await LanguageManager.GetStringAsync("String_FullBurstNA");
-
-                                if (cmsAmmoSuppressiveFire.Enabled)
-                                    cmsAmmoSuppressiveFire.Text = string.Format(GlobalSettings.CultureInfo,
-                                        await LanguageManager.GetStringAsync(
-                                            "String_SuppressiveFire")
-                                        , objWeapon.Suppressive,
-                                        await LanguageManager.GetStringAsync(
-                                            objWeapon.Suppressive == 1
-                                                ? "String_Bullet"
-                                                : "String_Bullets"));
-                                else
-                                    cmsAmmoSuppressiveFire.Text
-                                        = await LanguageManager.GetStringAsync("String_SuppressiveFireNA");
+                                cmsAmmoSingleShot.Text = strSingleShotText;
+                                cmsAmmoShortBurst.Text = strShortBurstText;
+                                cmsAmmoLongBurst.Text = strLongBurstText;
+                                cmsAmmoFullBurst.Text = strFullBurstText;
+                                cmsAmmoSuppressiveFire.Text = strSuppressiveFireText;
                             }, token);
                             token.ThrowIfCancellationRequested();
                             using (new FetchSafelyFromPool<List<ListItem>>(
@@ -17140,71 +17144,88 @@ namespace Chummer
                                 = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), token);
                             await cmdFireVehicleWeapon.DoThreadSafeAsync(x => x.Enabled = objWeapon.AmmoRemaining != 0, token);
                             await cboVehicleWeaponFiringMode.DoThreadSafeAsync(x => x.SelectedValue = objWeapon.FireMode, token);
-                            await cmdVehicleAmmoExpense.DoThreadSafeAsync(async () =>
+                            string strSingleShotText
+                                = objWeapon.AllowSingleShot || (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
+                                    ? string.Format(GlobalSettings.CultureInfo,
+                                                    await LanguageManager.GetStringAsync(
+                                                        "String_SingleShot")
+                                                    , objWeapon.SingleShot.ToString(GlobalSettings.CultureInfo),
+                                                    objWeapon.SingleShot == 1
+                                                        ? await LanguageManager.GetStringAsync(
+                                                            "String_Bullet")
+                                                        : await LanguageManager.GetStringAsync(
+                                                            "String_Bullets"))
+                                    : await
+                                        LanguageManager.GetStringAsync("String_SingleShotNA");
+                            string strShortBurstText
+                                = objWeapon.AllowShortBurst
+                                    ? string.Format(GlobalSettings.CultureInfo,
+                                                    await LanguageManager.GetStringAsync(
+                                                        "String_ShortBurst")
+                                                    , objWeapon.ShortBurst.ToString(GlobalSettings.CultureInfo),
+                                                    objWeapon.ShortBurst == 1
+                                                        ? await LanguageManager.GetStringAsync(
+                                                            "String_Bullet")
+                                                        : await LanguageManager.GetStringAsync(
+                                                            "String_Bullets"))
+                                    : await
+                                        LanguageManager.GetStringAsync("String_ShortBurstNA");
+                            string strLongBurstText
+                                = objWeapon.AllowLongBurst
+                                    ? string.Format(GlobalSettings.CultureInfo,
+                                                    await LanguageManager.GetStringAsync(
+                                                        "String_LongBurst")
+                                                    , objWeapon.LongBurst.ToString(GlobalSettings.CultureInfo),
+                                                    objWeapon.LongBurst == 1
+                                                        ? await LanguageManager.GetStringAsync(
+                                                            "String_Bullet")
+                                                        : await LanguageManager.GetStringAsync(
+                                                            "String_Bullets"))
+                                    : await
+                                        LanguageManager.GetStringAsync("String_LongBurstNA");
+                            string strFullBurstText
+                                = objWeapon.AllowFullBurst
+                                    ? string.Format(GlobalSettings.CultureInfo,
+                                                    await LanguageManager.GetStringAsync(
+                                                        "String_FullBurst")
+                                                    , objWeapon.FullBurst.ToString(GlobalSettings.CultureInfo),
+                                                    objWeapon.FullBurst == 1
+                                                        ? await LanguageManager.GetStringAsync(
+                                                            "String_Bullet")
+                                                        : await LanguageManager.GetStringAsync(
+                                                            "String_Bullets"))
+                                    : await
+                                        LanguageManager.GetStringAsync("String_FullBurstNA");
+                            string strSuppressiveFireText
+                                = objWeapon.AllowSuppressive
+                                    ? string.Format(GlobalSettings.CultureInfo,
+                                                    await LanguageManager.GetStringAsync(
+                                                        "String_SuppressiveFire")
+                                                    , objWeapon.Suppressive.ToString(GlobalSettings.CultureInfo),
+                                                    objWeapon.Suppressive == 1
+                                                        ? await LanguageManager.GetStringAsync(
+                                                            "String_Bullet")
+                                                        : await LanguageManager.GetStringAsync(
+                                                            "String_Bullets"))
+                                    : await
+                                        LanguageManager.GetStringAsync("String_SuppressiveFireNA");
+                            await cmdVehicleAmmoExpense.DoThreadSafeAsync(() =>
                             {
-                                cmsVehicleAmmoSingleShot.Enabled =
-                                    objWeapon.AllowMode(await LanguageManager.GetStringAsync("String_ModeSingleShot"))
-                                    ||
-                                    objWeapon.AllowMode(
-                                        await LanguageManager.GetStringAsync("String_ModeSemiAutomatic"));
-                                cmsVehicleAmmoShortBurst.Enabled =
-                                    objWeapon.AllowMode(await LanguageManager.GetStringAsync("String_ModeBurstFire")) ||
-                                    objWeapon.AllowMode(
-                                        await LanguageManager.GetStringAsync("String_ModeFullAutomatic"));
-                                cmsVehicleAmmoLongBurst.Enabled =
-                                    objWeapon.AllowMode(
-                                        await LanguageManager.GetStringAsync("String_ModeFullAutomatic"));
-                                cmsVehicleAmmoFullBurst.Enabled =
-                                    objWeapon.AllowMode(
-                                        await LanguageManager.GetStringAsync("String_ModeFullAutomatic"));
-                                cmsVehicleAmmoSuppressiveFire.Enabled =
-                                    objWeapon.AllowMode(
-                                        await LanguageManager.GetStringAsync("String_ModeFullAutomatic"));
+                                cmsVehicleAmmoSingleShot.Enabled = objWeapon.AllowSingleShot;
+                                cmsVehicleAmmoShortBurst.Enabled = objWeapon.AllowShortBurst;
+                                cmsVehicleAmmoLongBurst.Enabled = objWeapon.AllowLongBurst;
+                                cmsVehicleAmmoFullBurst.Enabled = objWeapon.AllowFullBurst;
+                                cmsVehicleAmmoSuppressiveFire.Enabled = objWeapon.AllowSuppressive;
 
                                 // Melee Weapons with Ammo are considered to be Single Shot.
                                 if (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
                                     cmsVehicleAmmoSingleShot.Enabled = true;
 
-                                if (cmsVehicleAmmoSingleShot.Enabled)
-                                    cmsVehicleAmmoSingleShot.Text = string.Format(
-                                        GlobalSettings.CultureInfo,
-                                        await LanguageManager.GetStringAsync("String_SingleShot")
-                                        , objWeapon.SingleShot,
-                                        await LanguageManager.GetStringAsync(objWeapon.SingleShot == 1
-                                                                                 ? "String_Bullet"
-                                                                                 : "String_Bullets"));
-                                if (cmsVehicleAmmoShortBurst.Enabled)
-                                    cmsVehicleAmmoShortBurst.Text = string.Format(
-                                        GlobalSettings.CultureInfo,
-                                        await LanguageManager.GetStringAsync("String_ShortBurst")
-                                        , objWeapon.ShortBurst,
-                                        await LanguageManager.GetStringAsync(objWeapon.ShortBurst == 1
-                                                                                 ? "String_Bullet"
-                                                                                 : "String_Bullets"));
-                                if (cmsVehicleAmmoLongBurst.Enabled)
-                                    cmsVehicleAmmoLongBurst.Text = string.Format(
-                                        GlobalSettings.CultureInfo,
-                                        await LanguageManager.GetStringAsync("String_LongBurst")
-                                        , objWeapon.LongBurst,
-                                        await LanguageManager.GetStringAsync(objWeapon.LongBurst == 1
-                                                                                 ? "String_Bullet"
-                                                                                 : "String_Bullets"));
-                                if (cmsVehicleAmmoFullBurst.Enabled)
-                                    cmsVehicleAmmoFullBurst.Text = string.Format(
-                                        GlobalSettings.CultureInfo,
-                                        await LanguageManager.GetStringAsync("String_FullBurst")
-                                        , objWeapon.FullBurst,
-                                        await LanguageManager.GetStringAsync(objWeapon.FullBurst == 1
-                                                                                 ? "String_Bullet"
-                                                                                 : "String_Bullets"));
-                                if (cmsVehicleAmmoSuppressiveFire.Enabled)
-                                    cmsVehicleAmmoSuppressiveFire.Text = string.Format(
-                                        GlobalSettings.CultureInfo,
-                                        await LanguageManager.GetStringAsync("String_SuppressiveFire")
-                                        , objWeapon.Suppressive,
-                                        await LanguageManager.GetStringAsync(objWeapon.Suppressive == 1
-                                                                                 ? "String_Bullet"
-                                                                                 : "String_Bullets"));
+                                cmsVehicleAmmoSingleShot.Text = strSingleShotText;
+                                cmsVehicleAmmoShortBurst.Text = strShortBurstText;
+                                cmsVehicleAmmoLongBurst.Text = strLongBurstText;
+                                cmsVehicleAmmoFullBurst.Text = strFullBurstText;
+                                cmsVehicleAmmoSuppressiveFire.Text = strSuppressiveFireText;
                             }, token);
                             using (new FetchSafelyFromPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstAmmo))

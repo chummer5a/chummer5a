@@ -111,7 +111,12 @@ namespace Chummer.UI.Skills
 
             //Visible = false;
 
-            await this.DoThreadSafeAsync(async () =>
+            bool blnExoticVisible = (await _objCharacter.LoadDataXPathAsync("skills.xml"))
+                .SelectSingleNode(
+                    "/chummer/skills/skill[exotic = "
+                    + bool.TrueString.CleanXPath()
+                    + ']') != null;
+            await this.DoThreadSafeAsync(() =>
             {
                 Stopwatch swDisplays = Stopwatch.StartNew();
                 Stopwatch parts = Stopwatch.StartNew();
@@ -186,41 +191,65 @@ namespace Chummer.UI.Skills
                     parts.TaskEnd("MakeSkillDisplay()");
 
                     cboDisplayFilter.BeginUpdate();
-                    cboDisplayFilter.DataSource = null;
-                    cboDisplayFilter.ValueMember = "Item2";
-                    cboDisplayFilter.DisplayMember = "Item1";
-                    cboDisplayFilter.DataSource = _lstDropDownActiveSkills;
-                    cboDisplayFilter.SelectedIndex = 1;
-                    cboDisplayFilter.MaxDropDownItems = _lstDropDownActiveSkills.Count;
-                    cboDisplayFilter.EndUpdate();
+                    try
+                    {
+                        cboDisplayFilter.DataSource = null;
+                        cboDisplayFilter.ValueMember = "Item2";
+                        cboDisplayFilter.DisplayMember = "Item1";
+                        cboDisplayFilter.DataSource = _lstDropDownActiveSkills;
+                        cboDisplayFilter.SelectedIndex = 1;
+                        cboDisplayFilter.MaxDropDownItems = _lstDropDownActiveSkills.Count;
+                    }
+                    finally
+                    {
+                        cboDisplayFilter.EndUpdate();
+                    }
 
                     cboDisplayFilterKnowledge.BeginUpdate();
-                    cboDisplayFilterKnowledge.DataSource = null;
-                    cboDisplayFilterKnowledge.ValueMember = "Item2";
-                    cboDisplayFilterKnowledge.DisplayMember = "Item1";
-                    cboDisplayFilterKnowledge.DataSource = _lstDropDownKnowledgeSkills;
-                    cboDisplayFilterKnowledge.SelectedIndex = 1;
-                    cboDisplayFilterKnowledge.MaxDropDownItems = _lstDropDownKnowledgeSkills.Count;
-                    cboDisplayFilterKnowledge.EndUpdate();
+                    try
+                    {
+                        cboDisplayFilterKnowledge.DataSource = null;
+                        cboDisplayFilterKnowledge.ValueMember = "Item2";
+                        cboDisplayFilterKnowledge.DisplayMember = "Item1";
+                        cboDisplayFilterKnowledge.DataSource = _lstDropDownKnowledgeSkills;
+                        cboDisplayFilterKnowledge.SelectedIndex = 1;
+                        cboDisplayFilterKnowledge.MaxDropDownItems = _lstDropDownKnowledgeSkills.Count;
+                    }
+                    finally
+                    {
+                        cboDisplayFilterKnowledge.EndUpdate();
+                    }
                     parts.TaskEnd("_ddl databind");
 
                     cboSort.BeginUpdate();
-                    cboSort.DataSource = null;
-                    cboSort.ValueMember = "Item2";
-                    cboSort.DisplayMember = "Item1";
-                    cboSort.DataSource = _sortList;
-                    cboSort.SelectedIndex = 0;
-                    cboSort.MaxDropDownItems = _sortList.Count;
-                    cboSort.EndUpdate();
+                    try
+                    {
+                        cboSort.DataSource = null;
+                        cboSort.ValueMember = "Item2";
+                        cboSort.DisplayMember = "Item1";
+                        cboSort.DataSource = _sortList;
+                        cboSort.SelectedIndex = 0;
+                        cboSort.MaxDropDownItems = _sortList.Count;
+                    }
+                    finally
+                    {
+                        cboSort.EndUpdate();
+                    }
 
                     cboSortKnowledge.BeginUpdate();
-                    cboSortKnowledge.DataSource = null;
-                    cboSortKnowledge.ValueMember = "Item2";
-                    cboSortKnowledge.DisplayMember = "Item1";
-                    cboSortKnowledge.DataSource = _lstSortKnowledgeList;
-                    cboSortKnowledge.SelectedIndex = 0;
-                    cboSortKnowledge.MaxDropDownItems = _lstSortKnowledgeList.Count;
-                    cboSortKnowledge.EndUpdate();
+                    try
+                    {
+                        cboSortKnowledge.DataSource = null;
+                        cboSortKnowledge.ValueMember = "Item2";
+                        cboSortKnowledge.DisplayMember = "Item1";
+                        cboSortKnowledge.DataSource = _lstSortKnowledgeList;
+                        cboSortKnowledge.SelectedIndex = 0;
+                        cboSortKnowledge.MaxDropDownItems = _lstSortKnowledgeList.Count;
+                    }
+                    finally
+                    {
+                        cboSortKnowledge.EndUpdate();
+                    }
 
                     parts.TaskEnd("_sort databind");
 
@@ -258,11 +287,7 @@ namespace Chummer.UI.Skills
                         lblKnowledgeSkillPointsTitle.Visible = false;
                     }
 
-                    btnExotic.Visible = (await _objCharacter.LoadDataXPathAsync("skills.xml"))
-                                                     .SelectSingleNode(
-                                                         "/chummer/skills/skill[exotic = "
-                                                         + bool.TrueString.CleanXPath()
-                                                         + ']') != null;
+                    btnExotic.Visible = blnExoticVisible;
                 }
                 finally
                 {
@@ -756,7 +781,7 @@ namespace Chummer.UI.Skills
         private async void btnExotic_Click(object sender, EventArgs e)
         {
             ExoticSkill objSkill;
-            using (SelectExoticSkill frmPickExoticSkill = new SelectExoticSkill(_objCharacter))
+            using (SelectExoticSkill frmPickExoticSkill = await this.DoThreadSafeFuncAsync(() => new SelectExoticSkill(_objCharacter)))
             {
                 await frmPickExoticSkill.ShowDialogSafeAsync(this);
 
@@ -785,22 +810,21 @@ namespace Chummer.UI.Skills
 
                 Form frmToUse = ParentForm ?? Program.MainForm;
 
-                DialogResult eResult = await frmToUse.DoThreadSafeFuncAsync(async x =>
+                DialogResult eResult;
+                string strDescription = await LanguageManager.GetStringAsync("Label_Options_NewKnowledgeSkill");
+                using (SelectItem form = await this.DoThreadSafeFuncAsync(() => new SelectItem
                 {
-                    using (SelectItem form = new SelectItem
-                           {
-                               Description = await LanguageManager.GetStringAsync("Label_Options_NewKnowledgeSkill")
-                           })
-                    {
-                        form.SetDropdownItemsMode(_objCharacter.SkillsSection.MyDefaultKnowledgeSkills);
+                    Description = strDescription
+                }))
+                {
+                    form.SetDropdownItemsMode(_objCharacter.SkillsSection.MyDefaultKnowledgeSkills);
 
-                        await form.ShowDialogSafeAsync(x);
+                    await form.ShowDialogSafeAsync(frmToUse);
 
-                        if (form.DialogResult == DialogResult.OK)
-                            strSelectedSkill = form.SelectedItem;
-                        return form.DialogResult;
-                    }
-                });
+                    if (form.DialogResult == DialogResult.OK)
+                        strSelectedSkill = form.SelectedItem;
+                    eResult = form.DialogResult;
+                }
 
                 if (eResult != DialogResult.OK)
                     return;

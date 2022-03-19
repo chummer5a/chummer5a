@@ -179,13 +179,10 @@ namespace Chummer
 
                     if (_frmPrintView == null)
                     {
-                        await this.DoThreadSafeAsync(async () =>
-                        {
-                            _frmPrintView = new CharacterSheetViewer();
-                            await _frmPrintView.SetSelectedSheet("Game Master Summary", token);
-                            await _frmPrintView.SetCharacters(token, _aobjCharacters);
-                            _frmPrintView.Show();
-                        }, token);
+                        _frmPrintView = await this.DoThreadSafeFuncAsync(() => new CharacterSheetViewer(), token);
+                        await _frmPrintView.SetSelectedSheet("Game Master Summary", token);
+                        await _frmPrintView.SetCharacters(token, _aobjCharacters);
+                        await _frmPrintView.DoThreadSafeAsync(x => x.Show(), token);
                     }
                     else
                     {

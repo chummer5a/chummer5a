@@ -232,7 +232,7 @@ namespace Chummer.UI.Powers
 
             do
             {
-                using (SelectPower frmPickPower = new SelectPower(_objCharacter))
+                using (SelectPower frmPickPower = await this.DoThreadSafeFuncAsync(() => new SelectPower(_objCharacter)))
                 {
                     await frmPickPower.ShowDialogSafeAsync(this);
 
@@ -261,8 +261,11 @@ namespace Chummer.UI.Powers
         {
             decimal decPowerPointsTotal = _objCharacter.PowerPointsTotal;
             decimal decPowerPointsRemaining = decPowerPointsTotal - _objCharacter.PowerPointsUsed;
-            lblPowerPoints.Text = string.Format(GlobalSettings.CultureInfo, "{1}{0}({2}{0}{3})",
-                await LanguageManager.GetStringAsync("String_Space"), decPowerPointsTotal, decPowerPointsRemaining, await LanguageManager.GetStringAsync("String_Remaining"));
+            string strText = string.Format(GlobalSettings.CultureInfo, "{1}{0}({2}{0}{3})",
+                                           await LanguageManager.GetStringAsync("String_Space"), decPowerPointsTotal,
+                                           decPowerPointsRemaining,
+                                           await LanguageManager.GetStringAsync("String_Remaining"));
+            await lblPowerPoints.DoThreadSafeAsync(x => x.Text = strText);
         }
 
         private void InitializeTable()
@@ -402,7 +405,7 @@ namespace Chummer.UI.Powers
             {
                 ClickHandler = async p =>
                 {
-                    using (EditNotes frmPowerNotes = new EditNotes(p.Notes, p.NotesColor))
+                    using (EditNotes frmPowerNotes = await this.DoThreadSafeFuncAsync(() => new EditNotes(p.Notes, p.NotesColor)))
                     {
                         await frmPowerNotes.ShowDialogSafeAsync(this);
                         if (frmPowerNotes.DialogResult == DialogResult.OK)
@@ -434,7 +437,7 @@ namespace Chummer.UI.Powers
                 ClickHandler = async p =>
                 {
                     //Cache the parentform prior to deletion, otherwise the relationship is broken.
-                    Form frmParent = ParentForm;
+                    Form frmParent = await this.DoThreadSafeFuncAsync(x => x.ParentForm);
                     if (p.FreeLevels > 0)
                     {
                         string strExtra = p.Extra;

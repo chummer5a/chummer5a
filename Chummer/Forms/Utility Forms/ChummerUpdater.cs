@@ -513,12 +513,10 @@ namespace Chummer
             }
             if (_blnPreferNightly)
                 strStatusText += strSpace + await LanguageManager.GetStringAsync("String_Nightly_Changelog_Warning");
+            string strUpdateText = await LanguageManager.GetStringAsync(intResult > 0 ? "Button_Download" : "Button_Redownload");
             token.ThrowIfCancellationRequested();
             await Task.WhenAll(lblUpdaterStatus.DoThreadSafeAsync(x => x.Text = strStatusText, token),
-                               cmdUpdate.DoThreadSafeFuncAsync(
-                                   async x => x.Text
-                                       = await LanguageManager.GetStringAsync(
-                                           intResult > 0 ? "Button_Download" : "Button_Redownload"), token));
+                               cmdUpdate.DoThreadSafeFuncAsync(x => x.Text = strUpdateText, token));
             token.ThrowIfCancellationRequested();
         }
 

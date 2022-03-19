@@ -542,28 +542,29 @@ namespace ChummerHub.Client.UI
 
         private async void BGroupFoundLoadInCharacterRoster_Click(object sender, EventArgs e)
         {
-            await PluginHandler.MainForm.DoThreadSafeAsync(async () =>
+            SINnerSearchGroup item = await PluginHandler.MainForm.DoThreadSafeFuncAsync(() =>
             {
                 TreeNode selectedNode = tvGroupSearchResult.SelectedNode;
-                SINnerSearchGroup item = selectedNode?.Tag as SINnerSearchGroup;
-                while (item == null && selectedNode?.Parent != null)
+                SINnerSearchGroup objInnerItem = selectedNode?.Tag as SINnerSearchGroup;
+                while (objInnerItem == null && selectedNode?.Parent != null)
                 {
                     selectedNode = selectedNode.Parent;
-                    item = selectedNode?.Tag as SINnerSearchGroup;
+                    objInnerItem = selectedNode?.Tag as SINnerSearchGroup;
                 }
-                if (item != null)
-                {
-                    List<SINnerSearchGroup> list = new List<SINnerSearchGroup>() {item};
-                    IEnumerable<TreeNode> nodelist = Backend.Utils.CharacterRosterTreeNodifyGroupList(list);
-                    foreach (TreeNode node in nodelist)
-                    {
-                        await PluginHandler.MyTreeNodes2Add.AddOrUpdateAsync(node.Name, node, (key, oldValue) => node);
-                    }
-                    await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
-                    PluginHandler.MainForm.CharacterRoster.BringToFront();
-                    MyParentForm.Close();
-                }
+                return objInnerItem;
             });
+            if (item != null)
+            {
+                List<SINnerSearchGroup> list = new List<SINnerSearchGroup> {item};
+                IEnumerable<TreeNode> nodelist = await PluginHandler.MainForm.DoThreadSafeFuncAsync(() => Backend.Utils.CharacterRosterTreeNodifyGroupList(list));
+                foreach (TreeNode node in nodelist)
+                {
+                    await PluginHandler.MyTreeNodes2Add.AddOrUpdateAsync(node.Name, node, (key, oldValue) => node);
+                }
+                await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
+                await PluginHandler.MainForm.CharacterRoster.DoThreadSafeAsync(x => x.BringToFront());
+                await MyParentForm.DoThreadSafeAsync(x => x.Close());
+            }
         }
 
         private async void BGroupsFoundDeleteGroup_Click(object sender, EventArgs e)

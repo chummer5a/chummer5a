@@ -143,9 +143,8 @@ namespace Chummer
                 try
                 {
                     CharacterCache objSelectedCache = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, _objGenericToken) as CharacterCache;
-                    await this.DoThreadSafeAsync(
-                        () => UpdateCharacter(objSelectedCache, _objGenericToken)
-                            .ContinueWith(x => IsFinishedLoading = true, _objGenericToken), _objGenericToken);
+                    await UpdateCharacter(objSelectedCache, _objGenericToken)
+                        .ContinueWith(x => IsFinishedLoading = true, _objGenericToken);
                 }
                 catch (OperationCanceledException)
                 {
@@ -273,8 +272,7 @@ namespace Chummer
                 }
                 
                 CharacterCache objSelectedCache = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, _objGenericToken) as CharacterCache;
-                await this.DoThreadSafeAsync(() => UpdateCharacter(objSelectedCache, _objGenericToken),
-                                             _objGenericToken);
+                await UpdateCharacter(objSelectedCache, _objGenericToken);
                 await PurgeUnusedCharacterCaches(_objGenericToken);
             }
             catch (OperationCanceledException)
@@ -350,7 +348,7 @@ namespace Chummer
             try
             {
                 CharacterCache objSelectedCache = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) as CharacterCache;
-                await this.DoThreadSafeAsync(() => UpdateCharacter(objSelectedCache, token), token);
+                await UpdateCharacter(objSelectedCache, token);
                 await PurgeUnusedCharacterCaches(token);
             }
             catch (ObjectDisposedException)

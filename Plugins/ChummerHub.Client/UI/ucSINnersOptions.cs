@@ -296,42 +296,40 @@ namespace ChummerHub.Client.UI
         {
             tlpOptions.Enabled = Settings.Default.UserModeRegistered;
             string mail = await GetUserEmail();
-            await this.DoThreadSafeAsync(async () =>
+            try
             {
-                try
-                {
-                    Settings.Default.Reload();
-                    tbTempDownloadPath.Text = Settings.Default.TempDownloadPath;
+                Settings.Default.Reload();
+                await tbTempDownloadPath.DoThreadSafeAsync(x => x.Text = Settings.Default.TempDownloadPath);
 
-                    if (!string.IsNullOrEmpty(mail))
-                    {
-                        lUsername.Text = mail;
-                        //also, since we are logged in in now, refresh the frmCharacterRoster!
-                        if (PluginHandler.MainForm != null)
-                            await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
-                        bLogin.Text = "Logout";
-                        BindingSource bs = new BindingSource
-                        {
-                            DataSource = StaticUtils.UserRoles
-                        };
-                        cbRoles.DataSource = bs;
-                        HideWebBrowser();
-                    }
-                    else
-                    {
-                        bLogin.Text = "Login";
-                        BindingSource bs = new BindingSource
-                        {
-                            DataSource = StaticUtils.UserRoles
-                        };
-                        cbRoles.DataSource = bs;
-                    }
-                }
-                catch (Exception ex)
+                if (!string.IsNullOrEmpty(mail))
                 {
-                    Log.Warn(ex);
+                    await lUsername.DoThreadSafeAsync(x => x.Text = mail);
+                    //also, since we are logged in in now, refresh the frmCharacterRoster!
+                    if (PluginHandler.MainForm != null)
+                        await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
+                    await bLogin.DoThreadSafeAsync(x => x.Text = "Logout");
+                    BindingSource bs = new BindingSource
+                    {
+                        DataSource = StaticUtils.UserRoles
+                    };
+                    await cbRoles.DoThreadSafeAsync(x => x.DataSource = bs);
+                    if (frmWebBrowser != null)
+                        await frmWebBrowser.DoThreadSafeAsync(x => x.Hide());
                 }
-            });
+                else
+                {
+                    await bLogin.DoThreadSafeAsync(x => x.Text = "Login");
+                    BindingSource bs = new BindingSource
+                    {
+                        DataSource = StaticUtils.UserRoles
+                    };
+                    await cbRoles.DoThreadSafeAsync(x => x.DataSource = bs);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warn(ex);
+            }
         }
 
         public async Task<string> GetUserEmail()
@@ -406,11 +404,6 @@ namespace ChummerHub.Client.UI
                 Settings.Default.Save();
                 ShowWebBrowser();
             }
-        }
-
-        private void HideWebBrowser()
-        {
-            frmWebBrowser?.Hide();
         }
 
         private frmWebBrowser frmWebBrowser;

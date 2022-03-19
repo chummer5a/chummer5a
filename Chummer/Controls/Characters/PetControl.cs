@@ -175,7 +175,8 @@ namespace Chummer
                 using (CursorWait.New(ParentForm))
                 {
                     _objContact.FileName = openFileDialog.FileName;
-                    cmdLink.ToolTipText = await LanguageManager.GetStringAsync("Tip_Contact_OpenFile");
+                    string strText = await LanguageManager.GetStringAsync("Tip_Contact_OpenFile");
+                    await cmdLink.SetToolTipTextAsync(strText);
 
                     // Set the relative path.
                     Uri uriApplication = new Uri(Utils.GetStartupPath);
@@ -195,7 +196,8 @@ namespace Chummer
             {
                 _objContact.FileName = string.Empty;
                 _objContact.RelativeFileName = string.Empty;
-                cmdLink.ToolTipText = await LanguageManager.GetStringAsync("Tip_Contact_LinkFile");
+                string strText = await LanguageManager.GetStringAsync("Tip_Contact_LinkFile");
+                await cmdLink.SetToolTipTextAsync(strText);
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
             }
         }
@@ -213,7 +215,8 @@ namespace Chummer
             string strTooltip = await LanguageManager.GetStringAsync("Tip_Contact_EditNotes");
             if (!string.IsNullOrEmpty(_objContact.Notes))
                 strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
-            cmdNotes.ToolTipText = strTooltip.WordWrap();
+            strTooltip = strTooltip.WordWrap();
+            await cmdNotes.SetToolTipTextAsync(strTooltip);
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
         }
 

@@ -43,27 +43,36 @@ namespace Chummer
         {
             if (objNotes == null || treNode == null)
                 return false;
-            Form frmToUse = treNode.TreeView.FindForm() ?? Program.MainForm;
+            TreeView objTreeView = treNode.TreeView;
+            Form frmToUse = objTreeView != null
+                ? await objTreeView.DoThreadSafeFuncAsync(x => x.FindForm()) ?? Program.MainForm
+                : Program.MainForm;
 
-            DialogResult eResult = await frmToUse.DoThreadSafeFuncAsync(async x =>
+            using (EditNotes frmItemNotes = await frmToUse.DoThreadSafeFuncAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor)))
             {
-                using (EditNotes frmItemNotes = new EditNotes(objNotes.Notes, objNotes.NotesColor))
+                await frmItemNotes.ShowDialogSafeAsync(frmToUse);
+                if (frmItemNotes.DialogResult != DialogResult.OK)
+                    return false;
+
+                objNotes.Notes = frmItemNotes.Notes;
+                objNotes.NotesColor = frmItemNotes.NotesColor;
+            }
+
+            if (objTreeView != null)
+            {
+                await objTreeView.DoThreadSafeAsync(() =>
                 {
-                    await frmItemNotes.ShowDialogSafeAsync(x);
-                    if (frmItemNotes.DialogResult != DialogResult.OK)
-                        return frmItemNotes.DialogResult;
-
-                    objNotes.Notes = frmItemNotes.Notes;
-                    objNotes.NotesColor = frmItemNotes.NotesColor;
-                }
-
+                    treNode.ForeColor = objNotes.PreferredColor;
+                    treNode.ToolTipText = objNotes.Notes.WordWrap();
+                });
+            }
+            else
+            {
                 treNode.ForeColor = objNotes.PreferredColor;
                 treNode.ToolTipText = objNotes.Notes.WordWrap();
+            }
 
-                return DialogResult.OK;
-            });
-
-            return eResult == DialogResult.OK;
+            return true;
         }
     }
 }
