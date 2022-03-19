@@ -140,6 +140,7 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
         public static void DoThreadSafe<T>(this T objControl, Func<Task> funcToRun) where T : Control
         {
             objControl.DoThreadSafeCore(true, funcToRun);
@@ -189,6 +190,7 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
         public static void QueueThreadSafe<T>(this T objControl, Func<Task> funcToRun) where T : Control
         {
             objControl.DoThreadSafeCore(false, funcToRun);
@@ -866,6 +868,166 @@ namespace Chummer
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
+        public static Task DoThreadSafeFunc<T1>(this T1 objControl, Func<Task> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            token.ThrowIfCancellationRequested();
+            Task<Task> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun, token);
+            token.ThrowIfCancellationRequested();
+            if (objTask.Status == TaskStatus.Created)
+                objTask.RunSynchronously();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+            return objTask.Result;
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
+        public static Task DoThreadSafeFunc<T1>(this T1 objControl, Func<T1, Task> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            token.ThrowIfCancellationRequested();
+            Task<Task> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun, token);
+            token.ThrowIfCancellationRequested();
+            if (objTask.Status == TaskStatus.Created)
+                objTask.RunSynchronously();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+            return objTask.Result;
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
+        public static Task DoThreadSafeFunc<T1>(this T1 objControl, Func<CancellationToken, Task> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            token.ThrowIfCancellationRequested();
+            Task<Task> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun, token);
+            token.ThrowIfCancellationRequested();
+            if (objTask.Status == TaskStatus.Created)
+                objTask.RunSynchronously();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+            return objTask.Result;
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
+        public static Task DoThreadSafeFunc<T1>(this T1 objControl, Func<T1, CancellationToken, Task> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            token.ThrowIfCancellationRequested();
+            Task<Task> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun, token);
+            token.ThrowIfCancellationRequested();
+            if (objTask.Status == TaskStatus.Created)
+                objTask.RunSynchronously();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+            return objTask.Result;
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
+        public static ValueTask DoThreadSafeFunc<T1>(this T1 objControl, Func<ValueTask> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            token.ThrowIfCancellationRequested();
+            Task<ValueTask> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun, token);
+            token.ThrowIfCancellationRequested();
+            if (objTask.Status == TaskStatus.Created)
+                objTask.RunSynchronously();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+            return objTask.Result;
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
+        public static ValueTask DoThreadSafeFunc<T1>(this T1 objControl, Func<T1, ValueTask> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            token.ThrowIfCancellationRequested();
+            Task<ValueTask> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun, token);
+            token.ThrowIfCancellationRequested();
+            if (objTask.Status == TaskStatus.Created)
+                objTask.RunSynchronously();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+            return objTask.Result;
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
+        public static ValueTask DoThreadSafeFunc<T1>(this T1 objControl, Func<CancellationToken, ValueTask> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            token.ThrowIfCancellationRequested();
+            Task<ValueTask> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun, token);
+            token.ThrowIfCancellationRequested();
+            if (objTask.Status == TaskStatus.Created)
+                objTask.RunSynchronously();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+            return objTask.Result;
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
+        public static ValueTask DoThreadSafeFunc<T1>(this T1 objControl, Func<T1, CancellationToken, ValueTask> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            token.ThrowIfCancellationRequested();
+            Task<ValueTask> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun, token);
+            token.ThrowIfCancellationRequested();
+            if (objTask.Status == TaskStatus.Created)
+                objTask.RunSynchronously();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+            return objTask.Result;
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<T2> funcToRun, CancellationToken token = default) where T1 : Control
         {
             return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
@@ -903,6 +1065,110 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<T1, T2> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
+        public static Task<Task> DoThreadSafeFuncAsync<T1>(this T1 objControl, Func<Task> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
+        public static Task<Task> DoThreadSafeFuncAsync<T1>(this T1 objControl, Func<T1, CancellationToken, Task> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
+        public static Task<Task> DoThreadSafeFuncAsync<T1>(this T1 objControl, Func<CancellationToken, Task> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
+        public static Task<Task> DoThreadSafeFuncAsync<T1>(this T1 objControl, Func<T1, Task> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
+        public static Task<ValueTask> DoThreadSafeFuncAsync<T1>(this T1 objControl, Func<ValueTask> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
+        public static Task<ValueTask> DoThreadSafeFuncAsync<T1>(this T1 objControl, Func<T1, CancellationToken, ValueTask> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
+        public static Task<ValueTask> DoThreadSafeFuncAsync<T1>(this T1 objControl, Func<CancellationToken, ValueTask> funcToRun, CancellationToken token = default) where T1 : Control
+        {
+            return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Careful about async blocks inside this function because they can cause UI code to end up executing on non-UI threads.")]
+        public static Task<ValueTask> DoThreadSafeFuncAsync<T1>(this T1 objControl, Func<T1, ValueTask> funcToRun, CancellationToken token = default) where T1 : Control
         {
             return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun, token);
         }

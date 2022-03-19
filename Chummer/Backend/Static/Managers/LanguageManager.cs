@@ -1565,34 +1565,38 @@ namespace Chummer
             }
         }
 
-        public static async Task PopulateSheetLanguageListAsync(ElasticComboBox cboLanguage, string strSelectedSheet, IEnumerable<Character> lstCharacters = null, CultureInfo defaultCulture = null)
+        public static Task PopulateSheetLanguageListAsync(ElasticComboBox cboLanguage, string strSelectedSheet, IEnumerable<Character> lstCharacters = null, CultureInfo defaultCulture = null)
         {
-            if (cboLanguage == null)
-                throw new ArgumentNullException(nameof(cboLanguage));
-            string strDefaultSheetLanguage = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.Language;
-            int? intLastIndexDirectorySeparator = strSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
-            if (intLastIndexDirectorySeparator.HasValue && intLastIndexDirectorySeparator != -1)
+            return cboLanguage == null
+                ? Task.FromException(new ArgumentNullException(nameof(cboLanguage)))
+                : PopulateSheetLanguageListAsyncInner();
+            async Task PopulateSheetLanguageListAsyncInner()
             {
-                string strSheetLanguage = strSelectedSheet.Substring(0, intLastIndexDirectorySeparator.Value);
-                if (strSheetLanguage.Length == 5)
-                    strDefaultSheetLanguage = strSheetLanguage;
-            }
-
-            List<ListItem> lstSheetLanguageList = await GetSheetLanguageListAsync(lstCharacters, true);
-            try
-            {
-                await cboLanguage.PopulateWithListItemsAsync(lstSheetLanguageList);
-                await cboLanguage.DoThreadSafeAsync(x =>
+                string strDefaultSheetLanguage = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.Language;
+                int? intLastIndexDirectorySeparator = strSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
+                if (intLastIndexDirectorySeparator.HasValue && intLastIndexDirectorySeparator != -1)
                 {
-                    x.SelectedValue = strDefaultSheetLanguage;
-                    if (x.SelectedIndex == -1)
-                        x.SelectedValue
-                            = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
-                });
-            }
-            finally
-            {
-                Utils.ListItemListPool.Return(lstSheetLanguageList);
+                    string strSheetLanguage = strSelectedSheet.Substring(0, intLastIndexDirectorySeparator.Value);
+                    if (strSheetLanguage.Length == 5)
+                        strDefaultSheetLanguage = strSheetLanguage;
+                }
+
+                List<ListItem> lstSheetLanguageList = await GetSheetLanguageListAsync(lstCharacters, true);
+                try
+                {
+                    await cboLanguage.PopulateWithListItemsAsync(lstSheetLanguageList);
+                    await cboLanguage.DoThreadSafeAsync(x =>
+                    {
+                        x.SelectedValue = strDefaultSheetLanguage;
+                        if (x.SelectedIndex == -1)
+                            x.SelectedValue
+                                = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
+                    });
+                }
+                finally
+                {
+                    Utils.ListItemListPool.Return(lstSheetLanguageList);
+                }
             }
         }
 

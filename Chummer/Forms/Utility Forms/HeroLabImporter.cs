@@ -602,20 +602,14 @@ namespace Chummer
                             }
                         }
                     }
-
-                    DialogResult ePickBPResult = await this.DoThreadSafeFunc(ShowBPAsync);
-
-                    async ValueTask<DialogResult> ShowBPAsync()
+                    
+                    using (SelectBuildMethod frmPickBP = await this.DoThreadSafeFuncAsync(() => new SelectBuildMethod(objCharacter, true)))
                     {
-                        using (SelectBuildMethod frmPickBP = new SelectBuildMethod(objCharacter, true))
-                        {
-                            await frmPickBP.ShowDialogSafeAsync(this);
-                            return frmPickBP.DialogResult;
-                        }
+                        await frmPickBP.ShowDialogSafeAsync(this);
+                        if (frmPickBP.DialogResult != DialogResult.OK)
+                            return;
                     }
 
-                    if (ePickBPResult != DialogResult.OK)
-                        return;
                     //Timekeeper.Start("load_file");
                     if (!await objCharacter.LoadFromHeroLabFileAsync(strFile, strCharacterId, objCharacter.SettingsKey))
                         return;

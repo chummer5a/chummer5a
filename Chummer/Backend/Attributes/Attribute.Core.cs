@@ -38,7 +38,7 @@ namespace Chummer.Backend.Attributes
     /// </summary>
     [HubClassTag("Abbrev", true, "TotalValue", "TotalValue")]
     [DebuggerDisplay("{" + nameof(_strAbbrev) + "}")]
-    public class CharacterAttrib : INotifyMultiplePropertyChanged, IDisposable, IAsyncDisposable
+    public sealed class CharacterAttrib : INotifyMultiplePropertyChanged, IDisposable, IAsyncDisposable
     {
         private int _intMetatypeMin = 1;
         private int _intMetatypeMax = 6;

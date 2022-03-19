@@ -1332,7 +1332,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Opens the correct window for a single character (not thread-safe).
+        /// Opens the correct window for a single character.
         /// </summary>
         public Task OpenCharacter(Character objCharacter, bool blnIncludeInMru = true)
         {
@@ -1340,7 +1340,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Open the correct windows for a list of characters (not thread-safe).
+        /// Open the correct windows for a list of characters.
         /// </summary>
         /// <param name="lstCharacters">Characters for which windows should be opened.</param>
         /// <param name="blnIncludeInMru">Added the opened characters to the Most Recently Used list.</param>
@@ -1353,10 +1353,12 @@ namespace Chummer
                 List<Character> lstNewCharacters = lstCharacters.ToList();
                 if (lstNewCharacters.Count == 0)
                     return;
-                FormWindowState wsPreference = MdiChildren.Length == 0
-                                               || MdiChildren.Any(x => x.WindowState == FormWindowState.Maximized)
-                    ? FormWindowState.Maximized
-                    : FormWindowState.Normal;
+                FormWindowState wsPreference
+                    = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
+                                                            || x.MdiChildren.Any(
+                                                                y => y.WindowState == FormWindowState.Maximized))
+                        ? FormWindowState.Maximized
+                        : FormWindowState.Normal;
                 List<CharacterShared> lstNewFormsToProcess = new List<CharacterShared>(lstNewCharacters.Count);
                 string strUI = await LanguageManager.GetStringAsync("String_UI");
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
@@ -1463,7 +1465,7 @@ namespace Chummer
                 }
                 else
                 {
-                    using (CharacterSheetViewer frmViewer = this.DoThreadSafeFunc(() => new CharacterSheetViewer()))
+                    using (CharacterSheetViewer frmViewer = await this.DoThreadSafeFuncAsync(() => new CharacterSheetViewer()))
                     {
                         await frmViewer.SetCharacters(default, objCharacter);
                         await frmViewer.ShowDialogSafeAsync(this);
@@ -1526,7 +1528,7 @@ namespace Chummer
                 else
                 {
                     using (ExportCharacter frmExportCharacter
-                           = this.DoThreadSafeFunc(() => new ExportCharacter(objCharacter)))
+                           = await this.DoThreadSafeFuncAsync(() => new ExportCharacter(objCharacter)))
                         await frmExportCharacter.ShowDialogSafeAsync(this);
                 }
             }
@@ -1537,7 +1539,7 @@ namespace Chummer
         /// </summary>
         private async void PopulateMruToolstripMenu(object sender, TextEventArgs e)
         {
-            await this.DoThreadSafeFunc(() => DoPopulateMruToolstripMenu(e?.Text));
+            await DoPopulateMruToolstripMenu(e?.Text);
         }
 
         private async ValueTask DoPopulateMruToolstripMenu(string strText = "")
@@ -1863,8 +1865,7 @@ namespace Chummer
                             lstCharactersToLoad.Add(await tskLoadingTask);
 
                         if (lstCharactersToLoad.Count > 0)
-                            // ReSharper disable once AccessToDisposedClosure
-                            await this.DoThreadSafeFunc(() => OpenCharacterList(lstCharactersToLoad));
+                            await OpenCharacterList(lstCharactersToLoad);
                     }
                 });
             }

@@ -271,7 +271,7 @@ namespace ChummerHub.Client.UI
                                              ".";
                                 Log.Info(msg);
                                 Program.ShowMessageBox(msg, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                await this.DoThreadSafeFunc(() => ProcessGroupSearchVisible());
+                                await ProcessGroupSearchVisible();
                             }
                             else
                             {
@@ -284,7 +284,7 @@ namespace ChummerHub.Client.UI
                                              ".";
                                 Log.Info(msg);
                                 Program.ShowMessageBox(msg, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                await this.DoThreadSafeFunc(() => ProcessGroupSearchVisible());
+                                await ProcessGroupSearchVisible();
                                 await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
                             }
                         }).Unwrap();
@@ -440,13 +440,13 @@ namespace ChummerHub.Client.UI
 
         private async ValueTask ProcessGroupSearchVisible(object sender = null)
         {
-            if (!Visible)
+            if (!await this.DoThreadSafeFuncAsync(x => x.Visible))
                 return;
-            lSINnerName.Text = "not set";
-            cbShowMembers.Checked = MyCE == null;
+            await lSINnerName.DoThreadSafeAsync(x => x.Text = "not set");
+            await cbShowMembers.DoThreadSafeAsync(x => x.Checked = MyCE == null);
             if (MyCE == null)
                 return;
-            lSINnerName.Text = MyCE.MySINnerFile.Alias;
+            await lSINnerName.DoThreadSafeAsync(x => x.Text = MyCE.MySINnerFile.Alias);
             if (MyCE?.MySINnerFile.MyGroup != null)
             {
                 using (CursorWait.New(this, true))
@@ -454,14 +454,15 @@ namespace ChummerHub.Client.UI
                     try
                     {
                         //MySINSearchGroupResult = null;
-                        if (string.IsNullOrEmpty(tbSearchGroupname.Text))
+                        string strText = await tbSearchGroupname.DoThreadSafeFuncAsync(x => x.Text);
+                        if (string.IsNullOrEmpty(strText))
                         {
-                            SINSearchGroupResult temp = new SINSearchGroupResult(MyCE?.MySINnerFile.MyGroup);
+                            SINSearchGroupResult temp = await this.DoThreadSafeFuncAsync(() => new SINSearchGroupResult(MyCE?.MySINnerFile.MyGroup));
                             MySINSearchGroupResult = temp;
                         }
                         else
                         {
-                            MySINSearchGroupResult = await SearchForGroups(tbSearchGroupname.Text);
+                            MySINSearchGroupResult = await SearchForGroups(strText);
                         }
                     }
                     catch (ArgumentNullException)

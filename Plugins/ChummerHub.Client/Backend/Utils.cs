@@ -1111,11 +1111,7 @@ namespace ChummerHub.Client.Backend
                         await tempCache.DisposeAsync();
                     }
                 }
-                await PluginHandler.MainForm.CharacterRoster.DoThreadSafeFunc(async x =>
-                {
-                    await ((CharacterRoster)x).UpdateCharacter(objCache);
-                });
-
+                await PluginHandler.MainForm.CharacterRoster.UpdateCharacter(objCache);
                 treeViewEventArgs.Node.Text = objCache.CalculatedName();
             }
         }

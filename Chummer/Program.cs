@@ -1060,11 +1060,9 @@ namespace Chummer
             if (lstCharacters == null)
                 return Task.CompletedTask;
             if (MainForm != null)
-                return MainForm.DoThreadSafeFunc(
-                    x => x.OpenCharacterList(lstCharacters, blnIncludeInMru));
+                return MainForm.OpenCharacterList(lstCharacters, blnIncludeInMru);
             return Task.Run(() => MainFormOnAssignAsyncActions.Add(
-                                x => x.DoThreadSafeFunc(
-                                    y => y.OpenCharacterList(lstCharacters, blnIncludeInMru))));
+                                x => x.OpenCharacterList(lstCharacters, blnIncludeInMru)));
         }
 
         /// <summary>
@@ -1075,10 +1073,9 @@ namespace Chummer
             if (objCharacter == null || MainForm == null)
                 return Task.CompletedTask;
             if (MainForm != null)
-                return MainForm.DoThreadSafeFunc(x => x.OpenCharacterForPrinting(objCharacter));
+                return MainForm.OpenCharacterForPrinting(objCharacter);
             return Task.Run(() => MainFormOnAssignAsyncActions.Add(
-                                x => x.DoThreadSafeFunc(
-                                    y => y.OpenCharacterForPrinting(objCharacter))));
+                                x => x.OpenCharacterForPrinting(objCharacter)));
         }
 
         /// <summary>
@@ -1089,10 +1086,9 @@ namespace Chummer
             if (objCharacter == null || MainForm == null)
                 return Task.CompletedTask;
             if (MainForm != null)
-                return MainForm.DoThreadSafeFunc(x => x.OpenCharacterForExport(objCharacter));
+                return MainForm.OpenCharacterForExport(objCharacter);
             return Task.Run(() => MainFormOnAssignAsyncActions.Add(
-                                x => x.DoThreadSafeFunc(
-                                    y => y.OpenCharacterForExport(objCharacter))));
+                                x => x.OpenCharacterForExport(objCharacter)));
         }
 
         public static LoadingBar MainProgressBar { get; set; }

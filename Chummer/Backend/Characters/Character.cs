@@ -4299,7 +4299,26 @@ namespace Chummer
         /// <summary>
         /// Queue of methods to execute after loading has finished. Return value signals whether loading should continue after execution (True) or terminate/cancel (False).
         /// </summary>
-        public ThreadSafeQueue<Func<bool>> PostLoadMethods { get; } = new ThreadSafeQueue<Func<bool>>();
+        public ThreadSafeQueue<Func<bool>> PostLoadMethods
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _quePostLoadMethods;
+            }
+        }
+
+        /// <summary>
+        /// Queue of asynchronous methods to execute after loading has finished. Return value signals whether loading should continue after execution (True) or terminate/cancel (False).
+        /// </summary>
+        public ThreadSafeQueue<Func<Task<bool>>> PostLoadMethodsAsync
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _quePostLoadMethodsAsync;
+            }
+        }
 
         /// <summary>
         /// Load the Character from an XML file synchronously.
@@ -5016,7 +5035,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         ePickBPResult = Program.MainForm.DoThreadSafeFunc(ShowBP);
                                     else
-                                        ePickBPResult = await Program.MainForm.DoThreadSafeFunc(ShowBPAsync);
+                                        ePickBPResult = await ShowBPAsync();
 
                                     DialogResult ShowBP()
                                     {
@@ -5027,9 +5046,9 @@ namespace Chummer
                                         }
                                     }
 
-                                    async ValueTask<DialogResult> ShowBPAsync()
+                                    async Task<DialogResult> ShowBPAsync()
                                     {
-                                        using (SelectBuildMethod frmPickBP = new SelectBuildMethod(this, true))
+                                        using (SelectBuildMethod frmPickBP = await Program.MainForm.DoThreadSafeFuncAsync(() => new SelectBuildMethod(this, true)))
                                         {
                                             await frmPickBP.ShowDialogSafeAsync(this);
                                             return frmPickBP.DialogResult;
@@ -7479,10 +7498,33 @@ namespace Chummer
                                 if (!funcToCall.Invoke())
                                     return false;
                             if (blnSync)
+                            {
                                 // ReSharper disable once MethodHasAsyncOverload
                                 PostLoadMethods.Clear();
+
+                                foreach (Func<Task<bool>> funcToCall in PostLoadMethodsAsync)
+                                {
+                                    Task<bool> tskToCall = funcToCall.Invoke();
+                                    if (tskToCall.Status == TaskStatus.Created)
+                                        tskToCall.RunSynchronously();
+                                    if (!tskToCall.GetAwaiter().GetResult())
+                                        return false;
+                                }
+
+                                PostLoadMethodsAsync.Clear();
+                            }
                             else
+                            {
                                 await PostLoadMethods.ClearAsync();
+
+                                foreach (Func<Task<bool>> funcToCall in PostLoadMethodsAsync)
+                                {
+                                    if (!await funcToCall.Invoke())
+                                        return false;
+                                }
+
+                                await PostLoadMethodsAsync.ClearAsync();
+                            }
                             //Timekeeper.Finish("load_char_improvementrefreshers");
                         }
 
@@ -8825,9 +8867,10 @@ namespace Chummer
                     _lstImprovementGroups.Dispose();
                     _objSkillsSection.Dispose();
                     _objAttributeSection.Dispose();
-                    PostLoadMethods.Dispose();
-                    DoOnSaveCompleted.Dispose();
-                    DoOnSaveCompletedAsync.Dispose();
+                    _quePostLoadMethods.Dispose();
+                    _quePostLoadMethodsAsync.Dispose();
+                    _setDoOnSaveCompleted.Dispose();
+                    _setDoOnSaveCompletedAsync.Dispose();
                     if (_stkPushText.IsValueCreated)
                         _stkPushText.Value.Dispose();
                     if (!SettingsManager.LoadedCharacterSettings.ContainsKey(_objSettings.DictionaryKey))
@@ -8927,9 +8970,10 @@ namespace Chummer
                     await _lstImprovementGroups.DisposeAsync();
                     await _objSkillsSection.DisposeAsync();
                     await _objAttributeSection.DisposeAsync();
-                    await PostLoadMethods.DisposeAsync();
-                    await DoOnSaveCompleted.DisposeAsync();
-                    await DoOnSaveCompletedAsync.DisposeAsync();
+                    await _quePostLoadMethods.DisposeAsync();
+                    await _quePostLoadMethodsAsync.DisposeAsync();
+                    await _setDoOnSaveCompleted.DisposeAsync();
+                    await _setDoOnSaveCompletedAsync.DisposeAsync();
                     if (_stkPushText.IsValueCreated)
                         await _stkPushText.Value.DisposeAsync();
                     if (!SettingsManager.LoadedCharacterSettings.ContainsKey(_objSettings.DictionaryKey))
@@ -9947,12 +9991,12 @@ namespace Chummer
             }
         }
 
-        public bool SwitchBuildMethods(CharacterBuildMethod eOldBuildMethod, CharacterBuildMethod eNewBuildMethod, string strOldSettingsKey)
+        public async Task<bool> SwitchBuildMethods(CharacterBuildMethod eOldBuildMethod, CharacterBuildMethod eNewBuildMethod, string strOldSettingsKey)
         {
             DialogResult eResult;
             if (eNewBuildMethod.UsesPriorityTables())
             {
-                eResult = Program.MainForm.DoThreadSafeFunc(() =>
+                eResult = await Program.MainForm.DoThreadSafeFuncAsync(() =>
                 {
                     using (SelectMetatypePriority frmSelectMetatype = new SelectMetatypePriority(this))
                     {
@@ -9963,7 +10007,7 @@ namespace Chummer
             }
             else
             {
-                eResult = Program.MainForm.DoThreadSafeFunc(() =>
+                eResult = await Program.MainForm.DoThreadSafeFuncAsync(() =>
                 {
                     using (SelectMetatypeKarma frmSelectMetatype = new SelectMetatypeKarma(this))
                     {
@@ -29043,6 +29087,8 @@ namespace Chummer
         private SourceString _objCachedSourceDetail;
         private readonly SkillsSection _objSkillsSection;
         private readonly AttributeSection _objAttributeSection;
+        private readonly ThreadSafeQueue<Func<bool>> _quePostLoadMethods = new ThreadSafeQueue<Func<bool>>();
+        private readonly ThreadSafeQueue<Func<Task<bool>>> _quePostLoadMethodsAsync = new ThreadSafeQueue<Func<Task<bool>>>();
 
         public SourceString SourceDetail
         {

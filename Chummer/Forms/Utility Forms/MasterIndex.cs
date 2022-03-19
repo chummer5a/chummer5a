@@ -115,7 +115,7 @@ namespace Chummer
                 CharacterSettings objSettings;
                 bool blnSuccess;
                 
-                await cboCharacterSetting.DoThreadSafeFunc(x => x.PopulateWithListItemsAsync(lstCharacterSettings, token), token);
+                await cboCharacterSetting.PopulateWithListItemsAsync(lstCharacterSettings, token);
                 if (!string.IsNullOrEmpty(strOldSettingKey))
                 {
                     (blnSuccess, objSettings)
