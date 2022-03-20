@@ -146,13 +146,12 @@ namespace Chummer
                     // Swallow this
                 }
             }
-            _objGenericFormClosingCancellationTokenSource?.Cancel(false);
             Log.Info("ChummerUpdater_Load exit");
         }
 
         private bool _blnFormClosing;
 
-        private void ChummerUpdater_FormClosing(object sender, FormClosingEventArgs e)
+        private async void ChummerUpdater_FormClosing(object sender, FormClosingEventArgs e)
         {
             // If we have automatic updates on, make sure we don't close the updater, just hide it
             if (e.CloseReason == CloseReason.UserClosing && GlobalSettings.AutomaticUpdate)
@@ -183,6 +182,23 @@ namespace Chummer
             }
             _clientDownloader.CancelAsync();
             _clientChangelogDownloader.CancelAsync();
+            try
+            {
+                await _tskChangelogDownloader;
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+            try
+            {
+                await _tskConnectionLoader;
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+            _objGenericFormClosingCancellationTokenSource?.Cancel(false);
         }
 
         private async Task DownloadChangelog(CancellationToken token = default)
@@ -953,7 +969,7 @@ namespace Chummer
         private void wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             if (int.TryParse((e.BytesReceived * 100 / e.TotalBytesToReceive).ToString(GlobalSettings.InvariantCultureInfo), out int intTmp))
-                pgbOverallProgress.Value = intTmp;
+                pgbOverallProgress.QueueThreadSafe(x => x.Value = intTmp);
         }
 
         /// <summary>
