@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Web.Script.Serialization;
@@ -150,6 +151,9 @@ namespace Chummer.Backend
             // ReSharper disable once MemberCanBePrivate.Local
             public readonly uint _uintThreadId = NativeMethods.GetCurrentThreadId();
 
+            // ReSharper disable once MemberCanBePrivate.Local
+            public readonly IntPtr _ptrExceptionInfo = Marshal.GetExceptionPointers();
+
             public string SerializeBase64()
             {
                 string altson = new JavaScriptSerializer().Serialize(this);
@@ -173,12 +177,11 @@ namespace Chummer.Backend
 
             public void GetObjectData(SerializationInfo info, StreamingContext context)
             {
-                info.AddValue("procesid", _intProcessId);
-                info.AddValue("threadid", _uintThreadId);
-                foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicAttributes)
-                    info.AddValue(objLoopKeyValuePair.Key, objLoopKeyValuePair.Value);
-                foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicPretendFiles)
-                    info.AddValue(objLoopKeyValuePair.Key, objLoopKeyValuePair.Value);
+                info.AddValue("_intProcessId", _intProcessId);
+                info.AddValue("_uintThreadId", _uintThreadId);
+                info.AddValue("_ptrExceptionInfo", _ptrExceptionInfo);
+                _dicAttributes.GetObjectData(info, context);
+                _dicPretendFiles.GetObjectData(info, context);
                 foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicCapturedFiles)
                     info.AddValue(objLoopKeyValuePair.Key, objLoopKeyValuePair.Value);
             }

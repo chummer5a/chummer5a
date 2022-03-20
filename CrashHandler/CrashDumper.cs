@@ -444,49 +444,49 @@ namespace CrashHandler
         //	}
         //}
 
-        private static bool Deserialize(string base64json,
-            out short processId,
-            out List<string> filesList,
-            out Dictionary<string, string> pretendFiles,
-            out Dictionary<string, string> attributes,
-            out uint threadId,
-            out IntPtr exceptionPrt)
+        private static bool Deserialize(string strBase64json,
+            out short shrProcessId,
+            out List<string> lstFiles,
+            out Dictionary<string, string> dicPretendFiles,
+            out Dictionary<string, string> dicAttributes,
+            out uint uintThreadId,
+            out IntPtr ptrException)
         {
-            string json = Encoding.UTF8.GetString(File.ReadAllBytes(base64json));
+            string json = Encoding.UTF8.GetString(File.ReadAllBytes(strBase64json));
             byte[] tempBytes = Convert.FromBase64String(json);
             object obj = new JavaScriptSerializer().DeserializeObject(Encoding.UTF8.GetString(tempBytes));
 
             Dictionary<string, object> parts = obj as Dictionary<string, object>;
             if (parts?["_intProcessId"] is int pid)
             {
-                filesList = parts["_dicCapturedFiles"] as List<string>;
-                attributes =
+                lstFiles = parts["_dicCapturedFiles"] as List<string>;
+                dicAttributes =
                     ((Dictionary<string, object>) parts["_dicAttributes"]).ToDictionary(x => x.Key,
                         y => y.Value.ToString());
-                pretendFiles =
+                dicPretendFiles =
                     ((Dictionary<string, object>) parts["_dicPretendFiles"]).ToDictionary(x => x.Key,
                         y => y.Value.ToString());
 
-                processId = (short) pid;
+                shrProcessId = (short) pid;
                 string s = "0";
-                if (parts.TryGetValue("exceptionPrt", out object objPart))
+                if (parts.TryGetValue("_ptrExceptionInfo", out object objPart))
                 {
                     s = objPart?.ToString() ?? "0";
                 }
 
-                exceptionPrt = new IntPtr(int.Parse(s));
+                ptrException = new IntPtr(int.Parse(s));
 
-                threadId = uint.Parse(parts["_uintThreadId"]?.ToString() ?? "0");
+                uintThreadId = uint.Parse(parts["_uintThreadId"]?.ToString() ?? "0");
 
                 return true;
             }
 
-            processId = 0;
-            filesList = null;
-            pretendFiles = null;
-            attributes = null;
-            exceptionPrt = IntPtr.Zero;
-            threadId = 0;
+            shrProcessId = 0;
+            lstFiles = null;
+            dicPretendFiles = null;
+            dicAttributes = null;
+            ptrException = IntPtr.Zero;
+            uintThreadId = 0;
             return false;
         }
 

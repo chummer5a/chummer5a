@@ -327,7 +327,7 @@ namespace Chummer
                             //If you set true as DeveloperMode (see above), you can see the sending telemetry in the debugging output window in IDE.
                             TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = true;
 #else
-                        TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = false;
+                            TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = false;
 #endif
                             TelemetryConfiguration.Active.TelemetryInitializers.Add(new CustomTelemetryInitializer());
                             TelemetryConfiguration.Active.TelemetryProcessorChainBuilder.Use(next =>
