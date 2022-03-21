@@ -2437,7 +2437,7 @@ namespace Chummer
                 {
                     XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select(
                         "priorities/priority[category = \"Heritage\" and value = "
-                        + strSelectedCategory.CleanXPath()
+                        + (await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? string.Empty).CleanXPath()
                         + " and (not(prioritytable) or prioritytable = "
                         + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                     foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
