@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -33,7 +34,7 @@ namespace CrashHandler
         public Process Process { get; private set; }
         public bool DoCleanUp { get; set; } = true;
 
-        private readonly List<string> _lstFilePaths;
+        private readonly ConcurrentDictionary<string, string> _dicFilePaths;
         private readonly Dictionary<string, string> _lstPretendFilePaths;
         private readonly Dictionary<string, string> _attributes;
         private readonly short _procId;
@@ -64,7 +65,7 @@ namespace CrashHandler
             CrashLogWriter.WriteLine("This file contains information on a crash report for Chummer5A.");
             CrashLogWriter.WriteLine("You can safely delete this file, but a developer might want to look at it.");
 
-            if (!Deserialize(b64Json, out _procId, out _lstFilePaths, out _lstPretendFilePaths, out _attributes,
+            if (!Deserialize(b64Json, out _procId, out _dicFilePaths, out _lstPretendFilePaths, out _attributes,
                 out _threadId, out _exceptionPrt))
             {
                 throw new ArgumentException("Could not deserialize");
@@ -300,9 +301,9 @@ namespace CrashHandler
 
         private void CopyFiles()
         {
-            if (_lstFilePaths?.Count > 0)
+            if (_dicFilePaths?.Count > 0)
             {
-                foreach (string strFilePath in _lstFilePaths)
+                foreach (string strFilePath in _dicFilePaths.Keys)
                 {
                     if (!File.Exists(strFilePath))
                         continue;
@@ -446,7 +447,7 @@ namespace CrashHandler
 
         private static bool Deserialize(string strBase64json,
             out short shrProcessId,
-            out List<string> lstFiles,
+            out ConcurrentDictionary<string, string> dicFiles,
             out Dictionary<string, string> dicPretendFiles,
             out Dictionary<string, string> dicAttributes,
             out uint uintThreadId,
@@ -459,7 +460,7 @@ namespace CrashHandler
             Dictionary<string, object> parts = obj as Dictionary<string, object>;
             if (parts?["_intProcessId"] is int pid)
             {
-                lstFiles = parts["_dicCapturedFiles"] as List<string>;
+                dicFiles = parts["_dicCapturedFiles"] as ConcurrentDictionary<string, string>;
                 dicAttributes =
                     ((Dictionary<string, object>) parts["_dicAttributes"]).ToDictionary(x => x.Key,
                         y => y.Value.ToString());
@@ -482,7 +483,7 @@ namespace CrashHandler
             }
 
             shrProcessId = 0;
-            lstFiles = null;
+            dicFiles = null;
             dicPretendFiles = null;
             dicAttributes = null;
             ptrException = IntPtr.Zero;
