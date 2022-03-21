@@ -30,6 +30,7 @@ Data Changes:
 - Dedicated Spellslinger and Dedicated Conjurer now properly disable access to the Summoning and Binding skills and the Spellcasting skill respectively.
 - Delnar Skills Remake now reports the appropriate dice pools for rituals (based on Ceremony) and enchantments (based on Arcana).
 - Neural Amplifiers (Learning Stimulus) has had its backend modified so that it stacks and works better together with other karma cost-modifying improvements. 
+- Fixed incorrect autosoft type on the Avibras-Nissan AN 822.
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups

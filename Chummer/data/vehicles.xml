@@ -9018,7 +9018,7 @@
           <rating>3</rating>
           <maxrating>3</maxrating>
         </gear>
-        <gear rating="2" select="Evasion">Skill Autosoft</gear>
+        <gear rating="2" select="Avibras-Nissan AN 822">[Model] Evasion Autosoft</gear>
         <gear rating="2" select="Electronic Warfare">Skill Autosoft</gear>
         <gear rating="2" select="Avibras-Nissan AN 822">[Model] Maneuvering Autosoft</gear>
       </gears>
