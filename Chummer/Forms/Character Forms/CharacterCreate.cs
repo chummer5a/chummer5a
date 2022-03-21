@@ -17193,10 +17193,9 @@ namespace Chummer
                        })
                 {
                     frmPickMount.SetGeneralItemsMode(lstModularMounts);
-                    await frmPickMount.ShowDialogSafeAsync(this);
 
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickMount.DialogResult == DialogResult.Cancel)
+                    if (await frmPickMount.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     {
                         return;
                     }
@@ -17291,10 +17290,9 @@ namespace Chummer
                        })
                 {
                     frmPickMount.SetGeneralItemsMode(lstModularMounts);
-                    await frmPickMount.ShowDialogSafeAsync(this);
 
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickMount.DialogResult == DialogResult.Cancel)
+                    if (await frmPickMount.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     {
                         return;
                     }
@@ -17417,9 +17415,7 @@ namespace Chummer
                 return;
             using (CreateWeaponMount frmCreateWeaponMount = new CreateWeaponMount(objWeaponMount.Parent, CharacterObject, objWeaponMount))
             {
-                await frmCreateWeaponMount.ShowDialogSafeAsync(this);
-
-                if (frmCreateWeaponMount.DialogResult == DialogResult.Cancel)
+                if (await frmCreateWeaponMount.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
             }
 
@@ -17432,9 +17428,7 @@ namespace Chummer
         {
             using (CreateCustomDrug form = new CreateCustomDrug(CharacterObject))
             {
-                await form.ShowDialogSafeAsync(this);
-
-                if (form.DialogResult == DialogResult.Cancel)
+                if (await form.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
                 Drug objCustomDrug = form.CustomDrug;

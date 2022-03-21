@@ -498,10 +498,8 @@ namespace Chummer
             {
                 using (SelectLifestyleQuality frmSelectLifestyleQuality = new SelectLifestyleQuality(_objCharacter, cboBaseLifestyle.SelectedValue.ToString(), _objLifestyle.LifestyleQualities))
                 {
-                    await frmSelectLifestyleQuality.ShowDialogSafeAsync(this);
-
                     // Don't do anything else if the form was canceled.
-                    if (frmSelectLifestyleQuality.DialogResult == DialogResult.Cancel)
+                    if (await frmSelectLifestyleQuality.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         return;
                     blnAddAgain = frmSelectLifestyleQuality.AddAgain;
 

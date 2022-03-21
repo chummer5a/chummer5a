@@ -219,9 +219,8 @@ namespace Chummer
                                })
                         {
                             frmSelectAction.SetDropdownItemsMode(lstActions);
-                            await frmSelectAction.ShowDialogSafeAsync(this);
 
-                            if (frmSelectAction.DialogResult == DialogResult.OK)
+                            if (await frmSelectAction.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
                                 txtSelect.Text = frmSelectAction.SelectedName;
                                 txtTranslateSelection.Text = await TranslateField(_strSelect, frmSelectAction.SelectedName);
@@ -253,9 +252,7 @@ namespace Chummer
                             Description = await LanguageManager.GetStringAsync("Title_SelectAttribute")
                         })
                         {
-                            await frmPickAttribute.ShowDialogSafeAsync(this);
-
-                            if (frmPickAttribute.DialogResult == DialogResult.OK)
+                            if (await frmPickAttribute.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
                                 txtSelect.Text = frmPickAttribute.SelectedAttribute;
                                 txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickAttribute.SelectedAttribute);
@@ -269,8 +266,7 @@ namespace Chummer
                         InitiationGrade objGrade = new InitiationGrade(_objCharacter) { Grade = -1, Technomancer = true };
                         using (SelectMetamagic frmPickMetamagic = new SelectMetamagic(_objCharacter, objGrade))
                         {
-                            await frmPickMetamagic.ShowDialogSafeAsync(this);
-                            if (frmPickMetamagic.DialogResult == DialogResult.OK)
+                            if (await frmPickMetamagic.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
                                 string strSelectedId = frmPickMetamagic.SelectedMetamagic;
                                 if (!string.IsNullOrEmpty(strSelectedId))
@@ -304,8 +300,7 @@ namespace Chummer
                         InitiationGrade objGrade = new InitiationGrade(_objCharacter) { Grade = -1 };
                         using (SelectMetamagic frmPickMetamagic = new SelectMetamagic(_objCharacter, objGrade))
                         {
-                            await frmPickMetamagic.ShowDialogSafeAsync(this);
-                            if (frmPickMetamagic.DialogResult == DialogResult.OK)
+                            if (await frmPickMetamagic.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
                                 string strSelectedId = frmPickMetamagic.SelectedMetamagic;
                                 if (!string.IsNullOrEmpty(strSelectedId))
@@ -338,9 +333,8 @@ namespace Chummer
                     using (SelectAttribute frmPickAttribute = new SelectAttribute(Backend.Attributes.AttributeSection.MentalAttributes.ToArray()))
                     {
                         frmPickAttribute.Description = await LanguageManager.GetStringAsync("Title_SelectAttribute");
-                        await frmPickAttribute.ShowDialogSafeAsync(this);
 
-                        if (frmPickAttribute.DialogResult == DialogResult.OK)
+                        if (await frmPickAttribute.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
                             txtSelect.Text = frmPickAttribute.SelectedAttribute;
                             txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickAttribute.SelectedAttribute);
@@ -352,9 +346,8 @@ namespace Chummer
                     using (SelectAttribute frmPickAttribute = new SelectAttribute(Backend.Attributes.AttributeSection.PhysicalAttributes.ToArray()))
                     {
                         frmPickAttribute.Description = await LanguageManager.GetStringAsync("Title_SelectAttribute");
-                        await frmPickAttribute.ShowDialogSafeAsync(this);
 
-                        if (frmPickAttribute.DialogResult == DialogResult.OK)
+                        if (await frmPickAttribute.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
                             txtSelect.Text = frmPickAttribute.SelectedAttribute;
                             txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickAttribute.SelectedAttribute);
@@ -386,9 +379,7 @@ namespace Chummer
                             Description = await LanguageManager.GetStringAsync("Title_SelectAttribute")
                         })
                         {
-                            await frmPickAttribute.ShowDialogSafeAsync(this);
-
-                            if (frmPickAttribute.DialogResult == DialogResult.OK)
+                            if (await frmPickAttribute.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
                                 txtSelect.Text = frmPickAttribute.SelectedAttribute;
                                 txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickAttribute.SelectedAttribute);
@@ -401,9 +392,7 @@ namespace Chummer
                     using (SelectSkill frmPickSkill = new SelectSkill(_objCharacter))
                     {
                         frmPickSkill.Description = await LanguageManager.GetStringAsync("Title_SelectSkill");
-                        await frmPickSkill.ShowDialogSafeAsync(this);
-
-                        if (frmPickSkill.DialogResult == DialogResult.OK)
+                        if (await frmPickSkill.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
                             txtSelect.Text = frmPickSkill.SelectedSkill;
                             txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickSkill.SelectedSkill);
@@ -467,9 +456,7 @@ namespace Chummer
                                })
                         {
                             frmPickSkill.SetDropdownItemsMode(lstDropdownItems);
-                            await frmPickSkill.ShowDialogSafeAsync(this);
-
-                            if (frmPickSkill.DialogResult == DialogResult.OK)
+                            if (await frmPickSkill.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
                                 txtSelect.Text = frmPickSkill.SelectedItem;
                                 txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickSkill.SelectedItem);
@@ -483,9 +470,8 @@ namespace Chummer
                     using (SelectSkillCategory frmPickSkillCategory = new SelectSkillCategory(_objCharacter))
                     {
                         frmPickSkillCategory.Description = await LanguageManager.GetStringAsync("Title_SelectSkillCategory");
-                        await frmPickSkillCategory.ShowDialogSafeAsync(this);
 
-                        if (frmPickSkillCategory.DialogResult == DialogResult.OK)
+                        if (await frmPickSkillCategory.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
                             txtSelect.Text = frmPickSkillCategory.SelectedCategory;
                             txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickSkillCategory.SelectedCategory);
@@ -497,9 +483,8 @@ namespace Chummer
                     using (SelectSkillGroup frmPickSkillGroup = new SelectSkillGroup(_objCharacter))
                     {
                         frmPickSkillGroup.Description = await LanguageManager.GetStringAsync("Title_SelectSkillGroup");
-                        await frmPickSkillGroup.ShowDialogSafeAsync(this);
 
-                        if (frmPickSkillGroup.DialogResult == DialogResult.OK)
+                        if (await frmPickSkillGroup.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
                             txtSelect.Text = frmPickSkillGroup.SelectedSkillGroup;
                             txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickSkillGroup.SelectedSkillGroup);
@@ -529,9 +514,8 @@ namespace Chummer
                                })
                         {
                             selectComplexForm.SetDropdownItemsMode(lstComplexForms);
-                            await selectComplexForm.ShowDialogSafeAsync(this);
 
-                            if (selectComplexForm.DialogResult == DialogResult.OK)
+                            if (await selectComplexForm.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
                                 txtSelect.Text = selectComplexForm.SelectedName;
                                 txtTranslateSelection.Text = await TranslateField(_strSelect, selectComplexForm.SelectedName);
@@ -563,9 +547,8 @@ namespace Chummer
                                })
                         {
                             selectSpell.SetDropdownItemsMode(lstSpells);
-                            await selectSpell.ShowDialogSafeAsync(this);
 
-                            if (selectSpell.DialogResult == DialogResult.OK)
+                            if (await selectSpell.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
                                 txtSelect.Text = selectSpell.SelectedName;
                                 txtTranslateSelection.Text = await TranslateField(_strSelect, selectSpell.SelectedName);
@@ -579,9 +562,8 @@ namespace Chummer
                     using (SelectWeaponCategory frmPickWeaponCategory = new SelectWeaponCategory(_objCharacter))
                     {
                         frmPickWeaponCategory.Description = await LanguageManager.GetStringAsync("Title_SelectWeaponCategory");
-                        await frmPickWeaponCategory.ShowDialogSafeAsync(this);
 
-                        if (frmPickWeaponCategory.DialogResult == DialogResult.OK)
+                        if (await frmPickWeaponCategory.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
                             txtSelect.Text = frmPickWeaponCategory.SelectedCategory;
                             txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickWeaponCategory.SelectedCategory);
@@ -593,9 +575,8 @@ namespace Chummer
                     using (SelectSpellCategory frmPickSpellCategory = new SelectSpellCategory(_objCharacter))
                     {
                         frmPickSpellCategory.Description = await LanguageManager.GetStringAsync("Title_SelectSpellCategory");
-                        await frmPickSpellCategory.ShowDialogSafeAsync(this);
 
-                        if (frmPickSpellCategory.DialogResult == DialogResult.OK)
+                        if (await frmPickSpellCategory.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
                             txtSelect.Text = frmPickSpellCategory.SelectedCategory;
                             txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickSpellCategory.SelectedCategory);
@@ -607,9 +588,8 @@ namespace Chummer
                     using (SelectPower frmPickPower = new SelectPower(_objCharacter))
                     {
                         frmPickPower.IgnoreLimits = chkIgnoreLimits.Checked;
-                        await frmPickPower.ShowDialogSafeAsync(this);
 
-                        if (frmPickPower.DialogResult == DialogResult.OK)
+                        if (await frmPickPower.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
                             txtSelect.Text = (await _objCharacter.LoadDataXPathAsync("powers.xml")).SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.SelectedPower.CleanXPath() + "]/name")?.Value;
                             txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickPower.SelectedPower);

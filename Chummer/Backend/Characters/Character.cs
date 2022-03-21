@@ -2423,9 +2423,8 @@ namespace Chummer
                                        xmlAIProgramData["translate"]?.InnerText ?? xmlAIProgramData["name"].InnerText)
                                })
                         {
-                            frmPickText.ShowDialogSafe(this);
                             // Make sure the dialogue window was not canceled.
-                            if (frmPickText.DialogResult == DialogResult.Cancel)
+                            if (frmPickText.ShowDialogSafe(this) == DialogResult.Cancel)
                                 continue;
                             strExtra = frmPickText.SelectedValue;
                         }
@@ -5716,9 +5715,7 @@ namespace Chummer
                                                             using (SelectItem frmPickItem = new SelectItem())
                                                             {
                                                                 frmPickItem.SetDropdownItemsMode(lstContacts);
-                                                                frmPickItem.ShowDialogSafe(frmParent);
-
-                                                                ePickItemResult = frmPickItem.DialogResult;
+                                                                ePickItemResult = frmPickItem.ShowDialogSafe(frmParent);
                                                                 selectedContactUniqueId = frmPickItem.SelectedItem;
                                                             }
                                                         }
@@ -9994,8 +9991,7 @@ namespace Chummer
                 {
                     using (SelectMetatypePriority frmSelectMetatype = new SelectMetatypePriority(this))
                     {
-                        frmSelectMetatype.ShowDialogSafe(this);
-                        return frmSelectMetatype.DialogResult;
+                        return frmSelectMetatype.ShowDialogSafe(this);
                     }
                 });
             }
@@ -10005,8 +10001,7 @@ namespace Chummer
                 {
                     using (SelectMetatypeKarma frmSelectMetatype = new SelectMetatypeKarma(this))
                     {
-                        frmSelectMetatype.ShowDialogSafe(this);
-                        return frmSelectMetatype.DialogResult;
+                        return frmSelectMetatype.ShowDialogSafe(this);
                     }
                 });
             }
@@ -26941,6 +26936,7 @@ namespace Chummer
                                     {
                                         if (blnSync)
                                         {
+                                            // ReSharper disable MethodHasAsyncOverload
                                             using (SelectBuildMethod frmPickBP =
                                                    Program.MainForm.DoThreadSafeFunc(
                                                        () => new SelectBuildMethod(this, true)))
@@ -26948,6 +26944,7 @@ namespace Chummer
                                                 if (frmPickBP.ShowDialogSafe(this) != DialogResult.OK)
                                                     return false;
                                             }
+                                            // ReSharper restore MethodHasAsyncOverload
                                         }
                                         else
                                         {
@@ -27029,6 +27026,7 @@ namespace Chummer
 
                                     if (blnSync)
                                     {
+                                        // ReSharper disable MethodHasAsyncOverload
                                         using (SelectMetatypePriority frmSelectMetatype =
                                                Program.MainForm.DoThreadSafeFunc(
                                                    () => new SelectMetatypePriority(this)))
@@ -27036,6 +27034,7 @@ namespace Chummer
                                             if (frmSelectMetatype.ShowDialogSafe(this) != DialogResult.OK)
                                                 return false;
                                         }
+                                        // ReSharper restore MethodHasAsyncOverload
                                     }
                                     else
                                     {
@@ -27052,6 +27051,7 @@ namespace Chummer
                                 {
                                     if (blnSync)
                                     {
+                                        // ReSharper disable MethodHasAsyncOverload
                                         using (SelectMetatypeKarma frmSelectMetatype =
                                                Program.MainForm.DoThreadSafeFunc(
                                                    () => new SelectMetatypeKarma(this)))
@@ -27059,6 +27059,7 @@ namespace Chummer
                                             if (frmSelectMetatype.ShowDialogSafe(this) != DialogResult.OK)
                                                 return false;
                                         }
+                                        // ReSharper restore MethodHasAsyncOverload
                                     }
                                     else
                                     {

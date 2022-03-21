@@ -385,9 +385,10 @@ namespace Chummer.Backend.Equipment
                                        AllowCancel = false
                                    })
                             {
-                                if (frmPickNumber.ShowDialogSafe(x) != DialogResult.Cancel)
+                                DialogResult eReturn = frmPickNumber.ShowDialogSafe(x);
+                                if (eReturn != DialogResult.Cancel)
                                     _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
-                                return frmPickNumber.DialogResult;
+                                return eReturn;
                             }
                         });
                         if (eResult == DialogResult.Cancel)
@@ -435,9 +436,8 @@ namespace Chummer.Backend.Equipment
                                        ExcludeGeneralCategory = true
                                    })
                             {
-                                frmPickArmorMod.ShowDialogSafe(x);
-
-                                if (frmPickArmorMod.DialogResult == DialogResult.Cancel)
+                                DialogResult eReturn = frmPickArmorMod.ShowDialogSafe(x);
+                                if (eReturn == DialogResult.Cancel)
                                     return DialogResult.Cancel;
 
                                 // Locate the selected piece.
@@ -474,7 +474,7 @@ namespace Chummer.Backend.Equipment
                                     _lstArmorMods.Add(objMod);
                                 }
 
-                                return frmPickArmorMod.DialogResult;
+                                return eReturn;
                             }
                         });
                         if (eResult == DialogResult.Cancel)

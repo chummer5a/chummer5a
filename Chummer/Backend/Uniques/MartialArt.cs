@@ -609,9 +609,7 @@ namespace Chummer
             {
                 using (SelectMartialArt frmPickMartialArt = new SelectMartialArt(objCharacter))
                 {
-                    frmPickMartialArt.ShowDialogSafe(objCharacter);
-
-                    if (frmPickMartialArt.DialogResult == DialogResult.Cancel)
+                    if (frmPickMartialArt.ShowDialogSafe(objCharacter) == DialogResult.Cancel)
                         return false;
 
                     blnAddAgain = frmPickMartialArt.AddAgain;

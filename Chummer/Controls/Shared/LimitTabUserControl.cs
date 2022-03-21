@@ -94,9 +94,7 @@ namespace Chummer.UI.Shared
         {
             using (SelectLimitModifier frmPickLimitModifier = await this.DoThreadSafeFuncAsync(() => new SelectLimitModifier(null, "Physical", "Mental", "Social")))
             {
-                await frmPickLimitModifier.ShowDialogSafeAsync(this);
-
-                if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
+                if (await frmPickLimitModifier.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
                 // Create the new limit modifier.
@@ -147,8 +145,7 @@ namespace Chummer.UI.Shared
                         continue;
                     using (EditNotes frmItemNotes = new EditNotes(objImprovement.Notes, objImprovement.NotesColor))
                     {
-                        await frmItemNotes.ShowDialogSafeAsync(this);
-                        if (frmItemNotes.DialogResult != DialogResult.OK)
+                        if (await frmItemNotes.ShowDialogSafeAsync(this) != DialogResult.OK)
                             continue;
 
                         objImprovement.Notes = frmItemNotes.Notes;
@@ -182,8 +179,7 @@ namespace Chummer.UI.Shared
         {
             using (EditNotes frmItemNotes = await this.DoThreadSafeFuncAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor)))
             {
-                await frmItemNotes.ShowDialogSafeAsync(this);
-                if (frmItemNotes.DialogResult != DialogResult.OK)
+                if (await frmItemNotes.ShowDialogSafeAsync(this) != DialogResult.OK)
                     return;
 
                 objNotes.Notes = frmItemNotes.Notes;
@@ -466,9 +462,7 @@ namespace Chummer.UI.Shared
 
             using (SelectLimitModifier frmPickLimitModifier = await this.DoThreadSafeFuncAsync(() => new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social")))
             {
-                await frmPickLimitModifier.ShowDialogSafeAsync(this);
-
-                if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
+                if (await frmPickLimitModifier.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
                 //Remove the old LimitModifier to ensure we don't double up.

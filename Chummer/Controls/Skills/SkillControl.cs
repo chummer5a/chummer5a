@@ -470,9 +470,7 @@ namespace Chummer.UI.Skills
             Form frmToUse = await this.DoThreadSafeFuncAsync(x => x.ParentForm) ?? Program.MainForm;
             using (SelectSpec selectForm = await this.DoThreadSafeFuncAsync(() => new SelectSpec(_objSkill)))
             {
-                await selectForm.ShowDialogSafeAsync(frmToUse);
-
-                if (selectForm.DialogResult != DialogResult.OK)
+                if (await selectForm.ShowDialogSafeAsync(frmToUse) != DialogResult.OK)
                     return;
                 _objSkill.AddSpecialization(selectForm.SelectedItem);
             }
@@ -552,8 +550,7 @@ namespace Chummer.UI.Skills
         {
             using (EditNotes frmItemNotes = await this.DoThreadSafeFuncAsync(() => new EditNotes(_objSkill.Notes, _objSkill.NotesColor)))
             {
-                await frmItemNotes.ShowDialogSafeAsync(this);
-                if (frmItemNotes.DialogResult != DialogResult.OK)
+                if (await frmItemNotes.ShowDialogSafeAsync(this) != DialogResult.OK)
                     return;
                 _objSkill.Notes = frmItemNotes.Notes;
             }

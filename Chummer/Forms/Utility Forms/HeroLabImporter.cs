@@ -632,8 +632,7 @@ namespace Chummer
                     
                     using (SelectBuildMethod frmPickBP = await this.DoThreadSafeFuncAsync(() => new SelectBuildMethod(objCharacter, true), token))
                     {
-                        await frmPickBP.ShowDialogSafeAsync(this);
-                        if (frmPickBP.DialogResult != DialogResult.OK)
+                        if (await frmPickBP.ShowDialogSafeAsync(this) != DialogResult.OK)
                             return;
                     }
 

@@ -83,8 +83,11 @@ namespace Chummer
             });
             while (!blnDoClose)
                 Utils.SafeSleep(true);
-            frmForm.DoThreadSafe(x => x.Close());
-            return frmForm.DialogResult;
+            return frmForm.DoThreadSafeFunc(x =>
+            {
+                x.Close();
+                return x.DialogResult;
+            });
         }
 
         /// <summary>

@@ -797,8 +797,7 @@ namespace Chummer
                 {
                     using (SelectBuildMethod frmPickSetting = await this.DoThreadSafeFuncAsync(() => new SelectBuildMethod(objCharacter)))
                     {
-                        await frmPickSetting.ShowDialogSafeAsync(this);
-                        if (await frmPickSetting.DoThreadSafeFuncAsync(x => x.DialogResult) == DialogResult.Cancel)
+                        if (await frmPickSetting.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             return;
                     }
 
@@ -811,9 +810,7 @@ namespace Chummer
                     using (SelectMetatypeKarma frmSelectMetatype
                            = await this.DoThreadSafeFuncAsync(() => new SelectMetatypeKarma(objCharacter, "critters.xml")))
                     {
-                        await frmSelectMetatype.ShowDialogSafeAsync(this);
-
-                        if (await frmSelectMetatype.DoThreadSafeFuncAsync(x => x.DialogResult) == DialogResult.Cancel)
+                        if (await frmSelectMetatype.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             return;
                     }
 
@@ -1219,8 +1216,7 @@ namespace Chummer
                     // Show the BP selection window.
                     using (SelectBuildMethod frmBP = await this.DoThreadSafeFuncAsync(() => new SelectBuildMethod(objCharacter)))
                     {
-                        await frmBP.ShowDialogSafeAsync(this);
-                        if (await frmBP.DoThreadSafeFuncAsync(x => x.DialogResult) != DialogResult.OK)
+                        if (await frmBP.ShowDialogSafeAsync(this) != DialogResult.OK)
                             return;
                     }
 
@@ -1229,9 +1225,7 @@ namespace Chummer
                     {
                         using (SelectMetatypePriority frmSelectMetatype = await this.DoThreadSafeFuncAsync(() => new SelectMetatypePriority(objCharacter)))
                         {
-                            await frmSelectMetatype.ShowDialogSafeAsync(this);
-
-                            if (await frmSelectMetatype.DoThreadSafeFuncAsync(x => x.DialogResult) != DialogResult.OK)
+                            if (await frmSelectMetatype.ShowDialogSafeAsync(this) != DialogResult.OK)
                                 return;
                         }
                     }
@@ -1239,9 +1233,7 @@ namespace Chummer
                     {
                         using (SelectMetatypeKarma frmSelectMetatype = await this.DoThreadSafeFuncAsync(() => new SelectMetatypeKarma(objCharacter)))
                         {
-                            await frmSelectMetatype.ShowDialogSafeAsync(this);
-
-                            if (await frmSelectMetatype.DoThreadSafeFuncAsync(x => x.DialogResult) != DialogResult.OK)
+                            if (await frmSelectMetatype.ShowDialogSafeAsync(this) != DialogResult.OK)
                                 return;
                         }
                     }

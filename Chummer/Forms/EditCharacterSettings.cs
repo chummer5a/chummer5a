@@ -126,15 +126,9 @@ namespace Chummer
                        Description = strRename
                    }))
             {
-                await frmSelectName.ShowDialogSafeAsync(this);
-                if (await frmSelectName.DoThreadSafeFuncAsync(x =>
-                    {
-                        if (x.DialogResult != DialogResult.OK)
-                            return true;
-                        _objCharacterSettings.Name = x.SelectedValue;
-                        return false;
-                    }))
+                if (await frmSelectName.ShowDialogSafeAsync(this) != DialogResult.OK)
                     return;
+                _objCharacterSettings.Name = frmSelectName.SelectedValue;
             }
 
             using (CursorWait.New(this))
@@ -255,15 +249,9 @@ namespace Chummer
                                Description = strSelectSettingName
                            }))
                     {
-                        await frmSelectName.ShowDialogSafeAsync(this);
-                        if (await frmSelectName.DoThreadSafeFuncAsync(x =>
-                            {
-                                if (x.DialogResult != DialogResult.OK)
-                                    return true;
-                                strSelectedName = x.SelectedValue;
-                                return false;
-                            }))
+                        if (await frmSelectName.ShowDialogSafeAsync(this) != DialogResult.OK)
                             return;
+                        strSelectedName = frmSelectName.SelectedValue;
                     }
 
                     if (SettingsManager.LoadedCharacterSettings.Any(x => x.Value.Name == strSelectedName))

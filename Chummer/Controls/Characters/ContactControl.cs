@@ -393,8 +393,7 @@ namespace Chummer
         {
             using (EditNotes frmContactNotes = new EditNotes(_objContact.Notes, _objContact.NotesColor))
             {
-                await frmContactNotes.ShowDialogSafeAsync(this);
-                if (frmContactNotes.DialogResult != DialogResult.OK)
+                if (await frmContactNotes.ShowDialogSafeAsync(this) != DialogResult.OK)
                     return;
                 _objContact.Notes = frmContactNotes.Notes;
             }

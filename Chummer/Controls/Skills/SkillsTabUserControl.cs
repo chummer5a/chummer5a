@@ -783,9 +783,7 @@ namespace Chummer.UI.Skills
             ExoticSkill objSkill;
             using (SelectExoticSkill frmPickExoticSkill = await this.DoThreadSafeFuncAsync(() => new SelectExoticSkill(_objCharacter)))
             {
-                await frmPickExoticSkill.ShowDialogSafeAsync(this);
-
-                if (frmPickExoticSkill.DialogResult != DialogResult.OK)
+                if (await frmPickExoticSkill.ShowDialogSafeAsync(this) != DialogResult.OK)
                     return;
 
                 objSkill = _objCharacter.SkillsSection.AddExoticSkill(frmPickExoticSkill.SelectedExoticSkill,
@@ -806,11 +804,10 @@ namespace Chummer.UI.Skills
         {
             if (_objCharacter.Created)
             {
-                string strSelectedSkill = string.Empty;
+                string strSelectedSkill;
 
                 Form frmToUse = ParentForm ?? Program.MainForm;
-
-                DialogResult eResult;
+                
                 string strDescription = await LanguageManager.GetStringAsync("Label_Options_NewKnowledgeSkill");
                 using (SelectItem form = await this.DoThreadSafeFuncAsync(() => new SelectItem
                 {
@@ -818,16 +815,10 @@ namespace Chummer.UI.Skills
                 }))
                 {
                     form.SetDropdownItemsMode(_objCharacter.SkillsSection.MyDefaultKnowledgeSkills);
-
-                    await form.ShowDialogSafeAsync(frmToUse);
-
-                    if (form.DialogResult == DialogResult.OK)
-                        strSelectedSkill = form.SelectedItem;
-                    eResult = form.DialogResult;
+                    if (await form.ShowDialogSafeAsync(frmToUse) != DialogResult.OK)
+                        return;
+                    strSelectedSkill = form.SelectedItem;
                 }
-
-                if (eResult != DialogResult.OK)
-                    return;
 
                 KnowledgeSkill skill = new KnowledgeSkill(_objCharacter)
                 {

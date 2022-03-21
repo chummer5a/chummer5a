@@ -323,9 +323,7 @@ namespace Chummer
                 using (SelectLimitModifier frmPickLimitModifier
                        = new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
                 {
-                    await frmPickLimitModifier.ShowDialogSafeAsync(this);
-
-                    if (frmPickLimitModifier.DialogResult == DialogResult.Cancel)
+                    if (await frmPickLimitModifier.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         return;
 
                     //Remove the old LimitModifier to ensure we don't double up.
@@ -358,8 +356,7 @@ namespace Chummer
             {
                 using (EditNotes frmItemNotes = new EditNotes(objNotes.Notes, objNotes.NotesColor))
                 {
-                    await frmItemNotes.ShowDialogSafeAsync(this);
-                    if (frmItemNotes.DialogResult != DialogResult.OK)
+                    if (await frmItemNotes.ShowDialogSafeAsync(this) != DialogResult.OK)
                         return;
                     objNotes.Notes = frmItemNotes.Notes;
                     objNotes.NotesColor = frmItemNotes.NotesColor;
@@ -7123,9 +7120,9 @@ namespace Chummer
             }
         }
 
-        public async ValueTask DoExport()
+        public async ValueTask DoExport(CancellationToken token = default)
         {
-            using (ExportCharacter frmExportCharacter = await this.DoThreadSafeFuncAsync(() => new ExportCharacter(CharacterObject)))
+            using (ExportCharacter frmExportCharacter = await this.DoThreadSafeFuncAsync(() => new ExportCharacter(CharacterObject), token))
                 await frmExportCharacter.ShowDialogSafeAsync(this);
         }
 
@@ -7163,9 +7160,7 @@ namespace Chummer
                 {
                     using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSelectedVehicle))
                     {
-                        await frmPickGear.ShowDialogSafeAsync(this);
-
-                        if (frmPickGear.DialogResult == DialogResult.Cancel)
+                        if (await frmPickGear.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             break;
                         blnAddAgain = frmPickGear.AddAgain;
 

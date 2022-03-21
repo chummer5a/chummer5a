@@ -326,9 +326,7 @@ namespace Chummer
                                Dice = objLoopCharacter.InitPasses
                            }))
                     {
-                        await frmHits.ShowDialogSafeAsync(this);
-
-                        if (frmHits.DialogResult != DialogResult.OK)
+                        if (await frmHits.ShowDialogSafeAsync(this) != DialogResult.OK)
                             return; // we decided not to actually change the initiative
                         objLoopCharacter.InitRoll = frmHits.Result + objLoopCharacter.InitialInit;
                     }
@@ -404,9 +402,7 @@ namespace Chummer
                     Dice = _lstCharacters[chkBoxChummer.SelectedIndex].InitPasses
                 }))
                 {
-                    await frmHits.ShowDialogSafeAsync(this);
-
-                    if (frmHits.DialogResult != DialogResult.OK)
+                    if (await frmHits.ShowDialogSafeAsync(this) != DialogResult.OK)
                         return; // we decided not to actually change the initiative
 
                     int intResult = await frmHits.DoThreadSafeFuncAsync(x => x.Result);
@@ -444,9 +440,7 @@ namespace Chummer
                     Dice = character.InitPasses
                 }))
                 {
-                    await frmHits.ShowDialogSafeAsync(this);
-
-                    if (frmHits.DialogResult != DialogResult.OK)
+                    if (await frmHits.ShowDialogSafeAsync(this) != DialogResult.OK)
                     {
                         Program.ShowMessageBox("ERROR"); // TODO edward show error
                         return;

@@ -810,10 +810,8 @@ namespace Chummer
                     WeaponMountSlots = intSlots
                 }))
                 {
-                    await frmPickVehicleMod.ShowDialogSafeAsync(this);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
+                    if (await frmPickVehicleMod.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         break;
 
                     blnAddAgain = frmPickVehicleMod.AddAgain;

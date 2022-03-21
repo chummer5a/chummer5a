@@ -50,8 +50,7 @@ namespace Chummer
 
             using (EditNotes frmItemNotes = await frmToUse.DoThreadSafeFuncAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor)))
             {
-                await frmItemNotes.ShowDialogSafeAsync(frmToUse);
-                if (frmItemNotes.DialogResult != DialogResult.OK)
+                if (await frmItemNotes.ShowDialogSafeAsync(frmToUse) != DialogResult.OK)
                     return false;
 
                 objNotes.Notes = frmItemNotes.Notes;

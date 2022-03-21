@@ -277,10 +277,10 @@ namespace Chummer.Backend.Equipment
                                        AllowCancel = false
                                    })
                             {
-                                if (frmPickNumber.ShowDialogSafe(x) != DialogResult.Cancel)
-                                    _strCost = frmPickNumber.SelectedValue.ToString(
-                                        GlobalSettings.InvariantCultureInfo);
-                                return frmPickNumber.DialogResult;
+                                DialogResult eReturn = frmPickNumber.ShowDialogSafe(x);
+                                if (eReturn != DialogResult.Cancel)
+                                    _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                                return eReturn;
                             }
                         });
                         if (eResult == DialogResult.Cancel)

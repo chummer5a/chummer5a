@@ -1635,14 +1635,13 @@ namespace Chummer
                                             else
                                                 frmPickSkill.SetDropdownItemsMode(lstDropdownItems);
 
-                                            frmPickSkill.ShowDialogSafe(x);
-
-                                            if (frmPickSkill.DialogResult != DialogResult.Cancel)
+                                            DialogResult eReturn = frmPickSkill.ShowDialogSafe(x);
+                                            if (eReturn != DialogResult.Cancel)
                                             {
                                                 strSelectedSkill = frmPickSkill.SelectedItem;
                                             }
 
-                                            return frmPickSkill.DialogResult;
+                                            return eReturn;
                                         }
                                     });
                                     if (eResult == DialogResult.Cancel)
@@ -1704,16 +1703,15 @@ namespace Chummer
                             frmPickSkill.OnlySkill = ForcedValue;
                             frmPickSkill.Opacity = 0;
                         }
-
-                        frmPickSkill.ShowDialogSafe(x);
-
+                        
                         // Make sure the dialogue window was not canceled.
-                        if (frmPickSkill.DialogResult != DialogResult.Cancel)
+                        DialogResult eReturn = frmPickSkill.ShowDialogSafe(x);
+                        if (eReturn != DialogResult.Cancel)
                         {
                             strSelectedSkill = frmPickSkill.SelectedSkill;
                         }
 
-                        return frmPickSkill.DialogResult;
+                        return eReturn;
                     }
                 });
                 if (eResult == DialogResult.Cancel)
@@ -1869,15 +1867,14 @@ namespace Chummer
                                                                  strFriendlyName)
                                            })
                                     {
-                                        frmPickText.ShowDialogSafe(x);
-
                                         // Make sure the dialogue window was not canceled.
-                                        if (frmPickText.DialogResult != DialogResult.Cancel)
+                                        DialogResult eResult = frmPickText.ShowDialogSafe(x);
+                                        if (eResult != DialogResult.Cancel)
                                         {
                                             _strSelectedValue = frmPickText.SelectedValue;
                                         }
 
-                                        return frmPickText.DialogResult;
+                                        return eResult;
                                     }
                                 });
                                 if (eResult == DialogResult.Cancel)
@@ -1968,14 +1965,13 @@ namespace Chummer
                                                 frmSelect.SetGeneralItemsMode(lstItems);
                                             }
 
-                                            frmSelect.ShowDialogSafe(x);
-
-                                            if (frmSelect.DialogResult != DialogResult.Cancel)
+                                            DialogResult eReturn = frmSelect.ShowDialogSafe(x);
+                                            if (eReturn != DialogResult.Cancel)
                                             {
                                                 _strSelectedValue = frmSelect.SelectedItem;
                                             }
 
-                                            return frmSelect.DialogResult;
+                                            return eReturn;
                                         }
                                     }
                                 });

@@ -234,10 +234,8 @@ namespace Chummer.UI.Powers
             {
                 using (SelectPower frmPickPower = await this.DoThreadSafeFuncAsync(() => new SelectPower(_objCharacter)))
                 {
-                    await frmPickPower.ShowDialogSafeAsync(this);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickPower.DialogResult == DialogResult.Cancel)
+                    if (await frmPickPower.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         break;
 
                     blnAddAgain = frmPickPower.AddAgain;
@@ -407,8 +405,7 @@ namespace Chummer.UI.Powers
                 {
                     using (EditNotes frmPowerNotes = await this.DoThreadSafeFuncAsync(() => new EditNotes(p.Notes, p.NotesColor)))
                     {
-                        await frmPowerNotes.ShowDialogSafeAsync(this);
-                        if (frmPowerNotes.DialogResult == DialogResult.OK)
+                        if (await frmPowerNotes.ShowDialogSafeAsync(this) == DialogResult.OK)
                             p.Notes = frmPowerNotes.Notes;
                     }
                 },

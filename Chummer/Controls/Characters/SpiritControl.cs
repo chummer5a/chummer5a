@@ -287,8 +287,7 @@ namespace Chummer
         {
             using (EditNotes frmSpritNotes = new EditNotes(_objSpirit.Notes, _objSpirit.NotesColor))
             {
-                await frmSpritNotes.ShowDialogSafeAsync(this);
-                if (frmSpritNotes.DialogResult != DialogResult.OK)
+                if (await frmSpritNotes.ShowDialogSafeAsync(this) != DialogResult.OK)
                     return;
                 _objSpirit.Notes = frmSpritNotes.Notes;
             }
