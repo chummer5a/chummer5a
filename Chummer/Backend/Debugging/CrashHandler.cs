@@ -38,7 +38,7 @@ namespace Chummer.Backend
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
-        private sealed class DumpData : ISerializable
+        private sealed class DumpData : ISerializable, IDeserializationCallback
         {
             public DumpData(Exception ex)
             {
@@ -180,10 +180,16 @@ namespace Chummer.Backend
                 info.AddValue("_intProcessId", _intProcessId);
                 info.AddValue("_uintThreadId", _uintThreadId);
                 info.AddValue("_ptrExceptionInfo", _ptrExceptionInfo);
-                _dicAttributes.GetObjectData(info, context);
-                _dicPretendFiles.GetObjectData(info, context);
-                foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicCapturedFiles)
-                    info.AddValue(objLoopKeyValuePair.Key, objLoopKeyValuePair.Value);
+                info.AddValue("_dicAttributes", _dicAttributes);
+                info.AddValue("_dicPretendFiles", _dicPretendFiles);
+                info.AddValue("_dicCapturedFiles", _dicCapturedFiles);
+            }
+
+            /// <inheritdoc />
+            public void OnDeserialization(object sender)
+            {
+                _dicAttributes.OnDeserialization(sender);
+                _dicPretendFiles.OnDeserialization(sender);
             }
         }
 
