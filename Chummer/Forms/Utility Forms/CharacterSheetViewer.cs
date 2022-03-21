@@ -503,11 +503,9 @@ namespace Chummer
         {
             int intHeight = await webViewer.DoThreadSafeFuncAsync(x => x.Height, token);
             string strDocumentText
-                = "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\"><head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head><body style=\"width:100%;height:"
-                  +
+                = "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\"><head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head><body style=\"width:100%;height:" +
                   intHeight.ToString(GlobalSettings.InvariantCultureInfo) +
-                  ";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">"
-                  +
+                  ";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">" +
                   strText.CleanForHtml() + "</body></html>";
             await webViewer.DoThreadSafeAsync(x => x.DocumentText = strDocumentText, token);
         }

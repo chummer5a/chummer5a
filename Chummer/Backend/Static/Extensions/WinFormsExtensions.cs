@@ -46,16 +46,19 @@ namespace Chummer
         public static DialogResult ShowDialogSafe(this Form frmForm, IWin32Window owner = null)
         {
             if (!Utils.IsUnitTest)
-                return frmForm.ShowDialog(owner);
+                return frmForm.DoThreadSafeFunc(x => x.ShowDialog(owner));
             // Unit tests cannot use ShowDialog because that will stall them out
             bool blnDoClose = false;
             void FormOnShown(object sender, EventArgs args) => blnDoClose = true;
-            frmForm.Shown += FormOnShown;
-            frmForm.ShowInTaskbar = false;
-            frmForm.Show(owner);
+            frmForm.DoThreadSafe(x =>
+            {
+                x.Shown += FormOnShown;
+                x.ShowInTaskbar = false;
+                x.Show(owner);
+            });
             while (!blnDoClose)
                 Utils.SafeSleep(true);
-            frmForm.Close();
+            frmForm.DoThreadSafe(x => x.Close());
             return frmForm.DialogResult;
         }
 
@@ -79,18 +82,24 @@ namespace Chummer
         public static Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, IWin32Window owner = null)
         {
             // Unit tests cannot use ShowDialog because that will stall them out
-            return !Utils.IsUnitTest ? Task.FromResult(frmForm.ShowDialog(owner)) : ShowDialogSafeUnitTestAsync();
+            return !Utils.IsUnitTest ? frmForm.DoThreadSafeFuncAsync(x => x.ShowDialog(owner)) : ShowDialogSafeUnitTestAsync();
 
             async Task<DialogResult> ShowDialogSafeUnitTestAsync()
             {
                 bool blnDoClose = false;
                 void FormOnShown(object sender, EventArgs args) => blnDoClose = true;
-                frmForm.Shown += FormOnShown;
-                frmForm.Show(owner);
+                await frmForm.DoThreadSafeAsync(x =>
+                {
+                    x.Shown += FormOnShown;
+                    x.Show(owner);
+                });
                 while (!blnDoClose)
                     await Utils.SafeSleepAsync();
-                frmForm.Close();
-                return frmForm.DialogResult;
+                return await frmForm.DoThreadSafeFuncAsync(x =>
+                {
+                    x.Close();
+                    return frmForm.DialogResult;
+                });
             }
         }
 

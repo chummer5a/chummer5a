@@ -68,186 +68,202 @@ namespace Chummer.Plugins
                                                                                            && MainForm.OpenCharacterForms.Any(x => x.CharacterObject?.FileName == strTag));
             }
 
-            ContextMenuStrip cmsRoster = new ContextMenuStrip();
-            DpiFriendlyToolStripMenuItem tsShowMySINners = new DpiFriendlyToolStripMenuItem
+            ContextMenuStrip cmsRoster = objNode.ContextMenuStrip ?? new ContextMenuStrip();
+            try
             {
-                Name = "tsShowMySINners",
-                Tag = "Menu_ShowMySINners",
-                Text = "Show all my SINners",
-                Size = new Size(177, 22),
-                Image = Resources.group,
-                ImageDpi192 = Resources.group1,
-            };
-            tsShowMySINners.Click += ShowMySINnersOnClick;
-            tsShowMySINners.UpdateLightDarkMode();
-            tsShowMySINners.TranslateToolStripItemsRecursively();
-            cmsRoster.Items.Add(tsShowMySINners);
-            
-            DpiFriendlyToolStripMenuItem tsSINnersCreateGroup = new DpiFriendlyToolStripMenuItem
-            {
-                Name = "tsSINnersCreateGroup",
-                Tag = "Menu_SINnersCreateGroup",
-                Text = "Create Group",
-                Size = new Size(177, 22),
-                Image = Resources.group,
-                ImageDpi192 = Resources.group1,
-            };
-            tsSINnersCreateGroup.Click += SINnersCreateGroupOnClick;
-            tsSINnersCreateGroup.UpdateLightDarkMode();
-            tsSINnersCreateGroup.TranslateToolStripItemsRecursively();
-            cmsRoster.Items.Add(tsSINnersCreateGroup);
-            cmsRoster.UpdateLightDarkMode();
-            cmsRoster.TranslateWinForm();
-
-            objNode.ContextMenuStrip = cmsRoster;
-            if (objNode.Tag is CharacterCache member)
-            {
-                ToolStripMenuItem newShare = new ToolStripMenuItem("Share")
+                DpiFriendlyToolStripMenuItem tsShowMySINners = new DpiFriendlyToolStripMenuItem
                 {
-                    Name = "tsShareChummer",
-                    Tag = "Menu_ShareChummer",
-                    Text = "Share chummer",
+                    Name = "tsShowMySINners",
+                    Tag = "Menu_ShowMySINners",
+                    Text = "Show all my SINners",
                     Size = new Size(177, 22),
-                    Image = Resources.link_add
+                    ImageDpi96 = Resources.group,
+                    ImageDpi192 = Resources.group1,
                 };
-                newShare.Click += NewShareOnClick;
-                newShare.UpdateLightDarkMode();
-                newShare.TranslateToolStripItemsRecursively();
-                objNode.ContextMenuStrip.Items.Add(newShare);
+                tsShowMySINners.Click += ShowMySINnersOnClick;
+                tsShowMySINners.UpdateLightDarkMode();
+                tsShowMySINners.TranslateToolStripItemsRecursively();
+                cmsRoster.Items.Add(tsShowMySINners);
 
-                //is it a favorite sinner?
-                if (member.MyPluginDataDic.TryGetValue("IsSINnerFavorite", out object objFavorite))
+                DpiFriendlyToolStripMenuItem tsSINnersCreateGroup = new DpiFriendlyToolStripMenuItem
                 {
-                    ToolStripMenuItem newFavorite;
-                    if (objFavorite is bool isFavorite && isFavorite)
+                    Name = "tsSINnersCreateGroup",
+                    Tag = "Menu_SINnersCreateGroup",
+                    Text = "Create Group",
+                    Size = new Size(177, 22),
+                    ImageDpi96 = Resources.group,
+                    ImageDpi192 = Resources.group1,
+                };
+                tsSINnersCreateGroup.Click += SINnersCreateGroupOnClick;
+                tsSINnersCreateGroup.UpdateLightDarkMode();
+                tsSINnersCreateGroup.TranslateToolStripItemsRecursively();
+                cmsRoster.Items.Add(tsSINnersCreateGroup);
+
+                if (objNode.Tag is CharacterCache member)
+                {
+                    DpiFriendlyToolStripMenuItem newShare = new DpiFriendlyToolStripMenuItem("Share")
                     {
-                        newFavorite = new ToolStripMenuItem("RemovePinned")
-                        {
-                            Name = "tsRemovePinnedChummer",
-                            Tag = "Menu_RemovePinnedChummer",
-                            Text = "remove from pinned Chummers",
-                            Size = new Size(177, 22),
-                            Image = Resources.user_delete
-                        };
-                        newFavorite.Click += RemovePinnedOnClick;
-                    }
-                    else
+                        Name = "tsShareChummer",
+                        Tag = "Menu_ShareChummer",
+                        Text = "Share chummer",
+                        Size = new Size(177, 22),
+                        ImageDpi96 = Resources.link_add,
+                        ImageDpi192 = Resources.link_add1
+                    };
+                    newShare.Click += NewShareOnClick;
+                    newShare.UpdateLightDarkMode();
+                    newShare.TranslateToolStripItemsRecursively();
+                    cmsRoster.Items.Add(newShare);
+
+                    //is it a favorite sinner?
+                    if (member.MyPluginDataDic.TryGetValue("IsSINnerFavorite", out object objFavorite))
                     {
-                        newFavorite = new ToolStripMenuItem("AddPinned")
+                        DpiFriendlyToolStripMenuItem newFavorite;
+                        if (objFavorite is bool isFavorite && isFavorite)
                         {
-                            Name = "tsAddPinnedChummer",
-                            Tag = "Menu_AddPinnedChummer",
-                            Text = "add to pinned Chummers",
-                            Size = new Size(177, 22),
-                            Image = Resources.user_add
-                        };
-                        newFavorite.Click += AddPinnedOnClick;
+                            newFavorite = new DpiFriendlyToolStripMenuItem("RemovePinned")
+                            {
+                                Name = "tsRemovePinnedChummer",
+                                Tag = "Menu_RemovePinnedChummer",
+                                Text = "remove from pinned Chummers",
+                                Size = new Size(177, 22),
+                                ImageDpi96 = Resources.user_delete,
+                                ImageDpi192 = Resources.user_delete1
+                            };
+                            newFavorite.Click += RemovePinnedOnClick;
+                        }
+                        else
+                        {
+                            newFavorite = new DpiFriendlyToolStripMenuItem("AddPinned")
+                            {
+                                Name = "tsAddPinnedChummer",
+                                Tag = "Menu_AddPinnedChummer",
+                                Text = "add to pinned Chummers",
+                                Size = new Size(177, 22),
+                                ImageDpi96 = Resources.user_add,
+                                ImageDpi192 = Resources.user_add1
+                            };
+                            newFavorite.Click += AddPinnedOnClick;
+                        }
+
+                        newFavorite.UpdateLightDarkMode();
+                        newFavorite.TranslateToolStripItemsRecursively();
+                        cmsRoster.Items.Add(newFavorite);
                     }
-                    newFavorite.UpdateLightDarkMode();
-                    newFavorite.TranslateToolStripItemsRecursively();
-                    objNode.ContextMenuStrip.Items.Add(newFavorite);
+
+                    DpiFriendlyToolStripMenuItem newDelete = new DpiFriendlyToolStripMenuItem("DeleteFromSINners")
+                    {
+                        Name = "tsDeleteFromSINners",
+                        Tag = "Menu_DeleteFromSINners",
+                        Text = "delete chummer from SINners registry",
+                        Size = new Size(177, 22),
+                        ImageDpi96 = Resources.delete,
+                        ImageDpi192 = Resources.delete1
+                    };
+                    newDelete.Click += MainForm.CharacterRoster.tsDelete_Click;
+                    newDelete.UpdateLightDarkMode();
+                    newDelete.TranslateToolStripItemsRecursively();
+                    cmsRoster.Items.Add(newDelete);
                 }
-                ToolStripMenuItem newDelete = new ToolStripMenuItem("DeleteFromSINners")
+
+                bool isPluginNode = false;
+                TreeNode checkNode = objNode;
+                while (!isPluginNode && checkNode != null)
                 {
-                    Name = "tsDeleteFromSINners",
-                    Tag = "Menu_DeleteFromSINners",
-                    Text = "delete chummer from SINners registry",
-                    Size = new Size(177, 22),
-                    Image = Resources.delete
-                };
-                newDelete.Click += MainForm.CharacterRoster.tsDelete_Click;
-                newDelete.UpdateLightDarkMode();
-                newDelete.TranslateToolStripItemsRecursively();
-                objNode.ContextMenuStrip.Items.Add(newDelete);
-            }
+                    if (checkNode.Tag is PluginHandler)
+                        isPluginNode = true;
+                    checkNode = checkNode.Parent;
+                }
 
+                if (!isPluginNode)
+                    return true;
 
-            bool isPluginNode = false;
-            TreeNode checkNode = objNode;
-            while (!isPluginNode && checkNode != null)
-            {
-                if (checkNode.Tag is PluginHandler)
-                    isPluginNode = true;
-                checkNode = checkNode.Parent;
-            }
-            if (!isPluginNode)
-                return true;
-
-            if (objNode.Tag is SINnerSearchGroup)
-            {
-                MainForm.DoThreadSafe(() =>
+                if (objNode.Tag is SINnerSearchGroup)
                 {
-                    ToolStripMenuItem newShare = new ToolStripMenuItem("Share")
+                    DpiFriendlyToolStripMenuItem newShare = new DpiFriendlyToolStripMenuItem("Share")
                     {
                         Name = "tsShareChummerGroup",
                         Tag = "Menu_ShareChummerGroup",
                         Text = "Share chummer group",
                         Size = new Size(177, 22),
-                        Image = Resources.link_add
+                        ImageDpi96 = Resources.link_add,
+                        ImageDpi192 = Resources.link_add1
                     };
                     newShare.Click += NewShareOnClick;
                     newShare.UpdateLightDarkMode();
                     newShare.TranslateToolStripItemsRecursively();
-                    objNode.ContextMenuStrip.Items.Add(newShare);
+                    cmsRoster.Items.Add(newShare);
 
                     //is it a favorite sinner?
-                    ToolStripMenuItem newFavorite;
+                    DpiFriendlyToolStripMenuItem newFavorite;
                     //if (group.IsFavorite == true)
                     //{
-                    //    newFavorite = new ToolStripMenuItem("RemovePinned")
+                    //    newFavorite = new DpiFriendlyToolStripMenuItem("RemovePinned")
                     //    {
                     //        Name = "tsRemovePinnedGroup",
                     //        Tag = "Menu_RemovePinnedGroup",
                     //        Text = "remove from pinned",
                     //        Size = new Size(177, 22),
-                    //        Image = Resources.user_delete
+                    //        ImageDpi96 = Resources.user_delete,
+                    //        ImageDpi192 = Resources.user_delete1
                     //    };
                     //    newFavorite.Click += RemovePinnedOnClick;
                     //}
                     //else
                     {
-                        newFavorite = new ToolStripMenuItem("AddPinned")
+                        newFavorite = new DpiFriendlyToolStripMenuItem("AddPinned")
                         {
                             Name = "tsAddPinnedGroup",
                             Tag = "Menu_AddPinnedGroup",
                             Text = "Pin Chummer",
                             Size = new Size(177, 22),
-                            Image = Resources.user_add
+                            ImageDpi96 = Resources.user_add,
+                            ImageDpi192 = Resources.user_add1
                         };
                         newFavorite.Click += AddPinnedOnClick;
                     }
                     newFavorite.UpdateLightDarkMode();
                     newFavorite.TranslateToolStripItemsRecursively();
-                    objNode.ContextMenuStrip.Items.Add(newFavorite);
-                });
-            }
-
-            foreach (ToolStripItem item in objNode.ContextMenuStrip.Items.Cast<ToolStripItem>())
-            {
-                switch (item.Name)
-                {
-                    case "tsToggleFav":
-                    case "tsCloseOpenCharacter":
-                    case "tsSort":
-                        objNode.ContextMenuStrip.Items.Remove(item);
-                        break;
-                    case "tsDelete":
-                        objNode.ContextMenuStrip.Items.Remove(item);
-                        ToolStripMenuItem newDelete = new ToolStripMenuItem(item.Text, item.Image);
-                        newDelete.Click += MainForm.CharacterRoster.tsDelete_Click;
-                        newDelete.UpdateLightDarkMode();
-                        newDelete.TranslateToolStripItemsRecursively();
-                        objNode.ContextMenuStrip.Items.Add(newDelete);
-                        break;
+                    cmsRoster.Items.Add(newFavorite);
                 }
-            }
 
-            return true;
+                foreach (DpiFriendlyToolStripMenuItem item in cmsRoster.Items)
+                {
+                    switch (item.Name)
+                    {
+                        case "tsToggleFav":
+                        case "tsCloseOpenCharacter":
+                        case "tsSort":
+                            cmsRoster.Items.Remove(item);
+                            break;
+                        case "tsDelete":
+                            cmsRoster.Items.Remove(item);
+                            DpiFriendlyToolStripMenuItem newDelete = new DpiFriendlyToolStripMenuItem(item.Text)
+                            {
+                                ImageDpi96 = item.ImageDpi96,
+                                ImageDpi192 = item.ImageDpi192,
+                                Tag = item.Tag,
+                                Name = item.Name
+                            };
+                            newDelete.Click += MainForm.CharacterRoster.tsDelete_Click;
+                            newDelete.UpdateLightDarkMode();
+                            newDelete.TranslateToolStripItemsRecursively();
+                            cmsRoster.Items.Add(newDelete);
+                            break;
+                    }
+                }
+
+                return true;
+            }
+            finally
+            {
+                objNode.ContextMenuStrip = cmsRoster;
+            }
         }
 
         public ITelemetry SetTelemetryInitialize(ITelemetry telemetry)
         {
-            if (!String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.UserEmail))
+            if (!string.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.UserEmail))
             {
                 if (telemetry?.Context?.User != null)
                 {
@@ -574,7 +590,7 @@ namespace Chummer.Plugins
                 {
                     Name = "mnuSINSearch",
                     Text = "&SINner Search",
-                    Image = Resources.group,
+                    ImageDpi96 = Resources.group,
                     ImageTransparentColor = Color.Black,
                     Size = new Size(148, 22),
                     Tag = "Menu_Tools_SINnerSearch",
@@ -590,7 +606,7 @@ namespace Chummer.Plugins
             {
                 Name = "mnuSINnersArchetypes",
                 Text = "&Archetypes",
-                Image = Resources.group,
+                ImageDpi96 = Resources.group,
                 ImageTransparentColor = Color.Black,
                 Size = new Size(148, 22),
                 Tag = "Menu_Tools_SINnersArchetypes",
@@ -607,7 +623,7 @@ namespace Chummer.Plugins
                 {
                     Name = "mnuSINners",
                     Text = "&SINners",
-                    Image = Resources.group,
+                    ImageDpi96 = Resources.group,
                     ImageTransparentColor = Color.Black,
                     Size = new Size(148, 22),
                     Tag = "Menu_Tools_SINners",

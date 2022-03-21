@@ -1369,12 +1369,15 @@ namespace Chummer
                     }
                     finally
                     {
-                        if (await Program.OpenCharacters.AllAsync(
-                                x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
-                            && await Program.MainForm.OpenCharacterForms.AllAsync(
-                                x => x.CharacterObject != objCharacter))
-                            Program.OpenCharacters.Remove(objCharacter);
-                        await objCharacter.DisposeAsync();
+                        if (objCharacter != null)
+                        {
+                            if (await Program.OpenCharacters.AllAsync(
+                                    x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
+                                && await Program.MainForm.OpenCharacterForms.AllAsync(
+                                    x => x.CharacterObject != objCharacter))
+                                Program.OpenCharacters.Remove(objCharacter);
+                            await objCharacter.DisposeAsync();
+                        }
                     }
                 }
             }
@@ -1405,12 +1408,15 @@ namespace Chummer
                     }
                     finally
                     {
-                        if (await Program.OpenCharacters.AllAsync(
-                                x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
-                            && await Program.MainForm.OpenCharacterForms.AllAsync(
-                                x => x.CharacterObject != objCharacter))
-                            Program.OpenCharacters.Remove(objCharacter);
-                        await objCharacter.DisposeAsync();
+                        if (objCharacter != null)
+                        {
+                            if (await Program.OpenCharacters.AllAsync(
+                                    x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
+                                && await Program.MainForm.OpenCharacterForms.AllAsync(
+                                    x => x.CharacterObject != objCharacter))
+                                Program.OpenCharacters.Remove(objCharacter);
+                            await objCharacter.DisposeAsync();
+                        }
                     }
                 }
             }
