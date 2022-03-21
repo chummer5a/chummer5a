@@ -45,8 +45,33 @@ namespace Chummer
         /// <returns></returns>
         public static DialogResult ShowDialogSafe(this Form frmForm, IWin32Window owner = null)
         {
+            if (frmForm == null)
+                throw new ArgumentNullException(nameof(frmForm));
+            if (frmForm.IsDisposed)
+                throw new ObjectDisposedException(nameof(frmForm));
             if (!Utils.IsUnitTest)
-                return frmForm.DoThreadSafeFunc(x => x.ShowDialog(owner));
+            {
+                if (!frmForm.InvokeRequired)
+                {
+                    if (!(owner is Control objOwner) || !objOwner.InvokeRequired)
+                        return frmForm.ShowDialog(owner);
+                    IAsyncResult objInnerResult = objOwner.BeginInvoke((Func<Form, IWin32Window, DialogResult>)FuncToRun, frmForm, owner);
+                    // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
+                    using (objInnerResult.AsyncWaitHandle)
+                    {
+                        objInnerResult.AsyncWaitHandle.WaitOne();
+                        return (DialogResult)objOwner.EndInvoke(objInnerResult);
+                    }
+                }
+                DialogResult FuncToRun(Form x, IWin32Window y = null) => x.ShowDialog(y);
+                IAsyncResult objResult = frmForm.BeginInvoke((Func<Form, IWin32Window, DialogResult>)FuncToRun, frmForm, owner);
+                // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
+                using (objResult.AsyncWaitHandle)
+                {
+                    objResult.AsyncWaitHandle.WaitOne();
+                    return (DialogResult)frmForm.EndInvoke(objResult);
+                }
+            }
             // Unit tests cannot use ShowDialog because that will stall them out
             bool blnDoClose = false;
             void FormOnShown(object sender, EventArgs args) => blnDoClose = true;
@@ -82,25 +107,45 @@ namespace Chummer
         public static Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, IWin32Window owner = null)
         {
             // Unit tests cannot use ShowDialog because that will stall them out
-            return !Utils.IsUnitTest ? frmForm.DoThreadSafeFuncAsync(x => x.ShowDialog(owner)) : ShowDialogSafeUnitTestAsync();
-
-            async Task<DialogResult> ShowDialogSafeUnitTestAsync()
+            if (frmForm == null)
+                return Task.FromException<DialogResult>(new ArgumentNullException(nameof(frmForm)));
+            if (frmForm.IsDisposed)
+                return Task.FromException<DialogResult>(new ObjectDisposedException(nameof(frmForm)));
+            if (!Utils.IsUnitTest)
             {
-                bool blnDoClose = false;
-                void FormOnShown(object sender, EventArgs args) => blnDoClose = true;
-                await frmForm.DoThreadSafeAsync(x =>
+                if (!frmForm.InvokeRequired)
                 {
-                    x.Shown += FormOnShown;
-                    x.Show(owner);
-                });
-                while (!blnDoClose)
-                    await Utils.SafeSleepAsync();
-                return await frmForm.DoThreadSafeFuncAsync(x =>
+                    if (!(owner is Control objOwner) || !objOwner.InvokeRequired)
+                        return Task.FromResult(frmForm.ShowDialog(owner));
+                    IAsyncResult objInnerResult = objOwner.BeginInvoke((Func<Form, IWin32Window, DialogResult>)FuncToRun, frmForm, owner);
+                    return Task.Factory.FromAsync(objInnerResult, x =>
+                    {
+                        using (x.AsyncWaitHandle)
+                            return objOwner.IsNullOrDisposed() ? default : (DialogResult)objOwner.EndInvoke(x);
+                    });
+                }
+                DialogResult FuncToRun(Form x, IWin32Window y = null) => x.ShowDialog(y);
+                IAsyncResult objResult = frmForm.BeginInvoke((Func<Form, IWin32Window, DialogResult>)FuncToRun, frmForm, owner);
+                return Task.Factory.FromAsync(objResult, x =>
                 {
-                    x.Close();
-                    return frmForm.DialogResult;
+                    using (x.AsyncWaitHandle)
+                        return frmForm.IsNullOrDisposed() ? default : (DialogResult)frmForm.EndInvoke(x);
                 });
             }
+            TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
+            void BeginShow(Form frmInner)
+            {
+                frmInner.Shown += FormOnShown;
+                frmInner.Show(owner);
+                void FormOnShown(object sender, EventArgs args)
+                {
+                    frmForm.DoThreadSafe(x => x.Close());
+                    objCompletionSource.SetResult(frmForm.DoThreadSafeFunc(x => x.DialogResult));
+                }
+            }
+            Action<Form> funcBegin = BeginShow;
+            frmForm.BeginInvoke(funcBegin, frmForm);
+            return objCompletionSource.Task;
         }
 
         /// <summary>
@@ -112,6 +157,74 @@ namespace Chummer
         public static Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, Character objCharacter)
         {
             return frmForm.ShowDialogSafeAsync(Program.GetFormForDialog(objCharacter));
+        }
+
+        /// <summary>
+        /// Non-blocking version of ShowDialog() based on the following blog post:
+        /// https://sriramsakthivel.wordpress.com/2015/04/19/asynchronous-showdialog/
+        /// </summary>
+        /// <param name="frmForm"></param>
+        /// <param name="owner"></param>
+        /// <returns></returns>
+        public static Task<DialogResult> ShowDialogNonBlockingAsync(this Form frmForm, IWin32Window owner = null)
+        {
+            if (frmForm == null)
+                return Task.FromException<DialogResult>(new ArgumentNullException(nameof(frmForm)));
+            if (frmForm.IsDisposed)
+                return Task.FromException<DialogResult>(new ObjectDisposedException(nameof(frmForm)));
+            if (!frmForm.IsHandleCreated)
+            {
+                IntPtr _ = frmForm.Handle; // accessing Handle forces its creation
+            }
+            TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
+            frmForm.BeginInvoke(new Action(() => objCompletionSource.SetResult(frmForm.ShowDialog(owner))));
+            return objCompletionSource.Task;
+        }
+
+        /// <summary>
+        /// Alternative to Form.ShowDialog() that will not stall out unit tests.
+        /// </summary>
+        /// <param name="frmForm"></param>
+        /// <param name="owner"></param>
+        /// <returns></returns>
+        public static Task<DialogResult> ShowDialogNonBlockingSafeAsync(this Form frmForm, IWin32Window owner = null)
+        {
+            // Unit tests cannot use ShowDialog because that will stall them out
+            if (!Utils.IsUnitTest)
+                return frmForm.ShowDialogNonBlockingAsync(owner);
+            if (frmForm == null)
+                return Task.FromException<DialogResult>(new ArgumentNullException(nameof(frmForm)));
+            if (frmForm.IsDisposed)
+                return Task.FromException<DialogResult>(new ObjectDisposedException(nameof(frmForm)));
+            if (!frmForm.IsHandleCreated)
+            {
+                IntPtr _ = frmForm.Handle; // accessing Handle forces its creation
+            }
+            TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
+            void BeginShow(Form frmInner)
+            {
+                frmInner.Shown += FormOnShown;
+                frmInner.Show(owner);
+                void FormOnShown(object sender, EventArgs args)
+                {
+                    frmForm.DoThreadSafe(x => x.Close());
+                    objCompletionSource.SetResult(frmForm.DoThreadSafeFunc(x => x.DialogResult));
+                }
+            }
+            Action<Form> funcBegin = BeginShow;
+            frmForm.BeginInvoke(funcBegin, frmForm);
+            return objCompletionSource.Task;
+        }
+
+        /// <summary>
+        /// Alternative to Form.ShowDialog() that will not stall out unit tests.
+        /// </summary>
+        /// <param name="frmForm"></param>
+        /// <param name="objCharacter"></param>
+        /// <returns></returns>
+        public static Task<DialogResult> ShowDialogNonBlockingSafeAsync(this Form frmForm, Character objCharacter)
+        {
+            return frmForm.ShowDialogNonBlockingSafeAsync(Program.GetFormForDialog(objCharacter));
         }
 
         #endregion
@@ -247,9 +360,9 @@ namespace Chummer
                         if (blnSync)
                         {
                             IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
-                            // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                            objResult.AsyncWaitHandle.WaitOne();
-                            objResult.AsyncWaitHandle.Close();
+                            // Next two lines ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
+                            using (objResult.AsyncWaitHandle)
+                                objResult.AsyncWaitHandle.WaitOne();
                         }
                         else
                             myControlCopy.BeginInvoke(funcToRun);
@@ -310,9 +423,9 @@ namespace Chummer
                         if (blnSync)
                         {
                             IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
-                            // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                            objResult.AsyncWaitHandle.WaitOne();
-                            objResult.AsyncWaitHandle.Close();
+                            // Next two lines ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
+                            using (objResult.AsyncWaitHandle)
+                                objResult.AsyncWaitHandle.WaitOne();
                         }
                         else
                             myControlCopy.BeginInvoke(funcToRun, myControlCopy);
@@ -386,30 +499,31 @@ namespace Chummer
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
                         // funcToRun actually creates a Task that performs what is being run, so we need to get that task and then work with the task instead of the IAsyncResult
-                        objResult.AsyncWaitHandle.WaitOne();
-                        object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                        if (objReturnRaw is Task tskRunning)
+                        using (objResult.AsyncWaitHandle)
                         {
-                            if (blnSync)
+                            objResult.AsyncWaitHandle.WaitOne();
+                            object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                            if (objReturnRaw is Task tskRunning)
                             {
-                                if (tskRunning.Status == TaskStatus.Created)
-                                    tskRunning.RunSynchronously();
-                                while (!tskRunning.IsCompleted)
-                                    Utils.SafeSleep();
-                                if (tskRunning.Exception != null)
-                                    throw tskRunning.Exception;
-                            }
-                            else
-                            {
-                                Task.Run(() => tskRunning.ContinueWith(x =>
+                                if (blnSync)
                                 {
-                                    if (x.Exception != null)
-                                        throw x.Exception;
-                                }));
+                                    if (tskRunning.Status == TaskStatus.Created)
+                                        tskRunning.RunSynchronously();
+                                    while (!tskRunning.IsCompleted)
+                                        Utils.SafeSleep();
+                                    if (tskRunning.Exception != null)
+                                        throw tskRunning.Exception;
+                                }
+                                else
+                                {
+                                    Task.Run(() => tskRunning.ContinueWith(x =>
+                                    {
+                                        if (x.Exception != null)
+                                            throw x.Exception;
+                                    }));
+                                }
                             }
                         }
-
-                        objResult.AsyncWaitHandle.Close();
                     }
                     else
                     {
@@ -488,30 +602,31 @@ namespace Chummer
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
                         // funcToRun actually creates a Task that performs what is being run, so we need to get that task and then work with the task instead of the IAsyncResult
-                        objResult.AsyncWaitHandle.WaitOne();
-                        object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                        if (objReturnRaw is Task tskRunning)
+                        using (objResult.AsyncWaitHandle)
                         {
-                            if (blnSync)
+                            objResult.AsyncWaitHandle.WaitOne();
+                            object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                            if (objReturnRaw is Task tskRunning)
                             {
-                                if (tskRunning.Status == TaskStatus.Created)
-                                    tskRunning.RunSynchronously();
-                                while (!tskRunning.IsCompleted)
-                                    Utils.SafeSleep();
-                                if (tskRunning.Exception != null)
-                                    throw tskRunning.Exception;
-                            }
-                            else
-                            {
-                                Task.Run(() => tskRunning.ContinueWith(x =>
+                                if (blnSync)
                                 {
-                                    if (x.Exception != null)
-                                        throw x.Exception;
-                                }));
+                                    if (tskRunning.Status == TaskStatus.Created)
+                                        tskRunning.RunSynchronously();
+                                    while (!tskRunning.IsCompleted)
+                                        Utils.SafeSleep();
+                                    if (tskRunning.Exception != null)
+                                        throw tskRunning.Exception;
+                                }
+                                else
+                                {
+                                    Task.Run(() => tskRunning.ContinueWith(x =>
+                                    {
+                                        if (x.Exception != null)
+                                            throw x.Exception;
+                                    }));
+                                }
                             }
                         }
-
-                        objResult.AsyncWaitHandle.Close();
                     }
                     else
                     {
@@ -1210,12 +1325,14 @@ namespace Chummer
                         if (blnSync)
                         {
                             // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                            objResult.AsyncWaitHandle.WaitOne();
-                            token.ThrowIfCancellationRequested();
-                            object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                            if (objReturnRaw is T2 objReturnRawCast)
-                                objReturn = objReturnRawCast;
-                            objResult.AsyncWaitHandle.Close();
+                            using (objResult.AsyncWaitHandle)
+                            {
+                                objResult.AsyncWaitHandle.WaitOne();
+                                token.ThrowIfCancellationRequested();
+                                object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                                if (objReturnRaw is T2 objReturnRawCast)
+                                    objReturn = objReturnRawCast;
+                            }
                         }
                         else
                         {
@@ -1286,12 +1403,14 @@ namespace Chummer
                         if (blnSync)
                         {
                             // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                            objResult.AsyncWaitHandle.WaitOne();
-                            token.ThrowIfCancellationRequested();
-                            object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                            if (objReturnRaw is T2 objReturnRawCast)
-                                objReturn = objReturnRawCast;
-                            objResult.AsyncWaitHandle.Close();
+                            using (objResult.AsyncWaitHandle)
+                            {
+                                objResult.AsyncWaitHandle.WaitOne();
+                                token.ThrowIfCancellationRequested();
+                                object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                                if (objReturnRaw is T2 objReturnRawCast)
+                                    objReturn = objReturnRawCast;
+                            }
                         }
                         else
                         {
@@ -1362,12 +1481,14 @@ namespace Chummer
                         if (blnSync)
                         {
                             // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                            objResult.AsyncWaitHandle.WaitOne();
-                            token.ThrowIfCancellationRequested();
-                            object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                            if (objReturnRaw is T2 objReturnRawCast)
-                                objReturn = objReturnRawCast;
-                            objResult.AsyncWaitHandle.Close();
+                            using (objResult.AsyncWaitHandle)
+                            {
+                                objResult.AsyncWaitHandle.WaitOne();
+                                token.ThrowIfCancellationRequested();
+                                object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                                if (objReturnRaw is T2 objReturnRawCast)
+                                    objReturn = objReturnRawCast;
+                            }
                         }
                         else
                         {
@@ -1438,12 +1559,14 @@ namespace Chummer
                         if (blnSync)
                         {
                             // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                            objResult.AsyncWaitHandle.WaitOne();
-                            token.ThrowIfCancellationRequested();
-                            object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                            if (objReturnRaw is T2 objReturnRawCast)
-                                objReturn = objReturnRawCast;
-                            objResult.AsyncWaitHandle.Close();
+                            using (objResult.AsyncWaitHandle)
+                            {
+                                objResult.AsyncWaitHandle.WaitOne();
+                                token.ThrowIfCancellationRequested();
+                                object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                                if (objReturnRaw is T2 objReturnRawCast)
+                                    objReturn = objReturnRawCast;
+                            }
                         }
                         else
                         {
@@ -1643,7 +1766,7 @@ namespace Chummer
                             tskReturn.RunSynchronously();
                         if (tskReturn.Exception != null)
                             throw tskReturn.Exception;
-                        objReturn = tskReturn.Result;
+                        objReturn = tskReturn.GetAwaiter().GetResult();
                     }
                     else
                     {
@@ -1660,18 +1783,20 @@ namespace Chummer
                         if (blnSync)
                         {
                             // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                            objResult.AsyncWaitHandle.WaitOne();
-                            token.ThrowIfCancellationRequested();
-                            object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                            if (objReturnRaw is Task<T2> tskReturn)
+                            using (objResult.AsyncWaitHandle)
                             {
-                                if (tskReturn.Status == TaskStatus.Created)
-                                    tskReturn.RunSynchronously();
-                                if (tskReturn.Exception != null)
-                                    throw tskReturn.Exception;
-                                objReturn = tskReturn.Result;
+                                objResult.AsyncWaitHandle.WaitOne();
+                                token.ThrowIfCancellationRequested();
+                                object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                                if (objReturnRaw is Task<T2> tskReturn)
+                                {
+                                    if (tskReturn.Status == TaskStatus.Created)
+                                        tskReturn.RunSynchronously();
+                                    if (tskReturn.Exception != null)
+                                        throw tskReturn.Exception;
+                                    objReturn = tskReturn.GetAwaiter().GetResult();
+                                }
                             }
-                            objResult.AsyncWaitHandle.Close();
                         }
                         else
                         {
@@ -1694,7 +1819,7 @@ namespace Chummer
                             tskReturn.RunSynchronously();
                         if (tskReturn.Exception != null)
                             throw tskReturn.Exception;
-                        objReturn = tskReturn.Result;
+                        objReturn = tskReturn.GetAwaiter().GetResult();
                     }
                 }
             }
@@ -1748,7 +1873,7 @@ namespace Chummer
                             tskReturn.RunSynchronously();
                         if (tskReturn.Exception != null)
                             throw tskReturn.Exception;
-                        objReturn = tskReturn.Result;
+                        objReturn = tskReturn.GetAwaiter().GetResult();
                     }
                     else
                     {
@@ -1765,18 +1890,20 @@ namespace Chummer
                         if (blnSync)
                         {
                             // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                            objResult.AsyncWaitHandle.WaitOne();
-                            token.ThrowIfCancellationRequested();
-                            object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                            if (objReturnRaw is Task<T2> tskReturn)
+                            using (objResult.AsyncWaitHandle)
                             {
-                                if (tskReturn.Status == TaskStatus.Created)
-                                    tskReturn.RunSynchronously();
-                                if (tskReturn.Exception != null)
-                                    throw tskReturn.Exception;
-                                objReturn = tskReturn.Result;
+                                objResult.AsyncWaitHandle.WaitOne();
+                                token.ThrowIfCancellationRequested();
+                                object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                                if (objReturnRaw is Task<T2> tskReturn)
+                                {
+                                    if (tskReturn.Status == TaskStatus.Created)
+                                        tskReturn.RunSynchronously();
+                                    if (tskReturn.Exception != null)
+                                        throw tskReturn.Exception;
+                                    objReturn = tskReturn.GetAwaiter().GetResult();
+                                }
                             }
-                            objResult.AsyncWaitHandle.Close();
                         }
                         else
                         {
@@ -1799,7 +1926,7 @@ namespace Chummer
                             tskReturn.RunSynchronously();
                         if (tskReturn.Exception != null)
                             throw tskReturn.Exception;
-                        objReturn = tskReturn.Result;
+                        objReturn = tskReturn.GetAwaiter().GetResult();
                     }
                 }
             }
@@ -1853,7 +1980,7 @@ namespace Chummer
                             tskReturn.RunSynchronously();
                         if (tskReturn.Exception != null)
                             throw tskReturn.Exception;
-                        objReturn = tskReturn.Result;
+                        objReturn = tskReturn.GetAwaiter().GetResult();
                     }
                     else
                     {
@@ -1870,18 +1997,20 @@ namespace Chummer
                         if (blnSync)
                         {
                             // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                            objResult.AsyncWaitHandle.WaitOne();
-                            token.ThrowIfCancellationRequested();
-                            object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                            if (objReturnRaw is Task<T2> tskReturn)
+                            using (objResult.AsyncWaitHandle)
                             {
-                                if (tskReturn.Status == TaskStatus.Created)
-                                    tskReturn.RunSynchronously();
-                                if (tskReturn.Exception != null)
-                                    throw tskReturn.Exception;
-                                objReturn = tskReturn.Result;
+                                objResult.AsyncWaitHandle.WaitOne();
+                                token.ThrowIfCancellationRequested();
+                                object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                                if (objReturnRaw is Task<T2> tskReturn)
+                                {
+                                    if (tskReturn.Status == TaskStatus.Created)
+                                        tskReturn.RunSynchronously();
+                                    if (tskReturn.Exception != null)
+                                        throw tskReturn.Exception;
+                                    objReturn = tskReturn.GetAwaiter().GetResult();
+                                }
                             }
-                            objResult.AsyncWaitHandle.Close();
                         }
                         else
                         {
@@ -1904,7 +2033,7 @@ namespace Chummer
                             tskReturn.RunSynchronously();
                         if (tskReturn.Exception != null)
                             throw tskReturn.Exception;
-                        objReturn = tskReturn.Result;
+                        objReturn = tskReturn.GetAwaiter().GetResult();
                     }
                 }
             }
@@ -1958,7 +2087,7 @@ namespace Chummer
                             tskReturn.RunSynchronously();
                         if (tskReturn.Exception != null)
                             throw tskReturn.Exception;
-                        objReturn = tskReturn.Result;
+                        objReturn = tskReturn.GetAwaiter().GetResult();
                     }
                     else
                     {
@@ -1975,18 +2104,20 @@ namespace Chummer
                         if (blnSync)
                         {
                             // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                            objResult.AsyncWaitHandle.WaitOne();
-                            token.ThrowIfCancellationRequested();
-                            object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                            if (objReturnRaw is Task<T2> tskReturn)
+                            using (objResult.AsyncWaitHandle)
                             {
-                                if (tskReturn.Status == TaskStatus.Created)
-                                    tskReturn.RunSynchronously();
-                                if (tskReturn.Exception != null)
-                                    throw tskReturn.Exception;
-                                objReturn = tskReturn.Result;
+                                objResult.AsyncWaitHandle.WaitOne();
+                                token.ThrowIfCancellationRequested();
+                                object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                                if (objReturnRaw is Task<T2> tskReturn)
+                                {
+                                    if (tskReturn.Status == TaskStatus.Created)
+                                        tskReturn.RunSynchronously();
+                                    if (tskReturn.Exception != null)
+                                        throw tskReturn.Exception;
+                                    objReturn = tskReturn.GetAwaiter().GetResult();
+                                }
                             }
-                            objResult.AsyncWaitHandle.Close();
                         }
                         else
                         {
@@ -2009,7 +2140,7 @@ namespace Chummer
                             tskReturn.RunSynchronously();
                         if (tskReturn.Exception != null)
                             throw tskReturn.Exception;
-                        objReturn = tskReturn.Result;
+                        objReturn = tskReturn.GetAwaiter().GetResult();
                     }
                 }
             }
