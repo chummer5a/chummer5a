@@ -38,7 +38,7 @@ namespace Chummer.UI.Editors
 
         public void FocusContent()
         {
-            rtbContent.Focus();
+            rtbContent.DoThreadSafe(x => x.Focus());
         }
 
         private void UpdateFont(object sender, EventArgs e)
@@ -146,20 +146,30 @@ namespace Chummer.UI.Editors
 
         public string Rtf
         {
-            get => rtbContent.Rtf;
+            get => rtbContent.DoThreadSafeFunc(x => x.Rtf);
             set
             {
                 if (value.IsRtf())
-                    rtbContent.Rtf = string.IsNullOrWhiteSpace(value.RtfToPlainText()) ? string.Empty : value;
+                {
+                    string strText = string.IsNullOrWhiteSpace(value.RtfToPlainText()) ? string.Empty : value;
+                    rtbContent.DoThreadSafe(x => x.Rtf = strText);
+                }
                 else
-                    rtbContent.Text = value.NormalizeWhiteSpace();
+                {
+                    string strText = value.NormalizeWhiteSpace();
+                    rtbContent.DoThreadSafe(x => x.Text = strText);
+                }
             }
         }
 
         public override string Text
         {
-            get => rtbContent.Text;
-            set => rtbContent.Text = value.RtfToPlainText();
+            get => rtbContent.DoThreadSafeFunc(x => x.Text);
+            set
+            {
+                string strText = value.RtfToPlainText();
+                rtbContent.DoThreadSafe(x => x.Text = strText);
+            }
         }
 
         private bool IsSuperscript => rtbContent.SelectionCharOffset > 0;

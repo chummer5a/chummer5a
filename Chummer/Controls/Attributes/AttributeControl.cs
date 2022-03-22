@@ -155,48 +155,67 @@ namespace Chummer.UI.Attributes
 
         public void UpdateWidths(int intNameWidth, int intNudKarmaWidth, int intValueWidth, int intLimitsWidth)
         {
-            tlpMain.SuspendLayout();
-
-            if (intNameWidth >= 0)
+            tlpMain.DoThreadSafe(x => x.SuspendLayout());
+            try
             {
-                if (lblName.MinimumSize.Width > intNameWidth)
-                    lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
-                if (lblName.MaximumSize.Width != intNameWidth)
-                    lblName.MaximumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
-                if (lblName.MinimumSize.Width < intNameWidth)
-                    lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
-            }
+                if (intNameWidth >= 0)
+                {
+                    lblName.DoThreadSafe(x =>
+                    {
+                        if (x.MinimumSize.Width > intNameWidth)
+                            x.MinimumSize = new Size(intNameWidth, x.MinimumSize.Height);
+                        if (x.MaximumSize.Width != intNameWidth)
+                            x.MaximumSize = new Size(intNameWidth, x.MinimumSize.Height);
+                        if (x.MinimumSize.Width < intNameWidth)
+                            x.MinimumSize = new Size(intNameWidth, x.MinimumSize.Height);
+                    });
+                }
 
-            if (nudKarma?.Visible == true && nudBase?.Visible == true && intNudKarmaWidth >= 0)
+                if (intNudKarmaWidth >= 0 && nudBase?.DoThreadSafeFunc(x => x.Visible) == true)
+                {
+                    nudKarma?.DoThreadSafe(x =>
+                    {
+                        if (x.Visible)
+                        {
+                            x.Margin = new Padding(
+                                x.Margin.Right + Math.Max(intNudKarmaWidth - x.Width, 0),
+                                x.Margin.Top,
+                                x.Margin.Right,
+                                x.Margin.Bottom);
+                        }
+                    });
+                }
+
+                if (intValueWidth >= 0)
+                {
+                    lblValue.DoThreadSafe(x =>
+                    {
+                        if (x.MinimumSize.Width > intValueWidth)
+                            x.MinimumSize = new Size(intValueWidth, x.MinimumSize.Height);
+                        if (x.MaximumSize.Width != intValueWidth)
+                            x.MaximumSize = new Size(intValueWidth, x.MinimumSize.Height);
+                        if (x.MinimumSize.Width < intValueWidth)
+                            x.MinimumSize = new Size(intValueWidth, x.MinimumSize.Height);
+                    });
+                }
+
+                if (intLimitsWidth >= 0)
+                {
+                    lblValue.DoThreadSafe(x =>
+                    {
+                        if (x.MinimumSize.Width > intLimitsWidth)
+                            x.MinimumSize = new Size(intLimitsWidth, x.MinimumSize.Height);
+                        if (x.MaximumSize.Width != intLimitsWidth)
+                            x.MaximumSize = new Size(intLimitsWidth, x.MinimumSize.Height);
+                        if (x.MinimumSize.Width < intLimitsWidth)
+                            x.MinimumSize = new Size(intLimitsWidth, x.MinimumSize.Height);
+                    });
+                }
+            }
+            finally
             {
-                nudKarma.Margin = new Padding(
-                    nudKarma.Margin.Right + Math.Max(intNudKarmaWidth - nudKarma.Width, 0),
-                    nudKarma.Margin.Top,
-                    nudKarma.Margin.Right,
-                    nudKarma.Margin.Bottom);
+                tlpMain.DoThreadSafe(x => x.ResumeLayout());
             }
-
-            if (intValueWidth >= 0)
-            {
-                if (lblValue.MinimumSize.Width > intValueWidth)
-                    lblValue.MinimumSize = new Size(intValueWidth, lblValue.MinimumSize.Height);
-                if (lblValue.MaximumSize.Width != intValueWidth)
-                    lblValue.MaximumSize = new Size(intValueWidth, lblValue.MinimumSize.Height);
-                if (lblValue.MinimumSize.Width < intValueWidth)
-                    lblValue.MinimumSize = new Size(intValueWidth, lblValue.MinimumSize.Height);
-            }
-
-            if (intLimitsWidth >= 0)
-            {
-                if (lblLimits.MinimumSize.Width > intLimitsWidth)
-                    lblLimits.MinimumSize = new Size(intLimitsWidth, lblLimits.MinimumSize.Height);
-                if (lblLimits.MaximumSize.Width != intLimitsWidth)
-                    lblLimits.MaximumSize = new Size(intLimitsWidth, lblLimits.MinimumSize.Height);
-                if (lblLimits.MinimumSize.Width < intLimitsWidth)
-                    lblLimits.MinimumSize = new Size(intLimitsWidth, lblLimits.MinimumSize.Height);
-            }
-
-            tlpMain.ResumeLayout();
         }
 
         private void UnbindAttributeControl()
@@ -327,7 +346,7 @@ namespace Chummer.UI.Attributes
                 _objCharacter.AttributeSection.GetAttributeByName(AttributeName));
 
         [UsedImplicitly]
-        public int NameWidth => lblName.PreferredWidth;
+        public int NameWidth => lblName.DoThreadSafeFunc(x => x.PreferredWidth);
 
         private async void cmdBurnEdge_Click(object sender, EventArgs e)
         {

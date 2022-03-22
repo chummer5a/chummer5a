@@ -48,8 +48,14 @@ namespace Chummer.UI.Powers
             _dropDownList = GenerateDropdownFilter();
 
             SuspendLayout();
-            InitializeTable();
-            ResumeLayout();
+            try
+            {
+                InitializeTable();
+            }
+            finally
+            {
+                ResumeLayout();
+            }
         }
 
         private Character _objCharacter;
