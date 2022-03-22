@@ -42,8 +42,9 @@ namespace Chummer
         /// </summary>
         /// <param name="frmForm"></param>
         /// <param name="owner"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        public static DialogResult ShowDialogSafe(this Form frmForm, IWin32Window owner = null)
+        public static DialogResult ShowDialogSafe(this Form frmForm, IWin32Window owner = null, CancellationToken token = default)
         {
             if (frmForm == null)
                 throw new ArgumentNullException(nameof(frmForm));
@@ -57,18 +58,22 @@ namespace Chummer
                         return frmForm.ShowDialog(owner);
                     IAsyncResult objInnerResult = objOwner.BeginInvoke((Func<Form, IWin32Window, DialogResult>)FuncToRun, frmForm, owner);
                     // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                    using (objInnerResult.AsyncWaitHandle)
+                    using (WaitHandle objCancelHandle = token.WaitHandle)
+                    using (WaitHandle objHandle = objInnerResult.AsyncWaitHandle)
                     {
-                        objInnerResult.AsyncWaitHandle.WaitOne();
+                        WaitHandle.WaitAny(new[] { objHandle, objCancelHandle });
+                        token.ThrowIfCancellationRequested();
                         return (DialogResult)objOwner.EndInvoke(objInnerResult);
                     }
                 }
                 DialogResult FuncToRun(Form x, IWin32Window y = null) => x.ShowDialog(y);
                 IAsyncResult objResult = frmForm.BeginInvoke((Func<Form, IWin32Window, DialogResult>)FuncToRun, frmForm, owner);
                 // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                using (objResult.AsyncWaitHandle)
+                using (WaitHandle objCancelHandle = token.WaitHandle)
+                using (WaitHandle objHandle = objResult.AsyncWaitHandle)
                 {
-                    objResult.AsyncWaitHandle.WaitOne();
+                    WaitHandle.WaitAny(new[] { objHandle, objCancelHandle });
+                    token.ThrowIfCancellationRequested();
                     return (DialogResult)frmForm.EndInvoke(objResult);
                 }
             }
@@ -87,7 +92,7 @@ namespace Chummer
             {
                 x.Close();
                 return x.DialogResult;
-            });
+            }, token);
         }
 
         /// <summary>
@@ -95,10 +100,11 @@ namespace Chummer
         /// </summary>
         /// <param name="frmForm"></param>
         /// <param name="objCharacter"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        public static DialogResult ShowDialogSafe(this Form frmForm, Character objCharacter)
+        public static DialogResult ShowDialogSafe(this Form frmForm, Character objCharacter, CancellationToken token = default)
         {
-            return frmForm.ShowDialogSafe(Program.GetFormForDialog(objCharacter));
+            return frmForm.ShowDialogSafe(Program.GetFormForDialog(objCharacter), token);
         }
 
         /// <summary>
@@ -106,8 +112,9 @@ namespace Chummer
         /// </summary>
         /// <param name="frmForm"></param>
         /// <param name="owner"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        public static Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, IWin32Window owner = null)
+        public static Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, IWin32Window owner = null, CancellationToken token = default)
         {
             // Unit tests cannot use ShowDialog because that will stall them out
             if (frmForm == null)
@@ -123,19 +130,20 @@ namespace Chummer
                     IAsyncResult objInnerResult = objOwner.BeginInvoke((Func<Form, IWin32Window, DialogResult>)FuncToRun, frmForm, owner);
                     return Task.Factory.FromAsync(objInnerResult, x =>
                     {
-                        using (x.AsyncWaitHandle)
-                            return objOwner.IsNullOrDisposed() ? default : (DialogResult)objOwner.EndInvoke(x);
+                        token.ThrowIfCancellationRequested();
+                        return objOwner.IsNullOrDisposed() ? default : (DialogResult)objOwner.EndInvoke(x);
                     });
                 }
                 DialogResult FuncToRun(Form x, IWin32Window y = null) => x.ShowDialog(y);
                 IAsyncResult objResult = frmForm.BeginInvoke((Func<Form, IWin32Window, DialogResult>)FuncToRun, frmForm, owner);
                 return Task.Factory.FromAsync(objResult, x =>
                 {
-                    using (x.AsyncWaitHandle)
-                        return frmForm.IsNullOrDisposed() ? default : (DialogResult)frmForm.EndInvoke(x);
+                    token.ThrowIfCancellationRequested();
+                    return frmForm.IsNullOrDisposed() ? default : (DialogResult)frmForm.EndInvoke(x);
                 });
             }
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
+            CancellationTokenRegistration objCancelRegistration = token.Register(() => objCompletionSource.SetCanceled());
             void BeginShow(Form frmInner)
             {
                 frmInner.Shown += FormOnShown;
@@ -143,7 +151,8 @@ namespace Chummer
                 void FormOnShown(object sender, EventArgs args)
                 {
                     frmForm.DoThreadSafe(x => x.Close());
-                    objCompletionSource.SetResult(frmForm.DoThreadSafeFunc(x => x.DialogResult));
+                    objCompletionSource.SetResult(frmForm.DoThreadSafeFunc(x => x.DialogResult, token));
+                    objCancelRegistration.Dispose();
                 }
             }
             Action<Form> funcBegin = BeginShow;
@@ -156,10 +165,11 @@ namespace Chummer
         /// </summary>
         /// <param name="frmForm"></param>
         /// <param name="objCharacter"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        public static Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, Character objCharacter)
+        public static Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, Character objCharacter, CancellationToken token = default)
         {
-            return Program.GetFormForDialogAsync(objCharacter).ContinueWith(x => frmForm.ShowDialogSafeAsync(x.Result)).Unwrap();
+            return Program.GetFormForDialogAsync(objCharacter).ContinueWith(x => frmForm.ShowDialogSafeAsync(x.Result, token), token).Unwrap();
         }
 
         /// <summary>
@@ -168,8 +178,9 @@ namespace Chummer
         /// </summary>
         /// <param name="frmForm"></param>
         /// <param name="owner"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        public static Task<DialogResult> ShowDialogNonBlockingAsync(this Form frmForm, IWin32Window owner = null)
+        public static Task<DialogResult> ShowDialogNonBlockingAsync(this Form frmForm, IWin32Window owner = null, CancellationToken token = default)
         {
             if (frmForm == null)
                 return Task.FromException<DialogResult>(new ArgumentNullException(nameof(frmForm)));
@@ -180,7 +191,12 @@ namespace Chummer
                 IntPtr _ = frmForm.Handle; // accessing Handle forces its creation
             }
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
-            frmForm.BeginInvoke(new Action(() => objCompletionSource.SetResult(frmForm.ShowDialog(owner))));
+            CancellationTokenRegistration objCancelRegistration = token.Register(() => objCompletionSource.SetCanceled());
+            frmForm.BeginInvoke(new Action(() =>
+            {
+                objCompletionSource.SetResult(frmForm.ShowDialog(owner));
+                objCancelRegistration.Dispose();
+            }));
             return objCompletionSource.Task;
         }
 
@@ -189,12 +205,13 @@ namespace Chummer
         /// </summary>
         /// <param name="frmForm"></param>
         /// <param name="owner"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        public static Task<DialogResult> ShowDialogNonBlockingSafeAsync(this Form frmForm, IWin32Window owner = null)
+        public static Task<DialogResult> ShowDialogNonBlockingSafeAsync(this Form frmForm, IWin32Window owner = null, CancellationToken token = default)
         {
             // Unit tests cannot use ShowDialog because that will stall them out
             if (!Utils.IsUnitTest)
-                return frmForm.ShowDialogNonBlockingAsync(owner);
+                return frmForm.ShowDialogNonBlockingAsync(owner, token);
             if (frmForm == null)
                 return Task.FromException<DialogResult>(new ArgumentNullException(nameof(frmForm)));
             if (frmForm.IsDisposed)
@@ -204,6 +221,7 @@ namespace Chummer
                 IntPtr _ = frmForm.Handle; // accessing Handle forces its creation
             }
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
+            CancellationTokenRegistration objCancelRegistration = token.Register(() => objCompletionSource.SetCanceled());
             void BeginShow(Form frmInner)
             {
                 frmInner.Shown += FormOnShown;
@@ -211,7 +229,8 @@ namespace Chummer
                 void FormOnShown(object sender, EventArgs args)
                 {
                     frmForm.DoThreadSafe(x => x.Close());
-                    objCompletionSource.SetResult(frmForm.DoThreadSafeFunc(x => x.DialogResult));
+                    objCompletionSource.SetResult(frmForm.DoThreadSafeFunc(x => x.DialogResult, token));
+                    objCancelRegistration.Dispose();
                 }
             }
             Action<Form> funcBegin = BeginShow;
@@ -224,10 +243,11 @@ namespace Chummer
         /// </summary>
         /// <param name="frmForm"></param>
         /// <param name="objCharacter"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        public static Task<DialogResult> ShowDialogNonBlockingSafeAsync(this Form frmForm, Character objCharacter)
+        public static Task<DialogResult> ShowDialogNonBlockingSafeAsync(this Form frmForm, Character objCharacter, CancellationToken token = default)
         {
-            return frmForm.ShowDialogNonBlockingSafeAsync(Program.GetFormForDialog(objCharacter));
+            return frmForm.ShowDialogNonBlockingSafeAsync(Program.GetFormForDialog(objCharacter), token);
         }
 
         #endregion
@@ -364,8 +384,8 @@ namespace Chummer
                         {
                             IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
                             // Next two lines ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                            using (objResult.AsyncWaitHandle)
-                                objResult.AsyncWaitHandle.WaitOne();
+                            using (WaitHandle objHandle = objResult.AsyncWaitHandle)
+                                objHandle.WaitOne();
                         }
                         else
                             myControlCopy.BeginInvoke(funcToRun);
@@ -427,8 +447,8 @@ namespace Chummer
                         {
                             IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
                             // Next two lines ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                            using (objResult.AsyncWaitHandle)
-                                objResult.AsyncWaitHandle.WaitOne();
+                            using (WaitHandle objHandle = objResult.AsyncWaitHandle)
+                                objHandle.WaitOne();
                         }
                         else
                             myControlCopy.BeginInvoke(funcToRun, myControlCopy);
@@ -502,9 +522,9 @@ namespace Chummer
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
                         // funcToRun actually creates a Task that performs what is being run, so we need to get that task and then work with the task instead of the IAsyncResult
-                        using (objResult.AsyncWaitHandle)
+                        using (WaitHandle objHandle = objResult.AsyncWaitHandle)
                         {
-                            objResult.AsyncWaitHandle.WaitOne();
+                            objHandle.WaitOne();
                             object objReturnRaw = myControlCopy.EndInvoke(objResult);
                             if (objReturnRaw is Task tskRunning)
                             {
@@ -605,9 +625,9 @@ namespace Chummer
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
                         // funcToRun actually creates a Task that performs what is being run, so we need to get that task and then work with the task instead of the IAsyncResult
-                        using (objResult.AsyncWaitHandle)
+                        using (WaitHandle objHandle = objResult.AsyncWaitHandle)
                         {
-                            objResult.AsyncWaitHandle.WaitOne();
+                            objHandle.WaitOne();
                             object objReturnRaw = myControlCopy.EndInvoke(objResult);
                             if (objReturnRaw is Task tskRunning)
                             {
@@ -1328,9 +1348,10 @@ namespace Chummer
                         if (blnSync)
                         {
                             // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                            using (objResult.AsyncWaitHandle)
+                            using (WaitHandle objCancelHandle = token.WaitHandle)
+                            using (WaitHandle objHandle = objResult.AsyncWaitHandle)
                             {
-                                objResult.AsyncWaitHandle.WaitOne();
+                                WaitHandle.WaitAny(new [] { objHandle, objCancelHandle });
                                 token.ThrowIfCancellationRequested();
                                 object objReturnRaw = myControlCopy.EndInvoke(objResult);
                                 if (objReturnRaw is T2 objReturnRawCast)
@@ -1406,9 +1427,10 @@ namespace Chummer
                         if (blnSync)
                         {
                             // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                            using (objResult.AsyncWaitHandle)
+                            using (WaitHandle objCancelHandle = token.WaitHandle)
+                            using (WaitHandle objHandle = objResult.AsyncWaitHandle)
                             {
-                                objResult.AsyncWaitHandle.WaitOne();
+                                WaitHandle.WaitAny(new[] { objHandle, objCancelHandle });
                                 token.ThrowIfCancellationRequested();
                                 object objReturnRaw = myControlCopy.EndInvoke(objResult);
                                 if (objReturnRaw is T2 objReturnRawCast)
@@ -1484,9 +1506,10 @@ namespace Chummer
                         if (blnSync)
                         {
                             // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                            using (objResult.AsyncWaitHandle)
+                            using (WaitHandle objCancelHandle = token.WaitHandle)
+                            using (WaitHandle objHandle = objResult.AsyncWaitHandle)
                             {
-                                objResult.AsyncWaitHandle.WaitOne();
+                                WaitHandle.WaitAny(new[] { objHandle, objCancelHandle });
                                 token.ThrowIfCancellationRequested();
                                 object objReturnRaw = myControlCopy.EndInvoke(objResult);
                                 if (objReturnRaw is T2 objReturnRawCast)
@@ -1562,9 +1585,10 @@ namespace Chummer
                         if (blnSync)
                         {
                             // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                            using (objResult.AsyncWaitHandle)
+                            using (WaitHandle objCancelHandle = token.WaitHandle)
+                            using (WaitHandle objHandle = objResult.AsyncWaitHandle)
                             {
-                                objResult.AsyncWaitHandle.WaitOne();
+                                WaitHandle.WaitAny(new[] { objHandle, objCancelHandle });
                                 token.ThrowIfCancellationRequested();
                                 object objReturnRaw = myControlCopy.EndInvoke(objResult);
                                 if (objReturnRaw is T2 objReturnRawCast)
@@ -1786,9 +1810,10 @@ namespace Chummer
                         if (blnSync)
                         {
                             // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                            using (objResult.AsyncWaitHandle)
+                            using (WaitHandle objCancelHandle = token.WaitHandle)
+                            using (WaitHandle objHandle = objResult.AsyncWaitHandle)
                             {
-                                objResult.AsyncWaitHandle.WaitOne();
+                                WaitHandle.WaitAny(new[] { objHandle, objCancelHandle });
                                 token.ThrowIfCancellationRequested();
                                 object objReturnRaw = myControlCopy.EndInvoke(objResult);
                                 if (objReturnRaw is Task<T2> tskReturn)
@@ -1893,9 +1918,10 @@ namespace Chummer
                         if (blnSync)
                         {
                             // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                            using (objResult.AsyncWaitHandle)
+                            using (WaitHandle objCancelHandle = token.WaitHandle)
+                            using (WaitHandle objHandle = objResult.AsyncWaitHandle)
                             {
-                                objResult.AsyncWaitHandle.WaitOne();
+                                WaitHandle.WaitAny(new[] { objHandle, objCancelHandle });
                                 token.ThrowIfCancellationRequested();
                                 object objReturnRaw = myControlCopy.EndInvoke(objResult);
                                 if (objReturnRaw is Task<T2> tskReturn)
@@ -2000,9 +2026,10 @@ namespace Chummer
                         if (blnSync)
                         {
                             // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                            using (objResult.AsyncWaitHandle)
+                            using (WaitHandle objCancelHandle = token.WaitHandle)
+                            using (WaitHandle objHandle = objResult.AsyncWaitHandle)
                             {
-                                objResult.AsyncWaitHandle.WaitOne();
+                                WaitHandle.WaitAny(new[] { objHandle, objCancelHandle });
                                 token.ThrowIfCancellationRequested();
                                 object objReturnRaw = myControlCopy.EndInvoke(objResult);
                                 if (objReturnRaw is Task<T2> tskReturn)
@@ -2107,9 +2134,10 @@ namespace Chummer
                         if (blnSync)
                         {
                             // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                            using (objResult.AsyncWaitHandle)
+                            using (WaitHandle objCancelHandle = token.WaitHandle)
+                            using (WaitHandle objHandle = objResult.AsyncWaitHandle)
                             {
-                                objResult.AsyncWaitHandle.WaitOne();
+                                WaitHandle.WaitAny(new[] { objHandle, objCancelHandle });
                                 token.ThrowIfCancellationRequested();
                                 object objReturnRaw = myControlCopy.EndInvoke(objResult);
                                 if (objReturnRaw is Task<T2> tskReturn)

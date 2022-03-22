@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -42,9 +43,14 @@ namespace Chummer
             return new ThreadSafeForm<T>(Program.MainForm.DoThreadSafeFunc(funcFormConstructor));
         }
 
-        public static async ValueTask<ThreadSafeForm<T>> GetAsync(Func<T> funcFormConstructor)
+        public static async ValueTask<ThreadSafeForm<T>> GetAsync(Func<T> funcFormConstructor, CancellationToken token = default)
         {
-            return new ThreadSafeForm<T>(await Program.MainForm.DoThreadSafeFuncAsync(funcFormConstructor));
+            return new ThreadSafeForm<T>(await Program.MainForm.DoThreadSafeFuncAsync(funcFormConstructor, token));
+        }
+
+        public static async ValueTask<ThreadSafeForm<T>> GetAsync(Func<CancellationToken, T> funcFormConstructor, CancellationToken token = default)
+        {
+            return new ThreadSafeForm<T>(await Program.MainForm.DoThreadSafeFuncAsync(funcFormConstructor, token));
         }
 
         public void Dispose()
@@ -62,39 +68,39 @@ namespace Chummer
             return MyForm.ShowDialog(owner);
         }
 
-        public DialogResult ShowDialogSafe(IWin32Window owner = null)
+        public DialogResult ShowDialogSafe(IWin32Window owner = null, CancellationToken token = default)
         {
-            return MyForm.ShowDialogSafe(owner);
+            return MyForm.ShowDialogSafe(owner, token);
         }
 
-        public DialogResult ShowDialogSafe(Character objCharacter)
+        public DialogResult ShowDialogSafe(Character objCharacter, CancellationToken token = default)
         {
-            return MyForm.ShowDialogSafe(objCharacter);
+            return MyForm.ShowDialogSafe(objCharacter, token);
         }
 
-        public Task<DialogResult> ShowDialogSafeAsync(IWin32Window owner = null)
+        public Task<DialogResult> ShowDialogSafeAsync(IWin32Window owner = null, CancellationToken token = default)
         {
-            return MyForm.ShowDialogSafeAsync(owner);
+            return MyForm.ShowDialogSafeAsync(owner, token);
         }
 
-        public Task<DialogResult> ShowDialogSafeAsync(Character objCharacter)
+        public Task<DialogResult> ShowDialogSafeAsync(Character objCharacter, CancellationToken token = default)
         {
-            return MyForm.ShowDialogSafeAsync(objCharacter);
+            return MyForm.ShowDialogSafeAsync(objCharacter, token);
         }
 
-        public Task<DialogResult> ShowDialogNonBlockingAsync(IWin32Window owner = null)
+        public Task<DialogResult> ShowDialogNonBlockingAsync(IWin32Window owner = null, CancellationToken token = default)
         {
-            return MyForm.ShowDialogNonBlockingAsync(owner);
+            return MyForm.ShowDialogNonBlockingAsync(owner, token);
         }
 
-        public Task<DialogResult> ShowDialogNonBlockingSafeAsync(IWin32Window owner = null)
+        public Task<DialogResult> ShowDialogNonBlockingSafeAsync(IWin32Window owner = null, CancellationToken token = default)
         {
-            return MyForm.ShowDialogNonBlockingSafeAsync(owner);
+            return MyForm.ShowDialogNonBlockingSafeAsync(owner, token);
         }
 
-        public Task<DialogResult> ShowDialogNonBlockingSafeAsync(Character objCharacter)
+        public Task<DialogResult> ShowDialogNonBlockingSafeAsync(Character objCharacter, CancellationToken token = default)
         {
-            return MyForm.ShowDialogNonBlockingSafeAsync(objCharacter);
+            return MyForm.ShowDialogNonBlockingSafeAsync(objCharacter, token);
         }
     }
 }

@@ -89,7 +89,8 @@ namespace Chummer
             using (CursorWait.New(this))
             {
                 object objOldSelected = await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue);
-                using (EditCharacterSettings frmOptions = await this.DoThreadSafeFuncAsync(
+                using (ThreadSafeForm<EditCharacterSettings> frmOptions
+                       = await ThreadSafeForm<EditCharacterSettings>.GetAsync(
                            () => new EditCharacterSettings(objOldSelected as CharacterSettings)))
                     await frmOptions.ShowDialogSafeAsync(this);
 

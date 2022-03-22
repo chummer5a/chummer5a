@@ -1445,11 +1445,11 @@ namespace Chummer
                     return;
                 using (CursorWait.New(Program.MainForm))
                 {
-                    using (EditGlobalSettings frmOptions = new EditGlobalSettings())
+                    using (ThreadSafeForm<EditGlobalSettings> frmOptions = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings()))
                     {
                         if (string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
                             // ReSharper disable once AccessToDisposedClosure
-                            await frmOptions.DoLinkPdfReader();
+                            await frmOptions.MyForm.DoLinkPdfReader();
                         if (await frmOptions.ShowDialogSafeAsync(Program.MainForm) != DialogResult.OK)
                             return;
                         strPdfParameters = GlobalSettings.PdfParameters;
@@ -1520,10 +1520,10 @@ namespace Chummer
                     return;
                 using (CursorWait.New(Program.MainForm))
                 {
-                    using (EditGlobalSettings frmOptions = new EditGlobalSettings())
+                    using (ThreadSafeForm<EditGlobalSettings> frmOptions = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings()))
                     {
                         // ReSharper disable once AccessToDisposedClosure
-                        await frmOptions.DoLinkPdf(objBookInfo.Code);
+                        await frmOptions.MyForm.DoLinkPdf(objBookInfo.Code);
                         if (await frmOptions.ShowDialogSafeAsync(Program.MainForm) != DialogResult.OK)
                             return;
                         uriPath = null;

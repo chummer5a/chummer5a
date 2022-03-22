@@ -647,10 +647,9 @@ namespace Chummer
         {
             using (CursorWait.New(this))
             {
-                using (EditCharacterSettings frmOptions = await this.DoThreadSafeFuncAsync(
-                           () => new EditCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings),
-                           _objGenericToken))
-                    await frmOptions.ShowDialogSafeAsync(this);
+                using (ThreadSafeForm<EditCharacterSettings> frmOptions = await ThreadSafeForm<EditCharacterSettings>.GetAsync(
+                           () => new EditCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings), _objGenericToken))
+                    await frmOptions.ShowDialogSafeAsync(this, _objGenericToken);
                 // Do not repopulate the character settings list because that will happen from frmCharacterSettings where appropriate
             }
         }

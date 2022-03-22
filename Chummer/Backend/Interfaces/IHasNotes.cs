@@ -48,13 +48,13 @@ namespace Chummer
                 ? await objTreeView.DoThreadSafeFuncAsync(x => x.FindForm()) ?? Program.MainForm
                 : Program.MainForm;
 
-            using (EditNotes frmItemNotes = await frmToUse.DoThreadSafeFuncAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor)))
+            using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor)))
             {
                 if (await frmItemNotes.ShowDialogSafeAsync(frmToUse) != DialogResult.OK)
                     return false;
 
-                objNotes.Notes = frmItemNotes.Notes;
-                objNotes.NotesColor = frmItemNotes.NotesColor;
+                objNotes.Notes = frmItemNotes.MyForm.Notes;
+                objNotes.NotesColor = frmItemNotes.MyForm.NotesColor;
             }
 
             if (objTreeView != null)
