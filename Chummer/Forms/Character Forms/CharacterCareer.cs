@@ -2489,7 +2489,7 @@ namespace Chummer
                 ShowMetatypeMaximum = true
             })
             {
-                if (frmPickAttribute.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                if (await frmPickAttribute.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
                 // Create an Improvement to reduce the CharacterAttribute's Metatype Maximum.

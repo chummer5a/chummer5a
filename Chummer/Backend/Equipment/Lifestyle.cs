@@ -391,21 +391,21 @@ namespace Chummer.Backend.Equipment
                                 new ListItem(strName, xmlLifestyle.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                         }
 
-                        using (SelectItem frmSelect = new SelectItem
-                               {
-                                   Description = string.Format(GlobalSettings.CultureInfo,
+                        using (ThreadSafeForm<SelectItem> frmSelect = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
+                        {
+                            Description = string.Format(GlobalSettings.CultureInfo,
                                                                LanguageManager.GetString("String_CannotFindLifestyle"),
                                                                _strName)
-                               })
+                        }))
                         {
-                            frmSelect.SetGeneralItemsMode(lstQualities);
+                            frmSelect.MyForm.SetGeneralItemsMode(lstQualities);
                             if (frmSelect.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                             {
                                 _guiID = Guid.Empty;
                                 return;
                             }
 
-                            _strBaseLifestyle = frmSelect.SelectedItem;
+                            _strBaseLifestyle = frmSelect.MyForm.SelectedItem;
                         }
                     }
                 }

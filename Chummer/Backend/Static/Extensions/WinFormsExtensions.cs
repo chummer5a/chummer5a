@@ -159,7 +159,7 @@ namespace Chummer
         /// <returns></returns>
         public static Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, Character objCharacter)
         {
-            return frmForm.ShowDialogSafeAsync(Program.GetFormForDialog(objCharacter));
+            return Program.GetFormForDialogAsync(objCharacter).ContinueWith(x => frmForm.ShowDialogSafeAsync(x.Result)).Unwrap();
         }
 
         /// <summary>

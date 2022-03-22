@@ -834,6 +834,23 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Gets the form to use for creating sub-forms and displaying them as dialogs
+        /// </summary>
+        /// <param name="objCharacter">If this character's file is open, use their open form as the one we want for showing dialogs.</param>
+        /// <returns></returns>
+        public static Task<Form> GetFormForDialogAsync(Character objCharacter = null)
+        {
+            if (MainForm == null)
+                return Task.FromResult<Form>(null);
+            return objCharacter == null ? Task.FromResult<Form>(MainForm) : InnerMethod();
+            async Task<Form> InnerMethod()
+            {
+                return await MainForm.OpenCharacterForms.FirstOrDefaultAsync(
+                    x => ReferenceEquals(x.CharacterObject, objCharacter)) as Form ?? MainForm;
+            }
+        }
+
+        /// <summary>
         /// List of all currently loaded characters (either in an open form or linked to a character in an open form via contact, spirit, or pet)
         /// </summary>
         public static ThreadSafeObservableCollection<Character> OpenCharacters { get; } = new ThreadSafeObservableCollection<Character>();

@@ -607,14 +607,14 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (SelectMartialArt frmPickMartialArt = new SelectMartialArt(objCharacter))
+                using (ThreadSafeForm<SelectMartialArt> frmPickMartialArt = ThreadSafeForm<SelectMartialArt>.Get(() => new SelectMartialArt(objCharacter)))
                 {
                     if (frmPickMartialArt.ShowDialogSafe(objCharacter) == DialogResult.Cancel)
                         return false;
 
-                    blnAddAgain = frmPickMartialArt.AddAgain;
+                    blnAddAgain = frmPickMartialArt.MyForm.AddAgain;
                     // Open the Martial Arts XML file and locate the selected piece.
-                    XmlNode objXmlArt = objCharacter.LoadData("martialarts.xml").SelectSingleNode("/chummer/martialarts/martialart[id = " + frmPickMartialArt.SelectedMartialArt.CleanXPath() + ']');
+                    XmlNode objXmlArt = objCharacter.LoadData("martialarts.xml").SelectSingleNode("/chummer/martialarts/martialart[id = " + frmPickMartialArt.MyForm.SelectedMartialArt.CleanXPath() + ']');
 
                     MartialArt objMartialArt = new MartialArt(objCharacter);
                     objMartialArt.Create(objXmlArt);

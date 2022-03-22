@@ -1397,7 +1397,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(xmlBonusNode));
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
-            string strSelectedSkill = string.Empty;
+            string strSelectedSkill;
             blnIsKnowledgeSkill = blnIsKnowledgeSkill
                                   || xmlBonusNode.Attributes?["knowledgeskills"]?.InnerText == bool.TrueString;
             if (blnIsKnowledgeSkill)
@@ -1621,31 +1621,26 @@ namespace Chummer
                                     }
 
                                     lstDropdownItems.Sort(CompareListItems.CompareNames);
-                                    
-                                    DialogResult eResult = Program.GetFormForDialog(objCharacter).DoThreadSafeFunc(x =>
+
+                                    using (ThreadSafeForm<SelectItem> frmPickSkill
+                                           = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
+                                           {
+                                               Description = LanguageManager.GetString("Title_SelectSkill"),
+                                               AllowAutoSelect = string.IsNullOrWhiteSpace(strPrompt)
+                                           }))
                                     {
-                                        using (SelectItem frmPickSkill = new SelectItem
-                                               {
-                                                   Description = LanguageManager.GetString("Title_SelectSkill"),
-                                                   AllowAutoSelect = string.IsNullOrWhiteSpace(strPrompt)
-                                               })
+                                        if (setAllowedNames != null && string.IsNullOrWhiteSpace(strPrompt))
+                                            frmPickSkill.MyForm.SetGeneralItemsMode(lstDropdownItems);
+                                        else
+                                            frmPickSkill.MyForm.SetDropdownItemsMode(lstDropdownItems);
+
+                                        if (frmPickSkill.ShowDialogSafe(objCharacter) == DialogResult.Cancel)
                                         {
-                                            if (setAllowedNames != null && string.IsNullOrWhiteSpace(strPrompt))
-                                                frmPickSkill.SetGeneralItemsMode(lstDropdownItems);
-                                            else
-                                                frmPickSkill.SetDropdownItemsMode(lstDropdownItems);
-
-                                            DialogResult eReturn = frmPickSkill.ShowDialogSafe(x);
-                                            if (eReturn != DialogResult.Cancel)
-                                            {
-                                                strSelectedSkill = frmPickSkill.SelectedItem;
-                                            }
-
-                                            return eReturn;
+                                            throw new AbortedException();
                                         }
-                                    });
-                                    if (eResult == DialogResult.Cancel)
-                                        throw new AbortedException();
+
+                                        strSelectedSkill = frmPickSkill.MyForm.SelectedItem;
+                                    }
                                 }
                             }
                         }
@@ -1654,68 +1649,62 @@ namespace Chummer
             }
             else
             {
-                DialogResult eResult = Program.GetFormForDialog(objCharacter).DoThreadSafeFunc(x =>
+                // Display the Select Skill window and record which Skill was selected.
+                using (ThreadSafeForm<SelectSkill> frmPickSkill
+                       = ThreadSafeForm<SelectSkill>.Get(() => new SelectSkill(objCharacter, strFriendlyName)
+                       {
+                           Description = !string.IsNullOrEmpty(strFriendlyName)
+                               ? string.Format(GlobalSettings.CultureInfo,
+                                               LanguageManager.GetString("String_Improvement_SelectSkillNamed"),
+                                               strFriendlyName)
+                               : LanguageManager.GetString("String_Improvement_SelectSkill")
+                       }))
                 {
-                    // Display the Select Skill window and record which Skill was selected.
-                    using (SelectSkill frmPickSkill = new SelectSkill(objCharacter, strFriendlyName)
-                           {
-                               Description = !string.IsNullOrEmpty(strFriendlyName)
-                                   ? string.Format(GlobalSettings.CultureInfo,
-                                                   LanguageManager.GetString("String_Improvement_SelectSkillNamed"),
-                                                   strFriendlyName)
-                                   : LanguageManager.GetString("String_Improvement_SelectSkill")
-                           })
+                    string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
+                    if (!string.IsNullOrWhiteSpace(strMinimumRating))
+                        frmPickSkill.MyForm.MinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
+                    string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
+                    if (!string.IsNullOrWhiteSpace(strMaximumRating))
+                        frmPickSkill.MyForm.MaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
+
+                    XmlNode xmlSkillCategories = xmlBonusNode.SelectSingleNode("skillcategories");
+                    if (xmlSkillCategories != null)
+                        frmPickSkill.MyForm.LimitToCategories = xmlSkillCategories;
+                    string strTemp = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
+                    if (!string.IsNullOrEmpty(strTemp))
+                        frmPickSkill.MyForm.OnlyCategory = strTemp;
+                    strTemp = xmlBonusNode.SelectSingleNode("@skillgroup")?.InnerText;
+                    if (!string.IsNullOrEmpty(strTemp))
+                        frmPickSkill.MyForm.OnlySkillGroup = strTemp;
+                    strTemp = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
+                    if (!string.IsNullOrEmpty(strTemp))
+                        frmPickSkill.MyForm.ExcludeCategory = strTemp;
+                    strTemp = xmlBonusNode.SelectSingleNode("@excludeskillgroup")?.InnerText;
+                    if (!string.IsNullOrEmpty(strTemp))
+                        frmPickSkill.MyForm.ExcludeSkillGroup = strTemp;
+                    strTemp = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
+                    if (!string.IsNullOrEmpty(strTemp))
+                        frmPickSkill.MyForm.LimitToSkill = strTemp;
+                    strTemp = xmlBonusNode.SelectSingleNode("@excludeskill")?.InnerText;
+                    if (!string.IsNullOrEmpty(strTemp))
+                        frmPickSkill.MyForm.ExcludeSkill = strTemp;
+                    strTemp = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
+                    if (!string.IsNullOrEmpty(strTemp))
+                        frmPickSkill.MyForm.LinkedAttribute = strTemp;
+
+                    if (!string.IsNullOrEmpty(ForcedValue))
                     {
-                        string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
-                        if (!string.IsNullOrWhiteSpace(strMinimumRating))
-                            frmPickSkill.MinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
-                        string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
-                        if (!string.IsNullOrWhiteSpace(strMaximumRating))
-                            frmPickSkill.MaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
-
-                        XmlNode xmlSkillCategories = xmlBonusNode.SelectSingleNode("skillcategories");
-                        if (xmlSkillCategories != null)
-                            frmPickSkill.LimitToCategories = xmlSkillCategories;
-                        string strTemp = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
-                        if (!string.IsNullOrEmpty(strTemp))
-                            frmPickSkill.OnlyCategory = strTemp;
-                        strTemp = xmlBonusNode.SelectSingleNode("@skillgroup")?.InnerText;
-                        if (!string.IsNullOrEmpty(strTemp))
-                            frmPickSkill.OnlySkillGroup = strTemp;
-                        strTemp = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
-                        if (!string.IsNullOrEmpty(strTemp))
-                            frmPickSkill.ExcludeCategory = strTemp;
-                        strTemp = xmlBonusNode.SelectSingleNode("@excludeskillgroup")?.InnerText;
-                        if (!string.IsNullOrEmpty(strTemp))
-                            frmPickSkill.ExcludeSkillGroup = strTemp;
-                        strTemp = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
-                        if (!string.IsNullOrEmpty(strTemp))
-                            frmPickSkill.LimitToSkill = strTemp;
-                        strTemp = xmlBonusNode.SelectSingleNode("@excludeskill")?.InnerText;
-                        if (!string.IsNullOrEmpty(strTemp))
-                            frmPickSkill.ExcludeSkill = strTemp;
-                        strTemp = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
-                        if (!string.IsNullOrEmpty(strTemp))
-                            frmPickSkill.LinkedAttribute = strTemp;
-
-                        if (!string.IsNullOrEmpty(ForcedValue))
-                        {
-                            frmPickSkill.OnlySkill = ForcedValue;
-                            frmPickSkill.Opacity = 0;
-                        }
-                        
-                        // Make sure the dialogue window was not canceled.
-                        DialogResult eReturn = frmPickSkill.ShowDialogSafe(x);
-                        if (eReturn != DialogResult.Cancel)
-                        {
-                            strSelectedSkill = frmPickSkill.SelectedSkill;
-                        }
-
-                        return eReturn;
+                        frmPickSkill.MyForm.OnlySkill = ForcedValue;
+                        frmPickSkill.MyForm.Opacity = 0;
                     }
-                });
-                if (eResult == DialogResult.Cancel)
-                    throw new AbortedException();
+
+                    if (frmPickSkill.ShowDialogSafe(objCharacter) == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    strSelectedSkill = frmPickSkill.MyForm.SelectedSkill;
+                }
             }
 
             return strSelectedSkill;
@@ -1855,29 +1844,47 @@ namespace Chummer
                             }
                             else if (nodBonus["selecttext"].Attributes.Count == 0)
                             {
-                                DialogResult eResult = Program.GetFormForDialog(objCharacter).DoThreadSafeFunc(x =>
-                                {
-                                    // Display the Select Text window and record the value that was entered.
-                                    using (SelectText frmPickText = new SelectText
+                                using (ThreadSafeForm<SelectText> frmPickText
+                                       = blnSync
+                                           // ReSharper disable once MethodHasAsyncOverload
+                                           ? ThreadSafeForm<SelectText>.Get(() => new SelectText
                                            {
-                                               Description =
-                                                   string.Format(GlobalSettings.CultureInfo,
-                                                                 LanguageManager.GetString(
-                                                                     "String_Improvement_SelectText"),
-                                                                 strFriendlyName)
+                                               Description = string.Format(GlobalSettings.CultureInfo,
+                                                                           LanguageManager.GetString(
+                                                                               "String_Improvement_SelectText"),
+                                                                           strFriendlyName)
                                            })
+                                           : await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
+                                           {
+                                               Description = string.Format(GlobalSettings.CultureInfo,
+                                                                           LanguageManager.GetString(
+                                                                               "String_Improvement_SelectText"),
+                                                                           strFriendlyName)
+                                           }))
+                                {
+                                    if ((blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? frmPickText.ShowDialogSafe(objCharacter)
+                                            : await frmPickText.ShowDialogSafeAsync(objCharacter))
+                                        == DialogResult.Cancel)
                                     {
-                                        // Make sure the dialogue window was not canceled.
-                                        DialogResult eResult = frmPickText.ShowDialogSafe(x);
-                                        if (eResult != DialogResult.Cancel)
-                                        {
-                                            _strSelectedValue = frmPickText.SelectedValue;
-                                        }
-
-                                        return eResult;
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            Rollback(objCharacter);
+                                        else
+                                            await RollbackAsync(objCharacter);
+                                        ForcedValue = string.Empty;
+                                        LimitSelection = string.Empty;
+                                        return false;
                                     }
-                                });
-                                if (eResult == DialogResult.Cancel)
+
+                                    _strSelectedValue = frmPickText.MyForm.SelectedValue;
+                                }
+                            }
+                            else if (objCharacter != null)
+                            {
+                                string strXPath = nodBonus.SelectSingleNode("selecttext/@xpath")?.Value;
+                                if (string.IsNullOrEmpty(strXPath))
                                 {
                                     if (blnSync)
                                         // ReSharper disable once MethodHasAsyncOverload
@@ -1888,103 +1895,123 @@ namespace Chummer
                                     LimitSelection = string.Empty;
                                     return false;
                                 }
-                            }
-                            else if (objCharacter != null)
-                            {
-                                DialogResult eResult = Program.GetFormForDialog(objCharacter).DoThreadSafeFunc(x =>
+
+                                string strXmlFile = nodBonus.SelectSingleNode("selecttext/@xml")?.Value
+                                                    ?? string.Empty;
+                                XPathNavigator xmlDoc
+                                    = blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? objCharacter.LoadDataXPath(strXmlFile)
+                                        : await objCharacter.LoadDataXPathAsync(strXmlFile);
+                                using (new FetchSafelyFromPool<List<ListItem>>(
+                                           Utils.ListItemListPool, out List<ListItem> lstItems))
                                 {
-                                    using (SelectItem frmSelect = new SelectItem
-                                           {
-                                               Description = string.Format(GlobalSettings.CultureInfo,
-                                                                           LanguageManager.GetString(
-                                                                               "String_Improvement_SelectText"),
-                                                                           strFriendlyName)
-                                           })
+                                    //TODO: While this is a safeguard for uniques, preference should be that we're selecting distinct values in the xpath.
+                                    //Use XPath2.0 distinct-values operators instead. REQUIRES > .Net 4.6
+                                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                               out HashSet<string> setUsedValues))
                                     {
-                                        string strXPath = nodBonus.SelectSingleNode("selecttext/@xpath")?.Value;
-                                        if (string.IsNullOrEmpty(strXPath))
+                                        foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
                                         {
-                                            return DialogResult.Cancel;
-                                        }
-
-                                        string strXmlFile = nodBonus.SelectSingleNode("selecttext/@xml")?.Value
-                                                            ?? string.Empty;
-                                        XPathNavigator xmlDoc
-                                            = objCharacter.LoadDataXPath(strXmlFile);
-                                        using (new FetchSafelyFromPool<List<ListItem>>(
-                                                   Utils.ListItemListPool, out List<ListItem> lstItems))
-                                        {
-                                            //TODO: While this is a safeguard for uniques, preference should be that we're selecting distinct values in the xpath.
-                                            //Use XPath2.0 distinct-values operators instead. REQUIRES > .Net 4.6
-                                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                       out HashSet<string> setUsedValues))
+                                            string strName
+                                                = (blnSync
+                                                      // ReSharper disable once MethodHasAsyncOverload
+                                                      ? objNode.SelectSingleNodeAndCacheExpression("name")
+                                                      : await objNode.SelectSingleNodeAndCacheExpressionAsync("name"))
+                                                  ?.Value
+                                                  ?? string.Empty;
+                                            if (string.IsNullOrWhiteSpace(strName))
                                             {
-                                                foreach (XPathNavigator objNode in xmlDoc.Select(strXPath))
-                                                {
-                                                    string strName
-                                                        = objNode.SelectSingleNodeAndCacheExpression("name")?.Value
-                                                          ?? string.Empty;
-                                                    if (string.IsNullOrWhiteSpace(strName))
-                                                    {
-                                                        // Assume that if we're not looking at something that has an XML node,
-                                                        // we're looking at a direct xpath filter or something that has proper names
-                                                        // like the lifemodule storybuilder macros.
-                                                        string strValue = objNode.Value;
-                                                        if (setUsedValues.Add(strValue))
-                                                            lstItems.Add(
-                                                                new ListItem(
-                                                                    strValue,
-                                                                    objCharacter.TranslateExtra(
-                                                                        strValue, strPreferFile: strXmlFile)));
-                                                    }
-                                                    else if (setUsedValues.Add(strName))
-                                                    {
-                                                        lstItems.Add(
-                                                            new ListItem(
-                                                                strName,
-                                                                objCharacter.TranslateExtra(
-                                                                    strName, strPreferFile: strXmlFile)));
-                                                    }
-                                                }
+                                                // Assume that if we're not looking at something that has an XML node,
+                                                // we're looking at a direct xpath filter or something that has proper names
+                                                // like the lifemodule storybuilder macros.
+                                                string strValue = objNode.Value;
+                                                if (setUsedValues.Add(strValue))
+                                                    lstItems.Add(
+                                                        new ListItem(
+                                                            strValue,
+                                                            blnSync
+                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                ? objCharacter.TranslateExtra(
+                                                                    strValue, strPreferFile: strXmlFile)
+                                                                : await objCharacter.TranslateExtraAsync(
+                                                                    strValue, strPreferFile: strXmlFile)));
                                             }
-
-                                            if (lstItems.Count == 0)
+                                            else if (setUsedValues.Add(strName))
                                             {
-                                                return DialogResult.Cancel;
+                                                lstItems.Add(
+                                                    new ListItem(
+                                                        strName,
+                                                        blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? objCharacter.TranslateExtra(
+                                                                strName, strPreferFile: strXmlFile)
+                                                            : await objCharacter.TranslateExtraAsync(
+                                                                strName, strPreferFile: strXmlFile)));
                                             }
-
-                                            if (Convert.ToBoolean(
-                                                    nodBonus.SelectSingleNode("selecttext/@allowedit")?.Value,
-                                                    GlobalSettings.InvariantCultureInfo))
-                                            {
-                                                lstItems.Insert(0, ListItem.Blank);
-                                                frmSelect.SetDropdownItemsMode(lstItems);
-                                            }
-                                            else
-                                            {
-                                                frmSelect.SetGeneralItemsMode(lstItems);
-                                            }
-
-                                            DialogResult eReturn = frmSelect.ShowDialogSafe(x);
-                                            if (eReturn != DialogResult.Cancel)
-                                            {
-                                                _strSelectedValue = frmSelect.SelectedItem;
-                                            }
-
-                                            return eReturn;
                                         }
                                     }
-                                });
-                                if (eResult == DialogResult.Cancel)
-                                {
-                                    if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
-                                        Rollback(objCharacter);
-                                    else
-                                        await RollbackAsync(objCharacter);
-                                    ForcedValue = string.Empty;
-                                    LimitSelection = string.Empty;
-                                    return false;
+
+                                    if (lstItems.Count == 0)
+                                    {
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            Rollback(objCharacter);
+                                        else
+                                            await RollbackAsync(objCharacter);
+                                        ForcedValue = string.Empty;
+                                        LimitSelection = string.Empty;
+                                        return false;
+                                    }
+
+                                    using (ThreadSafeForm<SelectItem> frmSelect
+                                           = blnSync
+                                               // ReSharper disable once MethodHasAsyncOverload
+                                               ? ThreadSafeForm<SelectItem>.Get(() => new SelectItem
+                                               {
+                                                   Description = string.Format(GlobalSettings.CultureInfo,
+                                                                               LanguageManager.GetString(
+                                                                                   "String_Improvement_SelectText"),
+                                                                               strFriendlyName)
+                                               })
+                                               : await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
+                                               {
+                                                   Description = string.Format(GlobalSettings.CultureInfo,
+                                                                               LanguageManager.GetString(
+                                                                                   "String_Improvement_SelectText"),
+                                                                               strFriendlyName)
+                                               }))
+                                    {
+                                        if (Convert.ToBoolean(
+                                                nodBonus.SelectSingleNode("selecttext/@allowedit")?.Value,
+                                                GlobalSettings.InvariantCultureInfo))
+                                        {
+                                            lstItems.Insert(0, ListItem.Blank);
+                                            frmSelect.MyForm.SetDropdownItemsMode(lstItems);
+                                        }
+                                        else
+                                        {
+                                            frmSelect.MyForm.SetGeneralItemsMode(lstItems);
+                                        }
+
+                                        DialogResult eReturn = blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? frmSelect.ShowDialogSafe(objCharacter)
+                                            : await frmSelect.ShowDialogSafeAsync(objCharacter);
+                                        if (eReturn == DialogResult.Cancel)
+                                        {
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                Rollback(objCharacter);
+                                            else
+                                                await RollbackAsync(objCharacter);
+                                            ForcedValue = string.Empty;
+                                            LimitSelection = string.Empty;
+                                            return false;
+                                        }
+
+                                        _strSelectedValue = frmSelect.MyForm.SelectedItem;
+                                    }
                                 }
                             }
 

@@ -395,14 +395,14 @@ namespace Chummer.Backend.Equipment
                                                       ?? xmlNode.SelectSingleNode("name")?.Value));
                     }
 
-                    using (SelectItem frmSelect = new SelectItem
-                           {
-                               Description = string.Format(GlobalSettings.CultureInfo,
+                    using (ThreadSafeForm<SelectItem> frmSelect = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
+                    {
+                        Description = string.Format(GlobalSettings.CultureInfo,
                                                            LanguageManager.GetString(
                                                                "String_intCannotFindLifestyleQuality"), _strName)
-                           })
+                    }))
                     {
-                        frmSelect.SetGeneralItemsMode(lstQualities);
+                        frmSelect.MyForm.SetGeneralItemsMode(lstQualities);
                         if (frmSelect.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                         {
                             _guiID = Guid.Empty;
@@ -411,7 +411,7 @@ namespace Chummer.Backend.Equipment
 
                         objLifestyleQualityNode =
                             objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = "
-                                                            + frmSelect.SelectedItem.CleanXPath() + ']');
+                                                            + frmSelect.MyForm.SelectedItem.CleanXPath() + ']');
                     }
                 }
             }

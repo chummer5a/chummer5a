@@ -407,30 +407,24 @@ namespace Chummer.Backend.Equipment
                     {
                         if (decMax > 1000000)
                             decMax = 1000000;
-                        DialogResult eResult = Program.GetFormForDialog(_objCharacter).DoThreadSafeFunc(x =>
+                        using (ThreadSafeForm<SelectNumber> frmPickNumber
+                               = ThreadSafeForm<SelectNumber>.Get(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                               {
+                                   Minimum = decMin,
+                                   Maximum = decMax,
+                                   Description = string.Format(
+                                       GlobalSettings.CultureInfo,
+                                       LanguageManager.GetString("String_SelectVariableCost"),
+                                       DisplayNameShort(GlobalSettings.Language)),
+                                   AllowCancel = false
+                               }))
                         {
-                            using (SelectNumber frmPickNumber
-                                   = new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
-                                   {
-                                       Minimum = decMin,
-                                       Maximum = decMax,
-                                       Description = string.Format(
-                                           GlobalSettings.CultureInfo,
-                                           LanguageManager.GetString("String_SelectVariableCost"),
-                                           DisplayNameShort(GlobalSettings.Language)),
-                                       AllowCancel = false
-                                   })
+                            if (frmPickNumber.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                             {
-                                DialogResult eReturn = frmPickNumber.ShowDialogSafe(x);
-                                if (eReturn != DialogResult.Cancel)
-                                    _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
-                                return eReturn;
+                                _guiID = Guid.Empty;
+                                return;
                             }
-                        });
-                        if (eResult == DialogResult.Cancel)
-                        {
-                            _guiID = Guid.Empty;
-                            return;
+                            _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
                         }
                     }
                     else
@@ -6425,18 +6419,18 @@ namespace Chummer.Backend.Equipment
                 if (intMaxAmmoCount <= intCurrentAmmoCount)
                     return;
 
-                using (SelectNumber frmNewAmmoCount = new SelectNumber(0)
+                using (ThreadSafeForm<SelectNumber> frmNewAmmoCount = ThreadSafeForm<SelectNumber>.Get(() => new SelectNumber(0)
                 {
                     AllowCancel = true,
                     Maximum = intMaxAmmoCount,
                     Minimum = intCurrentAmmoCount,
                     Description = string.Format(LanguageManager.GetString("Message_SelectNumberOfCharges"), CurrentDisplayName)
-                })
+                }))
                 {
                     if (frmNewAmmoCount.ShowDialogSafe(_objCharacter) != DialogResult.OK)
                         return;
 
-                    objInternalClip.Ammo = frmNewAmmoCount.SelectedValue.ToInt32();
+                    objInternalClip.Ammo = frmNewAmmoCount.MyForm.SelectedValue.ToInt32();
                 }
                 return;
             }
@@ -6506,11 +6500,11 @@ namespace Chummer.Backend.Equipment
                 lstAmmo.Add(objExternalSource);
 
             // Show the Ammunition Selection window.
-            using (ReloadWeapon frmReloadWeapon = new ReloadWeapon(this)
+            using (ThreadSafeForm<ReloadWeapon> frmReloadWeapon = ThreadSafeForm<ReloadWeapon>.Get(() => new ReloadWeapon(this)
             {
                 Ammo = lstAmmo,
                 Count = lstCount
-            })
+            }))
             {
                 if (frmReloadWeapon.ShowDialogSafe(_objCharacter) != DialogResult.OK)
                     return;
@@ -6546,11 +6540,11 @@ namespace Chummer.Backend.Equipment
                 }
 
                 Gear objSelectedAmmo;
-                decimal decQty = frmReloadWeapon.SelectedCount;
+                decimal decQty = frmReloadWeapon.MyForm.SelectedCount;
                 // If an External Source is not being used, consume ammo.
-                if (frmReloadWeapon.SelectedAmmo != objExternalSource?.InternalId)
+                if (frmReloadWeapon.MyForm.SelectedAmmo != objExternalSource?.InternalId)
                 {
-                    objSelectedAmmo = lstGears.DeepFindById(frmReloadWeapon.SelectedAmmo);
+                    objSelectedAmmo = lstGears.DeepFindById(frmReloadWeapon.MyForm.SelectedAmmo);
 
                     if (objSelectedAmmo.Quantity == decQty && objSelectedAmmo.Parent != null)
                     {

@@ -815,30 +815,24 @@ namespace Chummer.Backend.Equipment
                             if (decMax > 1000000)
                                 decMax = 1000000;
 
-                            DialogResult eResult = Program.GetFormForDialog(_objCharacter).DoThreadSafeFunc(x =>
+                            using (ThreadSafeForm<SelectNumber> frmPickNumber
+                                   = ThreadSafeForm<SelectNumber>.Get(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                                   {
+                                       Minimum = decMin,
+                                       Maximum = decMax,
+                                       Description = string.Format(
+                                           GlobalSettings.CultureInfo,
+                                           LanguageManager.GetString("String_SelectVariableCost"),
+                                           DisplayNameShort(GlobalSettings.Language)),
+                                       AllowCancel = false
+                                   }))
                             {
-                                using (SelectNumber frmPickNumber
-                                       = new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
-                                       {
-                                           Minimum = decMin,
-                                           Maximum = decMax,
-                                           Description = string.Format(
-                                               GlobalSettings.CultureInfo,
-                                               LanguageManager.GetString("String_SelectVariableCost"),
-                                               CurrentDisplayNameShort),
-                                           AllowCancel = false
-                                       })
+                                if (frmPickNumber.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                                 {
-                                    DialogResult eReturn = frmPickNumber.ShowDialogSafe(x);
-                                    if (eReturn != DialogResult.Cancel)
-                                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
-                                    return eReturn;
+                                    _guiID = Guid.Empty;
+                                    return;
                                 }
-                            });
-                            if (eResult == DialogResult.Cancel)
-                            {
-                                _guiID = Guid.Empty;
-                                return;
+                                _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
                             }
                         }
                         else
@@ -1123,177 +1117,183 @@ namespace Chummer.Backend.Equipment
 
         public bool GetValidLimbSlot(XPathNavigator xpnCyberware)
         {
-            using (SelectSide frmPickSide = new SelectSide
+            string strForcedSide = string.Empty;
+            if (_strForced == "Right" || _strForced == "Left")
+                strForcedSide = _strForced;
+            if (string.IsNullOrEmpty(strForcedSide) && ParentVehicle == null)
             {
-                Description =
-                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_SelectSide"),
-                        CurrentDisplayNameShort)
-            })
-            {
-                string strForcedSide = string.Empty;
-                if (_strForced == "Right" || _strForced == "Left")
-                    strForcedSide = _strForced;
-                if (string.IsNullOrEmpty(strForcedSide) && ParentVehicle == null)
+                IList<Cyberware> lstCyberwareToCheck =
+                    Parent == null ? _objCharacter.Cyberware : Parent.Children;
+                Dictionary<string, int> dicNumLeftMountBlockers = new Dictionary<string, int>(6);
+                Dictionary<string, int> dicNumRightMountBlockers = new Dictionary<string, int>(6);
+                foreach (Cyberware objCheckCyberware in lstCyberwareToCheck)
                 {
-                    IList<Cyberware> lstCyberwareToCheck =
-                        Parent == null ? _objCharacter.Cyberware : Parent.Children;
-                    Dictionary<string, int> dicNumLeftMountBlockers = new Dictionary<string, int>(6);
-                    Dictionary<string, int> dicNumRightMountBlockers = new Dictionary<string, int>(6);
-                    foreach (Cyberware objCheckCyberware in lstCyberwareToCheck)
+                    if (string.IsNullOrEmpty(objCheckCyberware.BlocksMounts)) continue;
+                    Dictionary<string, int> dicToUse;
+                    switch (objCheckCyberware.Location)
                     {
-                        if (string.IsNullOrEmpty(objCheckCyberware.BlocksMounts)) continue;
-                        Dictionary<string, int> dicToUse;
-                        switch (objCheckCyberware.Location)
-                        {
-                            case "Left":
-                                dicToUse = dicNumLeftMountBlockers;
-                                break;
+                        case "Left":
+                            dicToUse = dicNumLeftMountBlockers;
+                            break;
 
-                            case "Right":
-                                dicToUse = dicNumRightMountBlockers;
-                                break;
+                        case "Right":
+                            dicToUse = dicNumRightMountBlockers;
+                            break;
 
-                            default:
-                                continue;
-                        }
-                        foreach (string strBlockMount in objCheckCyberware.BlocksMounts.SplitNoAlloc(',',
-                            StringSplitOptions.RemoveEmptyEntries))
-                        {
-                            if (dicToUse.TryGetValue(strBlockMount, out int intExistingLimbCount))
-                                dicToUse[strBlockMount] = intExistingLimbCount + objCheckCyberware.LimbSlotCount;
-                            else
-                                dicToUse.Add(strBlockMount, objCheckCyberware.LimbSlotCount);
-                        }
+                        default:
+                            continue;
                     }
+                    foreach (string strBlockMount in objCheckCyberware.BlocksMounts.SplitNoAlloc(',',
+                        StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        if (dicToUse.TryGetValue(strBlockMount, out int intExistingLimbCount))
+                            dicToUse[strBlockMount] = intExistingLimbCount + objCheckCyberware.LimbSlotCount;
+                        else
+                            dicToUse.Add(strBlockMount, objCheckCyberware.LimbSlotCount);
+                    }
+                }
 
-                    bool blnAllowLeft = true;
-                    bool blnAllowRight = true;
-                    // Potentially expensive checks that can (and therefore should) be parallelized. Normally, this would just be a Parallel.Invoke,
-                    // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
-                    // Not using async-await because this is trivial code and I do not want to infect everything that calls this with async as well.
-                    Utils.RunWithoutThreadLock(
-                        () =>
+                bool blnAllowLeft = true;
+                bool blnAllowRight = true;
+                // Potentially expensive checks that can (and therefore should) be parallelized. Normally, this would just be a Parallel.Invoke,
+                // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
+                // Not using async-await because this is trivial code and I do not want to infect everything that calls this with async as well.
+                Utils.RunWithoutThreadLock(
+                    () =>
+                    {
+                        blnAllowLeft = xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
+                                           string.Empty, "Left");
+                        if (!blnAllowLeft)
+                            return;
+                        if (!string.IsNullOrEmpty(HasModularMount)
+                            && dicNumLeftMountBlockers.TryGetValue(HasModularMount, out int intNumBlockers))
                         {
-                            blnAllowLeft = xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
-                                               string.Empty, "Left");
+                            string strLimbTypeOfMount = MountToLimbType(HasModularMount);
+                            blnAllowLeft = !string.IsNullOrEmpty(strLimbTypeOfMount)
+                                           && _objCharacter.LimbCount(strLimbTypeOfMount) / 2 >= intNumBlockers;
                             if (!blnAllowLeft)
                                 return;
-                            if (!string.IsNullOrEmpty(HasModularMount)
-                                && dicNumLeftMountBlockers.TryGetValue(HasModularMount, out int intNumBlockers))
+                        }
+                        if (string.IsNullOrEmpty(BlocksMounts))
+                            return;
+                        using (new FetchSafelyFromPool<HashSet<string>>(
+                                   Utils.StringHashSetPool, out HashSet<string> setBlocksMounts))
+                        {
+                            setBlocksMounts.AddRange(BlocksMounts
+                                                         .SplitNoAlloc(
+                                                             ',', StringSplitOptions.RemoveEmptyEntries));
+                            foreach (Cyberware x in lstCyberwareToCheck)
                             {
-                                string strLimbTypeOfMount = MountToLimbType(HasModularMount);
-                                blnAllowLeft = !string.IsNullOrEmpty(strLimbTypeOfMount)
-                                               && _objCharacter.LimbCount(strLimbTypeOfMount) / 2 >= intNumBlockers;
-                                if (!blnAllowLeft)
-                                    return;
-                            }
-                            if (string.IsNullOrEmpty(BlocksMounts))
-                                return;
-                            using (new FetchSafelyFromPool<HashSet<string>>(
-                                       Utils.StringHashSetPool, out HashSet<string> setBlocksMounts))
-                            {
-                                setBlocksMounts.AddRange(BlocksMounts
-                                                             .SplitNoAlloc(
-                                                                 ',', StringSplitOptions.RemoveEmptyEntries));
-                                foreach (Cyberware x in lstCyberwareToCheck)
+                                if (string.IsNullOrEmpty(x.HasModularMount))
+                                    continue;
+                                if (x.Location != "Left")
+                                    continue;
+                                if (!setBlocksMounts.Contains(x.HasModularMount))
+                                    continue;
+                                string strLimbTypeOfMount = MountToLimbType(x.HasModularMount);
+                                if (string.IsNullOrEmpty(strLimbTypeOfMount))
                                 {
-                                    if (string.IsNullOrEmpty(x.HasModularMount))
-                                        continue;
-                                    if (x.Location != "Left")
-                                        continue;
-                                    if (!setBlocksMounts.Contains(x.HasModularMount))
-                                        continue;
-                                    string strLimbTypeOfMount = MountToLimbType(x.HasModularMount);
-                                    if (string.IsNullOrEmpty(strLimbTypeOfMount))
-                                    {
-                                        blnAllowLeft = false;
-                                        return;
-                                    }
+                                    blnAllowLeft = false;
+                                    return;
+                                }
 
-                                    int intLimbSlotCount = LimbSlotCount;
-                                    if (dicNumLeftMountBlockers.TryGetValue(x.HasModularMount, out intNumBlockers))
-                                        intLimbSlotCount += intNumBlockers;
+                                int intLimbSlotCount = LimbSlotCount;
+                                if (dicNumLeftMountBlockers.TryGetValue(x.HasModularMount, out intNumBlockers))
+                                    intLimbSlotCount += intNumBlockers;
 
-                                    if (_objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount)
-                                    {
-                                        blnAllowLeft = false;
-                                        return;
-                                    }
+                                if (_objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount)
+                                {
+                                    blnAllowLeft = false;
+                                    return;
                                 }
                             }
-                        },
-                        () =>
+                        }
+                    },
+                    () =>
+                    {
+                        blnAllowRight = xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
+                                           string.Empty, "Right");
+                        if (!blnAllowRight)
+                            return;
+                        if (!string.IsNullOrEmpty(HasModularMount)
+                            && dicNumRightMountBlockers.TryGetValue(HasModularMount, out int intNumBlockers))
                         {
-                            blnAllowRight = xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
-                                               string.Empty, "Right");
+                            string strLimbTypeOfMount = MountToLimbType(HasModularMount);
+                            blnAllowRight = !string.IsNullOrEmpty(strLimbTypeOfMount)
+                                           && _objCharacter.LimbCount(strLimbTypeOfMount) / 2 >= intNumBlockers;
                             if (!blnAllowRight)
                                 return;
-                            if (!string.IsNullOrEmpty(HasModularMount)
-                                && dicNumRightMountBlockers.TryGetValue(HasModularMount, out int intNumBlockers))
+                        }
+                        if (string.IsNullOrEmpty(BlocksMounts))
+                            return;
+                        using (new FetchSafelyFromPool<HashSet<string>>(
+                                   Utils.StringHashSetPool, out HashSet<string> setBlocksMounts))
+                        {
+                            setBlocksMounts.AddRange(BlocksMounts
+                                                         .SplitNoAlloc(
+                                                             ',', StringSplitOptions.RemoveEmptyEntries));
+                            foreach (Cyberware x in lstCyberwareToCheck)
                             {
-                                string strLimbTypeOfMount = MountToLimbType(HasModularMount);
-                                blnAllowRight = !string.IsNullOrEmpty(strLimbTypeOfMount)
-                                               && _objCharacter.LimbCount(strLimbTypeOfMount) / 2 >= intNumBlockers;
-                                if (!blnAllowRight)
-                                    return;
-                            }
-                            if (string.IsNullOrEmpty(BlocksMounts))
-                                return;
-                            using (new FetchSafelyFromPool<HashSet<string>>(
-                                       Utils.StringHashSetPool, out HashSet<string> setBlocksMounts))
-                            {
-                                setBlocksMounts.AddRange(BlocksMounts
-                                                             .SplitNoAlloc(
-                                                                 ',', StringSplitOptions.RemoveEmptyEntries));
-                                foreach (Cyberware x in lstCyberwareToCheck)
+                                if (string.IsNullOrEmpty(x.HasModularMount))
+                                    continue;
+                                if (x.Location != "Right")
+                                    continue;
+                                if (!setBlocksMounts.Contains(x.HasModularMount))
+                                    continue;
+                                string strLimbTypeOfMount = MountToLimbType(x.HasModularMount);
+                                if (string.IsNullOrEmpty(strLimbTypeOfMount))
                                 {
-                                    if (string.IsNullOrEmpty(x.HasModularMount))
-                                        continue;
-                                    if (x.Location != "Right")
-                                        continue;
-                                    if (!setBlocksMounts.Contains(x.HasModularMount))
-                                        continue;
-                                    string strLimbTypeOfMount = MountToLimbType(x.HasModularMount);
-                                    if (string.IsNullOrEmpty(strLimbTypeOfMount))
-                                    {
-                                        blnAllowRight = false;
-                                        return;
-                                    }
+                                    blnAllowRight = false;
+                                    return;
+                                }
 
-                                    int intLimbSlotCount = LimbSlotCount;
-                                    if (dicNumRightMountBlockers.TryGetValue(x.HasModularMount, out intNumBlockers))
-                                        intLimbSlotCount += intNumBlockers;
+                                int intLimbSlotCount = LimbSlotCount;
+                                if (dicNumRightMountBlockers.TryGetValue(x.HasModularMount, out intNumBlockers))
+                                    intLimbSlotCount += intNumBlockers;
 
-                                    if (_objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount)
-                                    {
-                                        blnAllowRight = false;
-                                        return;
-                                    }
+                                if (_objCharacter.LimbCount(strLimbTypeOfMount) / 2 < intLimbSlotCount)
+                                {
+                                    blnAllowRight = false;
+                                    return;
                                 }
                             }
-                        });
-                    // Only one side is allowed.
-                    if (blnAllowLeft != blnAllowRight)
-                        strForcedSide = blnAllowLeft ? "Left" : "Right";
+                        }
+                    });
+                // Only one side is allowed.
+                if (blnAllowLeft != blnAllowRight)
+                    strForcedSide = blnAllowLeft ? "Left" : "Right";
 #if DEBUG
-                    // Should never happen, so break immediately if we have a debugger attached
-                    else if (!blnAllowLeft && !blnAllowRight)
-                        Utils.BreakIfDebug();
+                // Should never happen, so break immediately if we have a debugger attached
+                else if (!blnAllowLeft && !blnAllowRight)
+                    Utils.BreakIfDebug();
 #endif
-                }
-
-                if (!string.IsNullOrEmpty(strForcedSide))
-                    frmPickSide.ForceValue(strForcedSide);
-                // Make sure the dialogue window was not canceled.
-                else if (frmPickSide.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
-                {
-                    _guiID = Guid.Empty;
-                    return false;
-                }
-
-                _strLocation = frmPickSide.SelectedSide;
-                return true;
             }
+
+            if (!string.IsNullOrEmpty(strForcedSide))
+            {
+                _strLocation = strForcedSide;
+            }
+            else
+            {
+                using (ThreadSafeForm<SelectSide> frmPickSide = ThreadSafeForm<SelectSide>.Get(() => new SelectSide
+                       {
+                           Description =
+                               string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_SelectSide"),
+                                             CurrentDisplayNameShort)
+                       }))
+                {
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickSide.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                    {
+                        _guiID = Guid.Empty;
+                        return false;
+                    }
+
+                    _strLocation = frmPickSide.MyForm.SelectedSide;
+                }
+            }
+
+            return true;
         }
 
         private void CreateChildren(XmlNode objParentNode, Grade objGrade, IList<Weapon> lstWeapons,

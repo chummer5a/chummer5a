@@ -2416,17 +2416,17 @@ namespace Chummer
                     XmlNode xmlSelectText = xmlAIProgramData.SelectSingleNode("bonus/selecttext");
                     if (xmlSelectText != null && !string.IsNullOrWhiteSpace(strExtra))
                     {
-                        using (SelectText frmPickText = new SelectText
-                               {
-                                   Description = string.Format(GlobalSettings.CultureInfo,
+                        using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
+                        {
+                            Description = string.Format(GlobalSettings.CultureInfo,
                                        LanguageManager.GetString("String_Improvement_SelectText"),
                                        xmlAIProgramData["translate"]?.InnerText ?? xmlAIProgramData["name"].InnerText)
-                               })
+                        }))
                         {
                             // Make sure the dialogue window was not canceled.
                             if (frmPickText.ShowDialogSafe(this) == DialogResult.Cancel)
                                 continue;
-                            strExtra = frmPickText.SelectedValue;
+                            strExtra = frmPickText.MyForm.SelectedValue;
                         }
                     }
 
@@ -5029,27 +5029,27 @@ namespace Chummer
                                 if (blnShowSelectBP)
                                 {
                                     LoadAsDirty = true;
-                                    DialogResult ePickBPResult;
                                     if (blnSync)
                                     {
                                         // ReSharper disable once MethodHasAsyncOverload
-                                        using (SelectBuildMethod frmPickBP = Program.MainForm.DoThreadSafeFunc(() => new SelectBuildMethod(this, true)))
+                                        using (ThreadSafeForm<SelectBuildMethod> frmPickBP = ThreadSafeForm<SelectBuildMethod>.Get(() => new SelectBuildMethod(this, true)))
                                         {
                                             // ReSharper disable once MethodHasAsyncOverload
-                                            ePickBPResult = frmPickBP.ShowDialogSafe(this);
+                                            if (frmPickBP.ShowDialogSafe(this) != DialogResult.OK)
+                                            {
+                                                return false;
+                                            }
                                         }
                                     }
                                     else
                                     {
-                                        using (SelectBuildMethod frmPickBP = await Program.MainForm.DoThreadSafeFuncAsync(() => new SelectBuildMethod(this, true)))
+                                        using (ThreadSafeForm<SelectBuildMethod> frmPickBP = await ThreadSafeForm<SelectBuildMethod>.GetAsync(() => new SelectBuildMethod(this, true)))
                                         {
-                                            ePickBPResult = await frmPickBP.ShowDialogSafeAsync(this);
+                                            if (await frmPickBP.ShowDialogSafeAsync(this) != DialogResult.OK)
+                                            {
+                                                return false;
+                                            }
                                         }
-                                    }
-
-                                    if (ePickBPResult != DialogResult.OK)
-                                    {
-                                        return false;
                                     }
                                 }
 
@@ -5702,28 +5702,32 @@ namespace Chummer
                                                         {
                                                             lstContacts.Sort(CompareListItems.CompareNames);
                                                         }
-
-                                                        DialogResult ePickItemResult = DialogResult.Cancel;
+                                                        
                                                         if (blnSync)
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            Program.GetFormForDialog(this).DoThreadSafe(DoSelectItem);
-                                                        else
-                                                            await Program.GetFormForDialog(this).DoThreadSafeAsync(DoSelectItem);
-
-                                                        void DoSelectItem(Control frmParent)
                                                         {
-                                                            using (SelectItem frmPickItem = new SelectItem())
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem()))
                                                             {
-                                                                frmPickItem.SetDropdownItemsMode(lstContacts);
-                                                                ePickItemResult = frmPickItem.ShowDialogSafe(frmParent);
-                                                                selectedContactUniqueId = frmPickItem.SelectedItem;
+                                                                frmPickItem.MyForm.SetDropdownItemsMode(lstContacts);
+                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                if (frmPickItem.ShowDialogSafe(this) != DialogResult.OK)
+                                                                {
+                                                                    return false;
+                                                                }
+                                                                selectedContactUniqueId = frmPickItem.MyForm.SelectedItem;
                                                             }
                                                         }
-
-                                                        // Make sure the dialogue window was not canceled.
-                                                        if (ePickItemResult != DialogResult.OK)
+                                                        else
                                                         {
-                                                            return false;
+                                                            using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem()))
+                                                            {
+                                                                frmPickItem.MyForm.SetDropdownItemsMode(lstContacts);
+                                                                if (await frmPickItem.ShowDialogSafeAsync(this) != DialogResult.OK)
+                                                                {
+                                                                    return false;
+                                                                }
+                                                                selectedContactUniqueId = frmPickItem.MyForm.SelectedItem;
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -9987,23 +9991,17 @@ namespace Chummer
             DialogResult eResult;
             if (eNewBuildMethod.UsesPriorityTables())
             {
-                eResult = await Program.MainForm.DoThreadSafeFuncAsync(() =>
+                using (ThreadSafeForm<SelectMetatypePriority> frmSelectMetatype = await ThreadSafeForm<SelectMetatypePriority>.GetAsync(() => new SelectMetatypePriority(this)))
                 {
-                    using (SelectMetatypePriority frmSelectMetatype = new SelectMetatypePriority(this))
-                    {
-                        return frmSelectMetatype.ShowDialogSafe(this);
-                    }
-                });
+                    eResult = await frmSelectMetatype.ShowDialogSafeAsync(this);
+                }
             }
             else
             {
-                eResult = await Program.MainForm.DoThreadSafeFuncAsync(() =>
+                using (ThreadSafeForm<SelectMetatypeKarma> frmSelectMetatype = await ThreadSafeForm<SelectMetatypeKarma>.GetAsync(() => new SelectMetatypeKarma(this)))
                 {
-                    using (SelectMetatypeKarma frmSelectMetatype = new SelectMetatypeKarma(this))
-                    {
-                        return frmSelectMetatype.ShowDialogSafe(this);
-                    }
-                });
+                    eResult = await frmSelectMetatype.ShowDialogSafeAsync(this);
+                }
             }
 
             using (LockObject.EnterWriteLock())
@@ -26936,9 +26934,9 @@ namespace Chummer
                                     {
                                         if (blnSync)
                                         {
-                                            // ReSharper disable MethodHasAsyncOverload
-                                            using (SelectBuildMethod frmPickBP =
-                                                   Program.MainForm.DoThreadSafeFunc(
+                                            using (ThreadSafeForm<SelectBuildMethod> frmPickBP
+                                                   // ReSharper disable MethodHasAsyncOverload
+                                                   = ThreadSafeForm<SelectBuildMethod>.Get(
                                                        () => new SelectBuildMethod(this, true)))
                                             {
                                                 if (frmPickBP.ShowDialogSafe(this) != DialogResult.OK)
@@ -26948,8 +26946,8 @@ namespace Chummer
                                         }
                                         else
                                         {
-                                            using (SelectBuildMethod frmPickBP =
-                                                   await Program.MainForm.DoThreadSafeFuncAsync(
+                                            using (ThreadSafeForm<SelectBuildMethod> frmPickBP =
+                                                   await ThreadSafeForm<SelectBuildMethod>.GetAsync(
                                                        () => new SelectBuildMethod(this, true)))
                                             {
                                                 if (await frmPickBP.ShowDialogSafeAsync(this) != DialogResult.OK)
@@ -27027,8 +27025,8 @@ namespace Chummer
                                     if (blnSync)
                                     {
                                         // ReSharper disable MethodHasAsyncOverload
-                                        using (SelectMetatypePriority frmSelectMetatype =
-                                               Program.MainForm.DoThreadSafeFunc(
+                                        using (ThreadSafeForm<SelectMetatypePriority> frmSelectMetatype =
+                                               ThreadSafeForm<SelectMetatypePriority>.Get(
                                                    () => new SelectMetatypePriority(this)))
                                         {
                                             if (frmSelectMetatype.ShowDialogSafe(this) != DialogResult.OK)
@@ -27038,8 +27036,8 @@ namespace Chummer
                                     }
                                     else
                                     {
-                                        using (SelectMetatypePriority frmSelectMetatype =
-                                               await Program.MainForm.DoThreadSafeFuncAsync(
+                                        using (ThreadSafeForm<SelectMetatypePriority> frmSelectMetatype =
+                                               await ThreadSafeForm<SelectMetatypePriority>.GetAsync(
                                                    () => new SelectMetatypePriority(this)))
                                         {
                                             if (await frmSelectMetatype.ShowDialogSafeAsync(this) != DialogResult.OK)
@@ -27052,8 +27050,8 @@ namespace Chummer
                                     if (blnSync)
                                     {
                                         // ReSharper disable MethodHasAsyncOverload
-                                        using (SelectMetatypeKarma frmSelectMetatype =
-                                               Program.MainForm.DoThreadSafeFunc(
+                                        using (ThreadSafeForm<SelectMetatypeKarma> frmSelectMetatype =
+                                               ThreadSafeForm<SelectMetatypeKarma>.Get(
                                                    () => new SelectMetatypeKarma(this)))
                                         {
                                             if (frmSelectMetatype.ShowDialogSafe(this) != DialogResult.OK)
@@ -27063,8 +27061,8 @@ namespace Chummer
                                     }
                                     else
                                     {
-                                        using (SelectMetatypeKarma frmSelectMetatype =
-                                               await Program.MainForm.DoThreadSafeFuncAsync(
+                                        using (ThreadSafeForm<SelectMetatypeKarma> frmSelectMetatype =
+                                               await ThreadSafeForm<SelectMetatypeKarma>.GetAsync(
                                                    () => new SelectMetatypeKarma(this)))
                                         {
                                             if (await frmSelectMetatype.ShowDialogSafeAsync(this) != DialogResult.OK)

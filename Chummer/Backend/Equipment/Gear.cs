@@ -243,11 +243,11 @@ namespace Chummer.Backend.Equipment
                 }
                 else if (!blnSkipSelectForms)
                 {
-                    using (SelectText frmPickText = new SelectText
-                           {
-                               PreventXPathErrors = true,
-                               Description = LanguageManager.GetString("String_CustomItem_SelectText")
-                           })
+                    using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
+                    {
+                        PreventXPathErrors = true,
+                        Description = LanguageManager.GetString("String_CustomItem_SelectText")
+                    }))
                     {
                         // Make sure the dialogue window was not canceled.
                         if (frmPickText.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
@@ -256,11 +256,11 @@ namespace Chummer.Backend.Equipment
                             return;
                         }
 
-                        string strCustomName = LanguageManager.GetString(frmPickText.SelectedValue,
+                        string strCustomName = LanguageManager.GetString(frmPickText.MyForm.SelectedValue,
                                                                          GlobalSettings.DefaultLanguage, false);
                         if (string.IsNullOrEmpty(strCustomName))
                             strCustomName =
-                                _objCharacter.ReverseTranslateExtra(frmPickText.SelectedValue);
+                                _objCharacter.ReverseTranslateExtra(frmPickText.MyForm.SelectedValue);
                         _strName = strCustomName;
                         _objCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
@@ -298,30 +298,24 @@ namespace Chummer.Backend.Equipment
                     {
                         if (decMax > 1000000)
                             decMax = 1000000;
-                        DialogResult eResult = Program.GetFormForDialog(_objCharacter).DoThreadSafeFunc(x =>
+                        using (ThreadSafeForm<SelectNumber> frmPickNumber
+                               = ThreadSafeForm<SelectNumber>.Get(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                               {
+                                   Minimum = decMin,
+                                   Maximum = decMax,
+                                   Description = string.Format(
+                                       GlobalSettings.CultureInfo,
+                                       LanguageManager.GetString("String_SelectVariableCost"),
+                                       DisplayNameShort(GlobalSettings.Language)),
+                                   AllowCancel = false
+                               }))
                         {
-                            using (SelectNumber frmPickNumber
-                                   = new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
-                                   {
-                                       Minimum = decMin,
-                                       Maximum = decMax,
-                                       Description = string.Format(
-                                           GlobalSettings.CultureInfo,
-                                           LanguageManager.GetString("String_SelectVariableCost"),
-                                           DisplayNameShort(GlobalSettings.Language)),
-                                       AllowCancel = false
-                                   })
+                            if (frmPickNumber.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                             {
-                                DialogResult eReturn = frmPickNumber.ShowDialogSafe(x);
-                                if (eReturn != DialogResult.Cancel)
-                                    _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
-                                return eReturn;
+                                _guiID = Guid.Empty;
+                                return;
                             }
-                        });
-                        if (eResult == DialogResult.Cancel)
-                        {
-                            _guiID = Guid.Empty;
-                            return;
+                            _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
                         }
                     }
                     else
@@ -340,24 +334,27 @@ namespace Chummer.Backend.Equipment
                     blnDoExtra = objXmlGear.SelectSingleNode("ammoforweapontype/@noextra")?.Value != bool.TrueString;
                 if (!string.IsNullOrEmpty(strAmmoWeaponType) && blnDoExtra)
                 {
-                    SelectWeaponCategory frmPickWeaponCategory = new SelectWeaponCategory(_objCharacter)
+                    using (ThreadSafeForm<SelectWeaponCategory> frmPickWeaponCategory
+                           = ThreadSafeForm<SelectWeaponCategory>.Get(() => new SelectWeaponCategory(_objCharacter)
+                           {
+                               Description = LanguageManager.GetString("String_SelectWeaponCategoryAmmo"),
+                               WeaponType = strAmmoWeaponType
+                           }))
                     {
-                        Description = LanguageManager.GetString("String_SelectWeaponCategoryAmmo"),
-                        WeaponType = strAmmoWeaponType
-                    };
-                    if (!string.IsNullOrEmpty(_strForcedValue) &&
-                        !_strForcedValue.Equals(_strName, StringComparison.Ordinal))
-                        frmPickWeaponCategory.OnlyCategory = _strForcedValue;
+                        if (!string.IsNullOrEmpty(_strForcedValue) &&
+                            !_strForcedValue.Equals(_strName, StringComparison.Ordinal))
+                            frmPickWeaponCategory.MyForm.OnlyCategory = _strForcedValue;
 
-                    if (frmPickWeaponCategory.ShowDialogSafe(_objCharacter)
-                        != DialogResult.OK)
-                    {
-                        _guiID = Guid.Empty;
-                        return;
+                        if (frmPickWeaponCategory.ShowDialogSafe(_objCharacter)
+                            != DialogResult.OK)
+                        {
+                            _guiID = Guid.Empty;
+                            return;
+                        }
+
+                        if (!string.IsNullOrEmpty(frmPickWeaponCategory.MyForm.SelectedCategory))
+                            _strExtra = frmPickWeaponCategory.MyForm.SelectedCategory;
                     }
-
-                    if (!string.IsNullOrEmpty(frmPickWeaponCategory.SelectedCategory))
-                        _strExtra = frmPickWeaponCategory.SelectedCategory;
                 }
             }
 
@@ -582,15 +579,16 @@ namespace Chummer.Backend.Equipment
                                 string strFriendlyName = LanguageManager.GetString(strChooseGearNodeName, false);
                                 if (string.IsNullOrEmpty(strFriendlyName))
                                     strFriendlyName = _objCharacter.TranslateExtra(strChooseGearNodeName);
-                                using (SelectItem frmPickItem = new SelectItem
-                                       {
-                                           Description = string.Format(GlobalSettings.CultureInfo,
-                                                                       LanguageManager.GetString(
-                                                                           "String_Improvement_SelectText"),
-                                                                       strFriendlyName)
-                                       })
+                                using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(
+                                           () => new SelectItem
+                                           {
+                                               Description = string.Format(GlobalSettings.CultureInfo,
+                                                                           LanguageManager.GetString(
+                                                                               "String_Improvement_SelectText"),
+                                                                           strFriendlyName)
+                                           }))
                                 {
-                                    frmPickItem.SetGeneralItemsMode(lstGears);
+                                    frmPickItem.MyForm.SetGeneralItemsMode(lstGears);
 
                                     // Make sure the dialogue window was not canceled.
                                     if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
@@ -606,7 +604,7 @@ namespace Chummer.Backend.Equipment
 
                                     XmlNode objXmlChosenGear =
                                         objXmlChooseGearNode.SelectSingleNode("usegear[name = " +
-                                                                              frmPickItem.SelectedItem.CleanXPath()
+                                                                              frmPickItem.MyForm.SelectedItem.CleanXPath()
                                                                               + ']');
 
                                     if (objXmlChosenGear == null)
