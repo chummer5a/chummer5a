@@ -1415,9 +1415,9 @@ namespace Chummer
                 objLoopControl = await objLoopControl.DoThreadSafeFuncAsync(x => x.Parent);
             }
             
-            using (CursorWait.New(objControl.FindForm() ?? objControl))
+            using (CursorWait.New(await objControl.DoThreadSafeFuncAsync(x => x.FindForm()) ?? objControl))
             {
-                await OpenPdf(objControl.Text, objCharacter, string.Empty, string.Empty, true);
+                await OpenPdf(await objControl.DoThreadSafeFuncAsync(x => x.Text), objCharacter, string.Empty, string.Empty, true);
             }
         }
 

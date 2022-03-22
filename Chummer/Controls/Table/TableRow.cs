@@ -46,11 +46,11 @@ namespace Chummer.UI.Table
         {
             if (blnSelected)
             {
-                BackColor = ColorManager.Highlight;
+                this.DoThreadSafe(x => x.BackColor = ColorManager.Highlight);
             }
             else
             {
-                BackColor = (intIndex & 1) == 0 ? ColorManager.ControlLightest : ColorManager.Control;
+                this.DoThreadSafe(x => x.BackColor = (intIndex & 1) == 0 ? ColorManager.ControlLightest : ColorManager.Control);
             }
         }
 

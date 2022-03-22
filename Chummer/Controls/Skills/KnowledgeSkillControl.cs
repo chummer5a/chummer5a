@@ -426,13 +426,16 @@ namespace Chummer.UI.Skills
         }
 
         [UsedImplicitly]
-        public int NameWidth => tlpLeft.Width - (lblName.Visible ? lblName.Margin.Left + lblName.Margin.Right : cboName.Margin.Left + cboName.Margin.Right);
+        public int NameWidth => tlpLeft.DoThreadSafeFunc(x => x.Width) -
+                                (lblName?.DoThreadSafeFunc(x => x.Visible) == true
+                                    ? lblName.DoThreadSafeFunc(x => x.Margin.Left + x.Margin.Right)
+                                    : cboName.DoThreadSafeFunc(x => x.Margin.Left + x.Margin.Right));
 
         [UsedImplicitly]
-        public int NudSkillWidth => nudSkill?.Visible == true ? nudSkill.Width : 0;
+        public int NudSkillWidth => nudSkill?.DoThreadSafeFunc(x => x.Visible) == true ? nudSkill.DoThreadSafeFunc(x => x.Width) : 0;
 
         [UsedImplicitly]
-        public int RightButtonsWidth => tlpRight.Width;
+        public int RightButtonsWidth => tlpRight.DoThreadSafeFunc(x => x.Width);
 
         /// <summary>
         /// I'm not super pleased with how this works, but it's functional so w/e.

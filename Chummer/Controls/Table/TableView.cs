@@ -42,132 +42,144 @@ namespace Chummer.UI.Table
             public override bool Layout(object container, LayoutEventArgs layoutEventArgs)
             {
                 _table.SuspendLayout();
-                int[] aintSharedWidths = _table._columns.Count > GlobalSettings.MaxStackLimit ? ArrayPool<int>.Shared.Rent(_table._columns.Count) : null;
-                // ReSharper disable once MergeConditionalExpression
+                try
+                {
+                    int[] aintSharedWidths = _table._columns.Count > GlobalSettings.MaxStackLimit ? ArrayPool<int>.Shared.Rent(_table._columns.Count) : null;
+                    // ReSharper disable once MergeConditionalExpression
 #pragma warning disable IDE0029 // Use coalesce expression
-                Span<int> widths = aintSharedWidths != null ? aintSharedWidths : stackalloc int[_table._columns.Count];
+                    Span<int> widths = aintSharedWidths != null ? aintSharedWidths : stackalloc int[_table._columns.Count];
 #pragma warning restore IDE0029 // Use coalesce expression
 
-                int y = 0;
+                    int y = 0;
 
-                // determine minimal widths
-                for (int i = 0; i < widths.Length; i++)
-                {
-                    Size headerMinSize = _table._lstCells[i].header.MinimumSize;
-                    int width = Math.Max(_table._columns[i].MinWidth, headerMinSize.Width);
-                    if (y < headerMinSize.Height)
+                    // determine minimal widths
+                    for (int i = 0; i < widths.Length; i++)
                     {
-                        y = headerMinSize.Height;
-                    }
-                    widths[i] = width;
-                }
-
-                for (int i = 0; i < _table._lstRowCells.Count; i++)
-                {
-                    TableRow row = _table._lstRowCells[i];
-                    if (row.Parent != null)
-                    {
-                        for (int j = 0; j < widths.Length; j++)
+                        Size headerMinSize = _table._lstCells[i].header.MinimumSize;
+                        int width = Math.Max(_table._columns[i].MinWidth, headerMinSize.Width);
+                        if (y < headerMinSize.Height)
                         {
-                            int w = _table._lstCells[j].cells[i].MinimumSize.Width;
-                            if (widths[j] < w)
+                            y = headerMinSize.Height;
+                        }
+                        widths[i] = width;
+                    }
+
+                    for (int i = 0; i < _table._lstRowCells.Count; i++)
+                    {
+                        TableRow row = _table._lstRowCells[i];
+                        if (row.Parent != null)
+                        {
+                            for (int j = 0; j < widths.Length; j++)
                             {
-                                widths[j] = w;
+                                int w = _table._lstCells[j].cells[i].MinimumSize.Width;
+                                if (widths[j] < w)
+                                {
+                                    widths[j] = w;
+                                }
                             }
                         }
                     }
-                }
 
-                int widthSum = 0;
-                foreach (int w in widths)
-                {
-                    widthSum += w;
-                }
-
-                if (widthSum > _table.Width)
-                {
-                    // modify container size if content does not fit
-                    _table.Width = widthSum;
-                }
-                else
-                {
-                    // grow columns to preferred sizes starting at the leftmost
-                    int delta = _table.Width - widthSum;
-                    for (int i = 0; delta > 0 && i < widths.Length; i++)
+                    int widthSum = 0;
+                    foreach (int w in widths)
                     {
-                        int w = widths[i];
-                        int pW = _table._columns[i].PrefWidth;
-                        if (w < pW)
+                        widthSum += w;
+                    }
+
+                    if (widthSum > _table.Width)
+                    {
+                        // modify container size if content does not fit
+                        _table.Width = widthSum;
+                    }
+                    else
+                    {
+                        // grow columns to preferred sizes starting at the leftmost
+                        int delta = _table.Width - widthSum;
+                        for (int i = 0; delta > 0 && i < widths.Length; i++)
                         {
-                            int diff = pW - w;
-                            if (delta > diff)
+                            int w = widths[i];
+                            int pW = _table._columns[i].PrefWidth;
+                            if (w < pW)
                             {
-                                widths[i] = pW;
-                                delta -= diff;
-                            }
-                            else
-                            {
-                                widths[i] = w + delta;
-                                break;
+                                int diff = pW - w;
+                                if (delta > diff)
+                                {
+                                    widths[i] = pW;
+                                    delta -= diff;
+                                }
+                                else
+                                {
+                                    widths[i] = w + delta;
+                                    break;
+                                }
                             }
                         }
                     }
-                }
 
-                int x = 0;
+                    int x = 0;
 
-                // layout headers
-                for (int i = 0; i < widths.Length; i++)
-                {
-                    Control header = _table._lstCells[i].header;
-                    header.Location = new Point(x, 0);
-                    header.Size = new Size(widths[i], y);
-                    x += widths[i];
-                }
-
-                int rowIndex = 0;
-
-                // layout cells
-                foreach (int index in _table._lstPermutation)
-                {
-                    x = 0;
-                    TableRow row = _table._lstRowCells[index];
-                    if (row.Parent != null)
+                    // layout headers
+                    for (int i = 0; i < widths.Length; i++)
                     {
-                        row.SuspendLayout();
-                        row.Index = rowIndex;
-                        row.Selected = (_table._intSelectedIndex == index);
-                        row.Location = new Point(0, y);
-                        row.Width = widthSum;
-                        int dy = 0;
-                        for (int i = 0; i < _table._columns.Count; i++)
-                        {
-                            TableCell cell = _table._lstCells[i].cells[index];
-                            cell.Location = new Point(x, row.Margin.Top);
-                            if (dy < cell.Height)
-                            {
-                                dy = cell.Height;
-                            }
-                            x += widths[i];
-                        }
-                        for (int i = 0; i < _table._columns.Count; i++)
-                        {
-                            TableCell cell = _table._lstCells[i].cells[index];
-                            cell.UpdateAvailableSize(widths[i], dy);
-                        }
-                        row.Height = dy + row.Margin.Top + row.Margin.Bottom;
-                        row.ResumeLayout(false);
-                        y += row.Height;
-                        rowIndex++;
+                        Control header = _table._lstCells[i].header;
+                        header.Location = new Point(x, 0);
+                        header.Size = new Size(widths[i], y);
+                        x += widths[i];
                     }
+
+                    int rowIndex = 0;
+
+                    // layout cells
+                    foreach (int index in _table._lstPermutation)
+                    {
+                        x = 0;
+                        TableRow row = _table._lstRowCells[index];
+                        if (row.Parent != null)
+                        {
+                            row.SuspendLayout();
+                            try
+                            {
+                                row.Index = rowIndex;
+                                row.Selected = (_table._intSelectedIndex == index);
+                                row.Location = new Point(0, y);
+                                row.Width = widthSum;
+                                int dy = 0;
+                                for (int i = 0; i < _table._columns.Count; i++)
+                                {
+                                    TableCell cell = _table._lstCells[i].cells[index];
+                                    cell.Location = new Point(x, row.Margin.Top);
+                                    if (dy < cell.Height)
+                                    {
+                                        dy = cell.Height;
+                                    }
+                                    x += widths[i];
+                                }
+                                for (int i = 0; i < _table._columns.Count; i++)
+                                {
+                                    TableCell cell = _table._lstCells[i].cells[index];
+                                    cell.UpdateAvailableSize(widths[i], dy);
+                                }
+                                row.Height = dy + row.Margin.Top + row.Margin.Bottom;
+                            }
+                            finally
+                            {
+                                row.ResumeLayout(false);
+                            }
+                            y += row.Height;
+                            rowIndex++;
+                        }
+                    }
+                    if (y > _table.Height)
+                    {
+                        _table.Height = y;
+                    }
+                    if (aintSharedWidths != null)
+                        ArrayPool<int>.Shared.Return(aintSharedWidths);
                 }
-                if (y > _table.Height)
+                finally
                 {
-                    _table.Height = y;
+                    _table.ResumeLayout(false);
                 }
-                _table.ResumeLayout(false);
-                if (aintSharedWidths != null)
-                    ArrayPool<int>.Shared.Return(aintSharedWidths);
                 return true;
             }
         }
@@ -209,25 +221,31 @@ namespace Chummer.UI.Table
         private void ItemPropertyChanged(int intIndex, T objItem, string strProperty)
         {
             SuspendLayout();
-            if (string.IsNullOrEmpty(strProperty))
+            try
             {
-                // update all cells
-                UpdateRow(intIndex, objItem);
-            }
-            else
-            {
-                // update cells in columns that have the column as dependency
-                if (_dicObservedProperties.TryGetValue(strProperty, out List<int> lstColumns))
+                if (string.IsNullOrEmpty(strProperty))
                 {
-                    foreach (int intColumnIndex in lstColumns)
+                    // update all cells
+                    UpdateRow(intIndex, objItem);
+                }
+                else
+                {
+                    // update cells in columns that have the column as dependency
+                    if (_dicObservedProperties.TryGetValue(strProperty, out List<int> lstColumns))
                     {
-                        if (intIndex >= _lstCells[intColumnIndex].cells.Count)
-                            continue;
-                        UpdateCell(_columns[intColumnIndex], _lstCells[intColumnIndex].cells[intIndex], objItem);
+                        foreach (int intColumnIndex in lstColumns)
+                        {
+                            if (intIndex >= _lstCells[intColumnIndex].cells.Count)
+                                continue;
+                            UpdateCell(_columns[intColumnIndex], _lstCells[intColumnIndex].cells[intIndex], objItem);
+                        }
                     }
                 }
             }
-            ResumeLayout(true);
+            finally
+            {
+                ResumeLayout(true);
+            }
         }
 
         public void PauseSort(object objSender)
@@ -269,7 +287,7 @@ namespace Chummer.UI.Table
             }
             if (blnPerformLayout)
             {
-                PerformLayout();
+                this.DoThreadSafe(x => x.PerformLayout());
             }
         }
 
@@ -283,7 +301,10 @@ namespace Chummer.UI.Table
             {
                 Control content = cell.Content;
                 string strText = funcTooltipExtractor(item);
-                tooltip.SetToolTip(content ?? cell, strText.CleanForHtml());
+                if (content != null)
+                    content.DoThreadSafe(x => tooltip.SetToolTip(content, strText.CleanForHtml()));
+                else
+                    tooltip.SetToolTip(cell, strText.CleanForHtml());
             }
         }
 
@@ -310,80 +331,96 @@ namespace Chummer.UI.Table
         private void CreateCellsForColumn(int insertIndex, TableColumn<T> column)
         {
             SuspendLayout();
-            List<TableCell> cells;
-            if (_lstItems != null)
+            try
             {
-                cells = new List<TableCell>(_lstItems.Count);
-                for (int i = 0; i < _lstItems.Count; i++)
+                List<TableCell> cells;
+                if (_lstItems != null)
                 {
-                    T item = _lstItems[i];
-                    TableCell cell = CreateCell(item, column);
-                    cells.Add(cell);
-                    if (_filter(item))
+                    cells = new List<TableCell>(_lstItems.Count);
+                    for (int i = 0; i < _lstItems.Count; i++)
                     {
-                        TableRow row = _lstRowCells[i];
-                        row.SuspendLayout();
-                        row.Controls.Add(cell);
-                        row.ResumeLayout(false);
-                    }
-                }
-            }
-            else
-            {
-                cells = new List<TableCell>(1);
-            }
-            HeaderCell header = new HeaderCell
-            {
-                Text = column.Text,
-                TextTag = column.Tag
-            };
-            if (column.Sorter != null)
-            {
-                header.HeaderClick += (sender, evt) =>
-                {
-                    if (_sortColumn == column)
-                    {
-                        // cycle through states if column remains the same
-                        switch (_eSortType)
+                        T item = _lstItems[i];
+                        TableCell cell = CreateCell(item, column);
+                        cells.Add(cell);
+                        if (_filter(item))
                         {
-                            case SortOrder.None:
-                                _eSortType = SortOrder.Ascending;
-                                break;
-
-                            case SortOrder.Ascending:
-                                _eSortType = SortOrder.Descending;
-                                break;
-
-                            case SortOrder.Descending:
-                                _eSortType = SortOrder.None;
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        if (_sortColumn != null)
-                        {
-                            // reset old column sort arrow
-                            for (int i = 0; i < _columns.Count; i++)
+                            TableRow row = _lstRowCells[i];
+                            row.SuspendLayout();
+                            try
                             {
-                                if (_columns[i] == _sortColumn)
-                                {
-                                    _lstCells[i].header.SortType = SortOrder.None;
-                                    break;
-                                }
+                                row.Controls.Add(cell);
+                            }
+                            finally
+                            {
+                                row.ResumeLayout(false);
                             }
                         }
-                        _sortColumn = column;
-                        _eSortType = SortOrder.Ascending;
                     }
-                    header.SortType = _eSortType;
-                    Sort();
+                }
+                else
+                {
+                    cells = new List<TableCell>(1);
+                }
+
+                HeaderCell header = new HeaderCell
+                {
+                    Text = column.Text,
+                    TextTag = column.Tag
                 };
-                header.Sortable = true;
+                if (column.Sorter != null)
+                {
+                    header.HeaderClick += (sender, evt) =>
+                    {
+                        if (_sortColumn == column)
+                        {
+                            // cycle through states if column remains the same
+                            switch (_eSortType)
+                            {
+                                case SortOrder.None:
+                                    _eSortType = SortOrder.Ascending;
+                                    break;
+
+                                case SortOrder.Ascending:
+                                    _eSortType = SortOrder.Descending;
+                                    break;
+
+                                case SortOrder.Descending:
+                                    _eSortType = SortOrder.None;
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            if (_sortColumn != null)
+                            {
+                                // reset old column sort arrow
+                                for (int i = 0; i < _columns.Count; i++)
+                                {
+                                    if (_columns[i] == _sortColumn)
+                                    {
+                                        _lstCells[i].header.SortType = SortOrder.None;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            _sortColumn = column;
+                            _eSortType = SortOrder.Ascending;
+                        }
+
+                        header.SortType = _eSortType;
+                        Sort();
+                    };
+                    header.Sortable = true;
+                }
+
+                Controls.Add(header);
+                _lstCells.Insert(insertIndex, new ColumnHolder(header, cells));
             }
-            Controls.Add(header);
-            _lstCells.Insert(insertIndex, new ColumnHolder(header, cells));
-            ResumeLayout(false);
+            finally
+            {
+                ResumeLayout(false);
+            }
         }
 
         internal void ColumnAdded(TableColumn<T> column)
@@ -416,38 +453,44 @@ namespace Chummer.UI.Table
         {
             if (_lstItems == null) return;
             SuspendLayout();
-
-            for (int i = 0; i < _lstItems.Count; i++)
+            try
             {
-                TableRow row = _lstRowCells[i];
-                row.SuspendLayout();
-                if (_filter(_lstItems[i]))
+                for (int i = 0; i < _lstItems.Count; i++)
                 {
-                    if (row.Parent == null)
+                    TableRow row = _lstRowCells[i];
+                    row.SuspendLayout();
+                    try
                     {
-                        Controls.Add(row);
+                        if (_filter(_lstItems[i]))
+                        {
+                            if (row.Parent == null)
+                            {
+                                Controls.Add(row);
+                            }
+                        }
+                        else
+                        {
+                            if (row.Parent != null)
+                            {
+                                Controls.Remove(row);
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        row.ResumeLayout(false);
                     }
                 }
-                else
-                {
-                    if (row.Parent != null)
-                    {
-                        Controls.Remove(row);
-                    }
-                }
-                row.ResumeLayout(false);
             }
-
-            RestartLayout(performLayout);
+            finally
+            {
+                RestartLayout(performLayout);
+            }
         }
 
         private void RestartLayout(bool performLayout)
         {
-            ResumeLayout(false);
-            if (performLayout)
-            {
-                PerformLayout();
-            }
+            ResumeLayout(performLayout);
         }
 
         /// <summary>
@@ -476,21 +519,27 @@ namespace Chummer.UI.Table
                     if (e.PropertyDescriptor == null)
                     {
                         SuspendLayout();
-                        row = _lstRowCells[e.NewIndex];
-                        if (_filter(item))
+                        try
                         {
-                            if (row.Parent == null)
+                            row = _lstRowCells[e.NewIndex];
+                            if (_filter(item))
                             {
-                                Controls.Add(row);
+                                if (row.Parent == null)
+                                {
+                                    Controls.Add(row);
+                                }
                             }
+                            else if (row.Parent != null)
+                            {
+                                Controls.Remove(row);
+                            }
+                            UpdateRow(e.NewIndex, item);
+                            Sort(false);
                         }
-                        else if (row.Parent != null)
+                        finally
                         {
-                            Controls.Remove(row);
+                            RestartLayout(true);
                         }
-                        UpdateRow(e.NewIndex, item);
-                        Sort(false);
-                        RestartLayout(true);
                     }
                     else
                     {
@@ -503,42 +552,54 @@ namespace Chummer.UI.Table
                     row = CreateRow();
                     _lstRowCells.Insert(e.NewIndex, row);
                     SuspendLayout();
-                    if (_filter(item))
+                    try
                     {
-                        Controls.Add(row);
+                        if (_filter(item))
+                        {
+                            Controls.Add(row);
+                        }
+                        row.SuspendLayout();
+                        for (int i = 0; i < _columns.Count; i++)
+                        {
+                            TableColumn<T> column = _columns[i];
+                            IList<TableCell> cells = _lstCells[i].cells;
+                            TableCell newCell = CreateCell(item, column);
+                            cells.Insert(e.NewIndex, newCell);
+                            row.Controls.Add(newCell);
+                        }
+                        row.ResumeLayout(false);
+                        _lstPermutation.Add(_lstPermutation.Count);
+                        Sort(false);
                     }
-                    row.SuspendLayout();
-                    for (int i = 0; i < _columns.Count; i++)
+                    finally
                     {
-                        TableColumn<T> column = _columns[i];
-                        IList<TableCell> cells = _lstCells[i].cells;
-                        TableCell newCell = CreateCell(item, column);
-                        cells.Insert(e.NewIndex, newCell);
-                        row.Controls.Add(newCell);
+                        RestartLayout(true);
                     }
-                    row.ResumeLayout(false);
-                    _lstPermutation.Add(_lstPermutation.Count);
-                    Sort(false);
-                    RestartLayout(true);
                     break;
 
                 case ListChangedType.ItemDeleted:
                     SuspendLayout();
-                    for (int i = 0; i < _columns.Count; i++)
+                    try
                     {
-                        IList<TableCell> cells = _lstCells[i].cells;
-                        cells.RemoveAt(e.NewIndex);
+                        for (int i = 0; i < _columns.Count; i++)
+                        {
+                            IList<TableCell> cells = _lstCells[i].cells;
+                            cells.RemoveAt(e.NewIndex);
+                        }
+                        row = _lstRowCells[e.NewIndex];
+                        if (row.Parent != null)
+                        {
+                            Controls.Remove(row);
+                        }
+                        row.Dispose();
+                        _lstRowCells.RemoveAt(e.NewIndex);
+                        _lstPermutation.Remove(_lstPermutation.Count - 1);
+                        Sort(false);
                     }
-                    row = _lstRowCells[e.NewIndex];
-                    if (row.Parent != null)
+                    finally
                     {
-                        Controls.Remove(row);
+                        RestartLayout(true);
                     }
-                    row.Dispose();
-                    _lstRowCells.RemoveAt(e.NewIndex);
-                    _lstPermutation.Remove(_lstPermutation.Count - 1);
-                    Sort(false);
-                    RestartLayout(true);
                     break;
 
                 case ListChangedType.ItemMoved:
@@ -603,57 +664,63 @@ namespace Chummer.UI.Table
                 _lstItems = value;
                 int intNewCount = _lstItems?.Count ?? 0;
                 SuspendLayout();
-                int intLimit;
-                if (intNewCount > intOldCount)
+                try
                 {
-                    intLimit = intOldCount;
-                    for (int j = intOldCount; j < intNewCount; j++)
+                    int intLimit;
+                    if (intNewCount > intOldCount)
                     {
-                        TableRow row = CreateRow();
-                        _lstRowCells.Add(row);
-                    }
-                    for (int i = 0; i < _columns.Count; i++)
-                    {
-                        TableColumn<T> column = _columns[i];
-                        IList<TableCell> cells = _lstCells[i].cells;
+                        intLimit = intOldCount;
                         for (int j = intOldCount; j < intNewCount; j++)
                         {
-                            TableCell cell = CreateCell(_lstItems[j], column);
-                            cells.Add(cell);
-                            _lstRowCells[j].Controls.Add(cell);
+                            TableRow row = CreateRow();
+                            _lstRowCells.Add(row);
                         }
-                    }
-                }
-                else
-                {
-                    intLimit = intNewCount;
-                    foreach (IList<TableCell> cells in _lstCells.Select(x => x.cells))
-                    {
-                        cells.RemoveRange(intNewCount, intOldCount - intNewCount);
-                    }
-                    for (int i = intNewCount; i < intOldCount; i++)
-                    {
-                        TableRow row = _lstRowCells[i];
-                        if (row.Parent != null)
+                        for (int i = 0; i < _columns.Count; i++)
                         {
-                            Controls.Remove(row);
+                            TableColumn<T> column = _columns[i];
+                            IList<TableCell> cells = _lstCells[i].cells;
+                            for (int j = intOldCount; j < intNewCount; j++)
+                            {
+                                TableCell cell = CreateCell(_lstItems[j], column);
+                                cells.Add(cell);
+                                _lstRowCells[j].Controls.Add(cell);
+                            }
                         }
-                        row.Dispose();
                     }
-                    _lstRowCells.RemoveRange(intNewCount, intOldCount - intNewCount);
-                }
+                    else
+                    {
+                        intLimit = intNewCount;
+                        foreach (IList<TableCell> cells in _lstCells.Select(x => x.cells))
+                        {
+                            cells.RemoveRange(intNewCount, intOldCount - intNewCount);
+                        }
+                        for (int i = intNewCount; i < intOldCount; i++)
+                        {
+                            TableRow row = _lstRowCells[i];
+                            if (row.Parent != null)
+                            {
+                                Controls.Remove(row);
+                            }
+                            row.Dispose();
+                        }
+                        _lstRowCells.RemoveRange(intNewCount, intOldCount - intNewCount);
+                    }
 
-                for (int i = 0; i < intNewCount; i++)
-                {
-                    _lstPermutation.Add(i);
+                    for (int i = 0; i < intNewCount; i++)
+                    {
+                        _lstPermutation.Add(i);
+                    }
+                    for (int i = 0; i < intLimit; i++)
+                    {
+                        UpdateRow(i, _lstItems[i]);
+                    }
+                    Sort(false);
+                    DoFilter();
                 }
-                for (int i = 0; i < intLimit; i++)
+                finally
                 {
-                    UpdateRow(i, _lstItems[i]);
+                    RestartLayout(true);
                 }
-                Sort(false);
-                DoFilter();
-                RestartLayout(true);
 
                 if (_lstItems != null)
                 {

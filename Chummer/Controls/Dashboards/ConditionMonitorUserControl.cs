@@ -31,8 +31,8 @@ namespace Chummer
         /// </summary>
         public int MaxPhysical
         {
-            get => _progressBarPhysical.Maximum;
-            set => _progressBarPhysical.Maximum = value;
+            get => _progressBarPhysical.DoThreadSafeFunc(x => x.Maximum);
+            set => _progressBarPhysical.DoThreadSafe(x => x.Maximum = value);
         }
 
         /// <summary>
@@ -40,8 +40,8 @@ namespace Chummer
         /// </summary>
         public int MaxStun
         {
-            get => _progressBarStun.Maximum;
-            set => _progressBarStun.Maximum = value;
+            get => _progressBarStun.DoThreadSafeFunc(x => x.Maximum);
+            set => _progressBarStun.DoThreadSafe(x => x.Maximum = value);
         }
 
         /// <summary>
@@ -49,8 +49,8 @@ namespace Chummer
         /// </summary>
         public int Physical
         {
-            get => _progressBarPhysical.Value;
-            set => _progressBarPhysical.Value = value;
+            get => _progressBarPhysical.DoThreadSafeFunc(x => x.Value);
+            set => _progressBarPhysical.DoThreadSafe(x => x.Value = value);
         }
 
         /// <summary>
@@ -58,8 +58,8 @@ namespace Chummer
         /// </summary>
         public int Stun
         {
-            get => _progressBarStun.Value;
-            set => _progressBarStun.Value = value;
+            get => _progressBarStun.DoThreadSafeFunc(x => x.Value);
+            set => _progressBarStun.DoThreadSafe(x => x.Value = value);
         }
 
         #endregion Properties

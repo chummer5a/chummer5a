@@ -401,11 +401,11 @@ namespace Chummer.UI.Powers
             geasColumn.AddDependency(nameof(Power.DiscountedGeas));
             */
 
-            TableColumn<Power> noteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new PictureBox
+            TableColumn<Power> noteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(this.DoThreadSafeFunc(() => new PictureBox
             {
                 Image = Resources.note_edit,
                 Size = GetImageSize(Resources.note_edit)
-            })
+            }))
             {
                 ClickHandler = async p =>
                 {
@@ -430,12 +430,12 @@ namespace Chummer.UI.Powers
             };
             noteColumn.AddDependency(nameof(Power.Notes));
 
-            TableColumn<Power> deleteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new Button
+            TableColumn<Power> deleteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(this.DoThreadSafeFunc(() => new Button
             {
                 Text = LanguageManager.GetString("String_Delete"),
                 Tag = "String_Delete",
                 Dock = DockStyle.Fill
-            })
+            }))
             {
                 ClickHandler = async p =>
                 {

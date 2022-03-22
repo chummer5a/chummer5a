@@ -160,7 +160,7 @@ namespace Chummer.UI.Skills
 
         #region Properties
 
-        public int NameWidth => lblName.PreferredWidth;
+        public int NameWidth => lblName.DoThreadSafeFunc(x => x.PreferredWidth);
 
         #endregion Properties
 
@@ -172,7 +172,7 @@ namespace Chummer.UI.Skills
         /// <param name="intNameWidth">Width of the Name label</param>
         public void MoveControls(int intNameWidth)
         {
-            lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
+            lblName.DoThreadSafe(x => x.MinimumSize = new Size(intNameWidth, x.MinimumSize.Height));
         }
 
         #endregion Methods

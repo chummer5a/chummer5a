@@ -204,7 +204,9 @@ namespace Chummer
             if (_intIndex == _lstCharacters.Count - _intTotalChummersWithNoInit)
             {
                 // increment the round count since we have reached the end of the list
-                string strText = await LanguageManager.GetStringAsync("Label_Round") + await LanguageManager.GetStringAsync("String_Space") + (++_intRound).ToString(GlobalSettings.CultureInfo);
+                string strText = await LanguageManager.GetStringAsync("Label_Round") +
+                                 await LanguageManager.GetStringAsync("String_Space") +
+                                 (++_intRound).ToString(GlobalSettings.CultureInfo);
                 await lblRound.DoThreadSafeAsync(x => x.Text = strText);
                 // reset the the round with a minus ten on all
                 int index = -1;
@@ -463,12 +465,12 @@ namespace Chummer
         private void ApplyInitChange(int value)
         {
             // check if we have selected a chummer in the list
-            if (chkBoxChummer.SelectedItem == null)
+            if (chkBoxChummer.DoThreadSafeFunc(x => x.SelectedItem) == null)
                 Program.ShowMessageBox("Please Select a Chummer to remove");
             else
             {
                 // pull the simple character out
-                int index = chkBoxChummer.SelectedIndex;
+                int index = chkBoxChummer.DoThreadSafeFunc(x => x.SelectedIndex);
                 _lstCharacters[index].InitRoll += value;
 
                 // if negative or 0 init add to the count
@@ -476,7 +478,7 @@ namespace Chummer
                     _intTotalChummersWithNoInit++;
 
                 ResetListBoxChummers();
-                chkBoxChummer.SelectedIndex = index;
+                chkBoxChummer.DoThreadSafe(x => x.SelectedIndex = index);
             }
         }
 
@@ -486,9 +488,12 @@ namespace Chummer
 
         private void ResetListBoxChummers()
         {
-            chkBoxChummer.Items.Clear();
-            foreach (Character aCharacter in _lstCharacters)
-                chkBoxChummer.Items.Add(aCharacter);
+            chkBoxChummer.DoThreadSafe(x =>
+            {
+                x.Items.Clear();
+                foreach (Character aCharacter in _lstCharacters)
+                    x.Items.Add(aCharacter);
+            });
         }
 
         #endregion Methods

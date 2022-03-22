@@ -519,21 +519,29 @@ namespace Chummer.UI.Skills
         public bool CustomAttributeSet => AttributeActive != _objSkill.AttributeObject;
 
         [UsedImplicitly]
-        public int NameWidth => lblName.PreferredWidth + lblName.Margin.Right + pnlAttributes.Margin.Left + pnlAttributes.Width;
+        public int NameWidth => lblName.DoThreadSafeFunc(x => x.PreferredWidth + x.Margin.Right) + pnlAttributes.DoThreadSafeFunc(x => x.Margin.Left + x.Width);
 
         [UsedImplicitly]
-        public int NudSkillWidth => nudSkill?.Visible == true ? nudSkill.Width : 0;
+        public int NudSkillWidth => nudSkill?.DoThreadSafeFunc(x => x.Visible) == true ? nudSkill.DoThreadSafeFunc(x => x.Width) : 0;
 
         [UsedImplicitly]
         public void ResetSelectAttribute(object sender, EventArgs e)
         {
             if (!CustomAttributeSet)
                 return;
-            if (cboSelectAttribute != null)
+            if (cboSelectAttribute == null)
+                return;
+            cboSelectAttribute.DoThreadSafe(x =>
             {
-                cboSelectAttribute.SelectedValue = _objSkill.AttributeObject.Abbrev;
-                cboSelectAttribute_Closed(sender, e);
-            }
+                x.SelectedValue = _objSkill.AttributeObject.Abbrev;
+                x.Visible = false;
+                AttributeActive = _objSkill.CharacterObject.GetAttribute((string)x.SelectedValue);
+            });
+            btnAttribute.DoThreadSafe(x =>
+            {
+                x.Visible = true;
+                x.Text = cboSelectAttribute.DoThreadSafeFunc(y => y.Text);
+            });
         }
 
         private async void cmdDelete_Click(object sender, EventArgs e)
@@ -566,7 +574,7 @@ namespace Chummer.UI.Skills
         [UsedImplicitly]
         public void MoveControls(int intNewNameWidth)
         {
-            lblName.MinimumSize = new Size(intNewNameWidth - lblName.Margin.Right - pnlAttributes.Margin.Left - pnlAttributes.Width, lblName.MinimumSize.Height);
+            lblName.DoThreadSafe(x => x.MinimumSize = new Size(intNewNameWidth - x.Margin.Right - pnlAttributes.DoThreadSafeFunc(y => y.Margin.Left + y.Width), x.MinimumSize.Height));
         }
 
         private void UnbindSkillControl()

@@ -434,7 +434,7 @@ namespace Chummer
 
         public bool Expanded
         {
-            get => tlpStatBlock?.Visible == true;
+            get => tlpStatBlock?.DoThreadSafeFunc(x => x.Visible) == true;
             set
             {
                 cmdExpand.DoThreadSafe(x =>
