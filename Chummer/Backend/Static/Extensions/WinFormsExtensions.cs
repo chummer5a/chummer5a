@@ -63,7 +63,10 @@ namespace Chummer
                     {
                         WaitHandle.WaitAny(new[] { objHandle, objCancelHandle });
                         token.ThrowIfCancellationRequested();
-                        return (DialogResult)objOwner.EndInvoke(objInnerResult);
+                        object objInnerReturn = objOwner.EndInvoke(objInnerResult);
+                        if (objInnerReturn is Exception ex)
+                            throw ex;
+                        return (DialogResult)objInnerReturn;
                     }
                 }
                 DialogResult FuncToRun(Form x, IWin32Window y = null) => x.ShowDialog(y);
@@ -74,7 +77,10 @@ namespace Chummer
                 {
                     WaitHandle.WaitAny(new[] { objHandle, objCancelHandle });
                     token.ThrowIfCancellationRequested();
-                    return (DialogResult)frmForm.EndInvoke(objResult);
+                    object objReturn = frmForm.EndInvoke(objResult);
+                    if (objReturn is Exception ex)
+                        throw ex;
+                    return (DialogResult)objReturn;
                 }
             }
             // Unit tests cannot use ShowDialog because that will stall them out
@@ -131,7 +137,12 @@ namespace Chummer
                     return Task.Factory.FromAsync(objInnerResult, x =>
                     {
                         token.ThrowIfCancellationRequested();
-                        return objOwner.IsNullOrDisposed() ? default : (DialogResult)objOwner.EndInvoke(x);
+                        if (objOwner.IsNullOrDisposed())
+                            return default;
+                        object objReturn = objOwner.EndInvoke(x);
+                        if (objReturn is Exception ex)
+                            throw ex;
+                        return (DialogResult)objReturn;
                     });
                 }
                 DialogResult FuncToRun(Form x, IWin32Window y = null) => x.ShowDialog(y);
@@ -139,7 +150,12 @@ namespace Chummer
                 return Task.Factory.FromAsync(objResult, x =>
                 {
                     token.ThrowIfCancellationRequested();
-                    return frmForm.IsNullOrDisposed() ? default : (DialogResult)frmForm.EndInvoke(x);
+                    if (frmForm.IsNullOrDisposed())
+                        return default;
+                    object objReturn = frmForm.EndInvoke(x);
+                    if (objReturn is Exception ex)
+                        throw ex;
+                    return (DialogResult)objReturn;
                 });
             }
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
@@ -385,7 +401,12 @@ namespace Chummer
                             IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
                             // Next two lines ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
                             using (WaitHandle objHandle = objResult.AsyncWaitHandle)
+                            {
                                 objHandle.WaitOne();
+                                if (!myControlCopy.IsNullOrDisposed()
+                                    && myControlCopy.EndInvoke(objResult) is Exception ex)
+                                    throw ex;
+                            }
                         }
                         else
                             myControlCopy.BeginInvoke(funcToRun);
@@ -448,7 +469,12 @@ namespace Chummer
                             IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
                             // Next two lines ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
                             using (WaitHandle objHandle = objResult.AsyncWaitHandle)
+                            {
                                 objHandle.WaitOne();
+                                if (!myControlCopy.IsNullOrDisposed()
+                                    && myControlCopy.EndInvoke(objResult) is Exception ex)
+                                    throw ex;
+                            }
                         }
                         else
                             myControlCopy.BeginInvoke(funcToRun, myControlCopy);
@@ -526,9 +552,11 @@ namespace Chummer
                         {
                             objHandle.WaitOne();
                             object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                            if (objReturnRaw is Task tskRunning)
+                            switch (objReturnRaw)
                             {
-                                if (blnSync)
+                                case Exception ex:
+                                    throw ex;
+                                case Task tskRunning when blnSync:
                                 {
                                     if (tskRunning.Status == TaskStatus.Created)
                                         tskRunning.RunSynchronously();
@@ -536,15 +564,15 @@ namespace Chummer
                                         Utils.SafeSleep();
                                     if (tskRunning.Exception != null)
                                         throw tskRunning.Exception;
+                                    break;
                                 }
-                                else
-                                {
+                                case Task tskRunning:
                                     Task.Run(() => tskRunning.ContinueWith(x =>
                                     {
                                         if (x.Exception != null)
                                             throw x.Exception;
                                     }));
-                                }
+                                    break;
                             }
                         }
                     }
@@ -629,9 +657,11 @@ namespace Chummer
                         {
                             objHandle.WaitOne();
                             object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                            if (objReturnRaw is Task tskRunning)
+                            switch (objReturnRaw)
                             {
-                                if (blnSync)
+                                case Exception ex:
+                                    throw ex;
+                                case Task tskRunning when blnSync:
                                 {
                                     if (tskRunning.Status == TaskStatus.Created)
                                         tskRunning.RunSynchronously();
@@ -639,15 +669,15 @@ namespace Chummer
                                         Utils.SafeSleep();
                                     if (tskRunning.Exception != null)
                                         throw tskRunning.Exception;
+                                    break;
                                 }
-                                else
-                                {
+                                case Task tskRunning:
                                     Task.Run(() => tskRunning.ContinueWith(x =>
                                     {
                                         if (x.Exception != null)
                                             throw x.Exception;
                                     }));
-                                }
+                                    break;
                             }
                         }
                     }
@@ -713,11 +743,10 @@ namespace Chummer
                         await Task.Factory.FromAsync(objResult, x =>
                         {
                             token.ThrowIfCancellationRequested();
-                            object objReturn = myControlCopy.IsNullOrDisposed()
-                                ? default
-                                : myControlCopy.EndInvoke(x);
-                            token.ThrowIfCancellationRequested();
-                            return objReturn;
+                            if (myControlCopy.IsNullOrDisposed())
+                                return;
+                            if (myControlCopy.EndInvoke(x) is Exception ex)
+                                throw ex;
                         });
                     }
                     else
@@ -774,11 +803,10 @@ namespace Chummer
                         await Task.Factory.FromAsync(objResult, x =>
                         {
                             token.ThrowIfCancellationRequested();
-                            object objReturn = myControlCopy.IsNullOrDisposed()
-                                ? default
-                                : myControlCopy.EndInvoke(x);
-                            token.ThrowIfCancellationRequested();
-                            return objReturn;
+                            if (myControlCopy.IsNullOrDisposed())
+                                return;
+                            if (myControlCopy.EndInvoke(x) is Exception ex)
+                                throw ex;
                         });
                     }
                     else
@@ -836,11 +864,10 @@ namespace Chummer
                         await Task.Factory.FromAsync(objResult, x =>
                         {
                             token.ThrowIfCancellationRequested();
-                            object objReturn = myControlCopy.IsNullOrDisposed()
-                                ? default
-                                : myControlCopy.EndInvoke(x);
-                            token.ThrowIfCancellationRequested();
-                            return objReturn;
+                            if (myControlCopy.IsNullOrDisposed())
+                                return;
+                            if (myControlCopy.EndInvoke(x) is Exception ex)
+                                throw ex;
                         });
                     }
                     else
@@ -898,11 +925,10 @@ namespace Chummer
                         await Task.Factory.FromAsync(objResult, x =>
                         {
                             token.ThrowIfCancellationRequested();
-                            object objReturn = myControlCopy.IsNullOrDisposed()
-                                ? default
-                                : myControlCopy.EndInvoke(x);
-                            token.ThrowIfCancellationRequested();
-                            return objReturn;
+                            if (myControlCopy.IsNullOrDisposed())
+                                return;
+                            if (myControlCopy.EndInvoke(x) is Exception ex)
+                                throw ex;
                         });
                     }
                     else
@@ -1353,9 +1379,14 @@ namespace Chummer
                             {
                                 WaitHandle.WaitAny(new [] { objHandle, objCancelHandle });
                                 token.ThrowIfCancellationRequested();
-                                object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                                if (objReturnRaw is T2 objReturnRawCast)
-                                    objReturn = objReturnRawCast;
+                                switch (myControlCopy.EndInvoke(objResult))
+                                {
+                                    case Exception ex:
+                                        throw ex;
+                                    case T2 objReturnRawCast:
+                                        objReturn = objReturnRawCast;
+                                        break;
+                                }
                             }
                         }
                         else
@@ -1363,10 +1394,19 @@ namespace Chummer
                             await Task.Factory.FromAsync(objResult, x =>
                             {
                                 token.ThrowIfCancellationRequested();
-                                object objReturnRaw = myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x);
-                                token.ThrowIfCancellationRequested();
-                                if (objReturnRaw is T2 objReturnRawCast)
-                                    objReturn = objReturnRawCast;
+                                if (myControlCopy.IsNullOrDisposed())
+                                    objReturn = default;
+                                else
+                                {
+                                    switch (myControlCopy.EndInvoke(x))
+                                    {
+                                        case Exception ex:
+                                            throw ex;
+                                        case T2 objReturnRawCast:
+                                            objReturn = objReturnRawCast;
+                                            break;
+                                    }
+                                }
                             });
                         }
                     }
@@ -1432,9 +1472,14 @@ namespace Chummer
                             {
                                 WaitHandle.WaitAny(new[] { objHandle, objCancelHandle });
                                 token.ThrowIfCancellationRequested();
-                                object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                                if (objReturnRaw is T2 objReturnRawCast)
-                                    objReturn = objReturnRawCast;
+                                switch (myControlCopy.EndInvoke(objResult))
+                                {
+                                    case Exception ex:
+                                        throw ex;
+                                    case T2 objReturnRawCast:
+                                        objReturn = objReturnRawCast;
+                                        break;
+                                }
                             }
                         }
                         else
@@ -1442,10 +1487,19 @@ namespace Chummer
                             await Task.Factory.FromAsync(objResult, x =>
                             {
                                 token.ThrowIfCancellationRequested();
-                                object objReturnRaw = myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x);
-                                if (objReturnRaw is T2 objReturnRawCast)
-                                    objReturn = objReturnRawCast;
-                                token.ThrowIfCancellationRequested();
+                                if (myControlCopy.IsNullOrDisposed())
+                                    objReturn = default;
+                                else
+                                {
+                                    switch (myControlCopy.EndInvoke(x))
+                                    {
+                                        case Exception ex:
+                                            throw ex;
+                                        case T2 objReturnRawCast:
+                                            objReturn = objReturnRawCast;
+                                            break;
+                                    }
+                                }
                             });
                         }
                     }
@@ -1511,9 +1565,14 @@ namespace Chummer
                             {
                                 WaitHandle.WaitAny(new[] { objHandle, objCancelHandle });
                                 token.ThrowIfCancellationRequested();
-                                object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                                if (objReturnRaw is T2 objReturnRawCast)
-                                    objReturn = objReturnRawCast;
+                                switch (myControlCopy.EndInvoke(objResult))
+                                {
+                                    case Exception ex:
+                                        throw ex;
+                                    case T2 objReturnRawCast:
+                                        objReturn = objReturnRawCast;
+                                        break;
+                                }
                             }
                         }
                         else
@@ -1521,10 +1580,19 @@ namespace Chummer
                             await Task.Factory.FromAsync(objResult, x =>
                             {
                                 token.ThrowIfCancellationRequested();
-                                object objReturnRaw = myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x);
-                                token.ThrowIfCancellationRequested();
-                                if (objReturnRaw is T2 objReturnRawCast)
-                                    objReturn = objReturnRawCast;
+                                if (myControlCopy.IsNullOrDisposed())
+                                    objReturn = default;
+                                else
+                                {
+                                    switch (myControlCopy.EndInvoke(x))
+                                    {
+                                        case Exception ex:
+                                            throw ex;
+                                        case T2 objReturnRawCast:
+                                            objReturn = objReturnRawCast;
+                                            break;
+                                    }
+                                }
                             });
                         }
                     }
@@ -1590,9 +1658,14 @@ namespace Chummer
                             {
                                 WaitHandle.WaitAny(new[] { objHandle, objCancelHandle });
                                 token.ThrowIfCancellationRequested();
-                                object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                                if (objReturnRaw is T2 objReturnRawCast)
-                                    objReturn = objReturnRawCast;
+                                switch (myControlCopy.EndInvoke(objResult))
+                                {
+                                    case Exception ex:
+                                        throw ex;
+                                    case T2 objReturnRawCast:
+                                        objReturn = objReturnRawCast;
+                                        break;
+                                }
                             }
                         }
                         else
@@ -1600,10 +1673,19 @@ namespace Chummer
                             await Task.Factory.FromAsync(objResult, x =>
                             {
                                 token.ThrowIfCancellationRequested();
-                                object objReturnRaw = myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x);
-                                if (objReturnRaw is T2 objReturnRawCast)
-                                    objReturn = objReturnRawCast;
-                                token.ThrowIfCancellationRequested();
+                                if (myControlCopy.IsNullOrDisposed())
+                                    objReturn = default;
+                                else
+                                {
+                                    switch (myControlCopy.EndInvoke(x))
+                                    {
+                                        case Exception ex:
+                                            throw ex;
+                                        case T2 objReturnRawCast:
+                                            objReturn = objReturnRawCast;
+                                            break;
+                                    }
+                                }
                             });
                         }
                     }
@@ -1816,13 +1898,19 @@ namespace Chummer
                                 WaitHandle.WaitAny(new[] { objHandle, objCancelHandle });
                                 token.ThrowIfCancellationRequested();
                                 object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                                if (objReturnRaw is Task<T2> tskReturn)
+                                switch (objReturnRaw)
                                 {
-                                    if (tskReturn.Status == TaskStatus.Created)
-                                        tskReturn.RunSynchronously();
-                                    if (tskReturn.Exception != null)
-                                        throw tskReturn.Exception;
-                                    objReturn = tskReturn.GetAwaiter().GetResult();
+                                    case Exception ex:
+                                        throw ex;
+                                    case Task<T2> tskReturn:
+                                    {
+                                        if (tskReturn.Status == TaskStatus.Created)
+                                            tskReturn.RunSynchronously();
+                                        if (tskReturn.Exception != null)
+                                            throw tskReturn.Exception;
+                                        objReturn = tskReturn.GetAwaiter().GetResult();
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -1834,8 +1922,14 @@ namespace Chummer
                                 token.ThrowIfCancellationRequested();
                                 object objReturnRaw = myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x);
                                 token.ThrowIfCancellationRequested();
-                                if (objReturnRaw is Task<T2> objReturnRawCast)
-                                    tskReturn = objReturnRawCast;
+                                switch (objReturnRaw)
+                                {
+                                    case Exception ex:
+                                        throw ex;
+                                    case Task<T2> objReturnRawCast:
+                                        tskReturn = objReturnRawCast;
+                                        break;
+                                }
                             });
                             objReturn = await tskReturn;
                         }
@@ -1924,13 +2018,19 @@ namespace Chummer
                                 WaitHandle.WaitAny(new[] { objHandle, objCancelHandle });
                                 token.ThrowIfCancellationRequested();
                                 object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                                if (objReturnRaw is Task<T2> tskReturn)
+                                switch (objReturnRaw)
                                 {
-                                    if (tskReturn.Status == TaskStatus.Created)
-                                        tskReturn.RunSynchronously();
-                                    if (tskReturn.Exception != null)
-                                        throw tskReturn.Exception;
-                                    objReturn = tskReturn.GetAwaiter().GetResult();
+                                    case Exception ex:
+                                        throw ex;
+                                    case Task<T2> tskReturn:
+                                    {
+                                        if (tskReturn.Status == TaskStatus.Created)
+                                            tskReturn.RunSynchronously();
+                                        if (tskReturn.Exception != null)
+                                            throw tskReturn.Exception;
+                                        objReturn = tskReturn.GetAwaiter().GetResult();
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -1942,8 +2042,14 @@ namespace Chummer
                                 token.ThrowIfCancellationRequested();
                                 object objReturnRaw = myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x);
                                 token.ThrowIfCancellationRequested();
-                                if (objReturnRaw is Task<T2> objReturnRawCast)
-                                    tskReturn = objReturnRawCast;
+                                switch (objReturnRaw)
+                                {
+                                    case Exception ex:
+                                        throw ex;
+                                    case Task<T2> objReturnRawCast:
+                                        tskReturn = objReturnRawCast;
+                                        break;
+                                }
                             });
                             objReturn = await tskReturn;
                         }
@@ -2032,13 +2138,19 @@ namespace Chummer
                                 WaitHandle.WaitAny(new[] { objHandle, objCancelHandle });
                                 token.ThrowIfCancellationRequested();
                                 object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                                if (objReturnRaw is Task<T2> tskReturn)
+                                switch (objReturnRaw)
                                 {
-                                    if (tskReturn.Status == TaskStatus.Created)
-                                        tskReturn.RunSynchronously();
-                                    if (tskReturn.Exception != null)
-                                        throw tskReturn.Exception;
-                                    objReturn = tskReturn.GetAwaiter().GetResult();
+                                    case Exception ex:
+                                        throw ex;
+                                    case Task<T2> tskReturn:
+                                    {
+                                        if (tskReturn.Status == TaskStatus.Created)
+                                            tskReturn.RunSynchronously();
+                                        if (tskReturn.Exception != null)
+                                            throw tskReturn.Exception;
+                                        objReturn = tskReturn.GetAwaiter().GetResult();
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -2050,8 +2162,14 @@ namespace Chummer
                                 token.ThrowIfCancellationRequested();
                                 object objReturnRaw = myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x);
                                 token.ThrowIfCancellationRequested();
-                                if (objReturnRaw is Task<T2> objReturnRawCast)
-                                    tskReturn = objReturnRawCast;
+                                switch (objReturnRaw)
+                                {
+                                    case Exception ex:
+                                        throw ex;
+                                    case Task<T2> objReturnRawCast:
+                                        tskReturn = objReturnRawCast;
+                                        break;
+                                }
                             });
                             objReturn = await tskReturn;
                         }
@@ -2140,13 +2258,19 @@ namespace Chummer
                                 WaitHandle.WaitAny(new[] { objHandle, objCancelHandle });
                                 token.ThrowIfCancellationRequested();
                                 object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                                if (objReturnRaw is Task<T2> tskReturn)
+                                switch (objReturnRaw)
                                 {
-                                    if (tskReturn.Status == TaskStatus.Created)
-                                        tskReturn.RunSynchronously();
-                                    if (tskReturn.Exception != null)
-                                        throw tskReturn.Exception;
-                                    objReturn = tskReturn.GetAwaiter().GetResult();
+                                    case Exception ex:
+                                        throw ex;
+                                    case Task<T2> tskReturn:
+                                    {
+                                        if (tskReturn.Status == TaskStatus.Created)
+                                            tskReturn.RunSynchronously();
+                                        if (tskReturn.Exception != null)
+                                            throw tskReturn.Exception;
+                                        objReturn = tskReturn.GetAwaiter().GetResult();
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -2158,8 +2282,14 @@ namespace Chummer
                                 token.ThrowIfCancellationRequested();
                                 object objReturnRaw = myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x);
                                 token.ThrowIfCancellationRequested();
-                                if (objReturnRaw is Task<T2> objReturnRawCast)
-                                    tskReturn = objReturnRawCast;
+                                switch (objReturnRaw)
+                                {
+                                    case Exception ex:
+                                        throw ex;
+                                    case Task<T2> objReturnRawCast:
+                                        tskReturn = objReturnRawCast;
+                                        break;
+                                }
                             });
                             objReturn = await tskReturn;
                         }
