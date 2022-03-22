@@ -1118,10 +1118,12 @@ namespace Chummer
         /// <returns></returns>
         public static LoadingBar CreateAndShowProgressBar(string strFile = "", int intCount = 1)
         {
-            LoadingBar frmReturn = new LoadingBar { CharacterFile = strFile };
+            LoadingBar frmReturn = MainForm != null
+                ? MainForm.DoThreadSafeFunc(() => new LoadingBar { CharacterFile = strFile })
+                : new LoadingBar { CharacterFile = strFile };
             if (intCount > 0)
                 frmReturn.Reset(intCount);
-            frmReturn.Show();
+            frmReturn.DoThreadSafe(x => x.Show());
             return frmReturn;
         }
 
@@ -1133,10 +1135,12 @@ namespace Chummer
         /// <returns></returns>
         public static async ValueTask<LoadingBar> CreateAndShowProgressBarAsync(string strFile = "", int intCount = 1)
         {
-            LoadingBar frmReturn = new LoadingBar { CharacterFile = strFile };
+            LoadingBar frmReturn = MainForm != null
+                ? await MainForm.DoThreadSafeFuncAsync(() => new LoadingBar { CharacterFile = strFile })
+                : new LoadingBar { CharacterFile = strFile };
             if (intCount > 0)
                 await frmReturn.ResetAsync(intCount);
-            frmReturn.Show();
+            await frmReturn.DoThreadSafeAsync(x => x.Show());
             return frmReturn;
         }
 

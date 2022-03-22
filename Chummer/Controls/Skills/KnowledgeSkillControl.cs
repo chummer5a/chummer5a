@@ -406,14 +406,13 @@ namespace Chummer.UI.Skills
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
-            Form frmToUse = await this.DoThreadSafeFuncAsync(x => x.ParentForm) ?? Program.MainForm;
-            using (SelectSpec selectForm = await this.DoThreadSafeFuncAsync(() => new SelectSpec(_objSkill) { Mode = "Knowledge" }))
+            using (ThreadSafeForm<SelectSpec> selectForm = await ThreadSafeForm<SelectSpec>.GetAsync(() => new SelectSpec(_objSkill) { Mode = "Knowledge" }))
             {
-                if (await selectForm.ShowDialogSafeAsync(frmToUse) != DialogResult.OK)
+                if (await selectForm.ShowDialogSafeAsync(_objSkill.CharacterObject) != DialogResult.OK)
                     return;
-                _objSkill.AddSpecialization(selectForm.SelectedItem);
+                _objSkill.AddSpecialization(selectForm.MyForm.SelectedItem);
             }
-            if (frmToUse is CharacterShared frmParent)
+            if (await Program.GetFormForDialogAsync(_objSkill.CharacterObject) is CharacterShared frmParent)
                 frmParent.IsCharacterUpdateRequested = true;
         }
 

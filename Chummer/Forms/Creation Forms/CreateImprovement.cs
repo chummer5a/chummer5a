@@ -213,17 +213,18 @@ namespace Chummer
                                                    ?? strName));
                         }
 
-                        using (SelectItem frmSelectAction = new SelectItem
+                        string strDescription = await LanguageManager.GetStringAsync("Title_SelectAction");
+                        using (ThreadSafeForm<SelectItem> frmSelectAction = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
                                {
-                                   Description = await LanguageManager.GetStringAsync("Title_SelectAction")
-                               })
+                                   Description = strDescription
+                               }))
                         {
-                            frmSelectAction.SetDropdownItemsMode(lstActions);
+                            frmSelectAction.MyForm.SetDropdownItemsMode(lstActions);
 
                             if (await frmSelectAction.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
-                                txtSelect.Text = frmSelectAction.SelectedName;
-                                txtTranslateSelection.Text = await TranslateField(_strSelect, frmSelectAction.SelectedName);
+                                txtSelect.Text = frmSelectAction.MyForm.SelectedName;
+                                txtTranslateSelection.Text = await TranslateField(_strSelect, frmSelectAction.MyForm.SelectedName);
                             }
                         }
                     }
@@ -242,20 +243,22 @@ namespace Chummer
                         }
                         else if (!_objCharacter.IsMysticAdept || !_objCharacter.Settings.MysAdeptSecondMAGAttribute)
                             lstAbbrevs.Remove("MAGAdept");
-
                         if (!_objCharacter.RESEnabled)
                             lstAbbrevs.Remove("RES");
                         if (!_objCharacter.DEPEnabled)
                             lstAbbrevs.Remove("DEP");
-                        using (SelectAttribute frmPickAttribute = new SelectAttribute(lstAbbrevs.ToArray())
-                        {
-                            Description = await LanguageManager.GetStringAsync("Title_SelectAttribute")
-                        })
+
+                        string strDescription = await LanguageManager.GetStringAsync("Title_SelectAttribute");
+                        using (ThreadSafeForm<SelectAttribute> frmPickAttribute = await ThreadSafeForm<SelectAttribute>.GetAsync(
+                                   () => new SelectAttribute(lstAbbrevs.ToArray())
+                                   {
+                                       Description = strDescription
+                                   }))
                         {
                             if (await frmPickAttribute.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
-                                txtSelect.Text = frmPickAttribute.SelectedAttribute;
-                                txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickAttribute.SelectedAttribute);
+                                txtSelect.Text = frmPickAttribute.MyForm.SelectedAttribute;
+                                txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickAttribute.MyForm.SelectedAttribute);
                             }
                         }
                     }
@@ -264,11 +267,13 @@ namespace Chummer
                 case "SelectEcho":
                     {
                         InitiationGrade objGrade = new InitiationGrade(_objCharacter) { Grade = -1, Technomancer = true };
-                        using (SelectMetamagic frmPickMetamagic = new SelectMetamagic(_objCharacter, objGrade))
+                        using (ThreadSafeForm<SelectMetamagic> frmPickMetamagic =
+                               await ThreadSafeForm<SelectMetamagic>.GetAsync(() =>
+                                   new SelectMetamagic(_objCharacter, objGrade)))
                         {
                             if (await frmPickMetamagic.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
-                                string strSelectedId = frmPickMetamagic.SelectedMetamagic;
+                                string strSelectedId = frmPickMetamagic.MyForm.SelectedMetamagic;
                                 if (!string.IsNullOrEmpty(strSelectedId))
                                 {
                                     string strEchoName = (await _objCharacter.LoadDataXPathAsync("echoes.xml"))
@@ -298,11 +303,13 @@ namespace Chummer
                 case "SelectMetamagic":
                     {
                         InitiationGrade objGrade = new InitiationGrade(_objCharacter) { Grade = -1 };
-                        using (SelectMetamagic frmPickMetamagic = new SelectMetamagic(_objCharacter, objGrade))
+                        using (ThreadSafeForm<SelectMetamagic> frmPickMetamagic =
+                               await ThreadSafeForm<SelectMetamagic>.GetAsync(() =>
+                                   new SelectMetamagic(_objCharacter, objGrade)))
                         {
                             if (await frmPickMetamagic.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
-                                string strSelectedId = frmPickMetamagic.SelectedMetamagic;
+                                string strSelectedId = frmPickMetamagic.MyForm.SelectedMetamagic;
                                 if (!string.IsNullOrEmpty(strSelectedId))
                                 {
                                     string strEchoName = (await _objCharacter.LoadDataXPathAsync("metamagic.xml"))
@@ -330,31 +337,41 @@ namespace Chummer
                     break;
 
                 case "SelectMentalAttribute":
-                    using (SelectAttribute frmPickAttribute = new SelectAttribute(Backend.Attributes.AttributeSection.MentalAttributes.ToArray()))
+                {
+                    string strDescription = await LanguageManager.GetStringAsync("Title_SelectAttribute");
+                    using (ThreadSafeForm<SelectAttribute> frmPickAttribute =
+                           await ThreadSafeForm<SelectAttribute>.GetAsync(() =>
+                               new SelectAttribute(Backend.Attributes.AttributeSection.MentalAttributes.ToArray())
+                                   { Description = strDescription }))
                     {
-                        frmPickAttribute.Description = await LanguageManager.GetStringAsync("Title_SelectAttribute");
-
                         if (await frmPickAttribute.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
-                            txtSelect.Text = frmPickAttribute.SelectedAttribute;
-                            txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickAttribute.SelectedAttribute);
+                            txtSelect.Text = frmPickAttribute.MyForm.SelectedAttribute;
+                            txtTranslateSelection.Text =
+                                await TranslateField(_strSelect, frmPickAttribute.MyForm.SelectedAttribute);
                         }
                     }
-                    break;
 
+                    break;
+                }
                 case "SelectPhysicalAttribute":
-                    using (SelectAttribute frmPickAttribute = new SelectAttribute(Backend.Attributes.AttributeSection.PhysicalAttributes.ToArray()))
+                {
+                    string strDescription = await LanguageManager.GetStringAsync("Title_SelectAttribute");
+                    using (ThreadSafeForm<SelectAttribute> frmPickAttribute =
+                           await ThreadSafeForm<SelectAttribute>.GetAsync(() =>
+                               new SelectAttribute(Backend.Attributes.AttributeSection.PhysicalAttributes.ToArray())
+                                   { Description = strDescription }))
                     {
-                        frmPickAttribute.Description = await LanguageManager.GetStringAsync("Title_SelectAttribute");
-
                         if (await frmPickAttribute.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
-                            txtSelect.Text = frmPickAttribute.SelectedAttribute;
-                            txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickAttribute.SelectedAttribute);
+                            txtSelect.Text = frmPickAttribute.MyForm.SelectedAttribute;
+                            txtTranslateSelection.Text =
+                                await TranslateField(_strSelect, frmPickAttribute.MyForm.SelectedAttribute);
                         }
                     }
-                    break;
 
+                    break;
+                }
                 case "SelectSpecialAttribute":
                     {
                         List<string> lstAbbrevs = new List<string>(Backend.Attributes.AttributeSection.AttributeStrings);
@@ -374,40 +391,45 @@ namespace Chummer
                         if (!_objCharacter.DEPEnabled)
                             lstAbbrevs.Remove("DEP");
                             */
-                        using (SelectAttribute frmPickAttribute = new SelectAttribute(lstAbbrevs.ToArray())
-                        {
-                            Description = await LanguageManager.GetStringAsync("Title_SelectAttribute")
-                        })
+                        string strDescription = await LanguageManager.GetStringAsync("Title_SelectAttribute");
+                        using (ThreadSafeForm<SelectAttribute> frmPickAttribute = await ThreadSafeForm<SelectAttribute>.GetAsync(() => new SelectAttribute(lstAbbrevs.ToArray())
+                               {
+                                   Description = strDescription
+                               }))
                         {
                             if (await frmPickAttribute.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
-                                txtSelect.Text = frmPickAttribute.SelectedAttribute;
-                                txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickAttribute.SelectedAttribute);
+                                txtSelect.Text = frmPickAttribute.MyForm.SelectedAttribute;
+                                txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickAttribute.MyForm.SelectedAttribute);
                             }
                         }
                     }
                     break;
 
                 case "SelectSkill":
-                    using (SelectSkill frmPickSkill = new SelectSkill(_objCharacter))
+                {
+                    string strDescription = await LanguageManager.GetStringAsync("Title_SelectSkill");
+                    using (ThreadSafeForm<SelectSkill> frmPickSkill =
+                           await ThreadSafeForm<SelectSkill>.GetAsync(() => new SelectSkill(_objCharacter)
+                               { Description = strDescription }))
                     {
-                        frmPickSkill.Description = await LanguageManager.GetStringAsync("Title_SelectSkill");
                         if (await frmPickSkill.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
-                            txtSelect.Text = frmPickSkill.SelectedSkill;
-                            txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickSkill.SelectedSkill);
+                            txtSelect.Text = frmPickSkill.MyForm.SelectedSkill;
+                            txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickSkill.MyForm.SelectedSkill);
                         }
                     }
-                    break;
 
+                    break;
+                }
                 case "SelectKnowSkill":
                 {
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
-                                                                   out List<ListItem> lstDropdownItems))
+                               out List<ListItem> lstDropdownItems))
                     {
                         string strFilter = string.Empty;
                         using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                        out HashSet<string> setProcessedSkillNames))
+                                   out HashSet<string> setProcessedSkillNames))
                         {
                             foreach (KnowledgeSkill objKnowledgeSkill in _objCharacter.SkillsSection.KnowledgeSkills)
                             {
@@ -417,7 +439,7 @@ namespace Chummer
                             }
 
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdFilters))
+                                       out StringBuilder sbdFilters))
                             {
                                 if (setProcessedSkillNames.Count > 0)
                                 {
@@ -437,97 +459,103 @@ namespace Chummer
                         }
 
                         foreach (XPathNavigator xmlSkill in (await _objCharacter.LoadDataXPathAsync("skills.xml"))
-                                                                         .Select("/chummer/knowledgeskills/skill"
-                                                                             + strFilter))
+                                 .Select("/chummer/knowledgeskills/skill"
+                                         + strFilter))
                         {
                             string strName = (await xmlSkill.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                             if (!string.IsNullOrEmpty(strName))
                                 lstDropdownItems.Add(
                                     new ListItem(
                                         strName,
-                                        (await xmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? strName));
+                                        (await xmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ??
+                                        strName));
                         }
 
                         lstDropdownItems.Sort(CompareListItems.CompareNames);
 
-                        using (SelectItem frmPickSkill = new SelectItem
-                               {
-                                   Description = await LanguageManager.GetStringAsync("Title_SelectSkill")
-                               })
+                        string strDescription = await LanguageManager.GetStringAsync("Title_SelectSkill");
+                        using (ThreadSafeForm<SelectItem> frmPickSkill = ThreadSafeForm<SelectItem>.Get(() => new SelectItem { Description = strDescription }))
                         {
-                            frmPickSkill.SetDropdownItemsMode(lstDropdownItems);
+                            frmPickSkill.MyForm.SetDropdownItemsMode(lstDropdownItems);
                             if (await frmPickSkill.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
-                                txtSelect.Text = frmPickSkill.SelectedItem;
-                                txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickSkill.SelectedItem);
+                                txtSelect.Text = frmPickSkill.MyForm.SelectedItem;
+                                txtTranslateSelection.Text =
+                                    await TranslateField(_strSelect, frmPickSkill.MyForm.SelectedItem);
                             }
                         }
                     }
-                }
+
                     break;
-
+                }
                 case "SelectSkillCategory":
-                    using (SelectSkillCategory frmPickSkillCategory = new SelectSkillCategory(_objCharacter))
+                {
+                    string strDescription = await LanguageManager.GetStringAsync("Title_SelectSkillCategory");
+                    using (ThreadSafeForm<SelectSkillCategory> frmPickSkillCategory = ThreadSafeForm<SelectSkillCategory>.Get(() => new SelectSkillCategory(_objCharacter) { Description = strDescription }))
                     {
-                        frmPickSkillCategory.Description = await LanguageManager.GetStringAsync("Title_SelectSkillCategory");
-
                         if (await frmPickSkillCategory.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
-                            txtSelect.Text = frmPickSkillCategory.SelectedCategory;
-                            txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickSkillCategory.SelectedCategory);
+                            txtSelect.Text = frmPickSkillCategory.MyForm.SelectedCategory;
+                            txtTranslateSelection.Text =
+                                await TranslateField(_strSelect, frmPickSkillCategory.MyForm.SelectedCategory);
                         }
                     }
+
                     break;
-
+                }
                 case "SelectSkillGroup":
-                    using (SelectSkillGroup frmPickSkillGroup = new SelectSkillGroup(_objCharacter))
+                {
+                    string strDescription = await LanguageManager.GetStringAsync("Title_SelectSkillGroup");
+                    using (ThreadSafeForm<SelectSkillGroup> frmPickSkillGroup = ThreadSafeForm<SelectSkillGroup>.Get(() => new SelectSkillGroup(_objCharacter) { Description = strDescription }))
                     {
-                        frmPickSkillGroup.Description = await LanguageManager.GetStringAsync("Title_SelectSkillGroup");
-
                         if (await frmPickSkillGroup.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
-                            txtSelect.Text = frmPickSkillGroup.SelectedSkillGroup;
-                            txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickSkillGroup.SelectedSkillGroup);
+                            txtSelect.Text = frmPickSkillGroup.MyForm.SelectedSkillGroup;
+                            txtTranslateSelection.Text =
+                                await TranslateField(_strSelect, frmPickSkillGroup.MyForm.SelectedSkillGroup);
                         }
                     }
-                    break;
 
+                    break;
+                }
                 case "SelectComplexForm":
+                {
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
-                                                                   out List<ListItem> lstComplexForms))
+                               out List<ListItem> lstComplexForms))
                     {
-                        foreach (XPathNavigator xmlSpell in await (await _objCharacter.LoadDataXPathAsync("complexforms.xml"))
+                        foreach (XPathNavigator xmlSpell in await (await _objCharacter.LoadDataXPathAsync(
+                                         "complexforms.xml"))
                                      .SelectAndCacheExpressionAsync(
                                          "/chummer/complexforms/complexform"))
                         {
                             string strName = (await xmlSpell.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                             if (!string.IsNullOrEmpty(strName))
                                 lstComplexForms.Add(new ListItem(
-                                                        strName,
-                                                        (await xmlSpell.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
-                                                        ?? strName));
+                                    strName,
+                                    (await xmlSpell.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                    ?? strName));
                         }
 
-                        using (SelectItem selectComplexForm = new SelectItem
-                               {
-                                   Description = await LanguageManager.GetStringAsync("Title_SelectComplexForm")
-                               })
+                        string strDescription = await LanguageManager.GetStringAsync("Title_SelectComplexForm");
+                        using (ThreadSafeForm<SelectItem> selectComplexForm = ThreadSafeForm<SelectItem>.Get(() => new SelectItem { Description = strDescription }))
                         {
-                            selectComplexForm.SetDropdownItemsMode(lstComplexForms);
+                            selectComplexForm.MyForm.SetDropdownItemsMode(lstComplexForms);
 
                             if (await selectComplexForm.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
-                                txtSelect.Text = selectComplexForm.SelectedName;
-                                txtTranslateSelection.Text = await TranslateField(_strSelect, selectComplexForm.SelectedName);
+                                txtSelect.Text = selectComplexForm.MyForm.SelectedName;
+                                txtTranslateSelection.Text =
+                                    await TranslateField(_strSelect, selectComplexForm.MyForm.SelectedName);
                             }
                         }
                     }
 
                     break;
-
+                }
                 case "SelectSpell":
+                {
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
-                                                                   out List<ListItem> lstSpells))
+                               out List<ListItem> lstSpells))
                     {
                         foreach (XPathNavigator xmlSpell in await (await _objCharacter.LoadDataXPathAsync("spells.xml"))
                                      .SelectAndCacheExpressionAsync(
@@ -536,63 +564,63 @@ namespace Chummer
                             string strName = (await xmlSpell.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                             if (!string.IsNullOrEmpty(strName))
                                 lstSpells.Add(new ListItem(
-                                                  strName,
-                                                  (await xmlSpell.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
-                                                  ?? strName));
+                                    strName,
+                                    (await xmlSpell.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                    ?? strName));
                         }
 
-                        using (SelectItem selectSpell = new SelectItem
-                               {
-                                   Description = await LanguageManager.GetStringAsync("Title_SelectSpell")
-                               })
+                        string strDescription = await LanguageManager.GetStringAsync("Title_SelectSpell");
+                        using (ThreadSafeForm<SelectItem> selectSpell = ThreadSafeForm<SelectItem>.Get(() => new SelectItem { Description = strDescription }))
                         {
-                            selectSpell.SetDropdownItemsMode(lstSpells);
+                            selectSpell.MyForm.SetDropdownItemsMode(lstSpells);
 
                             if (await selectSpell.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
-                                txtSelect.Text = selectSpell.SelectedName;
-                                txtTranslateSelection.Text = await TranslateField(_strSelect, selectSpell.SelectedName);
+                                txtSelect.Text = selectSpell.MyForm.SelectedName;
+                                txtTranslateSelection.Text = await TranslateField(_strSelect, selectSpell.MyForm.SelectedName);
                             }
                         }
                     }
 
                     break;
-
+                }
                 case "SelectWeaponCategory":
-                    using (SelectWeaponCategory frmPickWeaponCategory = new SelectWeaponCategory(_objCharacter))
+                {
+                    string strDescription = await LanguageManager.GetStringAsync("Title_SelectWeaponCategory");
+                    using (ThreadSafeForm<SelectWeaponCategory> frmPickWeaponCategory = ThreadSafeForm<SelectWeaponCategory>.Get(() => new SelectWeaponCategory(_objCharacter) { Description = strDescription }))
                     {
-                        frmPickWeaponCategory.Description = await LanguageManager.GetStringAsync("Title_SelectWeaponCategory");
-
                         if (await frmPickWeaponCategory.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
-                            txtSelect.Text = frmPickWeaponCategory.SelectedCategory;
-                            txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickWeaponCategory.SelectedCategory);
+                            txtSelect.Text = frmPickWeaponCategory.MyForm.SelectedCategory;
+                            txtTranslateSelection.Text =
+                                await TranslateField(_strSelect, frmPickWeaponCategory.MyForm.SelectedCategory);
                         }
                     }
+
                     break;
-
+                }
                 case "SelectSpellCategory":
-                    using (SelectSpellCategory frmPickSpellCategory = new SelectSpellCategory(_objCharacter))
+                {
+                    string strDescription = await LanguageManager.GetStringAsync("Title_SelectSpellCategory");
+                    using (ThreadSafeForm<SelectSpellCategory> frmPickSpellCategory = ThreadSafeForm<SelectSpellCategory>.Get(() => new SelectSpellCategory(_objCharacter) { Description = strDescription }))
                     {
-                        frmPickSpellCategory.Description = await LanguageManager.GetStringAsync("Title_SelectSpellCategory");
-
                         if (await frmPickSpellCategory.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
-                            txtSelect.Text = frmPickSpellCategory.SelectedCategory;
-                            txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickSpellCategory.SelectedCategory);
+                            txtSelect.Text = frmPickSpellCategory.MyForm.SelectedCategory;
+                            txtTranslateSelection.Text =
+                                await TranslateField(_strSelect, frmPickSpellCategory.MyForm.SelectedCategory);
                         }
                     }
+
                     break;
-
+                }
                 case "SelectAdeptPower":
-                    using (SelectPower frmPickPower = new SelectPower(_objCharacter))
+                    using (ThreadSafeForm<SelectPower> frmPickPower = ThreadSafeForm<SelectPower>.Get(() => new SelectPower(_objCharacter) { IgnoreLimits = chkIgnoreLimits.Checked }))
                     {
-                        frmPickPower.IgnoreLimits = chkIgnoreLimits.Checked;
-
                         if (await frmPickPower.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
-                            txtSelect.Text = (await _objCharacter.LoadDataXPathAsync("powers.xml")).SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.SelectedPower.CleanXPath() + "]/name")?.Value;
-                            txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickPower.SelectedPower);
+                            txtSelect.Text = (await _objCharacter.LoadDataXPathAsync("powers.xml")).SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.MyForm.SelectedPower.CleanXPath() + "]/name")?.Value;
+                            txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickPower.MyForm.SelectedPower);
                         }
                     }
                     break;

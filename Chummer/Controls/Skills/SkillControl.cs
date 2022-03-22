@@ -466,15 +466,14 @@ namespace Chummer.UI.Skills
 
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
-
-            Form frmToUse = await this.DoThreadSafeFuncAsync(x => x.ParentForm) ?? Program.MainForm;
-            using (SelectSpec selectForm = await this.DoThreadSafeFuncAsync(() => new SelectSpec(_objSkill)))
+            
+            using (ThreadSafeForm<SelectSpec> selectForm = await ThreadSafeForm<SelectSpec>.GetAsync(() => new SelectSpec(_objSkill)))
             {
-                if (await selectForm.ShowDialogSafeAsync(frmToUse) != DialogResult.OK)
+                if (await selectForm.ShowDialogSafeAsync(_objSkill.CharacterObject) != DialogResult.OK)
                     return;
-                _objSkill.AddSpecialization(selectForm.SelectedItem);
+                _objSkill.AddSpecialization(selectForm.MyForm.SelectedItem);
             }
-            if (frmToUse is CharacterShared frmParent)
+            if (await Program.GetFormForDialogAsync(_objSkill.CharacterObject) is CharacterShared frmParent)
                 frmParent.IsCharacterUpdateRequested = true;
         }
 
@@ -548,11 +547,11 @@ namespace Chummer.UI.Skills
 
         private async void tsSkillLabelNotes_Click(object sender, EventArgs e)
         {
-            using (EditNotes frmItemNotes = await this.DoThreadSafeFuncAsync(() => new EditNotes(_objSkill.Notes, _objSkill.NotesColor)))
+            using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(_objSkill.Notes, _objSkill.NotesColor)))
             {
-                if (await frmItemNotes.ShowDialogSafeAsync(this) != DialogResult.OK)
+                if (await frmItemNotes.ShowDialogSafeAsync(_objSkill.CharacterObject) != DialogResult.OK)
                     return;
-                _objSkill.Notes = frmItemNotes.Notes;
+                _objSkill.Notes = frmItemNotes.MyForm.Notes;
             }
         }
 

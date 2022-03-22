@@ -92,14 +92,18 @@ namespace Chummer.UI.Shared
 
         private async void cmdAddLimitModifier_Click(object sender, EventArgs e)
         {
-            using (SelectLimitModifier frmPickLimitModifier = await this.DoThreadSafeFuncAsync(() => new SelectLimitModifier(null, "Physical", "Mental", "Social")))
+            using (ThreadSafeForm<SelectLimitModifier> frmPickLimitModifier =
+                   await ThreadSafeForm<SelectLimitModifier>.GetAsync(() =>
+                       new SelectLimitModifier(null, "Physical", "Mental", "Social")))
             {
-                if (await frmPickLimitModifier.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                if (await frmPickLimitModifier.ShowDialogSafeAsync(_objCharacter) == DialogResult.Cancel)
                     return;
 
                 // Create the new limit modifier.
                 LimitModifier objLimitModifier = new LimitModifier(_objCharacter);
-                objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition, true);
+                objLimitModifier.Create(frmPickLimitModifier.MyForm.SelectedName,
+                    frmPickLimitModifier.MyForm.SelectedBonus, frmPickLimitModifier.MyForm.SelectedLimitType,
+                    frmPickLimitModifier.MyForm.SelectedCondition, true);
                 if (objLimitModifier.InternalId.IsEmptyGuid())
                     return;
 
@@ -143,12 +147,12 @@ namespace Chummer.UI.Shared
                     if (objImprovement.ImproveType != Improvement.ImprovementType.LimitModifier ||
                         objImprovement.SourceName != objSelectedNodeTag.ToString())
                         continue;
-                    using (EditNotes frmItemNotes = new EditNotes(objImprovement.Notes, objImprovement.NotesColor))
+                    using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objImprovement.Notes, objImprovement.NotesColor)))
                     {
-                        if (await frmItemNotes.ShowDialogSafeAsync(this) != DialogResult.OK)
+                        if (await frmItemNotes.ShowDialogSafeAsync(_objCharacter) != DialogResult.OK)
                             continue;
 
-                        objImprovement.Notes = frmItemNotes.Notes;
+                        objImprovement.Notes = frmItemNotes.MyForm.Notes;
                     }
                     await treLimit.DoThreadSafeAsync(x =>
                     {
@@ -177,13 +181,13 @@ namespace Chummer.UI.Shared
         /// <param name="treNode"></param>
         private async ValueTask WriteNotes(IHasNotes objNotes, TreeNode treNode)
         {
-            using (EditNotes frmItemNotes = await this.DoThreadSafeFuncAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor)))
+            using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor)))
             {
-                if (await frmItemNotes.ShowDialogSafeAsync(this) != DialogResult.OK)
+                if (await frmItemNotes.ShowDialogSafeAsync(_objCharacter) != DialogResult.OK)
                     return;
 
-                objNotes.Notes = frmItemNotes.Notes;
-                objNotes.NotesColor = frmItemNotes.NotesColor;
+                objNotes.Notes = frmItemNotes.MyForm.Notes;
+                objNotes.NotesColor = frmItemNotes.MyForm.NotesColor;
             }
             TreeView objTreeView = treNode.TreeView;
             if (objTreeView != null)
@@ -460,16 +464,20 @@ namespace Chummer.UI.Shared
                 return;
             }
 
-            using (SelectLimitModifier frmPickLimitModifier = await this.DoThreadSafeFuncAsync(() => new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social")))
+            using (ThreadSafeForm<SelectLimitModifier> frmPickLimitModifier =
+                   await ThreadSafeForm<SelectLimitModifier>.GetAsync(() =>
+                       new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social")))
             {
-                if (await frmPickLimitModifier.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                if (await frmPickLimitModifier.ShowDialogSafeAsync(_objCharacter) == DialogResult.Cancel)
                     return;
 
                 //Remove the old LimitModifier to ensure we don't double up.
                 _objCharacter.LimitModifiers.Remove(objLimitModifier);
                 // Create the new limit modifier.
                 objLimitModifier = new LimitModifier(_objCharacter, strGuid);
-                objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition, true);
+                objLimitModifier.Create(frmPickLimitModifier.MyForm.SelectedName,
+                    frmPickLimitModifier.MyForm.SelectedBonus, frmPickLimitModifier.MyForm.SelectedLimitType,
+                    frmPickLimitModifier.MyForm.SelectedCondition, true);
 
                 _objCharacter.LimitModifiers.Add(objLimitModifier);
             }

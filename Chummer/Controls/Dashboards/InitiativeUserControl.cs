@@ -64,10 +64,10 @@ namespace Chummer
          * Queries the user for the chummer to add to the list
          */
 
-        private void btnAdd_Click(object sender, EventArgs e)
+        private async void btnAdd_Click(object sender, EventArgs e)
         {
-            AddToken frmAdd = new AddToken(this);
-            frmAdd.Show();
+            using (ThreadSafeForm<AddToken> frmAdd = await ThreadSafeForm<AddToken>.GetAsync(() => new AddToken(this)))
+                await frmAdd.ShowDialogSafeAsync(this);
         }
 
         /*
@@ -321,14 +321,15 @@ namespace Chummer
                 if (await chkBoxChummer.DoThreadSafeFuncAsync(x => x.GetItemCheckState(j) == CheckState.Unchecked))
                 {
                     Character objLoopCharacter = _lstCharacters[j];
-                    using (InitiativeRoller frmHits = await this.DoThreadSafeFuncAsync(() => new InitiativeRoller
-                           {
-                               Dice = objLoopCharacter.InitPasses
-                           }))
+                    using (ThreadSafeForm<InitiativeRoller> frmHits = await ThreadSafeForm<InitiativeRoller>.GetAsync(
+                               () => new InitiativeRoller
+                               {
+                                   Dice = objLoopCharacter.InitPasses
+                               }))
                     {
                         if (await frmHits.ShowDialogSafeAsync(this) != DialogResult.OK)
                             return; // we decided not to actually change the initiative
-                        objLoopCharacter.InitRoll = frmHits.Result + objLoopCharacter.InitialInit;
+                        objLoopCharacter.InitRoll = frmHits.MyForm.Result + objLoopCharacter.InitialInit;
                     }
                 }
             }
@@ -397,7 +398,7 @@ namespace Chummer
                 if (await chkBoxChummer.DoThreadSafeFuncAsync(x => x.SelectedItem == null))
                     Program.ShowMessageBox("Please select a chummer before right-clicking");
 
-                using (InitiativeRoller frmHits = await this.DoThreadSafeFuncAsync(() => new InitiativeRoller
+                using (ThreadSafeForm<InitiativeRoller> frmHits = await ThreadSafeForm<InitiativeRoller>.GetAsync(() => new InitiativeRoller
                 {
                     Dice = _lstCharacters[chkBoxChummer.SelectedIndex].InitPasses
                 }))
@@ -405,7 +406,7 @@ namespace Chummer
                     if (await frmHits.ShowDialogSafeAsync(this) != DialogResult.OK)
                         return; // we decided not to actually change the initiative
 
-                    int intResult = await frmHits.DoThreadSafeFuncAsync(x => x.Result);
+                    int intResult = frmHits.MyForm.Result;
                     await chkBoxChummer.DoThreadSafeAsync(x =>
                     {
                         _lstCharacters[x.SelectedIndex].InitRoll = intResult;
@@ -435,7 +436,7 @@ namespace Chummer
                 return;
             if (character.InitRoll == int.MinValue)
             {
-                using (InitiativeRoller frmHits = await this.DoThreadSafeFuncAsync(() => new InitiativeRoller
+                using (ThreadSafeForm<InitiativeRoller> frmHits = await ThreadSafeForm<InitiativeRoller>.GetAsync(() => new InitiativeRoller
                 {
                     Dice = character.InitPasses
                 }))
@@ -446,7 +447,7 @@ namespace Chummer
                         return;
                     }
 
-                    character.InitRoll = await frmHits.DoThreadSafeFuncAsync(x => x.Result) + character.InitialInit;
+                    character.InitRoll = frmHits.MyForm.Result + character.InitialInit;
                 }
             }
 

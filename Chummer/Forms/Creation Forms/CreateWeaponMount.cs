@@ -803,27 +803,29 @@ namespace Chummer
             TreeNode objModsParentNode = await treMods.DoThreadSafeFuncAsync(x => x.FindNode("Node_AdditionalMods"));
             do
             {
-                using (SelectVehicleMod frmPickVehicleMod = await this.DoThreadSafeFuncAsync(() => new SelectVehicleMod(_objCharacter, _objVehicle, _objMount?.Mods)
-                {
-                    // Pass the selected vehicle on to the form.
-                    VehicleMountMods = true,
-                    WeaponMountSlots = intSlots
-                }))
+                using (ThreadSafeForm<SelectVehicleMod> frmPickVehicleMod =
+                       await ThreadSafeForm<SelectVehicleMod>.GetAsync(() =>
+                           new SelectVehicleMod(_objCharacter, _objVehicle, _objMount?.Mods)
+                           {
+                               // Pass the selected vehicle on to the form.
+                               VehicleMountMods = true,
+                               WeaponMountSlots = intSlots
+                           }))
                 {
                     // Make sure the dialogue window was not canceled.
                     if (await frmPickVehicleMod.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         break;
 
-                    blnAddAgain = frmPickVehicleMod.AddAgain;
+                    blnAddAgain = frmPickVehicleMod.MyForm.AddAgain;
                     XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("vehicles.xml");
-                    XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/weaponmountmods/mod[id = " + frmPickVehicleMod.SelectedMod.CleanXPath() + ']');
+                    XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/weaponmountmods/mod[id = " + frmPickVehicleMod.MyForm.SelectedMod.CleanXPath() + ']');
 
                     VehicleMod objMod = new VehicleMod(_objCharacter)
                     {
-                        DiscountCost = frmPickVehicleMod.BlackMarketDiscount
+                        DiscountCost = frmPickVehicleMod.MyForm.BlackMarketDiscount
                     };
-                    objMod.Create(objXmlMod, frmPickVehicleMod.SelectedRating, _objVehicle, frmPickVehicleMod.Markup);
-                    if (frmPickVehicleMod.FreeCost)
+                    objMod.Create(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, _objVehicle, frmPickVehicleMod.MyForm.Markup);
+                    if (frmPickVehicleMod.MyForm.FreeCost)
                         objMod.Cost = "0";
                     _objMount?.Mods.Add(objMod);
                     _lstMods.Add(objMod);

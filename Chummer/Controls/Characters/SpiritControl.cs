@@ -285,11 +285,11 @@ namespace Chummer
 
         private async void cmdNotes_Click(object sender, EventArgs e)
         {
-            using (EditNotes frmSpritNotes = new EditNotes(_objSpirit.Notes, _objSpirit.NotesColor))
+            using (ThreadSafeForm<EditNotes> frmSpiritNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(_objSpirit.Notes, _objSpirit.NotesColor)))
             {
-                if (await frmSpritNotes.ShowDialogSafeAsync(this) != DialogResult.OK)
+                if (await frmSpiritNotes.ShowDialogSafeAsync(_objSpirit.CharacterObject) != DialogResult.OK)
                     return;
-                _objSpirit.Notes = frmSpritNotes.Notes;
+                _objSpirit.Notes = frmSpiritNotes.MyForm.Notes;
             }
 
             string strTooltip = await LanguageManager.GetStringAsync(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes");

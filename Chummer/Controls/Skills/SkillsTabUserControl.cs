@@ -781,13 +781,13 @@ namespace Chummer.UI.Skills
         private async void btnExotic_Click(object sender, EventArgs e)
         {
             ExoticSkill objSkill;
-            using (SelectExoticSkill frmPickExoticSkill = await this.DoThreadSafeFuncAsync(() => new SelectExoticSkill(_objCharacter)))
+            using (ThreadSafeForm<SelectExoticSkill> frmPickExoticSkill = await ThreadSafeForm<SelectExoticSkill>.GetAsync(() => new SelectExoticSkill(_objCharacter)))
             {
-                if (await frmPickExoticSkill.ShowDialogSafeAsync(this) != DialogResult.OK)
+                if (await frmPickExoticSkill.ShowDialogSafeAsync(_objCharacter) != DialogResult.OK)
                     return;
 
-                objSkill = _objCharacter.SkillsSection.AddExoticSkill(frmPickExoticSkill.SelectedExoticSkill,
-                    frmPickExoticSkill.SelectedExoticSkillSpecialisation);
+                objSkill = _objCharacter.SkillsSection.AddExoticSkill(frmPickExoticSkill.MyForm.SelectedExoticSkill,
+                    frmPickExoticSkill.MyForm.SelectedExoticSkillSpecialisation);
             }
 
             // Karma check needs to come after the skill is created to make sure bonus-based modifiers (e.g. JoAT) get applied properly (since they can potentially trigger off of the specific exotic skill target)
@@ -805,19 +805,17 @@ namespace Chummer.UI.Skills
             if (_objCharacter.Created)
             {
                 string strSelectedSkill;
-
-                Form frmToUse = ParentForm ?? Program.MainForm;
                 
                 string strDescription = await LanguageManager.GetStringAsync("Label_Options_NewKnowledgeSkill");
-                using (SelectItem form = await this.DoThreadSafeFuncAsync(() => new SelectItem
+                using (ThreadSafeForm<SelectItem> form = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
                 {
                     Description = strDescription
                 }))
                 {
-                    form.SetDropdownItemsMode(_objCharacter.SkillsSection.MyDefaultKnowledgeSkills);
-                    if (await form.ShowDialogSafeAsync(frmToUse) != DialogResult.OK)
+                    form.MyForm.SetDropdownItemsMode(_objCharacter.SkillsSection.MyDefaultKnowledgeSkills);
+                    if (await form.ShowDialogSafeAsync(_objCharacter) != DialogResult.OK)
                         return;
-                    strSelectedSkill = form.SelectedItem;
+                    strSelectedSkill = form.MyForm.SelectedItem;
                 }
 
                 KnowledgeSkill skill = new KnowledgeSkill(_objCharacter)

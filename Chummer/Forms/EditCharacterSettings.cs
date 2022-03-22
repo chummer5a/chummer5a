@@ -113,14 +113,16 @@ namespace Chummer
         private async void cmdGlobalOptionsCustomData_Click(object sender, EventArgs e)
         {
             using (CursorWait.New(this))
-            using (EditGlobalSettings frmOptions = await this.DoThreadSafeFuncAsync(() => new EditGlobalSettings("tabCustomDataDirectories")))
+            using (ThreadSafeForm<EditGlobalSettings> frmOptions =
+                   await ThreadSafeForm<EditGlobalSettings>.GetAsync(() =>
+                       new EditGlobalSettings("tabCustomDataDirectories")))
                 await frmOptions.ShowDialogSafeAsync(this);
         }
 
         private async void cmdRename_Click(object sender, EventArgs e)
         {
             string strRename = await LanguageManager.GetStringAsync("Message_CharacterOptions_SettingRename");
-            using (SelectText frmSelectName = await this.DoThreadSafeFuncAsync(() => new SelectText
+            using (ThreadSafeForm<SelectText> frmSelectName = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
                    {
                        DefaultString = _objCharacterSettings.Name,
                        Description = strRename
@@ -128,7 +130,7 @@ namespace Chummer
             {
                 if (await frmSelectName.ShowDialogSafeAsync(this) != DialogResult.OK)
                     return;
-                _objCharacterSettings.Name = frmSelectName.SelectedValue;
+                _objCharacterSettings.Name = frmSelectName.MyForm.SelectedValue;
             }
 
             using (CursorWait.New(this))
@@ -233,7 +235,7 @@ namespace Chummer
 
         private async void cmdSaveAs_Click(object sender, EventArgs e)
         {
-            string strSelectedName = string.Empty;
+            string strSelectedName;
             string strSelectedFullFileName;
             string strSelectSettingName
                 = await LanguageManager.GetStringAsync("Message_CharacterOptions_SelectSettingName");
@@ -241,7 +243,7 @@ namespace Chummer
             {
                 do
                 {
-                    using (SelectText frmSelectName = await this.DoThreadSafeFuncAsync(() => new SelectText
+                    using (ThreadSafeForm<SelectText> frmSelectName = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
                            {
                                DefaultString = _objCharacterSettings.BuiltInOption
                                    ? string.Empty
@@ -251,7 +253,7 @@ namespace Chummer
                     {
                         if (await frmSelectName.ShowDialogSafeAsync(this) != DialogResult.OK)
                             return;
-                        strSelectedName = frmSelectName.SelectedValue;
+                        strSelectedName = frmSelectName.MyForm.SelectedValue;
                     }
 
                     if (SettingsManager.LoadedCharacterSettings.Any(x => x.Value.Name == strSelectedName))

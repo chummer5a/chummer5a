@@ -711,37 +711,44 @@ namespace Chummer
         private async void mnuGlobalSettings_Click(object sender, EventArgs e)
         {
             using (CursorWait.New(this))
-            using (EditGlobalSettings frmOptions = await this.DoThreadSafeFuncAsync(() => new EditGlobalSettings()))
+            using (ThreadSafeForm<EditGlobalSettings> frmOptions = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings()))
                 await frmOptions.ShowDialogSafeAsync(this);
         }
 
         private async void mnuCharacterSettings_Click(object sender, EventArgs e)
         {
             using (CursorWait.New(this))
-            using (EditCharacterSettings frmCharacterOptions
-                   = await this.DoThreadSafeFuncAsync(() => new EditCharacterSettings(
-                                                          (tabForms.SelectedTab?.Tag as CharacterShared)?.CharacterObject?.Settings)))
+            using (ThreadSafeForm<EditCharacterSettings> frmCharacterOptions =
+                   await ThreadSafeForm<EditCharacterSettings>.GetAsync(() =>
+                       new EditCharacterSettings((tabForms.SelectedTab?.Tag as CharacterShared)?.CharacterObject
+                           ?.Settings)))
                 await frmCharacterOptions.ShowDialogSafeAsync(this);
         }
 
-        private void mnuToolsUpdate_Click(object sender, EventArgs e)
+        private async void mnuToolsUpdate_Click(object sender, EventArgs e)
         {
             // Only a single instance of the updater can be open, so either find the current instance and focus on it, or create a new one.
             if (_frmUpdate == null)
             {
-                _frmUpdate = new ChummerUpdater();
-                _frmUpdate.FormClosed += ResetChummerUpdater;
-                _frmUpdate.Show();
+                _frmUpdate = await this.DoThreadSafeFuncAsync(() => new ChummerUpdater());
+                await _frmUpdate.DoThreadSafeAsync(x =>
+                {
+                    x.FormClosed += ResetChummerUpdater;
+                    x.Show();
+                });
             }
             // Silent updater is running, so make it visible
-            else if (_frmUpdate.SilentMode)
+            else if (await _frmUpdate.DoThreadSafeFuncAsync(x => x.SilentMode))
             {
-                _frmUpdate.SilentMode = false;
-                _frmUpdate.Show();
+                await _frmUpdate.DoThreadSafeAsync(x =>
+                {
+                    x.SilentMode = false;
+                    x.Show();
+                });
             }
             else
             {
-                _frmUpdate.Focus();
+                await _frmUpdate.DoThreadSafeAsync(x => x.Focus());
             }
         }
 
@@ -752,8 +759,8 @@ namespace Chummer
 
         private async void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (About showAbout = await this.DoThreadSafeFuncAsync(() => new About()))
-                await showAbout.ShowDialogSafeAsync(this);
+            using (ThreadSafeForm<About> frmAbout = await ThreadSafeForm<About>.GetAsync(() => new About()))
+                await frmAbout.ShowDialogSafeAsync(this);
         }
 
         private void mnuChummerWiki_Click(object sender, EventArgs e)
@@ -773,18 +780,20 @@ namespace Chummer
 
         public PrintMultipleCharacters PrintMultipleCharactersForm { get; private set; }
 
-        private void mnuFilePrintMultiple_Click(object sender, EventArgs e)
+        private async void mnuFilePrintMultiple_Click(object sender, EventArgs e)
         {
             if (PrintMultipleCharactersForm.IsNullOrDisposed())
-                PrintMultipleCharactersForm = new PrintMultipleCharacters();
+            {
+                PrintMultipleCharactersForm = await this.DoThreadSafeFuncAsync(() => new PrintMultipleCharacters());
+                await PrintMultipleCharactersForm.DoThreadSafeAsync(x => x.Show(this));
+            }
             else
-                PrintMultipleCharactersForm.Activate();
-            PrintMultipleCharactersForm.Show(this);
+                await PrintMultipleCharactersForm.DoThreadSafeAsync(x => x.Activate());
         }
 
         private async void mnuHelpRevisionHistory_Click(object sender, EventArgs e)
         {
-            using (VersionHistory frmShowHistory = await this.DoThreadSafeFuncAsync(() => new VersionHistory()))
+            using (ThreadSafeForm<VersionHistory> frmShowHistory = await ThreadSafeForm<VersionHistory>.GetAsync(() => new VersionHistory()))
                 await frmShowHistory.ShowDialogSafeAsync(this);
         }
 
@@ -795,7 +804,7 @@ namespace Chummer
                 Character objCharacter = new Character();
                 try
                 {
-                    using (SelectBuildMethod frmPickSetting = await this.DoThreadSafeFuncAsync(() => new SelectBuildMethod(objCharacter)))
+                    using (ThreadSafeForm<SelectBuildMethod> frmPickSetting = await ThreadSafeForm<SelectBuildMethod>.GetAsync(() => new SelectBuildMethod(objCharacter)))
                     {
                         if (await frmPickSetting.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             return;
@@ -807,8 +816,9 @@ namespace Chummer
                     objCharacter.Created = true;
 
                     // Show the Metatype selection window.
-                    using (SelectMetatypeKarma frmSelectMetatype
-                           = await this.DoThreadSafeFuncAsync(() => new SelectMetatypeKarma(objCharacter, "critters.xml")))
+                    using (ThreadSafeForm<SelectMetatypeKarma> frmSelectMetatype =
+                           await ThreadSafeForm<SelectMetatypeKarma>.GetAsync(() =>
+                               new SelectMetatypeKarma(objCharacter, "critters.xml")))
                     {
                         if (await frmSelectMetatype.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             return;
@@ -997,26 +1007,26 @@ namespace Chummer
             });
         }
 
-        private void mnuToolsDiceRoller_Click(object sender, EventArgs e)
+        private async void mnuToolsDiceRoller_Click(object sender, EventArgs e)
         {
             if (GlobalSettings.SingleDiceRoller)
             {
                 // Only a single instance of the Dice Roller window is allowed, so either find the existing one and focus on it, or create a new one.
                 if (_frmRoller == null)
                 {
-                    _frmRoller = new DiceRoller(this);
-                    _frmRoller.Show();
+                    _frmRoller = await this.DoThreadSafeFuncAsync(() => new DiceRoller(this));
+                    await _frmRoller.DoThreadSafeAsync(x => x.Show());
                 }
                 else
                 {
-                    _frmRoller.Activate();
+                    await _frmRoller.DoThreadSafeAsync(x => x.Activate());
                 }
             }
             else
             {
                 // No limit on the number of Dice Roller windows, so just create a new one.
-                DiceRoller frmRoller = new DiceRoller(this);
-                frmRoller.Show();
+                DiceRoller frmRoller = await this.DoThreadSafeFuncAsync(() => new DiceRoller(this));
+                await frmRoller.DoThreadSafeAsync(x => x.Show());
             }
         }
 
@@ -1214,7 +1224,7 @@ namespace Chummer
                 using (CursorWait.New(this))
                 {
                     // Show the BP selection window.
-                    using (SelectBuildMethod frmBP = await this.DoThreadSafeFuncAsync(() => new SelectBuildMethod(objCharacter)))
+                    using (ThreadSafeForm<SelectBuildMethod> frmBP = await ThreadSafeForm<SelectBuildMethod>.GetAsync(() => new SelectBuildMethod(objCharacter)))
                     {
                         if (await frmBP.ShowDialogSafeAsync(this) != DialogResult.OK)
                             return;
@@ -1223,7 +1233,7 @@ namespace Chummer
                     // Show the Metatype selection window.
                     if (objCharacter.EffectiveBuildMethodUsesPriorityTables)
                     {
-                        using (SelectMetatypePriority frmSelectMetatype = await this.DoThreadSafeFuncAsync(() => new SelectMetatypePriority(objCharacter)))
+                        using (ThreadSafeForm<SelectMetatypePriority> frmSelectMetatype = await ThreadSafeForm<SelectMetatypePriority>.GetAsync(() => new SelectMetatypePriority(objCharacter)))
                         {
                             if (await frmSelectMetatype.ShowDialogSafeAsync(this) != DialogResult.OK)
                                 return;
@@ -1231,7 +1241,7 @@ namespace Chummer
                     }
                     else
                     {
-                        using (SelectMetatypeKarma frmSelectMetatype = await this.DoThreadSafeFuncAsync(() => new SelectMetatypeKarma(objCharacter)))
+                        using (ThreadSafeForm<SelectMetatypeKarma> frmSelectMetatype = await ThreadSafeForm<SelectMetatypeKarma>.GetAsync(() => new SelectMetatypeKarma(objCharacter)))
                         {
                             if (await frmSelectMetatype.ShowDialogSafeAsync(this) != DialogResult.OK)
                                 return;
@@ -1457,9 +1467,9 @@ namespace Chummer
                 }
                 else
                 {
-                    using (CharacterSheetViewer frmViewer = await this.DoThreadSafeFuncAsync(() => new CharacterSheetViewer()))
+                    using (ThreadSafeForm<CharacterSheetViewer> frmViewer = await ThreadSafeForm<CharacterSheetViewer>.GetAsync(() => new CharacterSheetViewer()))
                     {
-                        await frmViewer.SetCharacters(default, objCharacter);
+                        await frmViewer.MyForm.SetCharacters(default, objCharacter);
                         await frmViewer.ShowDialogSafeAsync(this);
                     }
                 }
@@ -1519,8 +1529,8 @@ namespace Chummer
                 }
                 else
                 {
-                    using (ExportCharacter frmExportCharacter
-                           = await this.DoThreadSafeFuncAsync(() => new ExportCharacter(objCharacter)))
+                    using (ThreadSafeForm<ExportCharacter> frmExportCharacter =
+                           await ThreadSafeForm<ExportCharacter>.GetAsync(() => new ExportCharacter(objCharacter)))
                         await frmExportCharacter.ShowDialogSafeAsync(this);
                 }
             }
@@ -1842,8 +1852,8 @@ namespace Chummer
 
                         if (blnShowTest)
                         {
-                            TestDataEntries frmTestData = new TestDataEntries();
-                            frmTestData.Show();
+                            TestDataEntries frmTestData = this.DoThreadSafeFunc(() => new TestDataEntries());
+                            frmTestData.DoThreadSafe(x => x.Show());
                         }
                     }
                 }

@@ -391,11 +391,11 @@ namespace Chummer
 
         private async void cmdNotes_Click(object sender, EventArgs e)
         {
-            using (EditNotes frmContactNotes = new EditNotes(_objContact.Notes, _objContact.NotesColor))
+            using (ThreadSafeForm<EditNotes> frmContactNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(_objContact.Notes, _objContact.NotesColor)))
             {
                 if (await frmContactNotes.ShowDialogSafeAsync(this) != DialogResult.OK)
                     return;
-                _objContact.Notes = frmContactNotes.Notes;
+                _objContact.Notes = frmContactNotes.MyForm.Notes;
             }
 
             string strTooltip = await LanguageManager.GetStringAsync(_objContact.IsEnemy ? "Tip_Enemy_EditNotes" : "Tip_Contact_EditNotes");

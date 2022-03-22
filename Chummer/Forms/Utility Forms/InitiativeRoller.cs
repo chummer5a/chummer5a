@@ -57,7 +57,7 @@ namespace Chummer
         /// <summary>
         /// Dice roll result.
         /// </summary>
-        public int Result => nudDiceResult.ValueAsInt;
+        public int Result => nudDiceResult.DoThreadSafeFunc(x => x.ValueAsInt);
 
         #endregion Properties
     }

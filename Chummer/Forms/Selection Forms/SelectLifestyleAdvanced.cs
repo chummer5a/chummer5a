@@ -496,14 +496,16 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (SelectLifestyleQuality frmSelectLifestyleQuality = new SelectLifestyleQuality(_objCharacter, cboBaseLifestyle.SelectedValue.ToString(), _objLifestyle.LifestyleQualities))
+                using (ThreadSafeForm<SelectLifestyleQuality> frmSelectLifestyleQuality =
+                       await ThreadSafeForm<SelectLifestyleQuality>.GetAsync(() => new SelectLifestyleQuality(_objCharacter,
+                           cboBaseLifestyle.SelectedValue.ToString(), _objLifestyle.LifestyleQualities)))
                 {
                     // Don't do anything else if the form was canceled.
                     if (await frmSelectLifestyleQuality.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         return;
-                    blnAddAgain = frmSelectLifestyleQuality.AddAgain;
+                    blnAddAgain = frmSelectLifestyleQuality.MyForm.AddAgain;
 
-                    XmlNode objXmlQuality = _xmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + frmSelectLifestyleQuality.SelectedQuality.CleanXPath() + ']');
+                    XmlNode objXmlQuality = _xmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + frmSelectLifestyleQuality.MyForm.SelectedQuality.CleanXPath() + ']');
 
                     LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
 
@@ -515,7 +517,7 @@ namespace Chummer
                         objQuality.Dispose();
                         continue;
                     }
-                    objQuality.Free = frmSelectLifestyleQuality.FreeCost;
+                    objQuality.Free = frmSelectLifestyleQuality.MyForm.FreeCost;
 
                     _objLifestyle.LifestyleQualities.Add(objQuality);
                 }

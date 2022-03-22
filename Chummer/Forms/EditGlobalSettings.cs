@@ -501,14 +501,15 @@ namespace Chummer
                     return;
                 string strDescription
                     = await LanguageManager.GetStringAsync("String_CustomItem_SelectText", _strSelectedLanguage);
-                using (SelectText frmSelectCustomDirectoryName = await this.DoThreadSafeFuncAsync(() => new SelectText
+                using (ThreadSafeForm<SelectText> frmSelectCustomDirectoryName =
+                       await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
                        {
                            Description = strDescription
-                }))
+                       }))
                 {
                     if (await frmSelectCustomDirectoryName.ShowDialogSafeAsync(this) != DialogResult.OK)
                         return;
-                    CustomDataDirectoryInfo objNewCustomDataDirectory = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.SelectedValue, dlgSelectFolder.SelectedPath);
+                    CustomDataDirectoryInfo objNewCustomDataDirectory = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.MyForm.SelectedValue, dlgSelectFolder.SelectedPath);
                     if (objNewCustomDataDirectory.XmlException != default)
                     {
                         Program.ShowMessageBox(this,
@@ -604,14 +605,15 @@ namespace Chummer
             CustomDataDirectoryInfo objInfoToRename = (CustomDataDirectoryInfo)objSelected.Value;
             string strDescription
                 = await LanguageManager.GetStringAsync("String_CustomItem_SelectText", _strSelectedLanguage);
-            using (SelectText frmSelectCustomDirectoryName = await this.DoThreadSafeFuncAsync(() => new SelectText
-                   {
-                       Description = strDescription
-                   }))
+            using (ThreadSafeForm<SelectText> frmSelectCustomDirectoryName = await ThreadSafeForm<SelectText>.GetAsync(
+                       () => new SelectText
+                       {
+                           Description = strDescription
+                       }))
             {
                 if (await frmSelectCustomDirectoryName.ShowDialogSafeAsync(this) != DialogResult.OK)
                     return;
-                CustomDataDirectoryInfo objNewInfo = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.SelectedValue, objInfoToRename.DirectoryPath);
+                CustomDataDirectoryInfo objNewInfo = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.MyForm.SelectedValue, objInfoToRename.DirectoryPath);
                 if (!objNewInfo.HasManifest)
                     objNewInfo.CopyGuid(objInfoToRename);
                 if (objNewInfo.XmlException != default)

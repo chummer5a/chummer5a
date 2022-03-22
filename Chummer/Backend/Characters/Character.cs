@@ -2420,7 +2420,7 @@ namespace Chummer
                         {
                             Description = string.Format(GlobalSettings.CultureInfo,
                                        LanguageManager.GetString("String_Improvement_SelectText"),
-                                       xmlAIProgramData["translate"]?.InnerText ?? xmlAIProgramData["name"].InnerText)
+                                       xmlAIProgramData["translate"]?.InnerText ?? xmlAIProgramData["name"]?.InnerText)
                         }))
                         {
                             // Make sure the dialogue window was not canceled.
@@ -29280,18 +29280,21 @@ namespace Chummer
                     return false;
 
                 int intWILResult;
+                string strText = await LanguageManager.GetStringAsync("String_CyberzombieWILText");
+                string strDescription = await LanguageManager.GetStringAsync("String_CyberzombieWILDescription");
+                int intDice = await WIL.TotalValueAsync;
                 // Get the player to roll Dice to make a WIL Test and record the result.
-                using (SelectDiceHits frmWILHits = new SelectDiceHits
+                using (ThreadSafeForm<SelectDiceHits> frmWILHits = await ThreadSafeForm<SelectDiceHits>.GetAsync(() => new SelectDiceHits
                        {
-                           Text = await LanguageManager.GetStringAsync("String_CyberzombieWILText"),
-                           Description = await LanguageManager.GetStringAsync("String_CyberzombieWILDescription"),
-                           Dice = await WIL.TotalValueAsync
-                       })
+                           Text = strText,
+                           Description = strDescription,
+                           Dice = intDice
+                       }))
                 {
                     if (await frmWILHits.ShowDialogSafeAsync(this) != DialogResult.OK)
                         return false;
 
-                    intWILResult = frmWILHits.Result;
+                    intWILResult = frmWILHits.MyForm.Result;
                 }
 
                 // The character gains 10 + ((Threshold - Hits) * 10)BP worth of Negative Qualities.

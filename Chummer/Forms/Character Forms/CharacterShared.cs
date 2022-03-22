@@ -320,8 +320,9 @@ namespace Chummer
                     return;
                 }
 
-                using (SelectLimitModifier frmPickLimitModifier
-                       = new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
+                using (ThreadSafeForm<SelectLimitModifier> frmPickLimitModifier =
+                       ThreadSafeForm<SelectLimitModifier>.Get(() =>
+                           new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social")))
                 {
                     if (await frmPickLimitModifier.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         return;
@@ -330,9 +331,9 @@ namespace Chummer
                     CharacterObject.LimitModifiers.Remove(objLimitModifier);
                     // Create the new limit modifier.
                     objLimitModifier = new LimitModifier(CharacterObject, strGuid);
-                    objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus,
-                                            frmPickLimitModifier.SelectedLimitType,
-                                            frmPickLimitModifier.SelectedCondition, true);
+                    objLimitModifier.Create(frmPickLimitModifier.MyForm.SelectedName, frmPickLimitModifier.MyForm.SelectedBonus,
+                                            frmPickLimitModifier.MyForm.SelectedLimitType,
+                                            frmPickLimitModifier.MyForm.SelectedCondition, true);
 
                     CharacterObject.LimitModifiers.Add(objLimitModifier);
 
@@ -353,15 +354,26 @@ namespace Chummer
             if (objNotes == null)
                 return;
             using (CursorWait.New(this))
+            using (ThreadSafeForm<EditNotes> frmItemNotes =
+                   ThreadSafeForm<EditNotes>.Get(() => new EditNotes(objNotes.Notes, objNotes.NotesColor)))
             {
-                using (EditNotes frmItemNotes = new EditNotes(objNotes.Notes, objNotes.NotesColor))
+                if (await frmItemNotes.ShowDialogSafeAsync(this) != DialogResult.OK)
+                    return;
+                objNotes.Notes = frmItemNotes.MyForm.Notes;
+                objNotes.NotesColor = frmItemNotes.MyForm.NotesColor;
+                IsDirty = true;
+                if (treNode != null)
                 {
-                    if (await frmItemNotes.ShowDialogSafeAsync(this) != DialogResult.OK)
-                        return;
-                    objNotes.Notes = frmItemNotes.Notes;
-                    objNotes.NotesColor = frmItemNotes.NotesColor;
-                    IsDirty = true;
-                    if (treNode != null)
+                    TreeView objTreeView = treNode.TreeView;
+                    if (objTreeView != null)
+                    {
+                        objTreeView.DoThreadSafe(() =>
+                        {
+                            treNode.ForeColor = objNotes.PreferredColor;
+                            treNode.ToolTipText = objNotes.Notes.WordWrap();
+                        });
+                    }
+                    else
                     {
                         treNode.ForeColor = objNotes.PreferredColor;
                         treNode.ToolTipText = objNotes.Notes.WordWrap();
@@ -7122,7 +7134,7 @@ namespace Chummer
 
         public async ValueTask DoExport(CancellationToken token = default)
         {
-            using (ExportCharacter frmExportCharacter = await this.DoThreadSafeFuncAsync(() => new ExportCharacter(CharacterObject), token))
+            using (ThreadSafeForm<ExportCharacter> frmExportCharacter = await ThreadSafeForm<ExportCharacter>.GetAsync(() => new ExportCharacter(CharacterObject), token))
                 await frmExportCharacter.ShowDialogSafeAsync(this);
         }
 
@@ -7158,34 +7170,34 @@ namespace Chummer
 
                 do
                 {
-                    using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSelectedVehicle))
+                    using (ThreadSafeForm<SelectGear> frmPickGear = ThreadSafeForm<SelectGear>.Get(() => new SelectGear(CharacterObject, 0, 1, objSelectedVehicle)))
                     {
                         if (await frmPickGear.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             break;
-                        blnAddAgain = frmPickGear.AddAgain;
+                        blnAddAgain = frmPickGear.MyForm.AddAgain;
 
                         // Open the Gear XML file and locate the selected piece.
                         XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = " +
-                                                                             frmPickGear.SelectedGear.CleanXPath()
+                                                                             frmPickGear.MyForm.SelectedGear.CleanXPath()
                                                                              + ']');
 
                         // Create the new piece of Gear.
                         List<Weapon> lstWeapons = new List<Weapon>(1);
 
                         Gear objGear = new Gear(CharacterObject);
-                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
+                        objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty, false);
 
                         if (objGear.InternalId.IsEmptyGuid())
                             continue;
 
-                        objGear.Quantity = frmPickGear.SelectedQty;
-                        objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
+                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
+                        objGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
 
                         // Reduce the cost for Do It Yourself components.
-                        if (frmPickGear.DoItYourself)
+                        if (frmPickGear.MyForm.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
                         // If the item was marked as free, change its cost.
-                        if (frmPickGear.FreeCost)
+                        if (frmPickGear.MyForm.FreeCost)
                             objGear.Cost = "0";
 
                         if (CharacterObject.Created)
@@ -7206,7 +7218,7 @@ namespace Chummer
                             }
 
                             // Check the item's Cost and make sure the character can afford it.
-                            if (!frmPickGear.FreeCost)
+                            if (!frmPickGear.MyForm.FreeCost)
                             {
                                 if (decCost > CharacterObject.Nuyen)
                                 {
@@ -7240,7 +7252,7 @@ namespace Chummer
                         Gear objExistingGear = null;
                         // If this is Ammunition, see if the character already has it on them.
                         if ((objGear.Category == "Ammunition" ||
-                             !string.IsNullOrEmpty(objGear.AmmoForWeaponType)) && frmPickGear.Stack)
+                             !string.IsNullOrEmpty(objGear.AmmoForWeaponType)) && frmPickGear.MyForm.Stack)
                         {
                             objExistingGear =
                                 objSelectedVehicle.GearChildren.FirstOrDefault(x =>

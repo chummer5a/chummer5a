@@ -872,32 +872,38 @@ namespace Chummer
 
             if (ExoticSkill.IsExoticSkillName(strSkill1))
             {
-                using (SelectExoticSkill frmSelectExotic = await this.DoThreadSafeFuncAsync(() => new SelectExoticSkill(_objCharacter), token))
+                using (ThreadSafeForm<SelectExoticSkill> frmSelectExotic =
+                       await ThreadSafeForm<SelectExoticSkill>.GetAsync(() => new SelectExoticSkill(_objCharacter),
+                           token))
                 {
-                    frmSelectExotic.ForceSkill(strSkill1);
-                    if (await frmSelectExotic.ShowDialogSafeAsync(this) != DialogResult.OK)
+                    frmSelectExotic.MyForm.ForceSkill(strSkill1);
+                    if (await frmSelectExotic.ShowDialogSafeAsync(this, token) != DialogResult.OK)
                         return;
-                    strSkill1 += " (" + frmSelectExotic.SelectedExoticSkillSpecialisation + ')';
+                    strSkill1 += " (" + frmSelectExotic.MyForm.SelectedExoticSkillSpecialisation + ')';
                 }
             }
             if (ExoticSkill.IsExoticSkillName(strSkill2))
             {
-                using (SelectExoticSkill frmSelectExotic = await this.DoThreadSafeFuncAsync(() => new SelectExoticSkill(_objCharacter), token))
+                using (ThreadSafeForm<SelectExoticSkill> frmSelectExotic =
+                       await ThreadSafeForm<SelectExoticSkill>.GetAsync(() => new SelectExoticSkill(_objCharacter),
+                           token))
                 {
-                    frmSelectExotic.ForceSkill(strSkill2);
-                    if (await frmSelectExotic.ShowDialogSafeAsync(this) != DialogResult.OK)
+                    frmSelectExotic.MyForm.ForceSkill(strSkill2);
+                    if (await frmSelectExotic.ShowDialogSafeAsync(this, token) != DialogResult.OK)
                         return;
-                    strSkill2 += " (" + frmSelectExotic.SelectedExoticSkillSpecialisation + ')';
+                    strSkill2 += " (" + frmSelectExotic.MyForm.SelectedExoticSkillSpecialisation + ')';
                 }
             }
             if (ExoticSkill.IsExoticSkillName(strSkill3))
             {
-                using (SelectExoticSkill frmSelectExotic = await this.DoThreadSafeFuncAsync(() => new SelectExoticSkill(_objCharacter), token))
+                using (ThreadSafeForm<SelectExoticSkill> frmSelectExotic =
+                       await ThreadSafeForm<SelectExoticSkill>.GetAsync(() => new SelectExoticSkill(_objCharacter),
+                           token))
                 {
-                    frmSelectExotic.ForceSkill(strSkill3);
-                    if (await frmSelectExotic.ShowDialogSafeAsync(this) != DialogResult.OK)
+                    frmSelectExotic.MyForm.ForceSkill(strSkill3);
+                    if (await frmSelectExotic.ShowDialogSafeAsync(this, token) != DialogResult.OK)
                         return;
-                    strSkill3 += " (" + frmSelectExotic.SelectedExoticSkillSpecialisation + ')';
+                    strSkill3 += " (" + frmSelectExotic.MyForm.SelectedExoticSkillSpecialisation + ')';
                 }
             }
 

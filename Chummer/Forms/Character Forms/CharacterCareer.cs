@@ -3546,7 +3546,7 @@ namespace Chummer
                     using (Program.MainProgressBar = new LoadingBar {CharacterFile = objMerge.FileName})
                     {
                         await Program.MainProgressBar.ResetAsync(36);
-                        Program.MainProgressBar.Show();
+                        await Program.MainProgressBar.DoThreadSafeAsync(x => x.Show());
                         await objMerge.LoadAsync();
                         Program.MainProgressBar.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
                         objMerge.Possessed = true;

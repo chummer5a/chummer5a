@@ -232,17 +232,17 @@ namespace Chummer.UI.Powers
 
             do
             {
-                using (SelectPower frmPickPower = await this.DoThreadSafeFuncAsync(() => new SelectPower(_objCharacter)))
+                using (ThreadSafeForm<SelectPower> frmPickPower = await ThreadSafeForm<SelectPower>.GetAsync(() => new SelectPower(_objCharacter)))
                 {
                     // Make sure the dialogue window was not canceled.
-                    if (await frmPickPower.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                    if (await frmPickPower.ShowDialogSafeAsync(_objCharacter) == DialogResult.Cancel)
                         break;
 
-                    blnAddAgain = frmPickPower.AddAgain;
+                    blnAddAgain = frmPickPower.MyForm.AddAgain;
 
                     Power objPower = new Power(_objCharacter);
 
-                    XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.SelectedPower.CleanXPath() + ']');
+                    XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.MyForm.SelectedPower.CleanXPath() + ']');
                     if (objPower.Create(objXmlPower))
                     {
                         _objCharacter.Powers.Add(objPower);
@@ -403,10 +403,10 @@ namespace Chummer.UI.Powers
             {
                 ClickHandler = async p =>
                 {
-                    using (EditNotes frmPowerNotes = await this.DoThreadSafeFuncAsync(() => new EditNotes(p.Notes, p.NotesColor)))
+                    using (ThreadSafeForm<EditNotes> frmPowerNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(p.Notes, p.NotesColor)))
                     {
-                        if (await frmPowerNotes.ShowDialogSafeAsync(this) == DialogResult.OK)
-                            p.Notes = frmPowerNotes.Notes;
+                        if (await frmPowerNotes.ShowDialogSafeAsync(_objCharacter) == DialogResult.OK)
+                            p.Notes = frmPowerNotes.MyForm.Notes;
                     }
                 },
                 Alignment = Alignment.Center
