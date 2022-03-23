@@ -151,7 +151,7 @@ namespace Chummer
                                 "The error " + intErrorCode + " occurred while attempting to unblock WM_COPYDATA.");
                         }
 
-                        this.DoThreadSafe(x => x.Text = MainTitle);
+                        await this.DoThreadSafeAsync(x => x.Text = MainTitle);
 
                         //this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;
 
