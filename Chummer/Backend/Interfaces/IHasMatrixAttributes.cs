@@ -180,7 +180,7 @@ namespace Chummer
         /// <summary>
         /// Refreshes a set of ComboBoxes corresponding to Matrix attributes
         /// </summary>
-        public static void RefreshMatrixAttributeComboBoxes(this IHasMatrixAttributes objThis, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDataProcessing, ComboBox cboFirewall)
+        public static void RefreshMatrixAttributeComboBoxes(this IHasMatrixAttributes objThis, ElasticComboBox cboAttack, ElasticComboBox cboSleaze, ElasticComboBox cboDataProcessing, ElasticComboBox cboFirewall)
         {
             if (objThis == null)
                 return;
@@ -317,7 +317,7 @@ namespace Chummer
         /// <summary>
         /// Refreshes a set of ComboBoxes corresponding to Matrix attributes
         /// </summary>
-        public static async Task RefreshMatrixAttributeComboBoxesAsync(this IHasMatrixAttributes objThis, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDataProcessing, ComboBox cboFirewall, CancellationToken token = default)
+        public static async Task RefreshMatrixAttributeComboBoxesAsync(this IHasMatrixAttributes objThis, ElasticComboBox cboAttack, ElasticComboBox cboSleaze, ElasticComboBox cboDataProcessing, ElasticComboBox cboFirewall, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (objThis == null)
@@ -452,7 +452,7 @@ namespace Chummer
             }
         }
 
-        public static bool ProcessMatrixAttributeComboBoxChange(this IHasMatrixAttributes objThis, Character objCharacter, ComboBox cboChangedAttribute, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDataProcessing, ComboBox cboFirewall)
+        public static bool ProcessMatrixAttributeComboBoxChange(this IHasMatrixAttributes objThis, Character objCharacter, ElasticComboBox cboChangedAttribute, ElasticComboBox cboAttack, ElasticComboBox cboSleaze, ElasticComboBox cboDataProcessing, ElasticComboBox cboFirewall)
         {
             if (objThis == null)
                 return false;
@@ -531,7 +531,7 @@ namespace Chummer
             return blnRefreshCharacter && (objThis.IsActiveCommlink(objCharacter) || objThis.IsHomeNode(objCharacter));
         }
 
-        public static async Task<bool> ProcessMatrixAttributeComboBoxChangeAsync(this IHasMatrixAttributes objThis, Character objCharacter, ComboBox cboChangedAttribute, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDataProcessing, ComboBox cboFirewall, CancellationToken token = default)
+        public static async Task<bool> ProcessMatrixAttributeComboBoxChangeAsync(this IHasMatrixAttributes objThis, Character objCharacter, ElasticComboBox cboChangedAttribute, ElasticComboBox cboAttack, ElasticComboBox cboSleaze, ElasticComboBox cboDataProcessing, ElasticComboBox cboFirewall, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (objThis == null)

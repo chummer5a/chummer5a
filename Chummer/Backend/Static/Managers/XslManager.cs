@@ -90,18 +90,15 @@ namespace Chummer
                 if (blnSync)
                 {
                     objReturn.Load(strXslFilePath);
+                    Tuple<DateTime, XslCompiledTransform> tupNewValue = new Tuple<DateTime, XslCompiledTransform>(datLastWriteTimeUtc, objReturn);
                     // ReSharper disable once MethodHasAsyncOverload
-                    s_dicCompiledTransforms.Remove(strXslFilePath);
-                    // ReSharper disable once MethodHasAsyncOverload
-                    s_dicCompiledTransforms.TryAdd(
-                        strXslFilePath, new Tuple<DateTime, XslCompiledTransform>(datLastWriteTimeUtc, objReturn));
+                    s_dicCompiledTransforms.AddOrUpdate(strXslFilePath, tupNewValue, (x, y) => tupNewValue);
                 }
                 else
                 {
                     await Task.Run(() => objReturn.Load(strXslFilePath));
-                    await s_dicCompiledTransforms.RemoveAsync(strXslFilePath);
-                    await s_dicCompiledTransforms.TryAddAsync(
-                        strXslFilePath, new Tuple<DateTime, XslCompiledTransform>(datLastWriteTimeUtc, objReturn));
+                    Tuple<DateTime, XslCompiledTransform> tupNewValue = new Tuple<DateTime, XslCompiledTransform>(datLastWriteTimeUtc, objReturn);
+                    await s_dicCompiledTransforms.AddOrUpdateAsync(strXslFilePath, tupNewValue, (x, y) => tupNewValue);
                 }
             }
             else
