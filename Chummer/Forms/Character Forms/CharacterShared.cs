@@ -321,8 +321,7 @@ namespace Chummer
                 }
 
                 using (ThreadSafeForm<SelectLimitModifier> frmPickLimitModifier =
-                       ThreadSafeForm<SelectLimitModifier>.Get(() =>
-                           new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social")))
+                       await ThreadSafeForm<SelectLimitModifier>.GetAsync(() => new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social")))
                 {
                     if (await frmPickLimitModifier.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         return;
@@ -330,12 +329,12 @@ namespace Chummer
                     //Remove the old LimitModifier to ensure we don't double up.
                     CharacterObject.LimitModifiers.Remove(objLimitModifier);
                     // Create the new limit modifier.
-                    objLimitModifier = new LimitModifier(CharacterObject, strGuid);
-                    objLimitModifier.Create(frmPickLimitModifier.MyForm.SelectedName, frmPickLimitModifier.MyForm.SelectedBonus,
-                                            frmPickLimitModifier.MyForm.SelectedLimitType,
-                                            frmPickLimitModifier.MyForm.SelectedCondition, true);
+                    LimitModifier objNewLimitModifier = new LimitModifier(CharacterObject, strGuid);
+                    objNewLimitModifier.Create(frmPickLimitModifier.MyForm.SelectedName, frmPickLimitModifier.MyForm.SelectedBonus,
+                                               frmPickLimitModifier.MyForm.SelectedLimitType,
+                                               frmPickLimitModifier.MyForm.SelectedCondition, true);
 
-                    CharacterObject.LimitModifiers.Add(objLimitModifier);
+                    CharacterObject.LimitModifiers.Add(objNewLimitModifier);
 
                     IsCharacterUpdateRequested = true;
 
@@ -355,7 +354,7 @@ namespace Chummer
                 return;
             using (CursorWait.New(this))
             using (ThreadSafeForm<EditNotes> frmItemNotes =
-                   ThreadSafeForm<EditNotes>.Get(() => new EditNotes(objNotes.Notes, objNotes.NotesColor)))
+                   await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor)))
             {
                 if (await frmItemNotes.ShowDialogSafeAsync(this) != DialogResult.OK)
                     return;
@@ -367,7 +366,7 @@ namespace Chummer
                     TreeView objTreeView = treNode.TreeView;
                     if (objTreeView != null)
                     {
-                        objTreeView.DoThreadSafe(() =>
+                        await objTreeView.DoThreadSafeAsync(() =>
                         {
                             treNode.ForeColor = objNotes.PreferredColor;
                             treNode.ToolTipText = objNotes.Notes.WordWrap();
@@ -7135,7 +7134,7 @@ namespace Chummer
         public async ValueTask DoExport(CancellationToken token = default)
         {
             using (ThreadSafeForm<ExportCharacter> frmExportCharacter = await ThreadSafeForm<ExportCharacter>.GetAsync(() => new ExportCharacter(CharacterObject), token))
-                await frmExportCharacter.ShowDialogSafeAsync(this);
+                await frmExportCharacter.ShowDialogSafeAsync(this, token);
         }
 
         /// <summary>
@@ -7170,7 +7169,7 @@ namespace Chummer
 
                 do
                 {
-                    using (ThreadSafeForm<SelectGear> frmPickGear = ThreadSafeForm<SelectGear>.Get(() => new SelectGear(CharacterObject, 0, 1, objSelectedVehicle)))
+                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objSelectedVehicle)))
                     {
                         if (await frmPickGear.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             break;

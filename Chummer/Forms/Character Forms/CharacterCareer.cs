@@ -2482,25 +2482,26 @@ namespace Chummer
             if (!CharacterObject.DEPEnabled)
                 lstAbbrevs.Remove("DEP");
 
+            string strDescription = await LanguageManager.GetStringAsync("String_CyberzombieReduceAttribute");
             // Display the Select CharacterAttribute window and record which Skill was selected.
-            using (SelectAttribute frmPickAttribute = new SelectAttribute(lstAbbrevs.ToArray())
-            {
-                Description = await LanguageManager.GetStringAsync("String_CyberzombieReduceAttribute"),
-                ShowMetatypeMaximum = true
-            })
+            using (ThreadSafeForm<SelectAttribute> frmPickAttribute = await ThreadSafeForm<SelectAttribute>.GetAsync(() => new SelectAttribute(lstAbbrevs.ToArray())
+                   {
+                       Description = strDescription,
+                       ShowMetatypeMaximum = true
+                   }))
             {
                 if (await frmPickAttribute.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
                 // Create an Improvement to reduce the CharacterAttribute's Metatype Maximum.
-                if (!frmPickAttribute.DoNotAffectMetatypeMaximum)
+                if (!frmPickAttribute.MyForm.DoNotAffectMetatypeMaximum)
                 {
-                    await ImprovementManager.CreateImprovementAsync(CharacterObject, frmPickAttribute.SelectedAttribute, Improvement.ImprovementSource.AttributeLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, -1);
+                    await ImprovementManager.CreateImprovementAsync(CharacterObject, frmPickAttribute.MyForm.SelectedAttribute, Improvement.ImprovementSource.AttributeLoss, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, -1);
                     await ImprovementManager.CommitAsync(CharacterObject);
                 }
 
                 // Permanently reduce the CharacterAttribute's value.
-                CharacterObject.GetAttribute(frmPickAttribute.SelectedAttribute).Degrade(1);
+                CharacterObject.GetAttribute(frmPickAttribute.MyForm.SelectedAttribute).Degrade(1);
             }
 
             IsCharacterUpdateRequested = true;
@@ -2510,18 +2511,17 @@ namespace Chummer
         private async void mnuSpecialCloningMachine_Click(object sender, EventArgs e)
         {
             int intClones;
-            using (SelectNumber frmPickNumber = new SelectNumber(0)
+            string strDescription = await LanguageManager.GetStringAsync("String_CloningMachineNumber");
+            using (ThreadSafeForm<SelectNumber> frmPickNumber = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber(0)
+                   {
+                       Description = strDescription,
+                       Minimum = 1
+                   }))
             {
-                Description = await LanguageManager.GetStringAsync("String_CloningMachineNumber"),
-                Minimum = 1
-            })
-            {
-                await frmPickNumber.ShowDialogSafeAsync(this);
-
-                if (frmPickNumber.DialogResult == DialogResult.Cancel)
+                if (await frmPickNumber.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                intClones = frmPickNumber.SelectedValue.ToInt32();
+                intClones = frmPickNumber.MyForm.SelectedValue.ToInt32();
             }
 
             if (intClones <= 0)
@@ -3518,15 +3518,14 @@ namespace Chummer
                     }
                 }
 
-                using (SelectItem frmSelectVessel = new SelectItem())
+                using (ThreadSafeForm<SelectItem> frmSelectVessel = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem()))
                 {
-                    frmSelectVessel.SetGeneralItemsMode(lstMetatype);
-                    await frmSelectVessel.ShowDialogSafeAsync(this);
+                    frmSelectVessel.MyForm.SetGeneralItemsMode(lstMetatype);
 
-                    if (frmSelectVessel.DialogResult == DialogResult.Cancel)
+                    if (await frmSelectVessel.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         return;
 
-                    strSelectedVessel = frmSelectVessel.SelectedItem;
+                    strSelectedVessel = frmSelectVessel.MyForm.SelectedItem;
                 }
             }
 
@@ -4374,43 +4373,42 @@ namespace Chummer
                 // If this is the Obsolete Mod, the user must select a percentage. This will create an Expense that costs X% of the Vehicle's base cost to remove the special Obsolete Mod.
                 case VehicleMod objMod when objMod.Name == "Obsolete" || objMod.Name == "Obsolescent" && CharacterObjectSettings.AllowObsolescentUpgrade:
                 {
-                    using (SelectNumber frmModPercent = new SelectNumber
-                           {
-                               Minimum = 0,
-                               Maximum = 1000000,
-                               Description = await LanguageManager.GetStringAsync("String_Retrofit")
-                           })
-                    {
-                        await frmModPercent.ShowDialogSafeAsync(this);
+                    string strRetrofit = await LanguageManager.GetStringAsync("String_Retrofit");
+                        using (ThreadSafeForm<SelectNumber> frmModPercent = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber
+                               {
+                                   Minimum = 0,
+                                   Maximum = 1000000,
+                                   Description = strRetrofit
+                               }))
+                        {
+                            if (await frmModPercent.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                                return;
 
-                        if (frmModPercent.DialogResult == DialogResult.Cancel)
-                            return;
+                            decimal decPercentage = frmModPercent.MyForm.SelectedValue;
 
-                        decimal decPercentage = frmModPercent.SelectedValue;
+                            decimal decVehicleCost = objMod.Parent.OwnCost;
 
-                        decimal decVehicleCost = objMod.Parent.OwnCost;
+                            // Make sure the character has enough Nuyen for the expense.
+                            decimal decCost = decVehicleCost * decPercentage / 100;
 
-                        // Make sure the character has enough Nuyen for the expense.
-                        decimal decCost = decVehicleCost * decPercentage / 100;
+                            // Create a Vehicle Mod for the Retrofit.
+                            VehicleMod objRetrofit = new VehicleMod(CharacterObject);
 
-                        // Create a Vehicle Mod for the Retrofit.
-                        VehicleMod objRetrofit = new VehicleMod(CharacterObject);
+                            XmlDocument objVehiclesDoc = await CharacterObject.LoadDataAsync("vehicles.xml");
+                            XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
+                            objRetrofit.Create(objXmlNode, 0, objMod.Parent);
+                            objRetrofit.Cost = decCost.ToString(GlobalSettings.InvariantCultureInfo);
+                            objRetrofit.IncludedInVehicle = true;
+                            objMod.Parent.Mods.Add(objRetrofit);
 
-                        XmlDocument objVehiclesDoc = await CharacterObject.LoadDataAsync("vehicles.xml");
-                        XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
-                        objRetrofit.Create(objXmlNode, 0, objMod.Parent);
-                        objRetrofit.Cost = decCost.ToString(GlobalSettings.InvariantCultureInfo);
-                        objRetrofit.IncludedInVehicle = true;
-                        objMod.Parent.Mods.Add(objRetrofit);
+                            // Create an Expense Log Entry for removing the Obsolete Mod.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(decCost * -1, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_ExpenseVehicleRetrofit"), objMod.Parent.CurrentDisplayName), ExpenseType.Nuyen, DateTime.Now);
+                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
-                        // Create an Expense Log Entry for removing the Obsolete Mod.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_ExpenseVehicleRetrofit"), objMod.Parent.CurrentDisplayName), ExpenseType.Nuyen, DateTime.Now);
-                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-
-                        // Adjust the character's Nuyen total.
-                        CharacterObject.Nuyen += decCost * -1;
-                    }
+                            // Adjust the character's Nuyen total.
+                            CharacterObject.Nuyen += decCost * -1;
+                        }
 
                     break;
                 }
@@ -10223,14 +10221,12 @@ namespace Chummer
 
         private async void tsCreateNaturalWeapon_Click(object sender, EventArgs e)
         {
-            using (CreateNaturalWeapon frmCreateNaturalWeapon = new CreateNaturalWeapon(CharacterObject))
+            using (ThreadSafeForm<CreateNaturalWeapon> frmCreateNaturalWeapon = await ThreadSafeForm<CreateNaturalWeapon>.GetAsync(() => new CreateNaturalWeapon(CharacterObject)))
             {
-                await frmCreateNaturalWeapon.ShowDialogSafeAsync(this);
-
-                if (frmCreateNaturalWeapon.DialogResult == DialogResult.Cancel)
+                if (await frmCreateNaturalWeapon.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                Weapon objWeapon = frmCreateNaturalWeapon.SelectedWeapon;
+                Weapon objWeapon = frmCreateNaturalWeapon.MyForm.SelectedWeapon;
                 CharacterObject.Weapons.Add(objWeapon);
             }
         }
@@ -19340,14 +19336,12 @@ namespace Chummer
 
         private async void btnCreateCustomDrug_Click(object sender, EventArgs e)
         {
-            using (CreateCustomDrug form = new CreateCustomDrug(CharacterObject))
+            using (ThreadSafeForm<CreateCustomDrug> form = await ThreadSafeForm<CreateCustomDrug>.GetAsync(() => new CreateCustomDrug(CharacterObject)))
             {
-                await form.ShowDialogSafeAsync(this);
-
-                if (form.DialogResult == DialogResult.Cancel)
+                if (await form.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                Drug objCustomDrug = form.CustomDrug;
+                Drug objCustomDrug = form.MyForm.CustomDrug;
                 objCustomDrug.Quantity = 0;
                 CharacterObject.Drugs.Add(objCustomDrug);
                 objCustomDrug.GenerateImprovement();

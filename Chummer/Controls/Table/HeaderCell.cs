@@ -53,7 +53,7 @@ namespace Chummer.UI.Table
             this.DoThreadSafe(x => x.SuspendLayout());
             try
             {
-                using (Graphics g = CreateGraphics())
+                using (Graphics g = this.DoThreadSafeFunc(x => x.CreateGraphics()))
                 {
                     if (Sortable)
                     {
@@ -72,8 +72,9 @@ namespace Chummer.UI.Table
                         this.DoThreadSafe(x => x.MinimumSize = new Size(intMinWidth, intMinHeight));
                     }
 
+                    // ReSharper disable once AccessToDisposedClosure
                     _lblCellText.DoThreadSafe(x => x.Location = new Point((int)(_intLabelPadding * g.DpiX / 96.0f),
-                        (MinimumSize.Height - _lblCellText.Height) / 2));
+                                                                          (MinimumSize.Height - _lblCellText.Height) / 2));
                 }
             }
             finally

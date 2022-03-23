@@ -474,7 +474,7 @@ namespace Chummer
                         lstDropdownItems.Sort(CompareListItems.CompareNames);
 
                         string strDescription = await LanguageManager.GetStringAsync("Title_SelectSkill");
-                        using (ThreadSafeForm<SelectItem> frmPickSkill = ThreadSafeForm<SelectItem>.Get(() => new SelectItem { Description = strDescription }))
+                        using (ThreadSafeForm<SelectItem> frmPickSkill = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem { Description = strDescription }))
                         {
                             frmPickSkill.MyForm.SetDropdownItemsMode(lstDropdownItems);
                             if (await frmPickSkill.ShowDialogSafeAsync(this) == DialogResult.OK)
@@ -491,7 +491,7 @@ namespace Chummer
                 case "SelectSkillCategory":
                 {
                     string strDescription = await LanguageManager.GetStringAsync("Title_SelectSkillCategory");
-                    using (ThreadSafeForm<SelectSkillCategory> frmPickSkillCategory = ThreadSafeForm<SelectSkillCategory>.Get(() => new SelectSkillCategory(_objCharacter) { Description = strDescription }))
+                    using (ThreadSafeForm<SelectSkillCategory> frmPickSkillCategory = await ThreadSafeForm<SelectSkillCategory>.GetAsync(() => new SelectSkillCategory(_objCharacter) { Description = strDescription }))
                     {
                         if (await frmPickSkillCategory.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
@@ -506,7 +506,7 @@ namespace Chummer
                 case "SelectSkillGroup":
                 {
                     string strDescription = await LanguageManager.GetStringAsync("Title_SelectSkillGroup");
-                    using (ThreadSafeForm<SelectSkillGroup> frmPickSkillGroup = ThreadSafeForm<SelectSkillGroup>.Get(() => new SelectSkillGroup(_objCharacter) { Description = strDescription }))
+                    using (ThreadSafeForm<SelectSkillGroup> frmPickSkillGroup = await ThreadSafeForm<SelectSkillGroup>.GetAsync(() => new SelectSkillGroup(_objCharacter) { Description = strDescription }))
                     {
                         if (await frmPickSkillGroup.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
@@ -537,7 +537,7 @@ namespace Chummer
                         }
 
                         string strDescription = await LanguageManager.GetStringAsync("Title_SelectComplexForm");
-                        using (ThreadSafeForm<SelectItem> selectComplexForm = ThreadSafeForm<SelectItem>.Get(() => new SelectItem { Description = strDescription }))
+                        using (ThreadSafeForm<SelectItem> selectComplexForm = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem { Description = strDescription }))
                         {
                             selectComplexForm.MyForm.SetDropdownItemsMode(lstComplexForms);
 
@@ -570,7 +570,7 @@ namespace Chummer
                         }
 
                         string strDescription = await LanguageManager.GetStringAsync("Title_SelectSpell");
-                        using (ThreadSafeForm<SelectItem> selectSpell = ThreadSafeForm<SelectItem>.Get(() => new SelectItem { Description = strDescription }))
+                        using (ThreadSafeForm<SelectItem> selectSpell = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem { Description = strDescription }))
                         {
                             selectSpell.MyForm.SetDropdownItemsMode(lstSpells);
 
@@ -587,7 +587,7 @@ namespace Chummer
                 case "SelectWeaponCategory":
                 {
                     string strDescription = await LanguageManager.GetStringAsync("Title_SelectWeaponCategory");
-                    using (ThreadSafeForm<SelectWeaponCategory> frmPickWeaponCategory = ThreadSafeForm<SelectWeaponCategory>.Get(() => new SelectWeaponCategory(_objCharacter) { Description = strDescription }))
+                    using (ThreadSafeForm<SelectWeaponCategory> frmPickWeaponCategory = await ThreadSafeForm<SelectWeaponCategory>.GetAsync(() => new SelectWeaponCategory(_objCharacter) { Description = strDescription }))
                     {
                         if (await frmPickWeaponCategory.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
@@ -602,7 +602,7 @@ namespace Chummer
                 case "SelectSpellCategory":
                 {
                     string strDescription = await LanguageManager.GetStringAsync("Title_SelectSpellCategory");
-                    using (ThreadSafeForm<SelectSpellCategory> frmPickSpellCategory = ThreadSafeForm<SelectSpellCategory>.Get(() => new SelectSpellCategory(_objCharacter) { Description = strDescription }))
+                    using (ThreadSafeForm<SelectSpellCategory> frmPickSpellCategory = await ThreadSafeForm<SelectSpellCategory>.GetAsync(() => new SelectSpellCategory(_objCharacter) { Description = strDescription }))
                     {
                         if (await frmPickSpellCategory.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
@@ -615,7 +615,7 @@ namespace Chummer
                     break;
                 }
                 case "SelectAdeptPower":
-                    using (ThreadSafeForm<SelectPower> frmPickPower = ThreadSafeForm<SelectPower>.Get(() => new SelectPower(_objCharacter) { IgnoreLimits = chkIgnoreLimits.Checked }))
+                    using (ThreadSafeForm<SelectPower> frmPickPower = await ThreadSafeForm<SelectPower>.GetAsync(() => new SelectPower(_objCharacter) { IgnoreLimits = chkIgnoreLimits.Checked }))
                     {
                         if (await frmPickPower.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {

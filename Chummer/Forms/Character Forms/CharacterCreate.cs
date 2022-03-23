@@ -4077,15 +4077,13 @@ namespace Chummer
 
                     //i--; //Counter last increment
                     XmlNode objXmlLifeModule;
-                    using (SelectLifeModule frmSelectLifeModule = new SelectLifeModule(CharacterObject, intStage))
+                    using (ThreadSafeForm<SelectLifeModule> frmSelectLifeModule = await ThreadSafeForm<SelectLifeModule>.GetAsync(() => new SelectLifeModule(CharacterObject, intStage)))
                     {
-                        await frmSelectLifeModule.ShowDialogSafeAsync(this);
-
-                        if (frmSelectLifeModule.DialogResult == DialogResult.Cancel)
+                        if (await frmSelectLifeModule.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             break;
 
-                        blnAddAgain = frmSelectLifeModule.AddAgain;
-                        objXmlLifeModule = frmSelectLifeModule.SelectedNode;
+                        blnAddAgain = frmSelectLifeModule.MyForm.AddAgain;
+                        objXmlLifeModule = frmSelectLifeModule.MyForm.SelectedNode;
                     }
 
                     List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -15444,12 +15442,13 @@ namespace Chummer
                     }
 
                     decimal decStartingNuyen;
-                    using (SelectLifestyleStartingNuyen frmStartingNuyen
-                           = new SelectLifestyleStartingNuyen(CharacterObject))
+                    using (ThreadSafeForm<SelectLifestyleStartingNuyen> frmStartingNuyen
+                           = await ThreadSafeForm<SelectLifestyleStartingNuyen>.GetAsync(
+                               () => new SelectLifestyleStartingNuyen(CharacterObject), token))
                     {
-                        if (await frmStartingNuyen.ShowDialogSafeAsync(this) != DialogResult.OK)
+                        if (await frmStartingNuyen.ShowDialogSafeAsync(this, token) != DialogResult.OK)
                             return false;
-                        decStartingNuyen = frmStartingNuyen.StartingNuyen;
+                        decStartingNuyen = frmStartingNuyen.MyForm.StartingNuyen;
                     }
 
                     // Assign starting values and overflows.
@@ -17187,12 +17186,13 @@ namespace Chummer
                     return;
                 }
 
-                using (SelectItem frmPickMount = new SelectItem
+                string strDescription = await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware");
+                using (ThreadSafeForm<SelectItem> frmPickMount = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
                        {
-                           Description = await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware")
-                       })
+                           Description = strDescription
+                       }))
                 {
-                    frmPickMount.SetGeneralItemsMode(lstModularMounts);
+                    frmPickMount.MyForm.SetGeneralItemsMode(lstModularMounts);
 
                     // Make sure the dialogue window was not canceled.
                     if (await frmPickMount.ShowDialogSafeAsync(this) == DialogResult.Cancel)
@@ -17200,7 +17200,7 @@ namespace Chummer
                         return;
                     }
 
-                    strSelectedParentID = frmPickMount.SelectedItem;
+                    strSelectedParentID = frmPickMount.MyForm.SelectedItem;
                 }
             }
 
@@ -17284,12 +17284,13 @@ namespace Chummer
                     return;
                 }
 
-                using (SelectItem frmPickMount = new SelectItem
+                string strDescription = await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware");
+                using (ThreadSafeForm<SelectItem> frmPickMount = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
                        {
-                           Description = await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware")
-                       })
+                           Description = strDescription
+                       }))
                 {
-                    frmPickMount.SetGeneralItemsMode(lstModularMounts);
+                    frmPickMount.MyForm.SetGeneralItemsMode(lstModularMounts);
 
                     // Make sure the dialogue window was not canceled.
                     if (await frmPickMount.ShowDialogSafeAsync(this) == DialogResult.Cancel)
@@ -17297,7 +17298,7 @@ namespace Chummer
                         return;
                     }
 
-                    strSelectedParentID = frmPickMount.SelectedItem;
+                    strSelectedParentID = frmPickMount.MyForm.SelectedItem;
                 }
             }
 
@@ -17413,7 +17414,9 @@ namespace Chummer
         {
             if (!(treVehicles.SelectedNode?.Tag is WeaponMount objWeaponMount))
                 return;
-            using (CreateWeaponMount frmCreateWeaponMount = new CreateWeaponMount(objWeaponMount.Parent, CharacterObject, objWeaponMount))
+            using (ThreadSafeForm<CreateWeaponMount> frmCreateWeaponMount
+                   = await ThreadSafeForm<CreateWeaponMount>.GetAsync(
+                       () => new CreateWeaponMount(objWeaponMount.Parent, CharacterObject, objWeaponMount)))
             {
                 if (await frmCreateWeaponMount.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
@@ -17426,12 +17429,12 @@ namespace Chummer
 
         private async void btnCreateCustomDrug_Click_1(object sender, EventArgs e)
         {
-            using (CreateCustomDrug form = new CreateCustomDrug(CharacterObject))
+            using (ThreadSafeForm<CreateCustomDrug> form = await ThreadSafeForm<CreateCustomDrug>.GetAsync(() => new CreateCustomDrug(CharacterObject)))
             {
                 if (await form.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                Drug objCustomDrug = form.CustomDrug;
+                Drug objCustomDrug = form.MyForm.CustomDrug;
                 CharacterObject.Drugs.Add(objCustomDrug);
             }
         }
