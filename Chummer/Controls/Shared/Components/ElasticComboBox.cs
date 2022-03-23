@@ -59,7 +59,7 @@ namespace Chummer
         private void ClearUnintendedHighlight(object sender, EventArgs e)
         {
             if (DropDownStyle != ComboBoxStyle.DropDownList && IsHandleCreated)
-                this.DoThreadSafe(ClearSelection);
+                ClearSelection();
         }
 
         protected override void OnDataSourceChanged(EventArgs e)

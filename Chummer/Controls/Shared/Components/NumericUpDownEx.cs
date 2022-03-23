@@ -101,7 +101,7 @@ namespace Chummer
                         if (_blnMarginsSaved)
                         {
                             _blnSkipOnMarginChanged = true;
-                            this.DoThreadSafe(() => Margin = _objSavedMargins);
+                            Margin = _objSavedMargins;
                         }
                         return;
                     }
@@ -120,7 +120,7 @@ namespace Chummer
                     if (objNewMargins.Equals(Margin))
                         return;
                     _blnSkipOnMarginChanged = true;
-                    this.DoThreadSafe(() => Margin = objNewMargins);
+                    Margin = objNewMargins;
                 }
             }
             finally

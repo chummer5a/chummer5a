@@ -2249,7 +2249,7 @@ namespace Chummer
         private async void mnuSpecialChangeOptions_Click(object sender, EventArgs e)
         {
             using (CursorWait.New(this))
-            using (SelectBuildMethod frmPickBP = new SelectBuildMethod(CharacterObject, true))
+            using (ThreadSafeForm<SelectBuildMethod> frmPickBP = await ThreadSafeForm<SelectBuildMethod>.GetAsync(() => new SelectBuildMethod(CharacterObject, true)))
             {
                 await frmPickBP.ShowDialogSafeAsync(this);
             }
@@ -3380,29 +3380,28 @@ namespace Chummer
                 bool blnAddAgain;
                 do
                 {
-                    using (SelectSpell frmPickSpell = new SelectSpell(CharacterObject))
+                    using (ThreadSafeForm<SelectSpell> frmPickSpell = await ThreadSafeForm<SelectSpell>.GetAsync(() => new SelectSpell(CharacterObject)))
                     {
-                        await frmPickSpell.ShowDialogSafeAsync(this);
                         // Make sure the dialogue window was not canceled.
-                        if (frmPickSpell.DialogResult == DialogResult.Cancel)
+                        if (await frmPickSpell.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             break;
 
-                        blnAddAgain = frmPickSpell.AddAgain;
+                        blnAddAgain = frmPickSpell.MyForm.AddAgain;
 
                         XmlNode objXmlSpell
                             = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = "
-                                                              + frmPickSpell.SelectedSpell.CleanXPath() + ']');
+                                                              + frmPickSpell.MyForm.SelectedSpell.CleanXPath() + ']');
 
                         Spell objSpell = new Spell(CharacterObject);
-                        objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.Limited, frmPickSpell.Extended,
-                                        frmPickSpell.Alchemical);
+                        objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.MyForm.Limited, frmPickSpell.MyForm.Extended,
+                                        frmPickSpell.MyForm.Alchemical);
                         if (objSpell.InternalId.IsEmptyGuid())
                         {
                             objSpell.Dispose();
                             continue;
                         }
 
-                        objSpell.FreeBonus = frmPickSpell.FreeBonus;
+                        objSpell.FreeBonus = frmPickSpell.MyForm.FreeBonus;
                         // Barehanded Adept
                         if (objSpell.FreeBonus && CharacterObject.AdeptEnabled && !CharacterObject.MagicianEnabled
                             && (objSpell.Range == "T" || objSpell.Range == "T (A)"))
@@ -3797,19 +3796,18 @@ namespace Chummer
                             objMod.Name == "Obsolescent" && CharacterObjectSettings.AllowObsolescentUpgrade)
                         {
                             decimal decPercentage;
-                            using (SelectNumber frmModPercent = new SelectNumber
+                            string strRetrofit = await LanguageManager.GetStringAsync("String_Retrofit");
+                            using (ThreadSafeForm<SelectNumber> frmModPercent = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber
+                                   {
+                                       Minimum = 0,
+                                       Maximum = 1000000,
+                                       Description = strRetrofit
+                                   }))
                             {
-                                Minimum = 0,
-                                Maximum = 1000000,
-                                Description = await LanguageManager.GetStringAsync("String_Retrofit")
-                            })
-                            {
-                                await frmModPercent.ShowDialogSafeAsync(this);
-
-                                if (frmModPercent.DialogResult == DialogResult.Cancel)
+                                if (await frmModPercent.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                                     return;
 
-                                decPercentage = frmModPercent.SelectedValue;
+                                decPercentage = frmModPercent.MyForm.SelectedValue;
                             }
 
                             decimal decVehicleCost = objMod.Parent.OwnCost;
@@ -5521,23 +5519,23 @@ namespace Chummer
 
         private async void tsVehicleGearNotes_Click(object sender, EventArgs e)
         {
-            if (treVehicles.SelectedNode == null)
-                return;
-            switch (treVehicles.SelectedNode?.Tag)
+            switch (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag))
             {
                 case Gear objGear:
                     {
-                        using (EditNotes frmItemNotes = new EditNotes(objGear.Notes, objGear.NotesColor))
+                        using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objGear.Notes, objGear.NotesColor)))
                         {
-                            await frmItemNotes.ShowDialogSafeAsync(this);
-                            if (frmItemNotes.DialogResult != DialogResult.OK)
+                            if (await frmItemNotes.ShowDialogSafeAsync(this) != DialogResult.OK)
                                 return;
-                            objGear.Notes = frmItemNotes.Notes;
-                            objGear.NotesColor = frmItemNotes.NotesColor;
+                            objGear.Notes = frmItemNotes.MyForm.Notes;
+                            objGear.NotesColor = frmItemNotes.MyForm.NotesColor;
                             IsDirty = true;
 
-                            treVehicles.SelectedNode.ForeColor = objGear.PreferredColor;
-                            treVehicles.SelectedNode.ToolTipText = objGear.Notes.WordWrap();
+                            await treVehicles.DoThreadSafeAsync(x =>
+                            {
+                                x.SelectedNode.ForeColor = objGear.PreferredColor;
+                                x.SelectedNode.ToolTipText = objGear.Notes.WordWrap();
+                            });
                         }
 
                         break;
@@ -5553,23 +5551,21 @@ namespace Chummer
                 do
                 {
                     Lifestyle objLifestyle = new Lifestyle(CharacterObject);
-                    using (SelectLifestyleAdvanced frmPickLifestyle
-                           = new SelectLifestyleAdvanced(CharacterObject, objLifestyle))
+                    using (ThreadSafeForm<SelectLifestyleAdvanced> frmPickLifestyle
+                           = await ThreadSafeForm<SelectLifestyleAdvanced>.GetAsync(() => new SelectLifestyleAdvanced(CharacterObject, objLifestyle)))
                     {
-                        await frmPickLifestyle.ShowDialogSafeAsync(this);
-
                         // Make sure the dialogue window was not canceled.
-                        if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
+                        if (await frmPickLifestyle.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         {
-                            if (!ReferenceEquals(objLifestyle, frmPickLifestyle.SelectedLifestyle)
-                                && frmPickLifestyle.SelectedLifestyle != null)
-                                frmPickLifestyle.SelectedLifestyle.Dispose();
+                            if (!ReferenceEquals(objLifestyle, frmPickLifestyle.MyForm.SelectedLifestyle)
+                                && frmPickLifestyle.MyForm.SelectedLifestyle != null)
+                                frmPickLifestyle.MyForm.SelectedLifestyle.Dispose();
                             return;
                         }
 
-                        blnAddAgain = frmPickLifestyle.AddAgain;
+                        blnAddAgain = frmPickLifestyle.MyForm.AddAgain;
 
-                        objLifestyle = frmPickLifestyle.SelectedLifestyle;
+                        objLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
                     }
 
                     objLifestyle.StyleType = LifestyleType.Advanced;
@@ -5598,19 +5594,18 @@ namespace Chummer
                 return;
             }
 
-            using (SelectText frmPickText = new SelectText
+            string strDescription = await LanguageManager.GetStringAsync("String_WeaponName");
+            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
+                   {
+                       Description = strDescription,
+                       DefaultString = objWeapon.CustomName,
+                       AllowEmptyString = true
+                   }))
             {
-                Description = await LanguageManager.GetStringAsync("String_WeaponName"),
-                DefaultString = objWeapon.CustomName,
-                AllowEmptyString = true
-            })
-            {
-                await frmPickText.ShowDialogSafeAsync(this);
-
-                if (frmPickText.DialogResult == DialogResult.Cancel)
+                if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                objWeapon.CustomName = frmPickText.SelectedValue;
+                objWeapon.CustomName = frmPickText.MyForm.SelectedValue;
             }
 
             treWeapons.SelectedNode.Text = objWeapon.CurrentDisplayName;
@@ -5633,19 +5628,18 @@ namespace Chummer
                 return;
             }
 
-            using (SelectText frmPickText = new SelectText
+            string strDescription = await LanguageManager.GetStringAsync("String_GearName");
+            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
+                   {
+                       Description = strDescription,
+                       DefaultString = objGear.GearName,
+                       AllowEmptyString = true
+                   }))
             {
-                Description = await LanguageManager.GetStringAsync("String_GearName"),
-                DefaultString = objGear.GearName,
-                AllowEmptyString = true
-            })
-            {
-                await frmPickText.ShowDialogSafeAsync(this);
-
-                if (frmPickText.DialogResult == DialogResult.Cancel)
+                if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                objGear.GearName = frmPickText.SelectedValue;
+                objGear.GearName = frmPickText.MyForm.SelectedValue;
             }
 
             treGear.SelectedNode.Text = objGear.CurrentDisplayName;
@@ -6274,14 +6268,12 @@ namespace Chummer
             }
 
             // The character is still allowed to add Spells, so show the Create Spell window.
-            using (CreateSpell frmSpell = new CreateSpell(CharacterObject))
+            using (ThreadSafeForm<CreateSpell> frmSpell = await ThreadSafeForm<CreateSpell>.GetAsync(() => new CreateSpell(CharacterObject)))
             {
-                await frmSpell.ShowDialogSafeAsync(this);
-
-                if (frmSpell.DialogResult == DialogResult.Cancel)
+                if (await frmSpell.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                Spell objSpell = frmSpell.SelectedSpell;
+                Spell objSpell = frmSpell.MyForm.SelectedSpell;
                 CharacterObject.Spells.Add(objSpell);
             }
         }
@@ -6865,14 +6857,12 @@ namespace Chummer
 
         private async void tsCreateNaturalWeapon_Click(object sender, EventArgs e)
         {
-            using (CreateNaturalWeapon frmCreateNaturalWeapon = new CreateNaturalWeapon(CharacterObject))
+            using (ThreadSafeForm<CreateNaturalWeapon> frmCreateNaturalWeapon = await ThreadSafeForm<CreateNaturalWeapon>.GetAsync(() => new CreateNaturalWeapon(CharacterObject)))
             {
-                await frmCreateNaturalWeapon.ShowDialogSafeAsync(this);
-
-                if (frmCreateNaturalWeapon.DialogResult == DialogResult.Cancel)
+                if (await frmCreateNaturalWeapon.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                Weapon objWeapon = frmCreateNaturalWeapon.SelectedWeapon;
+                Weapon objWeapon = frmCreateNaturalWeapon.MyForm.SelectedWeapon;
                 CharacterObject.Weapons.Add(objWeapon);
             }
         }
@@ -15544,20 +15534,18 @@ namespace Chummer
         {
             XmlNode objXmlKit;
             bool blnAddAgain;
-            using (SelectPACKSKit frmPickPACKSKit = new SelectPACKSKit(CharacterObject))
+            using (ThreadSafeForm<SelectPACKSKit> frmPickPACKSKit = await ThreadSafeForm<SelectPACKSKit>.GetAsync(() => new SelectPACKSKit(CharacterObject)))
             {
-                await frmPickPACKSKit.ShowDialogSafeAsync(this);
-
                 // If the form was canceled, don't do anything.
-                if (frmPickPACKSKit.DialogResult == DialogResult.Cancel)
+                if (await frmPickPACKSKit.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return false;
 
                 // Do not create child items for Gear if the chosen Kit is in the Custom category since these items will contain the exact plugins desired.
                 //if (frmPickPACKSKit.SelectedCategory == "Custom")
                 //blnCreateChildren = false;
 
-                objXmlKit = (await CharacterObject.LoadDataAsync("packs.xml")).SelectSingleNode("/chummer/packs/pack[name = " + frmPickPACKSKit.SelectedKit.CleanXPath() + " and category = " + SelectPACKSKit.SelectedCategory.CleanXPath() + ']');
-                blnAddAgain = frmPickPACKSKit.AddAgain;
+                objXmlKit = (await CharacterObject.LoadDataAsync("packs.xml")).SelectSingleNode("/chummer/packs/pack[name = " + frmPickPACKSKit.MyForm.SelectedKit.CleanXPath() + " and category = " + SelectPACKSKit.SelectedCategory.CleanXPath() + ']');
+                blnAddAgain = frmPickPACKSKit.MyForm.AddAgain;
             }
 
             if (objXmlKit == null)
@@ -15606,19 +15594,17 @@ namespace Chummer
             {
                 string strForcedValue = xmlSelectMartialArt.Attributes?["select"]?.InnerText ?? string.Empty;
 
-                using (SelectMartialArt frmPickMartialArt = new SelectMartialArt(CharacterObject)
+                using (ThreadSafeForm<SelectMartialArt> frmPickMartialArt = await ThreadSafeForm<SelectMartialArt>.GetAsync(() => new SelectMartialArt(CharacterObject)
+                       {
+                           ForcedValue = strForcedValue
+                       }))
                 {
-                    ForcedValue = strForcedValue
-                })
-                {
-                    await frmPickMartialArt.ShowDialogSafeAsync(this);
-
-                    if (frmPickMartialArt.DialogResult != DialogResult.Cancel)
+                    if (await frmPickMartialArt.ShowDialogSafeAsync(this) != DialogResult.Cancel)
                     {
                         // Open the Martial Arts XML file and locate the selected piece.
                         XmlDocument objXmlMartialArtDocument = await CharacterObject.LoadDataAsync("martialarts.xml");
 
-                        XmlNode objXmlArt = objXmlMartialArtDocument.SelectSingleNode("/chummer/martialarts/martialart[id = " + frmPickMartialArt.SelectedMartialArt.CleanXPath() + ']');
+                        XmlNode objXmlArt = objXmlMartialArtDocument.SelectSingleNode("/chummer/martialarts/martialart[id = " + frmPickMartialArt.MyForm.SelectedMartialArt.CleanXPath() + ']');
 
                         MartialArt objMartialArt = new MartialArt(CharacterObject);
                         objMartialArt.Create(objXmlArt);
@@ -16216,7 +16202,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask CreatePACKSKit()
         {
-            using (CreatePACKSKit frmBuildPACKSKit = new CreatePACKSKit(CharacterObject))
+            using (ThreadSafeForm<CreatePACKSKit> frmBuildPACKSKit = await ThreadSafeForm<CreatePACKSKit>.GetAsync(() => new CreatePACKSKit(CharacterObject)))
                 await frmBuildPACKSKit.ShowDialogSafeAsync(this);
         }
 
@@ -16268,19 +16254,17 @@ namespace Chummer
         {
             if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
             {
-                using (SelectMetatypePriority frmSelectMetatype = new SelectMetatypePriority(CharacterObject))
+                using (ThreadSafeForm<SelectMetatypePriority> frmSelectMetatype = await ThreadSafeForm<SelectMetatypePriority>.GetAsync(() => new SelectMetatypePriority(CharacterObject)))
                 {
-                    await frmSelectMetatype.ShowDialogSafeAsync(this);
-                    if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                    if (await frmSelectMetatype.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         return;
                 }
             }
             else
             {
-                using (SelectMetatypeKarma frmSelectMetatype = new SelectMetatypeKarma(CharacterObject))
+                using (ThreadSafeForm<SelectMetatypeKarma> frmSelectMetatype = await ThreadSafeForm<SelectMetatypeKarma>.GetAsync(() => new SelectMetatypeKarma(CharacterObject)))
                 {
-                    await frmSelectMetatype.ShowDialogSafeAsync(this);
-                    if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                    if (await frmSelectMetatype.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         return;
                 }
             }
@@ -16316,7 +16300,7 @@ namespace Chummer
                 return;
             }
 
-            using (CreateCyberwareSuite frmBuildCyberwareSuite = new CreateCyberwareSuite(CharacterObject, objSource))
+            using (ThreadSafeForm<CreateCyberwareSuite> frmBuildCyberwareSuite = await ThreadSafeForm<CreateCyberwareSuite>.GetAsync(() => new CreateCyberwareSuite(CharacterObject, objSource)))
                 await frmBuildCyberwareSuite.ShowDialogSafeAsync(this);
         }
 
@@ -16518,18 +16502,16 @@ namespace Chummer
 
         private async ValueTask AddCyberwareSuite(Improvement.ImprovementSource objSource)
         {
-            using (SelectCyberwareSuite frmPickCyberwareSuite = new SelectCyberwareSuite(CharacterObject, objSource))
+            using (ThreadSafeForm<SelectCyberwareSuite> frmPickCyberwareSuite = await ThreadSafeForm<SelectCyberwareSuite>.GetAsync(() => new SelectCyberwareSuite(CharacterObject, objSource)))
             {
-                await frmPickCyberwareSuite.ShowDialogSafeAsync(this);
-
-                if (frmPickCyberwareSuite.DialogResult == DialogResult.Cancel)
+                if (await frmPickCyberwareSuite.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
                 string strType = objSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync(strType + ".xml", string.Empty, true);
-                XmlNode xmlSuite = frmPickCyberwareSuite.SelectedSuite.IsGuid()
-                    ? objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = " + frmPickCyberwareSuite.SelectedSuite.CleanXPath() + ']')
-                    : objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = " + frmPickCyberwareSuite.SelectedSuite.CleanXPath() + ']');
+                XmlNode xmlSuite = frmPickCyberwareSuite.MyForm.SelectedSuite.IsGuid()
+                    ? objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = " + frmPickCyberwareSuite.MyForm.SelectedSuite.CleanXPath() + ']')
+                    : objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = " + frmPickCyberwareSuite.MyForm.SelectedSuite.CleanXPath() + ']');
                 if (xmlSuite == null)
                     return;
                 Grade objGrade = Grade.ConvertToCyberwareGrade(xmlSuite["grade"]?.InnerText, objSource, CharacterObject);

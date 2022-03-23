@@ -3887,22 +3887,21 @@ namespace Chummer
                     break;
                 }
 
-                using (SelectSpell frmPickSpell = new SelectSpell(CharacterObject)
+                using (ThreadSafeForm<SelectSpell> frmPickSpell = await ThreadSafeForm<SelectSpell>.GetAsync(() => new SelectSpell(CharacterObject)
+                       {
+                           FreeOnly = CharacterObject.Karma < intSpellKarmaCost &&
+                                      (blnCanTouchOnlySpellBeFree || blnCanGenericSpellBeFree)
+                       }))
                 {
-                    FreeOnly = CharacterObject.Karma < intSpellKarmaCost &&
-                               (blnCanTouchOnlySpellBeFree || blnCanGenericSpellBeFree)
-                })
-                {
-                    await frmPickSpell.ShowDialogSafeAsync(this);
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickSpell.DialogResult == DialogResult.Cancel)
+                    if (await frmPickSpell.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         break;
-                    blnAddAgain = frmPickSpell.AddAgain;
+                    blnAddAgain = frmPickSpell.MyForm.AddAgain;
 
-                    XmlNode objXmlSpell = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = " + frmPickSpell.SelectedSpell.CleanXPath() + ']');
+                    XmlNode objXmlSpell = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = " + frmPickSpell.MyForm.SelectedSpell.CleanXPath() + ']');
 
                     Spell objSpell = new Spell(CharacterObject);
-                    objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.Limited, frmPickSpell.Extended, frmPickSpell.Alchemical);
+                    objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.MyForm.Limited, frmPickSpell.MyForm.Extended, frmPickSpell.MyForm.Alchemical);
                     if (objSpell.Alchemical)
                     {
                         intSpellKarmaCost = CharacterObject.SpellKarmaCost("Preparations");
@@ -3918,7 +3917,7 @@ namespace Chummer
                         continue;
                     }
 
-                    objSpell.FreeBonus = frmPickSpell.FreeBonus;
+                    objSpell.FreeBonus = frmPickSpell.MyForm.FreeBonus;
                     if (!objSpell.FreeBonus)
                     {
                         if (CharacterObject.Karma < intSpellKarmaCost)
@@ -4668,19 +4667,18 @@ namespace Chummer
 
         private async void cmdKarmaGained_Click(object sender, EventArgs e)
         {
-            using (CreateExpense frmNewExpense = new CreateExpense(CharacterObjectSettings)
+            string strText = await LanguageManager.GetStringAsync("String_WorkingForThePeople");
+            using (ThreadSafeForm<CreateExpense> frmNewExpense = await ThreadSafeForm<CreateExpense>.GetAsync(() => new CreateExpense(CharacterObjectSettings)
+                   {
+                       KarmaNuyenExchangeString = strText
+                   }))
             {
-                KarmaNuyenExchangeString = await LanguageManager.GetStringAsync("String_WorkingForThePeople")
-            })
-            {
-                await frmNewExpense.ShowDialogSafeAsync(this);
-
-                if (frmNewExpense.DialogResult == DialogResult.Cancel)
+                if (await frmNewExpense.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(frmNewExpense.Amount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
+                objExpense.Create(frmNewExpense.MyForm.Amount, frmNewExpense.MyForm.Reason, ExpenseType.Karma, frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -4688,14 +4686,14 @@ namespace Chummer
                 objExpense.Undo = objUndo;
 
                 // Adjust the character's Karma total.
-                CharacterObject.Karma += frmNewExpense.Amount.ToInt32();
+                CharacterObject.Karma += frmNewExpense.MyForm.Amount.ToInt32();
 
-                if (frmNewExpense.KarmaNuyenExchange)
+                if (frmNewExpense.MyForm.KarmaNuyenExchange)
                 {
                     // Create the Expense Log Entry.
                     objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(frmNewExpense.Amount * -CharacterObjectSettings.NuyenPerBPWftP, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
-                    objExpense.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
+                    objExpense.Create(frmNewExpense.MyForm.Amount * -CharacterObjectSettings.NuyenPerBPWftP, frmNewExpense.MyForm.Reason, ExpenseType.Nuyen, frmNewExpense.MyForm.SelectedDate);
+                    objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                     objUndo = new ExpenseUndo();
@@ -4703,25 +4701,24 @@ namespace Chummer
                     objExpense.Undo = objUndo;
 
                     // Adjust the character's Nuyen total.
-                    CharacterObject.Nuyen += frmNewExpense.Amount * -CharacterObjectSettings.NuyenPerBPWftP;
+                    CharacterObject.Nuyen += frmNewExpense.MyForm.Amount * -CharacterObjectSettings.NuyenPerBPWftP;
                 }
             }
         }
 
         private async void cmdKarmaSpent_Click(object sender, EventArgs e)
         {
-            using (CreateExpense frmNewExpense = new CreateExpense(CharacterObjectSettings)
+            string strText = await LanguageManager.GetStringAsync("String_WorkingForTheMan");
+            using (ThreadSafeForm<CreateExpense> frmNewExpense = await ThreadSafeForm<CreateExpense>.GetAsync(() => new CreateExpense(CharacterObjectSettings)
+                   {
+                       KarmaNuyenExchangeString = strText
+                   }))
             {
-                KarmaNuyenExchangeString = await LanguageManager.GetStringAsync("String_WorkingForTheMan")
-            })
-            {
-                await frmNewExpense.ShowDialogSafeAsync(this);
-
-                if (frmNewExpense.DialogResult == DialogResult.Cancel)
+                if (await frmNewExpense.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
                 // Make sure the Karma expense would not put the character's remaining Karma amount below 0.
-                if (CharacterObject.Karma - frmNewExpense.Amount < 0)
+                if (CharacterObject.Karma - frmNewExpense.MyForm.Amount < 0)
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -4729,8 +4726,8 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(frmNewExpense.Amount * -1, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
-                objExpense.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
+                objExpense.Create(frmNewExpense.MyForm.Amount * -1, frmNewExpense.MyForm.Reason, ExpenseType.Karma, frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
+                objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -4738,14 +4735,14 @@ namespace Chummer
                 objExpense.Undo = objUndo;
 
                 // Adjust the character's Karma total.
-                CharacterObject.Karma -= frmNewExpense.Amount.ToInt32();
+                CharacterObject.Karma -= frmNewExpense.MyForm.Amount.ToInt32();
 
-                if (frmNewExpense.KarmaNuyenExchange)
+                if (frmNewExpense.MyForm.KarmaNuyenExchange)
                 {
                     // Create the Expense Log Entry.
                     objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(frmNewExpense.Amount * CharacterObjectSettings.NuyenPerBPWftM, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
-                    objExpense.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
+                    objExpense.Create(frmNewExpense.MyForm.Amount * CharacterObjectSettings.NuyenPerBPWftM, frmNewExpense.MyForm.Reason, ExpenseType.Nuyen, frmNewExpense.MyForm.SelectedDate);
+                    objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                     objUndo = new ExpenseUndo();
@@ -4753,28 +4750,27 @@ namespace Chummer
                     objExpense.Undo = objUndo;
 
                     // Adjust the character's Nuyen total.
-                    CharacterObject.Nuyen += frmNewExpense.Amount * CharacterObjectSettings.NuyenPerBPWftM;
+                    CharacterObject.Nuyen += frmNewExpense.MyForm.Amount * CharacterObjectSettings.NuyenPerBPWftM;
                 }
             }
         }
 
         private async void cmdNuyenGained_Click(object sender, EventArgs e)
         {
-            using (CreateExpense frmNewExpense = new CreateExpense(CharacterObjectSettings)
+            string strText = await LanguageManager.GetStringAsync("String_WorkingForTheMan");
+            using (ThreadSafeForm<CreateExpense> frmNewExpense = await ThreadSafeForm<CreateExpense>.GetAsync(() => new CreateExpense(CharacterObjectSettings)
+                   {
+                       Mode = ExpenseType.Nuyen,
+                       KarmaNuyenExchangeString = strText
+                   }))
             {
-                Mode = ExpenseType.Nuyen,
-                KarmaNuyenExchangeString = await LanguageManager.GetStringAsync("String_WorkingForTheMan")
-            })
-            {
-                await frmNewExpense.ShowDialogSafeAsync(this);
-
-                if (frmNewExpense.DialogResult == DialogResult.Cancel)
+                if (await frmNewExpense.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(frmNewExpense.Amount, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
-                objExpense.Refund = frmNewExpense.Refund;
+                objExpense.Create(frmNewExpense.MyForm.Amount, frmNewExpense.MyForm.Reason, ExpenseType.Nuyen, frmNewExpense.MyForm.SelectedDate);
+                objExpense.Refund = frmNewExpense.MyForm.Refund;
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -4782,15 +4778,15 @@ namespace Chummer
                 objExpense.Undo = objUndo;
 
                 // Adjust the character's Nuyen total.
-                CharacterObject.Nuyen += frmNewExpense.Amount;
+                CharacterObject.Nuyen += frmNewExpense.MyForm.Amount;
 
-                if (frmNewExpense.KarmaNuyenExchange)
+                if (frmNewExpense.MyForm.KarmaNuyenExchange)
                 {
                     // Create the Expense Log Entry.
                     objExpense = new ExpenseLogEntry(CharacterObject);
-                    int intAmount = (frmNewExpense.Amount / CharacterObjectSettings.NuyenPerBPWftM).ToInt32();
-                    objExpense.Create(-intAmount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
-                    objExpense.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
+                    int intAmount = (frmNewExpense.MyForm.Amount / CharacterObjectSettings.NuyenPerBPWftM).ToInt32();
+                    objExpense.Create(-intAmount, frmNewExpense.MyForm.Reason, ExpenseType.Karma, frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
+                    objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                     objUndo = new ExpenseUndo();
@@ -4805,19 +4801,18 @@ namespace Chummer
 
         private async void cmdNuyenSpent_Click(object sender, EventArgs e)
         {
-            using (CreateExpense frmNewExpense = new CreateExpense(CharacterObjectSettings)
+            string strText = await LanguageManager.GetStringAsync("String_WorkingForThePeople");
+            using (ThreadSafeForm<CreateExpense> frmNewExpense = await ThreadSafeForm<CreateExpense>.GetAsync(() => new CreateExpense(CharacterObjectSettings)
+                   {
+                       Mode = ExpenseType.Nuyen,
+                       KarmaNuyenExchangeString = strText
+                   }))
             {
-                Mode = ExpenseType.Nuyen,
-                KarmaNuyenExchangeString = await LanguageManager.GetStringAsync("String_WorkingForThePeople")
-            })
-            {
-                await frmNewExpense.ShowDialogSafeAsync(this);
-
-                if (frmNewExpense.DialogResult == DialogResult.Cancel)
+                if (await frmNewExpense.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
                 // Make sure the Nuyen expense would not put the character's remaining Nuyen amount below 0.
-                if (CharacterObject.Nuyen - frmNewExpense.Amount < 0)
+                if (CharacterObject.Nuyen - frmNewExpense.MyForm.Amount < 0)
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -4825,7 +4820,7 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(frmNewExpense.Amount * -1, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
+                objExpense.Create(frmNewExpense.MyForm.Amount * -1, frmNewExpense.MyForm.Reason, ExpenseType.Nuyen, frmNewExpense.MyForm.SelectedDate);
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -4833,15 +4828,15 @@ namespace Chummer
                 objExpense.Undo = objUndo;
 
                 // Adjust the character's Nuyen total.
-                CharacterObject.Nuyen += frmNewExpense.Amount * -1;
+                CharacterObject.Nuyen += frmNewExpense.MyForm.Amount * -1;
 
-                if (frmNewExpense.KarmaNuyenExchange)
+                if (frmNewExpense.MyForm.KarmaNuyenExchange)
                 {
                     // Create the Expense Log Entry.
                     objExpense = new ExpenseLogEntry(CharacterObject);
-                    int intAmount = (frmNewExpense.Amount / CharacterObjectSettings.NuyenPerBPWftP).ToInt32();
-                    objExpense.Create(intAmount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
-                    objExpense.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
+                    int intAmount = (frmNewExpense.MyForm.Amount / CharacterObjectSettings.NuyenPerBPWftP).ToInt32();
+                    objExpense.Create(intAmount, frmNewExpense.MyForm.Reason, ExpenseType.Karma, frmNewExpense.MyForm.SelectedDate, frmNewExpense.MyForm.Refund);
+                    objExpense.ForceCareerVisible = frmNewExpense.MyForm.ForceCareerVisible;
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                     objUndo = new ExpenseUndo();
@@ -4891,18 +4886,16 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (SelectCritterPower frmPickCritterPower = new SelectCritterPower(CharacterObject))
+                using (ThreadSafeForm<SelectCritterPower> frmPickCritterPower = await ThreadSafeForm<SelectCritterPower>.GetAsync(() => new SelectCritterPower(CharacterObject)))
                 {
-                    await frmPickCritterPower.ShowDialogSafeAsync(this);
-
-                    if (frmPickCritterPower.DialogResult == DialogResult.Cancel)
+                    if (await frmPickCritterPower.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         break;
-                    blnAddAgain = frmPickCritterPower.AddAgain;
+                    blnAddAgain = frmPickCritterPower.MyForm.AddAgain;
 
-                    XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = " + frmPickCritterPower.SelectedPower.CleanXPath() + ']');
+                    XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = " + frmPickCritterPower.MyForm.SelectedPower.CleanXPath() + ']');
                     CritterPower objPower = new CritterPower(CharacterObject);
-                    objPower.Create(objXmlPower, frmPickCritterPower.SelectedRating);
-                    objPower.PowerPoints = frmPickCritterPower.PowerPoints;
+                    objPower.Create(objXmlPower, frmPickCritterPower.MyForm.SelectedRating);
+                    objPower.PowerPoints = frmPickCritterPower.MyForm.PowerPoints;
                     if (objPower.InternalId.IsEmptyGuid())
                         continue;
 
@@ -6066,13 +6059,12 @@ namespace Chummer
 
             if (objWeek == null)
                 return;
-            using (EditNotes frmItemNotes = new EditNotes(objWeek.Notes, objWeek.NotesColor))
+            using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objWeek.Notes, objWeek.NotesColor)))
             {
-                await frmItemNotes.ShowDialogSafeAsync(this);
-                if (frmItemNotes.DialogResult != DialogResult.OK)
+                if (await frmItemNotes.ShowDialogSafeAsync(this) != DialogResult.OK)
                     return;
-                objWeek.Notes = frmItemNotes.Notes;
-                objWeek.NotesColor = frmItemNotes.NotesColor;
+                objWeek.Notes = frmItemNotes.MyForm.Notes;
+                objWeek.NotesColor = frmItemNotes.MyForm.NotesColor;
                 IsDirty = true;
             }
         }
@@ -6088,15 +6080,13 @@ namespace Chummer
 
             int intYear;
             int intWeek;
-            using (SelectCalendarStart frmPickStart = new SelectCalendarStart(objStart))
+            using (ThreadSafeForm<SelectCalendarStart> frmPickStart = await ThreadSafeForm<SelectCalendarStart>.GetAsync(() => new SelectCalendarStart(objStart)))
             {
-                await frmPickStart.ShowDialogSafeAsync(this);
-
-                if (frmPickStart.DialogResult == DialogResult.Cancel)
+                if (await frmPickStart.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                intYear = frmPickStart.SelectedYear;
-                intWeek = frmPickStart.SelectedWeek;
+                intYear = frmPickStart.MyForm.SelectedYear;
+                intWeek = frmPickStart.MyForm.SelectedWeek;
             }
 
             // Determine the difference between the starting value and selected values for year and week.
@@ -6135,11 +6125,9 @@ namespace Chummer
             string location = treImprovements.SelectedNode?.Tag is string strSelectedId && strSelectedId != "Node_SelectedImprovements"
                 ? strSelectedId
                 : string.Empty;
-            using (CreateImprovement frmPickImprovement = new CreateImprovement(CharacterObject, location))
+            using (ThreadSafeForm<CreateImprovement> frmPickImprovement = await ThreadSafeForm<CreateImprovement>.GetAsync(() => new CreateImprovement(CharacterObject, location)))
             {
-                await frmPickImprovement.ShowDialogSafeAsync(this);
-
-                if (frmPickImprovement.DialogResult == DialogResult.Cancel)
+                if (await frmPickImprovement.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
             }
 
@@ -6169,32 +6157,32 @@ namespace Chummer
             }
 
             List<Gear> lstStack = new List<Gear>(lstGear.Count);
-
-            using (SelectItem frmPickItem = new SelectItem
-            {
-                Description = await LanguageManager.GetStringAsync("String_SelectItemFocus"),
-                AllowAutoSelect = false
-            })
+            string strDescription = await LanguageManager.GetStringAsync("String_SelectItemFocus");
+            using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
+                   {
+                       Description = strDescription,
+                       AllowAutoSelect = false
+                   }))
             {
                 // Let the character select the Foci they'd like to stack, stopping when they either click Cancel or there are no more items left in the list.
+                DialogResult eResult;
                 do
                 {
-                    frmPickItem.SetGearMode(lstGear);
-                    await frmPickItem.ShowDialogSafeAsync(this);
-
-                    if (frmPickItem.DialogResult != DialogResult.OK)
+                    frmPickItem.MyForm.SetGearMode(lstGear);
+                    eResult = await frmPickItem.ShowDialogSafeAsync(this);
+                    if (eResult != DialogResult.OK)
                         continue;
                     // Move the item from the Gear list to the Stack list.
                     foreach (Gear objGear in lstGear)
                     {
-                        if (objGear.InternalId != frmPickItem.SelectedItem)
+                        if (objGear.InternalId != frmPickItem.MyForm.SelectedItem)
                             continue;
                         objGear.Bonded = true;
                         lstStack.Add(objGear);
                         lstGear.Remove(objGear);
                         break;
                     }
-                } while (lstGear.Count > 0 && frmPickItem.DialogResult != DialogResult.Cancel);
+                } while (lstGear.Count > 0 && eResult != DialogResult.Cancel);
             }
 
             // Make sure at least 2 Foci were selected.
@@ -7546,15 +7534,13 @@ namespace Chummer
                 bool blnAddAgain = false;
                 do
                 {
-                    using (SelectMartialArtTechnique frmPickMartialArtTechnique = new SelectMartialArtTechnique(CharacterObject, objMartialArt))
+                    using (ThreadSafeForm<SelectMartialArtTechnique> frmPickMartialArtTechnique = await ThreadSafeForm<SelectMartialArtTechnique>.GetAsync(() => new SelectMartialArtTechnique(CharacterObject, objMartialArt)))
                     {
-                        await frmPickMartialArtTechnique.ShowDialogSafeAsync(this);
-
-                        if (frmPickMartialArtTechnique.DialogResult == DialogResult.Cancel)
+                        if (await frmPickMartialArtTechnique.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             return;
 
                         // Open the Martial Arts XML file and locate the selected piece.
-                        XmlNode xmlTechnique = (await CharacterObject.LoadDataAsync("martialarts.xml")).SelectSingleNode("/chummer/techniques/technique[id = " + frmPickMartialArtTechnique.SelectedTechnique.CleanXPath() + ']');
+                        XmlNode xmlTechnique = (await CharacterObject.LoadDataAsync("martialarts.xml")).SelectSingleNode("/chummer/techniques/technique[id = " + frmPickMartialArtTechnique.MyForm.SelectedTechnique.CleanXPath() + ']');
 
                         if (xmlTechnique == null)
                             continue;
@@ -7564,7 +7550,7 @@ namespace Chummer
                         if (objTechnique.InternalId.IsEmptyGuid())
                             return;
 
-                        blnAddAgain = frmPickMartialArtTechnique.AddAgain;
+                        blnAddAgain = frmPickMartialArtTechnique.MyForm.AddAgain;
 
                         int karmaCost = objMartialArt.Techniques.Count > 0 ? CharacterObjectSettings.KarmaTechnique : 0;
                         objMartialArt.Techniques.Add(objTechnique);
@@ -8005,12 +7991,11 @@ namespace Chummer
                     
                 case ICanSell vendorTrash:
                     {
-                        using (SellItem frmSell = new SellItem())
+                        using (ThreadSafeForm<SellItem> frmSell = await ThreadSafeForm<SellItem>.GetAsync(() => new SellItem()))
                         {
-                            await frmSell.ShowDialogSafeAsync(this);
-                            if (frmSell.DialogResult == DialogResult.Cancel)
+                            if (await frmSell.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                                 return;
-                            vendorTrash.Sell(frmSell.SellPercent, GlobalSettings.ConfirmDelete);
+                            vendorTrash.Sell(frmSell.MyForm.SellPercent, GlobalSettings.ConfirmDelete);
                         }
 
                         break;
@@ -8025,12 +8010,11 @@ namespace Chummer
         {
             if (treArmor.SelectedNode?.Tag is ICanSell vendorTrash)
             {
-                using (SellItem frmSell = new SellItem())
+                using (ThreadSafeForm<SellItem> frmSell = await ThreadSafeForm<SellItem>.GetAsync(() => new SellItem()))
                 {
-                    await frmSell.ShowDialogSafeAsync(this);
-                    if (frmSell.DialogResult == DialogResult.Cancel)
+                    if (await frmSell.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         return;
-                    vendorTrash.Sell(frmSell.SellPercent, GlobalSettings.ConfirmDelete);
+                    vendorTrash.Sell(frmSell.MyForm.SellPercent, GlobalSettings.ConfirmDelete);
                 }
             }
             else
@@ -8044,12 +8028,11 @@ namespace Chummer
             // Delete the selected Weapon.
             if (treWeapons.SelectedNode?.Tag is ICanSell vendorTrash)
             {
-                using (SellItem frmSell = new SellItem())
+                using (ThreadSafeForm<SellItem> frmSell = await ThreadSafeForm<SellItem>.GetAsync(() => new SellItem()))
                 {
-                    await frmSell.ShowDialogSafeAsync(this);
-                    if (frmSell.DialogResult == DialogResult.Cancel)
+                    if (await frmSell.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         return;
-                    vendorTrash.Sell(frmSell.SellPercent, GlobalSettings.ConfirmDelete);
+                    vendorTrash.Sell(frmSell.MyForm.SellPercent, GlobalSettings.ConfirmDelete);
                 }
             }
             else
@@ -8063,12 +8046,11 @@ namespace Chummer
             // Delete the selected Weapon.
             if (treGear.SelectedNode?.Tag is ICanSell vendorTrash)
             {
-                using (SellItem frmSell = new SellItem())
+                using (ThreadSafeForm<SellItem> frmSell = await ThreadSafeForm<SellItem>.GetAsync(() => new SellItem()))
                 {
-                    await frmSell.ShowDialogSafeAsync(this);
-                    if (frmSell.DialogResult == DialogResult.Cancel)
+                    if (await frmSell.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         return;
-                    vendorTrash.Sell(frmSell.SellPercent, GlobalSettings.ConfirmDelete);
+                    vendorTrash.Sell(frmSell.MyForm.SellPercent, GlobalSettings.ConfirmDelete);
                 }
             }
             else
@@ -8082,12 +8064,11 @@ namespace Chummer
             // Delete the selected Weapon.
             if (treVehicles.SelectedNode?.Tag is ICanSell vendorTrash)
             {
-                using (SellItem frmSell = new SellItem())
+                using (ThreadSafeForm<SellItem> frmSell = await ThreadSafeForm<SellItem>.GetAsync(() => new SellItem()))
                 {
-                    await frmSell.ShowDialogSafeAsync(this);
-                    if (frmSell.DialogResult == DialogResult.Cancel)
+                    if (await frmSell.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         return;
-                    vendorTrash.Sell(frmSell.SellPercent, GlobalSettings.ConfirmDelete);
+                    vendorTrash.Sell(frmSell.MyForm.SellPercent, GlobalSettings.ConfirmDelete);
                 }
             }
             else
@@ -8102,12 +8083,10 @@ namespace Chummer
             do
             {
                 Lifestyle objLifeStyle = new Lifestyle(CharacterObject);
-                using (SelectLifestyleAdvanced frmPickLifestyle = new SelectLifestyleAdvanced(CharacterObject, objLifeStyle))
+                using (ThreadSafeForm<SelectLifestyleAdvanced> frmPickLifestyle = await ThreadSafeForm<SelectLifestyleAdvanced>.GetAsync(() => new SelectLifestyleAdvanced(CharacterObject, objLifeStyle)))
                 {
-                    await frmPickLifestyle.ShowDialogSafeAsync(this);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
+                    if (await frmPickLifestyle.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     {
                         //And if it was, remove Improvements that was already added based on the lifestyle
                         foreach (LifestyleQuality lifestyleQuality in objLifeStyle.LifestyleQualities)
@@ -8116,9 +8095,9 @@ namespace Chummer
                         return;
                     }
 
-                    blnAddAgain = frmPickLifestyle.AddAgain;
+                    blnAddAgain = frmPickLifestyle.MyForm.AddAgain;
 
-                    Lifestyle objNewLifestyle = frmPickLifestyle.SelectedLifestyle;
+                    Lifestyle objNewLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
                     objNewLifestyle.StyleType = LifestyleType.Advanced;
 
                     CharacterObject.Lifestyles.Add(objNewLifestyle);
@@ -8136,19 +8115,18 @@ namespace Chummer
                 return;
             }
 
-            using (SelectText frmPickText = new SelectText
+            string strDescription = await LanguageManager.GetStringAsync("String_WeaponName");
+            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
+                   {
+                       Description = strDescription,
+                       DefaultString = objWeapon.CustomName,
+                       AllowEmptyString = true
+                   }))
             {
-                Description = await LanguageManager.GetStringAsync("String_WeaponName"),
-                DefaultString = objWeapon.CustomName,
-                AllowEmptyString = true
-            })
-            {
-                await frmPickText.ShowDialogSafeAsync(this);
-
-                if (frmPickText.DialogResult == DialogResult.Cancel)
+                if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                objWeapon.CustomName = frmPickText.SelectedValue;
+                objWeapon.CustomName = frmPickText.MyForm.SelectedValue;
             }
 
             treWeapons.SelectedNode.Text = objWeapon.CurrentDisplayName;
@@ -8164,19 +8142,18 @@ namespace Chummer
                 return;
             }
 
-            using (SelectText frmPickText = new SelectText
+            string strDescription = await LanguageManager.GetStringAsync("String_GearName");
+            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
+                   {
+                       Description = strDescription,
+                       DefaultString = objGear.GearName,
+                       AllowEmptyString = true
+                   }))
             {
-                Description = await LanguageManager.GetStringAsync("String_GearName"),
-                DefaultString = objGear.GearName,
-                AllowEmptyString = true
-            })
-            {
-                await frmPickText.ShowDialogSafeAsync(this);
-
-                if (frmPickText.DialogResult == DialogResult.Cancel)
+                if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                objGear.GearName = frmPickText.SelectedValue;
+                objGear.GearName = frmPickText.MyForm.SelectedValue;
             }
 
             treGear.SelectedNode.Text = objGear.CurrentDisplayName;
@@ -9072,13 +9049,13 @@ namespace Chummer
 
             do
             {
-                using (SelectCyberware frmPickCyberware = new SelectCyberware(CharacterObject, Improvement.ImprovementSource.Cyberware, objCyberwareParent ?? (object)objMod))
+                using (ThreadSafeForm<SelectCyberware> frmPickCyberware = await ThreadSafeForm<SelectCyberware>.GetAsync(() => new SelectCyberware(CharacterObject, Improvement.ImprovementSource.Cyberware, objCyberwareParent ?? (object)objMod)))
                 {
                     if (objCyberwareParent == null)
                     {
                         //frmPickCyberware.SetGrade = "Standard";
-                        frmPickCyberware.MaximumCapacity = objMod.CapacityRemaining;
-                        frmPickCyberware.Subsystems = objMod.Subsystems;
+                        frmPickCyberware.MyForm.MaximumCapacity = objMod.CapacityRemaining;
+                        frmPickCyberware.MyForm.Subsystems = objMod.Subsystems;
                         using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string> setDisallowedMounts))
                         using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
@@ -9115,7 +9092,7 @@ namespace Chummer
                                 // Remove trailing ","
                                 if (sbdDisallowedMounts.Length > 0)
                                     --sbdDisallowedMounts.Length;
-                                frmPickCyberware.DisallowedMounts = sbdDisallowedMounts.ToString();
+                                frmPickCyberware.MyForm.DisallowedMounts = sbdDisallowedMounts.ToString();
                             }
 
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -9126,17 +9103,17 @@ namespace Chummer
                                 // Remove trailing ","
                                 if (sbdHasMounts.Length > 0)
                                     --sbdHasMounts.Length;
-                                frmPickCyberware.HasModularMounts = sbdHasMounts.ToString();
+                                frmPickCyberware.MyForm.HasModularMounts = sbdHasMounts.ToString();
                             }
                         }
                     }
                     else
                     {
-                        frmPickCyberware.ForcedGrade = objCyberwareParent.Grade;
+                        frmPickCyberware.MyForm.ForcedGrade = objCyberwareParent.Grade;
                         // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that consume Capacity).
                         if (!objCyberwareParent.Capacity.Contains('['))
                         {
-                            frmPickCyberware.MaximumCapacity = objCyberwareParent.CapacityRemaining;
+                            frmPickCyberware.MyForm.MaximumCapacity = objCyberwareParent.CapacityRemaining;
 
                             // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
                             if (CharacterObjectSettings.EnforceCapacity && objCyberwareParent.CapacityRemaining < 0)
@@ -9146,8 +9123,8 @@ namespace Chummer
                             }
                         }
 
-                        frmPickCyberware.CyberwareParent = objCyberwareParent;
-                        frmPickCyberware.Subsystems = objCyberwareParent.AllowedSubsystems;
+                        frmPickCyberware.MyForm.CyberwareParent = objCyberwareParent;
+                        frmPickCyberware.MyForm.Subsystems = objCyberwareParent.AllowedSubsystems;
 
                         using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string> setDisallowedMounts))
@@ -9191,7 +9168,7 @@ namespace Chummer
                                 // Remove trailing ","
                                 if (sbdDisallowedMounts.Length > 0)
                                     --sbdDisallowedMounts.Length;
-                                frmPickCyberware.DisallowedMounts = sbdDisallowedMounts.ToString();
+                                frmPickCyberware.MyForm.DisallowedMounts = sbdDisallowedMounts.ToString();
                             }
 
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -9202,26 +9179,25 @@ namespace Chummer
                                 // Remove trailing ","
                                 if (sbdHasMounts.Length > 0)
                                     --sbdHasMounts.Length;
-                                frmPickCyberware.HasModularMounts = sbdHasMounts.ToString();
+                                frmPickCyberware.MyForm.HasModularMounts = sbdHasMounts.ToString();
                             }
                         }
                     }
 
-                    frmPickCyberware.LockGrade();
-                    frmPickCyberware.ParentVehicle = objVehicle ?? objMod.Parent;
-                    await frmPickCyberware.ShowDialogSafeAsync(this);
+                    frmPickCyberware.MyForm.LockGrade();
+                    frmPickCyberware.MyForm.ParentVehicle = objVehicle ?? objMod.Parent;
 
-                    if (frmPickCyberware.DialogResult == DialogResult.Cancel)
+                    if (await frmPickCyberware.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         break;
-                    blnAddAgain = frmPickCyberware.AddAgain;
+                    blnAddAgain = frmPickCyberware.MyForm.AddAgain;
 
-                    XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[id = " + frmPickCyberware.SelectedCyberware.CleanXPath() + ']');
+                    XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[id = " + frmPickCyberware.MyForm.SelectedCyberware.CleanXPath() + ']');
                     Cyberware objCyberware = new Cyberware(CharacterObject);
                     if (!objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware,
-                                               frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating,
+                                               frmPickCyberware.MyForm.SelectedGrade, frmPickCyberware.MyForm.SelectedRating,
                                                objVehicle, objMod.Cyberware, CharacterObject.Vehicles, objMod.Weapons,
-                                               frmPickCyberware.Markup, frmPickCyberware.FreeCost,
-                                               frmPickCyberware.BlackMarketDiscount, true,
+                                               frmPickCyberware.MyForm.Markup, frmPickCyberware.MyForm.FreeCost,
+                                               frmPickCyberware.MyForm.BlackMarketDiscount, true,
                                                "String_ExpensePurchaseVehicleCyberware", objCyberwareParent))
                         objCyberware.DeleteCyberware();
                 }
@@ -9354,17 +9330,15 @@ namespace Chummer
             }
 
             // The character is still allowed to add Spells, so show the Create Spell window.
-            using (CreateSpell frmSpell = new CreateSpell(CharacterObject))
+            using (ThreadSafeForm<CreateSpell> frmSpell = await ThreadSafeForm<CreateSpell>.GetAsync(() => new CreateSpell(CharacterObject)))
             {
-                await frmSpell.ShowDialogSafeAsync(this);
-
-                if (frmSpell.DialogResult == DialogResult.Cancel)
+                if (await frmSpell.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                 {
-                    frmSpell.SelectedSpell.Dispose();
+                    frmSpell.MyForm.SelectedSpell.Dispose();
                     return;
                 }
 
-                Spell objSpell = frmSpell.SelectedSpell;
+                Spell objSpell = frmSpell.MyForm.SelectedSpell;
                 if (objSpell.Alchemical)
                 {
                     intSpellKarmaCost = CharacterObject.SpellKarmaCost("Preparations");
@@ -12780,24 +12754,23 @@ namespace Chummer
                                                             KarmaExpenseType.ManualSubtract);
 
             bool blnDoRepopulateList;
-            using (CreateExpense frmEditExpense = new CreateExpense(CharacterObjectSettings)
-                   {
-                       Reason = objExpense.Reason,
-                       Amount = objExpense.Amount,
-                       Refund = objExpense.Refund,
-                       SelectedDate = objExpense.Date,
-                       ForceCareerVisible = objExpense.ForceCareerVisible
-                   })
+            using (ThreadSafeForm<CreateExpense> frmEditExpense = await ThreadSafeForm<CreateExpense>.GetAsync(
+                       () => new CreateExpense(CharacterObjectSettings)
+                       {
+                           Reason = objExpense.Reason,
+                           Amount = objExpense.Amount,
+                           Refund = objExpense.Refund,
+                           SelectedDate = objExpense.Date,
+                           ForceCareerVisible = objExpense.ForceCareerVisible
+                       }))
             {
-                frmEditExpense.LockFields(blnAllowEdit);
+                frmEditExpense.MyForm.LockFields(blnAllowEdit);
 
-                await frmEditExpense.ShowDialogSafeAsync(this);
-
-                if (frmEditExpense.DialogResult == DialogResult.Cancel)
+                if (await frmEditExpense.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
                 // If this is a manual entry, update the character's Karma total.
-                int intNewAmount = frmEditExpense.Amount.ToInt32();
+                int intNewAmount = frmEditExpense.MyForm.Amount.ToInt32();
                 if (blnAllowEdit && intOldAmount != intNewAmount)
                 {
                     objExpense.Amount = intNewAmount;
@@ -12805,11 +12778,11 @@ namespace Chummer
                     blnDoRepopulateList = true;
                 }
                 else
-                    blnDoRepopulateList = intNewAmount != 0 || chkShowFreeKarma.Checked;
+                    blnDoRepopulateList = intNewAmount != 0 || await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked);
 
                 // Rename the Expense.
-                objExpense.Reason = frmEditExpense.Reason;
-                objExpense.Date = frmEditExpense.SelectedDate;
+                objExpense.Reason = frmEditExpense.MyForm.Reason;
+                objExpense.Date = frmEditExpense.MyForm.SelectedDate;
             }
 
             if (blnDoRepopulateList)
@@ -12838,25 +12811,24 @@ namespace Chummer
                                                             NuyenExpenseType.ManualSubtract);
 
             bool blnDoRepopulateList;
-            using (CreateExpense frmEditExpense = new CreateExpense(CharacterObjectSettings)
-                   {
-                       Mode = ExpenseType.Nuyen,
-                       Reason = objExpense.Reason,
-                       Amount = objExpense.Amount,
-                       Refund = objExpense.Refund,
-                       SelectedDate = objExpense.Date,
-                       ForceCareerVisible = objExpense.ForceCareerVisible
-                   })
+            using (ThreadSafeForm<CreateExpense> frmEditExpense = await ThreadSafeForm<CreateExpense>.GetAsync(
+                       () => new CreateExpense(CharacterObjectSettings)
+                       {
+                           Mode = ExpenseType.Nuyen,
+                           Reason = objExpense.Reason,
+                           Amount = objExpense.Amount,
+                           Refund = objExpense.Refund,
+                           SelectedDate = objExpense.Date,
+                           ForceCareerVisible = objExpense.ForceCareerVisible
+                       }))
             {
-                frmEditExpense.LockFields(blnAllowEdit);
+                frmEditExpense.MyForm.LockFields(blnAllowEdit);
 
-                await frmEditExpense.ShowDialogSafeAsync(this);
-
-                if (frmEditExpense.DialogResult == DialogResult.Cancel)
+                if (await frmEditExpense.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
                 // If this is a manual entry, update the character's Karma total.
-                decimal decNewAmount = frmEditExpense.Amount;
+                decimal decNewAmount = frmEditExpense.MyForm.Amount;
                 if (blnAllowEdit && decOldAmount != decNewAmount)
                 {
                     objExpense.Amount = decNewAmount;
@@ -12864,11 +12836,11 @@ namespace Chummer
                     blnDoRepopulateList = true;
                 }
                 else
-                    blnDoRepopulateList = decNewAmount != 0 || chkShowFreeNuyen.Checked;
+                    blnDoRepopulateList = decNewAmount != 0 || await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked);
 
                 // Rename the Expense.
-                objExpense.Reason = frmEditExpense.Reason;
-                objExpense.Date = frmEditExpense.SelectedDate;
+                objExpense.Reason = frmEditExpense.MyForm.Reason;
+                objExpense.Date = frmEditExpense.MyForm.SelectedDate;
             }
 
             if (blnDoRepopulateList)
@@ -18904,17 +18876,15 @@ namespace Chummer
                     break;
                 }
                 // Let the user select a Program.
-                using (SelectAIProgram frmPickProgram = new SelectAIProgram(CharacterObject, CharacterObject.Karma >= intNewAIAdvancedProgramCost))
+                using (ThreadSafeForm<SelectAIProgram> frmPickProgram = await ThreadSafeForm<SelectAIProgram>.GetAsync(() => new SelectAIProgram(CharacterObject, CharacterObject.Karma >= intNewAIAdvancedProgramCost)))
                 {
-                    await frmPickProgram.ShowDialogSafeAsync(this);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickProgram.DialogResult == DialogResult.Cancel)
+                    if (await frmPickProgram.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         break;
 
-                    blnAddAgain = frmPickProgram.AddAgain;
+                    blnAddAgain = frmPickProgram.MyForm.AddAgain;
 
-                    XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/programs/program[id = " + frmPickProgram.SelectedProgram.CleanXPath() + ']');
+                    XmlNode objXmlProgram = objXmlDocument.SelectSingleNode("/chummer/programs/program[id = " + frmPickProgram.MyForm.SelectedProgram.CleanXPath() + ']');
                     if (objXmlProgram == null)
                         continue;
 
@@ -18923,14 +18893,18 @@ namespace Chummer
                     XmlNode xmlSelectText = objXmlProgram.SelectSingleNode("bonus/selecttext");
                     if (xmlSelectText != null)
                     {
-                        using (SelectText frmPickText = new SelectText
+                        string strDescription = string.Format(GlobalSettings.CultureInfo,
+                                                              await LanguageManager.GetStringAsync(
+                                                                  "String_Improvement_SelectText")
+                                                              , objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown"));
+                        using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
+                               {
+                                   Description = strDescription
+                               }))
                         {
-                            Description = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Improvement_SelectText")
-                                , objXmlProgram["translate"]?.InnerText ?? objXmlProgram["name"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown"))
-                        })
-                        {
-                            await frmPickText.ShowDialogSafeAsync(this);
-                            strExtra = frmPickText.SelectedValue;
+                            if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                                continue;
+                            strExtra = frmPickText.MyForm.SelectedValue;
                         }
                     }
 
@@ -19076,21 +19050,21 @@ namespace Chummer
                     return;
                 }
 
-                using (SelectItem frmPickMount = new SelectItem
+                string strDescription = await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware");
+                using (ThreadSafeForm<SelectItem> frmPickMount = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
                        {
-                           Description = await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware")
-                       })
+                           Description = strDescription
+                       }))
                 {
-                    frmPickMount.SetGeneralItemsMode(lstModularMounts);
-                    await frmPickMount.ShowDialogSafeAsync(this);
+                    frmPickMount.MyForm.SetGeneralItemsMode(lstModularMounts);
 
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickMount.DialogResult == DialogResult.Cancel)
+                    if (await frmPickMount.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     {
                         return;
                     }
 
-                    strSelectedParentID = frmPickMount.SelectedItem;
+                    strSelectedParentID = frmPickMount.MyForm.SelectedItem;
                 }
             }
 
@@ -19168,22 +19142,22 @@ namespace Chummer
                                                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-                
-                using (SelectItem frmPickMount = new SelectItem
+
+                string strDescription = await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware");
+                using (ThreadSafeForm<SelectItem> frmPickMount = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
                        {
-                           Description = await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware")
-                       })
+                           Description = strDescription
+                       }))
                 {
-                    frmPickMount.SetGeneralItemsMode(lstModularMounts);
-                    await frmPickMount.ShowDialogSafeAsync(this);
+                    frmPickMount.MyForm.SetGeneralItemsMode(lstModularMounts);
 
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickMount.DialogResult == DialogResult.Cancel)
+                    if (await frmPickMount.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     {
                         return;
                     }
 
-                    strSelectedParentID = frmPickMount.SelectedItem;
+                    strSelectedParentID = frmPickMount.MyForm.SelectedItem;
                 }
             }
             CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == objModularCyberware.InternalId, out VehicleMod objOldParentVehicleMod);
@@ -19502,25 +19476,21 @@ namespace Chummer
                     return;
                 }
 
-                using (SellItem frmSell = new SellItem())
+                using (ThreadSafeForm<SellItem> frmSell = await ThreadSafeForm<SellItem>.GetAsync(() => new SellItem()))
                 {
-                    await frmSell.ShowDialogSafeAsync(this);
-
-                    if (frmSell.DialogResult == DialogResult.Cancel)
+                    if (await frmSell.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         return;
 
-                    using (SelectCyberware pickCyber = new SelectCyberware(CharacterObject, objCyberware.SourceType)
+                    using (ThreadSafeForm<SelectCyberware> frmCyberware = await ThreadSafeForm<SelectCyberware>.GetAsync(() => new SelectCyberware(CharacterObject, objCyberware.SourceType)
+                           {
+                               DefaultSearchText = objCyberware.CurrentDisplayNameShort,
+                               Upgrading = true
+                           }))
                     {
-                        DefaultSearchText = objCyberware.CurrentDisplayNameShort,
-                        Upgrading = true
-                    })
-                    {
-                        await pickCyber.ShowDialogSafeAsync(this);
-
-                        if (pickCyber.DialogResult == DialogResult.Cancel)
+                        if (await frmCyberware.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             return;
 
-                        objCyberware.Upgrade(pickCyber.SelectedGrade, pickCyber.SelectedRating, frmSell.SellPercent, pickCyber.FreeCost);
+                        objCyberware.Upgrade(frmCyberware.MyForm.SelectedGrade, frmCyberware.MyForm.SelectedRating, frmSell.MyForm.SellPercent, frmCyberware.MyForm.FreeCost);
                     }
                 }
 
@@ -19558,7 +19528,7 @@ namespace Chummer
         private async void mnuSpecialChangeOptions_Click(object sender, EventArgs e)
         {
             using (CursorWait.New(this))
-            using (SelectBuildMethod frmPickBP = new SelectBuildMethod(CharacterObject, true))
+            using (ThreadSafeForm<SelectBuildMethod> frmPickBP = await ThreadSafeForm<SelectBuildMethod>.GetAsync(() => new SelectBuildMethod(CharacterObject, true)))
             {
                 await frmPickBP.ShowDialogSafeAsync(this);
             }

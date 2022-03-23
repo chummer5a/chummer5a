@@ -73,7 +73,7 @@ namespace Chummer.UI.Shared.Components
                 if (_blnCanBeRolled == value)
                     return;
                 _blnCanBeRolled = value;
-                cmdRoll.DoThreadSafe(x => x.Visible = value && CanEverBeRolled);
+                cmdRoll.Visible = value && CanEverBeRolled;
             }
         }
 
@@ -85,7 +85,7 @@ namespace Chummer.UI.Shared.Components
                 if (_blnCanEverBeRolled == value)
                     return;
                 _blnCanEverBeRolled = value;
-                cmdRoll.DoThreadSafe(x => x.Visible = CanBeRolled && value);
+                cmdRoll.Visible = value && CanBeRolled;
             }
         }
 
@@ -97,9 +97,9 @@ namespace Chummer.UI.Shared.Components
                 if (_intDicePool == value)
                     return;
                 _intDicePool = value;
-                lblDicePool.DoThreadSafe(x => x.Text = CanBeRolled
-                                             ? _intDicePool.ToString(GlobalSettings.CultureInfo)
-                                             : _intDicePool.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo));
+                lblDicePool.Text = CanBeRolled
+                    ? _intDicePool.ToString(GlobalSettings.CultureInfo)
+                    : _intDicePool.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
             }
         }
 

@@ -213,8 +213,9 @@ namespace Chummer.UI.Shared
 
         private void ResetDisplayPanelHeight(int intNumVisible = -1)
         {
-            pnlDisplay.DoThreadSafe(x => x.Height = Math.Max(this.DoThreadSafeFunc(y => y.Height),
-                (intNumVisible >= 0 ? intNumVisible : _lstContentList.Count(y => y.Visible)) * ListItemControlHeight));
+            int intMyHeight = this.DoThreadSafeFunc(x => x.Height);
+            pnlDisplay.DoThreadSafe(x => x.Height = Math.Max(intMyHeight,
+                                                             (intNumVisible >= 0 ? intNumVisible : _lstContentList.Count(y => y.Visible)) * ListItemControlHeight));
         }
 
         private void RedrawControls(IEnumerable<ControlWithMetaData> lstToClear)
