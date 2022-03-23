@@ -535,97 +535,123 @@ namespace Chummer
             void ApplyButtonStyle()
             {
                 // Buttons look weird if colored based on anything other than the default color scheme in dark mode
-                objControl.ForeColor = SystemColors.ControlText;
+                objControl.DoThreadSafe(x => x.ForeColor = SystemColors.ControlText);
             }
             switch (objControl)
             {
                 case DataGridView objDataGridView:
-                    objDataGridView.BackgroundColor = blnLightMode ? AppWorkspaceLight : AppWorkspaceDark;
-                    objDataGridView.GridColor = blnLightMode ? ControlTextLight : ControlTextDark;
-                    objDataGridView.DefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
-                    objDataGridView.DefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;
-                    objDataGridView.ColumnHeadersDefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
-                    objDataGridView.ColumnHeadersDefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;
-                    objDataGridView.AlternatingRowsDefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
-                    objDataGridView.AlternatingRowsDefaultCellStyle.BackColor = blnLightMode ? ControlLighterLight : ControlLighterDark;
-                    objDataGridView.RowTemplate.DefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
-                    objDataGridView.RowTemplate.DefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;
-                    foreach (DataGridViewTextBoxColumn objColumn in objDataGridView.Columns)
+                    objDataGridView.DoThreadSafe(x =>
                     {
-                        objColumn.DefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
-                        objColumn.DefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;
-                    }
+                        x.BackgroundColor = blnLightMode ? AppWorkspaceLight : AppWorkspaceDark;
+                        x.GridColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                        x.DefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                        x.DefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;
+                        x.ColumnHeadersDefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                        x.ColumnHeadersDefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;
+                        x.AlternatingRowsDefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                        x.AlternatingRowsDefaultCellStyle.BackColor
+                            = blnLightMode ? ControlLighterLight : ControlLighterDark;
+                        x.RowTemplate.DefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                        x.RowTemplate.DefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;
+                        foreach (DataGridViewTextBoxColumn objColumn in x.Columns)
+                        {
+                            objColumn.DefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                            objColumn.DefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;
+                        }
+                    });
                     break;
 
                 case SplitContainer objSplitControl:
-                    objSplitControl.ForeColor = blnLightMode ? SplitterColorLight : SplitterColorDark;
-                    objSplitControl.BackColor = blnLightMode ? SplitterColorLight : SplitterColorDark;
-                    ApplyColorsRecursively(objSplitControl.Panel1, blnLightMode);
-                    ApplyColorsRecursively(objSplitControl.Panel2, blnLightMode);
+                    objSplitControl.DoThreadSafe(x =>
+                    {
+                        x.ForeColor = blnLightMode
+                            ? SplitterColorLight
+                            : SplitterColorDark;
+                        x.BackColor = blnLightMode ? SplitterColorLight : SplitterColorDark;
+                    });
+                    ApplyColorsRecursively(objSplitControl.DoThreadSafeFunc(x => x.Panel1), blnLightMode);
+                    ApplyColorsRecursively(objSplitControl.DoThreadSafeFunc(x => x.Panel2), blnLightMode);
                     break;
 
                 case TreeView treControl:
-                    treControl.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
-                    treControl.BackColor = blnLightMode ? WindowLight : WindowDark;
-                    treControl.LineColor = blnLightMode ? WindowTextLight : WindowTextDark;
-                    foreach (TreeNode objNode in treControl.Nodes)
-                        ApplyColorsRecursively(objNode, blnLightMode);
+                    treControl.DoThreadSafe(x =>
+                    {
+                        x.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
+                        x.BackColor = blnLightMode ? WindowLight : WindowDark;
+                        x.LineColor = blnLightMode ? WindowTextLight : WindowTextDark;
+                        foreach (TreeNode objNode in x.Nodes)
+                            ApplyColorsRecursively(objNode, blnLightMode);
+                    });
                     break;
 
                 case TextBox txtControl:
-                    if (txtControl.ForeColor == ErrorColor)
-                        txtControl.ForeColor = ErrorColor;
-                    else if (blnLightMode)
-                        txtControl.ForeColor = WindowTextLight;
-                    else
-                        txtControl.ForeColor = WindowTextDark;
-                    if (txtControl.ReadOnly)
-                        txtControl.BackColor = blnLightMode ? ControlLight : ControlDark;
-                    else
-                        txtControl.BackColor = blnLightMode ? WindowLight : WindowDark;
+                    txtControl.DoThreadSafe(x =>
+                    {
+                        if (x.ForeColor == ErrorColor)
+                            x.ForeColor = ErrorColor;
+                        else if (blnLightMode)
+                            x.ForeColor = WindowTextLight;
+                        else
+                            x.ForeColor = WindowTextDark;
+                        if (x.ReadOnly)
+                            x.BackColor = blnLightMode ? ControlLight : ControlDark;
+                        else
+                            x.BackColor = blnLightMode ? WindowLight : WindowDark;
+                    });
                     break;
 
                 case ListView objListView:
-                    objControl.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
-                    objControl.BackColor = blnLightMode ? WindowLight : WindowDark;
-                    foreach (DiceRollerListViewItem objItem in objListView.Items)
+                    objListView.DoThreadSafe(x =>
                     {
-                        if (objItem.IsHit)
+                        x.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
+                        x.BackColor = blnLightMode ? WindowLight : WindowDark;
+                        foreach (DiceRollerListViewItem objItem in x.Items)
                         {
-                            if (objItem.IsGlitch)
+                            if (objItem.IsHit)
                             {
-                                objItem.ForeColor = blnLightMode ? DieGlitchHitForeLight : DieGlitchHitForeDark;
-                                objItem.BackColor = blnLightMode ? DieGlitchHitBackgroundLight : DieGlitchHitBackgroundDark;
+                                if (objItem.IsGlitch)
+                                {
+                                    objItem.ForeColor = blnLightMode ? DieGlitchHitForeLight : DieGlitchHitForeDark;
+                                    objItem.BackColor = blnLightMode
+                                        ? DieGlitchHitBackgroundLight
+                                        : DieGlitchHitBackgroundDark;
+                                }
+                                else
+                                {
+                                    objItem.ForeColor = blnLightMode ? DieHitForeLight : DieHitForeDark;
+                                    objItem.BackColor = blnLightMode ? DieHitBackgroundLight : DieHitBackgroundDark;
+                                }
+                            }
+                            else if (objItem.IsGlitch)
+                            {
+                                objItem.ForeColor = blnLightMode ? DieGlitchForeLight : DieGlitchForeDark;
+                                objItem.BackColor = blnLightMode ? DieGlitchBackgroundLight : DieGlitchBackgroundDark;
                             }
                             else
                             {
-                                objItem.ForeColor = blnLightMode ? DieHitForeLight : DieHitForeDark;
-                                objItem.BackColor = blnLightMode ? DieHitBackgroundLight : DieHitBackgroundDark;
+                                objItem.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
+                                objItem.BackColor = blnLightMode ? WindowLight : WindowDark;
                             }
                         }
-                        else if (objItem.IsGlitch)
-                        {
-                            objItem.ForeColor = blnLightMode ? DieGlitchForeLight : DieGlitchForeDark;
-                            objItem.BackColor = blnLightMode ? DieGlitchBackgroundLight : DieGlitchBackgroundDark;
-                        }
-                        else
-                        {
-                            objItem.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
-                            objItem.BackColor = blnLightMode ? WindowLight : WindowDark;
-                        }
-                    }
+                    });
                     break;
 
                 case ListBox _:
                 case ComboBox _:
                 case TableCell _:
-                    objControl.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
-                    objControl.BackColor = blnLightMode ? WindowLight : WindowDark;
+                    objControl.DoThreadSafe(x =>
+                    {
+                        x.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
+                        x.BackColor = blnLightMode ? WindowLight : WindowDark;
+                    });
                     break;
 
                 case GroupBox _:
-                    objControl.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
-                    objControl.BackColor = blnLightMode ? ControlLight : ControlDark;
+                    objControl.DoThreadSafe(x =>
+                    {
+                        x.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                        x.BackColor = blnLightMode ? ControlLight : ControlDark;
+                    });
                     break;
 
                 case ContactControl _:
@@ -640,7 +666,7 @@ namespace Chummer
                     return;
 
                 case CheckBox chkControl:
-                    if (chkControl.Appearance == Appearance.Button || chkControl is DpiFriendlyCheckBoxDisguisedAsButton)
+                    if (chkControl.DoThreadSafeFunc(x => x.Appearance == Appearance.Button) || chkControl is DpiFriendlyCheckBoxDisguisedAsButton)
                     {
                         ApplyButtonStyle();
                         break;
@@ -648,74 +674,87 @@ namespace Chummer
 
                     if (chkControl is ColorableCheckBox chkControlColored)
                     {
-                        chkControlColored.DefaultColorScheme = blnLightMode;
-                        if (blnLightMode) // Disabled case for Light mode already handled by the switch above
-                            chkControlColored.ForeColor = ControlTextLight;
-                        else
-                            chkControlColored.ForeColor = chkControlColored.Enabled ? ControlTextDark : GrayText;
+                        chkControlColored.DoThreadSafe(x =>
+                        {
+                            x.DefaultColorScheme = blnLightMode;
+                            if (blnLightMode) // Disabled case for Light mode already handled by the switch above
+                                x.ForeColor = ControlTextLight;
+                            else
+                                x.ForeColor = chkControlColored.Enabled ? ControlTextDark : GrayText;
+                        });
                         break;
                     }
                     goto default;
 
                 case Button cmdControl:
-                    if (cmdControl.FlatStyle == FlatStyle.Flat)
+                    if (cmdControl.DoThreadSafeFunc(x => x.FlatStyle) == FlatStyle.Flat)
                         goto default;
                     ApplyButtonStyle();
                     break;
 
                 case HeaderCell _:
                     // Header cells should use inverted colors
-                    objControl.ForeColor = blnLightMode ? ControlLightestLight : ControlLightestDark;
-                    objControl.BackColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                    objControl.DoThreadSafe(x =>
+                    {
+                        x.ForeColor = blnLightMode ? ControlLightestLight : ControlLightestDark;
+                        x.BackColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                    });
                     return;
 
                 case TableLayoutPanel tlpControl:
-                    if (tlpControl.BorderStyle != BorderStyle.None)
-                        tlpControl.BorderStyle = blnLightMode ? BorderStyle.FixedSingle : BorderStyle.Fixed3D;
+                    tlpControl.DoThreadSafe(x =>
+                    {
+                        if (x.BorderStyle != BorderStyle.None)
+                            x.BorderStyle = blnLightMode ? BorderStyle.FixedSingle : BorderStyle.Fixed3D;
+                    });
                     goto default;
                 case Form frmControl:
-                    if (frmControl.MainMenuStrip != null)
-                        foreach (ToolStripMenuItem tssItem in frmControl.MainMenuStrip.Items)
-                            ApplyColorsRecursively(tssItem, blnLightMode);
+                    frmControl.DoThreadSafe(x =>
+                    {
+                        if (x.MainMenuStrip != null)
+                            foreach (ToolStripMenuItem tssItem in x.MainMenuStrip.Items)
+                                ApplyColorsRecursively(tssItem, blnLightMode);
+                    });
                     goto default;
                 case TabControl objTabControl:
-                    foreach (TabPage tabPage in objTabControl.TabPages)
+                    foreach (TabPage tabPage in objTabControl.DoThreadSafeFunc(x => x.TabPages))
                         ApplyColorsRecursively(tabPage, blnLightMode);
                     goto default;
                 case ToolStrip tssStrip:
-                    foreach (ToolStripItem tssItem in tssStrip.Items)
-                        ApplyColorsRecursively(tssItem, blnLightMode);
+                    tssStrip.DoThreadSafe(x =>
+                    {
+                        foreach (ToolStripItem tssItem in x.Items)
+                            ApplyColorsRecursively(tssItem, blnLightMode);
+                    });
                     goto default;
                 default:
-                    if (objControl.ForeColor == (blnLightMode ? ControlDark : ControlLight))
-                        objControl.ForeColor = blnLightMode ? ControlLight : ControlDark;
-                    else if (objControl.ForeColor == (blnLightMode ? ControlDarkerDark : ControlDarkerLight))
-                        objControl.ForeColor = blnLightMode ? ControlDarkerLight : ControlDarkerDark;
-                    else if (objControl.ForeColor == (blnLightMode ? ControlDarkestDark : ControlDarkestLight))
-                        objControl.ForeColor = blnLightMode ? ControlDarkestLight : ControlDarkestDark;
-                    else
-                        objControl.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
-                    // These controls never have backgrounds set explicitly, so shouldn't have their backgrounds overwritten
-                    if (!(objControl is Label
-                          || objControl is CheckBox
-                          || objControl is PictureBox
-                          || objControl is Button
-                          || (objControl is Panel
-                              && !(objControl is SplitterPanel
-                                   || objControl is TabPage))))
+                    objControl.DoThreadSafe(x =>
                     {
-                        if (objControl.BackColor == (blnLightMode ? ControlLighterDark : ControlLighterLight))
-                            objControl.BackColor = blnLightMode ? ControlLighterLight : ControlLighterDark;
-                        else if (objControl.BackColor == (blnLightMode ? ControlLightestDark : ControlLightestLight))
-                            objControl.BackColor = blnLightMode ? ControlLightestLight : ControlLightestDark;
+                        if (x.ForeColor == (blnLightMode ? ControlDark : ControlLight))
+                            x.ForeColor = blnLightMode ? ControlLight : ControlDark;
+                        else if (x.ForeColor == (blnLightMode ? ControlDarkerDark : ControlDarkerLight))
+                            x.ForeColor = blnLightMode ? ControlDarkerLight : ControlDarkerDark;
+                        else if (x.ForeColor == (blnLightMode ? ControlDarkestDark : ControlDarkestLight))
+                            x.ForeColor = blnLightMode ? ControlDarkestLight : ControlDarkestDark;
                         else
-                            objControl.BackColor = blnLightMode ? ControlLight : ControlDark;
-                    }
+                            x.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                        // These controls never have backgrounds set explicitly, so shouldn't have their backgrounds overwritten
+                        if (!(x is Label || x is CheckBox || x is PictureBox || x is Button
+                              || (x is Panel && !(x is SplitterPanel || x is TabPage))))
+                        {
+                            if (x.BackColor == (blnLightMode ? ControlLighterDark : ControlLighterLight))
+                                x.BackColor = blnLightMode ? ControlLighterLight : ControlLighterDark;
+                            else if (x.BackColor == (blnLightMode ? ControlLightestDark : ControlLightestLight))
+                                x.BackColor = blnLightMode ? ControlLightestLight : ControlLightestDark;
+                            else
+                                x.BackColor = blnLightMode ? ControlLight : ControlDark;
+                        }
+                    });
 
                     break;
             }
 
-            foreach (Control objChild in objControl.Controls)
+            foreach (Control objChild in objControl.DoThreadSafeFunc(x => x.Controls))
                 ApplyColorsRecursively(objChild, blnLightMode);
         }
 

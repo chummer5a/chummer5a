@@ -77,19 +77,19 @@ namespace Chummer
         {
             _objControl = objControl;
             Form frmControl = _objControl as Form;
-            if (frmControl?.IsMdiChild != false)
+            if (frmControl?.DoThreadSafeFunc(x => x.IsMdiChild) != false)
             {
                 if (frmControl != null)
                 {
-                    _frmControlTopParent = frmControl.MdiParent;
+                    _frmControlTopParent = frmControl.DoThreadSafeFunc(x => x.MdiParent);
                 }
                 else if (_objControl is UserControl objUserControl)
                 {
-                    _frmControlTopParent = objUserControl.ParentForm;
+                    _frmControlTopParent = objUserControl.DoThreadSafeFunc(x => x.ParentForm);
                 }
                 else
                 {
-                    for (Control objLoop = _objControl?.Parent; objLoop != null; objLoop = objLoop.Parent)
+                    for (Control objLoop = _objControl?.DoThreadSafeFunc(x => x.Parent); objLoop != null; objLoop = objLoop.DoThreadSafeFunc(x => x.Parent))
                     {
                         if (objLoop is Form objLoopForm)
                         {
