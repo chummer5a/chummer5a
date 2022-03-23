@@ -2342,12 +2342,17 @@ namespace Chummer
         {
             if (objControl == null)
                 return;
-            if (!objControl.IsHandleCreated)
+            Control objThreadReferrer = Program.MainForm ?? objControl;
+            objThreadReferrer.DoThreadSafe(() =>
             {
-                IntPtr _ = objControl.Handle; // accessing Handle forces its creation
-            }
+                if (!objControl.IsHandleCreated)
+                {
+                    IntPtr _ = objControl.Handle; // accessing Handle forces its creation
+                }
 
-            objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false, DataSourceUpdateMode.Never);
+                objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false,
+                                            DataSourceUpdateMode.Never);
+            });
         }
 
         /// <summary>
@@ -2361,11 +2366,17 @@ namespace Chummer
         {
             if (objControl == null)
                 return;
-            if (!objControl.IsHandleCreated)
+            Control objThreadReferrer = Program.MainForm ?? objControl;
+            objThreadReferrer.DoThreadSafe(() =>
             {
-                IntPtr _ = objControl.Handle; // accessing Handle forces its creation
-            }
-            objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false, DataSourceUpdateMode.OnPropertyChanged);
+                if (!objControl.IsHandleCreated)
+                {
+                    IntPtr _ = objControl.Handle; // accessing Handle forces its creation
+                }
+
+                objControl.DataBindings.Add(strPropertyName, objDataSource, strDataMember, false,
+                                            DataSourceUpdateMode.OnPropertyChanged);
+            });
         }
 
         /// <summary>
@@ -2380,11 +2391,17 @@ namespace Chummer
         {
             if (objControl == null)
                 return;
-            if (!objControl.IsHandleCreated)
+            Control objThreadReferrer = Program.MainForm ?? objControl;
+            objThreadReferrer.DoThreadSafe(() =>
             {
-                IntPtr _ = objControl.Handle; // accessing Handle forces its creation
-            }
-            objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, false, DataSourceUpdateMode.Never));
+                if (!objControl.IsHandleCreated)
+                {
+                    IntPtr _ = objControl.Handle; // accessing Handle forces its creation
+                }
+
+                objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, false,
+                                                                 DataSourceUpdateMode.Never));
+            });
         }
 
         /// <summary>
@@ -2398,11 +2415,17 @@ namespace Chummer
         {
             if (objControl == null)
                 return;
-            if (!objControl.IsHandleCreated)
+            Control objThreadReferrer = Program.MainForm ?? objControl;
+            objThreadReferrer.DoThreadSafe(() =>
             {
-                IntPtr _ = objControl.Handle; // accessing Handle forces its creation
-            }
-            objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, false, DataSourceUpdateMode.OnPropertyChanged));
+                if (!objControl.IsHandleCreated)
+                {
+                    IntPtr _ = objControl.Handle; // accessing Handle forces its creation
+                }
+
+                objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, false,
+                                                                 DataSourceUpdateMode.OnPropertyChanged));
+            });
         }
 
         /// <summary>

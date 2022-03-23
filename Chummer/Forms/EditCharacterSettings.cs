@@ -1535,7 +1535,7 @@ namespace Chummer
             {
                 string strSelect = string.Empty;
                 if (!_blnLoading)
-                    strSelect = cboSetting.SelectedValue?.ToString();
+                    strSelect = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
                 _lstSettings.Clear();
                 foreach (KeyValuePair<string, CharacterSettings> kvpCharacterSettingsEntry in SettingsManager
                              .LoadedCharacterSettings)

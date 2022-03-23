@@ -151,7 +151,7 @@ namespace Chummer
                                 "The error " + intErrorCode + " occurred while attempting to unblock WM_COPYDATA.");
                         }
 
-                        Text = MainTitle;
+                        this.DoThreadSafe(x => x.Text = MainTitle);
 
                         //this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;
 
@@ -512,6 +512,7 @@ namespace Chummer
 
         private async ValueTask DoCacheGitVersion(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
             System.Net.HttpWebRequest request;
             try
@@ -531,8 +532,7 @@ namespace Chummer
                 return;
             }
 
-            if (token.IsCancellationRequested)
-                return;
+            token.ThrowIfCancellationRequested();
 
             request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
             request.Accept = "application/json";
@@ -548,8 +548,7 @@ namespace Chummer
                         return;
                     }
 
-                    if (token.IsCancellationRequested)
-                        return;
+                    token.ThrowIfCancellationRequested();
 
                     // Get the stream containing content returned by the server.
                     using (Stream dataStream = response.GetResponseStream())
@@ -560,22 +559,19 @@ namespace Chummer
                             return;
                         }
 
-                        if (token.IsCancellationRequested)
-                            return;
+                        token.ThrowIfCancellationRequested();
 
                         // Open the stream using a StreamReader for easy access.
                         using (StreamReader reader = new StreamReader(dataStream, System.Text.Encoding.UTF8, true))
                         {
-                            if (token.IsCancellationRequested)
-                                return;
+                            token.ThrowIfCancellationRequested();
 
                             // Read the content.
                             string responseFromServer = await reader.ReadToEndAsync();
 
                             string line = responseFromServer.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(x => x.Contains("tag_name"));
 
-                            if (token.IsCancellationRequested)
-                                return;
+                            token.ThrowIfCancellationRequested();
 
                             Version verLatestVersion = null;
                             if (!string.IsNullOrEmpty(line))
@@ -596,14 +592,12 @@ namespace Chummer
                                     }
                                 }
 
-                                if (token.IsCancellationRequested)
-                                    return;
+                                token.ThrowIfCancellationRequested();
 
                                 if (!Version.TryParse(strVersion.TrimStartOnce("Nightly-v"), out verLatestVersion))
                                     verLatestVersion = null;
 
-                                if (token.IsCancellationRequested)
-                                    return;
+                                token.ThrowIfCancellationRequested();
                             }
 
                             Utils.CachedGitVersion = verLatestVersion;
@@ -754,6 +748,7 @@ namespace Chummer
 
         private void ResetChummerUpdater(object sender, EventArgs e)
         {
+            _frmUpdate?.Close();
             _frmUpdate = null;
         }
 
@@ -870,13 +865,13 @@ namespace Chummer
             Form objMdiChild = await this.DoThreadSafeFuncAsync(x => x.ActiveMdiChild);
             if (objMdiChild != null)
             {
-                if (objMdiChild.WindowState == FormWindowState.Minimized)
+                if (await objMdiChild.DoThreadSafeFuncAsync(x => x.WindowState) == FormWindowState.Minimized)
                 {
-                    objMdiChild.WindowState = FormWindowState.Normal;
+                    await objMdiChild.DoThreadSafeAsync(x => x.WindowState = FormWindowState.Normal);
                 }
 
                 // If this is a new child form and does not have a tab page, create one.
-                if (!(objMdiChild.Tag is TabPage))
+                if (!(await objMdiChild.DoThreadSafeFuncAsync(x => x.Tag) is TabPage))
                 {
                     TabPage objTabPage = await this.DoThreadSafeFuncAsync(() => new TabPage
                     {
@@ -895,7 +890,7 @@ namespace Chummer
                     }
                     else
                     {
-                        string strTagText = await LanguageManager.GetStringAsync(objMdiChild.Tag?.ToString(), GlobalSettings.Language, false);
+                        string strTagText = await LanguageManager.GetStringAsync(await objMdiChild.DoThreadSafeFuncAsync(x => x.Tag?.ToString()), GlobalSettings.Language, false);
                         if (!string.IsNullOrEmpty(strTagText))
                             await objTabPage.DoThreadSafeAsync(x => x.Text = strTagText);
                     }

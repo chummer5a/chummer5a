@@ -155,7 +155,7 @@ namespace Chummer
                 }
 
                 await imgLanguageFlag.DoThreadSafeAsync(x => x.Image
-                                                            = Math.Min(imgLanguageFlag.Width, imgLanguageFlag.Height) >= 32
+                                                            = Math.Min(x.Width, x.Height) >= 32
                                                                 ? FlagImageGetter.GetFlagFromCountryCode192Dpi(
                                                                     _strSelectedLanguage.Substring(3, 2))
                                                                 : FlagImageGetter.GetFlagFromCountryCode(
@@ -205,7 +205,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string> setBooks))
                 {
-                    foreach (ListItem objItem in lstGlobalSourcebookInfos.Items)
+                    foreach (ListItem objItem in await lstGlobalSourcebookInfos.DoThreadSafeFuncAsync(x => x.Items))
                     {
                         string strItemValue = objItem.Value?.ToString();
                         setBooks.Add(strItemValue);
@@ -1585,7 +1585,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             string strSelectedSheetLanguage = await cboSheetLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
             await imgSheetLanguageFlag.DoThreadSafeAsync(x => x.Image
-                                                             = Math.Min(imgSheetLanguageFlag.Width, imgSheetLanguageFlag.Height)
+                                                             = Math.Min(x.Width, x.Height)
                                                                >= 32
                                                                  ? FlagImageGetter.GetFlagFromCountryCode192Dpi(
                                                                      strSelectedSheetLanguage?.Substring(3, 2))

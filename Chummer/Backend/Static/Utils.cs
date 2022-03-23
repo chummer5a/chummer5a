@@ -674,7 +674,7 @@ namespace Chummer
                 // Restart current application, with same arguments/parameters
                 foreach (Form objForm in Program.MainForm.MdiChildren)
                 {
-                    objForm.Close();
+                    await objForm.DoThreadSafeAsync(x => x.Close());
                 }
 
                 strArguments = sbdArguments.ToString();

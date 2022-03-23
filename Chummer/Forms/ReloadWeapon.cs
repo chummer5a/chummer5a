@@ -98,9 +98,15 @@ namespace Chummer
             await cboType.DoThreadSafeAsync(x =>
             {
                 x.BeginUpdate();
-                x.DataSource = null;
-                x.DataSource = _lstCount;
-                x.EndUpdate();
+                try
+                {
+                    x.DataSource = null;
+                    x.DataSource = _lstCount;
+                }
+                finally
+                {
+                    x.EndUpdate();
+                }
             });
 
             // If there's only 1 value in each list, the character doesn't have a choice, so just accept it.
@@ -149,13 +155,13 @@ namespace Chummer
         /// <summary>
         /// Name of the ammunition that was selected.
         /// </summary>
-        public string SelectedAmmo => cboAmmo.SelectedValue?.ToString() ?? string.Empty;
+        public string SelectedAmmo => cboAmmo.DoThreadSafeFunc(x => x.SelectedValue)?.ToString() ?? string.Empty;
 
         /// <summary>
         /// Number of rounds that were selected to be loaded.
         /// </summary>
         public int SelectedCount =>
-            int.TryParse(cboType.Text, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo,
+            int.TryParse(cboType.DoThreadSafeFunc(x => x.Text), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo,
                 out int intReturn)
                 ? intReturn
                 : _objWeapon?.AmmoRemaining ?? 0;
