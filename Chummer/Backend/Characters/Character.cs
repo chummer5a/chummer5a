@@ -4324,9 +4324,10 @@ namespace Chummer
         /// </summary>
         /// <param name="frmLoadingForm">Instance of frmLoading to use to update with loading progress. frmLoading::PerformStep() is called 35 times within this method, so plan accordingly.</param>
         /// <param name="showWarnings">Whether warnings about book content and other character content should be loaded.</param>
-        public bool Load(LoadingBar frmLoadingForm = null, bool showWarnings = true)
+        /// <param name="token">Cancellation token to use.</param>
+        public bool Load(LoadingBar frmLoadingForm = null, bool showWarnings = true, CancellationToken token = default)
         {
-            return LoadCoreAysnc(true, frmLoadingForm, showWarnings).GetAwaiter().GetResult();
+            return LoadCoreAysnc(true, frmLoadingForm, showWarnings, token).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -4334,9 +4335,10 @@ namespace Chummer
         /// </summary>
         /// <param name="frmLoadingForm">Instance of frmLoading to use to update with loading progress. frmLoading::PerformStep() is called 35 times within this method, so plan accordingly.</param>
         /// <param name="showWarnings">Whether warnings about book content and other character content should be loaded.</param>
-        public Task<bool> LoadAsync(LoadingBar frmLoadingForm = null, bool showWarnings = true)
+        /// <param name="token">Cancellation token to use.</param>
+        public Task<bool> LoadAsync(LoadingBar frmLoadingForm = null, bool showWarnings = true, CancellationToken token = default)
         {
-            return LoadCoreAysnc(false, frmLoadingForm, showWarnings);
+            return LoadCoreAysnc(false, frmLoadingForm, showWarnings, token);
         }
 
         public const int NumLoadingSections = 37;
@@ -4349,8 +4351,10 @@ namespace Chummer
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
         /// <param name="frmLoadingForm">Instance of frmLoading to use to update with loading progress. frmLoading::PerformStep() is called NumLoadingSections times within this method, so plan accordingly.</param>
         /// <param name="showWarnings">Whether warnings about book content and other character content should be loaded.</param>
-        private async Task<bool> LoadCoreAysnc(bool blnSync, LoadingBar frmLoadingForm = null, bool showWarnings = true)
+        /// <param name="token">Cancellation token to use.</param>
+        private async Task<bool> LoadCoreAysnc(bool blnSync, LoadingBar frmLoadingForm = null, bool showWarnings = true, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!File.Exists(_strFileName))
                 return false;
 
@@ -4358,9 +4362,9 @@ namespace Chummer
             IAsyncDisposable objLockerAsync = null;
             if (blnSync)
                 // ReSharper disable once MethodHasAsyncOverload
-                objLocker = LockObject.EnterWriteLock();
+                objLocker = LockObject.EnterWriteLock(token);
             else
-                objLockerAsync = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 LoadAsDirty = false;
@@ -4388,7 +4392,15 @@ namespace Chummer
                         XPathNavigator xmlCharacterNavigator = null;
                         Quality objLivingPersonaQuality = null;
 
-                        frmLoadingForm?.PerformStep("XML");
+                        if (frmLoadingForm != null)
+                        {
+                            if (blnSync)
+                                // ReSharper disable once MethodHasAsyncOverload
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                frmLoadingForm.PerformStep("XML");
+                            else
+                                await frmLoadingForm.PerformStepAsync("XML", token: token);
+                        }
 
                         using (_ = blnSync
                                    // ReSharper disable once MethodHasAsyncOverload
@@ -4399,7 +4411,7 @@ namespace Chummer
                                 return false;
                             bool blnKeepLoading = blnSync
                                 ? LoadSaveFileDocument()
-                                : await Task.Run(LoadSaveFileDocumentAsync);
+                                : await Task.Run(LoadSaveFileDocumentAsync, token);
 
                             bool LoadSaveFileDocument()
                             {
@@ -4523,11 +4535,16 @@ namespace Chummer
 
                         try
                         {
-                            frmLoadingForm?.PerformStep(
-                                blnSync
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    ? LanguageManager.GetString("String_Settings")
-                                    : await LanguageManager.GetStringAsync("String_Settings"));
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Settings"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("String_Settings"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -5032,10 +5049,11 @@ namespace Chummer
                                     if (blnSync)
                                     {
                                         // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         using (ThreadSafeForm<SelectBuildMethod> frmPickBP = ThreadSafeForm<SelectBuildMethod>.Get(() => new SelectBuildMethod(this, true)))
                                         {
                                             // ReSharper disable once MethodHasAsyncOverload
-                                            if (frmPickBP.ShowDialogSafe(this) != DialogResult.OK)
+                                            if (frmPickBP.ShowDialogSafe(this, token) != DialogResult.OK)
                                             {
                                                 return false;
                                             }
@@ -5043,9 +5061,9 @@ namespace Chummer
                                     }
                                     else
                                     {
-                                        using (ThreadSafeForm<SelectBuildMethod> frmPickBP = await ThreadSafeForm<SelectBuildMethod>.GetAsync(() => new SelectBuildMethod(this, true)))
+                                        using (ThreadSafeForm<SelectBuildMethod> frmPickBP = await ThreadSafeForm<SelectBuildMethod>.GetAsync(() => new SelectBuildMethod(this, true), token))
                                         {
-                                            if (await frmPickBP.ShowDialogSafeAsync(this) != DialogResult.OK)
+                                            if (await frmPickBP.ShowDialogSafeAsync(this, token) != DialogResult.OK)
                                             {
                                                 return false;
                                             }
@@ -5300,11 +5318,16 @@ namespace Chummer
                             XmlNodeList objXmlLocationList;
                             XmlNode xmlRootQualitiesNode;
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("String_MentorSpirit")
-                                                            : await LanguageManager.GetStringAsync(
-                                                                "String_MentorSpirit"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_MentorSpirit"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("String_MentorSpirit"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -5332,10 +5355,16 @@ namespace Chummer
                             else
                                 await _lstInternalIdsNeedingReapplyImprovements.ClearAsync();
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Tab_Improvements")
-                                                            : await LanguageManager.GetStringAsync("Tab_Improvements"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Improvements"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Tab_Improvements"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -5481,10 +5510,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_imp");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Label_Contacts")
-                                                            : await LanguageManager.GetStringAsync("Label_Contacts"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_Contacts"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Label_Contacts"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -5507,10 +5542,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_contacts");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("String_Qualities")
-                                                            : await LanguageManager.GetStringAsync("String_Qualities"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Qualities"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("String_Qualities"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -5706,11 +5747,12 @@ namespace Chummer
                                                         if (blnSync)
                                                         {
                                                             // ReSharper disable once MethodHasAsyncOverload
+                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                             using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem()))
                                                             {
                                                                 frmPickItem.MyForm.SetDropdownItemsMode(lstContacts);
                                                                 // ReSharper disable once MethodHasAsyncOverload
-                                                                if (frmPickItem.ShowDialogSafe(this) != DialogResult.OK)
+                                                                if (frmPickItem.ShowDialogSafe(this, token) != DialogResult.OK)
                                                                 {
                                                                     return false;
                                                                 }
@@ -5719,10 +5761,10 @@ namespace Chummer
                                                         }
                                                         else
                                                         {
-                                                            using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem()))
+                                                            using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), token))
                                                             {
                                                                 frmPickItem.MyForm.SetDropdownItemsMode(lstContacts);
-                                                                if (await frmPickItem.ShowDialogSafeAsync(this) != DialogResult.OK)
+                                                                if (await frmPickItem.ShowDialogSafeAsync(this, token) != DialogResult.OK)
                                                                 {
                                                                     return false;
                                                                 }
@@ -5872,10 +5914,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_quality");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Label_Attributes")
-                                                            : await LanguageManager.GetStringAsync("Label_Attributes"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_Attributes"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Label_Attributes"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -5885,10 +5933,16 @@ namespace Chummer
                                 AttributeSection.Load(objXmlCharacter);
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("String_Tradition")
-                                                            : await LanguageManager.GetStringAsync("String_Tradition"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Tradition"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("String_Tradition"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -6013,10 +6067,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_misc2");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Tab_Skills")
-                                                            : await LanguageManager.GetStringAsync("Tab_Skills"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Skills"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Tab_Skills"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -6039,10 +6099,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_skills");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("String_Locations")
-                                                            : await LanguageManager.GetStringAsync("String_Locations"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Locations"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("String_Locations"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -6174,10 +6240,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_sfoci");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Tab_Armor")
-                                                            : await LanguageManager.GetStringAsync("Tab_Armor"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Armor"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Tab_Armor"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -6196,10 +6268,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_armor");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Tab_Weapons")
-                                                            : await LanguageManager.GetStringAsync("Tab_Weapons"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Weapons"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Tab_Weapons"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -6218,10 +6296,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_weapons");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Tab_Drugs")
-                                                            : await LanguageManager.GetStringAsync("Tab_Drugs"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Drugs"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Tab_Drugs"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -6240,10 +6324,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_drugs");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Tab_Cyberware")
-                                                            : await LanguageManager.GetStringAsync("Tab_Cyberware"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Cyberware"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Tab_Cyberware"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -6534,11 +6624,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_ware");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Label_SelectedSpells")
-                                                            : await LanguageManager.GetStringAsync(
-                                                                "Label_SelectedSpells"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_SelectedSpells"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Label_SelectedSpells"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -6556,10 +6651,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_spells");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Tab_Adept")
-                                                            : await LanguageManager.GetStringAsync("Tab_Adept"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Adept"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Tab_Adept"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -6624,10 +6725,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_powers");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Label_Spirits")
-                                                            : await LanguageManager.GetStringAsync("Label_Spirits"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_Spirits"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Label_Spirits"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -6662,11 +6769,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_spirits");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Label_ComplexForms")
-                                                            : await LanguageManager.GetStringAsync(
-                                                                "Label_ComplexForms"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_ComplexForms"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Label_ComplexForms"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -6685,11 +6797,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_complex");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Tab_AdvancedPrograms")
-                                                            : await LanguageManager.GetStringAsync(
-                                                                "Tab_AdvancedPrograms"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_AdvancedPrograms"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Tab_AdvancedPrograms"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -6708,10 +6825,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_aiprogram");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Tab_MartialArts")
-                                                            : await LanguageManager.GetStringAsync("Tab_MartialArts"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_MartialArts"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Tab_MartialArts"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -6730,10 +6853,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_marts");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Tab_Limits")
-                                                            : await LanguageManager.GetStringAsync("Tab_Limits"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Limits"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Tab_Limits"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -6752,12 +6881,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_mod");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString(
-                                                                "String_SelectPACKSKit_Lifestyles")
-                                                            : await LanguageManager.GetStringAsync(
-                                                                "String_SelectPACKSKit_Lifestyles"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_SelectPACKSKit_Lifestyles"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("String_SelectPACKSKit_Lifestyles"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -6776,10 +6909,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_lifestyle");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Tab_Gear")
-                                                            : await LanguageManager.GetStringAsync("Tab_Gear"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Gear"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Tab_Gear"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -6922,10 +7061,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_gear");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Label_Vehicles")
-                                                            : await LanguageManager.GetStringAsync("Label_Vehicles"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_Vehicles"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Label_Vehicles"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -6944,11 +7089,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_car");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("String_Metamagics")
-                                                            : await LanguageManager.GetStringAsync(
-                                                                "String_Metamagics"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Metamagics"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("String_Metamagics"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -6967,10 +7117,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_mmagic");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("String_Arts")
-                                                            : await LanguageManager.GetStringAsync("String_Arts"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Arts"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("String_Arts"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -6989,11 +7145,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_arts");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("String_Enhancements")
-                                                            : await LanguageManager.GetStringAsync(
-                                                                "String_Enhancements"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Enhancements"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("String_Enhancements"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -7012,10 +7173,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_ench");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Tab_Critter")
-                                                            : await LanguageManager.GetStringAsync("Tab_Critter"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Critter"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Tab_Critter"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -7034,11 +7201,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_cpow");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Label_SummaryFoci")
-                                                            : await LanguageManager.GetStringAsync(
-                                                                "Label_SummaryFoci"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_SummaryFoci"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Label_SummaryFoci"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -7061,11 +7233,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_foci");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Label_SummaryInitiation")
-                                                            : await LanguageManager.GetStringAsync(
-                                                                "Label_SummaryInitiation"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_SummaryInitiation"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Label_SummaryInitiation"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -7084,10 +7261,17 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_init");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("String_Expenses")
-                                                            : await LanguageManager.GetStringAsync("String_Expenses"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Expenses"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("String_Expenses"), token: token);
+                            }
+
                             // While expenses are to be saved in create mode due to starting nuyen and starting karma being logged as expense log entries,
                             // they shouldn't get loaded in create mode because they shouldn't be there.
                             if (Created)
@@ -7120,11 +7304,16 @@ namespace Chummer
                                 }
                             }
 #endif
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Tip_Skill_Sustain")
-                                                            : await LanguageManager.GetStringAsync(
-                                                                "Tip_Skill_Sustain"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tip_Skill_Sustain"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Tip_Skill_Sustain"), token: token);
+                            }
 
                             // Need to load these after everything else so that we can properly link them up during loading
                             using (_ = blnSync
@@ -7143,10 +7332,16 @@ namespace Chummer
                                 }
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Tab_Improvements")
-                                                            : await LanguageManager.GetStringAsync("Tab_Improvements"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Improvements"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Tab_Improvements"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -7164,10 +7359,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_igroup");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Tab_Calendar")
-                                                            : await LanguageManager.GetStringAsync("Tab_Calendar"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Calendar"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Tab_Calendar"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -7186,11 +7387,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_calendar");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("String_LegacyFixes")
-                                                            : await LanguageManager.GetStringAsync(
-                                                                "String_LegacyFixes"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_LegacyFixes"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("String_LegacyFixes"), token: token);
+                            }
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
@@ -7378,11 +7584,16 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_flechettefix");
                             }
 
-                            frmLoadingForm?.PerformStep(blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString("Tab_Options_Plugins")
-                                                            : await LanguageManager.GetStringAsync(
-                                                                "Tab_Options_Plugins"));
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Options_Plugins"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Tab_Options_Plugins"), token: token);
+                            }
 
                             //Plugins
                             using (_ = blnSync
@@ -7407,11 +7618,16 @@ namespace Chummer
                             IsLoading = false;
                         }
 
-                        frmLoadingForm?.PerformStep(blnSync
-                                                        // ReSharper disable once MethodHasAsyncOverload
-                                                        ? LanguageManager.GetString("String_GeneratedImprovements")
-                                                        : await LanguageManager.GetStringAsync(
-                                                            "String_GeneratedImprovements"));
+                        if (frmLoadingForm != null)
+                        {
+                            if (blnSync)
+                                // ReSharper disable once MethodHasAsyncOverload
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                frmLoadingForm.PerformStep(LanguageManager.GetString("String_GeneratedImprovements"));
+                            else
+                                await frmLoadingForm.PerformStepAsync(
+                                    await LanguageManager.GetStringAsync("String_GeneratedImprovements"), token: token);
+                        }
 
                         // Refresh certain improvements
                         using (_ = blnSync

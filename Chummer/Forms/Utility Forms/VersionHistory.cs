@@ -48,7 +48,7 @@ namespace Chummer
                     await LanguageManager.GetStringAsync("Message_History_FileNotFound"),
                     await LanguageManager.GetStringAsync("MessageTitle_FileNotFound"), MessageBoxButtons.OK,
                     MessageBoxIcon.Exclamation);
-                Close();
+                await this.DoThreadSafeAsync(x => x.Close());
                 return;
             }
 

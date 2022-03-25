@@ -3378,13 +3378,13 @@ namespace Chummer
                             objMerge.STR.Value = objVessel.STR.Value + objMerge.MAG.TotalValue;
                             */
 
-                            Program.MainProgressBar.PerformStep(
+                            await Program.MainProgressBar.PerformStepAsync(
                                 await LanguageManager.GetStringAsync("String_SelectPACKSKit_Lifestyles"));
                             // Copy any Lifestyles the Vessel has.
                             foreach (Lifestyle objLifestyle in objVessel.Lifestyles)
                                 objMerge.Lifestyles.Add(objLifestyle);
 
-                            Program.MainProgressBar.PerformStep(await LanguageManager.GetStringAsync("Tab_Armor"));
+                            await Program.MainProgressBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Armor"));
                             // Copy any Armor the Vessel has.
                             foreach (Armor objArmor in objVessel.Armor)
                             {
@@ -3392,7 +3392,7 @@ namespace Chummer
                                 CopyArmorImprovements(objVessel, objMerge, objArmor);
                             }
 
-                            Program.MainProgressBar.PerformStep(await LanguageManager.GetStringAsync("Tab_Gear"));
+                            await Program.MainProgressBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Gear"));
                             // Copy any Gear the Vessel has.
                             foreach (Gear objGear in objVessel.Gear)
                             {
@@ -3400,7 +3400,7 @@ namespace Chummer
                                 CopyGearImprovements(objVessel, objMerge, objGear);
                             }
 
-                            Program.MainProgressBar.PerformStep(await LanguageManager.GetStringAsync("Tab_Cyberware"));
+                            await Program.MainProgressBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Cyberware"));
                             // Copy any Cyberware/Bioware the Vessel has.
                             foreach (Cyberware objCyberware in objVessel.Cyberware)
                             {
@@ -3408,17 +3408,17 @@ namespace Chummer
                                 CopyCyberwareImprovements(objVessel, objMerge, objCyberware);
                             }
 
-                            Program.MainProgressBar.PerformStep(await LanguageManager.GetStringAsync("Tab_Weapons"));
+                            await Program.MainProgressBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Weapons"));
                             // Copy any Weapons the Vessel has.
                             foreach (Weapon objWeapon in objVessel.Weapons)
                                 objMerge.Weapons.Add(objWeapon);
 
-                            Program.MainProgressBar.PerformStep(await LanguageManager.GetStringAsync("Tab_Vehicles"));
+                            await Program.MainProgressBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Vehicles"));
                             // Copy and Vehicles the Vessel has.
                             foreach (Vehicle objVehicle in objVessel.Vehicles)
                                 objMerge.Vehicles.Add(objVehicle);
 
-                            Program.MainProgressBar.PerformStep(await LanguageManager.GetStringAsync("String_Settings"));
+                            await Program.MainProgressBar.PerformStepAsync(await LanguageManager.GetStringAsync("String_Settings"));
                             // Copy the character info.
                             objMerge.Gender = objVessel.Gender;
                             objMerge.Age = objVessel.Age;
@@ -3460,7 +3460,7 @@ namespace Chummer
                             return;
                         using (Program.MainProgressBar = await Program.CreateAndShowProgressBarAsync())
                         {
-                            Program.MainProgressBar.PerformStep(objMerge.CharacterName,
+                            await Program.MainProgressBar.PerformStepAsync(objMerge.CharacterName,
                                                                 LoadingBar.ProgressBarTextPatterns.Saving);
                             objMerge.FileName = saveFileDialog.FileName;
                             if (await objMerge.SaveAsync())
@@ -3547,7 +3547,7 @@ namespace Chummer
                         await Program.MainProgressBar.ResetAsync(36);
                         await Program.MainProgressBar.DoThreadSafeAsync(x => x.Show());
                         await objMerge.LoadAsync();
-                        Program.MainProgressBar.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
+                        await Program.MainProgressBar.PerformStepAsync(await LanguageManager.GetStringAsync("String_UI"));
                         objMerge.Possessed = true;
                         objMerge.Alias = strSelectedVessel + await LanguageManager.GetStringAsync("String_Space") + '('
                                          + await LanguageManager.GetStringAsync("String_Possessed") + ')';
@@ -3669,7 +3669,7 @@ namespace Chummer
                             return;
                         using (Program.MainProgressBar = await Program.CreateAndShowProgressBarAsync())
                         {
-                            Program.MainProgressBar.PerformStep(objMerge.CharacterName,
+                            await Program.MainProgressBar.PerformStepAsync(objMerge.CharacterName,
                                                                 LoadingBar.ProgressBarTextPatterns.Saving);
                             objMerge.FileName = saveFileDialog.FileName;
                             if (await objMerge.SaveAsync())
@@ -13732,7 +13732,7 @@ namespace Chummer
                         try
                         {
                             await CharacterObject.LoadAsync(Program.MainProgressBar);
-                            Program.MainProgressBar.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
+                            await Program.MainProgressBar.PerformStepAsync(await LanguageManager.GetStringAsync("String_UI"));
                         }
                         finally
                         {

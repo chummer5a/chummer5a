@@ -517,7 +517,8 @@ namespace Chummer
                 await picMugshot.DoThreadSafeAsync(x => x.Image = null);
                 await cmdImport.DoThreadSafeAsync(x => x.Enabled = false);
             }
-            picMugshot_SizeChanged(null, EventArgs.Empty);
+
+            await ProcessMugshot();
         }
 
         #region Form Methods
@@ -541,24 +542,31 @@ namespace Chummer
             await DoImport();
         }
 
-        private void picMugshot_SizeChanged(object sender, EventArgs e)
+        private async void picMugshot_SizeChanged(object sender, EventArgs e)
         {
-            if (this.IsNullOrDisposed() || picMugshot.IsNullOrDisposed())
+            if (this.IsNullOrDisposed())
                 return;
-            picMugshot.DoThreadSafe(x =>
-            {
-                try
+            await ProcessMugshot();
+        }
+
+        private Task ProcessMugshot(CancellationToken token = default)
+        {
+            return picMugshot.IsNullOrDisposed()
+                ? Task.CompletedTask
+                : picMugshot.DoThreadSafeAsync(x =>
                 {
-                    x.SizeMode = x.Image != null && x.Height >= x.Image.Height
-                                                 && x.Width >= x.Image.Width
-                        ? PictureBoxSizeMode.CenterImage
-                        : PictureBoxSizeMode.Zoom;
-                }
-                catch (ArgumentException) // No other way to catch when the Image is not null, but is disposed
-                {
-                    x.SizeMode = PictureBoxSizeMode.Zoom;
-                }
-            });
+                    try
+                    {
+                        x.SizeMode = x.Image != null && x.Height >= x.Image.Height
+                                                     && x.Width >= x.Image.Width
+                            ? PictureBoxSizeMode.CenterImage
+                            : PictureBoxSizeMode.Zoom;
+                    }
+                    catch (ArgumentException) // No other way to catch when the Image is not null, but is disposed
+                    {
+                        x.SizeMode = PictureBoxSizeMode.Zoom;
+                    }
+                }, token);
         }
 
         #endregion Form Methods
@@ -652,7 +660,7 @@ namespace Chummer
                 }
             }
 
-            Close();
+            await this.DoThreadSafeAsync(x => x.Close(), token);
         }
     }
 }

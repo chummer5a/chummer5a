@@ -84,7 +84,7 @@ namespace Chummer
             if (await treCharacters.DoThreadSafeFuncAsync(x => x.SelectedNode) != null)
             {
                 await CancelPrint();
-                treCharacters.SelectedNode.Remove();
+                await treCharacters.DoThreadSafeAsync(x => x.SelectedNode.Remove());
                 if (_frmPrintView != null)
                     await StartPrint();
             }

@@ -106,30 +106,39 @@ namespace Chummer
             await LanguageManager.PopulateSheetLanguageListAsync(cboLanguage, _strSelectedSheet, _lstCharacters);
             await PopulateXsltList(_objGenericToken);
 
-            cboXSLT.SelectedValue = _strSelectedSheet;
+            await cboXSLT.DoThreadSafeAsync(x => x.SelectedValue = _strSelectedSheet, _objGenericToken);
             // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
-            if (cboXSLT.SelectedIndex == -1)
+            if (await cboXSLT.DoThreadSafeFuncAsync(x => x.SelectedIndex, _objGenericToken) == -1)
             {
-                string strLanguage = cboLanguage.SelectedValue?.ToString();
+                string strLanguage = await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), _objGenericToken);
                 int intNameIndex;
-                if (string.IsNullOrEmpty(strLanguage) || strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                    intNameIndex = cboXSLT.FindStringExact(GlobalSettings.DefaultCharacterSheet);
+                if (string.IsNullOrEmpty(strLanguage)
+                    || strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                    intNameIndex
+                        = await cboXSLT.DoThreadSafeFuncAsync(
+                            x => x.FindStringExact(GlobalSettings.DefaultCharacterSheet), _objGenericToken);
                 else
-                    intNameIndex = cboXSLT.FindStringExact(GlobalSettings.DefaultCharacterSheet.Substring(GlobalSettings.DefaultLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
+                    intNameIndex = await cboXSLT.DoThreadSafeFuncAsync(
+                        x => x.FindStringExact(GlobalSettings.DefaultCharacterSheet.Substring(
+                                                   GlobalSettings.DefaultLanguage.LastIndexOf(
+                                                       Path.DirectorySeparatorChar) + 1)), _objGenericToken);
                 if (intNameIndex != -1)
-                    cboXSLT.SelectedIndex = intNameIndex;
-                else if (cboXSLT.Items.Count > 0)
+                    await cboXSLT.DoThreadSafeAsync(x => x.SelectedIndex = intNameIndex, _objGenericToken);
+                else if (await cboXSLT.DoThreadSafeFuncAsync(x => x.Items.Count > 0, _objGenericToken))
                 {
                     if (string.IsNullOrEmpty(strLanguage) || strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                         _strSelectedSheet = GlobalSettings.DefaultCharacterSheetDefaultValue;
                     else
                         _strSelectedSheet = Path.Combine(strLanguage, GlobalSettings.DefaultCharacterSheetDefaultValue);
-                    cboXSLT.SelectedValue = _strSelectedSheet;
-                    if (cboXSLT.SelectedIndex == -1)
+                    await cboXSLT.DoThreadSafeAsync(x =>
                     {
-                        cboXSLT.SelectedIndex = 0;
-                        _strSelectedSheet = cboXSLT.SelectedValue?.ToString();
-                    }
+                        x.SelectedValue = _strSelectedSheet;
+                        if (x.SelectedIndex == -1)
+                        {
+                            x.SelectedIndex = 0;
+                            _strSelectedSheet = x.SelectedValue?.ToString();
+                        }
+                    }, _objGenericToken);
                 }
             }
             _blnLoading = false;
@@ -149,7 +158,7 @@ namespace Chummer
             // Re-generate the output when a new sheet is selected.
             if (!_blnLoading)
             {
-                _strSelectedSheet = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
+                _strSelectedSheet = await cboXSLT.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? string.Empty, _objGenericToken);
                 try
                 {
                     await RefreshSheet(_objGenericToken);
@@ -187,7 +196,7 @@ namespace Chummer
                 strSaveFile += ".htm";
 
             using (StreamWriter objWriter = new StreamWriter(strSaveFile, false, Encoding.UTF8))
-                await objWriter.WriteAsync(webViewer.DocumentText);
+                await objWriter.WriteAsync(await webViewer.DoThreadSafeFuncAsync(x => x.DocumentText, _objGenericToken));
         }
 
         private async void tsSaveAsXml_Click(object sender, EventArgs e)
@@ -294,7 +303,7 @@ namespace Chummer
                     switch (ePdfPrinterDialogResult)
                     {
                         case DialogResult.Cancel:
-                        case DialogResult.Yes when DoPdfPrinterShortcut(strPdfPrinter):
+                        case DialogResult.Yes when await DoPdfPrinterShortcut(strPdfPrinter):
                             return;
 
                         case DialogResult.Yes:
@@ -763,7 +772,7 @@ namespace Chummer
             }
         }
 
-        private bool DoPdfPrinterShortcut(string strPdfPrinterName)
+        private async ValueTask<bool> DoPdfPrinterShortcut(string strPdfPrinterName)
         {
             // We've got a proper, built-in PDF printer, so let's use that instead of wkhtmltopdf
             string strOldHeader = null;
@@ -811,7 +820,7 @@ namespace Chummer
                 {
                     // There is also no way to silently have it print to a PDF, so we have to show the print dialog
                     // and have the user click through, though the PDF printer will be temporarily set as their default
-                    webViewer.ShowPrintDialog();
+                    await webViewer.DoThreadSafeAsync(x => x.ShowPrintDialog(), _objGenericToken);
                 }
             }
             catch
@@ -861,7 +870,9 @@ namespace Chummer
 
         private async ValueTask PopulateXsltList(CancellationToken token = default)
         {
-            List<ListItem> lstFiles = await XmlManager.GetXslFilesFromLocalDirectoryAsync(cboLanguage.SelectedValue?.ToString() ?? GlobalSettings.DefaultLanguage, _lstCharacters, true);
+            List<ListItem> lstFiles = await XmlManager.GetXslFilesFromLocalDirectoryAsync(
+                await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
+                ?? GlobalSettings.DefaultLanguage, _lstCharacters, true);
             try
             {
                 await cboXSLT.PopulateWithListItemsAsync(lstFiles, token);

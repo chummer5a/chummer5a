@@ -176,7 +176,7 @@ namespace Chummer
                                            Text,
                                            GlobalSettings.AllowEasterEggs ? 4 : 3))
                             {
-                                Program.MainProgressBar.PerformStep(
+                                await Program.MainProgressBar.PerformStepAsync(
                                     await LanguageManager.GetStringAsync("String_UI"));
 
                                 Program.OpenCharacters.CollectionChanged += OpenCharactersOnCollectionChanged;
@@ -298,7 +298,7 @@ namespace Chummer
                                     }
                                 }
 
-                                Program.MainProgressBar.PerformStep(
+                                await Program.MainProgressBar.PerformStepAsync(
                                     await LanguageManager.GetStringAsync("Title_MasterIndex"));
 
                                 if (MasterIndex != null)
@@ -308,7 +308,7 @@ namespace Chummer
                                     await MasterIndex.DoThreadSafeAsync(x => x.Show());
                                 }
 
-                                Program.MainProgressBar.PerformStep(
+                                await Program.MainProgressBar.PerformStepAsync(
                                     await LanguageManager.GetStringAsync("String_CharacterRoster"));
 
                                 if (CharacterRoster != null)
@@ -320,7 +320,7 @@ namespace Chummer
 
                                 if (GlobalSettings.AllowEasterEggs)
                                 {
-                                    Program.MainProgressBar.PerformStep(
+                                    await Program.MainProgressBar.PerformStepAsync(
                                         await LanguageManager.GetStringAsync("String_Chummy"));
                                     _mascotChummy = await this.DoThreadSafeFuncAsync(() => new Chummy(null));
                                     await _mascotChummy.DoThreadSafeAsync(x => x.Show(this));
@@ -1364,10 +1364,10 @@ namespace Chummer
                 {
                     foreach (Character objCharacter in lstNewCharacters)
                     {
-                        Program.MainProgressBar.PerformStep(objCharacter == null
-                                                                ? strUI
-                                                                : strUI + strSpace + '(' + objCharacter.CharacterName
-                                                                  + ')');
+                        await Program.MainProgressBar.PerformStepAsync(objCharacter == null
+                                                                           ? strUI
+                                                                           : strUI + strSpace + '(' + objCharacter.CharacterName
+                                                                             + ')');
                         if (objCharacter == null || OpenCharacterForms.Any(x => x.CharacterObject == objCharacter))
                             continue;
                         if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 8000 : 7500)

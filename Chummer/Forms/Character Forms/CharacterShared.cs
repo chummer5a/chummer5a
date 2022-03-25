@@ -7040,8 +7040,8 @@ namespace Chummer
 
                 using (Program.MainProgressBar = await Program.CreateAndShowProgressBarAsync())
                 {
-                    Program.MainProgressBar.PerformStep(CharacterObject.CharacterName,
-                                                        LoadingBar.ProgressBarTextPatterns.Saving);
+                    await Program.MainProgressBar.PerformStepAsync(CharacterObject.CharacterName,
+                                                                   LoadingBar.ProgressBarTextPatterns.Saving, token);
                     if (!await CharacterObject.SaveAsync(token: token))
                         return false;
                     GlobalSettings.MostRecentlyUsedCharacters.Insert(0, CharacterObject.FileName);

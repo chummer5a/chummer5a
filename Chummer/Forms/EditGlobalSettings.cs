@@ -1783,8 +1783,7 @@ namespace Chummer
                     using (Program.MainProgressBar
                            = await Program.CreateAndShowProgressBarAsync(fbd.SelectedPath, files.Length))
                     {
-                        List<SourcebookInfo> list = null;
-                        await Task.Run(() => list = ScanFilesForPDFTexts(files, matches, Program.MainProgressBar).ToList());
+                        List<SourcebookInfo> list = await ScanFilesForPDFTexts(files, matches, Program.MainProgressBar);
                         sw.Stop();
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdFeedback))
@@ -1820,35 +1819,65 @@ namespace Chummer
             }
         }
 
-        private ICollection<SourcebookInfo> ScanFilesForPDFTexts(IEnumerable<string> files, XPathNodeIterator matches, LoadingBar frmProgressBar)
+        private async Task<List<SourcebookInfo>> ScanFilesForPDFTexts(IEnumerable<string> lstFiles, XPathNodeIterator matches, LoadingBar frmProgressBar)
         {
-            ParallelOptions parallelOptions = new ParallelOptions
-            {
-                MaxDegreeOfParallelism = 10
-            };
             // LockingDictionary makes sure we don't pick out multiple files for the same sourcebook
-            using (LockingDictionary<string, SourcebookInfo> resultCollection
-                = new LockingDictionary<string, SourcebookInfo>())
+            LockingDictionary<string, SourcebookInfo>
+                dicResults = new LockingDictionary<string, SourcebookInfo>();
+            try
             {
-                Parallel.ForEach(files, parallelOptions, file =>
+                List<Task<SourcebookInfo>> lstLoadingTasks = new List<Task<SourcebookInfo>>(10);
+                int intCounter = 0;
+                foreach (string strFile in lstFiles)
                 {
-                    FileInfo fileInfo = new FileInfo(file);
-                    frmProgressBar.PerformStep(fileInfo.Name, LoadingBar.ProgressBarTextPatterns.Scanning);
-                    SourcebookInfo info = ScanPDFForMatchingText(fileInfo, matches);
+                    lstLoadingTasks.Add(GetSourcebookInfo(strFile));
+                    if (++intCounter != 10) // Load files 10 at a time so that we don't overload things
+                        continue;
+                    await Task.WhenAll(lstLoadingTasks);
+                    foreach (Task<SourcebookInfo> tskLoop in lstLoadingTasks)
+                    {
+                        SourcebookInfo info = await tskLoop;
+                        // ReSharper disable once AccessToDisposedClosure
+                        if (info == null || await dicResults.ContainsKeyAsync(info.Code))
+                            continue;
+                        // ReSharper disable once AccessToDisposedClosure
+                        await dicResults.TryAddAsync(info.Code, info);
+                    }
+
+                    intCounter = 0;
+                    lstLoadingTasks.Clear();
+                }
+
+                await Task.WhenAll(lstLoadingTasks);
+                foreach (Task<SourcebookInfo> tskLoop in lstLoadingTasks)
+                {
+                    SourcebookInfo info = await tskLoop;
                     // ReSharper disable once AccessToDisposedClosure
-                    if (info == null || resultCollection.ContainsKey(info.Code))
-                        return;
+                    if (info == null || await dicResults.ContainsKeyAsync(info.Code))
+                        continue;
                     // ReSharper disable once AccessToDisposedClosure
-                    resultCollection.TryAdd(info.Code, info);
-                });
-                foreach (KeyValuePair<string, SourcebookInfo> kvpInfo in resultCollection)
+                    await dicResults.TryAddAsync(info.Code, info);
+                }
+
+                async Task<SourcebookInfo> GetSourcebookInfo(string strBookFile)
+                {
+                    FileInfo fileInfo = new FileInfo(strBookFile);
+                    await frmProgressBar.PerformStepAsync(fileInfo.Name, LoadingBar.ProgressBarTextPatterns.Scanning);
+                    return await ScanPDFForMatchingText(fileInfo, matches);
+                }
+
+                foreach (KeyValuePair<string, SourcebookInfo> kvpInfo in dicResults)
                     _dicSourcebookInfos[kvpInfo.Key] = kvpInfo.Value;
 
-                return resultCollection.Values;
+                return dicResults.Values.ToList();
+            }
+            finally
+            {
+                await dicResults.DisposeAsync();
             }
         }
 
-        private static SourcebookInfo ScanPDFForMatchingText(FileSystemInfo fileInfo, XPathNodeIterator xmlMatches)
+        private static async ValueTask<SourcebookInfo> ScanPDFForMatchingText(FileSystemInfo fileInfo, XPathNodeIterator xmlMatches)
         {
             //Search the first 10 pages for all the text
             for (int intPage = 1; intPage <= 10; intPage++)
@@ -1859,17 +1888,17 @@ namespace Chummer
 
                 foreach (XPathNavigator xmlMatch in xmlMatches)
                 {
-                    string strLanguageText = xmlMatch.SelectSingleNodeAndCacheExpression("text")?.Value ?? string.Empty;
+                    string strLanguageText = (await xmlMatch.SelectSingleNodeAndCacheExpressionAsync("text"))?.Value ?? string.Empty;
                     if (!text.Contains(strLanguageText))
                         continue;
-                    int trueOffset = intPage - xmlMatch.SelectSingleNodeAndCacheExpression("page")?.ValueAsInt ?? 0;
+                    int trueOffset = intPage - (await xmlMatch.SelectSingleNodeAndCacheExpressionAsync("page"))?.ValueAsInt ?? 0;
 
                     xmlMatch.MoveToParent();
                     xmlMatch.MoveToParent();
 
                     return new SourcebookInfo
                     {
-                        Code = xmlMatch.SelectSingleNodeAndCacheExpression("code")?.Value,
+                        Code = (await xmlMatch.SelectSingleNodeAndCacheExpressionAsync("code"))?.Value,
                         Offset = trueOffset,
                         Path = fileInfo.FullName
                     };

@@ -581,8 +581,8 @@ namespace Chummer
                     objCharacter.MetatypeBP = 0;
                     using (Program.MainProgressBar = await Program.CreateAndShowProgressBarAsync())
                     {
-                        Program.MainProgressBar.PerformStep(objCharacter.CharacterName,
-                                                            LoadingBar.ProgressBarTextPatterns.Saving);
+                        await Program.MainProgressBar.PerformStepAsync(objCharacter.CharacterName,
+                                                                       LoadingBar.ProgressBarTextPatterns.Saving);
                         if (!await objCharacter.SaveAsync())
                             return;
                     }

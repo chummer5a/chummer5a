@@ -10345,7 +10345,7 @@ namespace Chummer
                         try
                         {
                             await CharacterObject.LoadAsync(Program.MainProgressBar);
-                            Program.MainProgressBar.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
+                            await Program.MainProgressBar.PerformStepAsync(await LanguageManager.GetStringAsync("String_UI"));
 
                             // Select the Magician's Tradition.
                             if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
@@ -12339,8 +12339,8 @@ namespace Chummer
 
                 using (Program.MainProgressBar = await Program.CreateAndShowProgressBarAsync())
                 {
-                    Program.MainProgressBar.PerformStep(CharacterObject.CharacterName,
-                                                        LoadingBar.ProgressBarTextPatterns.Saving);
+                    await Program.MainProgressBar.PerformStepAsync(CharacterObject.CharacterName,
+                                                        LoadingBar.ProgressBarTextPatterns.Saving, token);
                     if (!await CharacterObject.SaveAsync(token: token))
                     {
                         CharacterObject.ExpenseEntries.Clear();
@@ -15344,8 +15344,8 @@ namespace Chummer
                     {
                         using (Program.MainProgressBar = await Program.CreateAndShowProgressBarAsync())
                         {
-                            Program.MainProgressBar.PerformStep(CharacterObject.CharacterName,
-                                                                LoadingBar.ProgressBarTextPatterns.Saving);
+                            await Program.MainProgressBar.PerformStepAsync(CharacterObject.CharacterName,
+                                                                LoadingBar.ProgressBarTextPatterns.Saving, token);
                             if (!await CharacterObject.SaveAsync(strNewName, token: token))
                                 return false;
                         }

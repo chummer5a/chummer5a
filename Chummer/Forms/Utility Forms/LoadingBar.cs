@@ -19,6 +19,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -141,11 +142,72 @@ namespace Chummer
                 default:
                     throw new ArgumentOutOfRangeException(nameof(eUseTextPattern), eUseTextPattern, null);
             }
-            if (pgbLoadingProgress.Maximum > 2)
-                strNewText += LanguageManager.GetString("String_Space") + '(' + (pgbLoadingProgress.Value + 1).ToString(GlobalSettings.CultureInfo)
-                              + '/' + (pgbLoadingProgress.Maximum - 1).ToString(GlobalSettings.CultureInfo) + ')';
-            lblLoadingInfo.QueueThreadSafe(x => x.Text = strNewText);
-            pgbLoadingProgress.QueueThreadSafe(x => x.PerformStep());
+
+            int intLoadingMaximum = pgbLoadingProgress.DoThreadSafeFunc(x => x.Maximum);
+            if (intLoadingMaximum > 2)
+                strNewText += LanguageManager.GetString("String_Space") + '(' + (pgbLoadingProgress.DoThreadSafeFunc(x => x.Value) + 1).ToString(GlobalSettings.CultureInfo)
+                              + '/' + (intLoadingMaximum - 1).ToString(GlobalSettings.CultureInfo) + ')';
+            lblLoadingInfo.DoThreadSafe(x => x.Text = strNewText);
+            pgbLoadingProgress.DoThreadSafe(x => x.PerformStep());
+        }
+
+        /// <summary>
+        /// Performs a single step on the underlying ProgressBar
+        /// </summary>
+        /// <param name="strStepName">The text that the descriptive label above the ProgressBar should use, i.e. "Loading {strStepName}..."</param>
+        /// <param name="eUseTextPattern">The text pattern to use in combination with <paramref name="strStepName"/>, e.g. "Loading", "Saving", et al.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        public async ValueTask PerformStepAsync(string strStepName = "", ProgressBarTextPatterns eUseTextPattern = ProgressBarTextPatterns.Loading, CancellationToken token = default)
+        {
+            if (this.IsNullOrDisposed())
+                return;
+            string strNewText;
+            switch (eUseTextPattern)
+            {
+                case ProgressBarTextPatterns.Saving:
+                    if (string.IsNullOrEmpty(strStepName))
+                        strNewText = await LanguageManager.GetStringAsync("String_Saving");
+                    else
+                        strNewText = string.Format(GlobalSettings.CultureInfo,
+                                                   await LanguageManager.GetStringAsync("String_Saving_Pattern"),
+                                                   strStepName);
+                    break;
+                case ProgressBarTextPatterns.Loading:
+                    if (string.IsNullOrEmpty(strStepName))
+                        strNewText = await LanguageManager.GetStringAsync("String_Loading");
+                    else
+                        strNewText = string.Format(GlobalSettings.CultureInfo,
+                                                   await LanguageManager.GetStringAsync("String_Loading_Pattern"),
+                                                   strStepName);
+                    break;
+                case ProgressBarTextPatterns.Scanning:
+                    if (string.IsNullOrEmpty(strStepName))
+                        strNewText = await LanguageManager.GetStringAsync("String_Scanning");
+                    else
+                        strNewText = string.Format(GlobalSettings.CultureInfo,
+                                                   await LanguageManager.GetStringAsync("String_Scanning_Pattern"),
+                                                   strStepName);
+                    break;
+                case ProgressBarTextPatterns.Initializing:
+                    if (string.IsNullOrEmpty(strStepName))
+                        strNewText = await LanguageManager.GetStringAsync("String_Initializing");
+                    else
+                        strNewText = string.Format(GlobalSettings.CultureInfo,
+                                                   await LanguageManager.GetStringAsync("String_Initializing_Pattern"),
+                                                   strStepName);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(eUseTextPattern), eUseTextPattern, null);
+            }
+
+            int intLoadingMaximum = await pgbLoadingProgress.DoThreadSafeFuncAsync(x => x.Maximum, token);
+            if (intLoadingMaximum > 2)
+                strNewText += await LanguageManager.GetStringAsync("String_Space") + '('
+                    + (await pgbLoadingProgress.DoThreadSafeFuncAsync(x => x.Value, token) + 1).ToString(
+                        GlobalSettings.CultureInfo)
+                    + '/' + (intLoadingMaximum - 1).ToString(GlobalSettings.CultureInfo) + ')';
+            await lblLoadingInfo.DoThreadSafeAsync(x => x.Text = strNewText, token);
+            await pgbLoadingProgress.DoThreadSafeAsync(x => x.PerformStep(), token);
         }
     }
 }

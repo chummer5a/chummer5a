@@ -453,7 +453,7 @@ namespace Chummer
                         _lstFileNamesWithItems.Insert(
                             0, new ListItem(string.Empty, await LanguageManager.GetStringAsync("String_All")));
 
-                        int intOldSelectedIndex = cboFile.DoThreadSafeFunc(x => x.SelectedIndex, token);
+                        int intOldSelectedIndex = await cboFile.DoThreadSafeFuncAsync(x => x.SelectedIndex, token);
                         await Task.WhenAll(
                             cboFile.PopulateWithListItemsAsync(_lstFileNamesWithItems, token).ContinueWith(
                                 y => cboFile.DoThreadSafe
@@ -551,7 +551,7 @@ namespace Chummer
             {
                 try
                 {
-                    if (lstItems.DoThreadSafeFunc(x => x.SelectedValue, _objGenericToken) is MasterIndexEntry objEntry)
+                    if (await lstItems.DoThreadSafeFuncAsync(x => x.SelectedValue, _objGenericToken) is MasterIndexEntry objEntry)
                     {
                         await Task.WhenAll(lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true, _objGenericToken),
                                            lblSourceClickReminder.DoThreadSafeAsync(

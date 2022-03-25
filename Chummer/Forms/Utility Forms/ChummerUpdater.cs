@@ -95,7 +95,7 @@ namespace Chummer
                 if (!SilentMode)
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Update_MultipleInstances"), await LanguageManager.GetStringAsync("Title_Update"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 Log.Info("ChummerUpdater_Load exit");
-                Close();
+                await this.DoThreadSafeAsync(x => x.Close(), _objGenericToken);
             }
 
             if (_objChangelogDownloaderCancellationTokenSource?.IsCancellationRequested == false)
@@ -157,7 +157,7 @@ namespace Chummer
             if (e.CloseReason == CloseReason.UserClosing && GlobalSettings.AutomaticUpdate)
             {
                 e.Cancel = true;
-                Hide();
+                await this.DoThreadSafeAsync(x => x.Hide(), _objGenericToken);
                 SilentMode = true;
                 return;
             }

@@ -86,7 +86,8 @@ namespace Chummer
                     }
             }
 
-            for (int intCounter = 1; intCounter <= nudDice.Value; intCounter++)
+            int intDice = await nudDice.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+            for (int intCounter = 1; intCounter <= intDice; intCounter++)
             {
                 if (await chkRuleOf6.DoThreadSafeFuncAsync(x => x.Checked))
                 {
@@ -116,7 +117,7 @@ namespace Chummer
 
             int intGlitchThreshold = await chkVariableGlitch.DoThreadSafeFuncAsync(x => x.Checked)
                 ? intHitCount + 1
-                : ((await nudDice.DoThreadSafeFuncAsync(x => x.Value) + 1) / 2).StandardRound();
+                : (intDice + 1) / 2;
             // Deduct the Gremlins Rating from the Glitch Threshold.
             intGlitchThreshold -= await nudGremlins.DoThreadSafeFuncAsync(x => x.ValueAsInt);
             if (intGlitchThreshold < 1)
@@ -127,7 +128,7 @@ namespace Chummer
             if (await chkBubbleDie.DoThreadSafeFuncAsync(x => x.Checked)
                 && (await chkVariableGlitch.DoThreadSafeFuncAsync(x => x.Checked)
                     || (intGlitchCount == intGlitchThreshold - 1
-                        && (await nudDice.DoThreadSafeFuncAsync(x => x.ValueAsInt) & 1) == 0)))
+                        && (intDice & 1) == 0)))
             {
                 int intBubbleDieResult = await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
                 DiceRollerListViewItem lviCur = new DiceRollerListViewItem(intBubbleDieResult, intTarget, intGlitchMin, true);
@@ -294,7 +295,7 @@ namespace Chummer
 
             int intGlitchThreshold = await chkVariableGlitch.DoThreadSafeFuncAsync(x => x.Checked)
                 ? intHitCount + 1
-                : ((await nudDice.DoThreadSafeFuncAsync(x => x.Value) + 1) / 2).StandardRound();
+                : (_lstResults.Count + 1) / 2;
             // Deduct the Gremlins Rating from the Glitch Threshold.
             intGlitchThreshold -= await nudGremlins.DoThreadSafeFuncAsync(x => x.ValueAsInt);
             if (intGlitchThreshold < 1)
@@ -305,7 +306,7 @@ namespace Chummer
             if (await chkBubbleDie.DoThreadSafeFuncAsync(x => x.Checked)
                 && (await chkVariableGlitch.DoThreadSafeFuncAsync(x => x.Checked)
                     || (intGlitchCount == intGlitchThreshold - 1
-                        && (await nudDice.DoThreadSafeFuncAsync(x => x.ValueAsInt) & 1) == 0)))
+                        && (_lstResults.Count & 1) == 0)))
             {
                 int intBubbleDieResult = await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
                 DiceRollerListViewItem lviCur = new DiceRollerListViewItem(intBubbleDieResult, intTarget, intGlitchMin, true);
@@ -401,7 +402,7 @@ namespace Chummer
         {
             Quality objGremlinsQuality
                 = lstQualities?.FirstOrDefault(x => x.Name.StartsWith("Gremlins", StringComparison.Ordinal));
-            nudGremlins.Value = objGremlinsQuality?.Levels ?? 0;
+            nudGremlins.DoThreadSafe(x => x.ValueAsInt = objGremlinsQuality?.Levels ?? 0);
         }
 
         #endregion Properties

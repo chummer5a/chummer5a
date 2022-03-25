@@ -525,7 +525,7 @@ namespace Chummer
                                     await XmlManager.LoadXPathAsync(strFile, null, GlobalSettings.DefaultLanguage);
                                 }
                                 await XmlManager.LoadXPathAsync(strFile);
-                                MainProgressBar.PerformStep(
+                                await MainProgressBar.PerformStepAsync(
                                     Application.ProductName,
                                     LoadingBar.ProgressBarTextPatterns.Initializing);
                             }

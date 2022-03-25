@@ -153,11 +153,11 @@ namespace Chummer
             {
                 if (_strXslt == "JSON")
                 {
-                    await ExportJson();
+                    await ExportJson(token: _objGenericToken);
                 }
                 else
                 {
-                    await ExportNormal();
+                    await ExportNormal(token: _objGenericToken);
                 }
             }
         }
@@ -191,7 +191,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!_blnLoading)
             {
-                _strExportLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalSettings.Language;
+                _strExportLanguage = await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? GlobalSettings.Language;
                 try
                 {
                     _objExportCulture = CultureInfo.GetCultureInfo(_strExportLanguage);
@@ -206,8 +206,7 @@ namespace Chummer
                 await Task.WhenAll(
                     imgSheetLanguageFlag.DoThreadSafeAsync(x =>
                                                                x.Image
-                                                                   = Math.Min(imgSheetLanguageFlag.Width,
-                                                                              imgSheetLanguageFlag.Height) >= 32
+                                                                   = Math.Min(x.Width, x.Height) >= 32
                                                                        ? FlagImageGetter.GetFlagFromCountryCode192Dpi(
                                                                            _strExportLanguage.Substring(3, 2))
                                                                        : FlagImageGetter.GetFlagFromCountryCode(
@@ -224,7 +223,7 @@ namespace Chummer
             {
                 if (_objCharacterXml != null)
                 {
-                    _strXslt = cboXSLT.SelectedValue?.ToString();
+                    _strXslt = await cboXSLT.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
                     if (!string.IsNullOrEmpty(_strXslt))
                     {
                         using (CursorWait.New(this))
@@ -331,8 +330,9 @@ namespace Chummer
 
         #region XML
 
-        private async ValueTask ExportNormal(string destination = null)
+        private async ValueTask ExportNormal(string destination = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             string strSaveFile = destination;
             if (string.IsNullOrEmpty(destination))
             {
@@ -344,6 +344,7 @@ namespace Chummer
                     string strLine;
                     while ((strLine = await objFile.ReadLineAsync()) != null)
                     {
+                        token.ThrowIfCancellationRequested();
                         if (strLine.StartsWith("<!-- ext:", StringComparison.Ordinal))
                             strExtension = strLine.TrimStartOnce("<!-- ext:", true).FastEscapeOnceFromEnd("-->").Trim();
                     }
@@ -376,7 +377,7 @@ namespace Chummer
             {
                 x.DialogResult = DialogResult.OK;
                 x.Close();
-            }, _objGenericToken);
+            }, token);
         }
 
         private async Task GenerateXml(CancellationToken token = default)
@@ -403,7 +404,7 @@ namespace Chummer
                         string strReturn = "Last write time could not be fetched when attempting to load " + _strXslt +
                                            Environment.NewLine;
                         Log.Debug(strReturn);
-                        SetTextToWorkerResult(strReturn);
+                        await SetTextToWorkerResult(strReturn, token);
                         return;
                     }
                     catch (PathTooLongException)
@@ -412,7 +413,7 @@ namespace Chummer
                         string strReturn = "Last write time could not be fetched when attempting to load " + _strXslt +
                                            Environment.NewLine;
                         Log.Debug(strReturn);
-                        SetTextToWorkerResult(strReturn);
+                        await SetTextToWorkerResult(strReturn, token);
                         return;
                     }
                     catch (UnauthorizedAccessException)
@@ -421,7 +422,7 @@ namespace Chummer
                         string strReturn = "Last write time could not be fetched when attempting to load " + _strXslt +
                                            Environment.NewLine;
                         Log.Debug(strReturn);
-                        SetTextToWorkerResult(strReturn);
+                        await SetTextToWorkerResult(strReturn, token);
                         return;
                     }
                     catch (XsltException ex)
@@ -431,7 +432,7 @@ namespace Chummer
                         Log.Debug(strReturn);
                         Log.Error("ERROR Message = " + ex.Message);
                         strReturn += ex.Message;
-                        SetTextToWorkerResult(strReturn);
+                        await SetTextToWorkerResult(strReturn, token);
                         return;
                     }
 
@@ -458,7 +459,7 @@ namespace Chummer
                             strText = await objReader.ReadToEndAsync();
                     }
                     token.ThrowIfCancellationRequested();
-                    SetTextToWorkerResult(strText);
+                    await SetTextToWorkerResult(strText, token);
                 }
                 finally
                 {
@@ -478,7 +479,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     string strText = JsonConvert.SerializeXmlNode(_objCharacterXml, Formatting.Indented);
                     token.ThrowIfCancellationRequested();
-                    SetTextToWorkerResult(strText);
+                    await SetTextToWorkerResult(strText, token);
                 }
                 finally
                 {
@@ -487,7 +488,7 @@ namespace Chummer
             }
         }
 
-        private void SetTextToWorkerResult(string strText)
+        private Task SetTextToWorkerResult(string strText, CancellationToken token = default)
         {
             string strDisplayText = strText;
             // Displayed text has all mugshots data removed because it's unreadable as Base64 strings, but massive enough to slow down the program
@@ -497,7 +498,7 @@ namespace Chummer
             _dicCache.AddOrUpdate(new Tuple<string, string>(_strExportLanguage, _strXslt),
                 new Tuple<string, string>(strText, strDisplayText),
                 (a, b) => new Tuple<string, string>(strText, strDisplayText));
-            txtText.DoThreadSafe(x => x.Text = strDisplayText);
+            return txtText.DoThreadSafeAsync(x => x.Text = strDisplayText, token);
         }
 
         private static readonly Regex s_RgxMainMugshotReplaceExpression = new Regex(
@@ -516,8 +517,9 @@ namespace Chummer
 
         #region JSON
 
-        private async ValueTask ExportJson(string destination = null)
+        private async ValueTask ExportJson(string destination = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             string strSaveFile = destination;
             if (string.IsNullOrEmpty(strSaveFile))
             {
@@ -543,7 +545,7 @@ namespace Chummer
             {
                 x.DialogResult = DialogResult.OK;
                 x.Close();
-            }, _objGenericToken);
+            }, token);
         }
 
         #endregion JSON

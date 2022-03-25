@@ -68,11 +68,14 @@ namespace Chummer
             {
                 Program.MainForm.OpenCharacterForms.CollectionChanged += OpenCharacterFormsOnCollectionChanged;
                 GlobalSettings.MruChanged += RefreshMruLists;
-                treCharacterList.ItemDrag += treCharacterList_OnDefaultItemDrag;
-                treCharacterList.DragEnter += treCharacterList_OnDefaultDragEnter;
-                treCharacterList.DragDrop += treCharacterList_OnDefaultDragDrop;
-                treCharacterList.DragOver += treCharacterList_OnDefaultDragOver;
-                treCharacterList.NodeMouseDoubleClick += treCharacterList_OnDefaultDoubleClick;
+                treCharacterList.DoThreadSafe(x =>
+                {
+                    x.ItemDrag += treCharacterList_OnDefaultItemDrag;
+                    x.DragEnter += treCharacterList_OnDefaultDragEnter;
+                    x.DragDrop += treCharacterList_OnDefaultDragDrop;
+                    x.DragOver += treCharacterList_OnDefaultDragOver;
+                    x.NodeMouseDoubleClick += treCharacterList_OnDefaultDoubleClick;
+                });
                 OnMyMouseDown += OnDefaultMouseDown;
                 if (_watcherCharacterRosterFolder != null)
                 {
@@ -86,11 +89,14 @@ namespace Chummer
             {
                 Program.MainForm.OpenCharacterForms.CollectionChanged -= OpenCharacterFormsOnCollectionChanged;
                 GlobalSettings.MruChanged -= RefreshMruLists;
-                treCharacterList.ItemDrag -= treCharacterList_OnDefaultItemDrag;
-                treCharacterList.DragEnter -= treCharacterList_OnDefaultDragEnter;
-                treCharacterList.DragDrop -= treCharacterList_OnDefaultDragDrop;
-                treCharacterList.DragOver -= treCharacterList_OnDefaultDragOver;
-                treCharacterList.NodeMouseDoubleClick -= treCharacterList_OnDefaultDoubleClick;
+                treCharacterList.DoThreadSafe(x =>
+                {
+                    x.ItemDrag -= treCharacterList_OnDefaultItemDrag;
+                    x.DragEnter -= treCharacterList_OnDefaultDragEnter;
+                    x.DragDrop -= treCharacterList_OnDefaultDragDrop;
+                    x.DragOver -= treCharacterList_OnDefaultDragOver;
+                    x.NodeMouseDoubleClick -= treCharacterList_OnDefaultDoubleClick;
+                });
                 OnMyMouseDown = null;
 
                 if (_watcherCharacterRosterFolder != null)
@@ -749,24 +755,23 @@ namespace Chummer
             Log.Trace("Populating CharacterRosterTreeNode Watch Folder (MainThread).");
             await treCharacterList.DoThreadSafeAsync(x =>
             {
-                TreeView treList = x;
-                treList.SuspendLayout();
+                x.SuspendLayout();
                 if (objWatchNode != null)
                 {
                     if (objWatchNode.TreeView == null)
                     {
-                        TreeNode objFavoriteNode = treCharacterList.FindNode("Favorite", false);
-                        TreeNode objRecentNode = treCharacterList.FindNode("Recent", false);
+                        TreeNode objFavoriteNode = x.FindNode("Favorite", false);
+                        TreeNode objRecentNode = x.FindNode("Recent", false);
                         if (objFavoriteNode != null && objRecentNode != null)
-                            treList.Nodes.Insert(2, objWatchNode);
+                            x.Nodes.Insert(2, objWatchNode);
                         else if (objFavoriteNode != null || objRecentNode != null)
-                            treList.Nodes.Insert(1, objWatchNode);
+                            x.Nodes.Insert(1, objWatchNode);
                         else
-                            treList.Nodes.Insert(0, objWatchNode);
+                            x.Nodes.Insert(0, objWatchNode);
                     }
                     objWatchNode.ExpandAll();
                 }
-                treList.ResumeLayout();
+                x.ResumeLayout();
             }, token);
         }
 
@@ -1495,11 +1500,9 @@ namespace Chummer
                 return;
             try
             {
-                TreeNode objSelectedNode
-                    = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken);
-                if (objSelectedNode?.Tag == null || objSelectedNode.Level <= 0)
+                if (await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level <= 0, _objGenericToken))
                     return;
-                string strFile = objSelectedNode.Tag.ToString();
+                string strFile = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag?.ToString(), _objGenericToken);
                 if (string.IsNullOrEmpty(strFile))
                     return;
                 Character objOpenCharacter
@@ -1543,129 +1546,132 @@ namespace Chummer
         {
             int intToolStripWidth = 180;
             int intToolStripHeight = 22;
-            using (Graphics g = CreateGraphics())
+            using (Graphics g = this.DoThreadSafeFunc(x => x.CreateGraphics(), _objGenericToken))
             {
                 intToolStripWidth = (int)(intToolStripWidth * g.DpiX / 96.0f);
                 intToolStripHeight = (int)(intToolStripHeight * g.DpiY / 96.0f);
             }
 
-            //
-            // tsToggleFav
-            //
-            DpiFriendlyToolStripMenuItem tsToggleFav = new DpiFriendlyToolStripMenuItem(components)
-            {
-                Image = Properties.Resources.asterisk_orange,
-                Name = "tsToggleFav",
-                Size = new Size(intToolStripWidth, intToolStripHeight),
-                Tag = "Menu_ToggleFavorite",
-                ImageDpi192 = Properties.Resources.asterisk_orange1
-            };
-            tsToggleFav.Click += tsToggleFav_Click;
-            //
-            // tsSort
-            //
-            DpiFriendlyToolStripMenuItem tsSort = new DpiFriendlyToolStripMenuItem(components)
-            {
-                Image = Properties.Resources.page_refresh,
-                Name = "tsSort",
-                Size = new Size(intToolStripWidth, intToolStripHeight),
-                Tag = "Menu_Sort",
-                ImageDpi192 = Properties.Resources.page_refresh1
-            };
-            tsSort.Click += tsSort_Click;
-            //
-            // tsOpen
-            //
-            DpiFriendlyToolStripMenuItem tsOpen = new DpiFriendlyToolStripMenuItem(components)
-            {
-                Image = Properties.Resources.folder_page,
-                Name = "tsOpen",
-                Size = new Size(intToolStripWidth, intToolStripHeight),
-                Tag = "Menu_Main_Open",
-                ImageDpi192 = Properties.Resources.folder_page1
-            };
-            tsOpen.Click += tsOpen_Click;
-            //
-            // tsOpenForPrinting
-            //
-            DpiFriendlyToolStripMenuItem tsOpenForPrinting = new DpiFriendlyToolStripMenuItem(components)
-            {
-                Image = Properties.Resources.folder_print,
-                Name = "tsOpenForPrinting",
-                Size = new Size(intToolStripWidth, intToolStripHeight),
-                Tag = "Menu_Main_OpenForPrinting",
-                ImageDpi192 = Properties.Resources.folder_print1
-            };
-            tsOpenForPrinting.Click += tsOpenForPrinting_Click;
-            //
-            // tsOpenForExport
-            //
-            DpiFriendlyToolStripMenuItem tsOpenForExport = new DpiFriendlyToolStripMenuItem(components)
-            {
-                Image = Properties.Resources.folder_script_go,
-                Name = "tsOpenForExport",
-                Size = new Size(intToolStripWidth, intToolStripHeight),
-                Tag = "Menu_Main_OpenForExport",
-                ImageDpi192 = Properties.Resources.folder_script_go1
-            };
-            tsOpenForExport.Click += tsOpenForExport_Click;
-            //
-            // tsDelete
-            //
-            DpiFriendlyToolStripMenuItem tsDelete = new DpiFriendlyToolStripMenuItem(components)
-            {
-                Image = Properties.Resources.delete,
-                Name = "tsDelete",
-                Size = new Size(intToolStripWidth, intToolStripHeight),
-                Tag = "Menu_Delete",
-                ImageDpi192 = Properties.Resources.delete1
-            };
-            tsDelete.Click += tsDelete_Click;
-            //
-            // cmsRoster
-            //
-            ContextMenuStrip cmsRoster = new ContextMenuStrip(components)
-            {
-                Name = "cmsRoster",
-                Size = new Size(intToolStripWidth, intToolStripHeight * 5)
-            };
-            cmsRoster.Items.AddRange(new ToolStripItem[]
-            {
-                tsToggleFav,
-                tsSort,
-                tsOpen,
-                tsOpenForPrinting,
-                tsOpenForExport,
-                tsDelete
-            });
-
-            tsToggleFav.TranslateToolStripItemsRecursively();
-            tsSort.TranslateToolStripItemsRecursively();
-            tsOpen.TranslateToolStripItemsRecursively();
-            tsOpenForPrinting.TranslateToolStripItemsRecursively();
-            tsOpenForExport.TranslateToolStripItemsRecursively();
-            tsDelete.TranslateToolStripItemsRecursively();
-
-            if (blnIncludeCloseOpenCharacter)
+            return this.DoThreadSafeFunc(() =>
             {
                 //
-                // tsCloseOpenCharacter
+                // tsToggleFav
                 //
-                DpiFriendlyToolStripMenuItem tsCloseOpenCharacter = new DpiFriendlyToolStripMenuItem(components)
+                DpiFriendlyToolStripMenuItem tsToggleFav = new DpiFriendlyToolStripMenuItem(components)
                 {
-                    Image = Properties.Resources.door_out,
-                    Name = "tsCloseOpenCharacter",
+                    Image = Properties.Resources.asterisk_orange,
+                    Name = "tsToggleFav",
                     Size = new Size(intToolStripWidth, intToolStripHeight),
-                    Tag = "Menu_Close",
-                    ImageDpi192 = Properties.Resources.door_out1
+                    Tag = "Menu_ToggleFavorite",
+                    ImageDpi192 = Properties.Resources.asterisk_orange1
                 };
-                tsCloseOpenCharacter.Click += tsCloseOpenCharacter_Click;
-                cmsRoster.Items.Add(tsCloseOpenCharacter);
-                tsCloseOpenCharacter.TranslateToolStripItemsRecursively();
-            }
-            cmsRoster.UpdateLightDarkMode();
+                tsToggleFav.Click += tsToggleFav_Click;
+                //
+                // tsSort
+                //
+                DpiFriendlyToolStripMenuItem tsSort = new DpiFriendlyToolStripMenuItem(components)
+                {
+                    Image = Properties.Resources.page_refresh,
+                    Name = "tsSort",
+                    Size = new Size(intToolStripWidth, intToolStripHeight),
+                    Tag = "Menu_Sort",
+                    ImageDpi192 = Properties.Resources.page_refresh1
+                };
+                tsSort.Click += tsSort_Click;
+                //
+                // tsOpen
+                //
+                DpiFriendlyToolStripMenuItem tsOpen = new DpiFriendlyToolStripMenuItem(components)
+                {
+                    Image = Properties.Resources.folder_page,
+                    Name = "tsOpen",
+                    Size = new Size(intToolStripWidth, intToolStripHeight),
+                    Tag = "Menu_Main_Open",
+                    ImageDpi192 = Properties.Resources.folder_page1
+                };
+                tsOpen.Click += tsOpen_Click;
+                //
+                // tsOpenForPrinting
+                //
+                DpiFriendlyToolStripMenuItem tsOpenForPrinting = new DpiFriendlyToolStripMenuItem(components)
+                {
+                    Image = Properties.Resources.folder_print,
+                    Name = "tsOpenForPrinting",
+                    Size = new Size(intToolStripWidth, intToolStripHeight),
+                    Tag = "Menu_Main_OpenForPrinting",
+                    ImageDpi192 = Properties.Resources.folder_print1
+                };
+                tsOpenForPrinting.Click += tsOpenForPrinting_Click;
+                //
+                // tsOpenForExport
+                //
+                DpiFriendlyToolStripMenuItem tsOpenForExport = new DpiFriendlyToolStripMenuItem(components)
+                {
+                    Image = Properties.Resources.folder_script_go,
+                    Name = "tsOpenForExport",
+                    Size = new Size(intToolStripWidth, intToolStripHeight),
+                    Tag = "Menu_Main_OpenForExport",
+                    ImageDpi192 = Properties.Resources.folder_script_go1
+                };
+                tsOpenForExport.Click += tsOpenForExport_Click;
+                //
+                // tsDelete
+                //
+                DpiFriendlyToolStripMenuItem tsDelete = new DpiFriendlyToolStripMenuItem(components)
+                {
+                    Image = Properties.Resources.delete,
+                    Name = "tsDelete",
+                    Size = new Size(intToolStripWidth, intToolStripHeight),
+                    Tag = "Menu_Delete",
+                    ImageDpi192 = Properties.Resources.delete1
+                };
+                tsDelete.Click += tsDelete_Click;
+                //
+                // cmsRoster
+                //
+                ContextMenuStrip cmsRoster = new ContextMenuStrip(components)
+                {
+                    Name = "cmsRoster",
+                    Size = new Size(intToolStripWidth, intToolStripHeight * 5)
+                };
+                cmsRoster.Items.AddRange(new ToolStripItem[]
+                {
+                    tsToggleFav,
+                    tsSort,
+                    tsOpen,
+                    tsOpenForPrinting,
+                    tsOpenForExport,
+                    tsDelete
+                });
 
-            return cmsRoster;
+                tsToggleFav.TranslateToolStripItemsRecursively();
+                tsSort.TranslateToolStripItemsRecursively();
+                tsOpen.TranslateToolStripItemsRecursively();
+                tsOpenForPrinting.TranslateToolStripItemsRecursively();
+                tsOpenForExport.TranslateToolStripItemsRecursively();
+                tsDelete.TranslateToolStripItemsRecursively();
+
+                if (blnIncludeCloseOpenCharacter)
+                {
+                    //
+                    // tsCloseOpenCharacter
+                    //
+                    DpiFriendlyToolStripMenuItem tsCloseOpenCharacter = new DpiFriendlyToolStripMenuItem(components)
+                    {
+                        Image = Properties.Resources.door_out,
+                        Name = "tsCloseOpenCharacter",
+                        Size = new Size(intToolStripWidth, intToolStripHeight),
+                        Tag = "Menu_Close",
+                        ImageDpi192 = Properties.Resources.door_out1
+                    };
+                    tsCloseOpenCharacter.Click += tsCloseOpenCharacter_Click;
+                    cmsRoster.Items.Add(tsCloseOpenCharacter);
+                    tsCloseOpenCharacter.TranslateToolStripItemsRecursively();
+                }
+
+                cmsRoster.UpdateLightDarkMode();
+                return cmsRoster;
+            }, _objGenericToken);
         }
 
         /// <summary>
