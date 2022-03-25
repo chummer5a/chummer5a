@@ -4043,16 +4043,15 @@ namespace Chummer
 
                 XmlNode objXmlComplexForm;
                 // Let the user select a Program.
-                using (SelectComplexForm frmPickComplexForm = new SelectComplexForm(CharacterObject))
+                using (ThreadSafeForm<SelectComplexForm> frmPickComplexForm
+                       = await ThreadSafeForm<SelectComplexForm>.GetAsync(() => new SelectComplexForm(CharacterObject)))
                 {
-                    await frmPickComplexForm.ShowDialogSafeAsync(this);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickComplexForm.DialogResult == DialogResult.Cancel)
+                    if (await frmPickComplexForm.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         break;
-                    blnAddAgain = frmPickComplexForm.AddAgain;
+                    blnAddAgain = frmPickComplexForm.MyForm.AddAgain;
 
-                    objXmlComplexForm = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = " + frmPickComplexForm.SelectedComplexForm.CleanXPath() + ']');
+                    objXmlComplexForm = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = " + frmPickComplexForm.MyForm.SelectedComplexForm.CleanXPath() + ']');
                 }
 
                 if (objXmlComplexForm == null)
@@ -4116,32 +4115,30 @@ namespace Chummer
 
         private async ValueTask<bool> PickWeapon(object destObject)
         {
-            using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject))
+            using (ThreadSafeForm<SelectWeapon> frmPickWeapon = await ThreadSafeForm<SelectWeapon>.GetAsync(() => new SelectWeapon(CharacterObject)))
             {
-                await frmPickWeapon.ShowDialogSafeAsync(this);
-
                 // Make sure the dialogue window was not canceled.
-                if (frmPickWeapon.DialogResult == DialogResult.Cancel)
+                if (await frmPickWeapon.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return false;
 
                 // Open the Weapons XML file and locate the selected piece.
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("weapons.xml");
 
-                XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + frmPickWeapon.SelectedWeapon.CleanXPath() + ']');
+                XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + frmPickWeapon.MyForm.SelectedWeapon.CleanXPath() + ']');
 
                 List<Weapon> lstWeapons = new List<Weapon>(1);
                 Weapon objWeapon = new Weapon(CharacterObject);
                 objWeapon.Create(objXmlWeapon, lstWeapons);
-                objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
+                objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
 
                 // Check the item's Cost and make sure the character can afford it.
-                if (!frmPickWeapon.FreeCost)
+                if (!frmPickWeapon.MyForm.FreeCost)
                 {
                     decimal decCost = objWeapon.TotalCost;
                     // Apply a markup if applicable.
-                    if (frmPickWeapon.Markup != 0)
+                    if (frmPickWeapon.MyForm.Markup != 0)
                     {
-                        decCost *= 1 + frmPickWeapon.Markup / 100.0m;
+                        decCost *= 1 + frmPickWeapon.MyForm.Markup / 100.0m;
                     }
 
                     // Multiply the cost if applicable.
@@ -4160,7 +4157,7 @@ namespace Chummer
                     if (decCost > CharacterObject.Nuyen)
                     {
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return frmPickWeapon.AddAgain;
+                        return frmPickWeapon.MyForm.AddAgain;
                     }
 
                     // Create the Expense Log Entry.
@@ -4191,7 +4188,7 @@ namespace Chummer
 
                 CharacterObject.Weapons.Add(objWeapon);
 
-                return frmPickWeapon.AddAgain;
+                return frmPickWeapon.MyForm.AddAgain;
             }
         }
 
@@ -4224,19 +4221,17 @@ namespace Chummer
 
             do
             {
-                using (SelectLifestyle frmPickLifestyle = new SelectLifestyle(CharacterObject))
+                using (ThreadSafeForm<SelectLifestyle> frmPickLifestyle = await ThreadSafeForm<SelectLifestyle>.GetAsync(() => new SelectLifestyle(CharacterObject)))
                 {
-                    await frmPickLifestyle.ShowDialogSafeAsync(this);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
+                    if (await frmPickLifestyle.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     {
-                        frmPickLifestyle.SelectedLifestyle.Dispose();
+                        frmPickLifestyle.MyForm.SelectedLifestyle.Dispose();
                         return;
                     }
 
-                    blnAddAgain = frmPickLifestyle.AddAgain;
-                    Lifestyle objLifestyle = frmPickLifestyle.SelectedLifestyle;
+                    blnAddAgain = frmPickLifestyle.MyForm.AddAgain;
+                    Lifestyle objLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
                     objLifestyle.Increments = 0;
                     CharacterObject.Lifestyles.Add(objLifestyle);
                 }
@@ -4266,37 +4261,35 @@ namespace Chummer
 
         private async ValueTask<bool> AddVehicle(Location objLocation = null)
         {
-            using (SelectVehicle frmPickVehicle = new SelectVehicle(CharacterObject))
+            using (ThreadSafeForm<SelectVehicle> frmPickVehicle = await ThreadSafeForm<SelectVehicle>.GetAsync(() => new SelectVehicle(CharacterObject)))
             {
-                await frmPickVehicle.ShowDialogSafeAsync(this);
-
                 // Make sure the dialogue window was not canceled.
-                if (frmPickVehicle.DialogResult == DialogResult.Cancel)
+                if (await frmPickVehicle.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return false;
 
                 // Open the Vehicles XML file and locate the selected piece.
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("vehicles.xml");
 
-                XmlNode objXmlVehicle = objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = " + frmPickVehicle.SelectedVehicle.CleanXPath() + ']');
+                XmlNode objXmlVehicle = objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = " + frmPickVehicle.MyForm.SelectedVehicle.CleanXPath() + ']');
                 Vehicle objVehicle = new Vehicle(CharacterObject);
                 objVehicle.Create(objXmlVehicle);
                 // Update the Used Vehicle information if applicable.
-                if (frmPickVehicle.UsedVehicle)
+                if (frmPickVehicle.MyForm.UsedVehicle)
                 {
-                    objVehicle.Avail = frmPickVehicle.UsedAvail;
-                    objVehicle.Cost = frmPickVehicle.UsedCost.ToString(GlobalSettings.InvariantCultureInfo);
+                    objVehicle.Avail = frmPickVehicle.MyForm.UsedAvail;
+                    objVehicle.Cost = frmPickVehicle.MyForm.UsedCost.ToString(GlobalSettings.InvariantCultureInfo);
                 }
 
-                objVehicle.DiscountCost = frmPickVehicle.BlackMarketDiscount;
+                objVehicle.DiscountCost = frmPickVehicle.MyForm.BlackMarketDiscount;
 
                 // Check the item's Cost and make sure the character can afford it.
-                if (!frmPickVehicle.FreeCost)
+                if (!frmPickVehicle.MyForm.FreeCost)
                 {
                     decimal decCost = objVehicle.TotalCost;
                     // Apply a markup if applicable.
-                    if (frmPickVehicle.Markup != 0)
+                    if (frmPickVehicle.MyForm.Markup != 0)
                     {
-                        decCost *= 1 + frmPickVehicle.Markup / 100.0m;
+                        decCost *= 1 + frmPickVehicle.MyForm.Markup / 100.0m;
                     }
 
                     // Multiply the cost if applicable.
@@ -4315,7 +4308,7 @@ namespace Chummer
                     if (decCost > CharacterObject.Nuyen)
                     {
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return frmPickVehicle.AddAgain;
+                        return frmPickVehicle.MyForm.AddAgain;
                     }
 
                     // Create the Expense Log Entry.
@@ -4330,13 +4323,13 @@ namespace Chummer
                     objExpense.Undo = objUndo;
                 }
 
-                objVehicle.DiscountCost = frmPickVehicle.BlackMarketDiscount;
+                objVehicle.DiscountCost = frmPickVehicle.MyForm.BlackMarketDiscount;
 
                 //objVehicle.Location = objLocation;
                 objLocation?.Children.Add(objVehicle);
                 CharacterObject.Vehicles.Add(objVehicle);
 
-                return frmPickVehicle.AddAgain;
+                return frmPickVehicle.MyForm.AddAgain;
             }
         }
 
@@ -4958,19 +4951,19 @@ namespace Chummer
             }
 
             decimal decSelectedValue;
-            using (SelectNumber frmPickNumber = new SelectNumber(intDecimalPlaces)
+            string strDescription = await LanguageManager.GetStringAsync("String_ReduceGear");
+            using (ThreadSafeForm<SelectNumber> frmPickNumber = await ThreadSafeForm<SelectNumber>.GetAsync(
+                       () => new SelectNumber(intDecimalPlaces)
+                       {
+                           Minimum = 0,
+                           Maximum = objGear.Quantity,
+                           Description = strDescription
+                       }))
             {
-                Minimum = 0,
-                Maximum = objGear.Quantity,
-                Description = await LanguageManager.GetStringAsync("String_ReduceGear")
-            })
-            {
-                await frmPickNumber.ShowDialogSafeAsync(this);
-
-                if (frmPickNumber.DialogResult == DialogResult.Cancel)
+                if (await frmPickNumber.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                decSelectedValue = frmPickNumber.SelectedValue;
+                decSelectedValue = frmPickNumber.MyForm.SelectedValue;
             }
 
             if (!CommonFunctions.ConfirmDelete(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ReduceQty"), decSelectedValue.ToString(GlobalSettings.CultureInfo))))
@@ -5018,16 +5011,16 @@ namespace Chummer
                 return;
             }
 
-            using (SelectNumber frmPickNumber = new SelectNumber(intDecimalPlaces)
+            string strDescription = await LanguageManager.GetStringAsync("String_SplitGear");
+            using (ThreadSafeForm<SelectNumber> frmPickNumber = await ThreadSafeForm<SelectNumber>.GetAsync(
+                       () => new SelectNumber(intDecimalPlaces)
+                       {
+                           Minimum = decMinimumAmount,
+                           Maximum = objSelectedGear.Quantity - decMinimumAmount,
+                           Description = strDescription
+                       }))
             {
-                Minimum = decMinimumAmount,
-                Maximum = objSelectedGear.Quantity - decMinimumAmount,
-                Description = await LanguageManager.GetStringAsync("String_SplitGear")
-            })
-            {
-                await frmPickNumber.ShowDialogSafeAsync(this);
-
-                if (frmPickNumber.DialogResult == DialogResult.Cancel)
+                if (await frmPickNumber.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
                 // Create a new piece of Gear.
@@ -5035,13 +5028,13 @@ namespace Chummer
 
                 objGear.Copy(objSelectedGear);
 
-                objGear.Quantity = frmPickNumber.SelectedValue;
+                objGear.Quantity = frmPickNumber.MyForm.SelectedValue;
                 objGear.Equipped = objSelectedGear.Equipped;
                 objGear.Location = objSelectedGear.Location;
                 objGear.Notes = objSelectedGear.Notes;
 
                 // Update the selected item.
-                objSelectedGear.Quantity -= frmPickNumber.SelectedValue;
+                objSelectedGear.Quantity -= objGear.Quantity;
                 objSelectedNode.Text = objSelectedGear.CurrentDisplayName;
 
                 CharacterObject.Gear.Add(objGear);
@@ -5071,15 +5064,14 @@ namespace Chummer
 
             Gear objSelectedGear;
             // Show the Select Item window.
-            using (SelectItem frmPickItem = new SelectItem())
+            using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem()))
             {
-                frmPickItem.SetGearMode(lstGear);
-                await frmPickItem.ShowDialogSafeAsync(this);
+                frmPickItem.MyForm.SetGearMode(lstGear);
 
-                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                if (await frmPickItem.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                objSelectedGear = CharacterObject.Gear.DeepFindById(frmPickItem.SelectedItem);
+                objSelectedGear = CharacterObject.Gear.DeepFindById(frmPickItem.MyForm.SelectedItem);
             }
 
             decimal decMinimumAmount = 1.0m;
@@ -5097,27 +5089,26 @@ namespace Chummer
                 decMinimumAmount = 0.01m;
             }
 
-            using (SelectNumber frmPickNumber = new SelectNumber(intDecimalPlaces)
+            string strDescription = await LanguageManager.GetStringAsync("String_MergeGear");
+            using (ThreadSafeForm<SelectNumber> frmPickNumber = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber(intDecimalPlaces)
+                   {
+                       Minimum = decMinimumAmount,
+                       Maximum = objGear.Quantity,
+                       Description = strDescription
+                   }))
             {
-                Minimum = decMinimumAmount,
-                Maximum = objGear.Quantity,
-                Description = await LanguageManager.GetStringAsync("String_MergeGear")
-            })
-            {
-                await frmPickNumber.ShowDialogSafeAsync(this);
-
-                if (frmPickNumber.DialogResult == DialogResult.Cancel)
+                if (await frmPickNumber.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
                 // Increase the quantity for the selected item.
-                objSelectedGear.Quantity += frmPickNumber.SelectedValue;
+                objSelectedGear.Quantity += frmPickNumber.MyForm.SelectedValue;
                 // Located the item in the Tree and update its display information.
                 TreeNode objNode = treGear.FindNode(objSelectedGear.InternalId);
                 if (objNode != null)
                     objNode.Text = objSelectedGear.CurrentDisplayName;
 
                 // Reduce the quantity for the selected item.
-                objGear.Quantity -= frmPickNumber.SelectedValue;
+                objGear.Quantity -= frmPickNumber.MyForm.SelectedValue;
             }
 
             // If the quantity has reached 0, delete the item and any Weapons it created.
@@ -5137,16 +5128,15 @@ namespace Chummer
         private async void cmdGearMoveToVehicle_Click(object sender, EventArgs e)
         {
             Vehicle objVehicle;
-            using (SelectItem frmPickItem = new SelectItem())
+            using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem()))
             {
-                frmPickItem.SetVehiclesMode(CharacterObject.Vehicles);
-                await frmPickItem.ShowDialogSafeAsync(this);
+                frmPickItem.MyForm.SetVehiclesMode(CharacterObject.Vehicles);
 
-                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                if (await frmPickItem.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
                 // Locate the selected Vehicle.
-                objVehicle = CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == frmPickItem.SelectedItem);
+                objVehicle = await CharacterObject.Vehicles.FirstOrDefaultAsync(x => x.InternalId == frmPickItem.MyForm.SelectedItem);
             }
 
             if (objVehicle == null)
@@ -5176,19 +5166,19 @@ namespace Chummer
                 decMove = decMinimumAmount;
             else
             {
-                using (SelectNumber frmPickNumber = new SelectNumber(intDecimalPlaces)
+                string strDescription = await LanguageManager.GetStringAsync("String_MoveGear");
+                using (ThreadSafeForm<SelectNumber> frmPickNumber = await ThreadSafeForm<SelectNumber>.GetAsync(
+                           () => new SelectNumber(intDecimalPlaces)
+                           {
+                               Minimum = decMinimumAmount,
+                               Maximum = objSelectedGear.Quantity,
+                               Description = strDescription
+                           }))
                 {
-                    Minimum = decMinimumAmount,
-                    Maximum = objSelectedGear.Quantity,
-                    Description = await LanguageManager.GetStringAsync("String_MoveGear")
-                })
-                {
-                    await frmPickNumber.ShowDialogSafeAsync(this);
-
-                    if (frmPickNumber.DialogResult == DialogResult.Cancel)
+                    if (await frmPickNumber.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         return;
 
-                    decMove = frmPickNumber.SelectedValue;
+                    decMove = frmPickNumber.MyForm.SelectedValue;
                 }
             }
 
@@ -5283,19 +5273,20 @@ namespace Chummer
                             decMove = decMinimumAmount;
                         else
                         {
-                            using (SelectNumber frmPickNumber = new SelectNumber(intDecimalPlaces)
+                            string strDescription = await LanguageManager.GetStringAsync("String_MoveGear");
+                            using (ThreadSafeForm<SelectNumber> frmPickNumber
+                                   = await ThreadSafeForm<SelectNumber>.GetAsync(
+                                       () => new SelectNumber(intDecimalPlaces)
+                                       {
+                                           Minimum = decMinimumAmount,
+                                           Maximum = objSelectedGear.Quantity,
+                                           Description = strDescription
+                                       }))
                             {
-                                Minimum = decMinimumAmount,
-                                Maximum = objSelectedGear.Quantity,
-                                Description = await LanguageManager.GetStringAsync("String_MoveGear")
-                            })
-                            {
-                                await frmPickNumber.ShowDialogSafeAsync(this);
-
-                                if (frmPickNumber.DialogResult == DialogResult.Cancel)
+                                if (await frmPickNumber.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                                     return;
 
-                                decMove = frmPickNumber.SelectedValue;
+                                decMove = frmPickNumber.MyForm.SelectedValue;
                             }
                         }
 
@@ -5371,19 +5362,19 @@ namespace Chummer
             }
 
             decimal decSelectedValue;
-            using (SelectNumber frmPickNumber = new SelectNumber(intDecimalPlaces)
+            string strDescription = await LanguageManager.GetStringAsync("String_ReduceGear");
+            using (ThreadSafeForm<SelectNumber> frmPickNumber = await ThreadSafeForm<SelectNumber>.GetAsync(
+                       () => new SelectNumber(intDecimalPlaces)
+                       {
+                           Minimum = 0,
+                           Maximum = objGear.Quantity,
+                           Description = strDescription
+                       }))
             {
-                Minimum = 0,
-                Maximum = objGear.Quantity,
-                Description = await LanguageManager.GetStringAsync("String_ReduceGear")
-            })
-            {
-                await frmPickNumber.ShowDialogSafeAsync(this);
-
-                if (frmPickNumber.DialogResult == DialogResult.Cancel)
+                if (await frmPickNumber.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                decSelectedValue = frmPickNumber.SelectedValue;
+                decSelectedValue = frmPickNumber.MyForm.SelectedValue;
             }
 
             if (!CommonFunctions.ConfirmDelete(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ReduceQty"), decSelectedValue.ToString(GlobalSettings.CultureInfo))))
@@ -5413,23 +5404,21 @@ namespace Chummer
                 bool blnFreeCost;
                 XmlNode objXmlQuality;
                 int intRatingToAdd;
-                using (SelectQuality frmPickQuality = new SelectQuality(CharacterObject))
+                using (ThreadSafeForm<SelectQuality> frmPickQuality = await ThreadSafeForm<SelectQuality>.GetAsync(() => new SelectQuality(CharacterObject)))
                 {
-                    await frmPickQuality.ShowDialogSafeAsync(this);
-
                     // Don't do anything else if the form was canceled.
-                    if (frmPickQuality.DialogResult == DialogResult.Cancel)
+                    if (await frmPickQuality.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         break;
-                    blnAddAgain = frmPickQuality.AddAgain;
-                    blnFreeCost = frmPickQuality.FreeCost;
+                    blnAddAgain = frmPickQuality.MyForm.AddAgain;
+                    blnFreeCost = frmPickQuality.MyForm.FreeCost;
 
-                    objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + frmPickQuality.SelectedQuality.CleanXPath() + ']');
-                    intRatingToAdd = frmPickQuality.SelectedRating;
+                    objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + frmPickQuality.MyForm.SelectedQuality.CleanXPath() + ']');
+                    intRatingToAdd = frmPickQuality.MyForm.SelectedRating;
                     int intDummy = 0;
                     if (objXmlQuality != null && objXmlQuality["nolevels"] == null && objXmlQuality.TryGetInt32FieldQuickly("limit", ref intDummy))
                     {
                         intRatingToAdd -= CharacterObject.Qualities.Count(x =>
-                            x.SourceIDString.Equals(frmPickQuality.SelectedQuality,
+                            x.SourceIDString.Equals(frmPickQuality.MyForm.SelectedQuality,
                                 StringComparison.InvariantCultureIgnoreCase) && string.IsNullOrEmpty(x.SourceName));
                     }
                 }
@@ -5608,25 +5597,24 @@ namespace Chummer
 
             XmlNode objXmlQuality;
             int intRatingToAdd;
-            using (SelectQuality frmPickQuality = new SelectQuality(CharacterObject)
+            using (ThreadSafeForm<SelectQuality> frmPickQuality = await ThreadSafeForm<SelectQuality>.GetAsync(
+                       () => new SelectQuality(CharacterObject)
+                       {
+                           ForceCategory = objQuality.Type.ToString(),
+                           IgnoreQuality = objQuality.Name
+                       }))
             {
-                ForceCategory = objQuality.Type.ToString(),
-                IgnoreQuality = objQuality.Name
-            })
-            {
-                await frmPickQuality.ShowDialogSafeAsync(this);
-
                 // Don't do anything else if the form was canceled.
-                if (frmPickQuality.DialogResult == DialogResult.Cancel)
+                if (await frmPickQuality.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                objXmlQuality = (await CharacterObject.LoadDataAsync("qualities.xml")).SelectSingleNode("/chummer/qualities/quality[id = " + frmPickQuality.SelectedQuality.CleanXPath() + ']');
-                intRatingToAdd = frmPickQuality.SelectedRating;
+                objXmlQuality = (await CharacterObject.LoadDataAsync("qualities.xml")).SelectSingleNode("/chummer/qualities/quality[id = " + frmPickQuality.MyForm.SelectedQuality.CleanXPath() + ']');
+                intRatingToAdd = frmPickQuality.MyForm.SelectedRating;
                 int intDummy = 0;
                 if (objXmlQuality != null && objXmlQuality["nolevels"] == null && objXmlQuality.TryGetInt32FieldQuickly("limit", ref intDummy))
                 {
                     intRatingToAdd -= CharacterObject.Qualities.Count(x =>
-                        x.SourceIDString.Equals(frmPickQuality.SelectedQuality,
+                        x.SourceIDString.Equals(frmPickQuality.MyForm.SelectedQuality,
                             StringComparison.InvariantCultureIgnoreCase) && string.IsNullOrEmpty(x.SourceName));
                 }
             }
@@ -5962,36 +5950,34 @@ namespace Chummer
 
         private async void cmdAddLocation_Click(object sender, EventArgs e)
         {
+            string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
             // Add a new location to the Gear Tree.
-            using (SelectText frmPickText = new SelectText
+            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
+                   {
+                       Description = strDescription
+                   }))
             {
-                Description = await LanguageManager.GetStringAsync("String_AddLocation")
-            })
-            {
-                await frmPickText.ShowDialogSafeAsync(this);
-
-                if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
+                if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.MyForm.SelectedValue))
                     return;
 
-                Location objLocation = new Location(CharacterObject, CharacterObject.GearLocations, frmPickText.SelectedValue);
+                Location objLocation = new Location(CharacterObject, CharacterObject.GearLocations, frmPickText.MyForm.SelectedValue);
                 CharacterObject.GearLocations.Add(objLocation);
             }
         }
 
         private async void cmdAddWeaponLocation_Click(object sender, EventArgs e)
         {
+            string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
             // Add a new location to the Gear Tree.
-            using (SelectText frmPickText = new SelectText
+            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
+                   {
+                       Description = strDescription
+                   }))
             {
-                Description = await LanguageManager.GetStringAsync("String_AddLocation")
-            })
-            {
-                await frmPickText.ShowDialogSafeAsync(this);
-
-                if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
+                if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.MyForm.SelectedValue))
                     return;
 
-                Location objLocation = new Location(CharacterObject, CharacterObject.WeaponLocations, frmPickText.SelectedValue);
+                Location objLocation = new Location(CharacterObject, CharacterObject.WeaponLocations, frmPickText.MyForm.SelectedValue);
                 CharacterObject.WeaponLocations.Add(objLocation);
             }
         }
@@ -6012,15 +5998,14 @@ namespace Chummer
             }
             else
             {
-                using (SelectCalendarStart frmPickStart = new SelectCalendarStart())
+                using (ThreadSafeForm<SelectCalendarStart> frmPickStart
+                       = await ThreadSafeForm<SelectCalendarStart>.GetAsync(() => new SelectCalendarStart()))
                 {
-                    await frmPickStart.ShowDialogSafeAsync(this);
-
-                    if (frmPickStart.DialogResult == DialogResult.Cancel)
+                    if (await frmPickStart.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         return;
 
-                    objWeek.Year = frmPickStart.SelectedYear;
-                    objWeek.Week = frmPickStart.SelectedWeek;
+                    objWeek.Year = frmPickStart.MyForm.SelectedYear;
+                    objWeek.Week = frmPickStart.MyForm.SelectedWeek;
                 }
             }
 
@@ -6252,25 +6237,24 @@ namespace Chummer
             // Edit the selected Improvement.
             if (!(treImprovements.SelectedNode?.Tag is Improvement objImprovement))
                 return;
-            using (CreateImprovement frmPickImprovement = new CreateImprovement(CharacterObject, objImprovement.CustomGroup)
-                   {
-                       EditImprovementObject = objImprovement
-                   })
+            using (ThreadSafeForm<CreateImprovement> frmPickImprovement = await ThreadSafeForm<CreateImprovement>.GetAsync(
+                       () => new CreateImprovement(CharacterObject, objImprovement.CustomGroup)
+                       {
+                           EditImprovementObject = objImprovement
+                       }))
             {
-                await frmPickImprovement.ShowDialogSafeAsync(this);
-
-                if (frmPickImprovement.DialogResult == DialogResult.Cancel)
+                if (await frmPickImprovement.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
                 TreeNode newNode = null;
-                if (!string.IsNullOrEmpty(frmPickImprovement.NewImprovement?.InternalId))
-                    newNode = treImprovements.FindNode(frmPickImprovement.NewImprovement.InternalId);
+                if (!string.IsNullOrEmpty(frmPickImprovement.MyForm.NewImprovement?.InternalId))
+                    newNode = treImprovements.FindNode(frmPickImprovement.MyForm.NewImprovement.InternalId);
 
                 if (newNode != null)
                 {
-                    newNode.Text = frmPickImprovement.NewImprovement.CustomName;
-                    newNode.ForeColor = frmPickImprovement.NewImprovement.PreferredColor;
-                    newNode.ToolTipText = frmPickImprovement.NewImprovement.Notes;
+                    newNode.Text = frmPickImprovement.MyForm.NewImprovement.CustomName;
+                    newNode.ForeColor = frmPickImprovement.MyForm.NewImprovement.PreferredColor;
+                    newNode.ToolTipText = frmPickImprovement.MyForm.NewImprovement.Notes;
                 }
                 else
                 {
@@ -6279,7 +6263,7 @@ namespace Chummer
 
                 //TODO: This is currently necessary because the Custom Improvement refresh fires before the improvement is assigned a custom group.
                 // Simplest way to fix this would be to make the customgroup a variable in the CreateImprovements method, but that's spooky.
-                if (!string.IsNullOrWhiteSpace(frmPickImprovement.NewImprovement?.CustomGroup))
+                if (!string.IsNullOrWhiteSpace(frmPickImprovement.MyForm.NewImprovement?.CustomGroup))
                 {
                     RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView, cmsImprovementLocation, cmsImprovement, lmtControl.LimitContextMenuStrip);
                 }
@@ -6325,18 +6309,18 @@ namespace Chummer
 
         private async void cmdAddArmorBundle_Click(object sender, EventArgs e)
         {
+            string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
             // Add a new location to the Armor Tree.
-            using (SelectText frmPickText = new SelectText
+            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
+                       () => new SelectText
+                       {
+                           Description = strDescription
+                       }))
             {
-                Description = await LanguageManager.GetStringAsync("String_AddLocation")
-            })
-            {
-                await frmPickText.ShowDialogSafeAsync(this);
-
-                if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
+                if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.MyForm.SelectedValue))
                     return;
 
-                Location objLocation = new Location(CharacterObject, CharacterObject.ArmorLocations, frmPickText.SelectedValue);
+                Location objLocation = new Location(CharacterObject, CharacterObject.ArmorLocations, frmPickText.MyForm.SelectedValue);
                 CharacterObject.ArmorLocations.Add(objLocation);
             }
         }
@@ -6477,16 +6461,17 @@ namespace Chummer
                 return;
             }
 
-            using (SelectText frmPickText = new SelectText
+            string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
+            // Add a new location to the Armor Tree.
+            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
+                       () => new SelectText
+                       {
+                           Description = strDescription
+                       }))
             {
-                Description = await LanguageManager.GetStringAsync("String_AddLocation")
-            })
-            {
-                await frmPickText.ShowDialogSafeAsync(this);
-
-                if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
+                if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.MyForm.SelectedValue))
                     return;
-                Location objLocation = new Location(CharacterObject, destCollection, frmPickText.SelectedValue);
+                Location objLocation = new Location(CharacterObject, destCollection, frmPickText.MyForm.SelectedValue);
                 destCollection.Add(objLocation);
             }
         }
@@ -6497,18 +6482,20 @@ namespace Chummer
                 return;
 
             int intKarmaCost;
-            using (SelectNumber frmPickNumber = new SelectNumber(0)
+            string strDescription = string.Format(GlobalSettings.CultureInfo,
+                                                  await LanguageManager.GetStringAsync("String_QuickeningKarma"),
+                                                  treSpells.SelectedNode.Text);
+            using (ThreadSafeForm<SelectNumber> frmPickNumber = await ThreadSafeForm<SelectNumber>.GetAsync(
+                       () => new SelectNumber(0)
+                       {
+                           Description = strDescription,
+                           Minimum = 1
+                       }))
             {
-                Description = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_QuickeningKarma"), treSpells.SelectedNode.Text),
-                Minimum = 1
-            })
-            {
-                await frmPickNumber.ShowDialogSafeAsync(this);
-
-                if (frmPickNumber.DialogResult == DialogResult.Cancel)
+                if (await frmPickNumber.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                intKarmaCost = frmPickNumber.SelectedValue.ToInt32();
+                intKarmaCost = frmPickNumber.MyForm.SelectedValue.ToInt32();
             }
 
             // Make sure the character has enough Karma to improve the CharacterAttribute.
@@ -6635,75 +6622,36 @@ namespace Chummer
                     break;
                 }
 
-                using (SelectWeaponAccessory frmPickWeaponAccessory = new SelectWeaponAccessory(CharacterObject)
+                using (ThreadSafeForm<SelectWeaponAccessory> frmPickWeaponAccessory
+                       = await ThreadSafeForm<SelectWeaponAccessory>.GetAsync(() => new SelectWeaponAccessory(CharacterObject)
+                       {
+                           ParentWeapon = objWeapon
+                       }))
                 {
-                    ParentWeapon = objWeapon
-                })
-                {
-                    await frmPickWeaponAccessory.ShowDialogSafeAsync(this);
-
-                    if (frmPickWeaponAccessory.DialogResult == DialogResult.Cancel)
+                    if (await frmPickWeaponAccessory.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         break;
-                    blnAddAgain = frmPickWeaponAccessory.AddAgain;
+                    blnAddAgain = frmPickWeaponAccessory.MyForm.AddAgain;
 
                     // Locate the selected piece.
-                    objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[id = " + frmPickWeaponAccessory.SelectedAccessory.CleanXPath() + ']');
+                    objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[id = " + frmPickWeaponAccessory.MyForm.SelectedAccessory.CleanXPath() + ']');
 
                     WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
-                    objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.SelectedMount, frmPickWeaponAccessory.SelectedRating);
+                    objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.MyForm.SelectedMount, frmPickWeaponAccessory.MyForm.SelectedRating);
                     objAccessory.Parent = objWeapon;
-
-                    if (objAccessory.Cost.StartsWith("Variable(", StringComparison.Ordinal))
-                    {
-                        decimal decMin;
-                        decimal decMax = decimal.MaxValue;
-                        string strCost = objAccessory.Cost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                        if (strCost.Contains('-'))
-                        {
-                            string[] strValues = strCost.Split('-');
-                            decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
-                            decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
-                        }
-                        else
-                            decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
-
-                        if (decMin != 0 || decMax != decimal.MaxValue)
-                        {
-                            if (decMax > 1000000)
-                                decMax = 1000000;
-                            using (SelectNumber frmPickNumber = new SelectNumber(CharacterObjectSettings.MaxNuyenDecimals)
-                            {
-                                Minimum = decMin,
-                                Maximum = decMax,
-                                Description = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_SelectVariableCost"), objAccessory.CurrentDisplayNameShort),
-                                AllowCancel = false
-                            })
-                            {
-                                await frmPickNumber.ShowDialogSafeAsync(this);
-                                if (frmPickNumber.DialogResult == DialogResult.Cancel)
-                                {
-                                    objAccessory.DeleteWeaponAccessory();
-                                    continue;
-                                }
-                                objAccessory.Cost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
-                            }
-                        }
-                    }
-
-                    objAccessory.DiscountCost = frmPickWeaponAccessory.BlackMarketDiscount;
+                    objAccessory.DiscountCost = frmPickWeaponAccessory.MyForm.BlackMarketDiscount;
 
                     // Check the item's Cost and make sure the character can afford it.
                     decimal decOriginalCost = objWeapon.TotalCost;
 
                     objWeapon.WeaponAccessories.Add(objAccessory);
 
-                    if (!frmPickWeaponAccessory.FreeCost)
+                    if (!frmPickWeaponAccessory.MyForm.FreeCost)
                     {
                         decimal decCost = objWeapon.TotalCost - decOriginalCost;
                         // Apply a markup if applicable.
-                        if (frmPickWeaponAccessory.Markup != 0)
+                        if (frmPickWeaponAccessory.MyForm.Markup != 0)
                         {
-                            decCost *= 1 + frmPickWeaponAccessory.Markup / 100.0m;
+                            decCost *= 1 + frmPickWeaponAccessory.MyForm.Markup / 100.0m;
                         }
 
                         // Multiply the cost if applicable.
@@ -6744,35 +6692,33 @@ namespace Chummer
 
         private async ValueTask<bool> PickArmor(Location objLocation = null)
         {
-            using (SelectArmor frmPickArmor = new SelectArmor(CharacterObject))
+            using (ThreadSafeForm<SelectArmor> frmPickArmor = await ThreadSafeForm<SelectArmor>.GetAsync(() => new SelectArmor(CharacterObject)))
             {
-                await frmPickArmor.ShowDialogSafeAsync(this);
-
                 // Make sure the dialogue window was not canceled.
-                if (frmPickArmor.DialogResult == DialogResult.Cancel)
+                if (await frmPickArmor.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return false;
 
                 // Open the Armor XML file and locate the selected piece.
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("armor.xml");
 
-                XmlNode objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = " + frmPickArmor.SelectedArmor.CleanXPath() + ']');
+                XmlNode objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = " + frmPickArmor.MyForm.SelectedArmor.CleanXPath() + ']');
 
                 Armor objArmor = new Armor(CharacterObject);
                 List<Weapon> lstWeapons = new List<Weapon>(1);
-                objArmor.Create(objXmlArmor, frmPickArmor.Rating, lstWeapons);
-                objArmor.DiscountCost = frmPickArmor.BlackMarketDiscount;
+                objArmor.Create(objXmlArmor, frmPickArmor.MyForm.Rating, lstWeapons);
+                objArmor.DiscountCost = frmPickArmor.MyForm.BlackMarketDiscount;
 
                 if (objArmor.InternalId.IsEmptyGuid())
-                    return frmPickArmor.AddAgain;
+                    return frmPickArmor.MyForm.AddAgain;
 
                 // Check the item's Cost and make sure the character can afford it.
-                if (!frmPickArmor.FreeCost)
+                if (!frmPickArmor.MyForm.FreeCost)
                 {
                     decimal decCost = objArmor.TotalCost;
                     // Apply a markup if applicable.
-                    if (frmPickArmor.Markup != 0)
+                    if (frmPickArmor.MyForm.Markup != 0)
                     {
-                        decCost *= 1 + frmPickArmor.Markup / 100.0m;
+                        decCost *= 1 + frmPickArmor.MyForm.Markup / 100.0m;
                     }
 
                     // Multiply the cost if applicable.
@@ -6794,7 +6740,7 @@ namespace Chummer
                         // Remove the Improvements created by the Armor.
                         await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Armor, objArmor.InternalId);
 
-                        return frmPickArmor.AddAgain;
+                        return frmPickArmor.MyForm.AddAgain;
                     }
 
                     // Create the Expense Log Entry.
@@ -6817,7 +6763,7 @@ namespace Chummer
                     CharacterObject.Weapons.Add(objWeapon);
                 }
 
-                return frmPickArmor.AddAgain;
+                return frmPickArmor.MyForm.AddAgain;
             }
         }
 
@@ -6866,30 +6812,31 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (SelectArmorMod frmPickArmorMod = new SelectArmorMod(CharacterObject, objArmor)
-                       {
-                           ArmorCost = objArmor.OwnCost,
-                           ArmorCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity(GlobalSettings.InvariantCultureInfo), GlobalSettings.InvariantCultureInfo),
-                           AllowedCategories = strAllowedCategories,
-                           ExcludeGeneralCategory = blnExcludeGeneralCategory,
-                           CapacityDisplayStyle = objArmor.CapacityDisplayStyle
-                       })
+                using (ThreadSafeForm<SelectArmorMod> frmPickArmorMod = await ThreadSafeForm<SelectArmorMod>.GetAsync(
+                           () => new SelectArmorMod(CharacterObject, objArmor)
+                           {
+                               ArmorCost = objArmor.OwnCost,
+                               ArmorCapacity
+                                   = Convert.ToDecimal(objArmor.CalculatedCapacity(GlobalSettings.InvariantCultureInfo),
+                                                       GlobalSettings.InvariantCultureInfo),
+                               AllowedCategories = strAllowedCategories,
+                               ExcludeGeneralCategory = blnExcludeGeneralCategory,
+                               CapacityDisplayStyle = objArmor.CapacityDisplayStyle
+                           }))
                 {
-                    await frmPickArmorMod.ShowDialogSafeAsync(this);
-
-                    if (frmPickArmorMod.DialogResult == DialogResult.Cancel)
+                    if (await frmPickArmorMod.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         break;
-                    blnAddAgain = frmPickArmorMod.AddAgain;
+                    blnAddAgain = frmPickArmorMod.MyForm.AddAgain;
 
                     // Locate the selected piece.
-                    objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = " + frmPickArmorMod.SelectedArmorMod.CleanXPath() + ']');
+                    objXmlArmor = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = " + frmPickArmorMod.MyForm.SelectedArmorMod.CleanXPath() + ']');
 
                     if (objXmlArmor == null)
                         continue;
 
                     ArmorMod objMod = new ArmorMod(CharacterObject);
                     List<Weapon> lstWeapons = new List<Weapon>(1);
-                    int intRating = Convert.ToInt32(objXmlArmor["maxrating"]?.InnerText, GlobalSettings.InvariantCultureInfo) > 1 ? frmPickArmorMod.SelectedRating : 0;
+                    int intRating = Convert.ToInt32(objXmlArmor["maxrating"]?.InnerText, GlobalSettings.InvariantCultureInfo) > 1 ? frmPickArmorMod.MyForm.SelectedRating : 0;
 
                     objMod.Create(objXmlArmor, intRating, lstWeapons);
                     if (objMod.InternalId.IsEmptyGuid())
@@ -6907,13 +6854,13 @@ namespace Chummer
                         continue;
                     }
 
-                    if (!frmPickArmorMod.FreeCost)
+                    if (!frmPickArmorMod.MyForm.FreeCost)
                     {
                         decimal decCost = objArmor.TotalCost - decOriginalCost;
                         // Apply a markup if applicable.
-                        if (frmPickArmorMod.Markup != 0)
+                        if (frmPickArmorMod.MyForm.Markup != 0)
                         {
-                            decCost *= 1 + frmPickArmorMod.Markup / 100.0m;
+                            decCost *= 1 + frmPickArmorMod.MyForm.Markup / 100.0m;
                         }
 
                         // Multiply the cost if applicable.
@@ -6997,22 +6944,22 @@ namespace Chummer
 
             do
             {
-                using (SelectVehicleMod frmPickVehicleMod = new SelectVehicleMod(CharacterObject, objVehicle, objVehicle.Mods))
+                using (ThreadSafeForm<SelectVehicleMod> frmPickVehicleMod
+                       = await ThreadSafeForm<SelectVehicleMod>.GetAsync(
+                           () => new SelectVehicleMod(CharacterObject, objVehicle, objVehicle.Mods)))
                 {
-                    await frmPickVehicleMod.ShowDialogSafeAsync(this);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
+                    if (await frmPickVehicleMod.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         break;
-                    blnAddAgain = frmPickVehicleMod.AddAgain;
+                    blnAddAgain = frmPickVehicleMod.MyForm.AddAgain;
 
-                    XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = " + frmPickVehicleMod.SelectedMod.CleanXPath() + ']');
+                    XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = " + frmPickVehicleMod.MyForm.SelectedMod.CleanXPath() + ']');
 
                     VehicleMod objMod = new VehicleMod(CharacterObject)
                     {
-                        DiscountCost = frmPickVehicleMod.BlackMarketDiscount
+                        DiscountCost = frmPickVehicleMod.MyForm.BlackMarketDiscount
                     };
-                    objMod.Create(objXmlMod, frmPickVehicleMod.SelectedRating, objVehicle, frmPickVehicleMod.Markup);
+                    objMod.Create(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, objVehicle, frmPickVehicleMod.MyForm.Markup);
                     // Make sure that the Armor Rating does not exceed the maximum allowed by the Vehicle.
                     if (objMod.Name.StartsWith("Armor", StringComparison.Ordinal))
                     {
@@ -7100,7 +7047,7 @@ namespace Chummer
                         }
                     }
 
-                    if (!frmPickVehicleMod.FreeCost)
+                    if (!frmPickVehicleMod.MyForm.FreeCost)
                     {
                         decimal decCost = objVehicle.TotalCost - decOriginalCost;
 
@@ -7193,20 +7140,21 @@ namespace Chummer
 
         private async ValueTask<bool> AddWeaponToWeaponMount(WeaponMount objWeaponMount, VehicleMod objMod, Vehicle objVehicle)
         {
-            using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject)
+            using (ThreadSafeForm<SelectWeapon> frmPickWeapon = await ThreadSafeForm<SelectWeapon>.GetAsync(
+                       () => new SelectWeapon(CharacterObject)
+                       {
+                           LimitToCategories = objMod == null
+                               ? objWeaponMount.AllowedWeaponCategories
+                               : objMod.WeaponMountCategories
+                       }))
             {
-                LimitToCategories = objMod == null ? objWeaponMount.AllowedWeaponCategories : objMod.WeaponMountCategories
-            })
-            {
-                await frmPickWeapon.ShowDialogSafeAsync(this);
-
-                if (frmPickWeapon.DialogResult == DialogResult.Cancel)
+                if (await frmPickWeapon.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return false;
 
                 // Open the Weapons XML file and locate the selected piece.
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("weapons.xml");
 
-                XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + frmPickWeapon.SelectedWeapon.CleanXPath() + ']');
+                XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + frmPickWeapon.MyForm.SelectedWeapon.CleanXPath() + ']');
 
                 List<Weapon> lstWeapons = new List<Weapon>(1);
                 Weapon objWeapon = new Weapon(CharacterObject)
@@ -7217,13 +7165,13 @@ namespace Chummer
                 };
                 objWeapon.Create(objXmlWeapon, lstWeapons);
 
-                if (!frmPickWeapon.FreeCost)
+                if (!frmPickWeapon.MyForm.FreeCost)
                 {
                     decimal decCost = objWeapon.TotalCost;
                     // Apply a markup if applicable.
-                    if (frmPickWeapon.Markup != 0)
+                    if (frmPickWeapon.MyForm.Markup != 0)
                     {
-                        decCost *= 1 + frmPickWeapon.Markup / 100.0m;
+                        decCost *= 1 + frmPickWeapon.MyForm.Markup / 100.0m;
                     }
 
                     // Multiply the cost if applicable.
@@ -7244,7 +7192,7 @@ namespace Chummer
                     {
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                        return frmPickWeapon.AddAgain;
+                        return frmPickWeapon.MyForm.AddAgain;
                     }
 
                     // Create the Expense Log Entry.
@@ -7272,7 +7220,7 @@ namespace Chummer
                         objWeaponMount.Weapons.Add(objLoopWeapon);
                 }
 
-                return frmPickWeapon.AddAgain && (objMod != null || !objWeaponMount.IsWeaponsFull);
+                return frmPickWeapon.MyForm.AddAgain && (objMod != null || !objWeaponMount.IsWeaponsFull);
             }
         }
 
@@ -7281,17 +7229,16 @@ namespace Chummer
             if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle))
                 return;
             WeaponMount objNewWeaponMount;
-            using (CreateWeaponMount frmPickVehicleMod = new CreateWeaponMount(objVehicle, CharacterObject)
+            using (ThreadSafeForm<CreateWeaponMount> frmPickVehicleMod = await ThreadSafeForm<CreateWeaponMount>.GetAsync(
+                       () => new CreateWeaponMount(objVehicle, CharacterObject)
+                       {
+                           AllowDiscounts = true
+                       }))
             {
-                AllowDiscounts = true
-            })
-            {
-                await frmPickVehicleMod.ShowDialogSafeAsync(this);
-
-                if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
+                if (await frmPickVehicleMod.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                objNewWeaponMount = frmPickVehicleMod.WeaponMount;
+                objNewWeaponMount = frmPickVehicleMod.MyForm.WeaponMount;
             }
 
             // Calculate cost based on total vehicle cost change to make sure we capture everything
@@ -7353,35 +7300,34 @@ namespace Chummer
                     return;
                 }
 
-                using (SelectWeaponAccessory frmPickWeaponAccessory = new SelectWeaponAccessory(CharacterObject)
+                using (ThreadSafeForm<SelectWeaponAccessory> frmPickWeaponAccessory
+                       = await ThreadSafeForm<SelectWeaponAccessory>.GetAsync(() => new SelectWeaponAccessory(CharacterObject)
+                       {
+                           ParentWeapon = objWeapon
+                       }))
                 {
-                    ParentWeapon = objWeapon
-                })
-                {
-                    await frmPickWeaponAccessory.ShowDialogSafeAsync(this);
-
-                    if (frmPickWeaponAccessory.DialogResult == DialogResult.Cancel)
+                    if (await frmPickWeaponAccessory.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         break;
-                    blnAddAgain = frmPickWeaponAccessory.AddAgain;
+                    blnAddAgain = frmPickWeaponAccessory.MyForm.AddAgain;
 
                     // Locate the selected piece.
-                    objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[id = " + frmPickWeaponAccessory.SelectedAccessory.CleanXPath() + ']');
+                    objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[id = " + frmPickWeaponAccessory.MyForm.SelectedAccessory.CleanXPath() + ']');
 
                     WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
-                    objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.SelectedMount, frmPickWeaponAccessory.SelectedRating);
+                    objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.MyForm.SelectedMount, frmPickWeaponAccessory.MyForm.SelectedRating);
                     objAccessory.Parent = objWeapon;
 
                     // Check the item's Cost and make sure the character can afford it.
                     decimal intOriginalCost = objWeapon.TotalCost;
                     objWeapon.WeaponAccessories.Add(objAccessory);
 
-                    if (!frmPickWeaponAccessory.FreeCost)
+                    if (!frmPickWeaponAccessory.MyForm.FreeCost)
                     {
                         decimal decCost = objWeapon.TotalCost - intOriginalCost;
                         // Apply a markup if applicable.
-                        if (frmPickWeaponAccessory.Markup != 0)
+                        if (frmPickWeaponAccessory.MyForm.Markup != 0)
                         {
-                            decCost *= 1 + frmPickWeaponAccessory.Markup / 100.0m;
+                            decCost *= 1 + frmPickWeaponAccessory.MyForm.Markup / 100.0m;
                         }
 
                         // Multiply the cost if applicable.
@@ -7422,23 +7368,22 @@ namespace Chummer
 
         private async ValueTask<bool> AddUnderbarrelWeapon(Weapon objSelectedWeapon, string strExpenseString)
         {
-            using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject)
+            using (ThreadSafeForm<SelectWeapon> frmPickWeapon = await ThreadSafeForm<SelectWeapon>.GetAsync(() => new SelectWeapon(CharacterObject)
+                   {
+                       LimitToCategories = "Underbarrel Weapons",
+                       ParentWeapon = objSelectedWeapon
+                   }))
             {
-                LimitToCategories = "Underbarrel Weapons",
-                ParentWeapon = objSelectedWeapon
-            })
-            {
-                frmPickWeapon.Mounts.UnionWith(objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
-                await frmPickWeapon.ShowDialogSafeAsync(this);
+                frmPickWeapon.MyForm.Mounts.UnionWith(objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
 
                 // Make sure the dialogue window was not canceled.
-                if (frmPickWeapon.DialogResult == DialogResult.Cancel)
+                if (await frmPickWeapon.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return false;
 
                 // Open the Weapons XML file and locate the selected piece.
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("weapons.xml");
 
-                XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + frmPickWeapon.SelectedWeapon.CleanXPath() + ']');
+                XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + frmPickWeapon.MyForm.SelectedWeapon.CleanXPath() + ']');
 
                 List<Weapon> lstWeapons = new List<Weapon>(1);
                 Weapon objWeapon = new Weapon(CharacterObject)
@@ -7446,19 +7391,19 @@ namespace Chummer
                     ParentVehicle = objSelectedWeapon.ParentVehicle
                 };
                 objWeapon.Create(objXmlWeapon, lstWeapons);
-                objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
+                objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
                 objWeapon.Parent = objSelectedWeapon;
                 if (!objSelectedWeapon.AllowAccessory)
                     objWeapon.AllowAccessory = false;
 
                 // Check the item's Cost and make sure the character can afford it.
-                if (!frmPickWeapon.FreeCost)
+                if (!frmPickWeapon.MyForm.FreeCost)
                 {
                     decimal decCost = objWeapon.TotalCost;
                     // Apply a markup if applicable.
-                    if (frmPickWeapon.Markup != 0)
+                    if (frmPickWeapon.MyForm.Markup != 0)
                     {
-                        decCost *= 1 + frmPickWeapon.Markup / 100.0m;
+                        decCost *= 1 + frmPickWeapon.MyForm.Markup / 100.0m;
                     }
 
                     // Multiply the cost if applicable.
@@ -7477,7 +7422,7 @@ namespace Chummer
                     if (decCost > CharacterObject.Nuyen)
                     {
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return frmPickWeapon.AddAgain;
+                        return frmPickWeapon.MyForm.AddAgain;
                     }
 
                     // Create the Expense Log Entry.
@@ -7500,7 +7445,7 @@ namespace Chummer
                     objSelectedWeapon.UnderbarrelWeapons.Add(objLoopWeapon);
                 }
 
-                return frmPickWeapon.AddAgain;
+                return frmPickWeapon.MyForm.AddAgain;
             }
         }
 
@@ -7626,40 +7571,39 @@ namespace Chummer
                 bool blnAddAgain;
                 do
                 {
-                    using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSensor, strCategories))
+                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories)))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
                                                                  && (!objSensor.Capacity.Contains('[')
                                                                      || objSensor.Capacity.Contains("/[")))
-                            frmPickGear.ShowNegativeCapacityOnly = true;
-                        await frmPickGear.ShowDialogSafeAsync(this);
+                            frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
 
-                        if (frmPickGear.DialogResult == DialogResult.Cancel)
+                        if (await frmPickGear.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             break;
-                        blnAddAgain = frmPickGear.AddAgain;
+                        blnAddAgain = frmPickGear.MyForm.AddAgain;
 
                         // Open the Gear XML file and locate the selected piece.
                         XmlNode objXmlGear
                             = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                              + frmPickGear.SelectedGear.CleanXPath() + ']');
+                                                              + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
 
                         // Create the new piece of Gear.
                         List<Weapon> lstWeapons = new List<Weapon>(1);
 
                         Gear objGear = new Gear(CharacterObject);
-                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
+                        objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty, false);
 
                         if (objGear.InternalId.IsEmptyGuid())
                             continue;
 
-                        objGear.Quantity = frmPickGear.SelectedQty;
+                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
 
                         // Reduce the cost for Do It Yourself components.
-                        if (frmPickGear.DoItYourself)
+                        if (frmPickGear.MyForm.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
 
                         // Check the item's Cost and make sure the character can afford it.
-                        if (!frmPickGear.FreeCost)
+                        if (!frmPickGear.MyForm.FreeCost)
                         {
                             decimal decCost = objGear.TotalCost;
 
@@ -7697,7 +7641,7 @@ namespace Chummer
 
                             ExpenseUndo objUndo = new ExpenseUndo();
                             objUndo.CreateNuyen(NuyenExpenseType.AddVehicleGear, objGear.InternalId,
-                                                frmPickGear.SelectedQty);
+                                                frmPickGear.MyForm.SelectedQty);
                             objExpense.Undo = objUndo;
                         }
 
@@ -9004,19 +8948,18 @@ namespace Chummer
             if (!(treVehicles.SelectedNode?.Tag is IHasCustomName objRename))
                 return;
 
-            using (SelectText frmPickText = new SelectText
+            string strDescription = await LanguageManager.GetStringAsync("String_VehicleName");
+            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
+                   {
+                       Description = strDescription,
+                       DefaultString = objRename.CustomName,
+                       AllowEmptyString = true
+                   }))
             {
-                Description = await LanguageManager.GetStringAsync("String_VehicleName"),
-                DefaultString = objRename.CustomName,
-                AllowEmptyString = true
-            })
-            {
-                await frmPickText.ShowDialogSafeAsync(this);
-
-                if (frmPickText.DialogResult == DialogResult.Cancel)
+                if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                objRename.CustomName = frmPickText.SelectedValue;
+                objRename.CustomName = frmPickText.MyForm.SelectedValue;
             }
 
             treVehicles.SelectedNode.Text = objRename.CurrentDisplayName;
@@ -9222,19 +9165,18 @@ namespace Chummer
             if (!(treArmor.SelectedNode?.Tag is IHasCustomName objRename))
                 return;
 
-            using (SelectText frmPickText = new SelectText
+            string strDescription = await LanguageManager.GetStringAsync("String_ArmorName");
+            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
+                   {
+                       Description = strDescription,
+                       DefaultString = objRename.CustomName,
+                       AllowEmptyString = true
+                   }))
             {
-                Description = await LanguageManager.GetStringAsync("String_ArmorName"),
-                DefaultString = objRename.CustomName,
-                AllowEmptyString = true
-            })
-            {
-                await frmPickText.ShowDialogSafeAsync(this);
-
-                if (frmPickText.DialogResult == DialogResult.Cancel)
+                if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                objRename.CustomName = frmPickText.SelectedValue;
+                objRename.CustomName = frmPickText.MyForm.SelectedValue;
             }
 
             treArmor.SelectedNode.Text = objRename.CurrentDisplayName;
@@ -9251,21 +9193,20 @@ namespace Chummer
                 return;
             }
 
-            using (SelectText frmPickText = new SelectText
+            string strDescription = await LanguageManager.GetStringAsync("String_LifestyleName");
+            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
+                   {
+                       Description = strDescription,
+                       DefaultString = objCustomName.CustomName,
+                       AllowEmptyString = true
+                   }))
             {
-                Description = await LanguageManager.GetStringAsync("String_LifestyleName"),
-                DefaultString = objCustomName.CustomName,
-                AllowEmptyString = true
-            })
-            {
-                await frmPickText.ShowDialogSafeAsync(this);
-
-                if (frmPickText.DialogResult == DialogResult.Cancel)
+                if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                if (objCustomName.CustomName == frmPickText.SelectedValue)
+                if (objCustomName.CustomName == frmPickText.MyForm.SelectedValue)
                     return;
-                objCustomName.CustomName = frmPickText.SelectedValue;
+                objCustomName.CustomName = frmPickText.MyForm.SelectedValue;
 
                 treLifestyles.SelectedNode.Text = objCustomName.CurrentDisplayName;
 
@@ -9277,18 +9218,17 @@ namespace Chummer
         {
             if (!(treGear.SelectedNode?.Tag is Location objLocation))
                 return;
-            using (SelectText frmPickText = new SelectText
+            string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
+            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
+                   {
+                       Description = strDescription,
+                       DefaultString = objLocation.Name
+                   }))
             {
-                Description = await LanguageManager.GetStringAsync("String_AddLocation"),
-                DefaultString = objLocation.Name
-            })
-            {
-                await frmPickText.ShowDialogSafeAsync(this);
-
-                if (frmPickText.DialogResult == DialogResult.Cancel)
+                if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                objLocation.Name = frmPickText.SelectedValue;
+                objLocation.Name = frmPickText.MyForm.SelectedValue;
             }
 
             treGear.SelectedNode.Text = objLocation.DisplayName();
@@ -9300,18 +9240,17 @@ namespace Chummer
         {
             if (!(treWeapons.SelectedNode?.Tag is Location objLocation))
                 return;
-            using (SelectText frmPickText = new SelectText
+            string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
+            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
+                   {
+                       Description = strDescription,
+                       DefaultString = objLocation.Name
+                   }))
             {
-                Description = await LanguageManager.GetStringAsync("String_AddLocation"),
-                DefaultString = objLocation.Name
-            })
-            {
-                await frmPickText.ShowDialogSafeAsync(this);
-
-                if (frmPickText.DialogResult == DialogResult.Cancel)
+                if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                objLocation.Name = frmPickText.SelectedValue;
+                objLocation.Name = frmPickText.MyForm.SelectedValue;
             }
 
             treWeapons.SelectedNode.Text = objLocation.DisplayName();
@@ -9388,18 +9327,17 @@ namespace Chummer
         {
             if (!(treArmor.SelectedNode?.Tag is Location objLocation))
                 return;
-            using (SelectText frmPickText = new SelectText
+            string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
+            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
+                   {
+                       Description = strDescription,
+                       DefaultString = objLocation.Name
+                   }))
             {
-                Description = await LanguageManager.GetStringAsync("String_AddLocation"),
-                DefaultString = objLocation.Name
-            })
-            {
-                await frmPickText.ShowDialogSafeAsync(this);
-
-                if (frmPickText.DialogResult == DialogResult.Cancel)
+                if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                objLocation.Name = frmPickText.SelectedValue;
+                objLocation.Name = frmPickText.MyForm.SelectedValue;
             }
 
             treArmor.SelectedNode.Text = objLocation.DisplayName();
@@ -9409,17 +9347,16 @@ namespace Chummer
 
         private async void tsImprovementRenameLocation_Click(object sender, EventArgs e)
         {
-            using (SelectText frmPickText = new SelectText
+            string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
+            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
+                   {
+                       Description = strDescription
+                   }))
             {
-                Description = await LanguageManager.GetStringAsync("String_AddLocation")
-            })
-            {
-                await frmPickText.ShowDialogSafeAsync(this);
-
-                if (frmPickText.DialogResult == DialogResult.Cancel)
+                if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                string strNewLocation = frmPickText.SelectedValue;
+                string strNewLocation = frmPickText.MyForm.SelectedValue;
 
                 int i = -1;
                 foreach (string strLocation in CharacterObject.ImprovementGroups)
@@ -9475,42 +9412,41 @@ namespace Chummer
                         }
                     }
 
-                    using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objCyberware, strCategories))
+                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objCyberware, strCategories)))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objCyberware.Capacity) &&
                             objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
                                                              objCyberware.Capacity.Contains("/[")))
-                            frmPickGear.ShowNegativeCapacityOnly = true;
-                        await frmPickGear.ShowDialogSafeAsync(this);
+                            frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
 
-                        if (frmPickGear.DialogResult == DialogResult.Cancel)
+                        if (await frmPickGear.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             break;
-                        blnAddAgain = frmPickGear.AddAgain;
+                        blnAddAgain = frmPickGear.MyForm.AddAgain;
 
                         // Open the Gear XML file and locate the selected piece.
                         XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
                         XmlNode objXmlGear
                             = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                              + frmPickGear.SelectedGear.CleanXPath() + ']');
+                                                              + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
 
                         // Create the new piece of Gear.
                         List<Weapon> lstWeapons = new List<Weapon>(1);
 
                         Gear objGear = new Gear(CharacterObject);
-                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty,
+                        objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
                                        objCyberware.IsModularCurrentlyEquipped);
 
                         if (objGear.InternalId.IsEmptyGuid())
                             continue;
 
-                        objGear.Quantity = frmPickGear.SelectedQty;
+                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
 
                         // Reduce the cost for Do It Yourself components.
-                        if (frmPickGear.DoItYourself)
+                        if (frmPickGear.MyForm.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
 
                         // Check the item's Cost and make sure the character can afford it.
-                        if (!frmPickGear.FreeCost)
+                        if (!frmPickGear.MyForm.FreeCost)
                         {
                             decimal decCost = objGear.TotalCost;
 
@@ -9599,41 +9535,40 @@ namespace Chummer
                         }
                     }
 
-                    using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objCyberware, strCategories))
+                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objCyberware, strCategories)))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objCyberware.Capacity) &&
                             objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
                                                              objCyberware.Capacity.Contains("/[")))
-                            frmPickGear.ShowNegativeCapacityOnly = true;
-                        await frmPickGear.ShowDialogSafeAsync(this);
+                            frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
 
-                        if (frmPickGear.DialogResult == DialogResult.Cancel)
+                        if (await frmPickGear.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             break;
-                        blnAddAgain = frmPickGear.AddAgain;
+                        blnAddAgain = frmPickGear.MyForm.AddAgain;
 
                         // Open the Gear XML file and locate the selected piece.
                         XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
                         XmlNode objXmlGear
                             = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                              + frmPickGear.SelectedGear.CleanXPath() + ']');
+                                                              + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
 
                         // Create the new piece of Gear.
                         List<Weapon> lstWeapons = new List<Weapon>(1);
 
                         Gear objGear = new Gear(CharacterObject);
-                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
+                        objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty, false);
 
                         if (objGear.InternalId.IsEmptyGuid())
                             continue;
 
-                        objGear.Quantity = frmPickGear.SelectedQty;
+                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
 
                         // Reduce the cost for Do It Yourself components.
-                        if (frmPickGear.DoItYourself)
+                        if (frmPickGear.MyForm.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
 
                         // Check the item's Cost and make sure the character can afford it.
-                        if (!frmPickGear.FreeCost)
+                        if (!frmPickGear.MyForm.FreeCost)
                         {
                             decimal decCost = objGear.TotalCost;
 
@@ -9728,42 +9663,41 @@ namespace Chummer
                 bool blnAddAgain;
                 do
                 {
-                    using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSensor, strCategories))
+                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories)))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
                                                                  && (!objSensor.Capacity.Contains('[')
                                                                      || objSensor.Capacity.Contains("/[")))
-                            frmPickGear.ShowNegativeCapacityOnly = true;
-                        await frmPickGear.ShowDialogSafeAsync(this);
+                            frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
 
-                        if (frmPickGear.DialogResult == DialogResult.Cancel)
+                        if (await frmPickGear.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             break;
-                        blnAddAgain = frmPickGear.AddAgain;
+                        blnAddAgain = frmPickGear.MyForm.AddAgain;
 
                         // Open the Gear XML file and locate the selected piece.
                         XmlNode objXmlGear
                             = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                              + frmPickGear.SelectedGear.CleanXPath() + ']');
+                                                              + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
 
                         // Create the new piece of Gear.
                         List<Weapon> lstWeapons = new List<Weapon>(1);
 
                         Gear objGear = new Gear(CharacterObject);
-                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty,
+                        objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
                                        (objSensor.Parent as Gear)?.Equipped
                                        ?? objCyberware?.IsModularCurrentlyEquipped == true);
 
                         if (objGear.InternalId.IsEmptyGuid())
                             continue;
 
-                        objGear.Quantity = frmPickGear.SelectedQty;
+                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
 
                         // Reduce the cost for Do It Yourself components.
-                        if (frmPickGear.DoItYourself)
+                        if (frmPickGear.MyForm.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
 
                         // Check the item's Cost and make sure the character can afford it.
-                        if (!frmPickGear.FreeCost)
+                        if (!frmPickGear.MyForm.FreeCost)
                         {
                             decimal decCost = objGear.TotalCost;
 
@@ -9803,7 +9737,7 @@ namespace Chummer
 
                             ExpenseUndo objUndo = new ExpenseUndo();
                             objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId,
-                                                frmPickGear.SelectedQty);
+                                                frmPickGear.MyForm.SelectedQty);
                             objExpense.Undo = objUndo;
                         }
 
@@ -9847,40 +9781,39 @@ namespace Chummer
                 bool blnAddAgain;
                 do
                 {
-                    using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSensor, strCategories))
+                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories)))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
                                                                  && (!objSensor.Capacity.Contains('[')
                                                                      || objSensor.Capacity.Contains("/[")))
-                            frmPickGear.ShowNegativeCapacityOnly = true;
-                        await frmPickGear.ShowDialogSafeAsync(this);
+                            frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
 
-                        if (frmPickGear.DialogResult == DialogResult.Cancel)
+                        if (await frmPickGear.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             break;
-                        blnAddAgain = frmPickGear.AddAgain;
+                        blnAddAgain = frmPickGear.MyForm.AddAgain;
 
                         // Open the Gear XML file and locate the selected piece.
                         XmlNode objXmlGear
                             = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                              + frmPickGear.SelectedGear.CleanXPath() + ']');
+                                                              + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
 
                         // Create the new piece of Gear.
                         List<Weapon> lstWeapons = new List<Weapon>(1);
 
                         Gear objGear = new Gear(CharacterObject);
-                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
+                        objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty, false);
 
                         if (objGear.InternalId.IsEmptyGuid())
                             continue;
 
-                        objGear.Quantity = frmPickGear.SelectedQty;
+                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
 
                         // Reduce the cost for Do It Yourself components.
-                        if (frmPickGear.DoItYourself)
+                        if (frmPickGear.MyForm.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
 
                         // Check the item's Cost and make sure the character can afford it.
-                        if (!frmPickGear.FreeCost)
+                        if (!frmPickGear.MyForm.FreeCost)
                         {
                             decimal decCost = objGear.TotalCost;
 
@@ -9920,7 +9853,7 @@ namespace Chummer
 
                             ExpenseUndo objUndo = new ExpenseUndo();
                             objUndo.CreateNuyen(NuyenExpenseType.AddCyberwareGear, objGear.InternalId,
-                                                frmPickGear.SelectedQty);
+                                                frmPickGear.MyForm.SelectedQty);
                             objExpense.Undo = objUndo;
                         }
 
@@ -9964,40 +9897,39 @@ namespace Chummer
                         }
                     }
 
-                    using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories))
+                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories)))
                     {
                         if (!string.IsNullOrEmpty(strCategories))
-                            frmPickGear.ShowNegativeCapacityOnly = true;
-                        await frmPickGear.ShowDialogSafeAsync(this);
+                            frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
 
-                        if (frmPickGear.DialogResult == DialogResult.Cancel)
+                        if (await frmPickGear.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             break;
-                        blnAddAgain = frmPickGear.AddAgain;
+                        blnAddAgain = frmPickGear.MyForm.AddAgain;
 
                         // Open the Gear XML file and locate the selected piece.
                         XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
                         XmlNode objXmlGear
                             = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                              + frmPickGear.SelectedGear.CleanXPath() + ']');
+                                                              + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
 
                         // Create the new piece of Gear.
                         List<Weapon> lstWeapons = new List<Weapon>(1);
 
                         Gear objGear = new Gear(CharacterObject);
-                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty,
+                        objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
                                        objAccessory.Equipped);
 
                         if (objGear.InternalId.IsEmptyGuid())
                             continue;
 
-                        objGear.Quantity = frmPickGear.SelectedQty;
+                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
 
                         // Reduce the cost for Do It Yourself components.
-                        if (frmPickGear.DoItYourself)
+                        if (frmPickGear.MyForm.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
 
                         // Check the item's Cost and make sure the character can afford it.
-                        if (!frmPickGear.FreeCost)
+                        if (!frmPickGear.MyForm.FreeCost)
                         {
                             decimal decCost = objGear.TotalCost;
 
@@ -10083,40 +10015,39 @@ namespace Chummer
                 bool blnAddAgain;
                 do
                 {
-                    using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSensor, strCategories))
+                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories)))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
                                                                  && (!objSensor.Capacity.Contains('[')
                                                                      || objSensor.Capacity.Contains("/[")))
-                            frmPickGear.ShowNegativeCapacityOnly = true;
-                        await frmPickGear.ShowDialogSafeAsync(this);
+                            frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
 
-                        if (frmPickGear.DialogResult == DialogResult.Cancel)
+                        if (await frmPickGear.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             break;
-                        blnAddAgain = frmPickGear.AddAgain;
+                        blnAddAgain = frmPickGear.MyForm.AddAgain;
 
                         XmlNode objXmlGear
                             = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                              + frmPickGear.SelectedGear.CleanXPath() + ']');
+                                                              + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
 
                         // Create the new piece of Gear.
                         List<Weapon> lstWeapons = new List<Weapon>(1);
 
                         Gear objGear = new Gear(CharacterObject);
-                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty,
+                        objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
                                        (objSensor.Parent as Gear)?.Equipped ?? objAccessory?.Equipped == true);
 
                         if (objGear.InternalId.IsEmptyGuid())
                             continue;
 
-                        objGear.Quantity = frmPickGear.SelectedQty;
+                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
 
                         // Reduce the cost for Do It Yourself components.
-                        if (frmPickGear.DoItYourself)
+                        if (frmPickGear.MyForm.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
 
                         // Check the item's Cost and make sure the character can afford it.
-                        if (!frmPickGear.FreeCost)
+                        if (!frmPickGear.MyForm.FreeCost)
                         {
                             decimal decCost = objGear.TotalCost;
 
@@ -10155,7 +10086,7 @@ namespace Chummer
 
                             ExpenseUndo objUndo = new ExpenseUndo();
                             objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId,
-                                                frmPickGear.SelectedQty);
+                                                frmPickGear.MyForm.SelectedQty);
                             objExpense.Undo = objUndo;
                         }
 
@@ -10174,18 +10105,17 @@ namespace Chummer
         {
             if (!(treVehicles.SelectedNode?.Tag is Location objLocation))
                 return;
-            using (SelectText frmPickText = new SelectText
+            string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
+            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
+                   {
+                       Description = strDescription,
+                       DefaultString = objLocation.Name
+                   }))
             {
-                Description = await LanguageManager.GetStringAsync("String_AddLocation"),
-                DefaultString = objLocation.Name
-            })
-            {
-                await frmPickText.ShowDialogSafeAsync(this);
-
-                if (frmPickText.DialogResult == DialogResult.Cancel)
+                if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                objLocation.Name = frmPickText.SelectedValue;
+                objLocation.Name = frmPickText.MyForm.SelectedValue;
             }
 
             treVehicles.SelectedNode.Text = objLocation.DisplayName();
@@ -10236,39 +10166,38 @@ namespace Chummer
                 bool blnAddAgain;
                 do
                 {
-                    using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSensor, strCategories))
+                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories)))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
                                                                  && (!objSensor.Capacity.Contains('[')
                                                                      || objSensor.Capacity.Contains("/[")))
-                            frmPickGear.ShowNegativeCapacityOnly = true;
-                        await frmPickGear.ShowDialogSafeAsync(this);
+                            frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
 
-                        if (frmPickGear.DialogResult == DialogResult.Cancel)
+                        if (await frmPickGear.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             break;
-                        blnAddAgain = frmPickGear.AddAgain;
+                        blnAddAgain = frmPickGear.MyForm.AddAgain;
 
                         XmlNode objXmlGear
                             = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                              + frmPickGear.SelectedGear.CleanXPath() + ']');
+                                                              + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
 
                         // Create the new piece of Gear.
                         List<Weapon> lstWeapons = new List<Weapon>(1);
 
                         Gear objGear = new Gear(CharacterObject);
-                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
+                        objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty, false);
 
                         if (objGear.InternalId.IsEmptyGuid())
                             continue;
 
-                        objGear.Quantity = frmPickGear.SelectedQty;
+                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
 
                         // Reduce the cost for Do It Yourself components.
-                        if (frmPickGear.DoItYourself)
+                        if (frmPickGear.MyForm.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
 
                         // Check the item's Cost and make sure the character can afford it.
-                        if (!frmPickGear.FreeCost)
+                        if (!frmPickGear.MyForm.FreeCost)
                         {
                             decimal decCost = objGear.TotalCost;
 
@@ -10307,7 +10236,7 @@ namespace Chummer
 
                             ExpenseUndo objUndo = new ExpenseUndo();
                             objUndo.CreateNuyen(NuyenExpenseType.AddWeaponGear, objGear.InternalId,
-                                                frmPickGear.SelectedQty);
+                                                frmPickGear.MyForm.SelectedQty);
                             objExpense.Undo = objUndo;
                         }
 
@@ -10355,37 +10284,36 @@ namespace Chummer
                         }
                     }
 
-                    using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories))
+                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories)))
                     {
                         if (!string.IsNullOrEmpty(strCategories))
-                            frmPickGear.ShowNegativeCapacityOnly = true;
-                        await frmPickGear.ShowDialogSafeAsync(this);
+                            frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
 
-                        if (frmPickGear.DialogResult == DialogResult.Cancel)
+                        if (await frmPickGear.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             break;
-                        blnAddAgain = frmPickGear.AddAgain;
+                        blnAddAgain = frmPickGear.MyForm.AddAgain;
 
                         XmlNode objXmlGear
                             = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                              + frmPickGear.SelectedGear.CleanXPath() + ']');
+                                                              + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
 
                         // Create the new piece of Gear.
                         List<Weapon> lstWeapons = new List<Weapon>(1);
 
                         Gear objGear = new Gear(CharacterObject);
-                        objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, false);
+                        objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty, false);
 
                         if (objGear.InternalId.IsEmptyGuid())
                             continue;
 
-                        objGear.Quantity = frmPickGear.SelectedQty;
+                        objGear.Quantity = frmPickGear.MyForm.SelectedQty;
 
                         // Reduce the cost for Do It Yourself components.
-                        if (frmPickGear.DoItYourself)
+                        if (frmPickGear.MyForm.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
 
                         // Check the item's Cost and make sure the character can afford it.
-                        if (!frmPickGear.FreeCost)
+                        if (!frmPickGear.MyForm.FreeCost)
                         {
                             decimal decCost = objGear.TotalCost;
 
@@ -10687,37 +10615,34 @@ namespace Chummer
             {
                 Lifestyle newLifestyle = objLifestyle;
                 // Edit Advanced Lifestyle.
-                using (SelectLifestyleAdvanced frmPickLifestyle = new SelectLifestyleAdvanced(CharacterObject, newLifestyle))
+                using (ThreadSafeForm<SelectLifestyleAdvanced> frmPickLifestyle = await ThreadSafeForm<SelectLifestyleAdvanced>.GetAsync(() => new SelectLifestyleAdvanced(CharacterObject, newLifestyle)))
                 {
-                    await frmPickLifestyle.ShowDialogSafeAsync(this);
-
-                    if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
+                    if (await frmPickLifestyle.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     {
-                        if (!ReferenceEquals(objLifestyle, frmPickLifestyle.SelectedLifestyle))
-                            frmPickLifestyle.SelectedLifestyle.Dispose();
+                        if (!ReferenceEquals(objLifestyle, frmPickLifestyle.MyForm.SelectedLifestyle))
+                            frmPickLifestyle.MyForm.SelectedLifestyle.Dispose();
                         return;
                     }
 
                     // Update the selected Lifestyle and refresh the list.
-                    objLifestyle = frmPickLifestyle.SelectedLifestyle;
+                    objLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
                 }
             }
             else
             {
                 // Edit Basic Lifestyle.
-                using (SelectLifestyle frmPickLifestyle = new SelectLifestyle(CharacterObject))
+                using (ThreadSafeForm<SelectLifestyle> frmPickLifestyle = await ThreadSafeForm<SelectLifestyle>.GetAsync(() => new SelectLifestyle(CharacterObject)))
                 {
-                    frmPickLifestyle.SetLifestyle(objLifestyle);
-                    await frmPickLifestyle.ShowDialogSafeAsync(this);
+                    frmPickLifestyle.MyForm.SetLifestyle(objLifestyle);
 
-                    if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
+                    if (await frmPickLifestyle.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     {
-                        frmPickLifestyle.SelectedLifestyle.Dispose();
+                        frmPickLifestyle.MyForm.SelectedLifestyle.Dispose();
                         return;
                     }
 
                     // Update the selected Lifestyle and refresh the list.
-                    objLifestyle = frmPickLifestyle.SelectedLifestyle;
+                    objLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
                 }
             }
             objLifestyle.Increments = intMonths;
@@ -11124,16 +11049,15 @@ namespace Chummer
             WeaponMount objWeaponMount;
             VehicleMod objMod = null;
 
-            using (SelectItem frmPickItem = new SelectItem())
+            using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem()))
             {
-                frmPickItem.SetVehiclesMode(lstVehicles);
-                await frmPickItem.ShowDialogSafeAsync(this);
+                frmPickItem.MyForm.SetVehiclesMode(lstVehicles);
 
-                if (frmPickItem.DialogResult == DialogResult.Cancel)
+                if (await frmPickItem.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
                 // Locate the selected Vehicle.
-                Vehicle objVehicle = CharacterObject.Vehicles.FirstOrDefault(x => x.InternalId == frmPickItem.SelectedItem);
+                Vehicle objVehicle = await CharacterObject.Vehicles.FirstOrDefaultAsync(x => x.InternalId == frmPickItem.MyForm.SelectedItem);
                 if (objVehicle == null)
                     return;
 
@@ -11175,15 +11099,14 @@ namespace Chummer
                         return;
                     }
 
-                    frmPickItem.SetGeneralItemsMode(lstItems);
-                    await frmPickItem.ShowDialogSafeAsync(this);
+                    frmPickItem.MyForm.SetGeneralItemsMode(lstItems);
 
-                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    if (await frmPickItem.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         return;
 
-                    string strId = frmPickItem.SelectedItem;
+                    string strId = frmPickItem.MyForm.SelectedItem;
                     // Locate the selected Vehicle Mod.
-                    objWeaponMount = objVehicle.WeaponMounts.FirstOrDefault(x => x.InternalId == strId);
+                    objWeaponMount = await objVehicle.WeaponMounts.FirstOrDefaultAsync(x => x.InternalId == strId);
                     // Locate the selected Vehicle Mod.
                     if (objWeaponMount == null)
                     {
@@ -13070,18 +12993,20 @@ namespace Chummer
 
         private async void cmdAddImprovementGroup_Click(object sender, EventArgs e)
         {
+            string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
             // Add a new location to the Improvements Tree.
-            using (SelectText frmPickText = new SelectText
+            using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
+                   {
+                       Description = strDescription
+                   }))
             {
-                Description = await LanguageManager.GetStringAsync("String_AddLocation")
-            })
-            {
-                await frmPickText.ShowDialogSafeAsync(this);
-
-                if (frmPickText.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.SelectedValue))
+                if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                string strLocation = frmPickText.SelectedValue;
+                string strLocation = frmPickText.MyForm.SelectedValue;
+
+                if (string.IsNullOrEmpty(strLocation))
+                    return;
 
                 CharacterObject.ImprovementGroups.Add(strLocation);
             }
@@ -15615,7 +15540,9 @@ namespace Chummer
         /// </summary>
         private async ValueTask<bool> PickCyberware(Cyberware objSelectedCyberware, Improvement.ImprovementSource objSource)
         {
-            using (SelectCyberware frmPickCyberware = new SelectCyberware(CharacterObject, objSource, objSelectedCyberware))
+            using (ThreadSafeForm<SelectCyberware> frmPickCyberware
+                   = await ThreadSafeForm<SelectCyberware>.GetAsync(
+                       () => new SelectCyberware(CharacterObject, objSource, objSelectedCyberware)))
             {
                 List<Improvement> lstUsedImprovements;
                 decimal decMultiplier = 1.0m;
@@ -15623,10 +15550,10 @@ namespace Chummer
                 {
                     // Apply the character's Cyberware Essence cost multiplier if applicable.
                     case Improvement.ImprovementSource.Cyberware:
-                    {
-                        lstUsedImprovements
-                            = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                CharacterObject, Improvement.ImprovementType.CyberwareEssCost);
+                        {
+                            lstUsedImprovements
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                    CharacterObject, Improvement.ImprovementType.CyberwareEssCost);
                             if (lstUsedImprovements.Count != 0)
                             {
                                 foreach (Improvement objImprovement in lstUsedImprovements)
@@ -15634,7 +15561,7 @@ namespace Chummer
                                     decMultiplier -= 1 - objImprovement.Value / 100.0m;
                                 }
 
-                                frmPickCyberware.CharacterESSMultiplier *= decMultiplier;
+                                frmPickCyberware.MyForm.CharacterESSMultiplier *= decMultiplier;
                             }
 
                             lstUsedImprovements
@@ -15648,7 +15575,7 @@ namespace Chummer
                                     decMultiplier *= objImprovement.Value / 100.0m;
                                 }
 
-                                frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
+                                frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
                             }
 
                             lstUsedImprovements
@@ -15662,7 +15589,7 @@ namespace Chummer
                                     decMultiplier -= 1 - objImprovement.Value / 100.0m;
                                 }
 
-                                frmPickCyberware.CharacterESSMultiplier *= decMultiplier;
+                                frmPickCyberware.MyForm.CharacterESSMultiplier *= decMultiplier;
                             }
 
                             lstUsedImprovements
@@ -15676,7 +15603,7 @@ namespace Chummer
                                     decMultiplier *= objImprovement.Value / 100.0m;
                                 }
 
-                                frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
+                                frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
                             }
 
                             break;
@@ -15694,7 +15621,7 @@ namespace Chummer
                                     decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
                                 }
 
-                                frmPickCyberware.CharacterESSMultiplier = decMultiplier;
+                                frmPickCyberware.MyForm.CharacterESSMultiplier = decMultiplier;
                             }
 
                             lstUsedImprovements
@@ -15708,7 +15635,7 @@ namespace Chummer
                                     decMultiplier *= objImprovement.Value / 100.0m;
                                 }
 
-                                frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
+                                frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
                             }
 
                             lstUsedImprovements
@@ -15722,7 +15649,7 @@ namespace Chummer
                                     decMultiplier -= 1 - objImprovement.Value / 100;
                                 }
 
-                                frmPickCyberware.CharacterESSMultiplier = decMultiplier;
+                                frmPickCyberware.MyForm.CharacterESSMultiplier = decMultiplier;
                             }
 
                             lstUsedImprovements
@@ -15736,7 +15663,7 @@ namespace Chummer
                                     decMultiplier *= objImprovement.Value / 100.0m;
                                 }
 
-                                frmPickCyberware.CharacterTotalESSMultiplier *= decMultiplier;
+                                frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
                             }
 
                             // Apply the character's Basic Bioware Essence cost multiplier if applicable.
@@ -15751,7 +15678,7 @@ namespace Chummer
                                     decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
                                 }
 
-                                frmPickCyberware.BasicBiowareESSMultiplier = decMultiplier;
+                                frmPickCyberware.MyForm.BasicBiowareESSMultiplier = decMultiplier;
                             }
 
                             // Genetech Cost multiplier.
@@ -15766,7 +15693,7 @@ namespace Chummer
                                     decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
                                 }
 
-                                frmPickCyberware.GenetechCostMultiplier = decMultiplier;
+                                frmPickCyberware.MyForm.GenetechCostMultiplier = decMultiplier;
                             }
 
                             // Apply the character's Genetech Essence cost multiplier if applicable.
@@ -15781,7 +15708,7 @@ namespace Chummer
                                     decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
                                 }
 
-                                frmPickCyberware.GenetechEssMultiplier = decMultiplier;
+                                frmPickCyberware.MyForm.GenetechEssMultiplier = decMultiplier;
                             }
 
                             break;
@@ -15792,13 +15719,13 @@ namespace Chummer
                 Dictionary<string, int> dicHasMounts = new Dictionary<string, int>(6);
                 if (objSelectedCyberware != null)
                 {
-                    frmPickCyberware.ForcedGrade = objSelectedCyberware.Grade;
-                    frmPickCyberware.LockGrade();
-                    frmPickCyberware.Subsystems = objSelectedCyberware.AllowedSubsystems;
+                    frmPickCyberware.MyForm.ForcedGrade = objSelectedCyberware.Grade;
+                    frmPickCyberware.MyForm.LockGrade();
+                    frmPickCyberware.MyForm.Subsystems = objSelectedCyberware.AllowedSubsystems;
                     // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that consume Capacity).
                     if (!objSelectedCyberware.Capacity.Contains('['))
                     {
-                        frmPickCyberware.MaximumCapacity = objSelectedCyberware.CapacityRemaining;
+                        frmPickCyberware.MyForm.MaximumCapacity = objSelectedCyberware.CapacityRemaining;
 
                         // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
                         if (CharacterObjectSettings.EnforceCapacity && objSelectedCyberware.CapacityRemaining < 0)
@@ -15906,7 +15833,7 @@ namespace Chummer
                     // Remove trailing ","
                     if (sbdDisallowedMounts.Length > 0)
                         --sbdDisallowedMounts.Length;
-                    frmPickCyberware.DisallowedMounts = sbdDisallowedMounts.ToString();
+                    frmPickCyberware.MyForm.DisallowedMounts = sbdDisallowedMounts.ToString();
                 }
 
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdHasMounts))
@@ -15934,30 +15861,28 @@ namespace Chummer
                     // Remove trailing ","
                     if (sbdHasMounts.Length > 0)
                         --sbdHasMounts.Length;
-                    frmPickCyberware.HasModularMounts = sbdHasMounts.ToString();
+                    frmPickCyberware.MyForm.HasModularMounts = sbdHasMounts.ToString();
                 }
 
-                await frmPickCyberware.ShowDialogSafeAsync(this);
-
                 // Make sure the dialogue window was not canceled.
-                if (frmPickCyberware.DialogResult == DialogResult.Cancel)
+                if (await frmPickCyberware.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return false;
 
                 // Open the Cyberware XML file and locate the selected piece.
                 XmlNode objXmlCyberware = objSource == Improvement.ImprovementSource.Bioware
-                    ? (await CharacterObject.LoadDataAsync("bioware.xml")).SelectSingleNode("/chummer/biowares/bioware[id = " + frmPickCyberware.SelectedCyberware.CleanXPath() + ']')
-                    : (await CharacterObject.LoadDataAsync("cyberware.xml")).SelectSingleNode("/chummer/cyberwares/cyberware[id = " + frmPickCyberware.SelectedCyberware.CleanXPath() + ']');
+                    ? (await CharacterObject.LoadDataAsync("bioware.xml")).SelectSingleNode("/chummer/biowares/bioware[id = " + frmPickCyberware.MyForm.SelectedCyberware.CleanXPath() + ']')
+                    : (await CharacterObject.LoadDataAsync("cyberware.xml")).SelectSingleNode("/chummer/cyberwares/cyberware[id = " + frmPickCyberware.MyForm.SelectedCyberware.CleanXPath() + ']');
 
-                Cyberware objCyberware = new Cyberware(CharacterObject) { ESSDiscount = frmPickCyberware.SelectedESSDiscount, Parent = objSelectedCyberware};
-                if (!objCyberware.Purchase(objXmlCyberware, objSource, frmPickCyberware.SelectedGrade,
-                                           frmPickCyberware.SelectedRating, null,
+                Cyberware objCyberware = new Cyberware(CharacterObject) { ESSDiscount = frmPickCyberware.MyForm.SelectedESSDiscount, Parent = objSelectedCyberware };
+                if (!objCyberware.Purchase(objXmlCyberware, objSource, frmPickCyberware.MyForm.SelectedGrade,
+                                           frmPickCyberware.MyForm.SelectedRating, null,
                                            objSelectedCyberware?.Children ?? CharacterObject.Cyberware,
                                            CharacterObject.Vehicles,
-                                           CharacterObject.Weapons, frmPickCyberware.Markup, frmPickCyberware.FreeCost,
-                                           frmPickCyberware.BlackMarketDiscount, objParent: objSelectedCyberware))
+                                           CharacterObject.Weapons, frmPickCyberware.MyForm.Markup, frmPickCyberware.MyForm.FreeCost,
+                                           frmPickCyberware.MyForm.BlackMarketDiscount, objParent: objSelectedCyberware))
                     objCyberware.DeleteCyberware();
 
-                return frmPickCyberware.AddAgain;
+                return frmPickCyberware.MyForm.AddAgain;
             }
         }
 
@@ -16006,13 +15931,15 @@ namespace Chummer
                     }
                 }
 
-                using (SelectGear frmPickGear
-                       = new SelectGear(CharacterObject, objSelectedGear?.ChildAvailModifier ?? 0,
-                                        objSelectedGear?.ChildCostMultiplier ?? 1, objSelectedGear, strCategories)
-                       {
-                           ShowFlechetteAmmoOnly = objAmmoForWeapon?.Damage.EndsWith("(f)", StringComparison.Ordinal)
-                                                   == true
-                       })
+                using (ThreadSafeForm<SelectGear> frmPickGear
+                       = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject,
+                                                                       objSelectedGear?.ChildAvailModifier ?? 0,
+                                                                       objSelectedGear?.ChildCostMultiplier ?? 1,
+                                                                       objSelectedGear, strCategories)
+                                                                   {
+                                                                       ShowFlechetteAmmoOnly = objAmmoForWeapon?.Damage.EndsWith("(f)", StringComparison.Ordinal)
+                                                                           == true
+                                                                   }))
                 {
                     if (!blnNullParent)
                     {
@@ -16020,7 +15947,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(objSelectedGear.Capacity) && !objSelectedGear.Capacity.Contains('[')
                             || objSelectedGear.Capacity.Contains("/["))
                         {
-                            frmPickGear.MaximumCapacity = objSelectedGear.CapacityRemaining;
+                            frmPickGear.MyForm.MaximumCapacity = objSelectedGear.CapacityRemaining;
 
                             // Do not allow the user to add a new piece of Gear if its Capacity has been reached.
                             if (CharacterObjectSettings.EnforceCapacity && objSelectedGear.CapacityRemaining < 0)
@@ -16033,7 +15960,7 @@ namespace Chummer
                             }
 
                             if (!string.IsNullOrEmpty(strCategories))
-                                frmPickGear.ShowNegativeCapacityOnly = true;
+                                frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
                         }
 
                         // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
@@ -16043,20 +15970,18 @@ namespace Chummer
                         }
                     }
 
-                    frmPickGear.DefaultSearchText = strForceItemValue;
-                    frmPickGear.ForceItemAmmoForWeaponType = objAmmoForWeapon?.WeaponType ?? string.Empty;
-
-                    await frmPickGear.ShowDialogSafeAsync(this);
+                    frmPickGear.MyForm.DefaultSearchText = strForceItemValue;
+                    frmPickGear.MyForm.ForceItemAmmoForWeaponType = objAmmoForWeapon?.WeaponType ?? string.Empty;
 
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickGear.DialogResult == DialogResult.Cancel)
+                    if (await frmPickGear.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         return false;
 
                     // Open the Cyberware XML file and locate the selected piece.
                     XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
                     XmlNode objXmlGear
                         = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                          + frmPickGear.SelectedGear.CleanXPath() + ']');
+                                                          + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
 
                     // Create the new piece of Gear.
                     List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -16069,21 +15994,21 @@ namespace Chummer
                     }
 
                     Gear objGear = new Gear(CharacterObject);
-                    objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, strForceValue,
+                    objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, strForceValue,
                                    objSelectedGear?.Equipped != false);
 
                     if (objGear.InternalId.IsEmptyGuid())
-                        return frmPickGear.AddAgain;
+                        return frmPickGear.MyForm.AddAgain;
 
-                    objGear.Quantity = frmPickGear.SelectedQty;
+                    objGear.Quantity = frmPickGear.MyForm.SelectedQty;
 
                     objGear.Parent = blnNullParent ? null : objSelectedGear;
 
                     //Reduce the Cost for Black Market Pipeline
-                    objGear.DiscountCost = frmPickGear.BlackMarketDiscount;
+                    objGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
 
                     // Reduce the cost for Do It Yourself components.
-                    if (frmPickGear.DoItYourself)
+                    if (frmPickGear.MyForm.DoItYourself)
                         objGear.Cost = '(' + objGear.Cost + ") * 0.5";
 
                     decimal decCost;
@@ -16105,7 +16030,7 @@ namespace Chummer
 
                     Gear objStackWith = null;
                     // See if the character already has the item on them if they chose to stack.
-                    if (frmPickGear.Stack)
+                    if (frmPickGear.MyForm.Stack)
                     {
                         objStackWith = objStackGear
                                        ?? CharacterObject.Gear.FirstOrDefault(x => x.Location == objLocation
@@ -16115,16 +16040,16 @@ namespace Chummer
                     if (objStackWith != null)
                     {
                         if (objStackWith.InternalId.IsEmptyGuid())
-                            return frmPickGear.AddAgain;
+                            return frmPickGear.MyForm.AddAgain;
                         // If a match was found, we need to use the cost of a single item in the stack which can include plugins.
                         foreach (Gear objPlugin in objStackWith.Children)
-                            decCost += objPlugin.TotalCost * frmPickGear.SelectedQty;
+                            decCost += objPlugin.TotalCost * frmPickGear.MyForm.SelectedQty;
                     }
 
                     // Apply a markup if applicable.
-                    if (frmPickGear.Markup != 0)
+                    if (frmPickGear.MyForm.Markup != 0)
                     {
-                        decCost *= 1 + frmPickGear.Markup / 100.0m;
+                        decCost *= 1 + frmPickGear.MyForm.Markup / 100.0m;
                     }
 
                     // Multiply the cost if applicable.
@@ -16151,7 +16076,7 @@ namespace Chummer
                                 await LanguageManager.GetStringAsync("MessageTitle_CapacityReached"),
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Information);
-                            return frmPickGear.AddAgain;
+                            return frmPickGear.MyForm.AddAgain;
                         }
 
                         // Multiply cost by parent gear's quantity
@@ -16160,7 +16085,7 @@ namespace Chummer
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     // Check the item's Cost and make sure the character can afford it.
-                    if (!frmPickGear.FreeCost)
+                    if (!frmPickGear.MyForm.FreeCost)
                     {
                         if (decCost > CharacterObject.Nuyen)
                         {
@@ -16170,7 +16095,7 @@ namespace Chummer
                             // Remove any Improvements created by the Gear.
                             await ImprovementManager.RemoveImprovementsAsync(
                                 CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
-                            return frmPickGear.AddAgain;
+                            return frmPickGear.MyForm.AddAgain;
                         }
 
                         // Create the Expense Log Entry.
@@ -16215,7 +16140,7 @@ namespace Chummer
                         }
                     }
 
-                    return frmPickGear.AddAgain;
+                    return frmPickGear.MyForm.AddAgain;
                 }
             }
         }
@@ -16264,14 +16189,15 @@ namespace Chummer
                     }
                 }
 
-                using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objParent, strCategories)
-                       {
-                           EnableStack = false,
-                           ShowArmorCapacityOnly = blnShowArmorCapacityOnly,
-                           CapacityDisplayStyle = objSelectedMod != null
-                               ? CapacityStyle.Standard
-                               : objSelectedArmor.CapacityDisplayStyle
-                       })
+                using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(
+                           () => new SelectGear(CharacterObject, 0, 1, objParent, strCategories)
+                           {
+                               EnableStack = false,
+                               ShowArmorCapacityOnly = blnShowArmorCapacityOnly,
+                               CapacityDisplayStyle = objSelectedMod != null
+                                   ? CapacityStyle.Standard
+                                   : objSelectedArmor.CapacityDisplayStyle
+                           }))
                 {
                     // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that consume Capacity).
                     if (!string.IsNullOrEmpty(strSelectedId))
@@ -16279,7 +16205,7 @@ namespace Chummer
                         if (objSelectedGear != null && (!objSelectedGear.Capacity.Contains('[')
                                                         || objSelectedGear.Capacity.Contains("/[")))
                         {
-                            frmPickGear.MaximumCapacity = objSelectedGear.CapacityRemaining;
+                            frmPickGear.MyForm.MaximumCapacity = objSelectedGear.CapacityRemaining;
 
                             // Do not allow the user to add a new piece of Gear if its Capacity has been reached.
                             if (CharacterObjectSettings.EnforceCapacity && objSelectedGear.CapacityRemaining < 0)
@@ -16294,7 +16220,7 @@ namespace Chummer
                         }
                         else if (objSelectedMod != null)
                         {
-                            frmPickGear.MaximumCapacity = objSelectedMod.GearCapacityRemaining;
+                            frmPickGear.MyForm.MaximumCapacity = objSelectedMod.GearCapacityRemaining;
 
                             // Do not allow the user to add a new piece of Gear if its Capacity has been reached.
                             if (CharacterObjectSettings.EnforceCapacity && objSelectedMod.GearCapacityRemaining < 0)
@@ -16309,42 +16235,40 @@ namespace Chummer
                         }
                     }
 
-                    await frmPickGear.ShowDialogSafeAsync(this);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickGear.DialogResult == DialogResult.Cancel)
+                    if (await frmPickGear.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                         return false;
 
                     // Open the Cyberware XML file and locate the selected piece.
                     XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
                     XmlNode objXmlGear
                         = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                          + frmPickGear.SelectedGear.CleanXPath() + ']');
+                                                          + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
 
                     // Create the new piece of Gear.
                     List<Weapon> lstWeapons = new List<Weapon>(1);
 
                     Gear objGear = new Gear(CharacterObject);
-                    objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty,
+                    objGear.Create(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons, string.Empty,
                                    objSelectedGear?.Equipped ?? objSelectedMod?.Equipped ?? objSelectedArmor.Equipped);
 
                     if (objGear.InternalId.IsEmptyGuid())
-                        return frmPickGear.AddAgain;
+                        return frmPickGear.MyForm.AddAgain;
 
-                    objGear.Quantity = frmPickGear.SelectedQty;
+                    objGear.Quantity = frmPickGear.MyForm.SelectedQty;
 
                     if (objSelectedGear != null)
                         objGear.Parent = objSelectedGear;
 
                     // Reduce the cost for Do It Yourself components.
-                    if (frmPickGear.DoItYourself)
+                    if (frmPickGear.MyForm.DoItYourself)
                         objGear.Cost = '(' + objGear.Cost + ") * 0.5";
 
                     // Apply a markup if applicable.
                     decimal decCost = objGear.TotalCost;
-                    if (frmPickGear.Markup != 0)
+                    if (frmPickGear.MyForm.Markup != 0)
                     {
-                        decCost *= 1 + frmPickGear.Markup / 100.0m;
+                        decCost *= 1 + frmPickGear.MyForm.Markup / 100.0m;
                     }
 
                     // Multiply the cost if applicable.
@@ -16385,7 +16309,7 @@ namespace Chummer
                                 this, await LanguageManager.GetStringAsync("Message_CapacityReached"),
                                 await LanguageManager.GetStringAsync("MessageTitle_CapacityReached"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return frmPickGear.AddAgain;
+                            return frmPickGear.MyForm.AddAgain;
                         }
                     }
                     // Add the Gear.
@@ -16399,7 +16323,7 @@ namespace Chummer
                                 this, await LanguageManager.GetStringAsync("Message_CapacityReached"),
                                 await LanguageManager.GetStringAsync("MessageTitle_CapacityReached"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return frmPickGear.AddAgain;
+                            return frmPickGear.MyForm.AddAgain;
                         }
                     }
                     else if (!string.IsNullOrEmpty(objSelectedMod?.Name))
@@ -16412,7 +16336,7 @@ namespace Chummer
                                 this, await LanguageManager.GetStringAsync("Message_CapacityReached"),
                                 await LanguageManager.GetStringAsync("MessageTitle_CapacityReached"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return frmPickGear.AddAgain;
+                            return frmPickGear.MyForm.AddAgain;
                         }
                     }
                     else
@@ -16425,12 +16349,12 @@ namespace Chummer
                                 this, await LanguageManager.GetStringAsync("Message_CapacityReached"),
                                 await LanguageManager.GetStringAsync("MessageTitle_CapacityReached"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return frmPickGear.AddAgain;
+                            return frmPickGear.MyForm.AddAgain;
                         }
                     }
 
                     // Check the item's Cost and make sure the character can afford it.
-                    if (!frmPickGear.FreeCost)
+                    if (!frmPickGear.MyForm.FreeCost)
                     {
                         if (decCost > CharacterObject.Nuyen)
                         {
@@ -16443,7 +16367,7 @@ namespace Chummer
                             Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
                                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
                                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return frmPickGear.AddAgain;
+                            return frmPickGear.MyForm.AddAgain;
                         }
 
                         // Create the Expense Log Entry.
@@ -16469,7 +16393,7 @@ namespace Chummer
                         CharacterObject.Weapons.Add(objWeapon);
                     }
 
-                    return frmPickGear.AddAgain;
+                    return frmPickGear.MyForm.AddAgain;
                 }
             }
         }
@@ -18295,14 +18219,12 @@ namespace Chummer
 
         private async ValueTask AddCyberwareSuite(Improvement.ImprovementSource objSource)
         {
-            using (SelectCyberwareSuite frmPickCyberwareSuite = new SelectCyberwareSuite(CharacterObject, objSource))
+            using (ThreadSafeForm<SelectCyberwareSuite> frmPickCyberwareSuite = await ThreadSafeForm<SelectCyberwareSuite>.GetAsync(() => new SelectCyberwareSuite(CharacterObject, objSource)))
             {
-                await frmPickCyberwareSuite.ShowDialogSafeAsync(this);
-
-                if (frmPickCyberwareSuite.DialogResult == DialogResult.Cancel)
+                if (await frmPickCyberwareSuite.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                decimal decCost = frmPickCyberwareSuite.TotalCost;
+                decimal decCost = frmPickCyberwareSuite.MyForm.TotalCost;
                 if (decCost > CharacterObject.Nuyen)
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -18312,9 +18234,9 @@ namespace Chummer
                 string strType = objSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync(strType + ".xml");
 
-                XmlNode xmlSuite = frmPickCyberwareSuite.SelectedSuite.IsGuid()
-                    ? objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = " + frmPickCyberwareSuite.SelectedSuite.CleanXPath() + ']')
-                    : objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = " + frmPickCyberwareSuite.SelectedSuite.CleanXPath() + ']');
+                XmlNode xmlSuite = frmPickCyberwareSuite.MyForm.SelectedSuite.IsGuid()
+                    ? objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = " + frmPickCyberwareSuite.MyForm.SelectedSuite.CleanXPath() + ']')
+                    : objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = " + frmPickCyberwareSuite.MyForm.SelectedSuite.CleanXPath() + ']');
                 if (xmlSuite == null)
                     return;
 
@@ -18457,12 +18379,10 @@ namespace Chummer
                 , CharacterObjectSettings.KarmaMetamagic.ToString(GlobalSettings.CultureInfo))))
                 return;
 
-            using (SelectMetamagic frmPickMetamagic = new SelectMetamagic(CharacterObject, objGrade))
+            using (ThreadSafeForm<SelectMetamagic> frmPickMetamagic = await ThreadSafeForm<SelectMetamagic>.GetAsync(() => new SelectMetamagic(CharacterObject, objGrade)))
             {
-                await frmPickMetamagic.ShowDialogSafeAsync(this);
-
                 // Make sure a value was selected.
-                if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
+                if (await frmPickMetamagic.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
                 Metamagic objNewMetamagic = new Metamagic(CharacterObject);
@@ -18471,12 +18391,12 @@ namespace Chummer
                 Improvement.ImprovementSource objSource;
                 if (CharacterObject.RESEnabled)
                 {
-                    objXmlMetamagic = (await CharacterObject.LoadDataAsync("echoes.xml")).SelectSingleNode("/chummer/echoes/echo[id = " + frmPickMetamagic.SelectedMetamagic.CleanXPath() + ']');
+                    objXmlMetamagic = (await CharacterObject.LoadDataAsync("echoes.xml")).SelectSingleNode("/chummer/echoes/echo[id = " + frmPickMetamagic.MyForm.SelectedMetamagic.CleanXPath() + ']');
                     objSource = Improvement.ImprovementSource.Echo;
                 }
                 else
                 {
-                    objXmlMetamagic = (await CharacterObject.LoadDataAsync("metamagic.xml")).SelectSingleNode("/chummer/metamagics/metamagic[id = " + frmPickMetamagic.SelectedMetamagic.CleanXPath() + ']');
+                    objXmlMetamagic = (await CharacterObject.LoadDataAsync("metamagic.xml")).SelectSingleNode("/chummer/metamagics/metamagic[id = " + frmPickMetamagic.MyForm.SelectedMetamagic.CleanXPath() + ']');
                     objSource = Improvement.ImprovementSource.Metamagic;
                 }
 
@@ -18525,15 +18445,14 @@ namespace Chummer
             }
             */
 
-            using (SelectArt frmPickArt = new SelectArt(CharacterObject, SelectArt.Mode.Art))
+            using (ThreadSafeForm<SelectArt> frmPickArt
+                   = await ThreadSafeForm<SelectArt>.GetAsync(() => new SelectArt(CharacterObject, SelectArt.Mode.Art)))
             {
-                await frmPickArt.ShowDialogSafeAsync(this);
-
                 // Make sure a value was selected.
-                if (frmPickArt.DialogResult == DialogResult.Cancel)
+                if (await frmPickArt.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                XmlNode objXmlArt = (await CharacterObject.LoadDataAsync("metamagic.xml")).SelectSingleNode("/chummer/arts/art[id = " + frmPickArt.SelectedItem.CleanXPath() + ']');
+                XmlNode objXmlArt = (await CharacterObject.LoadDataAsync("metamagic.xml")).SelectSingleNode("/chummer/arts/art[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
 
                 Art objArt = new Art(CharacterObject);
                 objArt.Create(objXmlArt, Improvement.ImprovementSource.Metamagic);
@@ -18609,15 +18528,15 @@ namespace Chummer
             }
 
             XmlNode objXmlArt;
-            using (SelectArt frmPickArt = new SelectArt(CharacterObject, SelectArt.Mode.Enchantment))
+            using (ThreadSafeForm<SelectArt> frmPickArt
+                   = await ThreadSafeForm<SelectArt>.GetAsync(
+                       () => new SelectArt(CharacterObject, SelectArt.Mode.Enchantment)))
             {
-                await frmPickArt.ShowDialogSafeAsync(this);
-
                 // Make sure a value was selected.
-                if (frmPickArt.DialogResult == DialogResult.Cancel)
+                if (await frmPickArt.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                objXmlArt = (await CharacterObject.LoadDataAsync("spells.xml")).SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.SelectedItem.CleanXPath() + ']');
+                objXmlArt = (await CharacterObject.LoadDataAsync("spells.xml")).SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
             }
 
             Spell objNewSpell = new Spell(CharacterObject);
@@ -18683,15 +18602,15 @@ namespace Chummer
             }
 
             XmlNode objXmlArt;
-            using (SelectArt frmPickArt = new SelectArt(CharacterObject, SelectArt.Mode.Ritual))
+            using (ThreadSafeForm<SelectArt> frmPickArt
+                   = await ThreadSafeForm<SelectArt>.GetAsync(
+                       () => new SelectArt(CharacterObject, SelectArt.Mode.Ritual)))
             {
-                await frmPickArt.ShowDialogSafeAsync(this);
-
                 // Make sure a value was selected.
-                if (frmPickArt.DialogResult == DialogResult.Cancel)
+                if (await frmPickArt.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                objXmlArt = (await CharacterObject.LoadDataAsync("spells.xml")).SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.SelectedItem.CleanXPath() + ']');
+                objXmlArt = (await CharacterObject.LoadDataAsync("spells.xml")).SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
             }
 
             Spell objNewSpell = new Spell(CharacterObject);
@@ -18751,15 +18670,15 @@ namespace Chummer
                 return;
 
             XmlNode objXmlArt;
-            using (SelectArt frmPickArt = new SelectArt(CharacterObject, SelectArt.Mode.Enhancement))
+            using (ThreadSafeForm<SelectArt> frmPickArt
+                   = await ThreadSafeForm<SelectArt>.GetAsync(
+                       () => new SelectArt(CharacterObject, SelectArt.Mode.Enhancement)))
             {
-                await frmPickArt.ShowDialogSafeAsync(this);
-
                 // Make sure a value was selected.
-                if (frmPickArt.DialogResult == DialogResult.Cancel)
+                if (await frmPickArt.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                objXmlArt = (await CharacterObject.LoadDataAsync("powers.xml")).SelectSingleNode("/chummer/enhancements/enhancement[id = " + frmPickArt.SelectedItem.CleanXPath() + ']');
+                objXmlArt = (await CharacterObject.LoadDataAsync("powers.xml")).SelectSingleNode("/chummer/enhancements/enhancement[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
             }
 
             if (objXmlArt == null)
@@ -19382,19 +19301,18 @@ namespace Chummer
             if (!(objSelectedNode?.Tag is Drug objDrug))
                 return;
 
-            using (SelectNumber frmPickNumber = new SelectNumber
+            string strDescription = await LanguageManager.GetStringAsync("String_ReduceGear");
+            using (ThreadSafeForm<SelectNumber> frmPickNumber = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber
+                   {
+                       Minimum = 0,
+                       Maximum = objDrug.Quantity,
+                       Description = strDescription
+                   }))
             {
-                Minimum = 0,
-                Maximum = objDrug.Quantity,
-                Description = await LanguageManager.GetStringAsync("String_ReduceGear")
-            })
-            {
-                await frmPickNumber.ShowDialogSafeAsync(this);
-
-                if (frmPickNumber.DialogResult == DialogResult.Cancel)
+                if (await frmPickNumber.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
 
-                decimal decSelectedValue = frmPickNumber.SelectedValue;
+                decimal decSelectedValue = frmPickNumber.MyForm.SelectedValue;
 
                 if (!CommonFunctions.ConfirmDelete(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ReduceQty"), decSelectedValue.ToString(GlobalSettings.CultureInfo))))
                     return;
