@@ -151,8 +151,11 @@ namespace Chummer
             }
 
             _objDrug.Quantity = 1;
-            DialogResult = DialogResult.OK;
-            Close();
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            });
         }
 
         private async ValueTask AddSelectedComponent()

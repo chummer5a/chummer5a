@@ -646,7 +646,11 @@ namespace Chummer
             _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalSettings.InvariantCultureInfo);
             _objLifestyle.StyleType = StyleType;
             SelectedLifestyle = _objLifestyle;
-            DialogResult = DialogResult.OK;
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            });
         }
 
         private async ValueTask RefreshSelectedLifestyle()

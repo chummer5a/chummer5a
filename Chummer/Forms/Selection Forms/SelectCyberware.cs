@@ -1369,7 +1369,11 @@ namespace Chummer
             if (nudESSDiscount.Visible)
                 SelectedESSDiscount = nudESSDiscount.ValueAsInt;
 
-            DialogResult = DialogResult.OK;
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            });
         }
 
         private bool _blnPopulatingGrades;

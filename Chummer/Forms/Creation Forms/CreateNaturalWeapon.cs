@@ -165,7 +165,11 @@ namespace Chummer
                     Page = (await objPower.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value
                 };
 
-                DialogResult = DialogResult.OK;
+                await this.DoThreadSafeAsync(x =>
+                {
+                    x.DialogResult = DialogResult.OK;
+                    x.Close();
+                });
             }
         }
 

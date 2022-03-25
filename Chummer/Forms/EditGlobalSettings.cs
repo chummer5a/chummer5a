@@ -132,7 +132,7 @@ namespace Chummer
                         return;
                 }
 
-                DialogResult = DialogResult.OK;
+                await this.DoThreadSafeAsync(x => x.DialogResult = DialogResult.OK);
                 await SaveRegistrySettings();
 
                 if (_blnDirty)

@@ -601,7 +601,11 @@ namespace Chummer
 
             _strSelectedQuality = strSelectedQuality;
             _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode.SelectSingleNode("category")?.Value;
-            DialogResult = DialogResult.OK;
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            });
         }
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)

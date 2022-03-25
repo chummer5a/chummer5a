@@ -1444,8 +1444,11 @@ namespace Chummer
                     }
                 }
 
-                DialogResult = DialogResult.OK;
-                Close();
+                await this.DoThreadSafeAsync(x =>
+                {
+                    x.DialogResult = DialogResult.OK;
+                    x.Close();
+                }, token);
             }
             else
             {

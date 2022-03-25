@@ -469,7 +469,11 @@ namespace Chummer
 
             _objMount.FreeCost = chkFreeItem.Checked;
 
-            DialogResult = DialogResult.OK;
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            });
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)

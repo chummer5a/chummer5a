@@ -62,7 +62,11 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
                     _strSelectedMartialArt = strSelectedId;
-                    DialogResult = DialogResult.OK;
+                    await this.DoThreadSafeAsync(x =>
+                    {
+                        x.DialogResult = DialogResult.OK;
+                        x.Close();
+                    });
                 }
             }
 

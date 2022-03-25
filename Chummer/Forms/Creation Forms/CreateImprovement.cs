@@ -775,7 +775,11 @@ namespace Chummer
             }
             else { Utils.BreakIfDebug(); }
 
-            DialogResult = DialogResult.OK;
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            });
         }
 
         /// <summary>

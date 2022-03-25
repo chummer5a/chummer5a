@@ -878,7 +878,11 @@ namespace Chummer
                 _objSpell.Extra = txtRestriction.Text;
             _objSpell.Duration = cboDuration.SelectedValue.ToString();
 
-            DialogResult = DialogResult.OK;
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            });
         }
 
         #endregion Methods

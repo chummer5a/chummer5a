@@ -372,7 +372,11 @@ namespace Chummer
                                   : txtText.Text,
                               Encoding.UTF8);
 
-            DialogResult = DialogResult.OK;
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            }, _objGenericToken);
         }
 
         private async Task GenerateXml(CancellationToken token = default)
@@ -535,7 +539,11 @@ namespace Chummer
                                   : txtText.Text,
                               Encoding.UTF8);
 
-            DialogResult = DialogResult.OK;
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            }, _objGenericToken);
         }
 
         #endregion JSON

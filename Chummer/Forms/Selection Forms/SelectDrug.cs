@@ -865,7 +865,11 @@ namespace Chummer
             BlackMarketDiscount = chkBlackMarketDiscount.Checked;
             Markup = nudMarkup.Value;
 
-            DialogResult = DialogResult.OK;
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            });
         }
 
         private bool _blnPopulatingGrades;

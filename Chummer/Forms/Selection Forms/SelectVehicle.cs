@@ -661,7 +661,11 @@ namespace Chummer
                             _decMarkup = nudMarkup.Value;
                             _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
 
-                            DialogResult = DialogResult.OK;
+                            await this.DoThreadSafeAsync(x =>
+                            {
+                                x.DialogResult = DialogResult.OK;
+                                x.Close();
+                            });
                         }
                     }
 
@@ -688,7 +692,11 @@ namespace Chummer
                         }
                         _decMarkup = nudMarkup.Value;
 
-                        DialogResult = DialogResult.OK;
+                        await this.DoThreadSafeAsync(x =>
+                        {
+                            x.DialogResult = DialogResult.OK;
+                            x.Close();
+                        });
                     }
                     break;
             }
@@ -707,7 +715,11 @@ namespace Chummer
             _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicle?.SelectSingleNode("category")?.Value;
             _decMarkup = nudMarkup.Value;
 
-            DialogResult = DialogResult.OK;
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            });
         }
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)

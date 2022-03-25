@@ -283,7 +283,11 @@ namespace Chummer
                 if (objXmlPower.RequirementsMet(_objCharacter, null, await LanguageManager.GetStringAsync("String_Power"), string.Empty, string.Empty, string.Empty, IgnoreLimits))
                 {
                     SelectedPower = strSelectedId;
-                    DialogResult = DialogResult.OK;
+                    await this.DoThreadSafeAsync(x =>
+                    {
+                        x.DialogResult = DialogResult.OK;
+                        x.Close();
+                    });
                 }
             }
         }

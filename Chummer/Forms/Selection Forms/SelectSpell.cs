@@ -66,7 +66,11 @@ namespace Chummer
             if (!string.IsNullOrEmpty(_strForceSpell))
             {
                 _strSelectedSpell = _strForceSpell;
-                DialogResult = DialogResult.OK;
+                await this.DoThreadSafeAsync(x =>
+                {
+                    x.DialogResult = DialogResult.OK;
+                    x.Close();
+                });
             }
             (bool blnCanTouchOnlySpellBeFree, bool blnCanGenericSpellBeFree) = await _objCharacter.AllowFreeSpellsAsync();
             _blnCanTouchOnlySpellBeFree = blnCanTouchOnlySpellBeFree;
@@ -487,7 +491,11 @@ namespace Chummer
                 ? cboCategory.SelectedValue?.ToString()
                 : _xmlBaseSpellDataNode.SelectSingleNode("/chummer/spells/spell[id = " + _strSelectedSpell.CleanXPath() + "]/category")?.Value ?? string.Empty;
             FreeBonus = chkFreeBonus.Checked;
-            DialogResult = DialogResult.OK;
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            });
         }
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)

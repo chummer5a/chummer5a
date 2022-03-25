@@ -371,8 +371,11 @@ namespace Chummer
                     objGroup.KarmaPoints += intBase;
                 }
 
-                DialogResult = DialogResult.OK;
-                Close();
+                await this.DoThreadSafeAsync(x =>
+                {
+                    x.DialogResult = DialogResult.OK;
+                    x.Close();
+                }, token);
             }
             else
             {
@@ -402,7 +405,7 @@ namespace Chummer
             string strNone = await LanguageManager.GetStringAsync("String_None");
             if (objXmlMetavariant != null)
             {
-                cmdOK.Enabled = true;
+                await cmdOK.DoThreadSafeAsync(x => x.Enabled = true, token);
                 if (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("forcecreature") == null)
                 {
                     string strText = ((await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("bodmin"))?.Value
