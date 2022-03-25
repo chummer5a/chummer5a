@@ -75,12 +75,12 @@ namespace Chummer
                         return; // we obviously cannot init
                     }
 
-                    nudInit.Value = objCharacter.InitiativeDice;
-                    txtName.Text = objCharacter.Name;
+                    await nudInit.DoThreadSafeAsync(x => x.Value = objCharacter.InitiativeDice);
+                    await txtName.DoThreadSafeAsync(x => x.Text = objCharacter.Name);
                     if (int.TryParse(
                             objCharacter.Initiative.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries)
                                         .FirstOrDefault(), out int intTemp))
-                        nudInitStart.Value = intTemp;
+                        await nudInitStart.DoThreadSafeAsync(x => x.Value = intTemp);
                     if (_character != null)
                     {
                         await _character.DisposeAsync();
@@ -111,22 +111,22 @@ namespace Chummer
         {
             if (_character != null)
             {
-                _character.Name = txtName.Text;
-                _character.InitPasses = (int)nudInit.Value;
+                _character.Name = await txtName.DoThreadSafeFuncAsync(x => x.Text);
+                _character.InitPasses = await nudInit.DoThreadSafeFuncAsync(x => x.ValueAsInt);
                 _character.Delayed = false;
-                _character.InitialInit = (int)nudInitStart.Value;
+                _character.InitialInit = await nudInitStart.DoThreadSafeFuncAsync(x => x.ValueAsInt);
             }
             else
             {
                 _character = new Character
                 {
-                    Name = txtName.Text,
-                    InitPasses = (int)nudInit.Value,
+                    Name = await txtName.DoThreadSafeFuncAsync(x => x.Text),
+                    InitPasses = await nudInit.DoThreadSafeFuncAsync(x => x.ValueAsInt),
                     Delayed = false,
-                    InitialInit = (int)nudInitStart.Value
+                    InitialInit = await nudInitStart.DoThreadSafeFuncAsync(x => x.ValueAsInt)
                 };
             }
-            if (chkAutoRollInit.Checked)
+            if (await chkAutoRollInit.DoThreadSafeFuncAsync(x => x.Checked))
             {
                 int intInitPasses = _character.InitPasses;
                 int intInitRoll = intInitPasses;
@@ -141,7 +141,7 @@ namespace Chummer
 
             _blnCharacterAdded = true;
             await parentControl.AddToken(_character);
-            Close();
+            await this.DoThreadSafeAsync(x => x.Close());
         }
     }
 }
