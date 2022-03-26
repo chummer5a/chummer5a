@@ -214,7 +214,10 @@ namespace Chummer
                                 using (_ = await Timekeeper.StartSyncronAsync("load_frm_career_databinding",
                                                                               op_load_frm_career))
                                 {
-                                    mnuSpecialAddBiowareSuite.Visible = CharacterObjectSettings.AllowBiowareSuites;
+                                    // Set the visibility of the Bioware Suites menu options.
+                                    await mnuCreateMenu.DoThreadSafeAsync(
+                                        () => mnuSpecialAddBiowareSuite.Visible
+                                            = CharacterObjectSettings.AllowBiowareSuites);
 
                                     txtGroupName.DoDataBinding("Text", CharacterObject, nameof(Character.GroupName));
                                     txtGroupNotes.DoDataBinding("Text", CharacterObject, nameof(Character.GroupNotes));
@@ -235,27 +238,34 @@ namespace Chummer
                                     txtAlias.DoDataBinding("Text", CharacterObject, nameof(Character.Alias));
                                     txtPlayerName.DoDataBinding("Text", CharacterObject, nameof(Character.PlayerName));
 
-                                    chkJoinGroup.Checked = CharacterObject.GroupMember;
+                                    await chkJoinGroup.DoThreadSafeAsync(x => x.Checked = CharacterObject.GroupMember);
                                     chkInitiationGroup.DoOneWayDataBinding("Enabled", CharacterObject,
                                                                            nameof(Character.GroupMember));
 
                                     // If the character has a mugshot, decode it and put it in the PictureBox.
                                     if (CharacterObject.Mugshots.Count > 0)
                                     {
-                                        nudMugshotIndex.Minimum = 1;
-                                        nudMugshotIndex.Maximum = CharacterObject.Mugshots.Count;
-                                        nudMugshotIndex.Value = Math.Max(CharacterObject.MainMugshotIndex, 0) + 1;
+                                        await nudMugshotIndex.DoThreadSafeAsync(x =>
+                                        {
+                                            x.Minimum = 1;
+                                            x.Maximum = CharacterObject.Mugshots.Count;
+                                            x.Value = Math.Max(CharacterObject.MainMugshotIndex, 0) + 1;
+                                        });
                                     }
                                     else
                                     {
-                                        nudMugshotIndex.Minimum = 0;
-                                        nudMugshotIndex.Maximum = 0;
-                                        nudMugshotIndex.Value = 0;
+                                        await nudMugshotIndex.DoThreadSafeAsync(x =>
+                                        {
+                                            x.Minimum = 0;
+                                            x.Maximum = 0;
+                                            x.Value = 0;
+                                        });
                                     }
 
-                                    lblNumMugshots.Text = await LanguageManager.GetStringAsync("String_Of") +
-                                                          CharacterObject.Mugshots.Count.ToString(
-                                                              GlobalSettings.CultureInfo);
+                                    string strNumMugshots = await LanguageManager.GetStringAsync("String_Of") +
+                                                            CharacterObject.Mugshots.Count.ToString(
+                                                                GlobalSettings.CultureInfo);
+                                    await lblNumMugshots.DoThreadSafeAsync(x => x.Text = strNumMugshots);
 
                                     nudStreetCred.DoDataBinding("Value", CharacterObject, nameof(Character.StreetCred));
                                     nudNotoriety.DoDataBinding("Value", CharacterObject, nameof(Character.Notoriety));
@@ -280,41 +290,36 @@ namespace Chummer
 
                                 if (!CharacterObjectSettings.BookEnabled("RF"))
                                 {
-                                    cmdAddLifestyle.SplitMenuStrip = null;
+                                    await cmdAddLifestyle.DoThreadSafeAsync(x => x.SplitMenuStrip = null);
                                 }
 
                                 if (!CharacterObjectSettings.BookEnabled("FA"))
                                 {
-                                    lblWildReputation.Visible = false;
-                                    nudWildReputation.Visible = false;
-                                    lblWildReputationTotal.Visible = false;
+                                    await lblWildReputation.DoThreadSafeAsync(x => x.Visible = false);
+                                    await nudWildReputation.DoThreadSafeAsync(x => x.Visible = false);
+                                    await lblWildReputationTotal.DoThreadSafeAsync(x => x.Visible = false);
                                     if (!CharacterObjectSettings.BookEnabled("SG"))
                                     {
-                                        lblAstralReputation.Visible = false;
-                                        nudAstralReputation.Visible = false;
-                                        lblAstralReputationTotal.Visible = false;
+                                        await lblAstralReputation.DoThreadSafeAsync(x => x.Visible = false);
+                                        await nudAstralReputation.DoThreadSafeAsync(x => x.Visible = false);
+                                        await lblAstralReputationTotal.DoThreadSafeAsync(x => x.Visible = false);
                                     }
                                 }
 
                                 if (!CharacterObjectSettings.EnableEnemyTracking)
                                 {
-                                    tabPeople.TabPages.Remove(tabEnemies);
+                                    await tabPeople.DoThreadSafeAsync(x => x.TabPages.Remove(tabEnemies));
                                 }
 
-                                splitKarmaNuyen.SplitterDistance = Math.Max(splitKarmaNuyen.SplitterDistance,
-                                                                            (splitKarmaNuyen.Width
-                                                                                - splitKarmaNuyen.SplitterWidth + 1)
-                                                                            / 2);
-                                splitMagician.SplitterDistance = Math.Max(splitMagician.SplitterDistance,
-                                                                          ((splitMagician.Height
-                                                                            - splitMagician.SplitterWidth)
-                                                                              * 2 + 2) / 3);
-                                splitTechnomancer.SplitterDistance = Math.Max(splitTechnomancer.SplitterDistance,
-                                                                              ((splitTechnomancer.Height
-                                                                                   - splitTechnomancer.SplitterWidth)
-                                                                               * 2
-                                                                               + 2)
-                                                                              / 3);
+                                await splitKarmaNuyen.DoThreadSafeAsync(
+                                    x => x.SplitterDistance
+                                        = Math.Max(x.SplitterDistance, (x.Width - x.SplitterWidth + 1) / 2));
+                                await splitMagician.DoThreadSafeAsync(x => x.SplitterDistance
+                                                                          = Math.Max(x.SplitterDistance,
+                                                                              ((x.Height - x.SplitterWidth) * 2 + 2) / 3));
+                                await splitTechnomancer.DoThreadSafeAsync(
+                                    x => x.SplitterDistance
+                                        = Math.Max(x.SplitterDistance, ((x.Height - x.SplitterWidth) * 2 + 2) / 3));
 
                                 using (_ = await Timekeeper.StartSyncronAsync(
                                            "load_frm_career_refresh", op_load_frm_career))
@@ -331,9 +336,8 @@ namespace Chummer
                                     RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
                                     RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
                                     RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
-                                    mnuSpecialPossess.Visible =
-                                        CharacterObject.CritterPowers.Any(
-                                            x => x.Name == "Inhabitation" || x.Name == "Possession");
+                                    bool blnVisible = await CharacterObject.CritterPowers.AnyAsync(x => x.Name == "Inhabitation" || x.Name == "Possession");
+                                    await mnuCreateMenu.DoThreadSafeAsync(() => mnuSpecialPossess.Visible = blnVisible);
                                     RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
                                     RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
                                     RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView,
@@ -361,15 +365,15 @@ namespace Chummer
                                 using (_ = await Timekeeper.StartSyncronAsync("load_frm_career_sortAndCallbacks",
                                                                               op_load_frm_career))
                                 {
-                                    treWeapons.SortCustomOrder();
-                                    treArmor.SortCustomOrder();
-                                    treGear.SortCustomOrder();
-                                    treLifestyles.SortCustomOrder();
-                                    treCustomDrugs.SortCustomOrder();
-                                    treCyberware.SortCustomOrder();
-                                    treVehicles.SortCustomOrder();
-                                    treCritterPowers.SortCustomOrder();
-                                    treImprovements.SortCustomOrder();
+                                    await treWeapons.DoThreadSafeAsync(x => x.SortCustomOrder());
+                                    await treArmor.DoThreadSafeAsync(x => x.SortCustomOrder());
+                                    await treGear.DoThreadSafeAsync(x => x.SortCustomOrder());
+                                    await treLifestyles.DoThreadSafeAsync(x => x.SortCustomOrder());
+                                    await treCustomDrugs.DoThreadSafeAsync(x => x.SortCustomOrder());
+                                    await treCyberware.DoThreadSafeAsync(x => x.SortCustomOrder());
+                                    await treVehicles.DoThreadSafeAsync(x => x.SortCustomOrder());
+                                    await treCritterPowers.DoThreadSafeAsync(x => x.SortCustomOrder());
+                                    await treImprovements.DoThreadSafeAsync(x => x.SortCustomOrder());
 
                                     // Set up events that would change various lists
                                     CharacterObject.Spells.CollectionChanged += SpellCollectionChanged;
@@ -456,8 +460,8 @@ namespace Chummer
                                         }
                                         else
                                         {
-                                            cboTradition.Visible = false;
-                                            lblTraditionLabel.Visible = false;
+                                            await cboTradition.DoThreadSafeAsync(x => x.Visible = false);
+                                            await lblTraditionLabel.DoThreadSafeAsync(x => x.Visible = false);
                                         }
                                     }
 
@@ -552,54 +556,70 @@ namespace Chummer
                                             cboSpiritCombat.DoDataBinding(
                                                 "SelectedValue", CharacterObject.MagicTradition,
                                                 nameof(Tradition.SpiritCombat));
-                                            lblSpiritCombat.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                            cboSpiritCombat.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                            cboSpiritCombat.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
+                                            await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG);
+                                            await cboSpiritCombat.DoThreadSafeAsync(x =>
+                                            {
+                                                x.Visible
+                                                    = CharacterObject.MagicTradition.Type == TraditionType.MAG;
+                                                x.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
+                                            });
 
                                             await cboSpiritDetection.PopulateWithListItemsAsync(lstSpirit);
                                             cboSpiritDetection.DoDataBinding(
                                                 "SelectedValue", CharacterObject.MagicTradition,
                                                 nameof(Tradition.SpiritDetection));
-                                            lblSpiritDetection.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                            cboSpiritDetection.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                            cboSpiritDetection.Enabled
-                                                = CharacterObject.MagicTradition.IsCustomTradition;
+                                            await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG);
+                                            await cboSpiritDetection.DoThreadSafeAsync(x =>
+                                            {
+                                                x.Visible
+                                                    = CharacterObject.MagicTradition.Type == TraditionType.MAG;
+                                                x.Enabled
+                                                    = CharacterObject.MagicTradition.IsCustomTradition;
+                                            });
 
                                             await cboSpiritHealth.PopulateWithListItemsAsync(lstSpirit);
                                             cboSpiritHealth.DoDataBinding(
                                                 "SelectedValue", CharacterObject.MagicTradition,
                                                 nameof(Tradition.SpiritHealth));
-                                            lblSpiritHealth.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                            cboSpiritHealth.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                            cboSpiritHealth.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
+                                            await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG);
+                                            await cboSpiritDetection.DoThreadSafeAsync(x =>
+                                            {
+                                                x.Visible
+                                                    = CharacterObject.MagicTradition.Type == TraditionType.MAG;
+                                                x.Enabled
+                                                    = CharacterObject.MagicTradition.IsCustomTradition;
+                                            });
 
                                             await cboSpiritIllusion.PopulateWithListItemsAsync(lstSpirit);
                                             cboSpiritIllusion.DoDataBinding(
                                                 "SelectedValue", CharacterObject.MagicTradition,
                                                 nameof(Tradition.SpiritIllusion));
-                                            lblSpiritIllusion.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                            cboSpiritIllusion.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                            cboSpiritIllusion.Enabled
-                                                = CharacterObject.MagicTradition.IsCustomTradition;
+                                            await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG);
+                                            await cboSpiritIllusion.DoThreadSafeAsync(x =>
+                                            {
+                                                x.Visible
+                                                    = CharacterObject.MagicTradition.Type == TraditionType.MAG;
+                                                x.Enabled
+                                                    = CharacterObject.MagicTradition.IsCustomTradition;
+                                            });
 
                                             await cboSpiritManipulation.PopulateWithListItemsAsync(lstSpirit);
                                             cboSpiritManipulation.DoDataBinding(
                                                 "SelectedValue", CharacterObject.MagicTradition,
                                                 nameof(Tradition.SpiritManipulation));
-                                            lblSpiritManipulation.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                            cboSpiritManipulation.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                            cboSpiritManipulation.Enabled
-                                                = CharacterObject.MagicTradition.IsCustomTradition;
+                                            await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG);
+                                            await cboSpiritManipulation.DoThreadSafeAsync(x =>
+                                            {
+                                                x.Visible
+                                                    = CharacterObject.MagicTradition.Type == TraditionType.MAG;
+                                                x.Enabled
+                                                    = CharacterObject.MagicTradition.IsCustomTradition;
+                                            });
                                         }
                                     }
 
@@ -645,8 +665,8 @@ namespace Chummer
                                         }
                                         else
                                         {
-                                            cboStream.Visible = false;
-                                            lblStreamLabel.Visible = false;
+                                            await cboStream.DoThreadSafeAsync(x => x.Visible = false);
+                                            await lblStreamLabel.DoThreadSafeAsync(x => x.Visible = false);
                                         }
                                     }
                                 }
@@ -654,7 +674,7 @@ namespace Chummer
                                 using (_ = await Timekeeper.StartSyncronAsync("load_frm_career_shapeshifter",
                                                                               op_load_frm_career))
                                 {
-                                    cboAttributeCategory.Visible = CharacterObject.MetatypeCategory == "Shapeshifter";
+                                    await cboAttributeCategory.DoThreadSafeAsync(x => x.Visible = CharacterObject.MetatypeCategory == "Shapeshifter");
                                     if (CharacterObject.MetatypeCategory == "Shapeshifter")
                                     {
                                         XPathNavigator objDoc
@@ -688,7 +708,7 @@ namespace Chummer
                                             lstAttributeCategories.Sort(CompareListItems.CompareNames);
                                             await cboAttributeCategory.PopulateWithListItemsAsync(
                                                 lstAttributeCategories);
-                                            cboAttributeCategory.SelectedValue = "Standard";
+                                            await cboAttributeCategory.DoThreadSafeAsync(x => x.SelectedValue = "Standard");
                                         }
                                     }
 
@@ -723,19 +743,25 @@ namespace Chummer
                                                                               op_load_frm_career))
                                 {
                                     // Select the Magician's Tradition.
-                                    if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
-                                        cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceIDString;
-                                    else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
-                                        cboTradition.SelectedIndex = 0;
+                                    await cboTradition.DoThreadSafeAsync(x =>
+                                    {
+                                        if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
+                                            x.SelectedValue = CharacterObject.MagicTradition.SourceIDString;
+                                        else if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                                            x.SelectedIndex = 0;
+                                    });
 
                                     txtTraditionName.DoDataBinding("Text", CharacterObject.MagicTradition,
                                                                    nameof(Tradition.Name));
 
-                                    // Select the Technomancer's Stream.
-                                    if (CharacterObject.MagicTradition.Type == TraditionType.RES)
-                                        cboStream.SelectedValue = CharacterObject.MagicTradition.SourceIDString;
-                                    else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
-                                        cboStream.SelectedIndex = 0;
+                                    await cboStream.DoThreadSafeAsync(x =>
+                                    {
+                                        // Select the Technomancer's Stream.
+                                        if (CharacterObject.MagicTradition.Type == TraditionType.RES)
+                                            x.SelectedValue = CharacterObject.MagicTradition.SourceIDString;
+                                        else if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                                            x.SelectedIndex = 0;
+                                    });
                                 }
 
                                 using (CustomActivity op_load_frm_career_longloads
@@ -770,31 +796,49 @@ namespace Chummer
                                 using (_ = await Timekeeper.StartSyncronAsync("load_frm_career_databindingCallbacks2",
                                                                               op_load_frm_career))
                                 {
-                                    treGear.ItemDrag += treGear_ItemDrag;
-                                    treGear.DragEnter += treGear_DragEnter;
-                                    treGear.DragDrop += treGear_DragDrop;
+                                    await treGear.DoThreadSafeAsync(x =>
+                                    {
+                                        x.ItemDrag += treGear_ItemDrag;
+                                        x.DragEnter += treGear_DragEnter;
+                                        x.DragDrop += treGear_DragDrop;
+                                    });
 
                                     /*
-                                    treLifestyles.ItemDrag += treLifestyles_ItemDrag;
-                                    treLifestyles.DragEnter += treLifestyles_DragEnter;
-                                    treLifestyles.DragDrop += treLifestyles_DragDrop;
+                                    treLifestyles.DoThreadSafe(x =>
+                                    {
+                                        x.ItemDrag += treLifestyles_ItemDrag;
+                                        x.DragEnter += treLifestyles_DragEnter;
+                                        x.DragDrop += treLifestyles_DragDrop;
+                                    });
                                     */
 
-                                    treArmor.ItemDrag += treArmor_ItemDrag;
-                                    treArmor.DragEnter += treArmor_DragEnter;
-                                    treArmor.DragDrop += treArmor_DragDrop;
+                                    await treArmor.DoThreadSafeAsync(x =>
+                                    {
+                                        x.ItemDrag += treArmor_ItemDrag;
+                                        x.DragEnter += treArmor_DragEnter;
+                                        x.DragDrop += treArmor_DragDrop;
+                                    });
 
-                                    treWeapons.ItemDrag += treWeapons_ItemDrag;
-                                    treWeapons.DragEnter += treWeapons_DragEnter;
-                                    treWeapons.DragDrop += treWeapons_DragDrop;
+                                    await treWeapons.DoThreadSafeAsync(x =>
+                                    {
+                                        x.ItemDrag += treWeapons_ItemDrag;
+                                        x.DragEnter += treWeapons_DragEnter;
+                                        x.DragDrop += treWeapons_DragDrop;
+                                    });
 
-                                    treVehicles.ItemDrag += treVehicles_ItemDrag;
-                                    treVehicles.DragEnter += treVehicles_DragEnter;
-                                    treVehicles.DragDrop += treVehicles_DragDrop;
+                                    await treVehicles.DoThreadSafeAsync(x =>
+                                    {
+                                        x.ItemDrag += treVehicles_ItemDrag;
+                                        x.DragEnter += treVehicles_DragEnter;
+                                        x.DragDrop += treVehicles_DragDrop;
+                                    });
 
-                                    treImprovements.ItemDrag += treImprovements_ItemDrag;
-                                    treImprovements.DragEnter += treImprovements_DragEnter;
-                                    treImprovements.DragDrop += treImprovements_DragDrop;
+                                    await treVehicles.DoThreadSafeAsync(x =>
+                                    {
+                                        x.ItemDrag += treImprovements_ItemDrag;
+                                        x.DragEnter += treImprovements_DragEnter;
+                                        x.DragDrop += treImprovements_DragDrop;
+                                    });
 
                                     // Merge the ToolStrips.
                                     ToolStripManager.RevertMerge("toolStrip");
@@ -1085,9 +1129,9 @@ namespace Chummer
                             {
                                 await SetTooltips();
 
-                                RefreshAttributes(pnlAttributes, null, lblAttributes, -1,
-                                                  lblAttributesAug.PreferredWidth,
-                                                  lblAttributesMetatype.PreferredWidth);
+                                await RefreshAttributes(pnlAttributes, null, lblAttributes, -1,
+                                                  await lblAttributesAug.DoThreadSafeFuncAsync(x => x.PreferredWidth),
+                                                  await lblAttributesMetatype.DoThreadSafeFuncAsync(x => x.PreferredWidth));
 
                                 CharacterObject.AttributeSection.Attributes.CollectionChanged
                                     += AttributeCollectionChanged;
@@ -1259,9 +1303,9 @@ namespace Chummer
             RefreshSustainedSpells(flpSustainedSpells, flpSustainedComplexForms, flpSustainedCritterPowers, chkPsycheActiveMagician, chkPsycheActiveTechnomancer, notifyCollectionChangedEventArgs);
         }
 
-        private void AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private async void AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            RefreshAttributes(pnlAttributes, notifyCollectionChangedEventArgs, lblAttributes, -1, lblAttributesAug.PreferredWidth, lblAttributesMetatype.PreferredWidth);
+            await RefreshAttributes(pnlAttributes, notifyCollectionChangedEventArgs, lblAttributes, -1, await lblAttributesAug.DoThreadSafeFuncAsync(x => x.PreferredWidth), await lblAttributesMetatype.DoThreadSafeFuncAsync(x => x.PreferredWidth));
         }
 
         private void ArmorCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -3584,10 +3628,8 @@ namespace Chummer
                 Character objMerge = new Character {FileName = CharacterObject.FileName};
                 try
                 {
-                    using (Program.MainProgressBar = new LoadingBar {CharacterFile = objMerge.FileName})
+                    using (Program.MainProgressBar = await Program.CreateAndShowProgressBarAsync(objMerge.FileName, 36))
                     {
-                        await Program.MainProgressBar.ResetAsync(36);
-                        await Program.MainProgressBar.DoThreadSafeAsync(x => x.Show());
                         await objMerge.LoadAsync();
                         await Program.MainProgressBar.PerformStepAsync(await LanguageManager.GetStringAsync("String_UI"));
                         objMerge.Possessed = true;

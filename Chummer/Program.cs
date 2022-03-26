@@ -505,9 +505,7 @@ namespace Chummer
                     {
                         // Attempt to cache all XML files that are used the most.
                         using (_ = Timekeeper.StartSyncron("cache_load", null, CustomActivity.OperationType.DependencyOperation, Utils.CurrentChummerVersion.ToString(3)))
-                        using (MainProgressBar
-                                   = CreateAndShowProgressBar(
-                                       Application.ProductName, Utils.BasicDataFileNames.Count))
+                        using (MainProgressBar = CreateAndShowProgressBar(Application.ProductName, Utils.BasicDataFileNames.Count))
                         {
                             Task[] tskCachingTasks = new Task[Utils.BasicDataFileNames.Count];
                             for (int i = 0; i < tskCachingTasks.Length; ++i)

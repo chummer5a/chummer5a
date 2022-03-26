@@ -294,17 +294,17 @@ namespace Chummer.UI.Table
         private void UpdateCell(TableColumn<T> column, TableCell cell, T item)
         {
             Func<T, object> funcExtractor = column.Extractor;
-            cell.UpdateValue(funcExtractor == null ? item : funcExtractor(item));
+            cell.DoThreadSafe(x => x.UpdateValue(funcExtractor == null ? item : funcExtractor(item)));
             Func<T, string> funcTooltipExtractor = column.ToolTipExtractor;
             ToolTip tooltip = ToolTip;
             if (tooltip != null && funcTooltipExtractor != null)
             {
-                Control content = cell.Content;
-                string strText = funcTooltipExtractor(item);
+                Control content = cell.DoThreadSafeFunc(x => x.Content);
+                string strText = funcTooltipExtractor(item).CleanForHtml();
                 if (content != null)
-                    content.DoThreadSafe(x => tooltip.SetToolTip(content, strText.CleanForHtml()));
+                    content.DoThreadSafe(x => tooltip.SetToolTip(x, strText));
                 else
-                    tooltip.SetToolTip(cell, strText.CleanForHtml());
+                    cell.DoThreadSafe(x => tooltip.SetToolTip(x, strText));
             }
         }
 

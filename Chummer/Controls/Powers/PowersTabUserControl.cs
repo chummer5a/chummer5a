@@ -274,114 +274,143 @@ namespace Chummer.UI.Powers
 
         private void InitializeTable()
         {
-            _table = new TableView<Power>
+            _table = this.DoThreadSafeFunc(() => new TableView<Power>
             {
                 Dock = DockStyle.Top,
                 ToolTip = _tipTooltip
-            };
+            });
             // create columns
-            TableColumn<Power> nameColumn = new TableColumn<Power>(() => new TextTableCell())
-            {
-                Text = "Power",
-                Extractor = (power => power.CurrentDisplayName),
-                Tag = "String_Power",
-                Sorter = (name1, name2) => string.Compare((string)name1, (string)name2, GlobalSettings.CultureInfo, CompareOptions.Ordinal)
-            };
+            TableColumn<Power> nameColumn = this.DoThreadSafeFunc(
+                () => new TableColumn<Power>(() => new TextTableCell())
+                {
+                    Text = "Power",
+                    Extractor = (power => power.CurrentDisplayName),
+                    Tag = "String_Power",
+                    Sorter = (name1, name2) =>
+                        string.Compare((string) name1, (string) name2, GlobalSettings.CultureInfo,
+                                       CompareOptions.Ordinal)
+                });
             nameColumn.AddDependency(nameof(Power.CurrentDisplayName));
 
-            TableColumn<Power> actionColumn = new TableColumn<Power>(() => new TextTableCell())
-            {
-                Text = "Action",
-                Extractor = (power => power.DisplayAction),
-                Tag = "ColumnHeader_Action",
-                Sorter = (action1, action2) => string.Compare((string)action1, (string)action2, GlobalSettings.CultureInfo, CompareOptions.Ordinal)
-            };
+            TableColumn<Power> actionColumn = this.DoThreadSafeFunc(
+                () => new TableColumn<Power>(() => new TextTableCell())
+                {
+                    Text = "Action",
+                    Extractor = (power => power.DisplayAction),
+                    Tag = "ColumnHeader_Action",
+                    Sorter = (action1, action2) =>
+                        string.Compare((string) action1, (string) action2, GlobalSettings.CultureInfo,
+                                       CompareOptions.Ordinal)
+                });
             actionColumn.AddDependency(nameof(Power.DisplayAction));
 
-            TableColumn<Power> ratingColumn = new TableColumn<Power>(() => new SpinnerTableCell<Power>(_table)
-            {
-                EnabledExtractor = (p => p.LevelsEnabled),
-                MaxExtractor = (p => Math.Max(p.TotalMaximumLevels - p.FreeLevels, 0)),
-                ValueUpdater = (p, newRating) =>
-                {
-                    int delta = ((int)newRating) - p.Rating;
-                    if (delta != 0)
-                    {
-                        p.Rating += delta;
-                    }
-                },
-                MinExtractor = (p => 0),
-                ValueGetter = (p => p.Rating)
-            })
-            {
-                Text = "Rating",
-                Tag = "String_Rating",
-                Sorter = (o1, o2) =>
-                {
-                    if (o1 is Power objPower1 && o2 is Power objPower2)
-                        return objPower1.Rating - objPower2.Rating;
-                    string strMessage = "Can't sort an Object of Type " + o1.GetType() +
-                                        " against another one of Type " + o2.GetType() + " in the ratingColumn." +
-                                        Environment.NewLine + "Both objects SHOULD be of the type \"Power\".";
-                    throw new ArgumentException(strMessage, nameof(o1));
-                }
-            };
+            TableColumn<Power> ratingColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
+                                                                        () => new SpinnerTableCell<Power>(_table)
+                                                                        {
+                                                                            EnabledExtractor = (p => p.LevelsEnabled),
+                                                                            MaxExtractor = (p =>
+                                                                                Math.Max(
+                                                                                    p.TotalMaximumLevels - p.FreeLevels,
+                                                                                    0)),
+                                                                            ValueUpdater = (p, newRating) =>
+                                                                            {
+                                                                                int delta = ((int) newRating)
+                                                                                    - p.Rating;
+                                                                                if (delta != 0)
+                                                                                {
+                                                                                    p.Rating += delta;
+                                                                                }
+                                                                            },
+                                                                            MinExtractor = (p => 0),
+                                                                            ValueGetter = (p => p.Rating)
+                                                                        })
+                                                                    {
+                                                                        Text = "Rating",
+                                                                        Tag = "String_Rating",
+                                                                        Sorter = (o1, o2) =>
+                                                                        {
+                                                                            if (o1 is Power objPower1
+                                                                                && o2 is Power objPower2)
+                                                                                return objPower1.Rating
+                                                                                    - objPower2.Rating;
+                                                                            string strMessage
+                                                                                = "Can't sort an Object of Type "
+                                                                                + o1.GetType() +
+                                                                                " against another one of Type "
+                                                                                + o2.GetType() + " in the ratingColumn."
+                                                                                +
+                                                                                Environment.NewLine
+                                                                                + "Both objects SHOULD be of the type \"Power\".";
+                                                                            throw new ArgumentException(
+                                                                                strMessage, nameof(o1));
+                                                                        }
+                                                                    });
 
             ratingColumn.AddDependency(nameof(Power.LevelsEnabled));
             ratingColumn.AddDependency(nameof(Power.FreeLevels));
             ratingColumn.AddDependency(nameof(Power.TotalMaximumLevels));
             ratingColumn.AddDependency(nameof(Power.TotalRating));
-            TableColumn<Power> totalRatingColumn = new TableColumn<Power>(() => new TextTableCell())
-            {
-                Text = "Total Rating",
-                Extractor = (power => power.TotalRating),
-                Tag = "String_TotalRating",
-                Sorter = (o1, o2) =>
+            TableColumn<Power> totalRatingColumn = this.DoThreadSafeFunc(
+                () => new TableColumn<Power>(() => new TextTableCell())
                 {
-                    if (o1 is Power objPower1 && o2 is Power objPower2)
-                        return objPower1.TotalRating - objPower2.TotalRating;
-                    string strMessage = "Can't sort an Object of Type " + o1.GetType() +
-                                        " against another one of Type " + o2.GetType() + " in the totalRatingColumn." +
-                                        Environment.NewLine + "Both objects SHOULD be of the type \"Power\".";
-                    throw new ArgumentException(strMessage, nameof(o1));
-                }
-            };
+                    Text = "Total Rating",
+                    Extractor = (power => power.TotalRating),
+                    Tag = "String_TotalRating",
+                    Sorter = (o1, o2) =>
+                    {
+                        if (o1 is Power objPower1 && o2 is Power objPower2)
+                            return objPower1.TotalRating - objPower2.TotalRating;
+                        string strMessage = "Can't sort an Object of Type " + o1.GetType() +
+                                            " against another one of Type " + o2.GetType()
+                                            + " in the totalRatingColumn." +
+                                            Environment.NewLine + "Both objects SHOULD be of the type \"Power\".";
+                        throw new ArgumentException(strMessage, nameof(o1));
+                    }
+                });
             totalRatingColumn.AddDependency(nameof(Power.TotalRating));
 
-            TableColumn<Power> powerPointsColumn = new TableColumn<Power>(() => new TextTableCell())
-            {
-                Text = "Power Points",
-                Extractor = (power => power.DisplayPoints),
-                Tag = "ColumnHeader_Power_Points",
-                ToolTipExtractor = (item => item.ToolTip)
-            };
+            TableColumn<Power> powerPointsColumn = this.DoThreadSafeFunc(
+                () => new TableColumn<Power>(() => new TextTableCell())
+                {
+                    Text = "Power Points",
+                    Extractor = (power => power.DisplayPoints),
+                    Tag = "ColumnHeader_Power_Points",
+                    ToolTipExtractor = (item => item.ToolTip)
+                });
             powerPointsColumn.AddDependency(nameof(Power.DisplayPoints));
             powerPointsColumn.AddDependency(nameof(Power.ToolTip));
 
-            TableColumn<Power> sourceColumn = new TableColumn<Power>(() => new TextTableCell
-            {
-                Cursor = Cursors.Hand
-            })
-            {
-                Text = "Source",
-                Extractor = (power => power.SourceDetail),
-                Tag = "Label_Source",
-                ToolTipExtractor = (item => item.SourceDetail.LanguageBookTooltip)
-            };
+            TableColumn<Power> sourceColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(() => new TextTableCell
+                                                                    {
+                                                                        Cursor = Cursors.Hand
+                                                                    })
+                                                                    {
+                                                                        Text = "Source",
+                                                                        Extractor = (power => power.SourceDetail),
+                                                                        Tag = "Label_Source",
+                                                                        ToolTipExtractor = (item =>
+                                                                            item.SourceDetail.LanguageBookTooltip)
+                                                                    });
             powerPointsColumn.AddDependency(nameof(Power.Source));
 
-            TableColumn<Power> adeptWayColumn = new TableColumn<Power>(() => new CheckBoxTableCell<Power>
-            {
-                ValueGetter = p => p.DiscountedAdeptWay,
-                ValueUpdater = (p, check) => p.DiscountedAdeptWay = check,
-                VisibleExtractor = p => p.AdeptWayDiscountEnabled,
-                EnabledExtractor = p => p.CharacterObject.AllowAdeptWayPowerDiscount || p.DiscountedAdeptWay,
-                Alignment = Alignment.Center
-            })
-            {
-                Text = "Adept Way",
-                Tag = "Checkbox_Power_AdeptWay"
-            };
+            TableColumn<Power> adeptWayColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
+                                                                          () => new CheckBoxTableCell<Power>
+                                                                          {
+                                                                              ValueGetter = p => p.DiscountedAdeptWay,
+                                                                              ValueUpdater = (p, check) =>
+                                                                                  p.DiscountedAdeptWay = check,
+                                                                              VisibleExtractor = p =>
+                                                                                  p.AdeptWayDiscountEnabled,
+                                                                              EnabledExtractor = p =>
+                                                                                  p.CharacterObject
+                                                                                      .AllowAdeptWayPowerDiscount
+                                                                                  || p.DiscountedAdeptWay,
+                                                                              Alignment = Alignment.Center
+                                                                          })
+                                                                      {
+                                                                          Text = "Adept Way",
+                                                                          Tag = "Checkbox_Power_AdeptWay"
+                                                                      });
             adeptWayColumn.AddDependency(nameof(Power.DiscountedAdeptWay));
             adeptWayColumn.AddDependency(nameof(Power.AdeptWayDiscountEnabled));
             adeptWayColumn.AddDependency(nameof(Character.AllowAdeptWayPowerDiscount));
@@ -401,69 +430,105 @@ namespace Chummer.UI.Powers
             geasColumn.AddDependency(nameof(Power.DiscountedGeas));
             */
 
-            TableColumn<Power> noteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(this.DoThreadSafeFunc(() => new PictureBox
-            {
-                Image = Resources.note_edit,
-                Size = GetImageSize(Resources.note_edit)
-            }))
-            {
-                ClickHandler = async p =>
-                {
-                    using (ThreadSafeForm<EditNotes> frmPowerNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(p.Notes, p.NotesColor)))
-                    {
-                        if (await frmPowerNotes.ShowDialogSafeAsync(_objCharacter) == DialogResult.OK)
-                            p.Notes = frmPowerNotes.MyForm.Notes;
-                    }
-                },
-                Alignment = Alignment.Center
-            })
-            {
-                Text = "Notes",
-                Tag = "ColumnHeader_Notes",
-                ToolTipExtractor = (p =>
-                {
-                    string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes");
-                    if (!string.IsNullOrEmpty(p.Notes))
-                        strTooltip += Environment.NewLine + Environment.NewLine + p.Notes.RtfToPlainText();
-                    return strTooltip.WordWrap();
-                })
-            };
+            TableColumn<Power> noteColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
+                                                                      () => new ButtonTableCell<Power>(new PictureBox
+                                                                      {
+                                                                          Image = Resources.note_edit,
+                                                                          Size = GetImageSize(Resources.note_edit)
+                                                                      })
+                                                                      {
+                                                                          ClickHandler = async p =>
+                                                                          {
+                                                                              using (ThreadSafeForm<EditNotes>
+                                                                               frmPowerNotes
+                                                                               = await ThreadSafeForm<EditNotes>
+                                                                                   .GetAsync(
+                                                                                       () => new EditNotes(
+                                                                                           p.Notes, p.NotesColor)))
+                                                                              {
+                                                                                  if (await frmPowerNotes
+                                                                                       .ShowDialogSafeAsync(
+                                                                                           _objCharacter)
+                                                                                   == DialogResult.OK)
+                                                                                      p.Notes = frmPowerNotes.MyForm
+                                                                                          .Notes;
+                                                                              }
+                                                                          },
+                                                                          Alignment = Alignment.Center
+                                                                      })
+                                                                  {
+                                                                      Text = "Notes",
+                                                                      Tag = "ColumnHeader_Notes",
+                                                                      ToolTipExtractor = (p =>
+                                                                      {
+                                                                          string strTooltip
+                                                                              = LanguageManager.GetString(
+                                                                                  "Tip_Power_EditNotes");
+                                                                          if (!string.IsNullOrEmpty(p.Notes))
+                                                                              strTooltip += Environment.NewLine
+                                                                                  + Environment.NewLine
+                                                                                  + p.Notes.RtfToPlainText();
+                                                                          return strTooltip.WordWrap();
+                                                                      })
+                                                                  });
             noteColumn.AddDependency(nameof(Power.Notes));
 
-            TableColumn<Power> deleteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(this.DoThreadSafeFunc(() => new Button
-            {
-                Text = LanguageManager.GetString("String_Delete"),
-                Tag = "String_Delete",
-                Dock = DockStyle.Fill
-            }))
-            {
-                ClickHandler = async p =>
-                {
-                    //Cache the parentform prior to deletion, otherwise the relationship is broken.
-                    Form frmParent = await this.DoThreadSafeFuncAsync(x => x.ParentForm);
-                    if (p.FreeLevels > 0)
-                    {
-                        string strExtra = p.Extra;
-                        string strImprovementSourceName = (await ImprovementManager.GetCachedImprovementListForValueOfAsync(p.CharacterObject, Improvement.ImprovementType.AdeptPowerFreePoints, p.Name))
-                                                           .Find(x => x.UniqueName == strExtra)?.SourceName;
-                        if (!string.IsNullOrWhiteSpace(strImprovementSourceName))
-                        {
-                            Gear objGear = p.CharacterObject.Gear.FindById(strImprovementSourceName);
-                            if (objGear?.Bonded == true)
-                            {
-                                objGear.Equipped = false;
-                                objGear.Extra = string.Empty;
-                            }
-                        }
-                    }
-                    p.DeletePower();
-                    p.UnbindPower();
+            TableColumn<Power> deleteColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
+                                                                        () => new ButtonTableCell<Power>(
+                                                                            new Button
+                                                                            {
+                                                                                Text = LanguageManager.GetString(
+                                                                                    "String_Delete"),
+                                                                                Tag = "String_Delete",
+                                                                                Dock = DockStyle.Fill
+                                                                            })
+                                                                        {
+                                                                            ClickHandler = async p =>
+                                                                            {
+                                                                                //Cache the parentform prior to deletion, otherwise the relationship is broken.
+                                                                                Form frmParent
+                                                                                    = await this.DoThreadSafeFuncAsync(
+                                                                                        x => x.ParentForm);
+                                                                                if (p.FreeLevels > 0)
+                                                                                {
+                                                                                    string strExtra = p.Extra;
+                                                                                    string strImprovementSourceName
+                                                                                        = (await ImprovementManager
+                                                                                            .GetCachedImprovementListForValueOfAsync(
+                                                                                                p.CharacterObject,
+                                                                                                Improvement
+                                                                                                    .ImprovementType
+                                                                                                    .AdeptPowerFreePoints,
+                                                                                                p.Name))
+                                                                                        .Find(x => x.UniqueName
+                                                                                            == strExtra)
+                                                                                        ?.SourceName;
+                                                                                    if (!string.IsNullOrWhiteSpace(
+                                                                                        strImprovementSourceName))
+                                                                                    {
+                                                                                        Gear objGear
+                                                                                            = p.CharacterObject.Gear
+                                                                                                .FindById(
+                                                                                                    strImprovementSourceName);
+                                                                                        if (objGear?.Bonded == true)
+                                                                                        {
+                                                                                            objGear.Equipped = false;
+                                                                                            objGear.Extra
+                                                                                                = string.Empty;
+                                                                                        }
+                                                                                    }
+                                                                                }
 
-                    if (frmParent is CharacterShared objParent)
-                        objParent.IsCharacterUpdateRequested = true;
-                },
-                EnabledExtractor = (p => p.FreeLevels == 0)
-            });
+                                                                                p.DeletePower();
+                                                                                p.UnbindPower();
+
+                                                                                if (frmParent is CharacterShared
+                                                                                 objParent)
+                                                                                    objParent.IsCharacterUpdateRequested
+                                                                                        = true;
+                                                                            },
+                                                                            EnabledExtractor = (p => p.FreeLevels == 0)
+                                                                        }));
             deleteColumn.AddDependency(nameof(Power.FreeLevels));
 
             _table.Columns.Add(nameColumn);

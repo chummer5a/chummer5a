@@ -33,11 +33,17 @@ namespace Chummer.UI.Table
             _button = button ?? throw new ArgumentNullException(nameof(button));
             button.Click += OnButtonClick;
             SuspendLayout();
-            Controls.Add(button);
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
-            button.PerformLayout();
-            ResumeLayout(false);
+            try
+            {
+                Controls.Add(button);
+                this.UpdateLightDarkMode();
+                this.TranslateWinForm();
+                button.PerformLayout();
+            }
+            finally
+            {
+                ResumeLayout(false);
+            }
         }
 
         private async void OnButtonClick(object sender, EventArgs e)

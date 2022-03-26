@@ -459,21 +459,21 @@ namespace Chummer
                             0, new ListItem(string.Empty, await LanguageManager.GetStringAsync("String_All")));
 
                         int intOldSelectedIndex = await cboFile.DoThreadSafeFuncAsync(x => x.SelectedIndex, token);
-                        await Task.WhenAll(
-                            cboFile.PopulateWithListItemsAsync(_lstFileNamesWithItems, token).ContinueWith(
-                                y => cboFile.DoThreadSafeAsync(x =>
-                                {
-                                    try
-                                    {
-                                        x.SelectedIndex = Math.Max(intOldSelectedIndex, 0);
-                                    }
-                                    // For some reason, some unit tests will fire this exception even when _lstFileNamesWithItems is explicitly checked for having enough items
-                                    catch (ArgumentOutOfRangeException)
-                                    {
-                                        x.SelectedIndex = -1;
-                                    }
-                                }, token), token).Unwrap(),
-                            lstItems.PopulateWithListItemsAsync(_lstItems, token).ContinueWith(y => lstItems.DoThreadSafeAsync(x => x.SelectedIndex = -1, token), token).Unwrap());
+                        await cboFile.PopulateWithListItemsAsync(_lstFileNamesWithItems, token);
+                        await cboFile.DoThreadSafeAsync(x =>
+                        {
+                            try
+                            {
+                                x.SelectedIndex = Math.Max(intOldSelectedIndex, 0);
+                            }
+                            // For some reason, some unit tests will fire this exception even when _lstFileNamesWithItems is explicitly checked for having enough items
+                            catch (ArgumentOutOfRangeException)
+                            {
+                                x.SelectedIndex = -1;
+                            }
+                        }, token);
+                        await lstItems.PopulateWithListItemsAsync(_lstItems, token);
+                        await lstItems.DoThreadSafeAsync(x => x.SelectedIndex = -1, token);
                     }
                 }
                 finally

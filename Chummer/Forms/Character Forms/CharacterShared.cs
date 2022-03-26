@@ -383,7 +383,7 @@ namespace Chummer
 
         #region Refresh Treeviews and Panels
 
-        protected void RefreshAttributes(FlowLayoutPanel pnlAttributes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, Label lblName = null, int intKarmaWidth = -1, int intValueWidth = -1, int intLimitsWidth = -1)
+        protected async ValueTask RefreshAttributes(FlowLayoutPanel pnlAttributes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null, Label lblName = null, int intKarmaWidth = -1, int intValueWidth = -1, int intLimitsWidth = -1)
         {
             if (pnlAttributes == null)
                 return;
@@ -392,52 +392,64 @@ namespace Chummer
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    pnlAttributes.SuspendLayout();
-                    pnlAttributes.Controls.Clear();
-                    if (CharacterObject.AttributeSection.Attributes.Count > 0)
+                    await pnlAttributes.DoThreadSafeAsync(x =>
                     {
-                        int intNameWidth = lblName?.PreferredWidth ?? 0;
-                        Control[] aobjControls = new Control[CharacterObject.AttributeSection.Attributes.Count];
-                        for (int i = 0; i < CharacterObject.AttributeSection.Attributes.Count; ++i)
+                        x.SuspendLayout();
+                        try
                         {
-                            AttributeControl objControl =
-                                new AttributeControl(CharacterObject.AttributeSection.Attributes[i]);
-                            objControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width,
-                                objControl.MinimumSize.Height);
-                            objControl.MaximumSize = new Size(pnlAttributes.ClientSize.Width,
-                                objControl.MaximumSize.Height);
-                            objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
-                            intNameWidth = Math.Max(intNameWidth, objControl.NameWidth);
-                            aobjControls[i] = objControl;
+                            x.Controls.Clear();
+                            if (CharacterObject.AttributeSection.Attributes.Count > 0)
+                            {
+                                int intNameWidth = lblName?.PreferredWidth ?? 0;
+                                Control[] aobjControls
+                                    = new Control[CharacterObject.AttributeSection.Attributes.Count];
+                                for (int i = 0; i < CharacterObject.AttributeSection.Attributes.Count; ++i)
+                                {
+                                    AttributeControl objControl =
+                                        new AttributeControl(CharacterObject.AttributeSection.Attributes[i]);
+                                    objControl.MinimumSize
+                                        = new Size(x.ClientSize.Width, objControl.MinimumSize.Height);
+                                    objControl.MaximumSize
+                                        = new Size(x.ClientSize.Width, objControl.MaximumSize.Height);
+                                    objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
+                                    intNameWidth = Math.Max(intNameWidth, objControl.NameWidth);
+                                    aobjControls[i] = objControl;
+                                }
+
+                                if (lblName != null)
+                                    lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
+                                foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
+                                    objControl.UpdateWidths(intNameWidth, intKarmaWidth, intValueWidth,
+                                                            intLimitsWidth);
+                                x.Controls.AddRange(aobjControls);
+                            }
                         }
-
-                        if (lblName != null)
-                            lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
-                        foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
-                            objControl.UpdateWidths(intNameWidth, intKarmaWidth, intValueWidth, intLimitsWidth);
-                        pnlAttributes.Controls.AddRange(aobjControls);
-                    }
-
-                    pnlAttributes.ResumeLayout();
+                        finally
+                        {
+                            x.ResumeLayout();
+                        }
+                    });
                 }
                 else
                 {
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
+                        {
+                            bool blnVaryingAddedWidths = false;
+                            int intNewNameWidth = -1;
+                            Control[] aobjControls = new Control[notifyCollectionChangedEventArgs.NewItems.Count];
+                            await pnlAttributes.DoThreadSafeAsync(x =>
                             {
-                                bool blnVaryingAddedWidths = false;
-                                int intNewNameWidth = -1;
-                                Control[] aobjControls = new Control[notifyCollectionChangedEventArgs.NewItems.Count];
                                 for (int i = 0; i < notifyCollectionChangedEventArgs.NewItems.Count; ++i)
                                 {
                                     AttributeControl objControl =
                                         new AttributeControl(
                                             notifyCollectionChangedEventArgs.NewItems[i] as CharacterAttrib);
-                                    objControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width,
-                                        objControl.MinimumSize.Height);
-                                    objControl.MaximumSize = new Size(pnlAttributes.ClientSize.Width,
-                                        objControl.MaximumSize.Height);
+                                    objControl.MinimumSize = new Size(x.ClientSize.Width,
+                                                                      objControl.MinimumSize.Height);
+                                    objControl.MaximumSize = new Size(x.ClientSize.Width,
+                                                                      objControl.MaximumSize.Height);
                                     objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
                                     if (intNewNameWidth < 0)
                                         intNewNameWidth = objControl.NameWidth;
@@ -451,42 +463,45 @@ namespace Chummer
                                 }
 
                                 int intOldNameWidth = lblName?.Width ??
-                                                      (pnlAttributes.Controls.Count > 0
-                                                          ? pnlAttributes.Controls[0].Width
+                                                      (x.Controls.Count > 0
+                                                          ? x.Controls[0].Width
                                                           : 0);
                                 if (intNewNameWidth > intOldNameWidth)
                                 {
                                     if (lblName != null)
                                         lblName.MinimumSize = new Size(intNewNameWidth, lblName.MinimumSize.Height);
-                                    foreach (AttributeControl objControl in pnlAttributes.Controls)
+                                    foreach (AttributeControl objControl in x.Controls)
                                         objControl.UpdateWidths(intNewNameWidth, intKarmaWidth, intValueWidth,
-                                            intLimitsWidth);
+                                                                intLimitsWidth);
                                     if (blnVaryingAddedWidths)
                                         foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
                                             objControl.UpdateWidths(intNewNameWidth, intKarmaWidth, intValueWidth,
-                                                intLimitsWidth);
+                                                                    intLimitsWidth);
                                 }
                                 else
                                 {
                                     foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
                                         objControl.UpdateWidths(intOldNameWidth, intKarmaWidth, intValueWidth,
-                                            intLimitsWidth);
+                                                                intLimitsWidth);
                                 }
 
-                                pnlAttributes.Controls.AddRange(aobjControls);
-                            }
+                                x.Controls.AddRange(aobjControls);
+                            });
                             break;
+                        }
 
                         case NotifyCollectionChangedAction.Remove:
+                        {
+                            await pnlAttributes.DoThreadSafeAsync(x =>
                             {
                                 foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.OldItems)
                                 {
-                                    foreach (AttributeControl objControl in pnlAttributes.Controls)
+                                    foreach (AttributeControl objControl in x.Controls)
                                     {
                                         if (objControl.AttributeName == objAttrib.Abbrev)
                                         {
                                             objControl.ValueChanged -= MakeDirtyWithCharacterUpdate;
-                                            pnlAttributes.Controls.Remove(objControl);
+                                            x.Controls.Remove(objControl);
                                             objControl.Dispose();
                                         }
                                     }
@@ -497,19 +512,22 @@ namespace Chummer
                                         objAttrib.Karma = 0;
                                     }
                                 }
-                            }
+                            });
                             break;
+                        }
 
                         case NotifyCollectionChangedAction.Replace:
+                        {
+                            await pnlAttributes.DoThreadSafeAsync(x =>
                             {
                                 foreach (CharacterAttrib objAttrib in notifyCollectionChangedEventArgs.OldItems)
                                 {
-                                    foreach (AttributeControl objControl in pnlAttributes.Controls)
+                                    foreach (AttributeControl objControl in x.Controls)
                                     {
                                         if (objControl.AttributeName == objAttrib.Abbrev)
                                         {
                                             objControl.ValueChanged -= MakeDirtyWithCharacterUpdate;
-                                            pnlAttributes.Controls.Remove(objControl);
+                                            x.Controls.Remove(objControl);
                                             objControl.Dispose();
                                         }
                                     }
@@ -520,19 +538,22 @@ namespace Chummer
                                         objAttrib.Karma = 0;
                                     }
                                 }
+                            });
 
-                                bool blnVaryingAddedWidths = false;
-                                int intNewNameWidth = -1;
-                                Control[] aobjControls = new Control[notifyCollectionChangedEventArgs.NewItems.Count];
+                            bool blnVaryingAddedWidths = false;
+                            int intNewNameWidth = -1;
+                            Control[] aobjControls = new Control[notifyCollectionChangedEventArgs.NewItems.Count];
+                            await pnlAttributes.DoThreadSafeAsync(x =>
+                            {
                                 for (int i = 0; i < notifyCollectionChangedEventArgs.NewItems.Count; ++i)
                                 {
                                     AttributeControl objControl =
                                         new AttributeControl(
                                             notifyCollectionChangedEventArgs.NewItems[i] as CharacterAttrib);
-                                    objControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width,
-                                        objControl.MinimumSize.Height);
-                                    objControl.MaximumSize = new Size(pnlAttributes.ClientSize.Width,
-                                        objControl.MaximumSize.Height);
+                                    objControl.MinimumSize = new Size(x.ClientSize.Width,
+                                                                      objControl.MinimumSize.Height);
+                                    objControl.MaximumSize = new Size(x.ClientSize.Width,
+                                                                      objControl.MaximumSize.Height);
                                     objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
                                     if (intNewNameWidth < 0)
                                         intNewNameWidth = objControl.NameWidth;
@@ -546,31 +567,32 @@ namespace Chummer
                                 }
 
                                 int intOldNameWidth = lblName?.Width ??
-                                                      (pnlAttributes.Controls.Count > 0
-                                                          ? pnlAttributes.Controls[0].Width
+                                                      (x.Controls.Count > 0
+                                                          ? x.Controls[0].Width
                                                           : 0);
                                 if (intNewNameWidth > intOldNameWidth)
                                 {
                                     if (lblName != null)
                                         lblName.MinimumSize = new Size(intNewNameWidth, lblName.MinimumSize.Height);
-                                    foreach (AttributeControl objControl in pnlAttributes.Controls)
+                                    foreach (AttributeControl objControl in x.Controls)
                                         objControl.UpdateWidths(intNewNameWidth, intKarmaWidth, intValueWidth,
-                                            intLimitsWidth);
+                                                                intLimitsWidth);
                                     if (blnVaryingAddedWidths)
                                         foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
                                             objControl.UpdateWidths(intNewNameWidth, intKarmaWidth, intValueWidth,
-                                                intLimitsWidth);
+                                                                    intLimitsWidth);
                                 }
                                 else
                                 {
                                     foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
                                         objControl.UpdateWidths(intOldNameWidth, intKarmaWidth, intValueWidth,
-                                            intLimitsWidth);
+                                                                intLimitsWidth);
                                 }
 
-                                pnlAttributes.Controls.AddRange(aobjControls);
-                            }
+                                x.Controls.AddRange(aobjControls);
+                            });
                             break;
+                        }
                     }
                 }
             }
@@ -2551,23 +2573,29 @@ namespace Chummer
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     treWeapons.SuspendLayout();
-                    treWeapons.Nodes.Clear();
-
-                    // Start by populating Locations.
-                    foreach (Location objLocation in CharacterObject.WeaponLocations)
+                    try
                     {
-                        treWeapons.Nodes.Add(objLocation.CreateTreeNode(cmsWeaponLocation));
-                    }
+                        treWeapons.Nodes.Clear();
 
-                    foreach (Weapon objWeapon in CharacterObject.Weapons)
+                        // Start by populating Locations.
+                        foreach (Location objLocation in CharacterObject.WeaponLocations)
+                        {
+                            treWeapons.Nodes.Add(objLocation.CreateTreeNode(cmsWeaponLocation));
+                        }
+
+                        foreach (Weapon objWeapon in CharacterObject.Weapons)
+                        {
+                            AddToTree(objWeapon, -1, false);
+                            objWeapon.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon, cmsWeaponAccessory,
+                                                                            cmsWeaponAccessoryGear);
+                        }
+
+                        treWeapons.SelectedNode = treWeapons.FindNode(strSelectedId);
+                    }
+                    finally
                     {
-                        AddToTree(objWeapon, -1, false);
-                        objWeapon.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon, cmsWeaponAccessory,
-                            cmsWeaponAccessoryGear);
+                        treWeapons.ResumeLayout();
                     }
-
-                    treWeapons.SelectedNode = treWeapons.FindNode(strSelectedId);
-                    treWeapons.ResumeLayout();
                 }
                 else
                 {
@@ -2705,39 +2733,45 @@ namespace Chummer
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     treArmor.SuspendLayout();
-                    treArmor.Nodes.Clear();
-
-                    // Start by adding Locations.
-                    foreach (Location objLocation in CharacterObject.ArmorLocations)
+                    try
                     {
-                        treArmor.Nodes.Add(objLocation.CreateTreeNode(cmsArmorLocation));
-                    }
+                        treArmor.Nodes.Clear();
 
-                    // Add Armor.
-                    foreach (Armor objArmor in CharacterObject.Armor)
-                    {
-                        AddToTree(objArmor, -1, false);
-                        objArmor.ArmorMods.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
-                        objArmor.ArmorMods.AddTaggedCollectionChanged(treArmor,
-                            (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y));
-                        objArmor.GearChildren.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
-                        objArmor.GearChildren.AddTaggedCollectionChanged(treArmor,
-                            (x, y) => objArmor.RefreshChildrenGears(treArmor, cmsArmorGear,
-                                () => objArmor.ArmorMods.Count, y));
-                        foreach (Gear objGear in objArmor.GearChildren)
-                            objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
-                        foreach (ArmorMod objArmorMod in objArmor.ArmorMods)
+                        // Start by adding Locations.
+                        foreach (Location objLocation in CharacterObject.ArmorLocations)
                         {
-                            objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
-                            objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor,
-                                (x, y) => objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y));
-                            foreach (Gear objGear in objArmorMod.GearChildren)
-                                objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
+                            treArmor.Nodes.Add(objLocation.CreateTreeNode(cmsArmorLocation));
                         }
-                    }
 
-                    treArmor.SelectedNode = treArmor.FindNode(strSelectedId);
-                    treArmor.ResumeLayout();
+                        // Add Armor.
+                        foreach (Armor objArmor in CharacterObject.Armor)
+                        {
+                            AddToTree(objArmor, -1, false);
+                            objArmor.ArmorMods.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
+                            objArmor.ArmorMods.AddTaggedCollectionChanged(treArmor,
+                                                                          (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y));
+                            objArmor.GearChildren.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
+                            objArmor.GearChildren.AddTaggedCollectionChanged(treArmor,
+                                                                             (x, y) => objArmor.RefreshChildrenGears(treArmor, cmsArmorGear,
+                                                                                 () => objArmor.ArmorMods.Count, y));
+                            foreach (Gear objGear in objArmor.GearChildren)
+                                objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
+                            foreach (ArmorMod objArmorMod in objArmor.ArmorMods)
+                            {
+                                objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
+                                objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor,
+                                    (x, y) => objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y));
+                                foreach (Gear objGear in objArmorMod.GearChildren)
+                                    objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
+                            }
+                        }
+
+                        treArmor.SelectedNode = treArmor.FindNode(strSelectedId);
+                    }
+                    finally
+                    {
+                        treArmor.ResumeLayout();
+                    }
                 }
                 else
                 {
@@ -3042,23 +3076,29 @@ namespace Chummer
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     treGear.SuspendLayout();
-                    treGear.Nodes.Clear();
-
-                    // Start by populating Locations.
-                    foreach (Location objLocation in CharacterObject.GearLocations)
+                    try
                     {
-                        treGear.Nodes.Add(objLocation.CreateTreeNode(cmsGearLocation));
-                    }
+                        treGear.Nodes.Clear();
 
-                    // Add Gear.
-                    foreach (Gear objGear in CharacterObject.Gear)
+                        // Start by populating Locations.
+                        foreach (Location objLocation in CharacterObject.GearLocations)
+                        {
+                            treGear.Nodes.Add(objLocation.CreateTreeNode(cmsGearLocation));
+                        }
+
+                        // Add Gear.
+                        foreach (Gear objGear in CharacterObject.Gear)
+                        {
+                            AddToTree(objGear, -1, false);
+                            objGear.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear);
+                        }
+
+                        treGear.SelectedNode = treGear.FindNode(strSelectedId);
+                    }
+                    finally
                     {
-                        AddToTree(objGear, -1, false);
-                        objGear.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear);
+                        treGear.ResumeLayout();
                     }
-
-                    treGear.SelectedNode = treGear.FindNode(strSelectedId);
-                    treGear.ResumeLayout();
                 }
                 else
                 {
@@ -3185,16 +3225,22 @@ namespace Chummer
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     treGear.SuspendLayout();
-                    treGear.Nodes.Clear();
-
-                    // Add Gear.
-                    foreach (Drug d in CharacterObject.Drugs)
+                    try
                     {
-                        AddToTree(d, -1, false);
-                    }
+                        treGear.Nodes.Clear();
 
-                    treGear.SelectedNode = treGear.FindNode(strSelectedId);
-                    treGear.ResumeLayout();
+                        // Add Gear.
+                        foreach (Drug d in CharacterObject.Drugs)
+                        {
+                            AddToTree(d, -1, false);
+                        }
+
+                        treGear.SelectedNode = treGear.FindNode(strSelectedId);
+                    }
+                    finally
+                    {
+                        treGear.ResumeLayout();
+                    }
                 }
                 else
                 {
@@ -3288,17 +3334,23 @@ namespace Chummer
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     treCyberware.SuspendLayout();
-                    treCyberware.Nodes.Clear();
-
-                    foreach (Cyberware objCyberware in CharacterObject.Cyberware)
+                    try
                     {
-                        AddToTree(objCyberware, false);
-                        objCyberware.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware,
-                            cmsCyberwareGear);
-                    }
+                        treCyberware.Nodes.Clear();
 
-                    treCyberware.SortCustomAlphabetically(strSelectedId);
-                    treCyberware.ResumeLayout();
+                        foreach (Cyberware objCyberware in CharacterObject.Cyberware)
+                        {
+                            AddToTree(objCyberware, false);
+                            objCyberware.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware,
+                                cmsCyberwareGear);
+                        }
+
+                        treCyberware.SortCustomAlphabetically(strSelectedId);
+                    }
+                    finally
+                    {
+                        treCyberware.ResumeLayout();
+                    }
                 }
                 else
                 {
@@ -3505,98 +3557,104 @@ namespace Chummer
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     treVehicles.SuspendLayout();
-                    treVehicles.Nodes.Clear();
-
-                    // Start by populating Locations.
-                    foreach (Location objLocation in CharacterObject.VehicleLocations)
+                    try
                     {
-                        treVehicles.Nodes.Add(objLocation.CreateTreeNode(cmsVehicleLocation));
-                    }
+                        treVehicles.Nodes.Clear();
 
-                    // Add Vehicles.
-                    foreach (Vehicle objVehicle in CharacterObject.Vehicles)
-                    {
-                        AddToTree(objVehicle, -1, false);
-                        objVehicle.Mods.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                        objVehicle.Mods.AddTaggedCollectionChanged(treVehicles,
-                            (x, y) => objVehicle.RefreshVehicleMods(treVehicles, cmsVehicle, cmsCyberware,
-                                cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                cmsVehicleWeaponAccessoryGear, null, y));
-                        objVehicle.WeaponMounts.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                        objVehicle.WeaponMounts.AddTaggedCollectionChanged(treVehicles,
-                            (x, y) => objVehicle.RefreshVehicleWeaponMounts(treVehicles, cmsVehicleWeaponMount,
-                                cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
-                                cmsCyberware, cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y));
-                        objVehicle.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                        objVehicle.Weapons.AddTaggedCollectionChanged(treVehicles,
-                            (x, y) => objVehicle.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
-                                cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
-                                () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
-                        foreach (VehicleMod objMod in objVehicle.Mods)
+                        // Start by populating Locations.
+                        foreach (Location objLocation in CharacterObject.VehicleLocations)
                         {
-                            objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                            objMod.Cyberware.AddTaggedCollectionChanged(treVehicles,
-                                (x, y) => objMod.RefreshChildrenCyberware(treVehicles, cmsCyberware, cmsCyberwareGear,
-                                    null, y));
-                            foreach (Cyberware objCyberware in objMod.Cyberware)
-                                objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles, cmsCyberware,
-                                    cmsCyberwareGear);
-                            objMod.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                            objMod.Weapons.AddTaggedCollectionChanged(treVehicles,
-                                (x, y) => objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
-                                    cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
-                                    () => objMod.Cyberware.Count, y));
-                            foreach (Weapon objWeapon in objMod.Weapons)
-                                objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon,
-                                    cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                            treVehicles.Nodes.Add(objLocation.CreateTreeNode(cmsVehicleLocation));
                         }
 
-                        foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                        // Add Vehicles.
+                        foreach (Vehicle objVehicle in CharacterObject.Vehicles)
                         {
-                            objMount.Mods.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                            objMount.Mods.AddTaggedCollectionChanged(treVehicles,
-                                (x, y) => objMount.RefreshVehicleMods(treVehicles, cmsVehicle, cmsCyberware,
-                                    cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                    cmsVehicleWeaponAccessoryGear, null, y));
-                            objMount.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                            objMount.Weapons.AddTaggedCollectionChanged(treVehicles,
-                                (x, y) => objMount.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
-                                    cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objMount.Mods.Count,
-                                    y));
-                            foreach (Weapon objWeapon in objMount.Weapons)
-                                objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon,
-                                    cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
-                            foreach (VehicleMod objMod in objMount.Mods)
+                            AddToTree(objVehicle, -1, false);
+                            objVehicle.Mods.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+                            objVehicle.Mods.AddTaggedCollectionChanged(treVehicles,
+                                                                       (x, y) => objVehicle.RefreshVehicleMods(treVehicles, cmsVehicle, cmsCyberware,
+                                                                           cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
+                                                                           cmsVehicleWeaponAccessoryGear, null, y));
+                            objVehicle.WeaponMounts.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+                            objVehicle.WeaponMounts.AddTaggedCollectionChanged(treVehicles,
+                                                                               (x, y) => objVehicle.RefreshVehicleWeaponMounts(treVehicles, cmsVehicleWeaponMount,
+                                                                                   cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
+                                                                                   cmsCyberware, cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y));
+                            objVehicle.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+                            objVehicle.Weapons.AddTaggedCollectionChanged(treVehicles,
+                                                                          (x, y) => objVehicle.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
+                                                                              cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
+                                                                              () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
+                            foreach (VehicleMod objMod in objVehicle.Mods)
                             {
+                                objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+                                objMod.Cyberware.AddTaggedCollectionChanged(treVehicles,
+                                                                            (x, y) => objMod.RefreshChildrenCyberware(treVehicles, cmsCyberware, cmsCyberwareGear,
+                                                                                null, y));
                                 foreach (Cyberware objCyberware in objMod.Cyberware)
-                                    objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles,
-                                        cmsCyberware, cmsCyberwareGear);
+                                    objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles, cmsCyberware,
+                                        cmsCyberwareGear);
+                                objMod.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+                                objMod.Weapons.AddTaggedCollectionChanged(treVehicles,
+                                                                          (x, y) => objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
+                                                                              cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
+                                                                              () => objMod.Cyberware.Count, y));
                                 foreach (Weapon objWeapon in objMod.Weapons)
                                     objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon,
                                         cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
                             }
+
+                            foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                            {
+                                objMount.Mods.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+                                objMount.Mods.AddTaggedCollectionChanged(treVehicles,
+                                                                         (x, y) => objMount.RefreshVehicleMods(treVehicles, cmsVehicle, cmsCyberware,
+                                                                             cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
+                                                                             cmsVehicleWeaponAccessoryGear, null, y));
+                                objMount.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+                                objMount.Weapons.AddTaggedCollectionChanged(treVehicles,
+                                                                            (x, y) => objMount.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
+                                                                                cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objMount.Mods.Count,
+                                                                                y));
+                                foreach (Weapon objWeapon in objMount.Weapons)
+                                    objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon,
+                                        cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                                foreach (VehicleMod objMod in objMount.Mods)
+                                {
+                                    foreach (Cyberware objCyberware in objMod.Cyberware)
+                                        objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles,
+                                            cmsCyberware, cmsCyberwareGear);
+                                    foreach (Weapon objWeapon in objMod.Weapons)
+                                        objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon,
+                                            cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                                }
+                            }
+
+                            foreach (Weapon objWeapon in objVehicle.Weapons)
+                                objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon,
+                                    cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                            objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+                            objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles,
+                                                                               (x, y) => objVehicle.RefreshChildrenGears(treVehicles, cmsVehicleGear,
+                                                                                   () => objVehicle.Mods.Count + objVehicle.Weapons.Count +
+                                                                                       (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
+                            foreach (Gear objGear in objVehicle.GearChildren)
+                                objGear.SetupChildrenGearsCollectionChanged(true, treVehicles, cmsVehicleGear);
+                            objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, MakeDirty);
+                            objVehicle.Locations.AddTaggedCollectionChanged(treVehicles,
+                                                                            (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
+                                                                                () => objVehicle.Mods.Count + objVehicle.Weapons.Count +
+                                                                                    (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) +
+                                                                                    objVehicle.GearChildren.Count(z => z.Location == null), y));
                         }
 
-                        foreach (Weapon objWeapon in objVehicle.Weapons)
-                            objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon,
-                                cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
-                        objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                        objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles,
-                            (x, y) => objVehicle.RefreshChildrenGears(treVehicles, cmsVehicleGear,
-                                () => objVehicle.Mods.Count + objVehicle.Weapons.Count +
-                                      (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
-                        foreach (Gear objGear in objVehicle.GearChildren)
-                            objGear.SetupChildrenGearsCollectionChanged(true, treVehicles, cmsVehicleGear);
-                        objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, MakeDirty);
-                        objVehicle.Locations.AddTaggedCollectionChanged(treVehicles,
-                            (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
-                                () => objVehicle.Mods.Count + objVehicle.Weapons.Count +
-                                      (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) +
-                                      objVehicle.GearChildren.Count(z => z.Location == null), y));
+                        treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
                     }
-
-                    treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
-                    treVehicles.ResumeLayout();
+                    finally
+                    {
+                        treVehicles.ResumeLayout();
+                    }
                 }
                 else
                 {
@@ -3949,26 +4007,28 @@ namespace Chummer
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     treFoci.SuspendLayout();
-                    treFoci.Nodes.Clear();
-
-                    int intFociTotal = 0;
-
-                    int intMaxFocusTotal = CharacterObject.MAG.TotalValue * 5;
-                    if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                        intMaxFocusTotal = Math.Min(intMaxFocusTotal, CharacterObject.MAGAdept.TotalValue * 5);
-
-                    foreach (Gear objGear in CharacterObject.Gear)
+                    try
                     {
-                        switch (objGear.Category)
+                        treFoci.Nodes.Clear();
+
+                        int intFociTotal = 0;
+
+                        int intMaxFocusTotal = CharacterObject.MAG.TotalValue * 5;
+                        if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                            intMaxFocusTotal = Math.Min(intMaxFocusTotal, CharacterObject.MAGAdept.TotalValue * 5);
+
+                        foreach (Gear objGear in CharacterObject.Gear)
                         {
-                            case "Foci":
-                            case "Metamagic Foci":
+                            switch (objGear.Category)
+                            {
+                                case "Foci":
+                                case "Metamagic Foci":
                                 {
                                     TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
                                     if (objNode == null)
                                         continue;
                                     objNode.Text = objNode.Text.CheapReplace(LanguageManager.GetString("String_Rating"),
-                                        () => LanguageManager.GetString(objGear.RatingLabel));
+                                                                             () => LanguageManager.GetString(objGear.RatingLabel));
                                     for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
                                     {
                                         if (i < CharacterObject.Foci.Count)
@@ -3992,9 +4052,9 @@ namespace Chummer
 
                                     AddToTree(objNode, false);
                                 }
-                                break;
+                                    break;
 
-                            case "Stacked Focus":
+                                case "Stacked Focus":
                                 {
                                     foreach (StackedFocus objStack in CharacterObject.StackedFoci)
                                     {
@@ -4025,12 +4085,16 @@ namespace Chummer
                                         }
                                     }
                                 }
-                                break;
+                                    break;
+                            }
                         }
-                    }
 
-                    treFoci.SortCustomAlphabetically(strSelectedId);
-                    treFoci.ResumeLayout();
+                        treFoci.SortCustomAlphabetically(strSelectedId);
+                    }
+                    finally
+                    {
+                        treFoci.ResumeLayout();
+                    }
                 }
                 else
                 {
@@ -4365,18 +4429,24 @@ namespace Chummer
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     treMartialArts.SuspendLayout();
-                    treMartialArts.Nodes.Clear();
-
-                    foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
+                    try
                     {
-                        AddToTree(objMartialArt, false);
-                        objMartialArt.Techniques.AddTaggedCollectionChanged(treMartialArts, MakeDirtyWithCharacterUpdate);
-                        objMartialArt.Techniques.AddTaggedCollectionChanged(treMartialArts,
-                            (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y));
-                    }
+                        treMartialArts.Nodes.Clear();
 
-                    treMartialArts.SortCustomAlphabetically(strSelectedId);
-                    treMartialArts.ResumeLayout();
+                        foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
+                        {
+                            AddToTree(objMartialArt, false);
+                            objMartialArt.Techniques.AddTaggedCollectionChanged(treMartialArts, MakeDirtyWithCharacterUpdate);
+                            objMartialArt.Techniques.AddTaggedCollectionChanged(treMartialArts,
+                                (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y));
+                        }
+
+                        treMartialArts.SortCustomAlphabetically(strSelectedId);
+                    }
+                    finally
+                    {
+                        treMartialArts.ResumeLayout();
+                    }
                 }
                 else
                 {
@@ -4619,39 +4689,45 @@ namespace Chummer
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     treImprovements.SuspendLayout();
-                    treImprovements.Nodes.Clear();
-
-                    objRoot = new TreeNode
+                    try
                     {
-                        Tag = "Node_SelectedImprovements",
-                        Text = LanguageManager.GetString("Node_SelectedImprovements")
-                    };
-                    treImprovements.Nodes.Add(objRoot);
+                        treImprovements.Nodes.Clear();
 
-                    // Add the Locations.
-                    foreach (string strGroup in CharacterObject.ImprovementGroups)
-                    {
-                        TreeNode objGroup = new TreeNode
+                        objRoot = new TreeNode
                         {
-                            Tag = strGroup,
-                            Text = strGroup,
-                            ContextMenuStrip = cmsImprovementLocation
+                            Tag = "Node_SelectedImprovements",
+                            Text = LanguageManager.GetString("Node_SelectedImprovements")
                         };
-                        treImprovements.Nodes.Add(objGroup);
-                    }
+                        treImprovements.Nodes.Add(objRoot);
 
-                    foreach (Improvement objImprovement in CharacterObject.Improvements)
-                    {
-                        if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
-                            objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
+                        // Add the Locations.
+                        foreach (string strGroup in CharacterObject.ImprovementGroups)
                         {
-                            AddToTree(objImprovement, false);
+                            TreeNode objGroup = new TreeNode
+                            {
+                                Tag = strGroup,
+                                Text = strGroup,
+                                ContextMenuStrip = cmsImprovementLocation
+                            };
+                            treImprovements.Nodes.Add(objGroup);
                         }
-                    }
 
-                    // Sort the list of Custom Improvements in alphabetical order based on their Custom Name within each Group.
-                    treImprovements.SortCustomAlphabetically(strSelectedId);
-                    treImprovements.ResumeLayout();
+                        foreach (Improvement objImprovement in CharacterObject.Improvements)
+                        {
+                            if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
+                                objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
+                            {
+                                AddToTree(objImprovement, false);
+                            }
+                        }
+
+                        // Sort the list of Custom Improvements in alphabetical order based on their Custom Name within each Group.
+                        treImprovements.SortCustomAlphabetically(strSelectedId);
+                    }
+                    finally
+                    {
+                        treImprovements.ResumeLayout();
+                    }
                 }
                 else
                 {
@@ -4949,19 +5025,24 @@ namespace Chummer
                 if (e == null || e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     treLifestyles.SuspendLayout();
-                    treLifestyles.Nodes.Clear();
-
-                    if (CharacterObject.Lifestyles.Count > 0)
+                    try
                     {
-                        foreach (Lifestyle objLifestyle in CharacterObject.Lifestyles)
+                        treLifestyles.Nodes.Clear();
+
+                        if (CharacterObject.Lifestyles.Count > 0)
                         {
-                            AddToTree(objLifestyle, false);
+                            foreach (Lifestyle objLifestyle in CharacterObject.Lifestyles)
+                            {
+                                AddToTree(objLifestyle, false);
+                            }
+
+                            treLifestyles.SortCustomAlphabetically(strSelectedId);
                         }
-
-                        treLifestyles.SortCustomAlphabetically(strSelectedId);
                     }
-
-                    treLifestyles.ResumeLayout();
+                    finally
+                    {
+                        treLifestyles.ResumeLayout();
+                    }
                 }
                 else
                 {
@@ -5073,32 +5154,37 @@ namespace Chummer
                 if (listChangedEventArgs == null || listChangedEventArgs.ListChangedType == ListChangedType.Reset)
                 {
                     lstCalendar.SuspendLayout();
-                    lstCalendar.Items.Clear();
-                    foreach (CalendarWeek objWeek in CharacterObject.Calendar)
+                    try
                     {
-                        ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
+                        lstCalendar.Items.Clear();
+                        foreach (CalendarWeek objWeek in CharacterObject.Calendar)
                         {
-                            Text = objWeek.Notes,
-                            ForeColor = objWeek.PreferredColor
-                        };
-                        ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
-                        {
-                            Text = objWeek.InternalId,
-                            ForeColor = objWeek.PreferredColor
-                        };
+                            ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
+                            {
+                                Text = objWeek.Notes,
+                                ForeColor = objWeek.PreferredColor
+                            };
+                            ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
+                            {
+                                Text = objWeek.InternalId,
+                                ForeColor = objWeek.PreferredColor
+                            };
 
-                        ListViewItem objItem = new ListViewItem
-                        {
-                            Text = objWeek.CurrentDisplayName,
-                            ForeColor = objWeek.PreferredColor
-                        };
-                        objItem.SubItems.Add(objNoteItem);
-                        objItem.SubItems.Add(objInternalIdItem);
+                            ListViewItem objItem = new ListViewItem
+                            {
+                                Text = objWeek.CurrentDisplayName,
+                                ForeColor = objWeek.PreferredColor
+                            };
+                            objItem.SubItems.Add(objNoteItem);
+                            objItem.SubItems.Add(objInternalIdItem);
 
-                        lstCalendar.Items.Add(objItem);
+                            lstCalendar.Items.Add(objItem);
+                        }
                     }
-
-                    lstCalendar.ResumeLayout();
+                    finally
+                    {
+                        lstCalendar.ResumeLayout();
+                    }
                 }
                 else
                 {
@@ -5212,60 +5298,65 @@ namespace Chummer
                     panContacts?.SuspendLayout();
                     panEnemies?.SuspendLayout();
                     panPets?.SuspendLayout();
-                    panContacts?.Controls.Clear();
-                    panEnemies?.Controls.Clear();
-                    panPets?.Controls.Clear();
-                    foreach (Contact objContact in CharacterObject.Contacts)
+                    try
                     {
-                        switch (objContact.EntityType)
+                        panContacts?.Controls.Clear();
+                        panEnemies?.Controls.Clear();
+                        panPets?.Controls.Clear();
+                        foreach (Contact objContact in CharacterObject.Contacts)
                         {
-                            case ContactType.Contact:
-                                {
-                                    if (panContacts == null)
-                                        break;
-                                    ContactControl objContactControl = this.DoThreadSafeFunc(() => new ContactControl(objContact));
-                                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                    objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                    objContactControl.DeleteContact += DeleteContact;
-                                    objContactControl.MouseDown += DragContactControl;
+                            switch (objContact.EntityType)
+                            {
+                                case ContactType.Contact:
+                                    {
+                                        if (panContacts == null)
+                                            break;
+                                        ContactControl objContactControl = this.DoThreadSafeFunc(() => new ContactControl(objContact));
+                                        // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                        objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                        objContactControl.DeleteContact += DeleteContact;
+                                        objContactControl.MouseDown += DragContactControl;
 
-                                    panContacts.Controls.Add(objContactControl);
-                                }
-                                break;
+                                        panContacts.Controls.Add(objContactControl);
+                                    }
+                                    break;
 
-                            case ContactType.Enemy:
-                                {
-                                    if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
-                                        break;
-                                    ContactControl objContactControl = this.DoThreadSafeFunc(() => new ContactControl(objContact));
-                                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                    objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                    objContactControl.DeleteContact += DeleteEnemy;
-                                    objContactControl.MouseDown += DragContactControl;
+                                case ContactType.Enemy:
+                                    {
+                                        if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
+                                            break;
+                                        ContactControl objContactControl = this.DoThreadSafeFunc(() => new ContactControl(objContact));
+                                        // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                        objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                        objContactControl.DeleteContact += DeleteEnemy;
+                                        objContactControl.MouseDown += DragContactControl;
 
-                                    panEnemies.Controls.Add(objContactControl);
-                                }
-                                break;
+                                        panEnemies.Controls.Add(objContactControl);
+                                    }
+                                    break;
 
-                            case ContactType.Pet:
-                                {
-                                    if (panPets == null)
-                                        break;
-                                    PetControl objContactControl = this.DoThreadSafeFunc(() => new PetControl(objContact));
-                                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                    objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                    objContactControl.DeleteContact += DeletePet;
-                                    objContactControl.MouseDown += DragContactControl;
+                                case ContactType.Pet:
+                                    {
+                                        if (panPets == null)
+                                            break;
+                                        PetControl objContactControl = this.DoThreadSafeFunc(() => new PetControl(objContact));
+                                        // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                        objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                        objContactControl.DeleteContact += DeletePet;
+                                        objContactControl.MouseDown += DragContactControl;
 
-                                    panPets.Controls.Add(objContactControl);
-                                }
-                                break;
+                                        panPets.Controls.Add(objContactControl);
+                                    }
+                                    break;
+                            }
                         }
                     }
-
-                    panContacts?.ResumeLayout();
-                    panEnemies?.ResumeLayout();
-                    panPets?.ResumeLayout();
+                    finally
+                    {
+                        panContacts?.ResumeLayout();
+                        panEnemies?.ResumeLayout();
+                        panPets?.ResumeLayout();
+                    }
                 }
                 else
                 {
@@ -6394,45 +6485,50 @@ namespace Chummer
                 {
                     panSpirits?.SuspendLayout();
                     panSprites?.SuspendLayout();
-                    panSpirits?.Controls.Clear();
-                    panSprites?.Controls.Clear();
-                    int intSpirits = -1;
-                    int intSprites = -1;
-                    foreach (Spirit objSpirit in CharacterObject.Spirits)
+                    try
                     {
-                        bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
-                        if (blnIsSpirit)
+                        panSpirits?.Controls.Clear();
+                        panSprites?.Controls.Clear();
+                        int intSpirits = -1;
+                        int intSprites = -1;
+                        foreach (Spirit objSpirit in CharacterObject.Spirits)
                         {
-                            if (panSpirits == null)
+                            bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
+                            if (blnIsSpirit)
+                            {
+                                if (panSpirits == null)
+                                    continue;
+                            }
+                            else if (panSprites == null)
                                 continue;
-                        }
-                        else if (panSprites == null)
-                            continue;
 
-                        SpiritControl objSpiritControl = new SpiritControl(objSpirit);
+                            SpiritControl objSpiritControl = new SpiritControl(objSpirit);
 
-                        // Attach an EventHandler for the ServicesOwedChanged Event.
-                        objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                        objSpiritControl.DeleteSpirit += DeleteSpirit;
+                            // Attach an EventHandler for the ServicesOwedChanged Event.
+                            objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                            objSpiritControl.DeleteSpirit += DeleteSpirit;
 
-                        await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
+                            await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
 
-                        if (blnIsSpirit)
-                        {
-                            ++intSpirits;
-                            objSpiritControl.Top = intSpirits * objSpiritControl.Height;
-                            panSpirits.Controls.Add(objSpiritControl);
-                        }
-                        else
-                        {
-                            ++intSprites;
-                            objSpiritControl.Top = intSprites * objSpiritControl.Height;
-                            panSprites.Controls.Add(objSpiritControl);
+                            if (blnIsSpirit)
+                            {
+                                ++intSpirits;
+                                objSpiritControl.Top = intSpirits * objSpiritControl.Height;
+                                panSpirits.Controls.Add(objSpiritControl);
+                            }
+                            else
+                            {
+                                ++intSprites;
+                                objSpiritControl.Top = intSprites * objSpiritControl.Height;
+                                panSprites.Controls.Add(objSpiritControl);
+                            }
                         }
                     }
-
-                    panSpirits?.ResumeLayout();
-                    panSprites?.ResumeLayout();
+                    finally
+                    {
+                        panSpirits?.ResumeLayout();
+                        panSprites?.ResumeLayout();
+                    }
                 }
                 else
                 {
