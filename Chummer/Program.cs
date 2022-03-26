@@ -505,16 +505,17 @@ namespace Chummer
                     {
                         // Attempt to cache all XML files that are used the most.
                         using (_ = Timekeeper.StartSyncron("cache_load", null, CustomActivity.OperationType.DependencyOperation, Utils.CurrentChummerVersion.ToString(3)))
-                        using (MainProgressBar = CreateAndShowProgressBar(Application.ProductName, Utils.BasicDataFileNames.Count))
+                        using (LoadingBar frmLoadingBar = CreateAndShowProgressBar(Application.ProductName, Utils.BasicDataFileNames.Count))
                         {
                             Task[] tskCachingTasks = new Task[Utils.BasicDataFileNames.Count];
                             for (int i = 0; i < tskCachingTasks.Length; ++i)
                             {
                                 string strLoopFile = Utils.BasicDataFileNames[i];
-                                tskCachingTasks[i] = Task.Run(() => CacheCommonFile(strLoopFile));
+                                // ReSharper disable once AccessToDisposedClosure
+                                tskCachingTasks[i] = Task.Run(() => CacheCommonFile(strLoopFile, frmLoadingBar));
                             }
 
-                            async Task CacheCommonFile(string strFile)
+                            async Task CacheCommonFile(string strFile, LoadingBar frmLoadingBarInner)
                             {
                                 // Load default language data first for performance reasons
                                 if (!GlobalSettings.Language.Equals(
@@ -523,7 +524,7 @@ namespace Chummer
                                     await XmlManager.LoadXPathAsync(strFile, null, GlobalSettings.DefaultLanguage);
                                 }
                                 await XmlManager.LoadXPathAsync(strFile);
-                                await MainProgressBar.PerformStepAsync(
+                                await frmLoadingBarInner.PerformStepAsync(
                                     Application.ProductName,
                                     LoadingBar.ProgressBarTextPatterns.Initializing);
                             }
@@ -755,7 +756,11 @@ namespace Chummer
             Form frmOwnerForm = owner as Form ?? owner?.FindForm();
             if (frmOwnerForm.IsNullOrDisposed())
             {
-                frmOwnerForm = MainProgressBar.IsNullOrDisposed() ? (Form) MainForm : MainProgressBar;
+                frmOwnerForm = TopMostLoadingBar;
+                if (frmOwnerForm.IsNullOrDisposed())
+                {
+                    frmOwnerForm = MainForm;
+                }
             }
 
             if (frmOwnerForm != null)
@@ -884,10 +889,10 @@ namespace Chummer
         /// <param name="strNewName">New name for the character.</param>
         /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
         /// <param name="blnShowErrors">Show error messages if the character failed to load.</param>
-        /// <param name="blnShowProgressBar">Show loading bar for the character.</param>
-        public static Character LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, bool blnShowProgressBar = true)
+        /// <param name="frmLoadingBar">If not null, show and use this loading bar for the character.</param>
+        public static Character LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, LoadingBar frmLoadingBar = null)
         {
-            return LoadCharacterCoreAsync(true, strFileName, strNewName, blnClearFileName, blnShowErrors, blnShowProgressBar).GetAwaiter().GetResult();
+            return LoadCharacterCoreAsync(true, strFileName, strNewName, blnClearFileName, blnShowErrors, frmLoadingBar).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -897,10 +902,10 @@ namespace Chummer
         /// <param name="strNewName">New name for the character.</param>
         /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
         /// <param name="blnShowErrors">Show error messages if the character failed to load.</param>
-        /// <param name="blnShowProgressBar">Show loading bar for the character.</param>
-        public static Task<Character> LoadCharacterAsync(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, bool blnShowProgressBar = true)
+        /// <param name="frmLoadingBar">If not null, show and use this loading bar for the character.</param>
+        public static Task<Character> LoadCharacterAsync(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, LoadingBar frmLoadingBar = null)
         {
-            return LoadCharacterCoreAsync(false, strFileName, strNewName, blnClearFileName, blnShowErrors, blnShowProgressBar);
+            return LoadCharacterCoreAsync(false, strFileName, strNewName, blnClearFileName, blnShowErrors, frmLoadingBar);
         }
 
         /// <summary>
@@ -913,8 +918,8 @@ namespace Chummer
         /// <param name="strNewName">New name for the character.</param>
         /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
         /// <param name="blnShowErrors">Show error messages if the character failed to load.</param>
-        /// <param name="blnShowProgressBar">Show loading bar for the character.</param>
-        private static async Task<Character> LoadCharacterCoreAsync(bool blnSync, string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, bool blnShowProgressBar = true)
+        /// <param name="frmLoadingBar">If not null, show and use this loading bar for the character.</param>
+        private static async Task<Character> LoadCharacterCoreAsync(bool blnSync, string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, LoadingBar frmLoadingBar = null)
         {
             if (string.IsNullOrEmpty(strFileName))
                 return null;
@@ -983,41 +988,18 @@ namespace Chummer
                         objCharacter.FileName = strFileName;
                     }
                 }
-                if (blnShowProgressBar && MainProgressBar.IsNullOrDisposed())
+
+                OpenCharacters.Add(objCharacter);
+                //Timekeeper.Start("load_file");
+                bool blnLoaded = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? objCharacter.Load(frmLoadingBar, blnShowErrors)
+                    : await objCharacter.LoadAsync(frmLoadingBar, blnShowErrors);
+                //Timekeeper.Finish("load_file");
+                if (!blnLoaded)
                 {
-                    using (MainProgressBar = await CreateAndShowProgressBarAsync(Path.GetFileName(objCharacter.FileName), Character.NumLoadingSections))
-                    {
-                        OpenCharacters.Add(objCharacter);
-                        //Timekeeper.Start("load_file");
-                        bool blnLoaded = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.Load(MainProgressBar, blnShowErrors)
-                            : await objCharacter.LoadAsync(MainProgressBar, blnShowErrors);
-                        //Timekeeper.Finish("load_file");
-                        if (!blnLoaded)
-                        {
-                            OpenCharacters.Remove(objCharacter);
-                            return null;
-                        }
-                    }
-                }
-                else
-                {
-                    OpenCharacters.Add(objCharacter);
-                    //Timekeeper.Start("load_file");
-                    bool blnLoaded;
-                    if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverload
-                        blnLoaded = objCharacter.Load(blnShowProgressBar ? MainProgressBar : null, blnShowErrors);
-                    else
-                        blnLoaded = await objCharacter.LoadAsync(blnShowProgressBar ? MainProgressBar : null,
-                            blnShowErrors);
-                    //Timekeeper.Finish("load_file");
-                    if (!blnLoaded)
-                    {
-                        OpenCharacters.Remove(objCharacter);
-                        return null;
-                    }
+                    OpenCharacters.Remove(objCharacter);
+                    return null;
                 }
 
                 // If a new name is given, set the character's name to match (used in cloning).
@@ -1106,7 +1088,9 @@ namespace Chummer
                                 x => x.OpenCharacterForExport(objCharacter)));
         }
 
-        public static LoadingBar MainProgressBar { get; set; }
+        public static LoadingBar TopMostLoadingBar => s_lstLoadingBars.Count > 0 ? s_lstLoadingBars[0] : null;
+
+        private static readonly ThreadSafeList<LoadingBar> s_lstLoadingBars = new ThreadSafeList<LoadingBar>();
 
         /// <summary>
         /// Syntactic sugar for creating and displaying a LoadingBar screen with specific text and progress bar size.
@@ -1121,7 +1105,12 @@ namespace Chummer
                 : new LoadingBar { CharacterFile = strFile };
             if (intCount > 0)
                 frmReturn.Reset(intCount);
-            frmReturn.DoThreadSafe(x => x.Show());
+            frmReturn.DoThreadSafe(x =>
+            {
+                x.Closed += (sender, args) => s_lstLoadingBars.Remove(x);
+                x.Show();
+            });
+            s_lstLoadingBars.Add(frmReturn);
             return frmReturn;
         }
 
@@ -1138,7 +1127,12 @@ namespace Chummer
                 : new LoadingBar { CharacterFile = strFile };
             if (intCount > 0)
                 await frmReturn.ResetAsync(intCount);
-            await frmReturn.DoThreadSafeAsync(x => x.Show());
+            await frmReturn.DoThreadSafeAsync(x =>
+            {
+                x.Closed += (sender, args) => s_lstLoadingBars.Remove(x);
+                x.Show();
+            });
+            await s_lstLoadingBars.AddAsync(frmReturn);
             return frmReturn;
         }
 

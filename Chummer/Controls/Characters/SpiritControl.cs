@@ -173,7 +173,10 @@ namespace Chummer
                 using (CursorWait.New(ParentForm))
                 {
                     if (objOpenCharacter == null)
-                        objOpenCharacter = await Program.LoadCharacterAsync(_objSpirit.LinkedCharacter.FileName);
+                    {
+                        using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(_objSpirit.LinkedCharacter.FileName, Character.NumLoadingSections))
+                            objOpenCharacter = await Program.LoadCharacterAsync(_objSpirit.LinkedCharacter.FileName, frmLoadingBar: frmLoadingBar);
+                    }
                     if (!await Program.SwitchToOpenCharacter(objOpenCharacter))
                         await Program.OpenCharacter(objOpenCharacter);
                 }
@@ -579,10 +582,10 @@ namespace Chummer
                     objCharacter.Create(objXmlMetatype["category"]?.InnerText, objXmlMetatype["id"]?.InnerText,
                                         string.Empty, objXmlMetatype, intForce);
                     objCharacter.MetatypeBP = 0;
-                    using (Program.MainProgressBar = await Program.CreateAndShowProgressBarAsync())
+                    using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
                     {
-                        await Program.MainProgressBar.PerformStepAsync(objCharacter.CharacterName,
-                                                                       LoadingBar.ProgressBarTextPatterns.Saving);
+                        await frmLoadingBar.PerformStepAsync(objCharacter.CharacterName,
+                                                             LoadingBar.ProgressBarTextPatterns.Saving);
                         if (!await objCharacter.SaveAsync())
                             return;
                     }

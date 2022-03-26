@@ -1349,11 +1349,14 @@ namespace Chummer
                 {
                     using (CursorWait.New(this))
                     {
-                        Character objOpenCharacter
-                            = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName)
-                              ?? await Program.LoadCharacterAsync(objCache.FilePath);
-                        if (!await Program.SwitchToOpenCharacter(objOpenCharacter))
-                            await Program.OpenCharacter(objOpenCharacter);
+                        Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName);
+                        if (objCharacter == null)
+                        {
+                            using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(objCache.FilePath, Character.NumLoadingSections))
+                                objCharacter = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar);
+                        }
+                        if (!await Program.SwitchToOpenCharacter(objCharacter))
+                            await Program.OpenCharacter(objCharacter);
                     }
                 }
             }
@@ -1375,9 +1378,12 @@ namespace Chummer
                     return;
                 using (CursorWait.New(this))
                 {
-                    Character objCharacter
-                        = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName)
-                          ?? await Program.LoadCharacterAsync(objCache.FilePath);
+                    Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName);
+                    if (objCharacter == null)
+                    {
+                        using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(objCache.FilePath, Character.NumLoadingSections))
+                            objCharacter = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar);
+                    }
                     try
                     {
                         await Program.OpenCharacterForPrinting(objCharacter);
@@ -1414,9 +1420,12 @@ namespace Chummer
                     return;
                 using (CursorWait.New(this))
                 {
-                    Character objCharacter
-                        = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName)
-                          ?? await Program.LoadCharacterAsync(objCache.FilePath);
+                    Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName);
+                    if (objCharacter == null)
+                    {
+                        using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(objCache.FilePath, Character.NumLoadingSections))
+                            objCharacter = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar);
+                    }
                     try
                     {
                         await Program.OpenCharacterForExport(objCharacter);

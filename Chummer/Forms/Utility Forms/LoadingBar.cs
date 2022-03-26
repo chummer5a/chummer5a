@@ -60,7 +60,7 @@ namespace Chummer
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
-
+        
         /// <summary>
         /// Resets the ProgressBar
         /// </summary>

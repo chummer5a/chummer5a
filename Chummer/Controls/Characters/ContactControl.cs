@@ -304,7 +304,10 @@ namespace Chummer
                 using (CursorWait.New(ParentForm))
                 {
                     if (objOpenCharacter == null)
-                        objOpenCharacter = await Program.LoadCharacterAsync(_objContact.LinkedCharacter.FileName);
+                    {
+                        using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(_objContact.LinkedCharacter.FileName, Character.NumLoadingSections))
+                            objOpenCharacter = await Program.LoadCharacterAsync(_objContact.LinkedCharacter.FileName, frmLoadingBar: frmLoadingBar);
+                    }
                     if (!await Program.SwitchToOpenCharacter(objOpenCharacter))
                         await Program.OpenCharacter(objOpenCharacter);
                 }

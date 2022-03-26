@@ -1167,7 +1167,12 @@ namespace Chummer
                 if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
                 {
                     Character objOpenCharacter = Program.OpenCharacters.Find(x => x.FileName == strFile);
-                    _objLinkedCharacter = objOpenCharacter ?? Program.LoadCharacter(strFile, string.Empty, false, false);
+                    _objLinkedCharacter = objOpenCharacter;
+                    if (_objLinkedCharacter == null)
+                    {
+                        using (LoadingBar frmLoadingBar = Program.CreateAndShowProgressBar(strFile, Character.NumLoadingSections))
+                            _objLinkedCharacter = Program.LoadCharacter(strFile, string.Empty, false, false, frmLoadingBar);
+                    }
                     if (_objLinkedCharacter != null)
                         CharacterObject.LinkedCharacters.Add(_objLinkedCharacter);
                 }

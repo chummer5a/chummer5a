@@ -13,15 +13,12 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            this.DoThreadSafe(() =>
+            if (disposing && (components != null))
             {
-                if (disposing && (components != null))
-                {
-                    components.Dispose();
-                }
+                this.DoThreadSafe(x => x.components.Dispose());
+            }
 
-                base.Dispose(disposing);
-            });
+            this.DoThreadSafe(() => base.Dispose(disposing));
         }
 
         #region Windows Form Designer generated code

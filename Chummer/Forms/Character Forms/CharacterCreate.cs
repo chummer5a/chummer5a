@@ -10429,14 +10429,14 @@ namespace Chummer
                 using (CursorWait.New(this, true))
                 {
                     using (CursorWait.New(this))
-                    using (Program.MainProgressBar = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName),
+                    using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName),
                                                                          Character.NumLoadingSections))
                     {
                         SkipUpdate = true;
                         try
                         {
-                            await CharacterObject.LoadAsync(Program.MainProgressBar);
-                            await Program.MainProgressBar.PerformStepAsync(await LanguageManager.GetStringAsync("String_UI"));
+                            await CharacterObject.LoadAsync(frmLoadingBar);
+                            await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("String_UI"));
 
                             // Select the Magician's Tradition.
                             if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
@@ -12428,9 +12428,9 @@ namespace Chummer
 
                 CharacterObject.Created = true;
 
-                using (Program.MainProgressBar = await Program.CreateAndShowProgressBarAsync())
+                using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
                 {
-                    await Program.MainProgressBar.PerformStepAsync(CharacterObject.CharacterName,
+                    await frmLoadingBar.PerformStepAsync(CharacterObject.CharacterName,
                                                         LoadingBar.ProgressBarTextPatterns.Saving, token);
                     if (!await CharacterObject.SaveAsync(token: token))
                     {
@@ -15433,9 +15433,9 @@ namespace Chummer
 
                     using (CursorWait.New(this))
                     {
-                        using (Program.MainProgressBar = await Program.CreateAndShowProgressBarAsync())
+                        using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
                         {
-                            await Program.MainProgressBar.PerformStepAsync(CharacterObject.CharacterName,
+                            await frmLoadingBar.PerformStepAsync(CharacterObject.CharacterName,
                                                                 LoadingBar.ProgressBarTextPatterns.Saving, token);
                             if (!await CharacterObject.SaveAsync(strNewName, token: token))
                                 return false;

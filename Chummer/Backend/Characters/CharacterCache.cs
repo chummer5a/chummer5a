@@ -620,8 +620,13 @@ namespace Chummer
 
         public async void OnDefaultDoubleClick(object sender, EventArgs e)
         {
-            Character objOpenCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == FileName)
-                                         ?? await Program.LoadCharacterAsync(FilePath);
+            Character objOpenCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == FileName);
+            if (objOpenCharacter == null)
+            {
+                using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(FilePath, Character.NumLoadingSections))
+                    objOpenCharacter = await Program.LoadCharacterAsync(FilePath, frmLoadingBar: frmLoadingBar);
+            }
+
             if (!await Program.SwitchToOpenCharacter(objOpenCharacter))
                 await Program.OpenCharacter(objOpenCharacter);
         }
