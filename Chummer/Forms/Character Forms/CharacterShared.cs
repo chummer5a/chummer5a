@@ -56,8 +56,13 @@ namespace Chummer
         private CharacterSheetViewer _frmPrintView;
         private readonly FileSystemWatcher _objCharacterFileWatcher;
 
+        protected CancellationTokenSource GenericCancellationTokenSource { get; } = new CancellationTokenSource();
+
+        protected CancellationToken GenericToken { get; }
+
         protected CharacterShared(Character objCharacter)
         {
+            GenericToken = GenericCancellationTokenSource.Token;
             _objCharacter = objCharacter;
             _objCharacter.PropertyChanged += RecacheSettingsOnSettingsChange;
             string name = "Show_Form_" + GetType();
@@ -7046,9 +7051,6 @@ namespace Chummer
         }
 
         protected Task UpdateCharacterInfoTask => _tskUpdateCharacterInfo;
-
-        protected CancellationTokenSource UpdateCharacterInfoCancellationTokenSource =>
-            _objUpdateCharacterInfoCancellationTokenSource;
 
         private Task _tskUpdateCharacterInfo = Task.CompletedTask;
 

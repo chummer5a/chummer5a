@@ -55,10 +55,6 @@ namespace Chummer
         private bool _blnDraggingGear;
         private StoryBuilder _objStoryBuilder;
 
-        public TreeView FociTree => treFoci;
-        //private readonly Stopwatch PowerPropertyChanged_StopWatch = Stopwatch.StartNew();
-        //private readonly Stopwatch SkillPropertyChanged_StopWatch = Stopwatch.StartNew();
-
         public TabControl TabCharacterTabs => tabCharacterTabs;
 
         #region Form Events
@@ -193,7 +189,7 @@ namespace Chummer
                                 if (CharacterObject == null)
                                 {
                                     // Stupid hack to get the MDI icon to show up properly.
-                                    await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon);
+                                    await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon, GenericToken);
                                     return;
                                 }
 
@@ -206,7 +202,7 @@ namespace Chummer
                                     {
                                         tslKarmaRemaining.Visible = false;
                                         tslKarmaRemainingLabel.Visible = false;
-                                    });
+                                    }, GenericToken);
                                 }
 
                                 using (_ = await Timekeeper.StartSyncronAsync(
@@ -219,7 +215,7 @@ namespace Chummer
                                         {
                                             mnuSpecialChangeMetatype.Tag = "Menu_SpecialChangePriorities";
                                             mnuSpecialChangeMetatype.TranslateToolStripItemsRecursively();
-                                        });
+                                        }, GenericToken);
                                     }
                                 }
 
@@ -269,16 +265,17 @@ namespace Chummer
                                                                      nameof(Character.DisplayEnemyKarma));
 
                                     string strKarma = await LanguageManager.GetStringAsync("Label_Karma");
-                                    string strKarmaRemaining = await LanguageManager.GetStringAsync("Label_KarmaRemaining");
+                                    string strKarmaRemaining
+                                        = await LanguageManager.GetStringAsync("Label_KarmaRemaining");
                                     string strBPSummaryKarma
                                         = await LanguageManager.GetStringAsync("Tab_BPSummary_Karma");
                                     await tsMain.DoThreadSafeAsync(() =>
                                     {
                                         tslKarmaLabel.Text = strKarma;
                                         tslKarmaRemainingLabel.Text = strKarmaRemaining;
-                                    });
-                                    await tabBPSummary.DoThreadSafeAsync(x => x.Text = strBPSummaryKarma);
-                                    await lblQualityBPLabel.DoThreadSafeAsync(x => x.Text = strKarma);
+                                    }, GenericToken);
+                                    await tabBPSummary.DoThreadSafeAsync(x => x.Text = strBPSummaryKarma, GenericToken);
+                                    await lblQualityBPLabel.DoThreadSafeAsync(x => x.Text = strKarma, GenericToken);
 
                                     lblMetatype.DoOneWayDataBinding("Text", CharacterObject,
                                                                     nameof(Character.FormattedMetatype));
@@ -287,8 +284,9 @@ namespace Chummer
                                     await mnuCreateMenu.DoThreadSafeAsync(() =>
                                     {
                                         mnuSpecialAddBiowareSuite.Visible = CharacterObjectSettings.AllowBiowareSuites;
-                                        mnuSpecialCreateBiowareSuite.Visible = CharacterObjectSettings.AllowBiowareSuites;
-                                    });
+                                        mnuSpecialCreateBiowareSuite.Visible
+                                            = CharacterObjectSettings.AllowBiowareSuites;
+                                    }, GenericToken);
 
                                     chkJoinGroup.DoDataBinding("Checked", CharacterObject,
                                                                nameof(Character.GroupMember));
@@ -314,7 +312,7 @@ namespace Chummer
                                             x.Minimum = 1;
                                             x.Maximum = CharacterObject.Mugshots.Count;
                                             x.Value = Math.Max(CharacterObject.MainMugshotIndex, 0) + 1;
-                                        });
+                                        }, GenericToken);
                                     }
                                     else
                                     {
@@ -323,42 +321,43 @@ namespace Chummer
                                             x.Minimum = 0;
                                             x.Maximum = 0;
                                             x.Value = 0;
-                                        });
+                                        }, GenericToken);
                                     }
 
                                     string strNumMugshots = await LanguageManager.GetStringAsync("String_Of") +
                                                             CharacterObject.Mugshots.Count.ToString(
                                                                 GlobalSettings.CultureInfo);
-                                    await lblNumMugshots.DoThreadSafeAsync(x => x.Text = strNumMugshots);
+                                    await lblNumMugshots.DoThreadSafeAsync(x => x.Text = strNumMugshots, GenericToken);
                                 }
 
                                 if (!CharacterObjectSettings.BookEnabled("RF"))
                                 {
-                                    await cmdAddLifestyle.DoThreadSafeAsync(x => x.SplitMenuStrip = null);
+                                    await cmdAddLifestyle.DoThreadSafeAsync(x => x.SplitMenuStrip = null, GenericToken);
                                 }
 
                                 if (!CharacterObjectSettings.BookEnabled("FA"))
                                 {
-                                    await lblWildReputation.DoThreadSafeAsync(x => x.Visible = false);
-                                    await lblWildReputationTotal.DoThreadSafeAsync(x => x.Visible = false);
+                                    await lblWildReputation.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                                    await lblWildReputationTotal.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
                                     if (!CharacterObjectSettings.BookEnabled("SG"))
                                     {
-                                        await lblAstralReputation.DoThreadSafeAsync(x => x.Visible = false);
-                                        await lblAstralReputationTotal.DoThreadSafeAsync(x => x.Visible = false);
+                                        await lblAstralReputation.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                                        await lblAstralReputationTotal.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
                                     }
                                 }
 
                                 if (!CharacterObjectSettings.EnableEnemyTracking)
                                 {
-                                    await tabPeople.DoThreadSafeAsync(x => x.TabPages.Remove(tabEnemies));
+                                    await tabPeople.DoThreadSafeAsync(x => x.TabPages.Remove(tabEnemies), GenericToken);
                                 }
 
                                 await splitMagician.DoThreadSafeAsync(x => x.SplitterDistance
                                                                           = Math.Max(x.SplitterDistance,
-                                                                              ((x.Height - x.SplitterWidth) * 2 + 2) / 3));
+                                                                              ((x.Height - x.SplitterWidth) * 2 + 2)
+                                                                              / 3), GenericToken);
                                 await splitTechnomancer.DoThreadSafeAsync(
                                     x => x.SplitterDistance
-                                        = Math.Max(x.SplitterDistance, ((x.Height - x.SplitterWidth) * 2 + 2) / 3));
+                                        = Math.Max(x.SplitterDistance, ((x.Height - x.SplitterWidth) * 2 + 2) / 3), GenericToken);
 
                                 using (_ = await Timekeeper.StartSyncronAsync(
                                            "load_frm_create_refresh", op_load_frm_create))
@@ -375,25 +374,25 @@ namespace Chummer
 
                                     if (!CharacterObjectSettings.BookEnabled("RF"))
                                     {
-                                        await cmdAddLifestyle.DoThreadSafeAsync(x => x.SplitMenuStrip = null);
+                                        await cmdAddLifestyle.DoThreadSafeAsync(x => x.SplitMenuStrip = null, GenericToken);
                                     }
 
                                     if (!CharacterObjectSettings.BookEnabled("FA"))
                                     {
-                                        await lblWildReputation.DoThreadSafeAsync(x => x.Visible = false);
-                                        await lblWildReputationTotal.DoThreadSafeAsync(x => x.Visible = false);
+                                        await lblWildReputation.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                                        await lblWildReputationTotal.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
                                         if (!CharacterObjectSettings.BookEnabled("SG"))
                                         {
-                                            await lblAstralReputation.DoThreadSafeAsync(x => x.Visible = false);
-                                            await lblAstralReputationTotal.DoThreadSafeAsync(x => x.Visible = false);
+                                            await lblAstralReputation.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                                            await lblAstralReputationTotal.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
                                         }
                                     }
 
                                     if (!CharacterObjectSettings.EnableEnemyTracking)
                                     {
-                                        await tabPeople.DoThreadSafeAsync(x => x.TabPages.Remove(tabEnemies));
-                                        await lblEnemiesBP.DoThreadSafeAsync(x => x.Visible = false);
-                                        await lblBuildEnemies.DoThreadSafeAsync(x => x.Visible = false);
+                                        await tabPeople.DoThreadSafeAsync(x => x.TabPages.Remove(tabEnemies), GenericToken);
+                                        await lblEnemiesBP.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                                        await lblBuildEnemies.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
                                     }
 
                                     RefreshQualities(treQualities, cmsQuality);
@@ -426,14 +425,14 @@ namespace Chummer
                                 using (_ = await Timekeeper.StartSyncronAsync(
                                            "load_frm_create_sortAndCallback", op_load_frm_create))
                                 {
-                                    await treWeapons.DoThreadSafeAsync(x => x.SortCustomOrder());
-                                    await treArmor.DoThreadSafeAsync(x => x.SortCustomOrder());
-                                    await treGear.DoThreadSafeAsync(x => x.SortCustomOrder());
-                                    await treLifestyles.DoThreadSafeAsync(x => x.SortCustomOrder());
-                                    await treCustomDrugs.DoThreadSafeAsync(x => x.SortCustomOrder());
-                                    await treCyberware.DoThreadSafeAsync(x => x.SortCustomOrder());
-                                    await treVehicles.DoThreadSafeAsync(x => x.SortCustomOrder());
-                                    await treCritterPowers.DoThreadSafeAsync(x => x.SortCustomOrder());
+                                    await treWeapons.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
+                                    await treArmor.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
+                                    await treGear.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
+                                    await treLifestyles.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
+                                    await treCustomDrugs.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
+                                    await treCyberware.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
+                                    await treVehicles.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
+                                    await treCritterPowers.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
 
                                     // Set up events that would change various lists
                                     CharacterObject.Spells.CollectionChanged += SpellCollectionChanged;
@@ -509,12 +508,12 @@ namespace Chummer
                                                                      "None",
                                                                      await LanguageManager
                                                                          .GetStringAsync("String_None")));
-                                            await cboTradition.PopulateWithListItemsAsync(lstTraditions);
+                                            await cboTradition.PopulateWithListItemsAsync(lstTraditions, GenericToken);
                                         }
                                         else
                                         {
-                                            await cboTradition.DoThreadSafeAsync(x => x.Visible = false);
-                                            await lblTraditionLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                            await cboTradition.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                                            await lblTraditionLabel.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
                                         }
                                     }
 
@@ -543,7 +542,7 @@ namespace Chummer
 
                                         lstDrainAttributes.Sort(CompareListItems.CompareNames);
                                         lstDrainAttributes.Insert(0, ListItem.Blank);
-                                        await cboDrain.PopulateWithListItemsAsync(lstDrainAttributes);
+                                        await cboDrain.PopulateWithListItemsAsync(lstDrainAttributes, GenericToken);
                                         cboDrain.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
                                                                nameof(Tradition.DrainExpression));
                                     }
@@ -555,7 +554,7 @@ namespace Chummer
                                     lblDrainAttributesValue.DoOneWayDataBinding(
                                         "ToolTipText", CharacterObject.MagicTradition,
                                         nameof(Tradition.DrainValueToolTip));
-                                    await CharacterObject.MagicTradition.SetSourceDetailAsync(lblTraditionSource);
+                                    await CharacterObject.MagicTradition.SetSourceDetailAsync(lblTraditionSource, GenericToken);
 
                                     lblFadingAttributes.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
                                                                             nameof(Tradition.DisplayDrainExpression));
@@ -611,74 +610,74 @@ namespace Chummer
 
                                             lstSpirit.Sort(CompareListItems.CompareNames);
 
-                                            await cboSpiritCombat.PopulateWithListItemsAsync(lstSpirit);
+                                            await cboSpiritCombat.PopulateWithListItemsAsync(lstSpirit, GenericToken);
                                             cboSpiritCombat.DoDataBinding(
                                                 "SelectedValue", CharacterObject.MagicTradition,
                                                 nameof(Tradition.SpiritCombat));
                                             await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG);
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG, GenericToken);
                                             await cboSpiritCombat.DoThreadSafeAsync(x =>
                                             {
                                                 x.Visible
                                                     = CharacterObject.MagicTradition.Type == TraditionType.MAG;
                                                 x.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-                                            });
+                                            }, GenericToken);
 
-                                            await cboSpiritDetection.PopulateWithListItemsAsync(lstSpirit);
+                                            await cboSpiritDetection.PopulateWithListItemsAsync(lstSpirit, GenericToken);
                                             cboSpiritDetection.DoDataBinding(
                                                 "SelectedValue", CharacterObject.MagicTradition,
                                                 nameof(Tradition.SpiritDetection));
                                             await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG);
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG, GenericToken);
                                             await cboSpiritDetection.DoThreadSafeAsync(x =>
                                             {
                                                 x.Visible
                                                     = CharacterObject.MagicTradition.Type == TraditionType.MAG;
                                                 x.Enabled
                                                     = CharacterObject.MagicTradition.IsCustomTradition;
-                                            });
+                                            }, GenericToken);
 
-                                            await cboSpiritHealth.PopulateWithListItemsAsync(lstSpirit);
+                                            await cboSpiritHealth.PopulateWithListItemsAsync(lstSpirit, GenericToken);
                                             cboSpiritHealth.DoDataBinding(
                                                 "SelectedValue", CharacterObject.MagicTradition,
                                                 nameof(Tradition.SpiritHealth));
                                             await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG);
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG, GenericToken);
                                             await cboSpiritDetection.DoThreadSafeAsync(x =>
                                             {
                                                 x.Visible
                                                     = CharacterObject.MagicTradition.Type == TraditionType.MAG;
                                                 x.Enabled
                                                     = CharacterObject.MagicTradition.IsCustomTradition;
-                                            });
+                                            }, GenericToken);
 
-                                            await cboSpiritIllusion.PopulateWithListItemsAsync(lstSpirit);
+                                            await cboSpiritIllusion.PopulateWithListItemsAsync(lstSpirit, GenericToken);
                                             cboSpiritIllusion.DoDataBinding(
                                                 "SelectedValue", CharacterObject.MagicTradition,
                                                 nameof(Tradition.SpiritIllusion));
                                             await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG);
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG, GenericToken);
                                             await cboSpiritIllusion.DoThreadSafeAsync(x =>
                                             {
                                                 x.Visible
                                                     = CharacterObject.MagicTradition.Type == TraditionType.MAG;
                                                 x.Enabled
                                                     = CharacterObject.MagicTradition.IsCustomTradition;
-                                            });
+                                            }, GenericToken);
 
-                                            await cboSpiritManipulation.PopulateWithListItemsAsync(lstSpirit);
+                                            await cboSpiritManipulation.PopulateWithListItemsAsync(lstSpirit, GenericToken);
                                             cboSpiritManipulation.DoDataBinding(
                                                 "SelectedValue", CharacterObject.MagicTradition,
                                                 nameof(Tradition.SpiritManipulation));
                                             await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG);
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG, GenericToken);
                                             await cboSpiritManipulation.DoThreadSafeAsync(x =>
                                             {
                                                 x.Visible
                                                     = CharacterObject.MagicTradition.Type == TraditionType.MAG;
                                                 x.Enabled
                                                     = CharacterObject.MagicTradition.IsCustomTradition;
-                                            });
+                                            }, GenericToken);
                                         }
                                     }
 
@@ -720,12 +719,12 @@ namespace Chummer
                                                               new ListItem(
                                                                   "None",
                                                                   await LanguageManager.GetStringAsync("String_None")));
-                                            await cboStream.PopulateWithListItemsAsync(lstStreams);
+                                            await cboStream.PopulateWithListItemsAsync(lstStreams, GenericToken);
                                         }
                                         else
                                         {
-                                            await cboStream.DoThreadSafeAsync(x => x.Visible = false);
-                                            await lblStreamLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                            await cboStream.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                                            await lblStreamLabel.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
                                         }
                                     }
 
@@ -741,7 +740,7 @@ namespace Chummer
                                             x.SelectedValue = CharacterObject.MagicTradition.SourceID.ToString();
                                         else if (x.SelectedIndex == -1 && x.Items.Count > 0)
                                             x.SelectedIndex = 0;
-                                    });
+                                    }, GenericToken);
 
                                     txtTraditionName.DoDataBinding("Text", CharacterObject.MagicTradition,
                                                                    nameof(Tradition.Name));
@@ -753,7 +752,7 @@ namespace Chummer
                                             x.SelectedValue = CharacterObject.MagicTradition.SourceID.ToString();
                                         else if (x.SelectedIndex == -1 && x.Items.Count > 0)
                                             x.SelectedIndex = 0;
-                                    });
+                                    }, GenericToken);
                                 }
 
                                 using (CustomActivity op_load_frm_create_longloads
@@ -793,7 +792,7 @@ namespace Chummer
                                         x.ItemDrag += treGear_ItemDrag;
                                         x.DragEnter += treGear_DragEnter;
                                         x.DragDrop += treGear_DragDrop;
-                                    });
+                                    }, GenericToken);
 
                                     /*
                                     treLifestyles.DoThreadSafe(x =>
@@ -801,7 +800,7 @@ namespace Chummer
                                         x.ItemDrag += treLifestyles_ItemDrag;
                                         x.DragEnter += treLifestyles_DragEnter;
                                         x.DragDrop += treLifestyles_DragDrop;
-                                    });
+                                    }, GenericToken);
                                     */
 
                                     await treArmor.DoThreadSafeAsync(x =>
@@ -809,21 +808,21 @@ namespace Chummer
                                         x.ItemDrag += treArmor_ItemDrag;
                                         x.DragEnter += treArmor_DragEnter;
                                         x.DragDrop += treArmor_DragDrop;
-                                    });
+                                    }, GenericToken);
 
                                     await treWeapons.DoThreadSafeAsync(x =>
                                     {
                                         x.ItemDrag += treWeapons_ItemDrag;
                                         x.DragEnter += treWeapons_DragEnter;
                                         x.DragDrop += treWeapons_DragDrop;
-                                    });
+                                    }, GenericToken);
 
                                     await treVehicles.DoThreadSafeAsync(x =>
                                     {
                                         x.ItemDrag += treVehicles_ItemDrag;
                                         x.DragEnter += treVehicles_DragEnter;
                                         x.DragDrop += treVehicles_DragDrop;
-                                    });
+                                    }, GenericToken);
 
                                     // Merge the ToolStrips.
                                     ToolStripManager.RevertMerge("toolStrip");
@@ -1098,7 +1097,7 @@ namespace Chummer
                                                                               .GetStringAsync("Enum_" + mode)));
                                         }
 
-                                        await cboVehicleWeaponFiringMode.PopulateWithListItemsAsync(lstFireModes);
+                                        await cboVehicleWeaponFiringMode.PopulateWithListItemsAsync(lstFireModes, GenericToken);
                                     }
                                 }
                             }
@@ -1109,10 +1108,12 @@ namespace Chummer
 
                             using (_ = await Timekeeper.StartSyncronAsync("load_frm_create_finish", op_load_frm_create))
                             {
-                                await SetTooltips();
+                                await SetTooltips(GenericToken);
                                 await RefreshAttributes(pnlAttributes, null, lblAttributes, lblKarma.PreferredWidth,
-                                                  await lblAttributesAug.DoThreadSafeFuncAsync(x => x.PreferredWidth),
-                                                  await lblAttributesMetatype.DoThreadSafeFuncAsync(x => x.PreferredWidth));
+                                                        await lblAttributesAug.DoThreadSafeFuncAsync(
+                                                            x => x.PreferredWidth, GenericToken),
+                                                        await lblAttributesMetatype.DoThreadSafeFuncAsync(
+                                                            x => x.PreferredWidth, GenericToken));
 
                                 CharacterObject.AttributeSection.Attributes.CollectionChanged
                                     += AttributeCollectionChanged;
@@ -1131,11 +1132,11 @@ namespace Chummer
                                 // Clear the Dirty flag which gets set when creating a new Character.
                                 if (!CharacterObject.LoadAsDirty)
                                     IsDirty = false;
-                                await DoRefreshPasteStatus();
-                                await ProcessMugshot();
+                                await DoRefreshPasteStatus(GenericToken);
+                                await ProcessMugshot(GenericToken);
 
                                 // Stupid hack to get the MDI icon to show up properly.
-                                await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon);
+                                await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon, GenericToken);
 
                                 Program.PluginLoader.CallPlugins(this, op_load_frm_create);
                             }
@@ -1155,6 +1156,11 @@ namespace Chummer
                             }
 
                             op_load_frm_create.SetSuccess(true);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            //swallow this
+                            op_load_frm_create?.SetSuccess(false);
                         }
                         catch (Exception ex)
                         {
@@ -1214,7 +1220,8 @@ namespace Chummer
                     if (e.Cancel)
                         return;
 
-                    UpdateCharacterInfoCancellationTokenSource?.Cancel(false);
+                    GenericCancellationTokenSource?.Cancel(false);
+                    IsCharacterUpdateRequested = false;
 
                     if (Program.MainForm.ActiveMdiChild == this)
                         ToolStripManager.RevertMerge("toolStrip");
@@ -1358,61 +1365,68 @@ namespace Chummer
 
             IsDirty = true;
 
-            switch (e.PropertyName)
+            try
             {
-                case nameof(Character.CharacterName):
-                    await UpdateWindowTitleAsync(false);
-                    break;
+                switch (e.PropertyName)
+                {
+                    case nameof(Character.CharacterName):
+                        await UpdateWindowTitleAsync(false, GenericToken);
+                        break;
 
-                case nameof(Character.DisplayNuyen):
-                    await StatusStrip.DoThreadSafeAsync(() => tslNuyenRemaining.Text = CharacterObject.DisplayNuyen);
-                    break;
+                    case nameof(Character.DisplayNuyen):
+                        await StatusStrip.DoThreadSafeAsync(() => tslNuyenRemaining.Text = CharacterObject.DisplayNuyen,
+                                                            GenericToken);
+                        break;
 
-                case nameof(Character.StolenNuyen):
-                    bool show = await ImprovementManager.ValueOfAsync(CharacterObject, Improvement.ImprovementType.Nuyen, strImprovedName: "Stolen") != 0;
+                    case nameof(Character.StolenNuyen):
+                        bool show = await ImprovementManager.ValueOfAsync(
+                            CharacterObject, Improvement.ImprovementType.Nuyen, strImprovedName: "Stolen") != 0;
 
-                    await lblStolenNuyen.DoThreadSafeAsync(x => x.Visible = show);
-                    await lblStolenNuyenLabel.DoThreadSafeAsync(x => x.Visible = show);
-                    break;
+                        await lblStolenNuyen.DoThreadSafeAsync(x => x.Visible = show, GenericToken);
+                        await lblStolenNuyenLabel.DoThreadSafeAsync(x => x.Visible = show, GenericToken);
+                        break;
 
-                case nameof(Character.DisplayEssence):
-                    await StatusStrip.DoThreadSafeAsync(() => tslEssence.Text = CharacterObject.DisplayEssence);
-                    break;
+                    case nameof(Character.DisplayEssence):
+                        await StatusStrip.DoThreadSafeAsync(() => tslEssence.Text = CharacterObject.DisplayEssence,
+                                                            GenericToken);
+                        break;
 
-                case nameof(Character.DisplayTotalCarriedWeight):
-                    await StatusStrip.DoThreadSafeAsync(() => tslCarriedWeight.Text = CharacterObject.DisplayTotalCarriedWeight);
-                    break;
+                    case nameof(Character.DisplayTotalCarriedWeight):
+                        await StatusStrip.DoThreadSafeAsync(
+                            () => tslCarriedWeight.Text = CharacterObject.DisplayTotalCarriedWeight, GenericToken);
+                        break;
 
-                case nameof(Character.Encumbrance):
-                    await StatusStrip.DoThreadSafeAsync(() => tslCarriedWeight.ForeColor = CharacterObject.Encumbrance > 0
-                                                            ? ColorManager.ErrorColor
-                                                            : ColorManager.ControlText);
-                    break;
+                    case nameof(Character.Encumbrance):
+                        await StatusStrip.DoThreadSafeAsync(() => tslCarriedWeight.ForeColor
+                                                                = CharacterObject.Encumbrance > 0
+                                                                    ? ColorManager.ErrorColor
+                                                                    : ColorManager.ControlText, GenericToken);
+                        break;
 
-                case nameof(Character.NuyenBP):
-                case nameof(Character.MetatypeBP):
-                case nameof(Character.ContactPoints):
-                case nameof(Character.FreeSpells):
-                case nameof(Character.CFPLimit):
-                case nameof(Character.AIAdvancedProgramLimit):
-                case nameof(Character.SpellKarmaCost):
-                case nameof(Character.ComplexFormKarmaCost):
-                case nameof(Character.AIProgramKarmaCost):
-                case nameof(Character.AIAdvancedProgramKarmaCost):
-                case nameof(Character.MysticAdeptPowerPoints):
-                case nameof(Character.MagicTradition):
-                case nameof(Character.GroupMember):
-                case nameof(Character.HomeNode):
-                case nameof(Character.ActiveCommlink):
-                    IsCharacterUpdateRequested = true;
-                    break;
+                    case nameof(Character.NuyenBP):
+                    case nameof(Character.MetatypeBP):
+                    case nameof(Character.ContactPoints):
+                    case nameof(Character.FreeSpells):
+                    case nameof(Character.CFPLimit):
+                    case nameof(Character.AIAdvancedProgramLimit):
+                    case nameof(Character.SpellKarmaCost):
+                    case nameof(Character.ComplexFormKarmaCost):
+                    case nameof(Character.AIProgramKarmaCost):
+                    case nameof(Character.AIAdvancedProgramKarmaCost):
+                    case nameof(Character.MysticAdeptPowerPoints):
+                    case nameof(Character.MagicTradition):
+                    case nameof(Character.GroupMember):
+                    case nameof(Character.HomeNode):
+                    case nameof(Character.ActiveCommlink):
+                        IsCharacterUpdateRequested = true;
+                        break;
 
-                case nameof(Character.Source):
-                case nameof(Character.Page):
-                    await CharacterObject.SetSourceDetailAsync(lblMetatypeSource);
-                    break;
+                    case nameof(Character.Source):
+                    case nameof(Character.Page):
+                        await CharacterObject.SetSourceDetailAsync(lblMetatypeSource, GenericToken);
+                        break;
 
-                case nameof(Character.MAGEnabled):
+                    case nameof(Character.MAGEnabled):
                     {
                         if (CharacterObject.MAGEnabled)
                         {
@@ -1425,30 +1439,31 @@ namespace Chummer
                                 intEssenceLoss = _objCharacter.EssencePenalty;
                             */
                             // If the character options permit initiation in create mode, show the Initiation page.
-                            await UpdateInitiationCost();
+                            await UpdateInitiationCost(GenericToken);
 
                             string strText = await LanguageManager.GetStringAsync("Tab_Initiation");
-                            await tabInitiation.DoThreadSafeAsync(x => x.Text = strText);
+                            await tabInitiation.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
                             strText = await LanguageManager.GetStringAsync("Button_AddMetamagic");
-                            await cmsMetamagic.DoThreadSafeAsync(() => tsMetamagicAddMetamagic.Text = strText);
+                            await cmsMetamagic.DoThreadSafeAsync(() => tsMetamagicAddMetamagic.Text = strText,
+                                                                 GenericToken);
                             strText = await LanguageManager.GetStringAsync("Button_AddInitiateGrade");
-                            await cmdAddMetamagic.DoThreadSafeAsync(x => x.Text = strText);
+                            await cmdAddMetamagic.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
                             strText = await LanguageManager.GetStringAsync("Button_RemoveInitiateGrade");
-                            await cmdDeleteMetamagic.DoThreadSafeAsync(x => x.Text = strText);
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
                             strText = await LanguageManager.GetStringAsync("String_InitiationType");
-                            await gpbInitiationType.DoThreadSafeAsync(x => x.Text = strText);
+                            await gpbInitiationType.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
                             strText = await LanguageManager.GetStringAsync("String_InitiationGroup");
-                            await gpbInitiationGroup.DoThreadSafeAsync(x => x.Text = strText);
+                            await gpbInitiationGroup.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
                             strText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
                                                         "Checkbox_InitiationOrdeal"),
                                                     CharacterObjectSettings.KarmaMAGInitiationOrdealPercent.ToString(
                                                         "P", GlobalSettings.CultureInfo));
-                            await chkInitiationOrdeal.DoThreadSafeAsync(x => x.Text = strText);
+                            await chkInitiationOrdeal.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
                             strText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
                                                         "Checkbox_InitiationGroup"),
                                                     CharacterObjectSettings.KarmaMAGInitiationGroupPercent.ToString(
                                                         "P", GlobalSettings.CultureInfo));
-                            await chkInitiationGroup.DoThreadSafeAsync(x => x.Text = strText);
+                            await chkInitiationGroup.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
                             strText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
                                                         "Checkbox_InitiationSchooling"),
                                                     CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent.ToString(
@@ -1457,27 +1472,28 @@ namespace Chummer
                             {
                                 x.Text = strText;
                                 x.Enabled = true;
-                            });
+                            }, GenericToken);
                             await cmsMetamagic.DoThreadSafeAsync(() =>
                             {
                                 tsMetamagicAddArt.Visible = true;
                                 tsMetamagicAddEnchantment.Visible = true;
                                 tsMetamagicAddEnhancement.Visible = true;
                                 tsMetamagicAddRitual.Visible = true;
-                            });
+                            }, GenericToken);
                             string strInitTip = string.Format(GlobalSettings.CultureInfo,
                                                               await LanguageManager.GetStringAsync(
                                                                   "Tip_ImproveInitiateGrade")
                                                               , CharacterObject.InitiateGrade + 1
                                                               , CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectSettings.KarmaInitiation);
-                            await cmdAddMetamagic.SetToolTipAsync(strInitTip);
+                            await cmdAddMetamagic.SetToolTipAsync(strInitTip, GenericToken);
                             strText = await LanguageManager.GetStringAsync("Checkbox_JoinedGroup");
-                            await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strText);
+                            await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
 
                             if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.MAG))
                             {
                                 CharacterObject.AttributeSection.Attributes.Add(CharacterObject.MAG);
                             }
+
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
                             {
                                 CharacterAttrib objMAGAdept =
@@ -1500,14 +1516,15 @@ namespace Chummer
                             }
                         }
 
-                        await gpbGearBondedFoci.DoThreadSafeAsync(x => x.Visible = CharacterObject.MAGEnabled);
-                        await lblAstralINI.DoThreadSafeAsync(x => x.Visible = CharacterObject.MAGEnabled);
+                        await gpbGearBondedFoci.DoThreadSafeAsync(x => x.Visible = CharacterObject.MAGEnabled,
+                                                                  GenericToken);
+                        await lblAstralINI.DoThreadSafeAsync(x => x.Visible = CharacterObject.MAGEnabled, GenericToken);
 
                         IsCharacterUpdateRequested = true;
                     }
-                    break;
+                        break;
 
-                case nameof(Character.RESEnabled):
+                    case nameof(Character.RESEnabled):
                     {
                         // Change to the status of RES being enabled.
                         if (CharacterObject.RESEnabled)
@@ -1522,30 +1539,31 @@ namespace Chummer
                             // If the character options permit submersion in create mode, show the Initiation page.
                             */
 
-                            await UpdateInitiationCost();
+                            await UpdateInitiationCost(GenericToken);
 
                             string strText = await LanguageManager.GetStringAsync("Tab_Submersion");
-                            await tabInitiation.DoThreadSafeAsync(x => x.Text = strText);
+                            await tabInitiation.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
                             strText = await LanguageManager.GetStringAsync("Button_AddEcho");
-                            await cmsMetamagic.DoThreadSafeAsync(() => tsMetamagicAddMetamagic.Text = strText);
+                            await cmsMetamagic.DoThreadSafeAsync(() => tsMetamagicAddMetamagic.Text = strText,
+                                                                 GenericToken);
                             strText = await LanguageManager.GetStringAsync("Button_AddSubmersionGrade");
-                            await cmdAddMetamagic.DoThreadSafeAsync(x => x.Text = strText);
+                            await cmdAddMetamagic.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
                             strText = await LanguageManager.GetStringAsync("Button_RemoveSubmersionGrade");
-                            await cmdDeleteMetamagic.DoThreadSafeAsync(x => x.Text = strText);
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
                             strText = await LanguageManager.GetStringAsync("String_SubmersionType");
-                            await gpbInitiationType.DoThreadSafeAsync(x => x.Text = strText);
+                            await gpbInitiationType.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
                             strText = await LanguageManager.GetStringAsync("String_SubmersionNetwork");
-                            await gpbInitiationGroup.DoThreadSafeAsync(x => x.Text = strText);
+                            await gpbInitiationGroup.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
                             strText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
                                                         "Checkbox_SubmersionTask"),
                                                     CharacterObjectSettings.KarmaRESInitiationOrdealPercent.ToString(
                                                         "P", GlobalSettings.CultureInfo));
-                            await chkInitiationOrdeal.DoThreadSafeAsync(x => x.Text = strText);
+                            await chkInitiationOrdeal.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
                             strText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
                                                         "Checkbox_NetworkSubmersion"),
                                                     CharacterObjectSettings.KarmaRESInitiationGroupPercent.ToString(
                                                         "P", GlobalSettings.CultureInfo));
-                            await chkInitiationGroup.DoThreadSafeAsync(x => x.Text = strText);
+                            await chkInitiationGroup.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
                             strText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
                                                         "Checkbox_InitiationSchooling"),
                                                     CharacterObjectSettings.KarmaRESInitiationSchoolingPercent.ToString(
@@ -1554,22 +1572,22 @@ namespace Chummer
                             {
                                 x.Text = strText;
                                 x.Enabled = CharacterObjectSettings.AllowTechnomancerSchooling;
-                            });
+                            }, GenericToken);
                             await cmsMetamagic.DoThreadSafeAsync(() =>
                             {
                                 tsMetamagicAddArt.Visible = false;
                                 tsMetamagicAddEnchantment.Visible = false;
                                 tsMetamagicAddEnhancement.Visible = false;
                                 tsMetamagicAddRitual.Visible = false;
-                            });
+                            }, GenericToken);
                             string strInitTip = string.Format(GlobalSettings.CultureInfo,
                                                               await LanguageManager.GetStringAsync(
                                                                   "Tip_ImproveSubmersionGrade")
                                                               , CharacterObject.SubmersionGrade + 1
                                                               , CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectSettings.KarmaInitiation);
-                            await cmdAddMetamagic.SetToolTipAsync(strInitTip);
+                            await cmdAddMetamagic.SetToolTipAsync(strInitTip, GenericToken);
                             strText = await LanguageManager.GetStringAsync("Checkbox_JoinedNetwork");
-                            await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strText);
+                            await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
 
                             if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.RES))
                             {
@@ -1589,9 +1607,9 @@ namespace Chummer
 
                         IsCharacterUpdateRequested = true;
                     }
-                    break;
+                        break;
 
-                case nameof(Character.DEPEnabled):
+                    case nameof(Character.DEPEnabled):
                     {
                         if (CharacterObject.DEPEnabled)
                         {
@@ -1605,49 +1623,58 @@ namespace Chummer
                             CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.DEP);
                         }
                     }
-                    break;
+                        break;
 
-                case nameof(Character.Ambidextrous):
+                    case nameof(Character.Ambidextrous):
                     {
                         using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                        out List<ListItem> lstPrimaryArm))
                         {
                             if (CharacterObject.Ambidextrous)
                             {
-                                lstPrimaryArm.Add(new ListItem("Ambidextrous", await LanguageManager.GetStringAsync("String_Ambidextrous")));
-                                await cboPrimaryArm.DoThreadSafeAsync(x => x.Enabled = false);
+                                lstPrimaryArm.Add(new ListItem("Ambidextrous",
+                                                               await LanguageManager.GetStringAsync(
+                                                                   "String_Ambidextrous")));
+                                await cboPrimaryArm.DoThreadSafeAsync(x => x.Enabled = false, GenericToken);
                             }
                             else
                             {
                                 //Create the dropdown for the character's primary arm.
-                                lstPrimaryArm.Add(new ListItem("Left", await LanguageManager.GetStringAsync("String_Improvement_SideLeft")));
-                                lstPrimaryArm.Add(new ListItem("Right", await LanguageManager.GetStringAsync("String_Improvement_SideRight")));
+                                lstPrimaryArm.Add(new ListItem(
+                                                      "Left",
+                                                      await LanguageManager.GetStringAsync(
+                                                          "String_Improvement_SideLeft")));
+                                lstPrimaryArm.Add(new ListItem(
+                                                      "Right",
+                                                      await LanguageManager.GetStringAsync(
+                                                          "String_Improvement_SideRight")));
                                 lstPrimaryArm.Sort(CompareListItems.CompareNames);
-                                await cboPrimaryArm.DoThreadSafeAsync(x => x.Enabled = true);
+                                await cboPrimaryArm.DoThreadSafeAsync(x => x.Enabled = true, GenericToken);
                             }
 
                             string strPrimaryArm = CharacterObject.PrimaryArm;
 
-                            await cboPrimaryArm.PopulateWithListItemsAsync(lstPrimaryArm);
+                            await cboPrimaryArm.PopulateWithListItemsAsync(lstPrimaryArm, GenericToken);
                             await cboPrimaryArm.DoThreadSafeAsync(x =>
                             {
                                 x.SelectedValue = strPrimaryArm;
                                 if (x.SelectedIndex == -1)
                                     x.SelectedIndex = 0;
-                            });
+                            }, GenericToken);
                         }
                     }
-                    break;
+                        break;
 
-                case nameof(Character.MagicianEnabled):
+                    case nameof(Character.MagicianEnabled):
                     {
                         // Change to the status of Magician being enabled.
                         if (CharacterObject.MagicianEnabled || CharacterObject.AdeptEnabled)
                         {
                             if (!tabCharacterTabs.TabPages.Contains(tabMagician))
                                 tabCharacterTabs.TabPages.Insert(3, tabMagician);
-                            await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true);
-                            if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && CharacterObject.AttributeSection.Attributes != null)
+                            await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true, GenericToken);
+                            if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
+                                && CharacterObject.AttributeSection.Attributes != null)
                             {
                                 CharacterAttrib objMAGAdept =
                                     CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
@@ -1660,8 +1687,9 @@ namespace Chummer
                         else
                         {
                             tabCharacterTabs.TabPages.Remove(tabMagician);
-                            await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = false);
-                            if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.AttributeSection.Attributes != null)
+                            await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = false, GenericToken);
+                            if (CharacterObjectSettings.MysAdeptSecondMAGAttribute
+                                && CharacterObject.AttributeSection.Attributes != null)
                             {
                                 CharacterAttrib objMAGAdept =
                                     CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
@@ -1671,20 +1699,24 @@ namespace Chummer
                                 }
                             }
                         }
-                        await cmdAddSpirit.DoThreadSafeAsync(x => x.Visible = CharacterObject.MagicianEnabled);
-                        await panSpirits.DoThreadSafeAsync(x => x.Visible = CharacterObject.MagicianEnabled);
-                    }
-                    break;
 
-                case nameof(Character.AdeptEnabled):
+                        await cmdAddSpirit.DoThreadSafeAsync(x => x.Visible = CharacterObject.MagicianEnabled,
+                                                             GenericToken);
+                        await panSpirits.DoThreadSafeAsync(x => x.Visible = CharacterObject.MagicianEnabled,
+                                                           GenericToken);
+                    }
+                        break;
+
+                    case nameof(Character.AdeptEnabled):
                     {
                         // Change to the status of Adept being enabled.
                         if (CharacterObject.AdeptEnabled)
                         {
                             if (!tabCharacterTabs.TabPages.Contains(tabMagician))
                                 tabCharacterTabs.TabPages.Insert(3, tabMagician);
-                            await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true);
-                            if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && CharacterObject.AttributeSection.Attributes != null)
+                            await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true, GenericToken);
+                            if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
+                                && CharacterObject.AttributeSection.Attributes != null)
                             {
                                 CharacterAttrib objMAGAdept =
                                     CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
@@ -1702,8 +1734,9 @@ namespace Chummer
                             if (!CharacterObject.MagicianEnabled)
                             {
                                 tabCharacterTabs.TabPages.Remove(tabMagician);
-                                await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = false);
-                                if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.AttributeSection.Attributes != null)
+                                await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = false, GenericToken);
+                                if (CharacterObjectSettings.MysAdeptSecondMAGAttribute
+                                    && CharacterObject.AttributeSection.Attributes != null)
                                 {
                                     CharacterAttrib objMAGAdept =
                                         CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
@@ -1714,14 +1747,14 @@ namespace Chummer
                                 }
                             }
                             else
-                                await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true);
+                                await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true, GenericToken);
 
                             tabCharacterTabs.TabPages.Remove(tabAdept);
                         }
                     }
-                    break;
+                        break;
 
-                case nameof(Character.TechnomancerEnabled):
+                    case nameof(Character.TechnomancerEnabled):
                     {
                         // Change to the status of Technomancer being enabled.
                         if (CharacterObject.TechnomancerEnabled)
@@ -1734,9 +1767,9 @@ namespace Chummer
                             tabCharacterTabs.TabPages.Remove(tabTechnomancer);
                         }
                     }
-                    break;
+                        break;
 
-                case nameof(Character.AdvancedProgramsEnabled):
+                    case nameof(Character.AdvancedProgramsEnabled):
                     {
                         // Change to the status of Advanced Programs being enabled.
                         if (CharacterObject.AdvancedProgramsEnabled)
@@ -1749,9 +1782,9 @@ namespace Chummer
                             tabCharacterTabs.TabPages.Remove(tabAdvancedPrograms);
                         }
                     }
-                    break;
+                        break;
 
-                case nameof(Character.CritterEnabled):
+                    case nameof(Character.CritterEnabled):
                     {
                         // Change the status of Critter being enabled.
                         if (CharacterObject.CritterEnabled)
@@ -1764,9 +1797,9 @@ namespace Chummer
                             tabCharacterTabs.TabPages.Remove(tabCritter);
                         }
                     }
-                    break;
+                        break;
 
-                case nameof(Character.AddBiowareEnabled):
+                    case nameof(Character.AddBiowareEnabled):
                     {
                         if (!CharacterObject.AddBiowareEnabled)
                         {
@@ -1791,8 +1824,10 @@ namespace Chummer
                                         CharacterObject.Cyberware.Add(objCyberware);
                                         objCyberware.ChangeModularEquip(false);
                                     }
+
                                     continue;
                                 }
+
                                 if (!objCyberware.CanRemoveThroughImprovements)
                                     continue;
                                 objCyberware.DeleteCyberware();
@@ -1805,9 +1840,9 @@ namespace Chummer
                             }
                         }
                     }
-                    break;
+                        break;
 
-                case nameof(Character.AddCyberwareEnabled):
+                    case nameof(Character.AddCyberwareEnabled):
                     {
                         if (!CharacterObject.AddCyberwareEnabled)
                         {
@@ -1832,8 +1867,10 @@ namespace Chummer
                                         objCyberware.Parent?.Children.Remove(objCyberware);
                                         CharacterObject.Cyberware.Add(objCyberware);
                                     }
+
                                     continue;
                                 }
+
                                 if (!objCyberware.CanRemoveThroughImprovements)
                                     continue;
                                 objCyberware.DeleteCyberware();
@@ -1846,16 +1883,17 @@ namespace Chummer
                             }
                         }
                     }
-                    break;
+                        break;
 
-                case nameof(Character.ExCon):
+                    case nameof(Character.ExCon):
                     {
                         if (CharacterObject.ExCon)
                         {
                             bool blnDoRefresh = false;
                             foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(
                                                                                   x => x.Children, x =>
-                                                                                      x.SourceID != Cyberware.EssenceHoleGUID
+                                                                                      x.SourceID != Cyberware
+                                                                                          .EssenceHoleGUID
                                                                                       && x.SourceID != Cyberware
                                                                                           .EssenceAntiHoleGUID
                                                                                       && x.IsModularCurrentlyEquipped)
@@ -1872,8 +1910,10 @@ namespace Chummer
                                         CharacterObject.Cyberware.Add(objCyberware);
                                         objCyberware.ChangeModularEquip(false);
                                     }
+
                                     continue;
                                 }
+
                                 if (!objCyberware.CanRemoveThroughImprovements)
                                     continue;
                                 objCyberware.DeleteCyberware();
@@ -1886,9 +1926,9 @@ namespace Chummer
                             }
                         }
                     }
-                    break;
+                        break;
 
-                case nameof(Character.InitiationEnabled):
+                    case nameof(Character.InitiationEnabled):
                     {
                         // Change the status of the Initiation tab being show.
                         if (CharacterObject.InitiationEnabled)
@@ -1900,71 +1940,90 @@ namespace Chummer
                         {
                             tabCharacterTabs.TabPages.Remove(tabInitiation);
                         }
-                        await gpbInitiationType.DoThreadSafeAsync(x => x.Visible = CharacterObject.InitiationEnabled);
-                        await gpbInitiationGroup.DoThreadSafeAsync(x => x.Visible = CharacterObject.InitiationEnabled);
-                    }
-                    break;
 
-                case nameof(Character.FirstMentorSpiritDisplayName):
+                        await gpbInitiationType.DoThreadSafeAsync(x => x.Visible = CharacterObject.InitiationEnabled,
+                                                                  GenericToken);
+                        await gpbInitiationGroup.DoThreadSafeAsync(x => x.Visible = CharacterObject.InitiationEnabled,
+                                                                   GenericToken);
+                    }
+                        break;
+
+                    case nameof(Character.FirstMentorSpiritDisplayName):
                     {
                         MentorSpirit objMentor = await CharacterObject.MentorSpirits.FirstOrDefaultAsync();
                         if (objMentor != null)
                         {
-                            await objMentor.SetSourceDetailAsync(lblMentorSpiritSource);
-                            await objMentor.SetSourceDetailAsync(lblParagonSource);
+                            await objMentor.SetSourceDetailAsync(lblMentorSpiritSource, GenericToken);
+                            await objMentor.SetSourceDetailAsync(lblParagonSource, GenericToken);
                         }
+
                         break;
                     }
-                case nameof(Character.HasMentorSpirit):
+                    case nameof(Character.HasMentorSpirit):
                     {
-                        await gpbMagicianMentorSpirit.DoThreadSafeAsync(x => x.Visible = CharacterObject.HasMentorSpirit);
-                        await gpbTechnomancerParagon.DoThreadSafeAsync(x => x.Visible = CharacterObject.HasMentorSpirit);
+                        await gpbMagicianMentorSpirit.DoThreadSafeAsync(
+                            x => x.Visible = CharacterObject.HasMentorSpirit, GenericToken);
+                        await gpbTechnomancerParagon.DoThreadSafeAsync(x => x.Visible = CharacterObject.HasMentorSpirit,
+                                                                       GenericToken);
                         break;
                     }
-                case nameof(Character.UseMysticAdeptPPs):
+                    case nameof(Character.UseMysticAdeptPPs):
                     {
-                        await lblMysticAdeptAssignment.DoThreadSafeAsync(x => x.Visible = CharacterObject.UseMysticAdeptPPs);
-                        await nudMysticAdeptMAGMagician.DoThreadSafeAsync(x => x.Visible = CharacterObject.UseMysticAdeptPPs);
+                        await lblMysticAdeptAssignment.DoThreadSafeAsync(
+                            x => x.Visible = CharacterObject.UseMysticAdeptPPs, GenericToken);
+                        await nudMysticAdeptMAGMagician.DoThreadSafeAsync(
+                            x => x.Visible = CharacterObject.UseMysticAdeptPPs, GenericToken);
                         break;
                     }
-                case nameof(Character.IsPrototypeTranshuman):
-                    {
-                        IsCharacterUpdateRequested = true;
-                        await lblPrototypeTranshumanESS.DoThreadSafeAsync(x => x.Visible = CharacterObject.IsPrototypeTranshuman);
-                        await lblPrototypeTranshumanESSLabel.DoThreadSafeAsync(x => x.Visible = CharacterObject.IsPrototypeTranshuman);
-                        break;
-                    }
-                case nameof(Character.MetatypeCategory):
+                    case nameof(Character.IsPrototypeTranshuman):
                     {
                         IsCharacterUpdateRequested = true;
-                        await mnuCreateMenu.DoThreadSafeAsync(() => mnuSpecialCyberzombie.Visible = CharacterObject.MetatypeCategory != "Cyberzombie");
+                        await lblPrototypeTranshumanESS.DoThreadSafeAsync(
+                            x => x.Visible = CharacterObject.IsPrototypeTranshuman);
+                        await lblPrototypeTranshumanESSLabel.DoThreadSafeAsync(
+                            x => x.Visible = CharacterObject.IsPrototypeTranshuman);
                         break;
                     }
-                case nameof(Character.IsSprite):
+                    case nameof(Character.MetatypeCategory):
                     {
                         IsCharacterUpdateRequested = true;
-                        await mnuCreateMenu.DoThreadSafeAsync(() => mnuSpecialConvertToFreeSprite.Visible = CharacterObject.IsSprite);
+                        await mnuCreateMenu.DoThreadSafeAsync(
+                            () => mnuSpecialCyberzombie.Visible = CharacterObject.MetatypeCategory != "Cyberzombie",
+                            GenericToken);
                         break;
                     }
-                case nameof(Character.BlackMarketDiscount):
-                {
-                    await Task.WhenAll(RefreshSelectedCyberware(UpdateCharacterInfoCancellationTokenSource?.Token ?? default),
-                                       RefreshSelectedArmor(UpdateCharacterInfoCancellationTokenSource?.Token ?? default),
-                                       RefreshSelectedGear(UpdateCharacterInfoCancellationTokenSource?.Token ?? default),
-                                       RefreshSelectedVehicle(UpdateCharacterInfoCancellationTokenSource?.Token ?? default),
-                                       RefreshSelectedWeapon(UpdateCharacterInfoCancellationTokenSource?.Token ?? default));
-                    break;
+                    case nameof(Character.IsSprite):
+                    {
+                        IsCharacterUpdateRequested = true;
+                        await mnuCreateMenu.DoThreadSafeAsync(
+                            () => mnuSpecialConvertToFreeSprite.Visible = CharacterObject.IsSprite, GenericToken);
+                        break;
+                    }
+                    case nameof(Character.BlackMarketDiscount):
+                    {
+                        await Task.WhenAll(RefreshSelectedCyberware(GenericToken),
+                                           RefreshSelectedArmor(GenericToken),
+                                           RefreshSelectedGear(GenericToken),
+                                           RefreshSelectedVehicle(GenericToken),
+                                           RefreshSelectedWeapon(GenericToken));
+                        break;
+                    }
+                    case nameof(Character.Settings):
+                    {
+                        if (!IsLoading)
+                        {
+                            foreach (PropertyInfo objProperty in typeof(CharacterSettings).GetProperties())
+                                await DoOnCharacterSettingsPropertyChanged(
+                                    new PropertyChangedEventArgs(objProperty.Name));
+                        }
+
+                        break;
+                    }
                 }
-                case nameof(Character.Settings):
-                {
-                    if (!IsLoading)
-                    {
-                        foreach (PropertyInfo objProperty in typeof(CharacterSettings).GetProperties())
-                            await DoOnCharacterSettingsPropertyChanged(
-                                new PropertyChangedEventArgs(objProperty.Name));
-                    }
-                    break;
-                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -2294,22 +2353,50 @@ namespace Chummer
 
         private async void mnuFileSave_Click(object sender, EventArgs e)
         {
-            await SaveCharacter();
+            try
+            {
+                await SaveCharacter(token: GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void mnuFileSaveAs_Click(object sender, EventArgs e)
         {
-            await SaveCharacterAs();
+            try
+            {
+                await SaveCharacterAs(token: GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void mnuFileSaveAsCreated_Click(object sender, EventArgs e)
         {
-            await SaveCharacterAs(true);
+            try
+            {
+                await SaveCharacterAs(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void mnuFilePrint_Click(object sender, EventArgs e)
         {
-            await DoPrint();
+            try
+            {
+                await DoPrint(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void mnuFileClose_Click(object sender, EventArgs e)
@@ -2339,10 +2426,17 @@ namespace Chummer
 
         private async void mnuSpecialChangeOptions_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
-            using (ThreadSafeForm<SelectBuildMethod> frmPickBP = await ThreadSafeForm<SelectBuildMethod>.GetAsync(() => new SelectBuildMethod(CharacterObject, true)))
+            try
             {
-                await frmPickBP.ShowDialogSafeAsync(this);
+                using (CursorWait.New(this))
+                using (ThreadSafeForm<SelectBuildMethod> frmPickBP = await ThreadSafeForm<SelectBuildMethod>.GetAsync(() => new SelectBuildMethod(CharacterObject, true), GenericToken))
+                {
+                    await frmPickBP.ShowDialogSafeAsync(this, GenericToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -2381,12 +2475,13 @@ namespace Chummer
             await DoReapplyImprovements();
         }
 
-        private async ValueTask DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null)
+        private async ValueTask DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
                 IAsyncDisposable objLocker
-                    = await CharacterObject.LockObject.EnterWriteLockAsync();
+                    = await CharacterObject.LockObject.EnterWriteLockAsync(token);
                 try
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
