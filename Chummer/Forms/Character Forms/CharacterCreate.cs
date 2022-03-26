@@ -1081,6 +1081,10 @@ namespace Chummer
                         Log.Error(ex);
                         throw;
                     }
+                    finally
+                    {
+                        IsFinishedInitializing = true;
+                    }
                 }
             }
         }

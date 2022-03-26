@@ -6868,6 +6868,8 @@ namespace Chummer
             }
         }
 
+        public bool IsFinishedInitializing { get; protected set; }
+
         public void MakeDirtyWithCharacterUpdate(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Move)

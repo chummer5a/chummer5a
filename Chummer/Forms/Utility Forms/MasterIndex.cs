@@ -150,18 +150,23 @@ namespace Chummer
 
         private async void MasterIndex_Load(object sender, EventArgs e)
         {
-            try
+            using (CursorWait.New(this))
             {
-                using (CursorWait.New(this))
+                try
                 {
+
                     await PopulateCharacterSettings(_objGenericToken);
-                    await LoadContent(_objGenericToken).ContinueWith(x => IsFinishedLoading = true, _objGenericToken);
+                    await LoadContent(_objGenericToken);
                     _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+                finally
+                {
+                    IsFinishedLoading = true;
+                }
             }
         }
 

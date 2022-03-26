@@ -130,31 +130,41 @@ namespace Chummer
         {
             using (CursorWait.New(this))
             {
-                SetMyEventHandlers();
-                _objMostRecentlyUsedsRefreshCancellationTokenSource = new CancellationTokenSource();
-                _tskMostRecentlyUsedsRefresh
-                    = LoadMruCharacters(true, _objMostRecentlyUsedsRefreshCancellationTokenSource.Token);
-                _objWatchFolderRefreshCancellationTokenSource = new CancellationTokenSource();
-                _tskWatchFolderRefresh = LoadWatchFolderCharacters(_objMostRecentlyUsedsRefreshCancellationTokenSource.Token);
                 try
                 {
-                    await Task.WhenAll(_tskMostRecentlyUsedsRefresh, _tskWatchFolderRefresh,
-                                       Task.WhenAll(Program.PluginLoader.MyActivePlugins.Select(RefreshPluginNodes)));
-                }
-                catch (OperationCanceledException)
-                {
-                    //swallow this
-                }
+                    try
+                    {
+                        CharacterCache objSelectedCache
+                            = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, _objGenericToken)
+                                as CharacterCache;
+                        await UpdateCharacter(objSelectedCache, _objGenericToken);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
 
-                try
-                {
-                    CharacterCache objSelectedCache = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, _objGenericToken) as CharacterCache;
-                    await UpdateCharacter(objSelectedCache, _objGenericToken)
-                        .ContinueWith(x => IsFinishedLoading = true, _objGenericToken);
+                    SetMyEventHandlers();
+                    _objMostRecentlyUsedsRefreshCancellationTokenSource = new CancellationTokenSource();
+                    _tskMostRecentlyUsedsRefresh
+                        = LoadMruCharacters(true, _objMostRecentlyUsedsRefreshCancellationTokenSource.Token);
+                    _objWatchFolderRefreshCancellationTokenSource = new CancellationTokenSource();
+                    _tskWatchFolderRefresh
+                        = LoadWatchFolderCharacters(_objMostRecentlyUsedsRefreshCancellationTokenSource.Token);
+                    try
+                    {
+                        await Task.WhenAll(_tskMostRecentlyUsedsRefresh, _tskWatchFolderRefresh,
+                                           Task.WhenAll(
+                                               Program.PluginLoader.MyActivePlugins.Select(RefreshPluginNodes)));
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
                 }
-                catch (OperationCanceledException)
+                finally
                 {
-                    //swallow this
+                    IsFinishedLoading = true;
                 }
             }
         }

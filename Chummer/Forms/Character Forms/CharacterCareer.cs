@@ -463,7 +463,8 @@ namespace Chummer
                                             string strName
                                                 = (await xmlDrain.SelectSingleNodeAndCacheExpressionAsync("name"))
                                                 ?.Value;
-                                            if (!string.IsNullOrEmpty(strName) && lstDrainAttributes.All(x => x.Value.ToString() != strName))
+                                            if (!string.IsNullOrEmpty(strName)
+                                                && lstDrainAttributes.All(x => x.Value.ToString() != strName))
                                             {
                                                 string strTranslatedName = (await xmlDrain
                                                     .SelectSingleNodeAndCacheExpressionAsync(
@@ -1116,6 +1117,10 @@ namespace Chummer
 
                         Log.Error(ex);
                         throw;
+                    }
+                    finally
+                    {
+                        IsFinishedInitializing = true;
                     }
                 }
             }
