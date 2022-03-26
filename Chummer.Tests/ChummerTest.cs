@@ -278,44 +278,45 @@ namespace Chummer.Tests
                                                                "(UnitTest05Dummy) "
                                                                + Path.GetFileNameWithoutExtension(objFileInfo.Name)
                                                                + ".txt");
-                        File.Create(strDummyFileName); // Create this so that we can track how far along the Unit Test is even if we don't have a debugger attached
-                        try
+                        using (File.Create(strDummyFileName, byte.MaxValue,
+                                           FileOptions
+                                               .DeleteOnClose)) // Create this so that we can track how far along the Unit Test is even if we don't have a debugger attached
                         {
-                            using (CharacterShared frmCharacterForm = objCharacter.Created
-                                       ? (CharacterShared) new CharacterCareer(objCharacter)
-                                       : new CharacterCreate(objCharacter))
+                            try
                             {
-                                frmCharacterForm.MdiParent = frmTestForm;
-                                frmCharacterForm.ShowInTaskbar = false;
-#if DEBUG
-                                frmCharacterForm.WindowState = FormWindowState.Minimized;
-#endif
-                                frmCharacterForm.Show();
-                                Utils.DoEventsSafe(true);
-                                while
-                                    (frmCharacterForm
-                                     .IsLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                                using (CharacterShared frmCharacterForm = objCharacter.Created
+                                           ? (CharacterShared) new CharacterCareer(objCharacter)
+                                           : new CharacterCreate(objCharacter))
                                 {
-                                    Utils.SafeSleep(true);
+                                    frmCharacterForm.MdiParent = frmTestForm;
+                                    frmCharacterForm.ShowInTaskbar = false;
+#if DEBUG
+                                    frmCharacterForm.WindowState = FormWindowState.Minimized;
+#endif
+                                    frmCharacterForm.Show();
+                                    Utils.DoEventsSafe(true);
+                                    while
+                                        (frmCharacterForm
+                                         .IsLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                                    {
+                                        Utils.SafeSleep(true);
+                                    }
+
+                                    frmCharacterForm.Close();
+                                    Utils.DoEventsSafe(true);
                                 }
 
-                                frmCharacterForm.Close();
                                 Utils.DoEventsSafe(true);
                             }
-
-                            Utils.DoEventsSafe(true);
-                        }
-                        catch (Exception e)
-                        {
-                            string strErrorMessage = "Exception while loading form for " + objFileInfo.FullName + ":";
-                            strErrorMessage += Environment.NewLine + e;
-                            Debug.WriteLine(strErrorMessage);
-                            Console.WriteLine(strErrorMessage);
-                            Assert.Fail(strErrorMessage);
-                        }
-                        finally
-                        {
-                            Utils.SafeDeleteFile(strDummyFileName);
+                            catch (Exception e)
+                            {
+                                string strErrorMessage
+                                    = "Exception while loading form for " + objFileInfo.FullName + ":";
+                                strErrorMessage += Environment.NewLine + e;
+                                Debug.WriteLine(strErrorMessage);
+                                Console.WriteLine(strErrorMessage);
+                                Assert.Fail(strErrorMessage);
+                            }
                         }
                     }
                 }
