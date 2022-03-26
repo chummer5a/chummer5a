@@ -461,8 +461,7 @@ namespace Chummer
                         int intOldSelectedIndex = await cboFile.DoThreadSafeFuncAsync(x => x.SelectedIndex, token);
                         await Task.WhenAll(
                             cboFile.PopulateWithListItemsAsync(_lstFileNamesWithItems, token).ContinueWith(
-                                y => cboFile.DoThreadSafe
-                                (x =>
+                                y => cboFile.DoThreadSafeAsync(x =>
                                 {
                                     try
                                     {
@@ -473,8 +472,8 @@ namespace Chummer
                                     {
                                         x.SelectedIndex = -1;
                                     }
-                                }), token),
-                            lstItems.PopulateWithListItemsAsync(_lstItems, token).ContinueWith(y => lstItems.DoThreadSafe(x => x.SelectedIndex = -1), token));
+                                }, token), token).Unwrap(),
+                            lstItems.PopulateWithListItemsAsync(_lstItems, token).ContinueWith(y => lstItems.DoThreadSafeAsync(x => x.SelectedIndex = -1, token), token).Unwrap());
                     }
                 }
                 finally

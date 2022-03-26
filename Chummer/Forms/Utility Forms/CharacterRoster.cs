@@ -62,20 +62,20 @@ namespace Chummer
             }
         }
 
-        public void SetMyEventHandlers(bool deleteThem = false)
+        public async ValueTask SetMyEventHandlers(bool deleteThem = false)
         {
             if (!deleteThem)
             {
                 Program.MainForm.OpenCharacterForms.CollectionChanged += OpenCharacterFormsOnCollectionChanged;
                 GlobalSettings.MruChanged += RefreshMruLists;
-                treCharacterList.DoThreadSafe(x =>
+                await treCharacterList.DoThreadSafeAsync(x =>
                 {
                     x.ItemDrag += treCharacterList_OnDefaultItemDrag;
                     x.DragEnter += treCharacterList_OnDefaultDragEnter;
                     x.DragDrop += treCharacterList_OnDefaultDragDrop;
                     x.DragOver += treCharacterList_OnDefaultDragOver;
                     x.NodeMouseDoubleClick += treCharacterList_OnDefaultDoubleClick;
-                });
+                }, _objGenericToken);
                 OnMyMouseDown += OnDefaultMouseDown;
                 if (_watcherCharacterRosterFolder != null)
                 {
@@ -89,14 +89,14 @@ namespace Chummer
             {
                 Program.MainForm.OpenCharacterForms.CollectionChanged -= OpenCharacterFormsOnCollectionChanged;
                 GlobalSettings.MruChanged -= RefreshMruLists;
-                treCharacterList.DoThreadSafe(x =>
+                await treCharacterList.DoThreadSafeAsync(x =>
                 {
                     x.ItemDrag -= treCharacterList_OnDefaultItemDrag;
                     x.DragEnter -= treCharacterList_OnDefaultDragEnter;
                     x.DragDrop -= treCharacterList_OnDefaultDragDrop;
                     x.DragOver -= treCharacterList_OnDefaultDragOver;
                     x.NodeMouseDoubleClick -= treCharacterList_OnDefaultDoubleClick;
-                });
+                }, _objGenericToken);
                 OnMyMouseDown = null;
 
                 if (_watcherCharacterRosterFolder != null)
@@ -144,7 +144,7 @@ namespace Chummer
                         //swallow this
                     }
 
-                    SetMyEventHandlers();
+                    await SetMyEventHandlers();
                     _objMostRecentlyUsedsRefreshCancellationTokenSource = new CancellationTokenSource();
                     _tskMostRecentlyUsedsRefresh
                         = LoadMruCharacters(true, _objMostRecentlyUsedsRefreshCancellationTokenSource.Token);
@@ -191,7 +191,7 @@ namespace Chummer
                     _objWatchFolderRefreshCancellationTokenSource = null;
                 }
 
-                SetMyEventHandlers(true);
+                await SetMyEventHandlers(true);
 
                 await DisposeTagNodes(await treCharacterList.DoThreadSafeFuncAsync(x => x.Nodes, _objGenericToken));
 

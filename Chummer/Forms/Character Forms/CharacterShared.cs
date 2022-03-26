@@ -6825,11 +6825,10 @@ namespace Chummer
             get => _blnIsDirty;
             set
             {
-                if (_blnIsDirty != value)
-                {
-                    _blnIsDirty = value;
-                    UpdateWindowTitle(true);
-                }
+                if (_blnIsDirty == value)
+                    return;
+                _blnIsDirty = value;
+                UpdateWindowTitle(true);
             }
         }
 
@@ -7015,7 +7014,22 @@ namespace Chummer
             string strTitle = CharacterObject.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '(' + CharacterObjectSettings.Name + ')';
             if (_blnIsDirty)
                 strTitle += '*';
-            this.QueueThreadSafe(() => Text = strTitle);
+            this.DoThreadSafe(x => x.Text = strTitle);
+        }
+
+        /// <summary>
+        /// Update the Window title to show the Character's name and unsaved changes status.
+        /// </summary>
+        public async ValueTask UpdateWindowTitleAsync(bool blnCanSkip, CancellationToken token = default)
+        {
+            if (Text.EndsWith('*') == _blnIsDirty && blnCanSkip)
+                return;
+
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
+            string strTitle = CharacterObject.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '(' + CharacterObjectSettings.Name + ')';
+            if (_blnIsDirty)
+                strTitle += '*';
+            await this.DoThreadSafeAsync(x => x.Text = strTitle, token);
         }
 
         /// <summary>

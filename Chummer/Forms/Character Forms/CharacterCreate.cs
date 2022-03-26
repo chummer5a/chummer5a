@@ -178,175 +178,137 @@ namespace Chummer
 
         private async void CharacterCreate_Load(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            try
             {
-                using (CustomActivity op_load_frm_create = await Timekeeper.StartSyncronAsync(
-                           "load_frm_create", null, CustomActivity.OperationType.RequestOperation,
-                           CharacterObject?.FileName))
+                using (CursorWait.New(this))
                 {
-                    try
+                    using (CustomActivity op_load_frm_create = await Timekeeper.StartSyncronAsync(
+                               "load_frm_create", null, CustomActivity.OperationType.RequestOperation,
+                               CharacterObject?.FileName))
                     {
                         try
                         {
-                            if (CharacterObject == null)
+                            try
                             {
-                                // Stupid hack to get the MDI icon to show up properly.
-                                await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon);
-                                return;
-                            }
-
-                            if (!CharacterObject.IsCritter
-                                && !CharacterObject.EffectiveBuildMethodIsLifeModule
-                                && CharacterObjectSettings.BuildKarma == 0)
-                            {
-                                _blnFreestyle = true;
-                                tslKarmaRemaining.Visible = false;
-                                tslKarmaRemainingLabel.Visible = false;
-                            }
-
-                            using (_ = await Timekeeper.StartSyncronAsync(
-                                       "load_frm_create_BuildMethod", op_load_frm_create))
-                            {
-                                // Initialize elements if we're using Priority to build.
-                                if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
+                                if (CharacterObject == null)
                                 {
-                                    mnuSpecialChangeMetatype.Tag = "Menu_SpecialChangePriorities";
-                                    mnuSpecialChangeMetatype.Text
-                                        = await LanguageManager.GetStringAsync("Menu_SpecialChangePriorities");
+                                    // Stupid hack to get the MDI icon to show up properly.
+                                    await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon);
+                                    return;
                                 }
-                            }
 
-                            using (_ = await Timekeeper.StartSyncronAsync(
-                                       "load_frm_create_databinding", op_load_frm_create))
-                            {
-                                lblNuyenTotal.DoOneWayDataBinding("Text", CharacterObject,
-                                                                  nameof(Character.DisplayTotalStartingNuyen));
-                                lblStolenNuyen.DoOneWayDataBinding("Text", CharacterObject,
-                                                                   nameof(Character.DisplayStolenNuyen));
-                                lblAttributesBase.DoOneWayDataBinding("Visible", CharacterObject,
-                                                                      nameof(Character
-                                                                                 .EffectiveBuildMethodUsesPriorityTables));
+                                if (!CharacterObject.IsCritter
+                                    && !CharacterObject.EffectiveBuildMethodIsLifeModule
+                                    && CharacterObjectSettings.BuildKarma == 0)
+                                {
+                                    _blnFreestyle = true;
+                                    tslKarmaRemaining.Visible = false;
+                                    tslKarmaRemainingLabel.Visible = false;
+                                }
 
-                                txtGroupName.DoDataBinding("Text", CharacterObject, nameof(Character.GroupName));
-                                txtGroupNotes.DoDataBinding("Text", CharacterObject, nameof(Character.GroupNotes));
+                                using (_ = await Timekeeper.StartSyncronAsync(
+                                           "load_frm_create_BuildMethod", op_load_frm_create))
+                                {
+                                    // Initialize elements if we're using Priority to build.
+                                    if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
+                                    {
+                                        mnuSpecialChangeMetatype.Tag = "Menu_SpecialChangePriorities";
+                                        mnuSpecialChangeMetatype.Text
+                                            = await LanguageManager.GetStringAsync("Menu_SpecialChangePriorities");
+                                    }
+                                }
 
-                                txtCharacterName.DoDataBinding("Text", CharacterObject, nameof(Character.Name));
-                                txtGender.DoDataBinding("Text", CharacterObject, nameof(Character.Gender));
-                                txtAge.DoDataBinding("Text", CharacterObject, nameof(Character.Age));
-                                txtEyes.DoDataBinding("Text", CharacterObject, nameof(Character.Eyes));
-                                txtHeight.DoDataBinding("Text", CharacterObject, nameof(Character.Height));
-                                txtWeight.DoDataBinding("Text", CharacterObject, nameof(Character.Weight));
-                                txtSkin.DoDataBinding("Text", CharacterObject, nameof(Character.Skin));
-                                txtHair.DoDataBinding("Text", CharacterObject, nameof(Character.Hair));
-                                rtfDescription.DoDataBinding("Rtf", CharacterObject, nameof(Character.Description));
-                                rtfBackground.DoDataBinding("Rtf", CharacterObject, nameof(Character.Background));
-                                rtfConcept.DoDataBinding("Rtf", CharacterObject, nameof(Character.Concept));
-                                rtfNotes.DoDataBinding("Rtf", CharacterObject, nameof(Character.Notes));
-                                txtAlias.DoDataBinding("Text", CharacterObject, nameof(Character.Alias));
-                                txtPlayerName.DoDataBinding("Text", CharacterObject, nameof(Character.PlayerName));
-
-                                lblPositiveQualitiesBP.DoOneWayDataBinding("Text", CharacterObject,
-                                                                           nameof(Character
-                                                                               .DisplayPositiveQualityKarma));
-                                lblNegativeQualitiesBP.DoOneWayDataBinding("Text", CharacterObject,
-                                                                           nameof(Character
-                                                                               .DisplayNegativeQualityKarma));
-                                lblMetagenicQualities.DoOneWayDataBinding("Text", CharacterObject,
+                                using (_ = await Timekeeper.StartSyncronAsync(
+                                           "load_frm_create_databinding", op_load_frm_create))
+                                {
+                                    lblNuyenTotal.DoOneWayDataBinding("Text", CharacterObject,
+                                                                      nameof(Character.DisplayTotalStartingNuyen));
+                                    lblStolenNuyen.DoOneWayDataBinding("Text", CharacterObject,
+                                                                       nameof(Character.DisplayStolenNuyen));
+                                    lblAttributesBase.DoOneWayDataBinding("Visible", CharacterObject,
                                                                           nameof(Character
-                                                                              .DisplayMetagenicQualityKarma));
-                                lblMetagenicQualities.DoOneWayDataBinding("Visible", CharacterObject,
-                                                                          nameof(Character.IsChangeling));
-                                lblMetagenicQualitiesLabel.DoOneWayDataBinding(
-                                    "Visible", CharacterObject, nameof(Character.IsChangeling));
-                                lblEnemiesBP.DoOneWayDataBinding("Text", CharacterObject,
-                                                                 nameof(Character.DisplayEnemyKarma));
-                                tslKarmaLabel.Text = await LanguageManager.GetStringAsync("Label_Karma");
-                                tslKarmaRemainingLabel.Text
-                                    = await LanguageManager.GetStringAsync("Label_KarmaRemaining");
-                                tabBPSummary.Text = await LanguageManager.GetStringAsync("Tab_BPSummary_Karma");
-                                lblQualityBPLabel.Text = await LanguageManager.GetStringAsync("Label_Karma");
+                                                                              .EffectiveBuildMethodUsesPriorityTables));
 
-                                lblMetatype.DoOneWayDataBinding("Text", CharacterObject,
-                                                                nameof(Character.FormattedMetatype));
+                                    txtGroupName.DoDataBinding("Text", CharacterObject, nameof(Character.GroupName));
+                                    txtGroupNotes.DoDataBinding("Text", CharacterObject, nameof(Character.GroupNotes));
 
-                                // Set the visibility of the Bioware Suites menu options.
-                                mnuSpecialAddBiowareSuite.Visible = CharacterObjectSettings.AllowBiowareSuites;
-                                mnuSpecialCreateBiowareSuite.Visible = CharacterObjectSettings.AllowBiowareSuites;
+                                    txtCharacterName.DoDataBinding("Text", CharacterObject, nameof(Character.Name));
+                                    txtGender.DoDataBinding("Text", CharacterObject, nameof(Character.Gender));
+                                    txtAge.DoDataBinding("Text", CharacterObject, nameof(Character.Age));
+                                    txtEyes.DoDataBinding("Text", CharacterObject, nameof(Character.Eyes));
+                                    txtHeight.DoDataBinding("Text", CharacterObject, nameof(Character.Height));
+                                    txtWeight.DoDataBinding("Text", CharacterObject, nameof(Character.Weight));
+                                    txtSkin.DoDataBinding("Text", CharacterObject, nameof(Character.Skin));
+                                    txtHair.DoDataBinding("Text", CharacterObject, nameof(Character.Hair));
+                                    rtfDescription.DoDataBinding("Rtf", CharacterObject, nameof(Character.Description));
+                                    rtfBackground.DoDataBinding("Rtf", CharacterObject, nameof(Character.Background));
+                                    rtfConcept.DoDataBinding("Rtf", CharacterObject, nameof(Character.Concept));
+                                    rtfNotes.DoDataBinding("Rtf", CharacterObject, nameof(Character.Notes));
+                                    txtAlias.DoDataBinding("Text", CharacterObject, nameof(Character.Alias));
+                                    txtPlayerName.DoDataBinding("Text", CharacterObject, nameof(Character.PlayerName));
 
-                                chkJoinGroup.DoDataBinding("Checked", CharacterObject, nameof(Character.GroupMember));
-                                chkInitiationGroup.DoOneWayDataBinding("Enabled", CharacterObject,
-                                                                       nameof(Character.GroupMember));
+                                    lblPositiveQualitiesBP.DoOneWayDataBinding("Text", CharacterObject,
+                                                                               nameof(Character
+                                                                                   .DisplayPositiveQualityKarma));
+                                    lblNegativeQualitiesBP.DoOneWayDataBinding("Text", CharacterObject,
+                                                                               nameof(Character
+                                                                                   .DisplayNegativeQualityKarma));
+                                    lblMetagenicQualities.DoOneWayDataBinding("Text", CharacterObject,
+                                                                              nameof(Character
+                                                                                  .DisplayMetagenicQualityKarma));
+                                    lblMetagenicQualities.DoOneWayDataBinding("Visible", CharacterObject,
+                                                                              nameof(Character.IsChangeling));
+                                    lblMetagenicQualitiesLabel.DoOneWayDataBinding(
+                                        "Visible", CharacterObject, nameof(Character.IsChangeling));
+                                    lblEnemiesBP.DoOneWayDataBinding("Text", CharacterObject,
+                                                                     nameof(Character.DisplayEnemyKarma));
+                                    tslKarmaLabel.Text = await LanguageManager.GetStringAsync("Label_Karma");
+                                    tslKarmaRemainingLabel.Text
+                                        = await LanguageManager.GetStringAsync("Label_KarmaRemaining");
+                                    tabBPSummary.Text = await LanguageManager.GetStringAsync("Tab_BPSummary_Karma");
+                                    lblQualityBPLabel.Text = await LanguageManager.GetStringAsync("Label_Karma");
 
-                                chkCyberwareBlackMarketDiscount.DoOneWayDataBinding(
-                                    "Visible", CharacterObject, nameof(Character.BlackMarketDiscount));
-                                chkGearBlackMarketDiscount.DoOneWayDataBinding(
-                                    "Visible", CharacterObject, nameof(Character.BlackMarketDiscount));
-                                chkWeaponBlackMarketDiscount.DoOneWayDataBinding(
-                                    "Visible", CharacterObject, nameof(Character.BlackMarketDiscount));
-                                chkArmorBlackMarketDiscount.DoOneWayDataBinding(
-                                    "Visible", CharacterObject, nameof(Character.BlackMarketDiscount));
-                                chkVehicleBlackMarketDiscount.DoOneWayDataBinding(
-                                    "Visible", CharacterObject, nameof(Character.BlackMarketDiscount));
+                                    lblMetatype.DoOneWayDataBinding("Text", CharacterObject,
+                                                                    nameof(Character.FormattedMetatype));
 
-                                // If the character has a mugshot, decode it and put it in the PictureBox.
-                                if (CharacterObject.Mugshots.Count > 0)
-                                {
-                                    nudMugshotIndex.Minimum = 1;
-                                    nudMugshotIndex.Maximum = CharacterObject.Mugshots.Count;
-                                    nudMugshotIndex.Value = Math.Max(CharacterObject.MainMugshotIndex, 0) + 1;
+                                    // Set the visibility of the Bioware Suites menu options.
+                                    mnuSpecialAddBiowareSuite.Visible = CharacterObjectSettings.AllowBiowareSuites;
+                                    mnuSpecialCreateBiowareSuite.Visible = CharacterObjectSettings.AllowBiowareSuites;
+
+                                    chkJoinGroup.DoDataBinding("Checked", CharacterObject,
+                                                               nameof(Character.GroupMember));
+                                    chkInitiationGroup.DoOneWayDataBinding("Enabled", CharacterObject,
+                                                                           nameof(Character.GroupMember));
+
+                                    chkCyberwareBlackMarketDiscount.DoOneWayDataBinding(
+                                        "Visible", CharacterObject, nameof(Character.BlackMarketDiscount));
+                                    chkGearBlackMarketDiscount.DoOneWayDataBinding(
+                                        "Visible", CharacterObject, nameof(Character.BlackMarketDiscount));
+                                    chkWeaponBlackMarketDiscount.DoOneWayDataBinding(
+                                        "Visible", CharacterObject, nameof(Character.BlackMarketDiscount));
+                                    chkArmorBlackMarketDiscount.DoOneWayDataBinding(
+                                        "Visible", CharacterObject, nameof(Character.BlackMarketDiscount));
+                                    chkVehicleBlackMarketDiscount.DoOneWayDataBinding(
+                                        "Visible", CharacterObject, nameof(Character.BlackMarketDiscount));
+
+                                    // If the character has a mugshot, decode it and put it in the PictureBox.
+                                    if (CharacterObject.Mugshots.Count > 0)
+                                    {
+                                        nudMugshotIndex.Minimum = 1;
+                                        nudMugshotIndex.Maximum = CharacterObject.Mugshots.Count;
+                                        nudMugshotIndex.Value = Math.Max(CharacterObject.MainMugshotIndex, 0) + 1;
+                                    }
+                                    else
+                                    {
+                                        nudMugshotIndex.Minimum = 0;
+                                        nudMugshotIndex.Maximum = 0;
+                                        nudMugshotIndex.Value = 0;
+                                    }
+
+                                    lblNumMugshots.Text = await LanguageManager.GetStringAsync("String_Of") +
+                                                          CharacterObject.Mugshots.Count.ToString(
+                                                              GlobalSettings.CultureInfo);
                                 }
-                                else
-                                {
-                                    nudMugshotIndex.Minimum = 0;
-                                    nudMugshotIndex.Maximum = 0;
-                                    nudMugshotIndex.Value = 0;
-                                }
-
-                                lblNumMugshots.Text = await LanguageManager.GetStringAsync("String_Of") +
-                                                      CharacterObject.Mugshots.Count.ToString(
-                                                          GlobalSettings.CultureInfo);
-                            }
-
-                            if (!CharacterObjectSettings.BookEnabled("RF"))
-                            {
-                                cmdAddLifestyle.SplitMenuStrip = null;
-                            }
-
-                            if (!CharacterObjectSettings.BookEnabled("FA"))
-                            {
-                                lblWildReputation.Visible = false;
-                                lblWildReputationTotal.Visible = false;
-                                if (!CharacterObjectSettings.BookEnabled("SG"))
-                                {
-                                    lblAstralReputation.Visible = false;
-                                    lblAstralReputationTotal.Visible = false;
-                                }
-                            }
-
-                            if (!CharacterObjectSettings.EnableEnemyTracking)
-                            {
-                                tabPeople.TabPages.Remove(tabEnemies);
-                            }
-
-                            splitMagician.SplitterDistance = Math.Max(splitMagician.SplitterDistance,
-                                                                      ((splitMagician.Height
-                                                                        - splitMagician.SplitterWidth)
-                                                                          * 2 + 2) / 3);
-                            splitTechnomancer.SplitterDistance = Math.Max(splitTechnomancer.SplitterDistance,
-                                                                          ((splitTechnomancer.Height
-                                                                            - splitTechnomancer.SplitterWidth) * 2 + 2)
-                                                                          / 3);
-
-                            using (_ = await Timekeeper.StartSyncronAsync(
-                                       "load_frm_create_refresh", op_load_frm_create))
-                            {
-                                cmdAddMetamagic.DoOneWayDataBinding("Enabled", CharacterObject,
-                                                                    nameof(Character.AddInitiationsAllowed));
-
-                                cmdLifeModule.DoOneWayDataBinding("Visible", CharacterObject,
-                                                                  nameof(Character.EffectiveBuildMethodIsLifeModule));
-                                btnCreateBackstory.DoOneWayDataBinding("Visible", CharacterObject,
-                                                                       nameof(Character.EnableAutomaticStoryButton));
 
                                 if (!CharacterObjectSettings.BookEnabled("RF"))
                                 {
@@ -367,725 +329,795 @@ namespace Chummer
                                 if (!CharacterObjectSettings.EnableEnemyTracking)
                                 {
                                     tabPeople.TabPages.Remove(tabEnemies);
-                                    lblEnemiesBP.Visible = false;
-                                    lblBuildEnemies.Visible = false;
                                 }
 
-                                RefreshQualities(treQualities, cmsQuality);
-                                await RefreshSpirits(panSpirits, panSprites);
-                                RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
-                                RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
-                                RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
-                                RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
-                                RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
-                                RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
-                                RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-                                RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
-                                RefreshContacts(panContacts, panEnemies, panPets);
+                                splitMagician.SplitterDistance = Math.Max(splitMagician.SplitterDistance,
+                                                                          ((splitMagician.Height
+                                                                            - splitMagician.SplitterWidth)
+                                                                              * 2 + 2) / 3);
+                                splitTechnomancer.SplitterDistance = Math.Max(splitTechnomancer.SplitterDistance,
+                                                                              ((splitTechnomancer.Height
+                                                                                   - splitTechnomancer.SplitterWidth)
+                                                                               * 2
+                                                                               + 2)
+                                                                              / 3);
 
-                                RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
-                                RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
-                                RefreshFociFromGear(treFoci, null);
-                                RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
-                                RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
-                                               cmsWeaponAccessoryGear);
-                                RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
-                                                cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
-                                                cmsVehicleGear,
-                                                cmsWeaponMount,
-                                                cmsVehicleCyberware, cmsVehicleCyberwareGear);
-                                RefreshDrugs(treCustomDrugs);
-                            }
-
-                            using (_ = await Timekeeper.StartSyncronAsync(
-                                       "load_frm_create_sortAndCallback", op_load_frm_create))
-                            {
-                                treWeapons.SortCustomOrder();
-                                treArmor.SortCustomOrder();
-                                treGear.SortCustomOrder();
-                                treLifestyles.SortCustomOrder();
-                                treCustomDrugs.SortCustomOrder();
-                                treCyberware.SortCustomOrder();
-                                treVehicles.SortCustomOrder();
-                                treCritterPowers.SortCustomOrder();
-
-                                // Set up events that would change various lists
-                                CharacterObject.Spells.CollectionChanged += SpellCollectionChanged;
-                                CharacterObject.ComplexForms.CollectionChanged += ComplexFormCollectionChanged;
-                                CharacterObject.Arts.CollectionChanged += ArtCollectionChanged;
-                                CharacterObject.Enhancements.CollectionChanged += EnhancementCollectionChanged;
-                                CharacterObject.Metamagics.CollectionChanged += MetamagicCollectionChanged;
-                                CharacterObject.InitiationGrades.CollectionChanged += InitiationGradeCollectionChanged;
-                                CharacterObject.Powers.ListChanged += PowersListChanged;
-                                CharacterObject.Powers.BeforeRemove += PowersBeforeRemove;
-                                CharacterObject.AIPrograms.CollectionChanged += AIProgramCollectionChanged;
-                                CharacterObject.CritterPowers.CollectionChanged += CritterPowerCollectionChanged;
-                                CharacterObject.Qualities.CollectionChanged += QualityCollectionChanged;
-                                CharacterObject.MartialArts.CollectionChanged += MartialArtCollectionChanged;
-                                CharacterObject.Lifestyles.CollectionChanged += LifestyleCollectionChanged;
-                                CharacterObject.Contacts.CollectionChanged += ContactCollectionChanged;
-                                CharacterObject.Spirits.CollectionChanged += SpiritCollectionChanged;
-                                CharacterObject.Armor.CollectionChanged += ArmorCollectionChanged;
-                                CharacterObject.ArmorLocations.CollectionChanged += ArmorLocationCollectionChanged;
-                                CharacterObject.Weapons.CollectionChanged += WeaponCollectionChanged;
-                                CharacterObject.WeaponLocations.CollectionChanged += WeaponLocationCollectionChanged;
-                                CharacterObject.Gear.CollectionChanged += GearCollectionChanged;
-                                CharacterObject.GearLocations.CollectionChanged += GearLocationCollectionChanged;
-                                CharacterObject.Drugs.CollectionChanged += DrugCollectionChanged;
-                                CharacterObject.Cyberware.CollectionChanged += CyberwareCollectionChanged;
-                                CharacterObject.Vehicles.CollectionChanged += VehicleCollectionChanged;
-                                CharacterObject.VehicleLocations.CollectionChanged += VehicleLocationCollectionChanged;
-
-                                SetupCommonCollectionDatabindings(true);
-                            }
-
-                            using (_ = await Timekeeper.StartSyncronAsync(
-                                       "load_frm_create_tradition", op_load_frm_create))
-                            {
-                                // Populate the Magician Traditions list.
-                                XPathNavigator xmlTraditionsBaseChummerNode =
-                                    await (await CharacterObject.LoadDataXPathAsync("traditions.xml"))
-                                        .SelectSingleNodeAndCacheExpressionAsync("/chummer");
-                                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
-                                                                               out List<ListItem> lstTraditions))
+                                using (_ = await Timekeeper.StartSyncronAsync(
+                                           "load_frm_create_refresh", op_load_frm_create))
                                 {
-                                    if (xmlTraditionsBaseChummerNode != null)
+                                    cmdAddMetamagic.DoOneWayDataBinding("Enabled", CharacterObject,
+                                                                        nameof(Character.AddInitiationsAllowed));
+
+                                    cmdLifeModule.DoOneWayDataBinding("Visible", CharacterObject,
+                                                                      nameof(Character
+                                                                                 .EffectiveBuildMethodIsLifeModule));
+                                    btnCreateBackstory.DoOneWayDataBinding("Visible", CharacterObject,
+                                                                           nameof(Character
+                                                                               .EnableAutomaticStoryButton));
+
+                                    if (!CharacterObjectSettings.BookEnabled("RF"))
                                     {
-                                        foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
-                                                     "traditions/tradition[" + CharacterObjectSettings.BookXPath()
-                                                                             + ']'))
+                                        cmdAddLifestyle.SplitMenuStrip = null;
+                                    }
+
+                                    if (!CharacterObjectSettings.BookEnabled("FA"))
+                                    {
+                                        lblWildReputation.Visible = false;
+                                        lblWildReputationTotal.Visible = false;
+                                        if (!CharacterObjectSettings.BookEnabled("SG"))
                                         {
-                                            string strName
-                                                = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync("name"))
-                                                ?.Value;
-                                            if (!string.IsNullOrEmpty(strName))
-                                                lstTraditions.Add(new ListItem(
-                                                                      (await xmlTradition
-                                                                          .SelectSingleNodeAndCacheExpressionAsync(
-                                                                              "id"))
-                                                                      ?.Value ?? strName,
-                                                                      (await xmlTradition
-                                                                          .SelectSingleNodeAndCacheExpressionAsync(
-                                                                              "translate"))
-                                                                      ?.Value ?? strName));
+                                            lblAstralReputation.Visible = false;
+                                            lblAstralReputationTotal.Visible = false;
                                         }
                                     }
 
-                                    if (lstTraditions.Count > 1)
+                                    if (!CharacterObjectSettings.EnableEnemyTracking)
                                     {
-                                        lstTraditions.Sort(CompareListItems.CompareNames);
-                                        lstTraditions.Insert(0,
-                                                             new ListItem(
-                                                                 "None",
-                                                                 await LanguageManager.GetStringAsync("String_None")));
-                                        await cboTradition.PopulateWithListItemsAsync(lstTraditions);
+                                        tabPeople.TabPages.Remove(tabEnemies);
+                                        lblEnemiesBP.Visible = false;
+                                        lblBuildEnemies.Visible = false;
                                     }
-                                    else
-                                    {
-                                        cboTradition.Visible = false;
-                                        lblTraditionLabel.Visible = false;
-                                    }
+
+                                    RefreshQualities(treQualities, cmsQuality);
+                                    await RefreshSpirits(panSpirits, panSprites);
+                                    RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
+                                    RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm,
+                                                        cmsInitiationNotes);
+                                    RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                                    RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                                    RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
+                                    RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
+                                    RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
+                                    RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
+                                    RefreshContacts(panContacts, panEnemies, panPets);
+
+                                    RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                                    RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                                    RefreshFociFromGear(treFoci, null);
+                                    RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
+                                    RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
+                                                   cmsWeaponAccessoryGear);
+                                    RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
+                                                    cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
+                                                    cmsVehicleGear,
+                                                    cmsWeaponMount,
+                                                    cmsVehicleCyberware, cmsVehicleCyberwareGear);
+                                    RefreshDrugs(treCustomDrugs);
                                 }
 
-                                // Populate the Magician Custom Drain Options list.
-                                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
-                                                                               out List<ListItem> lstDrainAttributes))
+                                using (_ = await Timekeeper.StartSyncronAsync(
+                                           "load_frm_create_sortAndCallback", op_load_frm_create))
                                 {
-                                    if (xmlTraditionsBaseChummerNode != null)
-                                    {
-                                        foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.Select(
-                                                     "drainattributes/drainattribute"))
-                                        {
-                                            string strName
-                                                = (await xmlDrain.SelectSingleNodeAndCacheExpressionAsync("name"))
-                                                ?.Value;
-                                            if (!string.IsNullOrEmpty(strName) && lstDrainAttributes.All(x => x.Value.ToString() != strName))
-                                            {
-                                                string strTranslatedName = (await xmlDrain
-                                                    .SelectSingleNodeAndCacheExpressionAsync(
-                                                        "translate"))?.Value ?? strName;
-                                                lstDrainAttributes.Add(new ListItem(strName, strTranslatedName));
-                                            }
-                                        }
-                                    }
+                                    treWeapons.SortCustomOrder();
+                                    treArmor.SortCustomOrder();
+                                    treGear.SortCustomOrder();
+                                    treLifestyles.SortCustomOrder();
+                                    treCustomDrugs.SortCustomOrder();
+                                    treCyberware.SortCustomOrder();
+                                    treVehicles.SortCustomOrder();
+                                    treCritterPowers.SortCustomOrder();
 
-                                    lstDrainAttributes.Sort(CompareListItems.CompareNames);
-                                    lstDrainAttributes.Insert(0, ListItem.Blank);
-                                    await cboDrain.PopulateWithListItemsAsync(lstDrainAttributes);
-                                    cboDrain.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                                                           nameof(Tradition.DrainExpression));
+                                    // Set up events that would change various lists
+                                    CharacterObject.Spells.CollectionChanged += SpellCollectionChanged;
+                                    CharacterObject.ComplexForms.CollectionChanged += ComplexFormCollectionChanged;
+                                    CharacterObject.Arts.CollectionChanged += ArtCollectionChanged;
+                                    CharacterObject.Enhancements.CollectionChanged += EnhancementCollectionChanged;
+                                    CharacterObject.Metamagics.CollectionChanged += MetamagicCollectionChanged;
+                                    CharacterObject.InitiationGrades.CollectionChanged
+                                        += InitiationGradeCollectionChanged;
+                                    CharacterObject.Powers.ListChanged += PowersListChanged;
+                                    CharacterObject.Powers.BeforeRemove += PowersBeforeRemove;
+                                    CharacterObject.AIPrograms.CollectionChanged += AIProgramCollectionChanged;
+                                    CharacterObject.CritterPowers.CollectionChanged += CritterPowerCollectionChanged;
+                                    CharacterObject.Qualities.CollectionChanged += QualityCollectionChanged;
+                                    CharacterObject.MartialArts.CollectionChanged += MartialArtCollectionChanged;
+                                    CharacterObject.Lifestyles.CollectionChanged += LifestyleCollectionChanged;
+                                    CharacterObject.Contacts.CollectionChanged += ContactCollectionChanged;
+                                    CharacterObject.Spirits.CollectionChanged += SpiritCollectionChanged;
+                                    CharacterObject.Armor.CollectionChanged += ArmorCollectionChanged;
+                                    CharacterObject.ArmorLocations.CollectionChanged += ArmorLocationCollectionChanged;
+                                    CharacterObject.Weapons.CollectionChanged += WeaponCollectionChanged;
+                                    CharacterObject.WeaponLocations.CollectionChanged
+                                        += WeaponLocationCollectionChanged;
+                                    CharacterObject.Gear.CollectionChanged += GearCollectionChanged;
+                                    CharacterObject.GearLocations.CollectionChanged += GearLocationCollectionChanged;
+                                    CharacterObject.Drugs.CollectionChanged += DrugCollectionChanged;
+                                    CharacterObject.Cyberware.CollectionChanged += CyberwareCollectionChanged;
+                                    CharacterObject.Vehicles.CollectionChanged += VehicleCollectionChanged;
+                                    CharacterObject.VehicleLocations.CollectionChanged
+                                        += VehicleLocationCollectionChanged;
+
+                                    SetupCommonCollectionDatabindings(true);
                                 }
 
-                                lblDrainAttributes.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
-                                                                       nameof(Tradition.DisplayDrainExpression));
-                                lblDrainAttributesValue.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
-                                                                            nameof(Tradition.DrainValue));
-                                lblDrainAttributesValue.DoOneWayDataBinding(
-                                    "ToolTipText", CharacterObject.MagicTradition,
-                                    nameof(Tradition.DrainValueToolTip));
-                                await CharacterObject.MagicTradition.SetSourceDetailAsync(lblTraditionSource);
-
-                                lblFadingAttributes.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
-                                                                        nameof(Tradition.DisplayDrainExpression));
-                                lblFadingAttributesValue.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
-                                                                             nameof(Tradition.DrainValue));
-                                lblFadingAttributesValue.DoOneWayDataBinding(
-                                    "ToolTipText", CharacterObject.MagicTradition,
-                                    nameof(Tradition.DrainValueToolTip));
-
-                                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                           out HashSet<string> limit))
+                                using (_ = await Timekeeper.StartSyncronAsync(
+                                           "load_frm_create_tradition", op_load_frm_create))
                                 {
-                                    foreach (Improvement improvement in await ImprovementManager
-                                                 .GetCachedImprovementListForValueOfAsync(
-                                                     CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
-                                    {
-                                        limit.Add(improvement.ImprovedName);
-                                    }
-
-                                    /* Populate drugs. //TODO: fix
-                                    foreach (Drug objDrug in CharacterObj.Drugs)
-                                    {
-                                        treCustomDrugs.Add(objDrug);
-                                    }
-                                    */
-
-                                    // Populate the Magician Custom Spirits lists - Combat.
+                                    // Populate the Magician Traditions list.
+                                    XPathNavigator xmlTraditionsBaseChummerNode =
+                                        await (await CharacterObject.LoadDataXPathAsync("traditions.xml"))
+                                            .SelectSingleNodeAndCacheExpressionAsync("/chummer");
                                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
-                                               out List<ListItem> lstSpirit))
+                                               out List<ListItem> lstTraditions))
                                     {
-                                        lstSpirit.Add(ListItem.Blank);
                                         if (xmlTraditionsBaseChummerNode != null)
                                         {
-                                            foreach (XPathNavigator xmlSpirit in await xmlTraditionsBaseChummerNode
-                                                         .SelectAndCacheExpressionAsync("spirits/spirit"))
+                                            foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
+                                                         "traditions/tradition[" + CharacterObjectSettings.BookXPath()
+                                                         + ']'))
                                             {
-                                                string strSpiritName
-                                                    = (await xmlSpirit.SelectSingleNodeAndCacheExpressionAsync("name"))
+                                                string strName
+                                                    = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync(
+                                                        "name"))
                                                     ?.Value;
-                                                if (!string.IsNullOrEmpty(strSpiritName)
-                                                    && (limit.Count == 0 || limit.Contains(strSpiritName)))
+                                                if (!string.IsNullOrEmpty(strName))
+                                                    lstTraditions.Add(new ListItem(
+                                                                          (await xmlTradition
+                                                                              .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                  "id"))
+                                                                          ?.Value ?? strName,
+                                                                          (await xmlTradition
+                                                                              .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                  "translate"))
+                                                                          ?.Value ?? strName));
+                                            }
+                                        }
+
+                                        if (lstTraditions.Count > 1)
+                                        {
+                                            lstTraditions.Sort(CompareListItems.CompareNames);
+                                            lstTraditions.Insert(0,
+                                                                 new ListItem(
+                                                                     "None",
+                                                                     await LanguageManager
+                                                                         .GetStringAsync("String_None")));
+                                            await cboTradition.PopulateWithListItemsAsync(lstTraditions);
+                                        }
+                                        else
+                                        {
+                                            cboTradition.Visible = false;
+                                            lblTraditionLabel.Visible = false;
+                                        }
+                                    }
+
+                                    // Populate the Magician Custom Drain Options list.
+                                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                               out List<ListItem> lstDrainAttributes))
+                                    {
+                                        if (xmlTraditionsBaseChummerNode != null)
+                                        {
+                                            foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.Select(
+                                                         "drainattributes/drainattribute"))
+                                            {
+                                                string strName
+                                                    = (await xmlDrain.SelectSingleNodeAndCacheExpressionAsync("name"))
+                                                    ?.Value;
+                                                if (!string.IsNullOrEmpty(strName)
+                                                    && lstDrainAttributes.All(x => x.Value.ToString() != strName))
                                                 {
-                                                    lstSpirit.Add(new ListItem(strSpiritName,
-                                                                               (await xmlSpirit
-                                                                                   .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                       "translate"))?.Value
-                                                                               ?? strSpiritName));
+                                                    string strTranslatedName = (await xmlDrain
+                                                        .SelectSingleNodeAndCacheExpressionAsync(
+                                                            "translate"))?.Value ?? strName;
+                                                    lstDrainAttributes.Add(new ListItem(strName, strTranslatedName));
                                                 }
                                             }
                                         }
 
-                                        lstSpirit.Sort(CompareListItems.CompareNames);
-
-                                        await cboSpiritCombat.PopulateWithListItemsAsync(lstSpirit);
-                                        cboSpiritCombat.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                                                                      nameof(Tradition.SpiritCombat));
-                                        lblSpiritCombat.Visible
-                                            = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                        cboSpiritCombat.Visible
-                                            = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                        cboSpiritCombat.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-
-                                        await cboSpiritDetection.PopulateWithListItemsAsync(lstSpirit);
-                                        cboSpiritDetection.DoDataBinding(
-                                            "SelectedValue", CharacterObject.MagicTradition,
-                                            nameof(Tradition.SpiritDetection));
-                                        lblSpiritDetection.Visible
-                                            = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                        cboSpiritDetection.Visible
-                                            = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                        cboSpiritDetection.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-
-                                        await cboSpiritHealth.PopulateWithListItemsAsync(lstSpirit);
-                                        cboSpiritHealth.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                                                                      nameof(Tradition.SpiritHealth));
-                                        lblSpiritHealth.Visible
-                                            = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                        cboSpiritHealth.Visible
-                                            = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                        cboSpiritHealth.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-
-                                        await cboSpiritIllusion.PopulateWithListItemsAsync(lstSpirit);
-                                        cboSpiritIllusion.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
-                                                                        nameof(Tradition.SpiritIllusion));
-                                        lblSpiritIllusion.Visible
-                                            = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                        cboSpiritIllusion.Visible
-                                            = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                        cboSpiritIllusion.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-
-                                        await cboSpiritManipulation.PopulateWithListItemsAsync(lstSpirit);
-                                        cboSpiritManipulation.DoDataBinding(
-                                            "SelectedValue", CharacterObject.MagicTradition,
-                                            nameof(Tradition.SpiritManipulation));
-                                        lblSpiritManipulation.Visible
-                                            = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                        cboSpiritManipulation.Visible
-                                            = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                        cboSpiritManipulation.Enabled
-                                            = CharacterObject.MagicTradition.IsCustomTradition;
+                                        lstDrainAttributes.Sort(CompareListItems.CompareNames);
+                                        lstDrainAttributes.Insert(0, ListItem.Blank);
+                                        await cboDrain.PopulateWithListItemsAsync(lstDrainAttributes);
+                                        cboDrain.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
+                                                               nameof(Tradition.DrainExpression));
                                     }
-                                }
 
-                                // Populate the Technomancer Streams list.
-                                xmlTraditionsBaseChummerNode =
-                                    await (await CharacterObject.LoadDataXPathAsync("streams.xml"))
-                                        .SelectSingleNodeAndCacheExpressionAsync("/chummer");
-                                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
-                                                                               out List<ListItem> lstStreams))
-                                {
-                                    if (xmlTraditionsBaseChummerNode != null)
+                                    lblDrainAttributes.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
+                                                                           nameof(Tradition.DisplayDrainExpression));
+                                    lblDrainAttributesValue.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
+                                        nameof(Tradition.DrainValue));
+                                    lblDrainAttributesValue.DoOneWayDataBinding(
+                                        "ToolTipText", CharacterObject.MagicTradition,
+                                        nameof(Tradition.DrainValueToolTip));
+                                    await CharacterObject.MagicTradition.SetSourceDetailAsync(lblTraditionSource);
+
+                                    lblFadingAttributes.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
+                                                                            nameof(Tradition.DisplayDrainExpression));
+                                    lblFadingAttributesValue.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
+                                        nameof(Tradition.DrainValue));
+                                    lblFadingAttributesValue.DoOneWayDataBinding(
+                                        "ToolTipText", CharacterObject.MagicTradition,
+                                        nameof(Tradition.DrainValueToolTip));
+
+                                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                               out HashSet<string> limit))
                                     {
-                                        foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
-                                                     "traditions/tradition[" + CharacterObjectSettings.BookXPath()
-                                                                             + ']'))
+                                        foreach (Improvement improvement in await ImprovementManager
+                                                     .GetCachedImprovementListForValueOfAsync(
+                                                         CharacterObject,
+                                                         Improvement.ImprovementType.LimitSpiritCategory))
                                         {
-                                            string strName
-                                                = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync("name"))
-                                                ?.Value;
-                                            if (!string.IsNullOrEmpty(strName))
-                                                lstStreams.Add(new ListItem(
-                                                                   (await xmlTradition
-                                                                       .SelectSingleNodeAndCacheExpressionAsync("id"))
-                                                                   ?.Value
-                                                                   ?? strName,
-                                                                   (await xmlTradition
-                                                                       .SelectSingleNodeAndCacheExpressionAsync(
-                                                                           "translate"))
-                                                                   ?.Value ?? strName));
+                                            limit.Add(improvement.ImprovedName);
+                                        }
+
+                                        /* Populate drugs. //TODO: fix
+                                        foreach (Drug objDrug in CharacterObj.Drugs)
+                                        {
+                                            treCustomDrugs.Add(objDrug);
+                                        }
+                                        */
+
+                                        // Populate the Magician Custom Spirits lists - Combat.
+                                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                   out List<ListItem> lstSpirit))
+                                        {
+                                            lstSpirit.Add(ListItem.Blank);
+                                            if (xmlTraditionsBaseChummerNode != null)
+                                            {
+                                                foreach (XPathNavigator xmlSpirit in await xmlTraditionsBaseChummerNode
+                                                             .SelectAndCacheExpressionAsync("spirits/spirit"))
+                                                {
+                                                    string strSpiritName
+                                                        = (await xmlSpirit.SelectSingleNodeAndCacheExpressionAsync(
+                                                            "name"))
+                                                        ?.Value;
+                                                    if (!string.IsNullOrEmpty(strSpiritName)
+                                                        && (limit.Count == 0 || limit.Contains(strSpiritName)))
+                                                    {
+                                                        lstSpirit.Add(new ListItem(strSpiritName,
+                                                                          (await xmlSpirit
+                                                                              .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                  "translate"))?.Value
+                                                                          ?? strSpiritName));
+                                                    }
+                                                }
+                                            }
+
+                                            lstSpirit.Sort(CompareListItems.CompareNames);
+
+                                            await cboSpiritCombat.PopulateWithListItemsAsync(lstSpirit);
+                                            cboSpiritCombat.DoDataBinding(
+                                                "SelectedValue", CharacterObject.MagicTradition,
+                                                nameof(Tradition.SpiritCombat));
+                                            lblSpiritCombat.Visible
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG;
+                                            cboSpiritCombat.Visible
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG;
+                                            cboSpiritCombat.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
+
+                                            await cboSpiritDetection.PopulateWithListItemsAsync(lstSpirit);
+                                            cboSpiritDetection.DoDataBinding(
+                                                "SelectedValue", CharacterObject.MagicTradition,
+                                                nameof(Tradition.SpiritDetection));
+                                            lblSpiritDetection.Visible
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG;
+                                            cboSpiritDetection.Visible
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG;
+                                            cboSpiritDetection.Enabled
+                                                = CharacterObject.MagicTradition.IsCustomTradition;
+
+                                            await cboSpiritHealth.PopulateWithListItemsAsync(lstSpirit);
+                                            cboSpiritHealth.DoDataBinding(
+                                                "SelectedValue", CharacterObject.MagicTradition,
+                                                nameof(Tradition.SpiritHealth));
+                                            lblSpiritHealth.Visible
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG;
+                                            cboSpiritHealth.Visible
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG;
+                                            cboSpiritHealth.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
+
+                                            await cboSpiritIllusion.PopulateWithListItemsAsync(lstSpirit);
+                                            cboSpiritIllusion.DoDataBinding(
+                                                "SelectedValue", CharacterObject.MagicTradition,
+                                                nameof(Tradition.SpiritIllusion));
+                                            lblSpiritIllusion.Visible
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG;
+                                            cboSpiritIllusion.Visible
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG;
+                                            cboSpiritIllusion.Enabled
+                                                = CharacterObject.MagicTradition.IsCustomTradition;
+
+                                            await cboSpiritManipulation.PopulateWithListItemsAsync(lstSpirit);
+                                            cboSpiritManipulation.DoDataBinding(
+                                                "SelectedValue", CharacterObject.MagicTradition,
+                                                nameof(Tradition.SpiritManipulation));
+                                            lblSpiritManipulation.Visible
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG;
+                                            cboSpiritManipulation.Visible
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG;
+                                            cboSpiritManipulation.Enabled
+                                                = CharacterObject.MagicTradition.IsCustomTradition;
                                         }
                                     }
 
-                                    if (lstStreams.Count > 1)
+                                    // Populate the Technomancer Streams list.
+                                    xmlTraditionsBaseChummerNode =
+                                        await (await CharacterObject.LoadDataXPathAsync("streams.xml"))
+                                            .SelectSingleNodeAndCacheExpressionAsync("/chummer");
+                                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                               out List<ListItem> lstStreams))
                                     {
-                                        lstStreams.Sort(CompareListItems.CompareNames);
-                                        lstStreams.Insert(0,
-                                                          new ListItem(
-                                                              "None",
-                                                              await LanguageManager.GetStringAsync("String_None")));
-                                        await cboStream.PopulateWithListItemsAsync(lstStreams);
+                                        if (xmlTraditionsBaseChummerNode != null)
+                                        {
+                                            foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
+                                                         "traditions/tradition[" + CharacterObjectSettings.BookXPath()
+                                                         + ']'))
+                                            {
+                                                string strName
+                                                    = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync(
+                                                        "name"))
+                                                    ?.Value;
+                                                if (!string.IsNullOrEmpty(strName))
+                                                    lstStreams.Add(new ListItem(
+                                                                       (await xmlTradition
+                                                                           .SelectSingleNodeAndCacheExpressionAsync(
+                                                                               "id"))
+                                                                       ?.Value
+                                                                       ?? strName,
+                                                                       (await xmlTradition
+                                                                           .SelectSingleNodeAndCacheExpressionAsync(
+                                                                               "translate"))
+                                                                       ?.Value ?? strName));
+                                            }
+                                        }
+
+                                        if (lstStreams.Count > 1)
+                                        {
+                                            lstStreams.Sort(CompareListItems.CompareNames);
+                                            lstStreams.Insert(0,
+                                                              new ListItem(
+                                                                  "None",
+                                                                  await LanguageManager.GetStringAsync("String_None")));
+                                            await cboStream.PopulateWithListItemsAsync(lstStreams);
+                                        }
+                                        else
+                                        {
+                                            cboStream.Visible = false;
+                                            lblStreamLabel.Visible = false;
+                                        }
                                     }
-                                    else
-                                    {
-                                        cboStream.Visible = false;
-                                        lblStreamLabel.Visible = false;
-                                    }
+
+                                    nudMysticAdeptMAGMagician.DoOneWayDataBinding("Maximum", CharacterObject.MAG,
+                                        nameof(CharacterAttrib.TotalValue));
+                                    nudMysticAdeptMAGMagician.DoDataBinding("Value", CharacterObject,
+                                                                            nameof(Character.MysticAdeptPowerPoints));
+
+                                    // Select the Magician's Tradition.
+                                    if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
+                                        cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID.ToString();
+                                    else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
+                                        cboTradition.SelectedIndex = 0;
+
+                                    txtTraditionName.DoDataBinding("Text", CharacterObject.MagicTradition,
+                                                                   nameof(Tradition.Name));
+
+                                    // Select the Technomancer's Stream.
+                                    if (CharacterObject.MagicTradition.Type == TraditionType.RES)
+                                        cboStream.SelectedValue = CharacterObject.MagicTradition.SourceID.ToString();
+                                    else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
+                                        cboStream.SelectedIndex = 0;
                                 }
 
-                                nudMysticAdeptMAGMagician.DoOneWayDataBinding("Maximum", CharacterObject.MAG,
-                                                                              nameof(CharacterAttrib.TotalValue));
-                                nudMysticAdeptMAGMagician.DoDataBinding("Value", CharacterObject,
-                                                                        nameof(Character.MysticAdeptPowerPoints));
-
-                                // Select the Magician's Tradition.
-                                if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
-                                    cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID.ToString();
-                                else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
-                                    cboTradition.SelectedIndex = 0;
-
-                                txtTraditionName.DoDataBinding("Text", CharacterObject.MagicTradition,
-                                                               nameof(Tradition.Name));
-
-                                // Select the Technomancer's Stream.
-                                if (CharacterObject.MagicTradition.Type == TraditionType.RES)
-                                    cboStream.SelectedValue = CharacterObject.MagicTradition.SourceID.ToString();
-                                else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
-                                    cboStream.SelectedIndex = 0;
-                            }
-
-                            using (CustomActivity op_load_frm_create_longloads
-                                   = await Timekeeper.StartSyncronAsync("load_frm_create_longloads",
-                                                                        op_load_frm_create))
-                            {
-                                using (_ = await Timekeeper.StartSyncronAsync("load_frm_create_tabSkillsUc.RealLoad()",
-                                                                              op_load_frm_create_longloads))
+                                using (CustomActivity op_load_frm_create_longloads
+                                       = await Timekeeper.StartSyncronAsync("load_frm_create_longloads",
+                                                                            op_load_frm_create))
                                 {
-                                    await tabSkillsUc.RealLoad();
-                                }
+                                    using (_ = await Timekeeper.StartSyncronAsync(
+                                               "load_frm_create_tabSkillsUc.RealLoad()",
+                                               op_load_frm_create_longloads))
+                                    {
+                                        await tabSkillsUc.RealLoad();
+                                    }
 
-                                using (_ = await Timekeeper.StartSyncronAsync("load_frm_create_tabPowerUc.RealLoad()",
-                                                                              op_load_frm_create_longloads))
-                                {
-                                    await tabPowerUc.RealLoad();
+                                    using (_ = await Timekeeper.StartSyncronAsync(
+                                               "load_frm_create_tabPowerUc.RealLoad()",
+                                               op_load_frm_create_longloads))
+                                    {
+                                        await tabPowerUc.RealLoad();
+                                    }
+
+                                    using (_ = await Timekeeper.StartSyncronAsync(
+                                               "load_frm_create_Run through all appropriate property changers",
+                                               op_load_frm_create_longloads))
+                                    {
+                                        // Run through all appropriate property changers
+                                        foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
+                                            await DoOnCharacterPropertyChanged(
+                                                new PropertyChangedEventArgs(objProperty.Name));
+                                    }
                                 }
 
                                 using (_ = await Timekeeper.StartSyncronAsync(
-                                           "load_frm_create_Run through all appropriate property changers",
-                                           op_load_frm_create_longloads))
+                                           "load_frm_create_databinding2", op_load_frm_create))
                                 {
-                                    // Run through all appropriate property changers
-                                    foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
-                                        await DoOnCharacterPropertyChanged(
-                                            new PropertyChangedEventArgs(objProperty.Name));
-                                }
-                            }
+                                    treGear.ItemDrag += treGear_ItemDrag;
+                                    treGear.DragEnter += treGear_DragEnter;
+                                    treGear.DragDrop += treGear_DragDrop;
 
-                            using (_ = await Timekeeper.StartSyncronAsync(
-                                       "load_frm_create_databinding2", op_load_frm_create))
-                            {
-                                treGear.ItemDrag += treGear_ItemDrag;
-                                treGear.DragEnter += treGear_DragEnter;
-                                treGear.DragDrop += treGear_DragDrop;
+                                    /*
+                                    treLifestyles.ItemDrag += treLifestyles_ItemDrag;
+                                    treLifestyles.DragEnter += treLifestyles_DragEnter;
+                                    treLifestyles.DragDrop += treLifestyles_DragDrop;
+                                    */
 
-                                /*
-                                treLifestyles.ItemDrag += treLifestyles_ItemDrag;
-                                treLifestyles.DragEnter += treLifestyles_DragEnter;
-                                treLifestyles.DragDrop += treLifestyles_DragDrop;
-                                */
+                                    treArmor.ItemDrag += treArmor_ItemDrag;
+                                    treArmor.DragEnter += treArmor_DragEnter;
+                                    treArmor.DragDrop += treArmor_DragDrop;
 
-                                treArmor.ItemDrag += treArmor_ItemDrag;
-                                treArmor.DragEnter += treArmor_DragEnter;
-                                treArmor.DragDrop += treArmor_DragDrop;
+                                    treWeapons.ItemDrag += treWeapons_ItemDrag;
+                                    treWeapons.DragEnter += treWeapons_DragEnter;
+                                    treWeapons.DragDrop += treWeapons_DragDrop;
 
-                                treWeapons.ItemDrag += treWeapons_ItemDrag;
-                                treWeapons.DragEnter += treWeapons_DragEnter;
-                                treWeapons.DragDrop += treWeapons_DragDrop;
+                                    treVehicles.ItemDrag += treVehicles_ItemDrag;
+                                    treVehicles.DragEnter += treVehicles_DragEnter;
+                                    treVehicles.DragDrop += treVehicles_DragDrop;
 
-                                treVehicles.ItemDrag += treVehicles_ItemDrag;
-                                treVehicles.DragEnter += treVehicles_DragEnter;
-                                treVehicles.DragDrop += treVehicles_DragDrop;
+                                    // Merge the ToolStrips.
+                                    ToolStripManager.RevertMerge("toolStrip");
+                                    ToolStripManager.Merge(tsMain, "toolStrip");
 
-                                // Merge the ToolStrips.
-                                ToolStripManager.RevertMerge("toolStrip");
-                                ToolStripManager.Merge(tsMain, "toolStrip");
+                                    nudNuyen.DoDataBinding("Value", CharacterObject, nameof(Character.NuyenBP));
+                                    nudNuyen.DoOneWayDataBinding("Maximum", CharacterObject,
+                                                                 nameof(Character.TotalNuyenMaximumBP));
 
-                                nudNuyen.DoDataBinding("Value", CharacterObject, nameof(Character.NuyenBP));
-                                nudNuyen.DoOneWayDataBinding("Maximum", CharacterObject,
-                                                             nameof(Character.TotalNuyenMaximumBP));
+                                    lblCMPhysical.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                                      nameof(Character.PhysicalCMToolTip));
+                                    lblCMPhysical.DoOneWayDataBinding("Text", CharacterObject,
+                                                                      nameof(Character.PhysicalCM));
+                                    lblCMPhysicalLabel.DoOneWayDataBinding("Text", CharacterObject,
+                                                                           nameof(Character.PhysicalCMLabelText));
+                                    lblCMStun.Visible = true; // Needed to make sure data bindings go through
+                                    lblCMStun.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                                  nameof(Character.StunCMToolTip));
+                                    lblCMStun.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.StunCM));
+                                    lblCMStun.DoOneWayDataBinding("Visible", CharacterObject,
+                                                                  nameof(Character.StunCMVisible));
+                                    lblCMStunLabel.DoOneWayDataBinding("Text", CharacterObject,
+                                                                       nameof(Character.StunCMLabelText));
 
-                                lblCMPhysical.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                  nameof(Character.PhysicalCMToolTip));
-                                lblCMPhysical.DoOneWayDataBinding("Text", CharacterObject,
-                                                                  nameof(Character.PhysicalCM));
-                                lblCMPhysicalLabel.DoOneWayDataBinding("Text", CharacterObject,
-                                                                       nameof(Character.PhysicalCMLabelText));
-                                lblCMStun.Visible = true; // Needed to make sure data bindings go through
-                                lblCMStun.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                              nameof(Character.StunCMToolTip));
-                                lblCMStun.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.StunCM));
-                                lblCMStun.DoOneWayDataBinding("Visible", CharacterObject,
-                                                              nameof(Character.StunCMVisible));
-                                lblCMStunLabel.DoOneWayDataBinding("Text", CharacterObject,
-                                                                   nameof(Character.StunCMLabelText));
+                                    lblESSMax.DoOneWayDataBinding("Text", CharacterObject,
+                                                                  nameof(Character.DisplayEssence));
+                                    lblCyberwareESS.DoOneWayDataBinding("Text", CharacterObject,
+                                                                        nameof(Character.DisplayCyberwareEssence));
+                                    lblBiowareESS.DoOneWayDataBinding("Text", CharacterObject,
+                                                                      nameof(Character.DisplayBiowareEssence));
+                                    lblEssenceHoleESS.DoOneWayDataBinding("Text", CharacterObject,
+                                                                          nameof(Character.DisplayEssenceHole));
 
-                                lblESSMax.DoOneWayDataBinding("Text", CharacterObject,
-                                                              nameof(Character.DisplayEssence));
-                                lblCyberwareESS.DoOneWayDataBinding("Text", CharacterObject,
-                                                                    nameof(Character.DisplayCyberwareEssence));
-                                lblBiowareESS.DoOneWayDataBinding("Text", CharacterObject,
-                                                                  nameof(Character.DisplayBiowareEssence));
-                                lblEssenceHoleESS.DoOneWayDataBinding("Text", CharacterObject,
-                                                                      nameof(Character.DisplayEssenceHole));
+                                    lblPrototypeTranshumanESS.DoOneWayDataBinding("Text", CharacterObject,
+                                        nameof(Character
+                                                   .DisplayPrototypeTranshumanEssenceUsed));
 
-                                lblPrototypeTranshumanESS.DoOneWayDataBinding("Text", CharacterObject,
+                                    lblArmor.DoOneWayDataBinding("Text", CharacterObject,
+                                                                 nameof(Character.TotalArmorRating));
+                                    lblArmor.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                                 nameof(Character.TotalArmorRatingToolTip));
+
+                                    lblDodge.DoOneWayDataBinding("Text", CharacterObject,
+                                                                 nameof(Character.DisplayDodge));
+                                    lblDodge.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                                 nameof(Character.DodgeToolTip));
+
+                                    lblSpellDefenseIndirectDodge.DoOneWayDataBinding("Text", CharacterObject,
+                                        nameof(Character
+                                                   .DisplaySpellDefenseIndirectDodge));
+                                    lblSpellDefenseIndirectDodge.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                        nameof(Character
+                                                   .SpellDefenseIndirectDodgeToolTip));
+                                    lblSpellDefenseIndirectSoak.DoOneWayDataBinding("Text", CharacterObject,
+                                        nameof(Character
+                                                   .DisplaySpellDefenseIndirectSoak));
+                                    lblSpellDefenseIndirectSoak.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                        nameof(Character
+                                                   .SpellDefenseIndirectSoakToolTip));
+                                    lblSpellDefenseDirectSoakMana.DoOneWayDataBinding("Text", CharacterObject,
+                                        nameof(Character
+                                                   .DisplaySpellDefenseDirectSoakMana));
+                                    lblSpellDefenseDirectSoakMana.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                        nameof(Character
+                                                   .SpellDefenseDirectSoakManaToolTip));
+                                    lblSpellDefenseDirectSoakPhysical.DoOneWayDataBinding("Text", CharacterObject,
+                                        nameof(Character.DisplaySpellDefenseDirectSoakPhysical));
+                                    lblSpellDefenseDirectSoakPhysical.DoOneWayDataBinding(
+                                        "ToolTipText", CharacterObject,
+                                        nameof(Character.SpellDefenseDirectSoakPhysicalToolTip));
+
+                                    lblSpellDefenseDetection.DoOneWayDataBinding("Text", CharacterObject,
+                                        nameof(Character
+                                                   .DisplaySpellDefenseDetection));
+                                    lblSpellDefenseDetection.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                        nameof(Character
+                                                   .SpellDefenseDetectionToolTip));
+                                    lblSpellDefenseDecAttBOD.DoOneWayDataBinding("Text", CharacterObject,
+                                        nameof(
+                                            Character
+                                                .DisplaySpellDefenseDecreaseBOD));
+                                    lblSpellDefenseDecAttBOD.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                        nameof(
+                                            Character
+                                                .SpellDefenseDecreaseBODToolTip));
+                                    lblSpellDefenseDecAttAGI.DoOneWayDataBinding("Text", CharacterObject,
+                                        nameof(
+                                            Character
+                                                .DisplaySpellDefenseDecreaseAGI));
+                                    lblSpellDefenseDecAttAGI.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                        nameof(
+                                            Character
+                                                .SpellDefenseDecreaseAGIToolTip));
+                                    lblSpellDefenseDecAttREA.DoOneWayDataBinding("Text", CharacterObject,
+                                        nameof(
+                                            Character
+                                                .DisplaySpellDefenseDecreaseREA));
+                                    lblSpellDefenseDecAttREA.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                        nameof(
+                                            Character
+                                                .SpellDefenseDecreaseREAToolTip));
+                                    lblSpellDefenseDecAttSTR.DoOneWayDataBinding("Text", CharacterObject,
+                                        nameof(
+                                            Character
+                                                .DisplaySpellDefenseDecreaseSTR));
+                                    lblSpellDefenseDecAttSTR.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                        nameof(
+                                            Character
+                                                .SpellDefenseDecreaseSTRToolTip));
+                                    lblSpellDefenseDecAttCHA.DoOneWayDataBinding("Text", CharacterObject,
+                                        nameof(
+                                            Character
+                                                .DisplaySpellDefenseDecreaseCHA));
+                                    lblSpellDefenseDecAttCHA.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                        nameof(
+                                            Character
+                                                .SpellDefenseDecreaseCHAToolTip));
+                                    lblSpellDefenseDecAttINT.DoOneWayDataBinding("Text", CharacterObject,
+                                        nameof(
+                                            Character
+                                                .DisplaySpellDefenseDecreaseINT));
+                                    lblSpellDefenseDecAttINT.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                        nameof(
+                                            Character
+                                                .SpellDefenseDecreaseINTToolTip));
+                                    lblSpellDefenseDecAttLOG.DoOneWayDataBinding("Text", CharacterObject,
+                                        nameof(
+                                            Character
+                                                .DisplaySpellDefenseDecreaseLOG));
+                                    lblSpellDefenseDecAttLOG.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                        nameof(
+                                            Character
+                                                .SpellDefenseDecreaseLOGToolTip));
+                                    lblSpellDefenseDecAttWIL.DoOneWayDataBinding("Text", CharacterObject,
+                                        nameof(
+                                            Character
+                                                .DisplaySpellDefenseDecreaseWIL));
+                                    lblSpellDefenseDecAttWIL.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                        nameof(
+                                            Character
+                                                .SpellDefenseDecreaseWILToolTip));
+
+                                    lblSpellDefenseIllusionMana.DoOneWayDataBinding("Text", CharacterObject,
+                                        nameof(Character
+                                                   .DisplaySpellDefenseIllusionMana));
+                                    lblSpellDefenseIllusionMana.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                        nameof(Character
+                                                   .SpellDefenseIllusionManaToolTip));
+                                    lblSpellDefenseIllusionPhysical.DoOneWayDataBinding("Text", CharacterObject,
+                                        nameof(Character.DisplaySpellDefenseIllusionPhysical));
+                                    lblSpellDefenseIllusionPhysical.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                        nameof(Character.SpellDefenseIllusionPhysicalToolTip));
+                                    lblSpellDefenseManipMental.DoOneWayDataBinding("Text", CharacterObject,
+                                        nameof(Character
+                                                   .DisplaySpellDefenseManipulationMental));
+                                    lblSpellDefenseManipMental.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                        nameof(Character
+                                                   .SpellDefenseManipulationMentalToolTip));
+                                    lblSpellDefenseManipPhysical.DoOneWayDataBinding("Text", CharacterObject,
+                                        nameof(Character
+                                                   .DisplaySpellDefenseManipulationPhysical));
+                                    lblSpellDefenseManipPhysical.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                        nameof(Character
+                                                   .SpellDefenseManipulationPhysicalToolTip));
+                                    nudCounterspellingDice.DoDataBinding("Value", CharacterObject,
+                                                                         nameof(Character.CurrentCounterspellingDice));
+
+                                    nudLiftCarryHits.DoDataBinding("Value", CharacterObject,
+                                                                   nameof(Character.CurrentLiftCarryHits));
+
+                                    lblMovement.DoOneWayDataBinding("Text", CharacterObject,
+                                                                    nameof(Character.DisplayMovement));
+                                    lblSwim.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplaySwim));
+                                    lblFly.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayFly));
+
+                                    lblRemainingNuyen.DoOneWayDataBinding("Text", CharacterObject,
+                                                                          nameof(Character.DisplayNuyen));
+
+                                    lblStreetCredTotal.DoOneWayDataBinding("Text", CharacterObject,
+                                                                           nameof(Character.TotalStreetCred));
+                                    lblStreetCredTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                                           nameof(Character.StreetCredTooltip));
+                                    lblNotorietyTotal.DoOneWayDataBinding("Text", CharacterObject,
+                                                                          nameof(Character.TotalNotoriety));
+                                    lblNotorietyTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                                          nameof(Character.NotorietyTooltip));
+                                    lblPublicAwareTotal.DoOneWayDataBinding("Text", CharacterObject,
+                                                                            nameof(Character.TotalPublicAwareness));
+                                    lblPublicAwareTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                                            nameof(Character.PublicAwarenessTooltip));
+                                    lblAstralReputationTotal.DoOneWayDataBinding("Text", CharacterObject,
+                                        nameof(Character.TotalAstralReputation));
+                                    lblAstralReputationTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                        nameof(Character.AstralReputationTooltip));
+                                    lblWildReputationTotal.DoOneWayDataBinding("Text", CharacterObject,
+                                                                               nameof(Character.TotalWildReputation));
+                                    lblWildReputationTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                                               nameof(Character.WildReputationTooltip));
+
+                                    lblMentorSpirit.DoOneWayDataBinding("Text", CharacterObject,
+                                                                        nameof(Character.FirstMentorSpiritDisplayName));
+                                    lblMentorSpiritInformation.DoOneWayDataBinding("Text", CharacterObject,
+                                        nameof(Character
+                                                   .FirstMentorSpiritDisplayInformation));
+                                    lblParagon.DoOneWayDataBinding("Text", CharacterObject,
+                                                                   nameof(Character.FirstMentorSpiritDisplayName));
+                                    lblParagonInformation.DoOneWayDataBinding("Text", CharacterObject,
                                                                               nameof(Character
-                                                                                  .DisplayPrototypeTranshumanEssenceUsed));
+                                                                                  .FirstMentorSpiritDisplayInformation));
 
-                                lblArmor.DoOneWayDataBinding("Text", CharacterObject,
-                                                             nameof(Character.TotalArmorRating));
-                                lblArmor.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                             nameof(Character.TotalArmorRatingToolTip));
+                                    lblComposure.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                                     nameof(Character.ComposureToolTip));
+                                    lblComposure.DoOneWayDataBinding("Text", CharacterObject,
+                                                                     nameof(Character.Composure));
+                                    lblSurprise.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                                    nameof(Character.SurpriseToolTip));
+                                    lblSurprise.DoOneWayDataBinding("Text", CharacterObject,
+                                                                    nameof(Character.Surprise));
+                                    lblJudgeIntentions.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                                           nameof(Character.JudgeIntentionsToolTip));
+                                    lblJudgeIntentions.DoOneWayDataBinding("Text", CharacterObject,
+                                                                           nameof(Character.JudgeIntentions));
+                                    lblLiftCarry.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                                     nameof(Character.LiftAndCarryToolTip));
+                                    lblLiftCarry.DoOneWayDataBinding("Text", CharacterObject,
+                                                                     nameof(Character.LiftAndCarry));
+                                    lblMemory.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                                  nameof(Character.MemoryToolTip));
+                                    lblMemory.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.Memory));
 
-                                lblDodge.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayDodge));
-                                lblDodge.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                             nameof(Character.DodgeToolTip));
+                                    lblLiftCarryLimits.DoOneWayDataBinding("Text", CharacterObject,
+                                                                           nameof(Character.LiftAndCarryLimits));
 
-                                lblSpellDefenseIndirectDodge.DoOneWayDataBinding("Text", CharacterObject,
-                                    nameof(Character
-                                               .DisplaySpellDefenseIndirectDodge));
-                                lblSpellDefenseIndirectDodge.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                    nameof(Character
-                                               .SpellDefenseIndirectDodgeToolTip));
-                                lblSpellDefenseIndirectSoak.DoOneWayDataBinding("Text", CharacterObject,
-                                    nameof(Character
-                                               .DisplaySpellDefenseIndirectSoak));
-                                lblSpellDefenseIndirectSoak.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                    nameof(Character
-                                               .SpellDefenseIndirectSoakToolTip));
-                                lblSpellDefenseDirectSoakMana.DoOneWayDataBinding("Text", CharacterObject,
-                                    nameof(Character
-                                               .DisplaySpellDefenseDirectSoakMana));
-                                lblSpellDefenseDirectSoakMana.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                    nameof(Character
-                                               .SpellDefenseDirectSoakManaToolTip));
-                                lblSpellDefenseDirectSoakPhysical.DoOneWayDataBinding("Text", CharacterObject,
-                                    nameof(Character.DisplaySpellDefenseDirectSoakPhysical));
-                                lblSpellDefenseDirectSoakPhysical.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                    nameof(Character.SpellDefenseDirectSoakPhysicalToolTip));
+                                    lblINI.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                               nameof(Character.InitiativeToolTip));
+                                    lblINI.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.Initiative));
+                                    lblAstralINI.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                                     nameof(Character.AstralInitiativeToolTip));
+                                    lblAstralINI.DoOneWayDataBinding("Text", CharacterObject,
+                                                                     nameof(Character.AstralInitiative));
+                                    lblMatrixINI.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                                     nameof(Character.MatrixInitiativeToolTip));
+                                    lblMatrixINI.DoOneWayDataBinding("Text", CharacterObject,
+                                                                     nameof(Character.MatrixInitiative));
+                                    lblMatrixINICold.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                                         nameof(Character.MatrixInitiativeColdToolTip));
+                                    lblMatrixINICold.DoOneWayDataBinding("Text", CharacterObject,
+                                                                         nameof(Character.MatrixInitiativeCold));
+                                    lblMatrixINIHot.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                                        nameof(Character.MatrixInitiativeHotToolTip));
+                                    lblMatrixINIHot.DoOneWayDataBinding("Text", CharacterObject,
+                                                                        nameof(Character.MatrixInitiativeHot));
+                                    lblRiggingINI.DoOneWayDataBinding("ToolTipText", CharacterObject,
+                                                                      nameof(Character.InitiativeToolTip));
+                                    lblRiggingINI.DoOneWayDataBinding("Text", CharacterObject,
+                                                                      nameof(Character.Initiative));
+                                }
 
-                                lblSpellDefenseDetection.DoOneWayDataBinding("Text", CharacterObject,
-                                                                             nameof(Character
-                                                                                 .DisplaySpellDefenseDetection));
-                                lblSpellDefenseDetection.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                             nameof(Character
-                                                                                 .SpellDefenseDetectionToolTip));
-                                lblSpellDefenseDecAttBOD.DoOneWayDataBinding("Text", CharacterObject,
-                                                                             nameof(
-                                                                                 Character
-                                                                                     .DisplaySpellDefenseDecreaseBOD));
-                                lblSpellDefenseDecAttBOD.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                             nameof(
-                                                                                 Character
-                                                                                     .SpellDefenseDecreaseBODToolTip));
-                                lblSpellDefenseDecAttAGI.DoOneWayDataBinding("Text", CharacterObject,
-                                                                             nameof(
-                                                                                 Character
-                                                                                     .DisplaySpellDefenseDecreaseAGI));
-                                lblSpellDefenseDecAttAGI.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                             nameof(
-                                                                                 Character
-                                                                                     .SpellDefenseDecreaseAGIToolTip));
-                                lblSpellDefenseDecAttREA.DoOneWayDataBinding("Text", CharacterObject,
-                                                                             nameof(
-                                                                                 Character
-                                                                                     .DisplaySpellDefenseDecreaseREA));
-                                lblSpellDefenseDecAttREA.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                             nameof(
-                                                                                 Character
-                                                                                     .SpellDefenseDecreaseREAToolTip));
-                                lblSpellDefenseDecAttSTR.DoOneWayDataBinding("Text", CharacterObject,
-                                                                             nameof(
-                                                                                 Character
-                                                                                     .DisplaySpellDefenseDecreaseSTR));
-                                lblSpellDefenseDecAttSTR.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                             nameof(
-                                                                                 Character
-                                                                                     .SpellDefenseDecreaseSTRToolTip));
-                                lblSpellDefenseDecAttCHA.DoOneWayDataBinding("Text", CharacterObject,
-                                                                             nameof(
-                                                                                 Character
-                                                                                     .DisplaySpellDefenseDecreaseCHA));
-                                lblSpellDefenseDecAttCHA.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                             nameof(
-                                                                                 Character
-                                                                                     .SpellDefenseDecreaseCHAToolTip));
-                                lblSpellDefenseDecAttINT.DoOneWayDataBinding("Text", CharacterObject,
-                                                                             nameof(
-                                                                                 Character
-                                                                                     .DisplaySpellDefenseDecreaseINT));
-                                lblSpellDefenseDecAttINT.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                             nameof(
-                                                                                 Character
-                                                                                     .SpellDefenseDecreaseINTToolTip));
-                                lblSpellDefenseDecAttLOG.DoOneWayDataBinding("Text", CharacterObject,
-                                                                             nameof(
-                                                                                 Character
-                                                                                     .DisplaySpellDefenseDecreaseLOG));
-                                lblSpellDefenseDecAttLOG.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                             nameof(
-                                                                                 Character
-                                                                                     .SpellDefenseDecreaseLOGToolTip));
-                                lblSpellDefenseDecAttWIL.DoOneWayDataBinding("Text", CharacterObject,
-                                                                             nameof(
-                                                                                 Character
-                                                                                     .DisplaySpellDefenseDecreaseWIL));
-                                lblSpellDefenseDecAttWIL.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                             nameof(
-                                                                                 Character
-                                                                                     .SpellDefenseDecreaseWILToolTip));
-
-                                lblSpellDefenseIllusionMana.DoOneWayDataBinding("Text", CharacterObject,
-                                    nameof(Character
-                                               .DisplaySpellDefenseIllusionMana));
-                                lblSpellDefenseIllusionMana.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                    nameof(Character
-                                               .SpellDefenseIllusionManaToolTip));
-                                lblSpellDefenseIllusionPhysical.DoOneWayDataBinding("Text", CharacterObject,
-                                    nameof(Character.DisplaySpellDefenseIllusionPhysical));
-                                lblSpellDefenseIllusionPhysical.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                    nameof(Character.SpellDefenseIllusionPhysicalToolTip));
-                                lblSpellDefenseManipMental.DoOneWayDataBinding("Text", CharacterObject,
-                                                                               nameof(Character
-                                                                                   .DisplaySpellDefenseManipulationMental));
-                                lblSpellDefenseManipMental.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                               nameof(Character
-                                                                                   .SpellDefenseManipulationMentalToolTip));
-                                lblSpellDefenseManipPhysical.DoOneWayDataBinding("Text", CharacterObject,
-                                    nameof(Character
-                                               .DisplaySpellDefenseManipulationPhysical));
-                                lblSpellDefenseManipPhysical.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                    nameof(Character
-                                               .SpellDefenseManipulationPhysicalToolTip));
-                                nudCounterspellingDice.DoDataBinding("Value", CharacterObject,
-                                                                     nameof(Character.CurrentCounterspellingDice));
-
-                                nudLiftCarryHits.DoDataBinding("Value", CharacterObject,
-                                                               nameof(Character.CurrentLiftCarryHits));
-
-                                lblMovement.DoOneWayDataBinding("Text", CharacterObject,
-                                                                nameof(Character.DisplayMovement));
-                                lblSwim.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplaySwim));
-                                lblFly.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayFly));
-
-                                lblRemainingNuyen.DoOneWayDataBinding("Text", CharacterObject,
-                                                                      nameof(Character.DisplayNuyen));
-
-                                lblStreetCredTotal.DoOneWayDataBinding("Text", CharacterObject,
-                                                                       nameof(Character.TotalStreetCred));
-                                lblStreetCredTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                       nameof(Character.StreetCredTooltip));
-                                lblNotorietyTotal.DoOneWayDataBinding("Text", CharacterObject,
-                                                                      nameof(Character.TotalNotoriety));
-                                lblNotorietyTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                      nameof(Character.NotorietyTooltip));
-                                lblPublicAwareTotal.DoOneWayDataBinding("Text", CharacterObject,
-                                                                        nameof(Character.TotalPublicAwareness));
-                                lblPublicAwareTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                        nameof(Character.PublicAwarenessTooltip));
-                                lblAstralReputationTotal.DoOneWayDataBinding("Text", CharacterObject,
-                                                                             nameof(Character.TotalAstralReputation));
-                                lblAstralReputationTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                             nameof(Character.AstralReputationTooltip));
-                                lblWildReputationTotal.DoOneWayDataBinding("Text", CharacterObject,
-                                                                           nameof(Character.TotalWildReputation));
-                                lblWildReputationTotal.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                           nameof(Character.WildReputationTooltip));
-
-                                lblMentorSpirit.DoOneWayDataBinding("Text", CharacterObject,
-                                                                    nameof(Character.FirstMentorSpiritDisplayName));
-                                lblMentorSpiritInformation.DoOneWayDataBinding("Text", CharacterObject,
-                                                                               nameof(Character
-                                                                                   .FirstMentorSpiritDisplayInformation));
-                                lblParagon.DoOneWayDataBinding("Text", CharacterObject,
-                                                               nameof(Character.FirstMentorSpiritDisplayName));
-                                lblParagonInformation.DoOneWayDataBinding("Text", CharacterObject,
-                                                                          nameof(Character
-                                                                              .FirstMentorSpiritDisplayInformation));
-
-                                lblComposure.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                 nameof(Character.ComposureToolTip));
-                                lblComposure.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.Composure));
-                                lblSurprise.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                nameof(Character.SurpriseToolTip));
-                                lblSurprise.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.Surprise));
-                                lblJudgeIntentions.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                       nameof(Character.JudgeIntentionsToolTip));
-                                lblJudgeIntentions.DoOneWayDataBinding("Text", CharacterObject,
-                                                                       nameof(Character.JudgeIntentions));
-                                lblLiftCarry.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                 nameof(Character.LiftAndCarryToolTip));
-                                lblLiftCarry.DoOneWayDataBinding("Text", CharacterObject,
-                                                                 nameof(Character.LiftAndCarry));
-                                lblMemory.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                              nameof(Character.MemoryToolTip));
-                                lblMemory.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.Memory));
-
-                                lblLiftCarryLimits.DoOneWayDataBinding("Text", CharacterObject,
-                                                                       nameof(Character.LiftAndCarryLimits));
-
-                                lblINI.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                           nameof(Character.InitiativeToolTip));
-                                lblINI.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.Initiative));
-                                lblAstralINI.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                 nameof(Character.AstralInitiativeToolTip));
-                                lblAstralINI.DoOneWayDataBinding("Text", CharacterObject,
-                                                                 nameof(Character.AstralInitiative));
-                                lblMatrixINI.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                 nameof(Character.MatrixInitiativeToolTip));
-                                lblMatrixINI.DoOneWayDataBinding("Text", CharacterObject,
-                                                                 nameof(Character.MatrixInitiative));
-                                lblMatrixINICold.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                     nameof(Character.MatrixInitiativeColdToolTip));
-                                lblMatrixINICold.DoOneWayDataBinding("Text", CharacterObject,
-                                                                     nameof(Character.MatrixInitiativeCold));
-                                lblMatrixINIHot.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                    nameof(Character.MatrixInitiativeHotToolTip));
-                                lblMatrixINIHot.DoOneWayDataBinding("Text", CharacterObject,
-                                                                    nameof(Character.MatrixInitiativeHot));
-                                lblRiggingINI.DoOneWayDataBinding("ToolTipText", CharacterObject,
-                                                                  nameof(Character.InitiativeToolTip));
-                                lblRiggingINI.DoOneWayDataBinding("Text", CharacterObject,
-                                                                  nameof(Character.Initiative));
-                            }
-
-                            using (_ = await Timekeeper.StartSyncronAsync(
-                                       "load_frm_create_vehicle", op_load_frm_create))
-                            {
-                                // Populate vehicle weapon fire mode list.
-                                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
-                                                                               out List<ListItem> lstFireModes))
+                                using (_ = await Timekeeper.StartSyncronAsync(
+                                           "load_frm_create_vehicle", op_load_frm_create))
                                 {
-                                    foreach (Weapon.FiringMode mode in Enum.GetValues(typeof(Weapon.FiringMode)))
+                                    // Populate vehicle weapon fire mode list.
+                                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                               out List<ListItem> lstFireModes))
                                     {
-                                        if (mode == Weapon.FiringMode.NumFiringModes)
-                                            continue;
-                                        lstFireModes.Add(new ListItem(mode,
-                                                                      await LanguageManager
-                                                                          .GetStringAsync("Enum_" + mode)));
-                                    }
+                                        foreach (Weapon.FiringMode mode in Enum.GetValues(typeof(Weapon.FiringMode)))
+                                        {
+                                            if (mode == Weapon.FiringMode.NumFiringModes)
+                                                continue;
+                                            lstFireModes.Add(new ListItem(mode,
+                                                                          await LanguageManager
+                                                                              .GetStringAsync("Enum_" + mode)));
+                                        }
 
-                                    await cboVehicleWeaponFiringMode.PopulateWithListItemsAsync(lstFireModes);
+                                        await cboVehicleWeaponFiringMode.PopulateWithListItemsAsync(lstFireModes);
+                                    }
                                 }
                             }
-                        }
-                        finally
-                        {
-                            IsLoading = false;
-                        }
-
-                        using (_ = await Timekeeper.StartSyncronAsync("load_frm_create_finish", op_load_frm_create))
-                        {
-                            await SetTooltips();
-                            RefreshAttributes(pnlAttributes, null, lblAttributes, lblKarma.PreferredWidth,
-                                              lblAttributesAug.PreferredWidth, lblAttributesMetatype.PreferredWidth);
-
-                            CharacterObject.AttributeSection.Attributes.CollectionChanged += AttributeCollectionChanged;
-
-                            IsCharacterUpdateRequested = true;
-                            // Directly awaiting here so that we can properly unset the dirty flag after the update
-                            try
+                            finally
                             {
-                                await UpdateCharacterInfoTask;
-                            }
-                            catch (OperationCanceledException)
-                            {
-                                return;
+                                IsLoading = false;
                             }
 
-                            // Clear the Dirty flag which gets set when creating a new Character.
-                            if (!CharacterObject.LoadAsDirty)
-                                IsDirty = false;
-                            await DoRefreshPasteStatus();
-                            await ProcessMugshot();
+                            using (_ = await Timekeeper.StartSyncronAsync("load_frm_create_finish", op_load_frm_create))
+                            {
+                                await SetTooltips();
+                                RefreshAttributes(pnlAttributes, null, lblAttributes, lblKarma.PreferredWidth,
+                                                  lblAttributesAug.PreferredWidth,
+                                                  lblAttributesMetatype.PreferredWidth);
 
-                            // Stupid hack to get the MDI icon to show up properly.
-                            await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon);
+                                CharacterObject.AttributeSection.Attributes.CollectionChanged
+                                    += AttributeCollectionChanged;
 
-                            Program.PluginLoader.CallPlugins(this, op_load_frm_create);
+                                IsCharacterUpdateRequested = true;
+                                // Directly awaiting here so that we can properly unset the dirty flag after the update
+                                try
+                                {
+                                    await UpdateCharacterInfoTask;
+                                }
+                                catch (OperationCanceledException)
+                                {
+                                    return;
+                                }
+
+                                // Clear the Dirty flag which gets set when creating a new Character.
+                                if (!CharacterObject.LoadAsDirty)
+                                    IsDirty = false;
+                                await DoRefreshPasteStatus();
+                                await ProcessMugshot();
+
+                                // Stupid hack to get the MDI icon to show up properly.
+                                await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon);
+
+                                Program.PluginLoader.CallPlugins(this, op_load_frm_create);
+                            }
+
+                            if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0
+                                && !Utils.IsUnitTest
+                                && Program.ShowMessageBox(this,
+                                                          await LanguageManager.GetStringAsync(
+                                                              "Message_ImprovementLoadError"),
+                                                          await LanguageManager.GetStringAsync(
+                                                              "MessageTitle_ImprovementLoadError"),
+                                                          MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation)
+                                == DialogResult.Yes)
+                            {
+                                await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
+                                await CharacterObject.InternalIdsNeedingReapplyImprovements.ClearAsync();
+                            }
+
+                            op_load_frm_create.SetSuccess(true);
                         }
-
-                        if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0
-                            && !Utils.IsUnitTest
-                            && Program.ShowMessageBox(this,
-                                                      await LanguageManager.GetStringAsync(
-                                                          "Message_ImprovementLoadError"),
-                                                      await LanguageManager.GetStringAsync(
-                                                          "MessageTitle_ImprovementLoadError"),
-                                                      MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation)
-                            == DialogResult.Yes)
+                        catch (Exception ex)
                         {
-                            await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
-                            await CharacterObject.InternalIdsNeedingReapplyImprovements.ClearAsync();
-                        }
+                            if (op_load_frm_create != null)
+                            {
+                                op_load_frm_create.SetSuccess(false);
+                                TelemetryClient.TrackException(ex);
+                            }
 
-                        op_load_frm_create.SetSuccess(true);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (op_load_frm_create != null)
-                        {
-                            op_load_frm_create.SetSuccess(false);
-                            TelemetryClient.TrackException(ex);
+                            Log.Error(ex);
+                            throw;
                         }
-
-                        Log.Error(ex);
-                        throw;
-                    }
-                    finally
-                    {
-                        IsFinishedInitializing = true;
                     }
                 }
+            }
+            finally
+            {
+                IsFinishedInitializing = true;
             }
         }
 
@@ -1274,7 +1306,7 @@ namespace Chummer
             switch (e.PropertyName)
             {
                 case nameof(Character.CharacterName):
-                    UpdateWindowTitle(false);
+                    await UpdateWindowTitleAsync(false);
                     break;
 
                 case nameof(Character.DisplayNuyen):

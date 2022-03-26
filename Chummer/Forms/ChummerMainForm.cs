@@ -1405,7 +1405,7 @@ namespace Chummer
 
                 // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
                 foreach (CharacterShared frmNewCharacter in lstNewFormsToProcess)
-                    frmNewCharacter.QueueThreadSafe(() => frmNewCharacter.WindowState = wsPreference);
+                    await frmNewCharacter.DoThreadSafeAsync(x => x.WindowState = wsPreference);
             }
         }
 

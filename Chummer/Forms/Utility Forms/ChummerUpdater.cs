@@ -966,10 +966,10 @@ namespace Chummer
         /// <summary>
         /// Update the download progress for the file.
         /// </summary>
-        private void wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        private async void wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             if (int.TryParse((e.BytesReceived * 100 / e.TotalBytesToReceive).ToString(GlobalSettings.InvariantCultureInfo), out int intTmp))
-                pgbOverallProgress.QueueThreadSafe(x => x.Value = intTmp);
+                await pgbOverallProgress.DoThreadSafeAsync(x => x.Value = intTmp, _objGenericToken);
         }
 
         /// <summary>
@@ -979,18 +979,18 @@ namespace Chummer
         {
             Log.Info("wc_DownloadExeFileCompleted enter");
             string strText1 = await LanguageManager.GetStringAsync("Button_Redownload");
-            cmdUpdate.QueueThreadSafe(x =>
-            {
-                x.Text = strText1;
-                x.Enabled = true;
-            });
             string strText2 = await LanguageManager.GetStringAsync("Button_Up_To_Date");
-            cmdRestart.QueueThreadSafe(x =>
-            {
-                if (_blnIsConnected && x.Text != strText2)
-                    x.Enabled = true;
-            });
-            cmdCleanReinstall.QueueThreadSafe(() => cmdCleanReinstall.Enabled = true);
+            await Task.WhenAll(cmdUpdate.DoThreadSafeAsync(x =>
+                               {
+                                   x.Text = strText1;
+                                   x.Enabled = true;
+                               }, _objGenericToken),
+                               cmdRestart.DoThreadSafeAsync(x =>
+                               {
+                                   if (_blnIsConnected && x.Text != strText2)
+                                       x.Enabled = true;
+                               }, _objGenericToken),
+                               cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken));
             Log.Info("wc_DownloadExeFileCompleted exit");
             if (SilentMode)
             {
@@ -1011,7 +1011,7 @@ namespace Chummer
                 {
                     _blnSilentModeUpdateWasDenied = true; // only actually go through with the attempt in Silent Mode once, don't prompt user any more if they canceled out once already
                     _blnIsConnected = false;
-                    this.QueueThreadSafe(Close);
+                    await this.DoThreadSafeAsync(x => x.Close(), _objGenericToken);
                 }
             }
         }

@@ -107,17 +107,8 @@ namespace Chummer
         {
             if (objCursor != null)
             {
-                // Only wait for the cursor change if we're changing to or from a full waiting cursor
-                if (objCursor == Cursors.WaitCursor || _objControl.Cursor == Cursors.WaitCursor)
-                {
-                    _objControl.DoThreadSafe(x => x.Cursor = objCursor);
-                    _frmControlTopParent?.DoThreadSafe(x => x.Cursor = objCursor);
-                }
-                else
-                {
-                    _objControl.QueueThreadSafe(x => x.Cursor = objCursor);
-                    _frmControlTopParent?.QueueThreadSafe(x => x.Cursor = objCursor);
-                }
+                _objControl.DoThreadSafe(x => x.Cursor = objCursor);
+                _frmControlTopParent?.DoThreadSafe(x => x.Cursor = objCursor);
             }
             else
             {

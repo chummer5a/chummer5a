@@ -49,7 +49,7 @@ namespace Chummer
                     return;
                 string strDisplayText = string.Format(GlobalSettings.CultureInfo,
                     LanguageManager.GetString("String_Loading_Pattern"), value);
-                this.QueueThreadSafe(x => x.Text = strDisplayText);
+                this.DoThreadSafe(x => x.Text = strDisplayText);
             }
         }
 
@@ -70,7 +70,7 @@ namespace Chummer
             if (this.IsNullOrDisposed())
                 return;
             string strNewText = LanguageManager.GetString("String_Initializing");
-            lblLoadingInfo.QueueThreadSafe(x => x.Text = strNewText);
+            lblLoadingInfo.DoThreadSafe(x => x.Text = strNewText);
             pgbLoadingProgress.DoThreadSafe(objBar =>
             {
                 objBar.Value = 0;

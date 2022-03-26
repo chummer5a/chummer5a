@@ -1120,15 +1120,24 @@ namespace ChummerHub.Client.Backend
         {
             string filepath = await DownloadFileTask(sinner, objCache);
             PluginHandler.MySINnerLoading = sinner;
-            PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(true);
-            Character c = await Program.LoadCharacterAsync(filepath);
-            if (c != null)
-                await SwitchToCharacter(c);
-            await PluginHandler.MainForm.DoThreadSafeAsync(x =>
+            try
             {
-                ((ChummerMainForm)x).CharacterRoster.SetMyEventHandlers();
+                await PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(true);
+                try
+                {
+                    Character c = await Program.LoadCharacterAsync(filepath);
+                    if (c != null)
+                        await SwitchToCharacter(c);
+                }
+                finally
+                {
+                    await PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers();
+                }
+            }
+            finally
+            {
                 PluginHandler.MySINnerLoading = null;
-            });
+            }
         }
 
         private static SINnerVisibility s_objDefaultSINnerVisibility;

@@ -267,7 +267,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void Skill_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void Skill_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             bool blnAll = false;
             switch (e?.PropertyName)
@@ -280,20 +280,26 @@ namespace Chummer.UI.Skills
                     {
                         string strOldSpec = _objSkill.CGLSpecializations.Count != 0 ? cboSpec.SelectedItem?.ToString() : cboSpec.Text;
                         IReadOnlyList<ListItem> lstSpecializations = _objSkill.CGLSpecializations;
-                        cboSpec.QueueThreadSafe(() =>
+                        _blnUpdatingSpec = true;
+                        try
                         {
-                            _blnUpdatingSpec = true;
-                            cboSpec.PopulateWithListItems(lstSpecializations);
-                            if (string.IsNullOrEmpty(strOldSpec))
-                                cboSpec.SelectedIndex = -1;
-                            else
+                            await cboSpec.PopulateWithListItemsAsync(lstSpecializations);
+                            await cboSpec.DoThreadSafeAsync(x =>
                             {
-                                cboSpec.SelectedValue = strOldSpec;
-                                if (cboSpec.SelectedIndex == -1)
-                                    cboSpec.Text = strOldSpec;
-                            }
+                                if (string.IsNullOrEmpty(strOldSpec))
+                                    x.SelectedIndex = -1;
+                                else
+                                {
+                                    x.SelectedValue = strOldSpec;
+                                    if (x.SelectedIndex == -1)
+                                        x.Text = strOldSpec;
+                                }
+                            });
+                        }
+                        finally
+                        {
                             _blnUpdatingSpec = false;
-                        });
+                        }
                     }
                     if (blnAll)
                         goto case nameof(KnowledgeSkill.WritableName);
@@ -303,12 +309,15 @@ namespace Chummer.UI.Skills
                     if (!_blnUpdatingName)
                     {
                         string strWritableName = _objSkill.WritableName;
-                        cboName.QueueThreadSafe(() =>
+                        _blnUpdatingName = true;
+                        try
                         {
-                            _blnUpdatingName = true;
-                            cboName.Text = strWritableName;
+                            await cboName.DoThreadSafeAsync(x => x.Text = strWritableName);
+                        }
+                        finally
+                        {
                             _blnUpdatingName = false;
-                        });
+                        }
                     }
                     if (blnAll)
                         goto case nameof(Skill.TopMostDisplaySpecialization);
@@ -318,12 +327,15 @@ namespace Chummer.UI.Skills
                     if (!_blnUpdatingSpec)
                     {
                         string strDisplaySpec = _objSkill.TopMostDisplaySpecialization;
-                        cboSpec.QueueThreadSafe(() =>
+                        _blnUpdatingSpec = true;
+                        try
                         {
-                            _blnUpdatingSpec = true;
-                            cboSpec.Text = strDisplaySpec;
+                            await cboSpec.DoThreadSafeAsync(x => x.Text = strDisplaySpec);
+                        }
+                        finally
+                        {
                             _blnUpdatingSpec = false;
-                        });
+                        }
                     }
                     if (blnAll)
                         goto case nameof(Skill.IsNativeLanguage);
@@ -334,7 +346,7 @@ namespace Chummer.UI.Skills
                     {
                         bool blnEnabled = _objSkill.IsNativeLanguage ||
                                           _objSkill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
-                        chkNativeLanguage.QueueThreadSafe(() => chkNativeLanguage.Enabled = blnEnabled);
+                        await chkNativeLanguage.DoThreadSafeAsync(x => x.Enabled = blnEnabled);
                     }
                     break;
             }

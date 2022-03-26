@@ -23,6 +23,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
@@ -323,7 +324,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void Skill_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        private async void Skill_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             if (_blnLoading)
                 return;
@@ -339,13 +340,13 @@ namespace Chummer.UI.Skills
                     blnUpdateAll = true;
                     goto case nameof(Skill.DisplayPool);
                 case nameof(Skill.DisplayPool):
-                    RefreshPoolTooltipAndDisplay();
+                    await RefreshPoolTooltipAndDisplayAsync();
                     if (blnUpdateAll)
                         goto case nameof(Skill.Default);
                     break;
 
                 case nameof(Skill.Default):
-                    lblName.Font = !_objSkill.Default ? _fntItalicName : _fntNormalName;
+                    await lblName.DoThreadSafeAsync(x => x.Font = !_objSkill.Default ? _fntItalicName : _fntNormalName);
                     if (blnUpdateAll)
                         goto case nameof(Skill.DefaultAttribute);
                     break;
@@ -368,12 +369,15 @@ namespace Chummer.UI.Skills
                     if (!_blnUpdatingSpec)
                     {
                         string strDisplaySpec = _objSkill.TopMostDisplaySpecialization;
-                        cboSpec.QueueThreadSafe(() =>
+                        _blnUpdatingSpec = true;
+                        try
                         {
-                            _blnUpdatingSpec = true;
-                            cboSpec.Text = strDisplaySpec;
+                            await cboSpec.DoThreadSafeAsync(x => x.Text = strDisplaySpec);
+                        }
+                        finally
+                        {
                             _blnUpdatingSpec = false;
-                        });
+                        }
                     }
                     if (blnUpdateAll)
                         goto case nameof(Skill.CGLSpecializations);
@@ -384,26 +388,32 @@ namespace Chummer.UI.Skills
                     {
                         string strOldSpec = cboSpec.Text;
                         IReadOnlyList<ListItem> lstSpecializations = _objSkill.CGLSpecializations;
-                        cboSpec.QueueThreadSafe(() =>
+                        _blnUpdatingSpec = true;
+                        try
                         {
-                            _blnUpdatingSpec = true;
-                            cboSpec.PopulateWithListItems(lstSpecializations);
-                            if (string.IsNullOrEmpty(strOldSpec))
-                                cboSpec.SelectedIndex = -1;
-                            else
+                            await cboSpec.PopulateWithListItemsAsync(lstSpecializations);
+                            await cboSpec.DoThreadSafeAsync(x =>
                             {
-                                cboSpec.SelectedValue = strOldSpec;
-                                if (cboSpec.SelectedIndex == -1)
-                                    cboSpec.Text = strOldSpec;
-                            }
+                                if (string.IsNullOrEmpty(strOldSpec))
+                                    x.SelectedIndex = -1;
+                                else
+                                {
+                                    x.SelectedValue = strOldSpec;
+                                    if (x.SelectedIndex == -1)
+                                        x.Text = strOldSpec;
+                                }
+                            });
+                        }
+                        finally
+                        {
                             _blnUpdatingSpec = false;
-                        });
+                        }
                     }
                     break;
             }
         }
 
-        private void Attribute_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        private async void Attribute_PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             if (_blnLoading)
                 return;
@@ -413,7 +423,7 @@ namespace Chummer.UI.Skills
                 case null:
                 case nameof(CharacterAttrib.Abbrev):
                 case nameof(CharacterAttrib.TotalValue):
-                    RefreshPoolTooltipAndDisplay();
+                    await RefreshPoolTooltipAndDisplayAsync();
                     break;
             }
         }
@@ -507,8 +517,9 @@ namespace Chummer.UI.Skills
                 _objAttributeActive = value;
                 if (_objAttributeActive != null)
                     _objAttributeActive.PropertyChanged += Attribute_PropertyChanged;
-                btnAttribute.QueueThreadSafe(() =>
-                    btnAttribute.Font = _objAttributeActive == _objSkill.AttributeObject ? _fntNormal : _fntItalic);
+                btnAttribute.DoThreadSafe(x => x.Font = _objAttributeActive == _objSkill.AttributeObject
+                                              ? _fntNormal
+                                              : _fntItalic);
                 RefreshPoolTooltipAndDisplay();
                 CustomAttributeChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -653,9 +664,26 @@ namespace Chummer.UI.Skills
         private void RefreshPoolTooltipAndDisplay()
         {
             string backgroundCalcPool = _objSkill.DisplayOtherAttribute(AttributeActive.Abbrev);
-            lblModifiedRating.QueueThreadSafe(() => lblModifiedRating.Text = backgroundCalcPool);
             string backgroundCalcTooltip = _objSkill.CompileDicepoolTooltip(AttributeActive.Abbrev);
-            lblModifiedRating.QueueThreadSafe(() => lblModifiedRating.ToolTipText = backgroundCalcTooltip);
+            lblModifiedRating.DoThreadSafe(x =>
+            {
+                x.Text = backgroundCalcPool;
+                x.ToolTipText = backgroundCalcTooltip;
+            });
+        }
+
+        /// <summary>
+        /// Refreshes the Tooltip and Displayed Dice Pool. Can be used in another Thread
+        /// </summary>
+        private Task RefreshPoolTooltipAndDisplayAsync()
+        {
+            string backgroundCalcPool = _objSkill.DisplayOtherAttribute(AttributeActive.Abbrev);
+            string backgroundCalcTooltip = _objSkill.CompileDicepoolTooltip(AttributeActive.Abbrev);
+            return lblModifiedRating.DoThreadSafeAsync(x =>
+            {
+                x.Text = backgroundCalcPool;
+                x.ToolTipText = backgroundCalcTooltip;
+            });
         }
 
         // Hacky solutions to data binding causing cursor to reset whenever the user is typing something in: have text changes start a timer, and have a 1s delay in the timer update fire the text update
