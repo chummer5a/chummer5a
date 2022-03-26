@@ -287,7 +287,7 @@ namespace Chummer
             this.tlpMiddle.Size = new System.Drawing.Size(35, 249);
             this.tlpMiddle.TabIndex = 30;
             // 
-            // frmCreateCustomDrug
+            // CreateCustomDrug
             // 
             this.AcceptButton = this.btnAdd;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -297,11 +297,12 @@ namespace Chummer
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.MinimumSize = new System.Drawing.Size(768, 576);
-            this.Name = "frmCreateCustomDrug";
+            this.Name = "CreateCustomDrug";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowIcon = false;
             this.Tag = "Button_CreateCustomDrug";
             this.Text = "Create Custom Drug";
+            this.Load += new System.EventHandler(this.CreateCustomDrug_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.flpButtons.ResumeLayout(false);

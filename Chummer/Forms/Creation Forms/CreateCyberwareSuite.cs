@@ -55,20 +55,22 @@ namespace Chummer
         private async void cmdOK_Click(object sender, EventArgs e)
         {
             // Make sure the suite and file name fields are populated.
-            if (string.IsNullOrEmpty(txtName.Text))
+            string strName = await txtName.DoThreadSafeFuncAsync(x => x.Text);
+            if (string.IsNullOrEmpty(strName))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareSuite_SuiteName"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_SuiteName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (string.IsNullOrEmpty(txtFileName.Text))
+            string strFileName = await txtFileName.DoThreadSafeFuncAsync(x => x.Text);
+            if (string.IsNullOrEmpty(strFileName))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareSuite_FileName"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_FileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the file name starts with custom and ends with _cyberware.xml.
-            if (!txtFileName.Text.StartsWith("custom_", StringComparison.OrdinalIgnoreCase) || !txtFileName.Text.EndsWith('_' + _strType + ".xml", StringComparison.OrdinalIgnoreCase))
+            if (!strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase) || !strFileName.EndsWith('_' + _strType + ".xml", StringComparison.OrdinalIgnoreCase))
             {
                 Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_CyberwareSuite_InvalidFileName"), _strType),
                     await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_InvalidFileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -77,7 +79,6 @@ namespace Chummer
 
             // See if a Suite with this name already exists for the Custom category.
             // This was originally done without the XmlManager, but because amends and overrides and toggling custom data directories can change names, we need to use it.
-            string strName = txtName.Text;
             if ((await _objCharacter.LoadDataXPathAsync(_strType + ".xml")).SelectSingleNode("/chummer/suites/suite[name = " + strName.CleanXPath() + ']') != null)
             {
                 Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_CyberwareSuite_DuplicateName"), strName),
@@ -212,7 +213,7 @@ namespace Chummer
                 }
             }
 
-            Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_CyberwareSuite_SuiteCreated"), txtName.Text),
+            Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_CyberwareSuite_SuiteCreated"), strName),
                 await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_SuiteCreated"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             await this.DoThreadSafeAsync(x =>
             {

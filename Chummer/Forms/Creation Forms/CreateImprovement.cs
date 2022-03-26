@@ -77,30 +77,40 @@ namespace Chummer
                 // Load the information from the passed Improvement if one has been given.
                 if (EditImprovementObject != null)
                 {
-                    cboImprovemetType.SelectedValue = EditImprovementObject.CustomId;
-                    txtName.Text = EditImprovementObject.CustomName;
-                    if (nudMax.Visible)
-                        nudMax.Value = EditImprovementObject.Maximum;
-                    if (nudMin.Visible)
-                        nudMin.Value = EditImprovementObject.Minimum;
-                    if (nudVal.Visible)
+                    await cboImprovemetType.DoThreadSafeAsync(x => x.SelectedValue = EditImprovementObject.CustomId);
+                    await txtName.DoThreadSafeAsync(x => x.Text = EditImprovementObject.CustomName);
+                    await nudMax.DoThreadSafeAsync(x =>
                     {
-                        // specificattribute stores the Value in Augmented instead.
-                        nudVal.Value = EditImprovementObject.CustomId == "specificattribute"
-                            ? EditImprovementObject.Augmented
-                            : EditImprovementObject.Value;
-                    }
+                        if (x.Visible)
+                            x.Value = EditImprovementObject.Maximum;
+                    });
+                    await nudMin.DoThreadSafeAsync(x =>
+                    {
+                        if (x.Visible)
+                            x.Value = EditImprovementObject.Minimum;
+                    });
+                    await nudVal.DoThreadSafeAsync(x =>
+                    {
+                        if (x.Visible)
+                        {
+                            // specificattribute stores the Value in Augmented instead.
+                            x.Value = EditImprovementObject.CustomId == "specificattribute"
+                                ? EditImprovementObject.Augmented
+                                : EditImprovementObject.Value;
+                        }
+                    });
 
-                    chkApplyToRating.Checked = chkApplyToRating.Visible && EditImprovementObject.AddToRating;
-                    if (txtTranslateSelection.Visible)
+                    await chkApplyToRating.DoThreadSafeAsync(x => x.Checked = x.Visible && EditImprovementObject.AddToRating);
+                    if (await txtTranslateSelection.DoThreadSafeFuncAsync(x => x.Visible))
                     {
-                        txtSelect.Text = EditImprovementObject.ImprovedName;
+                        await txtSelect.DoThreadSafeAsync(x => x.Text = EditImprovementObject.ImprovedName);
                         // get the selection type of improvement and generate translation
                         XmlNode objFetchNode = _objDocument.SelectSingleNode(
                             "/chummer/improvements/improvement[id = "
                             + cboImprovemetType.SelectedValue.ToString().CleanXPath() + "]/fields/field");
-                        txtTranslateSelection.Text
+                        string strText
                             = await TranslateField(objFetchNode?.InnerText, EditImprovementObject.ImprovedName);
+                        await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strText);
                     }
                 }
             }
@@ -223,8 +233,10 @@ namespace Chummer
 
                             if (await frmSelectAction.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
-                                txtSelect.Text = frmSelectAction.MyForm.SelectedName;
-                                txtTranslateSelection.Text = await TranslateField(_strSelect, frmSelectAction.MyForm.SelectedName);
+                                string strSelect = frmSelectAction.MyForm.SelectedName;
+                                await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect);
+                                string strTranslateSelection = await TranslateField(_strSelect, strSelect);
+                                await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection);
                             }
                         }
                     }
@@ -257,8 +269,10 @@ namespace Chummer
                         {
                             if (await frmPickAttribute.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
-                                txtSelect.Text = frmPickAttribute.MyForm.SelectedAttribute;
-                                txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickAttribute.MyForm.SelectedAttribute);
+                                string strSelect = frmPickAttribute.MyForm.SelectedAttribute;
+                                await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect);
+                                string strTranslateSelection = await TranslateField(_strSelect, strSelect);
+                                await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection);
                             }
                         }
                     }
@@ -281,19 +295,20 @@ namespace Chummer
                                                                                  "/chummer/echoes/echo[id = " + strSelectedId.CleanXPath() + "]/name")?.Value;
                                     if (!string.IsNullOrEmpty(strEchoName))
                                     {
-                                        txtSelect.Text = strEchoName;
-                                        txtTranslateSelection.Text = await TranslateField(_strSelect, strEchoName);
+                                        await txtSelect.DoThreadSafeAsync(x => x.Text = strEchoName);
+                                        string strTranslateSelection = await TranslateField(_strSelect, strEchoName);
+                                        await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection);
                                     }
                                     else
                                     {
-                                        txtSelect.Text = string.Empty;
-                                        txtTranslateSelection.Text = string.Empty;
+                                        await txtSelect.DoThreadSafeAsync(x => x.Text = string.Empty);
+                                        await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = string.Empty);
                                     }
                                 }
                                 else
                                 {
-                                    txtSelect.Text = string.Empty;
-                                    txtTranslateSelection.Text = string.Empty;
+                                    await txtSelect.DoThreadSafeAsync(x => x.Text = string.Empty);
+                                    await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = string.Empty);
                                 }
                             }
                         }
@@ -312,24 +327,25 @@ namespace Chummer
                                 string strSelectedId = frmPickMetamagic.MyForm.SelectedMetamagic;
                                 if (!string.IsNullOrEmpty(strSelectedId))
                                 {
-                                    string strEchoName = (await _objCharacter.LoadDataXPathAsync("metamagic.xml"))
+                                    string strMetamagicName = (await _objCharacter.LoadDataXPathAsync("metamagic.xml"))
                                                                       .SelectSingleNode(
                                                                           "/chummer/metamagics/metamagic[id = " + strSelectedId.CleanXPath() + "]/name")?.Value;
-                                    if (!string.IsNullOrEmpty(strEchoName))
+                                    if (!string.IsNullOrEmpty(strMetamagicName))
                                     {
-                                        txtSelect.Text = strEchoName;
-                                        txtTranslateSelection.Text = await TranslateField(_strSelect, strEchoName);
+                                        await txtSelect.DoThreadSafeAsync(x => x.Text = strMetamagicName);
+                                        string strTranslateSelection = await TranslateField(_strSelect, strMetamagicName);
+                                        await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection);
                                     }
                                     else
                                     {
-                                        txtSelect.Text = string.Empty;
-                                        txtTranslateSelection.Text = string.Empty;
+                                        await txtSelect.DoThreadSafeAsync(x => x.Text = string.Empty);
+                                        await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = string.Empty);
                                     }
                                 }
                                 else
                                 {
-                                    txtSelect.Text = string.Empty;
-                                    txtTranslateSelection.Text = string.Empty;
+                                    await txtSelect.DoThreadSafeAsync(x => x.Text = string.Empty);
+                                    await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = string.Empty);
                                 }
                             }
                         }
@@ -346,9 +362,10 @@ namespace Chummer
                     {
                         if (await frmPickAttribute.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
-                            txtSelect.Text = frmPickAttribute.MyForm.SelectedAttribute;
-                            txtTranslateSelection.Text =
-                                await TranslateField(_strSelect, frmPickAttribute.MyForm.SelectedAttribute);
+                            string strSelect = frmPickAttribute.MyForm.SelectedAttribute;
+                            await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect);
+                            string strTranslateSelection = await TranslateField(_strSelect, strSelect);
+                            await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection);
                         }
                     }
 
@@ -364,9 +381,10 @@ namespace Chummer
                     {
                         if (await frmPickAttribute.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
-                            txtSelect.Text = frmPickAttribute.MyForm.SelectedAttribute;
-                            txtTranslateSelection.Text =
-                                await TranslateField(_strSelect, frmPickAttribute.MyForm.SelectedAttribute);
+                            string strSelect = frmPickAttribute.MyForm.SelectedAttribute;
+                            await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect);
+                            string strTranslateSelection = await TranslateField(_strSelect, strSelect);
+                            await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection);
                         }
                     }
 
@@ -399,8 +417,10 @@ namespace Chummer
                         {
                             if (await frmPickAttribute.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
-                                txtSelect.Text = frmPickAttribute.MyForm.SelectedAttribute;
-                                txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickAttribute.MyForm.SelectedAttribute);
+                                string strSelect = frmPickAttribute.MyForm.SelectedAttribute;
+                                await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect);
+                                string strTranslateSelection = await TranslateField(_strSelect, strSelect);
+                                await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection);
                             }
                         }
                     }
@@ -415,8 +435,10 @@ namespace Chummer
                     {
                         if (await frmPickSkill.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
-                            txtSelect.Text = frmPickSkill.MyForm.SelectedSkill;
-                            txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickSkill.MyForm.SelectedSkill);
+                            string strSelect = frmPickSkill.MyForm.SelectedSkill;
+                            await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect);
+                            string strTranslateSelection = await TranslateField(_strSelect, strSelect);
+                            await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection);
                         }
                     }
 
@@ -479,9 +501,10 @@ namespace Chummer
                             frmPickSkill.MyForm.SetDropdownItemsMode(lstDropdownItems);
                             if (await frmPickSkill.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
-                                txtSelect.Text = frmPickSkill.MyForm.SelectedItem;
-                                txtTranslateSelection.Text =
-                                    await TranslateField(_strSelect, frmPickSkill.MyForm.SelectedItem);
+                                string strSelect = frmPickSkill.MyForm.SelectedItem;
+                                await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect);
+                                string strTranslateSelection = await TranslateField(_strSelect, strSelect);
+                                await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection);
                             }
                         }
                     }
@@ -495,9 +518,10 @@ namespace Chummer
                     {
                         if (await frmPickSkillCategory.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
-                            txtSelect.Text = frmPickSkillCategory.MyForm.SelectedCategory;
-                            txtTranslateSelection.Text =
-                                await TranslateField(_strSelect, frmPickSkillCategory.MyForm.SelectedCategory);
+                            string strSelect = frmPickSkillCategory.MyForm.SelectedCategory;
+                            await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect);
+                            string strTranslateSelection = await TranslateField(_strSelect, strSelect);
+                            await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection);
                         }
                     }
 
@@ -510,9 +534,10 @@ namespace Chummer
                     {
                         if (await frmPickSkillGroup.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
-                            txtSelect.Text = frmPickSkillGroup.MyForm.SelectedSkillGroup;
-                            txtTranslateSelection.Text =
-                                await TranslateField(_strSelect, frmPickSkillGroup.MyForm.SelectedSkillGroup);
+                            string strSelect = frmPickSkillGroup.MyForm.SelectedSkillGroup;
+                            await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect);
+                            string strTranslateSelection = await TranslateField(_strSelect, strSelect);
+                            await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection);
                         }
                     }
 
@@ -543,9 +568,10 @@ namespace Chummer
 
                             if (await selectComplexForm.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
-                                txtSelect.Text = selectComplexForm.MyForm.SelectedName;
-                                txtTranslateSelection.Text =
-                                    await TranslateField(_strSelect, selectComplexForm.MyForm.SelectedName);
+                                string strSelect = selectComplexForm.MyForm.SelectedName;
+                                await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect);
+                                string strTranslateSelection = await TranslateField(_strSelect, strSelect);
+                                await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection);
                             }
                         }
                     }
@@ -576,8 +602,10 @@ namespace Chummer
 
                             if (await selectSpell.ShowDialogSafeAsync(this) == DialogResult.OK)
                             {
-                                txtSelect.Text = selectSpell.MyForm.SelectedName;
-                                txtTranslateSelection.Text = await TranslateField(_strSelect, selectSpell.MyForm.SelectedName);
+                                string strSelect = selectSpell.MyForm.SelectedName;
+                                await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect);
+                                string strTranslateSelection = await TranslateField(_strSelect, strSelect);
+                                await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection);
                             }
                         }
                     }
@@ -591,9 +619,10 @@ namespace Chummer
                     {
                         if (await frmPickWeaponCategory.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
-                            txtSelect.Text = frmPickWeaponCategory.MyForm.SelectedCategory;
-                            txtTranslateSelection.Text =
-                                await TranslateField(_strSelect, frmPickWeaponCategory.MyForm.SelectedCategory);
+                            string strSelect = frmPickWeaponCategory.MyForm.SelectedCategory;
+                            await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect);
+                            string strTranslateSelection = await TranslateField(_strSelect, strSelect);
+                            await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection);
                         }
                     }
 
@@ -606,9 +635,10 @@ namespace Chummer
                     {
                         if (await frmPickSpellCategory.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
-                            txtSelect.Text = frmPickSpellCategory.MyForm.SelectedCategory;
-                            txtTranslateSelection.Text =
-                                await TranslateField(_strSelect, frmPickSpellCategory.MyForm.SelectedCategory);
+                            string strSelect = frmPickSpellCategory.MyForm.SelectedCategory;
+                            await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect);
+                            string strTranslateSelection = await TranslateField(_strSelect, strSelect);
+                            await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection);
                         }
                     }
 
@@ -619,8 +649,31 @@ namespace Chummer
                     {
                         if (await frmPickPower.ShowDialogSafeAsync(this) == DialogResult.OK)
                         {
-                            txtSelect.Text = (await _objCharacter.LoadDataXPathAsync("powers.xml")).SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.MyForm.SelectedPower.CleanXPath() + "]/name")?.Value;
-                            txtTranslateSelection.Text = await TranslateField(_strSelect, frmPickPower.MyForm.SelectedPower);
+                            string strSelectedId = frmPickPower.MyForm.SelectedPower;
+                            if (!string.IsNullOrEmpty(strSelectedId))
+                            {
+                                string strPowerName = (await _objCharacter.LoadDataXPathAsync("powers.xml"))
+                                                          .SelectSingleNode(
+                                                              "/chummer/powers/power[id = "
+                                                              + frmPickPower.MyForm.SelectedPower.CleanXPath() + "]/name")
+                                                          ?.Value;
+                                if (!string.IsNullOrEmpty(strPowerName))
+                                {
+                                    await txtSelect.DoThreadSafeAsync(x => x.Text = strPowerName);
+                                    string strTranslateSelection = await TranslateField(_strSelect, strPowerName);
+                                    await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection);
+                                }
+                                else
+                                {
+                                    await txtSelect.DoThreadSafeAsync(x => x.Text = string.Empty);
+                                    await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = string.Empty);
+                                }
+                            }
+                            else
+                            {
+                                await txtSelect.DoThreadSafeAsync(x => x.Text = string.Empty);
+                                await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = string.Empty);
+                            }
                         }
                     }
                     break;
@@ -684,29 +737,29 @@ namespace Chummer
                             // ReSharper disable once PossibleNullReferenceException
                             string strXml = await objFetchNode["xml"].InnerText
                                                                      .CheapReplaceAsync("{val}",
-                                                                         async () => await nudVal.DoThreadSafeFuncAsync(
+                                                                         () => nudVal.DoThreadSafeFuncAsync(
                                                                              x => x.Value.ToString(
                                                                                  GlobalSettings.InvariantCultureInfo)))
                                                                      .CheapReplaceAsync("{min}",
-                                                                         async () => await nudMin.DoThreadSafeFuncAsync(
+                                                                         () => nudMin.DoThreadSafeFuncAsync(
                                                                              x => x.Value.ToString(
                                                                                  GlobalSettings.InvariantCultureInfo)))
                                                                      .CheapReplaceAsync("{max}",
-                                                                         async () => await nudMax.DoThreadSafeFuncAsync(
+                                                                         () => nudMax.DoThreadSafeFuncAsync(
                                                                              x => x.Value.ToString(
                                                                                  GlobalSettings.InvariantCultureInfo)))
                                                                      .CheapReplaceAsync("{aug}",
-                                                                         async () => await nudAug.DoThreadSafeFuncAsync(
+                                                                         () => nudAug.DoThreadSafeFuncAsync(
                                                                              x => x.Value.ToString(
                                                                                  GlobalSettings.InvariantCultureInfo)))
                                                                      .CheapReplaceAsync("{free}",
-                                                                         async () =>
-                                                                             await chkFree.DoThreadSafeFuncAsync(
+                                                                         () =>
+                                                                             chkFree.DoThreadSafeFuncAsync(
                                                                                  x => x.Checked.ToString(
                                                                                      GlobalSettings
                                                                                          .InvariantCultureInfo)))
                                                                      .CheapReplaceAsync("{select}",
-                                                                         async () => await txtSelect
+                                                                         () => txtSelect
                                                                              .DoThreadSafeFuncAsync(
                                                                                  x => x.Text))
                                                                      .CheapReplaceAsync(

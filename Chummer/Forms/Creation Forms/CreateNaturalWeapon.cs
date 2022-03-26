@@ -79,13 +79,13 @@ namespace Chummer
 
                 // Bind the Lists to the ComboBoxes.
                 await cboSkill.PopulateWithListItemsAsync(lstSkills);
-                cboSkill.SelectedIndex = 0;
+                await cboSkill.DoThreadSafeAsync(x => x.SelectedIndex = 0);
 
                 await cboDVBase.PopulateWithListItemsAsync(lstDVBase);
-                cboDVBase.SelectedIndex = 0;
+                await cboDVBase.DoThreadSafeAsync(x => x.SelectedIndex = 0);
 
                 await cboDVType.PopulateWithListItemsAsync(lstDVType);
-                cboDVType.SelectedIndex = 0;
+                await cboDVType.DoThreadSafeAsync(x => x.SelectedIndex = 0);
             }
         }
 
@@ -122,24 +122,26 @@ namespace Chummer
         private async ValueTask AcceptForm()
         {
             // Assemble the DV from the fields.
-            string strDamage = cboDVBase.SelectedValue.ToString();
-            if (nudDVMod.ValueAsInt != 0)
+            string strDamage = await cboDVBase.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
+            int intDVMod = await nudDVMod.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+            if (intDVMod != 0)
             {
-                if (nudDVMod.Value < 0)
-                    strDamage += nudDVMod.Value.ToString(GlobalSettings.InvariantCultureInfo);
+                if (intDVMod < 0)
+                    strDamage += intDVMod.ToString(GlobalSettings.InvariantCultureInfo);
                 else
-                    strDamage += '+' + nudDVMod.Value.ToString(GlobalSettings.InvariantCultureInfo);
+                    strDamage += '+' + intDVMod.ToString(GlobalSettings.InvariantCultureInfo);
             }
-            strDamage += cboDVType.SelectedValue.ToString();
+            strDamage += await cboDVType.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
 
             // Create the AP value.
             string strAP;
-            if (nudAP.Value == 0)
+            int intAP = await nudAP.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+            if (intAP == 0)
                 strAP = "0";
-            else if (nudAP.Value > 0)
-                strAP = '+' + nudAP.Value.ToString(GlobalSettings.InvariantCultureInfo);
+            else if (intAP > 0)
+                strAP = '+' + intAP.ToString(GlobalSettings.InvariantCultureInfo);
             else
-                strAP = nudAP.Value.ToString(GlobalSettings.InvariantCultureInfo);
+                strAP = intAP.ToString(GlobalSettings.InvariantCultureInfo);
 
             // Get the information for the Natural Weapon Critter Power.
             XPathNavigator objPower = _objXmlPowersDocument.SelectSingleNode("powers/power[name = \"Natural Weapon\"]");
@@ -160,7 +162,7 @@ namespace Chummer
                     Concealability = 0,
                     Avail = "0",
                     Cost = "0",
-                    UseSkill = cboSkill.SelectedValue.ToString(),
+                    UseSkill = await cboSkill.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()),
                     Source = (await objPower.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value,
                     Page = (await objPower.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value
                 };

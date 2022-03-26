@@ -45,20 +45,22 @@ namespace Chummer
         private async void cmdOK_Click(object sender, EventArgs e)
         {
             // Make sure the kit and file name fields are populated.
-            if (string.IsNullOrEmpty(txtName.Text))
+            string strName = await txtName.DoThreadSafeFuncAsync(x => x.Text);
+            if (string.IsNullOrEmpty(strName))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CreatePACKSKit_KitName"), await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_KitName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (string.IsNullOrEmpty(txtFileName.Text))
+            string strFileName = await txtFileName.DoThreadSafeFuncAsync(x => x.Text);
+            if (string.IsNullOrEmpty(strFileName))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CreatePACKSKit_FileName"), await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_FileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the file name starts with custom and ends with _packs.xml.
-            if (!txtFileName.Text.StartsWith("custom_", StringComparison.OrdinalIgnoreCase) || !txtFileName.Text.EndsWith("_packs.xml", StringComparison.OrdinalIgnoreCase))
+            if (!strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase) || !strFileName.EndsWith("_packs.xml", StringComparison.OrdinalIgnoreCase))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CreatePACKSKit_InvalidFileName"), await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_InvalidFileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -66,7 +68,6 @@ namespace Chummer
 
             // See if a Kit with this name already exists for the Custom category.
             // This was originally done without the XmlManager, but because amends and overrides and toggling custom data directories can change names, we need to use it.
-            string strName = txtName.Text;
             if ((await XmlManager.LoadXPathAsync("packs.xml", _objCharacter.Settings.EnabledCustomDataDirectoryPaths))
                 .SelectSingleNode("/chummer/packs/pack[name = " + strName.CleanXPath() + " and category = \"Custom\"]") != null)
             {
@@ -75,7 +76,7 @@ namespace Chummer
                 return;
             }
 
-            string strPath = Path.Combine(Utils.GetStartupPath, "data", txtFileName.Text);
+            string strPath = Path.Combine(Utils.GetStartupPath, "data", strFileName);
 
             // If this is not a new file, read in the existing contents.
             XmlDocument objXmlCurrentDocument = null;
@@ -124,21 +125,21 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("category", "Custom");
 
                     // Export Attributes.
-                    if (chkAttributes.Checked)
+                    if (await chkAttributes.DoThreadSafeFuncAsync(x => x.Checked))
                     {
-                        int intBOD = _objCharacter.BOD.Value - (_objCharacter.BOD.MetatypeMinimum - 1);
-                        int intAGI = _objCharacter.AGI.Value - (_objCharacter.AGI.MetatypeMinimum - 1);
-                        int intREA = _objCharacter.REA.Value - (_objCharacter.REA.MetatypeMinimum - 1);
-                        int intSTR = _objCharacter.STR.Value - (_objCharacter.STR.MetatypeMinimum - 1);
-                        int intCHA = _objCharacter.CHA.Value - (_objCharacter.CHA.MetatypeMinimum - 1);
-                        int intINT = _objCharacter.INT.Value - (_objCharacter.INT.MetatypeMinimum - 1);
-                        int intLOG = _objCharacter.LOG.Value - (_objCharacter.LOG.MetatypeMinimum - 1);
-                        int intWIL = _objCharacter.WIL.Value - (_objCharacter.WIL.MetatypeMinimum - 1);
-                        int intEDG = _objCharacter.EDG.Value - (_objCharacter.EDG.MetatypeMinimum - 1);
-                        int intMAG = _objCharacter.MAG.Value - (_objCharacter.MAG.MetatypeMinimum - 1);
-                        int intMAGAdept = _objCharacter.MAGAdept.Value - (_objCharacter.MAGAdept.MetatypeMinimum - 1);
-                        int intDEP = _objCharacter.DEP.Value - (_objCharacter.DEP.MetatypeMinimum - 1);
-                        int intRES = _objCharacter.RES.Value - (_objCharacter.RES.MetatypeMinimum - 1);
+                        int intBOD = await _objCharacter.BOD.ValueAsync - (await _objCharacter.BOD.MetatypeMinimumAsync - 1);
+                        int intAGI = await _objCharacter.AGI.ValueAsync - (await _objCharacter.AGI.MetatypeMinimumAsync - 1);
+                        int intREA = await _objCharacter.REA.ValueAsync - (await _objCharacter.REA.MetatypeMinimumAsync - 1);
+                        int intSTR = await _objCharacter.STR.ValueAsync - (await _objCharacter.STR.MetatypeMinimumAsync - 1);
+                        int intCHA = await _objCharacter.CHA.ValueAsync - (await _objCharacter.CHA.MetatypeMinimumAsync - 1);
+                        int intINT = await _objCharacter.INT.ValueAsync - (await _objCharacter.INT.MetatypeMinimumAsync - 1);
+                        int intLOG = await _objCharacter.LOG.ValueAsync - (await _objCharacter.LOG.MetatypeMinimumAsync - 1);
+                        int intWIL = await _objCharacter.WIL.ValueAsync - (await _objCharacter.WIL.MetatypeMinimumAsync - 1);
+                        int intEDG = await _objCharacter.EDG.ValueAsync - (await _objCharacter.EDG.MetatypeMinimumAsync - 1);
+                        int intMAG = await _objCharacter.MAG.ValueAsync - (await _objCharacter.MAG.MetatypeMinimumAsync - 1);
+                        int intMAGAdept = await _objCharacter.MAGAdept.ValueAsync - (await _objCharacter.MAGAdept.MetatypeMinimumAsync - 1);
+                        int intDEP = await _objCharacter.DEP.ValueAsync - (await _objCharacter.DEP.MetatypeMinimumAsync - 1);
+                        int intRES = await _objCharacter.RES.ValueAsync - (await _objCharacter.RES.MetatypeMinimumAsync - 1);
                         // <attributes>
                         await objWriter.WriteStartElementAsync("attributes");
                         await objWriter.WriteElementStringAsync("bod", intBOD.ToString(GlobalSettings.InvariantCultureInfo));
@@ -166,7 +167,7 @@ namespace Chummer
                     }
 
                     // Export Qualities.
-                    if (chkQualities.Checked)
+                    if (await chkQualities.DoThreadSafeFuncAsync(x => x.Checked))
                     {
                         bool blnPositive = false;
                         bool blnNegative = false;
@@ -238,7 +239,7 @@ namespace Chummer
                     }
 
                     // Export Starting Nuyen.
-                    if (chkStartingNuyen.Checked)
+                    if (await chkStartingNuyen.DoThreadSafeFuncAsync(x => x.Checked))
                     {
                         decimal decNuyenBP = _objCharacter.NuyenBP;
                         if (!_objCharacter.EffectiveBuildMethodUsesPriorityTables)
@@ -248,7 +249,7 @@ namespace Chummer
 
                     /* TODO: Add support for active and knowledge skills and skill groups
                     // Export Active Skills.
-                    if (chkActiveSkills.Checked)
+                    if (await chkActiveSkills.DoThreadSafeFuncAsync(x => x.Checked))
                     {
                         // <skills>
                         await objWriter.WriteStartElementAsync("skills");
@@ -287,7 +288,7 @@ namespace Chummer
                     }
 
                     // Export Knowledge Skills.
-                    if (chkKnowledgeSkills.Checked)
+                    if (await chkKnowledgeSkills.DoThreadSafeFuncAsync(x => x.Checked))
                     {
                         // <knowledgeskills>
                         await objWriter.WriteStartElementAsync("knowledgeskills");
@@ -310,7 +311,7 @@ namespace Chummer
                     */
 
                     // Export Martial Arts.
-                    if (chkMartialArts.Checked)
+                    if (await chkMartialArts.DoThreadSafeFuncAsync(x => x.Checked))
                     {
                         // <martialarts>
                         await objWriter.WriteStartElementAsync("martialarts");
@@ -337,7 +338,7 @@ namespace Chummer
                     }
 
                     // Export Spells.
-                    if (chkSpells.Checked)
+                    if (await chkSpells.DoThreadSafeFuncAsync(x => x.Checked))
                     {
                         // <spells>
                         await objWriter.WriteStartElementAsync("spells");
@@ -358,7 +359,7 @@ namespace Chummer
                     }
 
                     // Export Complex Forms.
-                    if (chkComplexForms.Checked)
+                    if (await chkComplexForms.DoThreadSafeFuncAsync(x => x.Checked))
                     {
                         // <programs>
                         await objWriter.WriteStartElementAsync("complexforms");
@@ -381,7 +382,7 @@ namespace Chummer
                     }
 
                     // Export Cyberware/Bioware.
-                    if (chkCyberware.Checked)
+                    if (await chkCyberware.DoThreadSafeFuncAsync(x => x.Checked))
                     {
                         bool blnCyberware = false;
                         bool blnBioware = false;
@@ -481,7 +482,7 @@ namespace Chummer
                     }
 
                     // Export Lifestyle.
-                    if (chkLifestyle.Checked)
+                    if (await chkLifestyle.DoThreadSafeFuncAsync(x => x.Checked))
                     {
                         // <lifestyles>
                         await objWriter.WriteStartElementAsync("lifestyles");
@@ -518,7 +519,7 @@ namespace Chummer
                     }
 
                     // Export Armor.
-                    if (chkArmor.Checked)
+                    if (await chkArmor.DoThreadSafeFuncAsync(x => x.Checked))
                     {
                         // <armors>
                         await objWriter.WriteStartElementAsync("armors");
@@ -558,7 +559,7 @@ namespace Chummer
                     }
 
                     // Export Weapons.
-                    if (chkWeapons.Checked)
+                    if (await chkWeapons.DoThreadSafeFuncAsync(x => x.Checked))
                     {
                         // <weapons>
                         await objWriter.WriteStartElementAsync("weapons");
@@ -619,13 +620,13 @@ namespace Chummer
                     }
 
                     // Export Gear.
-                    if (chkGear.Checked)
+                    if (await chkGear.DoThreadSafeFuncAsync(x => x.Checked))
                     {
                         await WriteGear(objWriter, _objCharacter.Gear);
                     }
 
                     // Export Vehicles.
-                    if (chkVehicles.Checked)
+                    if (await chkVehicles.DoThreadSafeFuncAsync(x => x.Checked))
                     {
                         // <vehicles>
                         await objWriter.WriteStartElementAsync("vehicles");
@@ -746,7 +747,7 @@ namespace Chummer
                 }
             }
 
-            Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_CreatePACKSKit_SuiteCreated"), txtName.Text),
+            Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_CreatePACKSKit_SuiteCreated"), strName),
                 await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_SuiteCreated"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             await this.DoThreadSafeAsync(x =>
             {

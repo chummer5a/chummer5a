@@ -340,7 +340,7 @@ namespace Chummer
                     _objMount.Create(xmlSelectedMount, await nudMarkup.DoThreadSafeFuncAsync(x => x.Value));
                 }
 
-                _objMount.DiscountCost = chkBlackMarketDiscount.Checked;
+                _objMount.DiscountCost = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked);
 
                 WeaponMountOption objControlOption = new WeaponMountOption(_objCharacter);
                 if (objControlOption.Create(xmlSelectedControl))
@@ -467,7 +467,7 @@ namespace Chummer
                 }
             }
 
-            _objMount.FreeCost = chkFreeItem.Checked;
+            _objMount.FreeCost = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked);
 
             await this.DoThreadSafeAsync(x =>
             {
@@ -503,10 +503,6 @@ namespace Chummer
         {
             await UpdateInfo();
         }
-
-        public bool FreeCost => chkFreeItem.Checked;
-
-        public decimal Markup => nudMarkup.Value;
 
         public bool AllowDiscounts { get; set; }
 
