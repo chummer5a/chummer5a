@@ -77,27 +77,6 @@ namespace Chummer
             this.TranslateWinForm();
             _strCurrentVersion = Utils.CurrentChummerVersion.ToString(3);
 
-            // Retrieve the MDI client control on this parent window and apply some rendering tweaks to it.
-            foreach (Control control in Controls)
-            {
-                MdiClient mdiClient = control as MdiClient;
-                if (mdiClient == null)
-                    continue;
-                // Force double buffering on it by calling the protected SetStyle method via reflection.
-                MethodInfo setStyleMethod = typeof(MdiClient).GetMethod("SetStyle", BindingFlags.NonPublic | BindingFlags.Instance);
-                if (setStyleMethod != null)
-                {
-                    object[] styleParams =
-                    {
-                        ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer
-                                                           | ControlStyles.ResizeRedraw,
-                        true
-                    };
-                    setStyleMethod.Invoke(mdiClient, styleParams);
-                }
-                break;
-            }
-
             //lets write that in separate lines to see where the exception is thrown
             if (!GlobalSettings.HideMasterIndex || isUnitTest)
             {
