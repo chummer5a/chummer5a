@@ -359,9 +359,9 @@ namespace Chummer
                 return;
             using (CursorWait.New(this))
             using (ThreadSafeForm<EditNotes> frmItemNotes =
-                   await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor)))
+                   await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor), GenericToken))
             {
-                if (await frmItemNotes.ShowDialogSafeAsync(this) != DialogResult.OK)
+                if (await frmItemNotes.ShowDialogSafeAsync(this, GenericToken) != DialogResult.OK)
                     return;
                 objNotes.Notes = frmItemNotes.MyForm.Notes;
                 objNotes.NotesColor = frmItemNotes.MyForm.NotesColor;
@@ -375,7 +375,7 @@ namespace Chummer
                         {
                             treNode.ForeColor = objNotes.PreferredColor;
                             treNode.ToolTipText = objNotes.Notes.WordWrap();
-                        });
+                        }, GenericToken);
                     }
                     else
                     {
@@ -433,7 +433,7 @@ namespace Chummer
                         {
                             x.ResumeLayout();
                         }
-                    });
+                    }, GenericToken);
                 }
                 else
                 {
@@ -491,7 +491,7 @@ namespace Chummer
                                 }
 
                                 x.Controls.AddRange(aobjControls);
-                            });
+                            }, GenericToken);
                             break;
                         }
 
@@ -517,7 +517,7 @@ namespace Chummer
                                         objAttrib.Karma = 0;
                                     }
                                 }
-                            });
+                            }, GenericToken);
                             break;
                         }
 
@@ -543,7 +543,7 @@ namespace Chummer
                                         objAttrib.Karma = 0;
                                     }
                                 }
-                            });
+                            }, GenericToken);
 
                             bool blnVaryingAddedWidths = false;
                             int intNewNameWidth = -1;
@@ -595,7 +595,7 @@ namespace Chummer
                                 }
 
                                 x.Controls.AddRange(aobjControls);
-                            });
+                            }, GenericToken);
                             break;
                         }
                     }
@@ -5316,13 +5316,16 @@ namespace Chummer
                                     {
                                         if (panContacts == null)
                                             break;
-                                        ContactControl objContactControl = this.DoThreadSafeFunc(() => new ContactControl(objContact));
-                                        // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                        objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                        objContactControl.DeleteContact += DeleteContact;
-                                        objContactControl.MouseDown += DragContactControl;
+                                        this.DoThreadSafe(() =>
+                                        {
+                                            ContactControl objContactControl = new ContactControl(objContact);
+                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                            objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                            objContactControl.DeleteContact += DeleteContact;
+                                            objContactControl.MouseDown += DragContactControl;
 
-                                        panContacts.Controls.Add(objContactControl);
+                                            panContacts.Controls.Add(objContactControl);
+                                        }, GenericToken);
                                     }
                                     break;
 
@@ -5330,13 +5333,16 @@ namespace Chummer
                                     {
                                         if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
                                             break;
-                                        ContactControl objContactControl = this.DoThreadSafeFunc(() => new ContactControl(objContact));
-                                        // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                        objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                        objContactControl.DeleteContact += DeleteEnemy;
-                                        objContactControl.MouseDown += DragContactControl;
+                                        this.DoThreadSafe(() =>
+                                        {
+                                            ContactControl objContactControl = new ContactControl(objContact);
+                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                            objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                            objContactControl.DeleteContact += DeleteEnemy;
+                                            objContactControl.MouseDown += DragContactControl;
 
-                                        panEnemies.Controls.Add(objContactControl);
+                                            panEnemies.Controls.Add(objContactControl);
+                                        }, GenericToken);
                                     }
                                     break;
 
@@ -5344,13 +5350,16 @@ namespace Chummer
                                     {
                                         if (panPets == null)
                                             break;
-                                        PetControl objContactControl = this.DoThreadSafeFunc(() => new PetControl(objContact));
-                                        // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                        objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                        objContactControl.DeleteContact += DeletePet;
-                                        objContactControl.MouseDown += DragContactControl;
+                                        this.DoThreadSafe(() =>
+                                        {
+                                            PetControl objContactControl = new PetControl(objContact);
+                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                            objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                            objContactControl.DeleteContact += DeletePet;
+                                            objContactControl.MouseDown += DragContactControl;
 
-                                        panPets.Controls.Add(objContactControl);
+                                            panPets.Controls.Add(objContactControl);
+                                        }, GenericToken);
                                     }
                                     break;
                             }
@@ -5369,21 +5378,24 @@ namespace Chummer
                     {
                         case NotifyCollectionChangedAction.Add:
                             {
-                                foreach (Contact objLoopContact in notifyCollectionChangedEventArgs.NewItems)
+                                foreach (Contact objContact in notifyCollectionChangedEventArgs.NewItems)
                                 {
-                                    switch (objLoopContact.EntityType)
+                                    switch (objContact.EntityType)
                                     {
                                         case ContactType.Contact:
                                             {
                                                 if (panContacts == null)
                                                     break;
-                                                ContactControl objContactControl = this.DoThreadSafeFunc(() => new ContactControl(objLoopContact));
-                                                // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                                objContactControl.DeleteContact += DeleteContact;
-                                                objContactControl.MouseDown += DragContactControl;
+                                                panContacts.DoThreadSafe(x =>
+                                                {
+                                                    ContactControl objContactControl = new ContactControl(objContact);
+                                                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                                    objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                                    objContactControl.DeleteContact += DeleteContact;
+                                                    objContactControl.MouseDown += DragContactControl;
 
-                                                panContacts.Controls.Add(objContactControl);
+                                                    x.Controls.Add(objContactControl);
+                                                }, GenericToken);
                                             }
                                             break;
 
@@ -5391,13 +5403,16 @@ namespace Chummer
                                             {
                                                 if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
                                                     break;
-                                                ContactControl objContactControl = this.DoThreadSafeFunc(() => new ContactControl(objLoopContact));
-                                                // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                                objContactControl.DeleteContact += DeleteEnemy;
-                                                //objContactControl.MouseDown += DragContactControl;
+                                                panEnemies.DoThreadSafe(x =>
+                                                {
+                                                    ContactControl objContactControl = new ContactControl(objContact);
+                                                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                                    objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                                    objContactControl.DeleteContact += DeleteEnemy;
+                                                    objContactControl.MouseDown += DragContactControl;
 
-                                                panEnemies.Controls.Add(objContactControl);
+                                                    x.Controls.Add(objContactControl);
+                                                }, GenericToken);
                                             }
                                             break;
 
@@ -5405,13 +5420,16 @@ namespace Chummer
                                             {
                                                 if (panPets == null)
                                                     break;
-                                                PetControl objPetControl = this.DoThreadSafeFunc(() => new PetControl(objLoopContact));
-                                                // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                objPetControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                                objPetControl.DeleteContact += DeletePet;
-                                                //objPetControl.MouseDown += DragContactControl;
+                                                panPets.DoThreadSafe(x =>
+                                                {
+                                                    PetControl objContactControl = new PetControl(objContact);
+                                                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                                    objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                                    objContactControl.DeleteContact += DeletePet;
+                                                    objContactControl.MouseDown += DragContactControl;
 
-                                                panPets.Controls.Add(objPetControl);
+                                                    x.Controls.Add(objContactControl);
+                                                }, GenericToken);
                                             }
                                             break;
                                     }
@@ -5421,26 +5439,29 @@ namespace Chummer
 
                         case NotifyCollectionChangedAction.Remove:
                             {
-                                foreach (Contact objLoopContact in notifyCollectionChangedEventArgs.OldItems)
+                                foreach (Contact objContact in notifyCollectionChangedEventArgs.OldItems)
                                 {
-                                    switch (objLoopContact.EntityType)
+                                    switch (objContact.EntityType)
                                     {
                                         case ContactType.Contact:
                                             {
                                                 if (panContacts == null)
                                                     break;
-                                                for (int i = panContacts.Controls.Count - 1; i >= 0; i--)
+                                                panContacts.DoThreadSafe(x =>
                                                 {
-                                                    if (panContacts.Controls[i] is ContactControl objContactControl &&
-                                                        objContactControl.ContactObject == objLoopContact)
+                                                    for (int i = x.Controls.Count - 1; i >= 0; i--)
                                                     {
-                                                        panContacts.Controls.RemoveAt(i);
-                                                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                        objContactControl.DeleteContact -= DeleteContact;
-                                                        objContactControl.MouseDown -= DragContactControl;
-                                                        objContactControl.Dispose();
+                                                        if (x.Controls[i] is ContactControl objContactControl &&
+                                                            objContactControl.ContactObject == objContact)
+                                                        {
+                                                            x.Controls.RemoveAt(i);
+                                                            objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                                            objContactControl.DeleteContact -= DeleteContact;
+                                                            objContactControl.MouseDown -= DragContactControl;
+                                                            objContactControl.Dispose();
+                                                        }
                                                     }
-                                                }
+                                                }, GenericToken);
                                             }
                                             break;
 
@@ -5448,17 +5469,21 @@ namespace Chummer
                                             {
                                                 if (panEnemies == null)
                                                     break;
-                                                for (int i = panEnemies.Controls.Count - 1; i >= 0; i--)
+                                                panEnemies.DoThreadSafe(x =>
                                                 {
-                                                    if (panEnemies.Controls[i] is ContactControl objContactControl &&
-                                                        objContactControl.ContactObject == objLoopContact)
+                                                    for (int i = x.Controls.Count - 1; i >= 0; i--)
                                                     {
-                                                        panEnemies.Controls.RemoveAt(i);
-                                                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                        objContactControl.DeleteContact -= DeleteEnemy;
-                                                        objContactControl.Dispose();
+                                                        if (x.Controls[i] is ContactControl objContactControl
+                                                            && objContactControl.ContactObject == objContact)
+                                                        {
+                                                            x.Controls.RemoveAt(i);
+                                                            objContactControl.ContactDetailChanged
+                                                                -= MakeDirtyWithCharacterUpdate;
+                                                            objContactControl.DeleteContact -= DeleteEnemy;
+                                                            objContactControl.Dispose();
+                                                        }
                                                     }
-                                                }
+                                                }, GenericToken);
                                             }
                                             break;
 
@@ -5466,17 +5491,21 @@ namespace Chummer
                                             {
                                                 if (panPets == null)
                                                     break;
-                                                for (int i = panPets.Controls.Count - 1; i >= 0; i--)
+                                                panPets.DoThreadSafe(x =>
                                                 {
-                                                    if (panPets.Controls[i] is PetControl objPetControl &&
-                                                        objPetControl.ContactObject == objLoopContact)
+                                                    for (int i = x.Controls.Count - 1; i >= 0; i--)
                                                     {
-                                                        panPets.Controls.RemoveAt(i);
-                                                        objPetControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                        objPetControl.DeleteContact -= DeletePet;
-                                                        objPetControl.Dispose();
+                                                        if (x.Controls[i] is PetControl objPetControl &&
+                                                            objPetControl.ContactObject == objContact)
+                                                        {
+                                                            x.Controls.RemoveAt(i);
+                                                            objPetControl.ContactDetailChanged
+                                                                -= MakeDirtyWithCharacterUpdate;
+                                                            objPetControl.DeleteContact -= DeletePet;
+                                                            objPetControl.Dispose();
+                                                        }
                                                     }
-                                                }
+                                                }, GenericToken);
                                             }
                                             break;
                                     }
@@ -5486,26 +5515,29 @@ namespace Chummer
 
                         case NotifyCollectionChangedAction.Replace:
                             {
-                                foreach (Contact objLoopContact in notifyCollectionChangedEventArgs.OldItems)
+                                foreach (Contact objContact in notifyCollectionChangedEventArgs.OldItems)
                                 {
-                                    switch (objLoopContact.EntityType)
+                                    switch (objContact.EntityType)
                                     {
                                         case ContactType.Contact:
                                             {
                                                 if (panContacts == null)
                                                     break;
-                                                for (int i = panContacts.Controls.Count - 1; i >= 0; i--)
+                                                panContacts.DoThreadSafe(x =>
                                                 {
-                                                    if (panContacts.Controls[i] is ContactControl objContactControl &&
-                                                        objContactControl.ContactObject == objLoopContact)
+                                                    for (int i = x.Controls.Count - 1; i >= 0; i--)
                                                     {
-                                                        panContacts.Controls.RemoveAt(i);
-                                                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                        objContactControl.DeleteContact -= DeleteContact;
-                                                        objContactControl.MouseDown -= DragContactControl;
-                                                        objContactControl.Dispose();
+                                                        if (x.Controls[i] is ContactControl objContactControl &&
+                                                            objContactControl.ContactObject == objContact)
+                                                        {
+                                                            x.Controls.RemoveAt(i);
+                                                            objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                                                            objContactControl.DeleteContact -= DeleteContact;
+                                                            objContactControl.MouseDown -= DragContactControl;
+                                                            objContactControl.Dispose();
+                                                        }
                                                     }
-                                                }
+                                                }, GenericToken);
                                             }
                                             break;
 
@@ -5513,17 +5545,21 @@ namespace Chummer
                                             {
                                                 if (panEnemies == null)
                                                     break;
-                                                for (int i = panEnemies.Controls.Count - 1; i >= 0; i--)
+                                                panEnemies.DoThreadSafe(x =>
                                                 {
-                                                    if (panEnemies.Controls[i] is ContactControl objContactControl &&
-                                                        objContactControl.ContactObject == objLoopContact)
+                                                    for (int i = x.Controls.Count - 1; i >= 0; i--)
                                                     {
-                                                        panEnemies.Controls.RemoveAt(i);
-                                                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                        objContactControl.DeleteContact -= DeleteEnemy;
-                                                        objContactControl.Dispose();
+                                                        if (x.Controls[i] is ContactControl objContactControl
+                                                            && objContactControl.ContactObject == objContact)
+                                                        {
+                                                            x.Controls.RemoveAt(i);
+                                                            objContactControl.ContactDetailChanged
+                                                                -= MakeDirtyWithCharacterUpdate;
+                                                            objContactControl.DeleteContact -= DeleteEnemy;
+                                                            objContactControl.Dispose();
+                                                        }
                                                     }
-                                                }
+                                                }, GenericToken);
                                             }
                                             break;
 
@@ -5531,37 +5567,44 @@ namespace Chummer
                                             {
                                                 if (panPets == null)
                                                     break;
-                                                for (int i = panPets.Controls.Count - 1; i >= 0; i--)
+                                                panPets.DoThreadSafe(x =>
                                                 {
-                                                    if (panPets.Controls[i] is PetControl objPetControl &&
-                                                        objPetControl.ContactObject == objLoopContact)
+                                                    for (int i = x.Controls.Count - 1; i >= 0; i--)
                                                     {
-                                                        panPets.Controls.RemoveAt(i);
-                                                        objPetControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                        objPetControl.DeleteContact -= DeletePet;
-                                                        objPetControl.Dispose();
+                                                        if (x.Controls[i] is PetControl objPetControl &&
+                                                            objPetControl.ContactObject == objContact)
+                                                        {
+                                                            x.Controls.RemoveAt(i);
+                                                            objPetControl.ContactDetailChanged
+                                                                -= MakeDirtyWithCharacterUpdate;
+                                                            objPetControl.DeleteContact -= DeletePet;
+                                                            objPetControl.Dispose();
+                                                        }
                                                     }
-                                                }
+                                                }, GenericToken);
                                             }
                                             break;
                                     }
                                 }
 
-                                foreach (Contact objLoopContact in notifyCollectionChangedEventArgs.NewItems)
+                                foreach (Contact objContact in notifyCollectionChangedEventArgs.NewItems)
                                 {
-                                    switch (objLoopContact.EntityType)
+                                    switch (objContact.EntityType)
                                     {
                                         case ContactType.Contact:
                                             {
                                                 if (panContacts == null)
                                                     break;
-                                                ContactControl objContactControl = this.DoThreadSafeFunc(() => new ContactControl(objLoopContact));
-                                                // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                                objContactControl.DeleteContact += DeleteContact;
-                                                objContactControl.MouseDown += DragContactControl;
+                                                panContacts.DoThreadSafe(x =>
+                                                {
+                                                    ContactControl objContactControl = new ContactControl(objContact);
+                                                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                                    objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                                    objContactControl.DeleteContact += DeleteContact;
+                                                    objContactControl.MouseDown += DragContactControl;
 
-                                                panContacts.Controls.Add(objContactControl);
+                                                    x.Controls.Add(objContactControl);
+                                                }, GenericToken);
                                             }
                                             break;
 
@@ -5569,13 +5612,16 @@ namespace Chummer
                                             {
                                                 if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
                                                     break;
-                                                ContactControl objContactControl = this.DoThreadSafeFunc(() => new ContactControl(objLoopContact));
-                                                // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                                objContactControl.DeleteContact += DeleteEnemy;
-                                                //objContactControl.MouseDown += DragContactControl;
+                                                panEnemies.DoThreadSafe(x =>
+                                                {
+                                                    ContactControl objContactControl = new ContactControl(objContact);
+                                                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                                    objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                                    objContactControl.DeleteContact += DeleteEnemy;
+                                                    objContactControl.MouseDown += DragContactControl;
 
-                                                panEnemies.Controls.Add(objContactControl);
+                                                    x.Controls.Add(objContactControl);
+                                                }, GenericToken);
                                             }
                                             break;
 
@@ -5583,13 +5629,16 @@ namespace Chummer
                                             {
                                                 if (panPets == null)
                                                     break;
-                                                PetControl objPetControl = this.DoThreadSafeFunc(() => new PetControl(objLoopContact));
-                                                // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                objPetControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                                objPetControl.DeleteContact += DeletePet;
-                                                //objPetControl.MouseDown += DragContactControl;
+                                                panPets.DoThreadSafe(x =>
+                                                {
+                                                    PetControl objContactControl = new PetControl(objContact);
+                                                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                                    objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                                    objContactControl.DeleteContact += DeletePet;
+                                                    objContactControl.MouseDown += DragContactControl;
 
-                                                panPets.Controls.Add(objPetControl);
+                                                    x.Controls.Add(objContactControl);
+                                                }, GenericToken);
                                             }
                                             break;
                                     }
@@ -5666,30 +5715,33 @@ namespace Chummer
                         if (refreshingPanel == null)
                             continue;
 
-                        refreshingPanel.Visible = true;
-                        switch (objSustained.LinkedObjectType)
+                        refreshingPanel.DoThreadSafe(x =>
                         {
-                            case Improvement.ImprovementSource.Spell:
-                                if (chkPsycheActiveMagician != null)
-                                    chkPsycheActiveMagician.Visible = true;
-                                break;
+                            x.Visible = true;
+                            switch (objSustained.LinkedObjectType)
+                            {
+                                case Improvement.ImprovementSource.Spell:
+                                    if (chkPsycheActiveMagician != null)
+                                        chkPsycheActiveMagician.Visible = true;
+                                    break;
 
-                            case Improvement.ImprovementSource.ComplexForm:
-                                if (chkPsycheActiveTechnomancer != null)
-                                    chkPsycheActiveTechnomancer.Visible = true;
-                                break;
-                        }
+                                case Improvement.ImprovementSource.ComplexForm:
+                                    if (chkPsycheActiveTechnomancer != null)
+                                        chkPsycheActiveTechnomancer.Visible = true;
+                                    break;
+                            }
 
-                        int intSustainedObjects = refreshingPanel.Controls.Count;
+                            int intSustainedObjects = x.Controls.Count;
 
-                        SustainedObjectControl objSustainedObjectControl = this.DoThreadSafeFunc(() => new SustainedObjectControl(objSustained));
+                            SustainedObjectControl objSustainedObjectControl = new SustainedObjectControl(objSustained);
 
-                        objSustainedObjectControl.SustainedObjectDetailChanged += MakeDirtyWithCharacterUpdate;
-                        objSustainedObjectControl.UnsustainObject += DeleteSustainedObject;
+                            objSustainedObjectControl.SustainedObjectDetailChanged += MakeDirtyWithCharacterUpdate;
+                            objSustainedObjectControl.UnsustainObject += DeleteSustainedObject;
 
-                        objSustainedObjectControl.Top = intSustainedObjects * objSustainedObjectControl.Height;
+                            objSustainedObjectControl.Top = intSustainedObjects * objSustainedObjectControl.Height;
 
-                        refreshingPanel.Controls.Add(objSustainedObjectControl);
+                            x.Controls.Add(objSustainedObjectControl);
+                        }, GenericToken);
                     }
                 }
                 else
@@ -5706,31 +5758,36 @@ namespace Chummer
                                     if (refreshingPanel == null)
                                         continue;
 
-                                    refreshingPanel.Visible = true;
-                                    switch (objSustained.LinkedObjectType)
+                                    refreshingPanel.DoThreadSafe(x =>
                                     {
-                                        case Improvement.ImprovementSource.Spell:
-                                            if (chkPsycheActiveMagician != null)
-                                                chkPsycheActiveMagician.Visible = true;
-                                            break;
+                                        x.Visible = true;
+                                        switch (objSustained.LinkedObjectType)
+                                        {
+                                            case Improvement.ImprovementSource.Spell:
+                                                if (chkPsycheActiveMagician != null)
+                                                    chkPsycheActiveMagician.Visible = true;
+                                                break;
 
-                                        case Improvement.ImprovementSource.ComplexForm:
-                                            if (chkPsycheActiveTechnomancer != null)
-                                                chkPsycheActiveTechnomancer.Visible = true;
-                                            break;
-                                    }
+                                            case Improvement.ImprovementSource.ComplexForm:
+                                                if (chkPsycheActiveTechnomancer != null)
+                                                    chkPsycheActiveTechnomancer.Visible = true;
+                                                break;
+                                        }
 
-                                    int intSustainedObjects = refreshingPanel.Controls.Count;
+                                        int intSustainedObjects = x.Controls.Count;
 
-                                    SustainedObjectControl objSustainedObjectControl
-                                        = this.DoThreadSafeFunc(() => new SustainedObjectControl(objSustained));
+                                        SustainedObjectControl objSustainedObjectControl
+                                            = new SustainedObjectControl(objSustained);
 
-                                    objSustainedObjectControl.SustainedObjectDetailChanged += MakeDirtyWithCharacterUpdate;
-                                    objSustainedObjectControl.UnsustainObject += DeleteSustainedObject;
+                                        objSustainedObjectControl.SustainedObjectDetailChanged
+                                            += MakeDirtyWithCharacterUpdate;
+                                        objSustainedObjectControl.UnsustainObject += DeleteSustainedObject;
 
-                                    objSustainedObjectControl.Top = intSustainedObjects * objSustainedObjectControl.Height;
+                                        objSustainedObjectControl.Top
+                                            = intSustainedObjects * objSustainedObjectControl.Height;
 
-                                    refreshingPanel.Controls.Add(objSustainedObjectControl);
+                                        x.Controls.Add(objSustainedObjectControl);
+                                    }, GenericToken);
                                 }
                             }
                             break;
@@ -5746,52 +5803,54 @@ namespace Chummer
                                         continue;
 
                                     int intMoveUpAmount = 0;
-                                    int intSustainedObjects = refreshingPanel.Controls.Count;
-
-                                    for (int i = 0; i < intSustainedObjects; ++i)
+                                    refreshingPanel.DoThreadSafe(x =>
                                     {
-                                        Control objLoopControl = refreshingPanel.Controls[i];
-                                        if (objLoopControl is SustainedObjectControl objSustainedSpellControl &&
-                                            objSustainedSpellControl.LinkedSustainedObject == objSustained)
-                                        {
-                                            intMoveUpAmount = objSustainedSpellControl.Height;
+                                        int intSustainedObjects = x.Controls.Count;
 
-                                            refreshingPanel.Controls.RemoveAt(i);
+                                        for (int i = 0; i < intSustainedObjects; ++i)
+                                        {
+                                            Control objLoopControl = x.Controls[i];
+                                            if (objLoopControl is SustainedObjectControl objSustainedSpellControl &&
+                                                objSustainedSpellControl.LinkedSustainedObject == objSustained)
+                                            {
+                                                intMoveUpAmount = objSustainedSpellControl.Height;
 
-                                            objSustainedSpellControl.SustainedObjectDetailChanged -=
-                                                MakeDirtyWithCharacterUpdate;
-                                            objSustainedSpellControl.UnsustainObject -= DeleteSustainedObject;
-                                            objSustainedSpellControl.Dispose();
-                                            --i;
-                                            --intSustainedObjects;
-                                        }
-                                        else if (intMoveUpAmount != 0)
-                                        {
-                                            objLoopControl.Top -= intMoveUpAmount;
-                                        }
-                                    }
+                                                x.Controls.RemoveAt(i);
 
-                                    if (intSustainedObjects == 0)
-                                    {
-                                        refreshingPanel.Visible = false;
-                                        if (refreshingPanel == pnlSustainedSpells)
-                                        {
-                                            if (chkPsycheActiveMagician != null)
-                                                chkPsycheActiveMagician.Visible = false;
+                                                objSustainedSpellControl.SustainedObjectDetailChanged -=
+                                                    MakeDirtyWithCharacterUpdate;
+                                                objSustainedSpellControl.UnsustainObject -= DeleteSustainedObject;
+                                                objSustainedSpellControl.Dispose();
+                                                --i;
+                                                --intSustainedObjects;
+                                            }
+                                            else if (intMoveUpAmount != 0)
+                                            {
+                                                objLoopControl.Top -= intMoveUpAmount;
+                                            }
                                         }
-                                        else if (refreshingPanel == pnlSustainedComplexForms && chkPsycheActiveTechnomancer != null)
+
+                                        if (intSustainedObjects == 0)
                                         {
-                                            chkPsycheActiveTechnomancer.Visible = false;
+                                            x.Visible = false;
+                                            if (x == pnlSustainedSpells)
+                                            {
+                                                if (chkPsycheActiveMagician != null)
+                                                    chkPsycheActiveMagician.Visible = false;
+                                            }
+                                            else if (x == pnlSustainedComplexForms
+                                                     && chkPsycheActiveTechnomancer != null)
+                                            {
+                                                chkPsycheActiveTechnomancer.Visible = false;
+                                            }
                                         }
-                                    }
+                                    }, GenericToken);
                                 }
                             }
                             break;
 
                         case NotifyCollectionChangedAction.Replace:
                             {
-                                int intSustainedObjects;
-
                                 foreach (SustainedObject objSustained in notifyCollectionChangedEventArgs.OldItems)
                                 {
                                     Panel refreshingPanel = DetermineRefreshingPanel(objSustained, pnlSustainedSpells,
@@ -5801,42 +5860,48 @@ namespace Chummer
                                         continue;
 
                                     int intMoveUpAmount = 0;
-                                    intSustainedObjects = refreshingPanel.Controls.Count;
-
-                                    for (int i = 0; i < intSustainedObjects; ++i)
+                                    refreshingPanel.DoThreadSafe(x =>
                                     {
-                                        Control objLoopControl = refreshingPanel.Controls[i];
-                                        if (objLoopControl is SustainedObjectControl objSustainedSpellControl &&
-                                            objSustainedSpellControl.LinkedSustainedObject == objSustained)
-                                        {
-                                            intMoveUpAmount = objSustainedSpellControl.Height;
-                                            refreshingPanel.Controls.RemoveAt(i);
-                                            objSustainedSpellControl.SustainedObjectDetailChanged -=
-                                                MakeDirtyWithCharacterUpdate;
-                                            objSustainedSpellControl.UnsustainObject -= DeleteSustainedObject;
-                                            objSustainedSpellControl.Dispose();
-                                            --i;
-                                            --intSustainedObjects;
-                                        }
-                                        else if (intMoveUpAmount != 0)
-                                        {
-                                            objLoopControl.Top -= intMoveUpAmount;
-                                        }
-                                    }
+                                        int intSustainedObjects = x.Controls.Count;
 
-                                    if (intSustainedObjects == 0)
-                                    {
-                                        refreshingPanel.Visible = false;
-                                        if (refreshingPanel == pnlSustainedSpells)
+                                        for (int i = 0; i < intSustainedObjects; ++i)
                                         {
-                                            if (chkPsycheActiveMagician != null)
-                                                chkPsycheActiveMagician.Visible = false;
+                                            Control objLoopControl = x.Controls[i];
+                                            if (objLoopControl is SustainedObjectControl objSustainedSpellControl &&
+                                                objSustainedSpellControl.LinkedSustainedObject == objSustained)
+                                            {
+                                                intMoveUpAmount = objSustainedSpellControl.Height;
+
+                                                x.Controls.RemoveAt(i);
+
+                                                objSustainedSpellControl.SustainedObjectDetailChanged -=
+                                                    MakeDirtyWithCharacterUpdate;
+                                                objSustainedSpellControl.UnsustainObject -= DeleteSustainedObject;
+                                                objSustainedSpellControl.Dispose();
+                                                --i;
+                                                --intSustainedObjects;
+                                            }
+                                            else if (intMoveUpAmount != 0)
+                                            {
+                                                objLoopControl.Top -= intMoveUpAmount;
+                                            }
                                         }
-                                        else if (refreshingPanel == pnlSustainedComplexForms && chkPsycheActiveTechnomancer != null)
+
+                                        if (intSustainedObjects == 0)
                                         {
-                                            chkPsycheActiveTechnomancer.Visible = false;
+                                            x.Visible = false;
+                                            if (x == pnlSustainedSpells)
+                                            {
+                                                if (chkPsycheActiveMagician != null)
+                                                    chkPsycheActiveMagician.Visible = false;
+                                            }
+                                            else if (x == pnlSustainedComplexForms
+                                                     && chkPsycheActiveTechnomancer != null)
+                                            {
+                                                chkPsycheActiveTechnomancer.Visible = false;
+                                            }
                                         }
-                                    }
+                                    }, GenericToken);
                                 }
 
                                 foreach (SustainedObject objSustained in notifyCollectionChangedEventArgs.NewItems)
@@ -5847,31 +5912,36 @@ namespace Chummer
                                     if (refreshingPanel == null)
                                         continue;
 
-                                    refreshingPanel.Visible = true;
-                                    switch (objSustained.LinkedObjectType)
+                                    refreshingPanel.DoThreadSafe(x =>
                                     {
-                                        case Improvement.ImprovementSource.Spell:
-                                            if (chkPsycheActiveMagician != null)
-                                                chkPsycheActiveMagician.Visible = true;
-                                            break;
+                                        x.Visible = true;
+                                        switch (objSustained.LinkedObjectType)
+                                        {
+                                            case Improvement.ImprovementSource.Spell:
+                                                if (chkPsycheActiveMagician != null)
+                                                    chkPsycheActiveMagician.Visible = true;
+                                                break;
 
-                                        case Improvement.ImprovementSource.ComplexForm:
-                                            if (chkPsycheActiveTechnomancer != null)
-                                                chkPsycheActiveTechnomancer.Visible = true;
-                                            break;
-                                    }
+                                            case Improvement.ImprovementSource.ComplexForm:
+                                                if (chkPsycheActiveTechnomancer != null)
+                                                    chkPsycheActiveTechnomancer.Visible = true;
+                                                break;
+                                        }
 
-                                    intSustainedObjects = refreshingPanel.Controls.Count;
+                                        int intSustainedObjects = x.Controls.Count;
 
-                                    SustainedObjectControl objSustainedObjectControl =
-                                        new SustainedObjectControl(objSustained);
+                                        SustainedObjectControl objSustainedObjectControl
+                                            = new SustainedObjectControl(objSustained);
 
-                                    objSustainedObjectControl.SustainedObjectDetailChanged += MakeDirtyWithCharacterUpdate;
-                                    objSustainedObjectControl.UnsustainObject += DeleteSustainedObject;
+                                        objSustainedObjectControl.SustainedObjectDetailChanged
+                                            += MakeDirtyWithCharacterUpdate;
+                                        objSustainedObjectControl.UnsustainObject += DeleteSustainedObject;
 
-                                    objSustainedObjectControl.Top = intSustainedObjects * objSustainedObjectControl.Height;
+                                        objSustainedObjectControl.Top
+                                            = intSustainedObjects * objSustainedObjectControl.Height;
 
-                                    refreshingPanel.Controls.Add(objSustainedObjectControl);
+                                        x.Controls.Add(objSustainedObjectControl);
+                                    }, GenericToken);
                                 }
                             }
                             break;

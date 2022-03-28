@@ -981,17 +981,27 @@ namespace Chummer
                     if (objCache != null)
                     {
                         string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
-                        string strText = await objCache.Description.RtfToPlainTextAsync();
-                        await txtCharacterBio.DoThreadSafeAsync(x => x.Text = strText, token);
-                        strText = await objCache.Background.RtfToPlainTextAsync();
-                        await txtCharacterBackground.DoThreadSafeAsync(x => x.Text = strText, token);
-                        strText = await objCache.CharacterNotes.RtfToPlainTextAsync();
-                        await txtCharacterNotes.DoThreadSafeAsync(x => x.Text = strText, token);
-                        strText = await objCache.GameNotes.RtfToPlainTextAsync();
-                        await txtGameNotes.DoThreadSafeAsync(x => x.Text = strText, token);
-                        strText = await objCache.Concept.RtfToPlainTextAsync();
-                        await txtCharacterConcept.DoThreadSafeAsync(x => x.Text = strText, token);
-                        strText = objCache.Karma;
+                        await objCache.Description.RtfToPlainTextAsync()
+                                      .ContinueWith(
+                                          y => txtCharacterBio.DoThreadSafeAsync(x => x.Text = y.Result, token), token)
+                                      .Unwrap();
+                        await objCache.Background.RtfToPlainTextAsync()
+                                      .ContinueWith(
+                                          y => txtCharacterBackground.DoThreadSafeAsync(x => x.Text = y.Result, token), token)
+                                      .Unwrap();
+                        await objCache.CharacterNotes.RtfToPlainTextAsync()
+                                      .ContinueWith(
+                                          y => txtCharacterNotes.DoThreadSafeAsync(x => x.Text = y.Result, token), token)
+                                      .Unwrap();
+                        await objCache.GameNotes.RtfToPlainTextAsync()
+                                      .ContinueWith(
+                                          y => txtGameNotes.DoThreadSafeAsync(x => x.Text = y.Result, token), token)
+                                      .Unwrap();
+                        await objCache.Concept.RtfToPlainTextAsync()
+                                      .ContinueWith(
+                                          y => txtCharacterConcept.DoThreadSafeAsync(x => x.Text = y.Result, token), token)
+                                      .Unwrap();
+                        string strText = objCache.Karma;
                         if (string.IsNullOrEmpty(strText) || strText == 0.ToString(GlobalSettings.CultureInfo))
                             strText = await LanguageManager.GetStringAsync("String_None");
                         await lblCareerKarma.DoThreadSafeAsync(x => x.Text = strText, token);
@@ -1019,12 +1029,12 @@ namespace Chummer
                             if (string.IsNullOrEmpty(x.Text))
                                 x.Text = strUnknown;
                         }, token);
-                        strText = objCache.FileName;
-                        if (string.IsNullOrEmpty(strText))
-                            strText = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound");
+                        string strText2 = objCache.FileName;
+                        if (string.IsNullOrEmpty(strText2))
+                            strText2 = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound");
                         await lblFilePath.DoThreadSafeAsync(x =>
                         {
-                            x.Text = strText;
+                            x.Text = strText2;
                         }, token);
                         await lblSettings.DoThreadSafeAsync(x =>
                         {
@@ -1072,8 +1082,10 @@ namespace Chummer
                         }
                         else
                         {
-                            strText = await LanguageManager.GetStringAsync("String_MetatypeLoadError");
-                            await lblMetatype.DoThreadSafeAsync(x => x.Text = strText, token);
+                            await LanguageManager.GetStringAsync("String_MetatypeLoadError")
+                                                 .ContinueWith(
+                                                     y => lblMetatype.DoThreadSafeAsync(x => x.Text = y.Result, token), token)
+                                                 .Unwrap();
                         }
 
                         await tabCharacterText.DoThreadSafeAsync(x => x.Visible = true, token);
@@ -1519,9 +1531,10 @@ namespace Chummer
                 return;
             try
             {
-                if (await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level <= 0, _objGenericToken))
+                TreeNode objSelectedNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken);
+                if (objSelectedNode?.Level <= 0)
                     return;
-                string strFile = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag?.ToString(), _objGenericToken);
+                string strFile = objSelectedNode?.Tag?.ToString();
                 if (string.IsNullOrEmpty(strFile))
                     return;
                 Character objOpenCharacter
@@ -1565,14 +1578,14 @@ namespace Chummer
         {
             int intToolStripWidth = 180;
             int intToolStripHeight = 22;
-            using (Graphics g = this.DoThreadSafeFunc(x => x.CreateGraphics(), _objGenericToken))
-            {
-                intToolStripWidth = (int)(intToolStripWidth * g.DpiX / 96.0f);
-                intToolStripHeight = (int)(intToolStripHeight * g.DpiY / 96.0f);
-            }
-
+            
             return this.DoThreadSafeFunc(() =>
             {
+                using (Graphics g = CreateGraphics())
+                {
+                    intToolStripWidth = (int)(intToolStripWidth * g.DpiX / 96.0f);
+                    intToolStripHeight = (int)(intToolStripHeight * g.DpiY / 96.0f);
+                }
                 //
                 // tsToggleFav
                 //

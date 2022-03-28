@@ -353,31 +353,31 @@ namespace Chummer
 
         private async void txtDateFormat_TextChanged(object sender, EventArgs e)
         {
+            string strText;
             try
             {
-                string strText = DateTime.Now.ToString(await txtDateFormat.DoThreadSafeFuncAsync(x => x.Text), _objSelectedCultureInfo);
-                await txtDateFormatView.DoThreadSafeAsync(x => x.Text = strText);
+                strText = DateTime.Now.ToString(await txtDateFormat.DoThreadSafeFuncAsync(x => x.Text), _objSelectedCultureInfo);
             }
             catch
             {
-                string strError = await LanguageManager.GetStringAsync("String_Error", _strSelectedLanguage);
-                await txtDateFormatView.DoThreadSafeAsync(x => x.Text = strError);
+                strText = await LanguageManager.GetStringAsync("String_Error", _strSelectedLanguage);
             }
+            await txtDateFormatView.DoThreadSafeAsync(x => x.Text = strText);
             OptionsChanged(sender, e);
         }
 
         private async void txtTimeFormat_TextChanged(object sender, EventArgs e)
         {
+            string strText;
             try
             {
-                string strText = DateTime.Now.ToString(await txtTimeFormat.DoThreadSafeFuncAsync(x => x.Text), _objSelectedCultureInfo);
-                await txtTimeFormatView.DoThreadSafeAsync(x => x.Text = strText);
+                strText = DateTime.Now.ToString(await txtTimeFormat.DoThreadSafeFuncAsync(x => x.Text), _objSelectedCultureInfo);
             }
             catch
             {
-                string strError = await LanguageManager.GetStringAsync("String_Error", _strSelectedLanguage);
-                await txtTimeFormatView.DoThreadSafeAsync(x => x.Text = strError);
+                strText = await LanguageManager.GetStringAsync("String_Error", _strSelectedLanguage);
             }
+            await txtTimeFormatView.DoThreadSafeAsync(x => x.Text = strText);
             OptionsChanged(sender, e);
         }
 
@@ -781,13 +781,16 @@ namespace Chummer
             await gpbDirectoryInfo.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
-                string strText = await objSelected.GetDisplayDescriptionAsync(_strSelectedLanguage);
-                await txtDirectoryDescription.DoThreadSafeAsync(x => x.Text = strText);
+                await objSelected.GetDisplayDescriptionAsync(_strSelectedLanguage)
+                                 .ContinueWith(
+                                     y => txtDirectoryDescription.DoThreadSafeAsync(x => x.Text = y.Result))
+                                 .Unwrap();
                 await lblDirectoryVersion.DoThreadSafeAsync(x => x.Text = objSelected.MyVersion.ToString());
-                strText = await objSelected.GetDisplayAuthorsAsync(_strSelectedLanguage, _objSelectedCultureInfo);
-                await lblDirectoryAuthors.DoThreadSafeAsync(x => x.Text = strText);
+                await objSelected.GetDisplayAuthorsAsync(_strSelectedLanguage, _objSelectedCultureInfo)
+                                 .ContinueWith(y => lblDirectoryAuthors.DoThreadSafeAsync(x => x.Text = y.Result))
+                                 .Unwrap();
                 await lblDirectoryName.DoThreadSafeAsync(x => x.Text = objSelected.Name);
-                strText = objSelected.DirectoryPath.Replace(Utils.GetStartupPath, await LanguageManager.GetStringAsync("String_Chummer5a", _strSelectedLanguage));
+                string strText = objSelected.DirectoryPath.Replace(Utils.GetStartupPath, await LanguageManager.GetStringAsync("String_Chummer5a", _strSelectedLanguage));
                 await lblDirectoryPath.DoThreadSafeAsync(x => x.Text = strText);
 
                 if (objSelected.DependenciesList.Count > 0)
@@ -926,10 +929,11 @@ namespace Chummer
                                     await LanguageManager.GetStringAsync("DialogFilter_All")
                        })
                 {
-                    if (!string.IsNullOrEmpty(await txtPDFAppPath.DoThreadSafeFuncAsync(x => x.Text, token)) && File.Exists(await txtPDFAppPath.DoThreadSafeFuncAsync(x => x.Text, token)))
+                    string strPdfAppPath = await txtPDFAppPath.DoThreadSafeFuncAsync(x => x.Text, token);
+                    if (!string.IsNullOrEmpty(strPdfAppPath) && File.Exists(strPdfAppPath))
                     {
-                        openFileDialog.InitialDirectory = Path.GetDirectoryName(await txtPDFAppPath.DoThreadSafeFuncAsync(x => x.Text, token));
-                        openFileDialog.FileName = Path.GetFileName(await txtPDFAppPath.DoThreadSafeFuncAsync(x => x.Text, token));
+                        openFileDialog.InitialDirectory = Path.GetDirectoryName(strPdfAppPath);
+                        openFileDialog.FileName = Path.GetFileName(strPdfAppPath);
                     }
 
                     if (openFileDialog.ShowDialog(this) != DialogResult.OK)
@@ -1010,45 +1014,44 @@ namespace Chummer
             await lsbCustomDataDirectories.DoThreadSafeAsync(x => x.BeginUpdate(), token);
             try
             {
-                if (_setCustomDataDirectoryInfos.Count != await lsbCustomDataDirectories.DoThreadSafeFuncAsync(x => x.Items.Count, token))
+                await lsbCustomDataDirectories.DoThreadSafeAsync(x =>
                 {
-                    await lsbCustomDataDirectories.DoThreadSafeAsync(x => x.Items.Clear(), token);
-
-                    foreach (CustomDataDirectoryInfo objCustomDataDirectory in _setCustomDataDirectoryInfos)
+                    if (_setCustomDataDirectoryInfos.Count != x.Items.Count)
                     {
-                        ListItem objItem = new ListItem(objCustomDataDirectory, objCustomDataDirectory.Name);
-                        await lsbCustomDataDirectories.DoThreadSafeAsync(x => x.Items.Add(objItem), token);
+                        x.Items.Clear();
+                        foreach (CustomDataDirectoryInfo objCustomDataDirectory in _setCustomDataDirectoryInfos)
+                        {
+                            ListItem objItem = new ListItem(objCustomDataDirectory, objCustomDataDirectory.Name);
+                            x.Items.Add(objItem);
+                        }
                     }
-                }
-                else
-                {
-                    HashSet<CustomDataDirectoryInfo> setListedInfos = new HashSet<CustomDataDirectoryInfo>();
-                    for (int iI = await lsbCustomDataDirectories.DoThreadSafeFuncAsync(x => x.Items.Count, token) - 1; iI >= 0; --iI)
+                    else
                     {
-                        ListItem objExistingItem = (ListItem) lsbCustomDataDirectories.Items[iI];
-                        CustomDataDirectoryInfo objExistingInfo = (CustomDataDirectoryInfo) objExistingItem.Value;
-                        if (!_setCustomDataDirectoryInfos.Contains(objExistingInfo))
-                            await lsbCustomDataDirectories.DoThreadSafeAsync(x => x.Items.RemoveAt(iI), token);
-                        else
-                            setListedInfos.Add(objExistingInfo);
+                        HashSet<CustomDataDirectoryInfo> setListedInfos = new HashSet<CustomDataDirectoryInfo>();
+                        for (int iI = x.Items.Count - 1; iI >= 0; --iI)
+                        {
+                            ListItem objExistingItem = (ListItem) lsbCustomDataDirectories.Items[iI];
+                            CustomDataDirectoryInfo objExistingInfo = (CustomDataDirectoryInfo) objExistingItem.Value;
+                            if (!_setCustomDataDirectoryInfos.Contains(objExistingInfo))
+                                x.Items.RemoveAt(iI);
+                            else
+                                setListedInfos.Add(objExistingInfo);
+                        }
+
+                        foreach (CustomDataDirectoryInfo objCustomDataDirectory in _setCustomDataDirectoryInfos.Where(
+                                     y => !setListedInfos.Contains(y)))
+                        {
+                            ListItem objItem = new ListItem(objCustomDataDirectory, objCustomDataDirectory.Name);
+                            x.Items.Add(objItem);
+                        }
                     }
 
-                    foreach (CustomDataDirectoryInfo objCustomDataDirectory in _setCustomDataDirectoryInfos.Where(
-                                 x => !setListedInfos.Contains(x)))
-                    {
-                        ListItem objItem = new ListItem(objCustomDataDirectory, objCustomDataDirectory.Name);
-                        await lsbCustomDataDirectories.DoThreadSafeAsync(x => x.Items.Add(objItem), token);
-                    }
-                }
-
-                if (_blnLoading)
-                {
-                    await lsbCustomDataDirectories.DoThreadSafeAsync(x =>
+                    if (_blnLoading)
                     {
                         x.DisplayMember = nameof(ListItem.Name);
                         x.ValueMember = nameof(ListItem.Value);
-                    }, token);
-                }
+                    }
+                }, token);
             }
             finally
             {

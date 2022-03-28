@@ -308,10 +308,12 @@ namespace Chummer
 
                                 if (MasterIndex != null)
                                 {
-                                    if (CharacterRoster == null)
-                                        await MasterIndex.DoThreadSafeAsync(
-                                            x => x.WindowState = FormWindowState.Maximized);
-                                    await MasterIndex.DoThreadSafeAsync(x => x.Show());
+                                    await MasterIndex.DoThreadSafeAsync(x =>
+                                    {
+                                        if (CharacterRoster == null)
+                                            x.WindowState = FormWindowState.Maximized;
+                                        x.Show();
+                                    });
                                 }
 
                                 await frmLoadingBar.PerformStepAsync(
@@ -319,10 +321,12 @@ namespace Chummer
 
                                 if (CharacterRoster != null)
                                 {
-                                    if (MasterIndex == null)
-                                        await CharacterRoster.DoThreadSafeAsync(
-                                            x => x.WindowState = FormWindowState.Maximized);
-                                    await CharacterRoster.DoThreadSafeAsync(x => x.Show());
+                                    await CharacterRoster.DoThreadSafeAsync(x =>
+                                    {
+                                        if (MasterIndex == null)
+                                            x.WindowState = FormWindowState.Maximized;
+                                        x.Show();
+                                    });
                                 }
 
                                 if (GlobalSettings.AllowEasterEggs)
@@ -664,7 +668,7 @@ namespace Chummer
                                                             await LanguageManager.GetStringAsync(
                                                                 "String_Update_Available"),
                                                             Utils.CachedGitVersion);
-                        await this.DoThreadSafeAsync(() => Text = strNewText, token);
+                        await this.DoThreadSafeAsync(x => x.Text = strNewText, token);
                         if (GlobalSettings.AutomaticUpdate && _frmUpdate == null)
                         {
                             _frmUpdate = await this.DoThreadSafeFuncAsync(() => new ChummerUpdater(), token);
@@ -742,17 +746,20 @@ namespace Chummer
                 });
             }
             // Silent updater is running, so make it visible
-            else if (await _frmUpdate.DoThreadSafeFuncAsync(x => x.SilentMode))
+            else
             {
                 await _frmUpdate.DoThreadSafeAsync(x =>
                 {
-                    x.SilentMode = false;
-                    x.Show();
+                    if (x.SilentMode)
+                    {
+                        x.SilentMode = false;
+                        x.Show();
+                    }
+                    else
+                    {
+                        x.Focus();
+                    }
                 });
-            }
-            else
-            {
-                await _frmUpdate.DoThreadSafeAsync(x => x.Focus());
             }
         }
 
@@ -880,10 +887,13 @@ namespace Chummer
             Form objMdiChild = await this.DoThreadSafeFuncAsync(x => x.ActiveMdiChild);
             if (objMdiChild != null)
             {
-                if (await objMdiChild.DoThreadSafeFuncAsync(x => x.WindowState) == FormWindowState.Minimized)
+                await objMdiChild.DoThreadSafeAsync(x =>
                 {
-                    await objMdiChild.DoThreadSafeAsync(x => x.WindowState = FormWindowState.Normal);
-                }
+                    if (x.WindowState == FormWindowState.Minimized)
+                    {
+                        x.WindowState = FormWindowState.Normal;
+                    }
+                });
 
                 // If this is a new child form and does not have a tab page, create one.
                 if (!(await objMdiChild.DoThreadSafeFuncAsync(x => x.Tag) is TabPage))
@@ -1875,8 +1885,8 @@ namespace Chummer
 
                         if (blnShowTest)
                         {
-                            TestDataEntries frmTestData = this.DoThreadSafeFunc(() => new TestDataEntries());
-                            frmTestData.DoThreadSafe(x => x.Show());
+                            TestDataEntries frmTestData = new TestDataEntries();
+                            frmTestData.Show();
                         }
                     }
 
