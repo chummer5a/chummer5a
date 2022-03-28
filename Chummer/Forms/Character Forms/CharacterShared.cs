@@ -326,9 +326,9 @@ namespace Chummer
                 }
 
                 using (ThreadSafeForm<SelectLimitModifier> frmPickLimitModifier =
-                       await ThreadSafeForm<SelectLimitModifier>.GetAsync(() => new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social")))
+                       await ThreadSafeForm<SelectLimitModifier>.GetAsync(() => new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"), GenericToken))
                 {
-                    if (await frmPickLimitModifier.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                    if (await frmPickLimitModifier.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
                         return;
 
                     //Remove the old LimitModifier to ensure we don't double up.
@@ -7182,7 +7182,7 @@ namespace Chummer
             string strTitle = CharacterObject.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '(' + CharacterObjectSettings.Name + ')';
             if (_blnIsDirty)
                 strTitle += '*';
-            this.DoThreadSafe(x => x.Text = strTitle);
+            this.DoThreadSafe(x => x.Text = strTitle, GenericToken);
         }
 
         /// <summary>
@@ -7353,9 +7353,9 @@ namespace Chummer
 
                 do
                 {
-                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objSelectedVehicle)))
+                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objSelectedVehicle), GenericToken))
                     {
-                        if (await frmPickGear.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                        if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
                             break;
                         blnAddAgain = frmPickGear.MyForm.AddAgain;
 
