@@ -1644,40 +1644,57 @@ namespace Chummer
                     {
                         if (CharacterObject.MAGEnabled)
                         {
-                            if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
-                                tabCharacterTabs.TabPages.Insert(3, tabInitiation);
+                            await tabCharacterTabs.DoThreadSafeAsync(x =>
+                            {
+                                if (!x.TabPages.Contains(tabInitiation))
+                                    x.TabPages.Insert(3, tabInitiation);
+                            }, GenericToken);
 
                             await UpdateInitiationCost(GenericToken);
 
-                            string strText = await LanguageManager.GetStringAsync("Tab_Initiation");
-                            await tabInitiation.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
-                            strText = await LanguageManager.GetStringAsync("Button_AddMetamagic");
-                            await cmsMetamagic.DoThreadSafeAsync(() => tsMetamagicAddMetamagic.Text = strText, GenericToken);
-                            strText = await LanguageManager.GetStringAsync("Button_AddInitiateGrade");
-                            await cmdAddMetamagic.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
-                            strText = await LanguageManager.GetStringAsync("Button_RemoveInitiateGrade");
-                            await cmdDeleteMetamagic.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
-                            strText = await LanguageManager.GetStringAsync("String_InitiationType");
-                            await gpbInitiationType.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
-                            strText = await LanguageManager.GetStringAsync("String_InitiationGroup");
-                            await gpbInitiationGroup.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
-                            strText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
+                            await LanguageManager.GetStringAsync("Tab_Initiation")
+                                                 .ContinueWith(
+                                                     y => tabInitiation.DoThreadSafeAsync(
+                                                         x => x.Text = y.Result, GenericToken), GenericToken).Unwrap();
+                            await LanguageManager.GetStringAsync("Button_AddMetamagic")
+                                                 .ContinueWith(
+                                                     y => cmsMetamagic.DoThreadSafeAsync(
+                                                         () => tsMetamagicAddMetamagic.Text = y.Result, GenericToken),
+                                                     GenericToken)
+                                                 .Unwrap();
+                            await LanguageManager.GetStringAsync("Button_AddInitiateGrade")
+                                                 .ContinueWith(
+                                                     y => cmdAddMetamagic.DoThreadSafeAsync(
+                                                         x => x.Text = y.Result, GenericToken), GenericToken).Unwrap();
+                            await LanguageManager.GetStringAsync("Button_RemoveInitiateGrade")
+                                                 .ContinueWith(
+                                                     y => cmdDeleteMetamagic.DoThreadSafeAsync(
+                                                         x => x.Text = y.Result, GenericToken), GenericToken).Unwrap();
+                            await LanguageManager.GetStringAsync("String_InitiationType")
+                                                 .ContinueWith(
+                                                     y => gpbInitiationType.DoThreadSafeAsync(
+                                                         x => x.Text = y.Result, GenericToken), GenericToken).Unwrap();
+                            await LanguageManager.GetStringAsync("String_InitiationGroup")
+                                                 .ContinueWith(
+                                                     y => gpbInitiationGroup.DoThreadSafeAsync(
+                                                         x => x.Text = y.Result, GenericToken), GenericToken).Unwrap();
+                            string strText1 = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
                                                         "Checkbox_InitiationOrdeal"),
                                                     CharacterObjectSettings.KarmaMAGInitiationOrdealPercent.ToString(
                                                         "P", GlobalSettings.CultureInfo));
-                            await chkInitiationOrdeal.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
-                            strText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
+                            await chkInitiationOrdeal.DoThreadSafeAsync(x => x.Text = strText1, GenericToken);
+                            string strText2 = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
                                                         "Checkbox_InitiationGroup"),
                                                     CharacterObjectSettings.KarmaMAGInitiationGroupPercent.ToString(
                                                         "P", GlobalSettings.CultureInfo));
-                            await chkInitiationGroup.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
-                            strText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
+                            await chkInitiationGroup.DoThreadSafeAsync(x => x.Text = strText2, GenericToken);
+                            string strText3 = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
                                                         "Checkbox_InitiationSchooling"),
                                                     CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent.ToString(
                                                         "P", GlobalSettings.CultureInfo));
                             await chkInitiationSchooling.DoThreadSafeAsync(x =>
                             {
-                                x.Text = strText;
+                                x.Text = strText3;
                                 x.Enabled = true;
                             }, GenericToken);
                             await cmsMetamagic.DoThreadSafeAsync(() =>
@@ -1693,8 +1710,10 @@ namespace Chummer
                                                               , CharacterObject.InitiateGrade + 1
                                                               , CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectSettings.KarmaInitiation);
                             await cmdAddMetamagic.SetToolTipAsync(strInitTip, GenericToken);
-                            strText = await LanguageManager.GetStringAsync("Checkbox_JoinedGroup");
-                            await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
+                            await LanguageManager.GetStringAsync("Checkbox_JoinedGroup")
+                                                 .ContinueWith(
+                                                     y => chkJoinGroup.DoThreadSafeAsync(
+                                                         x => x.Text = y.Result, GenericToken), GenericToken).Unwrap();
 
                             if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.MAG))
                             {
@@ -1714,7 +1733,7 @@ namespace Chummer
                         else
                         {
                             if (!CharacterObject.RESEnabled)
-                                tabCharacterTabs.TabPages.Remove(tabInitiation);
+                                await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabInitiation), GenericToken);
 
                             if (CharacterObject.AttributeSection.Attributes != null)
                             {
@@ -1725,6 +1744,8 @@ namespace Chummer
 
                         await gpbGearBondedFoci.DoThreadSafeAsync(x => x.Visible = CharacterObject.MAGEnabled, GenericToken);
                         await lblAstralINI.DoThreadSafeAsync(x => x.Visible = CharacterObject.MAGEnabled, GenericToken);
+
+                        IsCharacterUpdateRequested = true;
                     }
                         break;
 
@@ -1732,8 +1753,11 @@ namespace Chummer
                     {
                         if (CharacterObject.RESEnabled)
                         {
-                            if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
-                                tabCharacterTabs.TabPages.Insert(3, tabInitiation);
+                            await tabCharacterTabs.DoThreadSafeAsync(x =>
+                            {
+                                if (!x.TabPages.Contains(tabInitiation))
+                                    x.TabPages.Insert(3, tabInitiation);
+                            }, GenericToken);
 
                             /*
                             int intEssenceLoss = 0;
@@ -1744,35 +1768,49 @@ namespace Chummer
 
                             await UpdateInitiationCost(GenericToken);
 
-                            string strText = await LanguageManager.GetStringAsync("Tab_Submersion");
-                            await tabInitiation.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
-                            strText = await LanguageManager.GetStringAsync("Button_AddEcho");
-                            await cmsMetamagic.DoThreadSafeAsync(() => tsMetamagicAddMetamagic.Text = strText, GenericToken);
-                            strText = await LanguageManager.GetStringAsync("Button_AddSubmersionGrade");
-                            await cmdAddMetamagic.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
-                            strText = await LanguageManager.GetStringAsync("Button_RemoveSubmersionGrade");
-                            await cmdDeleteMetamagic.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
-                            strText = await LanguageManager.GetStringAsync("String_SubmersionType");
-                            await gpbInitiationType.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
-                            strText = await LanguageManager.GetStringAsync("String_SubmersionNetwork");
-                            await gpbInitiationGroup.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
-                            strText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
+                            await LanguageManager.GetStringAsync("Tab_Submersion")
+                                                 .ContinueWith(
+                                                     y => tabInitiation.DoThreadSafeAsync(
+                                                         x => x.Text = y.Result, GenericToken), GenericToken).Unwrap();
+                            await LanguageManager.GetStringAsync("Button_AddEcho")
+                                                 .ContinueWith(
+                                                     y => cmsMetamagic.DoThreadSafeAsync(
+                                                         () => tsMetamagicAddMetamagic.Text = y.Result, GenericToken),
+                                                     GenericToken)
+                                                 .Unwrap();
+                            await LanguageManager.GetStringAsync("Button_AddSubmersionGrade")
+                                                 .ContinueWith(
+                                                     y => cmdAddMetamagic.DoThreadSafeAsync(
+                                                         x => x.Text = y.Result, GenericToken), GenericToken).Unwrap();
+                            await LanguageManager.GetStringAsync("Button_RemoveSubmersionGrade")
+                                                 .ContinueWith(
+                                                     y => cmdDeleteMetamagic.DoThreadSafeAsync(
+                                                         x => x.Text = y.Result, GenericToken), GenericToken).Unwrap();
+                            await LanguageManager.GetStringAsync("String_SubmersionType")
+                                                 .ContinueWith(
+                                                     y => gpbInitiationType.DoThreadSafeAsync(
+                                                         x => x.Text = y.Result, GenericToken), GenericToken).Unwrap();
+                            await LanguageManager.GetStringAsync("String_SubmersionNetwork")
+                                                 .ContinueWith(
+                                                     y => gpbInitiationGroup.DoThreadSafeAsync(
+                                                         x => x.Text = y.Result, GenericToken), GenericToken).Unwrap();
+                            string strText1 = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
                                                         "Checkbox_SubmersionTask"),
                                                     CharacterObjectSettings.KarmaRESInitiationOrdealPercent.ToString(
                                                         "P", GlobalSettings.CultureInfo));
-                            await chkInitiationOrdeal.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
-                            strText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
+                            await chkInitiationOrdeal.DoThreadSafeAsync(x => x.Text = strText1, GenericToken);
+                            string strText2 = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
                                                         "Checkbox_NetworkSubmersion"),
                                                     CharacterObjectSettings.KarmaRESInitiationGroupPercent.ToString(
                                                         "P", GlobalSettings.CultureInfo));
-                            await chkInitiationGroup.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
-                            strText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
+                            await chkInitiationGroup.DoThreadSafeAsync(x => x.Text = strText2, GenericToken);
+                            string strText3 = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync(
                                                         "Checkbox_InitiationSchooling"),
                                                     CharacterObjectSettings.KarmaRESInitiationSchoolingPercent.ToString(
                                                         "P", GlobalSettings.CultureInfo));
                             await chkInitiationSchooling.DoThreadSafeAsync(x =>
                             {
-                                x.Text = strText;
+                                x.Text = strText3;
                                 x.Enabled = CharacterObjectSettings.AllowTechnomancerSchooling;
                             }, GenericToken);
                             await cmsMetamagic.DoThreadSafeAsync(() =>
@@ -1788,37 +1826,46 @@ namespace Chummer
                                                               , CharacterObject.SubmersionGrade + 1
                                                               , CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectSettings.KarmaInitiation);
                             await cmdAddMetamagic.SetToolTipAsync(strInitTip, GenericToken);
-                            strText = await LanguageManager.GetStringAsync("Checkbox_JoinedNetwork");
-                            await chkJoinGroup.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
+                            await LanguageManager.GetStringAsync("Checkbox_JoinedNetwork")
+                                                 .ContinueWith(
+                                                     y => chkJoinGroup.DoThreadSafeAsync(
+                                                         x => x.Text = y.Result, GenericToken), GenericToken).Unwrap();
 
-                            if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.RES))
+                            if (CharacterObject.AttributeSection.Attributes != null && !await CharacterObject.AttributeSection.Attributes.ContainsAsync(
+                                    CharacterObject.RES))
                             {
                                 CharacterObject.AttributeSection.Attributes.Add(CharacterObject.RES);
                             }
                         }
                         else
                         {
-                            if (!CharacterObject.MAGEnabled) tabCharacterTabs.TabPages.Remove(tabInitiation);
-                            if (await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.RES))
+                            if (!CharacterObject.MAGEnabled)
+                                await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabInitiation), GenericToken);
+                            if (CharacterObject.AttributeSection.Attributes != null)
                             {
                                 CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.RES);
                             }
                         }
+                        IsCharacterUpdateRequested = true;
                     }
                         break;
 
                     case nameof(Character.DEPEnabled):
                     {
-                        if (CharacterObject.DEPEnabled)
+                        if (CharacterObject.AttributeSection.Attributes != null)
                         {
-                            if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.DEP))
+                            if (CharacterObject.DEPEnabled)
                             {
-                                CharacterObject.AttributeSection.Attributes.Add(CharacterObject.DEP);
+                                if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(
+                                        CharacterObject.DEP))
+                                {
+                                    CharacterObject.AttributeSection.Attributes.Add(CharacterObject.DEP);
+                                }
                             }
-                        }
-                        else if (await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.DEP))
-                        {
-                            CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.DEP);
+                            else
+                            {
+                                CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.DEP);
+                            }
                         }
                     }
                         break;

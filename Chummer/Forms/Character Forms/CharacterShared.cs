@@ -6999,7 +6999,14 @@ namespace Chummer
                 if (_blnIsDirty == value)
                     return;
                 _blnIsDirty = value;
-                UpdateWindowTitle(true);
+                try
+                {
+                    UpdateWindowTitle(true, GenericToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
         }
 
@@ -7173,8 +7180,9 @@ namespace Chummer
         /// <summary>
         /// Update the Window title to show the Character's name and unsaved changes status.
         /// </summary>
-        public void UpdateWindowTitle(bool blnCanSkip)
+        protected void UpdateWindowTitle(bool blnCanSkip, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (Text.EndsWith('*') == _blnIsDirty && blnCanSkip)
                 return;
 
@@ -7182,13 +7190,13 @@ namespace Chummer
             string strTitle = CharacterObject.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '(' + CharacterObjectSettings.Name + ')';
             if (_blnIsDirty)
                 strTitle += '*';
-            this.DoThreadSafe(x => x.Text = strTitle, GenericToken);
+            this.DoThreadSafe(x => x.Text = strTitle, token);
         }
 
         /// <summary>
         /// Update the Window title to show the Character's name and unsaved changes status.
         /// </summary>
-        public async ValueTask UpdateWindowTitleAsync(bool blnCanSkip, CancellationToken token = default)
+        protected async ValueTask UpdateWindowTitleAsync(bool blnCanSkip, CancellationToken token = default)
         {
             if (Text.EndsWith('*') == _blnIsDirty && blnCanSkip)
                 return;
