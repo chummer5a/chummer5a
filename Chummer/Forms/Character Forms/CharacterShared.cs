@@ -93,6 +93,11 @@ namespace Chummer
             }
         }
 
+        [Obsolete("This constructor is for use by form designers only.", true)]
+        protected CharacterShared()
+        {
+        }
+
         protected virtual void LiveUpdateFromCharacterFile(object sender, FileSystemEventArgs e)
         {
         }
@@ -105,11 +110,6 @@ namespace Chummer
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
             }
-        }
-
-        [Obsolete("This constructor is for use by form designers only.", true)]
-        protected CharacterShared()
-        {
         }
 
         /// <summary>

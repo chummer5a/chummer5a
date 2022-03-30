@@ -691,7 +691,6 @@ namespace Chummer
                 XmlWriterSettings objSettings = objXslTransform.OutputSettings?.Clone();
                 if (objSettings != null)
                 {
-                    objSettings.Async = true;
                     objSettings.CheckCharacters = false;
                     objSettings.ConformanceLevel = ConformanceLevel.Fragment;
                 }
