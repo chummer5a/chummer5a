@@ -86,10 +86,12 @@ namespace Chummer
             };
             if (GlobalSettings.LiveUpdateCleanCharacterFiles && objCharacter?.FileName != null)
             {
-                string strCharacterFileName = Path.GetFileName(objCharacter.FileName);
-                _objCharacterFileWatcher = new FileSystemWatcher(
-                    Path.GetFullPath(objCharacter.FileName).TrimEndOnce(strCharacterFileName), strCharacterFileName);
-                _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
+                string strBasePath = Path.GetFullPath(objCharacter.FileName);
+                if (File.Exists(strBasePath))
+                {
+                    _objCharacterFileWatcher = new FileSystemWatcher(Path.GetDirectoryName(strBasePath) ?? string.Empty, Path.GetFileName(strBasePath));
+                    _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
+                }
             }
         }
 
