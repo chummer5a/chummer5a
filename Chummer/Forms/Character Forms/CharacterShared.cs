@@ -89,7 +89,7 @@ namespace Chummer
                 string strBasePath = Path.GetFullPath(objCharacter.FileName);
                 if (File.Exists(strBasePath))
                 {
-                    _objCharacterFileWatcher = new FileSystemWatcher(Path.GetDirectoryName(strBasePath) ?? string.Empty, Path.GetFileName(strBasePath));
+                    _objCharacterFileWatcher = new FileSystemWatcher(Path.GetDirectoryName(strBasePath) ?? Path.GetPathRoot(strBasePath), Path.GetFileName(strBasePath));
                     _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
                 }
             }
