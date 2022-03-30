@@ -1498,7 +1498,7 @@ namespace Chummer.Backend.Equipment
                 : _objCharacter.Gear.DeepFindById(strAmmoGuid);
 
             return objAmmo != null
-                ? objAmmo.DisplayNameShortAsync(strLanguage).AsTask()
+                ? objAmmo.DisplayNameShortAsync(strLanguage)
                 : Task.FromResult(string.Empty);
         }
 

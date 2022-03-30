@@ -1337,7 +1337,7 @@ namespace Chummer.Backend.Attributes
         public Task<string> DisplayNameLongAsync(string strLanguage)
         {
             return Abbrev == "MAGAdept"
-                ? LanguageManager.MAGAdeptStringAsync(strLanguage, true).AsTask()
+                ? LanguageManager.MAGAdeptStringAsync(strLanguage, true)
                 : LanguageManager.GetStringAsync("String_Attribute" + Abbrev + "Long", strLanguage);
         }
 
@@ -2159,7 +2159,7 @@ namespace Chummer.Backend.Attributes
         public Task<string> GetDisplayAbbrevAsync(string strLanguage)
         {
             return Abbrev == "MAGAdept"
-                ? LanguageManager.MAGAdeptStringAsync(strLanguage).AsTask()
+                ? LanguageManager.MAGAdeptStringAsync(strLanguage)
                 : LanguageManager.GetStringAsync("String_Attribute" + Abbrev + "Short", strLanguage);
         }
 

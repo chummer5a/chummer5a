@@ -5981,7 +5981,7 @@ namespace Chummer
             this.tsbCopy.Tag = "Menu_EditCopy";
             this.tsbCopy.Text = "Copy";
             this.tsbCopy.Visible = false;
-            this.tsbCopy.Click += new System.EventHandler(this.tsbCopy_Click);
+            this.tsbCopy.Click += new System.EventHandler(this.mnuEditCopy_Click);
             // 
             // cmsGear
             // 

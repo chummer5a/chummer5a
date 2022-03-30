@@ -490,13 +490,13 @@ namespace Chummer
                 else
                     await objWriter.WriteElementStringAsync("connection", await LanguageManager.GetStringAsync("String_Group", strLanguageToPrint) + '(' + Connection.ToString(objCulture) + ')');
                 await objWriter.WriteElementStringAsync("loyalty", Loyalty.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("metatype", DisplayMetatypeMethod(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("gender", DisplayGenderMethod(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("age", DisplayAgeMethod(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("contacttype", DisplayTypeMethod(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("preferredpayment", DisplayPreferredPaymentMethod(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("hobbiesvice", DisplayHobbiesViceMethod(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("personallife", DisplayPersonalLifeMethod(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("metatype", await DisplayMetatypeMethodAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("gender", await DisplayGenderMethodAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("age", await DisplayAgeMethodAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("contacttype", await DisplayTypeMethodAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("preferredpayment", await DisplayPreferredPaymentMethodAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("hobbiesvice", await DisplayHobbiesViceMethodAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("personallife", await DisplayPersonalLifeMethodAsync(strLanguageToPrint));
                 await objWriter.WriteElementStringAsync("type", await LanguageManager.GetStringAsync("String_" + EntityType, strLanguageToPrint));
                 await objWriter.WriteElementStringAsync("forcedloyalty", ForcedLoyalty.ToString(objCulture));
                 await objWriter.WriteElementStringAsync("blackmail", Blackmail.ToString(GlobalSettings.InvariantCultureInfo));
@@ -670,6 +670,34 @@ namespace Chummer
             return strReturn;
         }
 
+        public async Task<string> DisplayMetatypeMethodAsync(string strLanguage)
+        {
+            string strReturn = Metatype;
+            if (LinkedCharacter != null)
+            {
+                // Update character information fields.
+                XPathNavigator objMetatypeNode = await _objCharacter.GetNodeXPathAsync(true);
+
+                strReturn = (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? await _objCharacter.TranslateExtraAsync(LinkedCharacter.Metatype, strLanguage, "metatypes.xml");
+
+                if (LinkedCharacter.MetavariantGuid == Guid.Empty)
+                    return strReturn;
+                objMetatypeNode = objMetatypeNode
+                    .SelectSingleNode("metavariants/metavariant[id = " + LinkedCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath() + ']');
+
+                string strMetatypeTranslate = objMetatypeNode != null ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value : null;
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage)
+                             + '('
+                             + (!string.IsNullOrEmpty(strMetatypeTranslate)
+                                 ? strMetatypeTranslate
+                                 : await _objCharacter.TranslateExtraAsync(LinkedCharacter.Metavariant, strLanguage, "metatypes.xml"))
+                             + ')';
+            }
+            else
+                strReturn = await _objCharacter.TranslateExtraAsync(strReturn, strLanguage, "metatypes.xml");
+            return strReturn;
+        }
+
         public string DisplayMetatype
         {
             get => DisplayMetatypeMethod(GlobalSettings.Language);
@@ -713,6 +741,14 @@ namespace Chummer
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/genders/gender[. = " + Gender.CleanXPath() + "]/@translate")?.Value ?? Gender;
         }
 
+        public async Task<string> DisplayGenderMethodAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Gender;
+
+            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage)).SelectSingleNode("/chummer/genders/gender[. = " + Gender.CleanXPath() + "]/@translate")?.Value ?? Gender;
+        }
+
         public string DisplayGender
         {
             get => DisplayGenderMethod(GlobalSettings.Language);
@@ -727,11 +763,10 @@ namespace Chummer
             get => LinkedCharacter != null ? LinkedCharacter.Gender : _strGender;
             set
             {
-                if (_strGender != value)
-                {
-                    _strGender = value;
-                    OnPropertyChanged();
-                }
+                if (_strGender == value)
+                    return;
+                _strGender = value;
+                OnPropertyChanged();
             }
         }
 
@@ -741,6 +776,14 @@ namespace Chummer
                 return Age;
 
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/ages/age[. = " + Age.CleanXPath() + "]/@translate")?.Value ?? Age;
+        }
+
+        public async Task<string> DisplayAgeMethodAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Age;
+
+            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage)).SelectSingleNode("/chummer/ages/age[. = " + Age.CleanXPath() + "]/@translate")?.Value ?? Age;
         }
 
         public string DisplayAge
@@ -757,11 +800,10 @@ namespace Chummer
             get => LinkedCharacter != null ? LinkedCharacter.Age : _strAge;
             set
             {
-                if (_strAge != value)
-                {
-                    _strAge = value;
-                    OnPropertyChanged();
-                }
+                if (_strAge == value)
+                    return;
+                _strAge = value;
+                OnPropertyChanged();
             }
         }
 
@@ -771,6 +813,14 @@ namespace Chummer
                 return Type;
 
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/types/type[. = " + Type.CleanXPath() + "]/@translate")?.Value ?? Type;
+        }
+
+        public async Task<string> DisplayTypeMethodAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Type;
+
+            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage)).SelectSingleNode("/chummer/types/type[. = " + Type.CleanXPath() + "]/@translate")?.Value ?? Type;
         }
 
         public string DisplayType
@@ -787,11 +837,10 @@ namespace Chummer
             get => _strType;
             set
             {
-                if (_strType != value)
-                {
-                    _strType = value;
-                    OnPropertyChanged();
-                }
+                if (_strType == value)
+                    return;
+                _strType = value;
+                OnPropertyChanged();
             }
         }
 
@@ -802,6 +851,15 @@ namespace Chummer
 
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage)
                 .SelectSingleNode("/chummer/preferredpayments/preferredpayment[. = " + PreferredPayment.CleanXPath() + "]/@translate")?.Value ?? PreferredPayment;
+        }
+
+        public async Task<string> DisplayPreferredPaymentMethodAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return PreferredPayment;
+
+            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage))
+                                .SelectSingleNode("/chummer/preferredpayments/preferredpayment[. = " + PreferredPayment.CleanXPath() + "]/@translate")?.Value ?? PreferredPayment;
         }
 
         public string DisplayPreferredPayment
@@ -818,11 +876,10 @@ namespace Chummer
             get => _strPreferredPayment;
             set
             {
-                if (_strPreferredPayment != value)
-                {
-                    _strPreferredPayment = value;
-                    OnPropertyChanged();
-                }
+                if (_strPreferredPayment == value)
+                    return;
+                _strPreferredPayment = value;
+                OnPropertyChanged();
             }
         }
 
@@ -831,17 +888,17 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return HobbiesVice;
 
-            try
-            {
-                return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/hobbiesvices/hobbyvice[. = " + HobbiesVice.CleanXPath() + "]/@translate")?.Value
-                       ?? HobbiesVice;
-            }
-            catch (Exception e)
-            {
-                string msg = "Could not LoadData for " + strLanguage + " of hobbiesvices " + HobbiesVice + ". Is it missing in contacts.xml?";
-                Log.Error(e, msg);
-                throw;
-            }
+            return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/hobbiesvices/hobbyvice[. = " + HobbiesVice.CleanXPath() + "]/@translate")?.Value
+                   ?? HobbiesVice;
+        }
+
+        public async Task<string> DisplayHobbiesViceMethodAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return HobbiesVice;
+
+            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage)).SelectSingleNode("/chummer/hobbiesvices/hobbyvice[. = " + HobbiesVice.CleanXPath() + "]/@translate")?.Value
+                   ?? HobbiesVice;
         }
 
         public string DisplayHobbiesVice
@@ -858,11 +915,10 @@ namespace Chummer
             get => _strHobbiesVice;
             set
             {
-                if (_strHobbiesVice != value)
-                {
-                    _strHobbiesVice = value;
-                    OnPropertyChanged();
-                }
+                if (_strHobbiesVice == value)
+                    return;
+                _strHobbiesVice = value;
+                OnPropertyChanged();
             }
         }
 
@@ -872,6 +928,15 @@ namespace Chummer
                 return PersonalLife;
 
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/personallives/personallife[. = " + PersonalLife.CleanXPath() + "]/@translate")?.Value
+                   ?? PersonalLife;
+        }
+
+        public async Task<string> DisplayPersonalLifeMethodAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return PersonalLife;
+
+            return (await _objCharacter.LoadDataXPathAsync("contacts.xml", strLanguage)).SelectSingleNode("/chummer/personallives/personallife[. = " + PersonalLife.CleanXPath() + "]/@translate")?.Value
                    ?? PersonalLife;
         }
 
@@ -889,11 +954,10 @@ namespace Chummer
             get => _strPersonalLife;
             set
             {
-                if (_strPersonalLife != value)
-                {
-                    _strPersonalLife = value;
-                    OnPropertyChanged();
-                }
+                if (_strPersonalLife == value)
+                    return;
+                _strPersonalLife = value;
+                OnPropertyChanged();
             }
         }
 
@@ -905,11 +969,10 @@ namespace Chummer
             get => _blnIsGroup;
             set
             {
-                if (_blnIsGroup != value)
-                {
-                    _blnIsGroup = value;
-                    OnPropertyChanged();
-                }
+                if (_blnIsGroup == value)
+                    return;
+                _blnIsGroup = value;
+                OnPropertyChanged();
             }
         }
 

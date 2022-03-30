@@ -1005,7 +1005,7 @@ namespace Chummer
                 + '(' + GetString("String_DescAdept", strLanguage) + ')';
         }
 
-        public static async ValueTask<string> MAGAdeptStringAsync(string strLanguage = "", bool blnLong = false)
+        public static async Task<string> MAGAdeptStringAsync(string strLanguage = "", bool blnLong = false)
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;

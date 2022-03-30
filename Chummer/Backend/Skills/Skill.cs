@@ -1566,7 +1566,7 @@ namespace Chummer.Backend.Skills
         {
             if (_dicCachedStringSpec.TryGetValue(strLanguage, out string strReturn))
                 return strReturn;
-            strReturn = await StringExtensions.JoinAsync(", ", Specializations.Select(x => x.DisplayNameAsync(strLanguage).AsTask()));
+            strReturn = await StringExtensions.JoinAsync(", ", Specializations.Select(x => x.DisplayNameAsync(strLanguage)));
 
             _dicCachedStringSpec.Add(strLanguage, strReturn);
 

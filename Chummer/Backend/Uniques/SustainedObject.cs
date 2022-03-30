@@ -262,16 +262,16 @@ namespace Chummer
             {
                 case Improvement.ImprovementSource.Spell:
                     if (_objLinkedObject is Spell objSpell)
-                        return objSpell.DisplayNameShortAsync(strLanguage).AsTask();
+                        return objSpell.DisplayNameShortAsync(strLanguage);
                     break;
                 case Improvement.ImprovementSource.ComplexForm:
                     if (_objLinkedObject is ComplexForm objComplexForm)
-                        return objComplexForm.DisplayNameShortAsync(strLanguage).AsTask();
+                        return objComplexForm.DisplayNameShortAsync(strLanguage);
                     break;
 
                 case Improvement.ImprovementSource.CritterPower:
                     if (_objLinkedObject is CritterPower objCritterPower)
-                        return objCritterPower.DisplayNameShortAsync(strLanguage).AsTask();
+                        return objCritterPower.DisplayNameShortAsync(strLanguage);
                     break;
             }
             return LanguageManager.GetStringAsync("String_Unknown", strLanguage);
@@ -307,16 +307,16 @@ namespace Chummer
             {
                 case Improvement.ImprovementSource.Spell:
                     if (_objLinkedObject is Spell objSpell)
-                        return objSpell.DisplayNameAsync(strLanguage).AsTask();
+                        return objSpell.DisplayNameAsync(strLanguage);
                     break;
                 case Improvement.ImprovementSource.ComplexForm:
                     if (_objLinkedObject is ComplexForm objComplexForm)
-                        return objComplexForm.DisplayNameAsync(strLanguage).AsTask();
+                        return objComplexForm.DisplayNameAsync(strLanguage);
                     break;
 
                 case Improvement.ImprovementSource.CritterPower:
                     if (_objLinkedObject is CritterPower objCritterPower)
-                        return objCritterPower.DisplayNameAsync(strLanguage).AsTask();
+                        return objCritterPower.DisplayNameAsync(strLanguage);
                     break;
             }
             return LanguageManager.GetStringAsync("String_Unknown", strLanguage);

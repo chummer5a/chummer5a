@@ -307,8 +307,10 @@ namespace Chummer
         /// Edit and update a Limit Modifier.
         /// </summary>
         /// <param name="treLimit"></param>
-        protected async ValueTask UpdateLimitModifier(TreeView treLimit)
+        /// <param name="token"></param>
+        protected async ValueTask UpdateLimitModifier(TreeView treLimit, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (treLimit == null || treLimit.SelectedNode.Level == 0)
                 return;
             using (CursorWait.New(this))
@@ -326,9 +328,9 @@ namespace Chummer
                 }
 
                 using (ThreadSafeForm<SelectLimitModifier> frmPickLimitModifier =
-                       await ThreadSafeForm<SelectLimitModifier>.GetAsync(() => new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"), GenericToken))
+                       await ThreadSafeForm<SelectLimitModifier>.GetAsync(() => new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"), token))
                 {
-                    if (await frmPickLimitModifier.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                    if (await frmPickLimitModifier.ShowDialogSafeAsync(this, token) == DialogResult.Cancel)
                         return;
 
                     //Remove the old LimitModifier to ensure we don't double up.
@@ -349,39 +351,37 @@ namespace Chummer
         }
 
         /// <summary>
-        ///
+        /// 
         /// </summary>
-        /// <param name="objNotes"></param>
         /// <param name="treNode"></param>
-        protected async ValueTask WriteNotes(IHasNotes objNotes, TreeNode treNode)
+        /// <param name="token"></param>
+        protected async ValueTask WriteNotes(TreeNode treNode, CancellationToken token = default)
         {
-            if (objNotes == null)
+            token.ThrowIfCancellationRequested();
+            if (!(treNode?.Tag is IHasNotes objNotes))
                 return;
             using (CursorWait.New(this))
             using (ThreadSafeForm<EditNotes> frmItemNotes =
-                   await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor), GenericToken))
+                   await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor), token))
             {
-                if (await frmItemNotes.ShowDialogSafeAsync(this, GenericToken) != DialogResult.OK)
+                if (await frmItemNotes.ShowDialogSafeAsync(this, token) != DialogResult.OK)
                     return;
                 objNotes.Notes = frmItemNotes.MyForm.Notes;
                 objNotes.NotesColor = frmItemNotes.MyForm.NotesColor;
                 IsDirty = true;
-                if (treNode != null)
+                TreeView objTreeView = treNode.TreeView;
+                if (objTreeView != null)
                 {
-                    TreeView objTreeView = treNode.TreeView;
-                    if (objTreeView != null)
-                    {
-                        await objTreeView.DoThreadSafeAsync(() =>
-                        {
-                            treNode.ForeColor = objNotes.PreferredColor;
-                            treNode.ToolTipText = objNotes.Notes.WordWrap();
-                        }, GenericToken);
-                    }
-                    else
+                    await objTreeView.DoThreadSafeAsync(() =>
                     {
                         treNode.ForeColor = objNotes.PreferredColor;
                         treNode.ToolTipText = objNotes.Notes.WordWrap();
-                    }
+                    }, token);
+                }
+                else
+                {
+                    treNode.ForeColor = objNotes.PreferredColor;
+                    treNode.ToolTipText = objNotes.Notes.WordWrap();
                 }
             }
         }
@@ -7352,8 +7352,9 @@ namespace Chummer
 
         #region Vehicles Tab
 
-        public async ValueTask PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null)
+        public async ValueTask PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
@@ -7361,9 +7362,9 @@ namespace Chummer
 
                 do
                 {
-                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objSelectedVehicle), GenericToken))
+                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objSelectedVehicle), token))
                     {
-                        if (await frmPickGear.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        if (await frmPickGear.ShowDialogSafeAsync(this, token) == DialogResult.Cancel)
                             break;
                         blnAddAgain = frmPickGear.MyForm.AddAgain;
 

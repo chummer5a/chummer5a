@@ -334,8 +334,13 @@ namespace Chummer
                                     RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
                                     RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
                                     RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
-                                    bool blnVisible = await CharacterObject.CritterPowers.AnyAsync(x => x.Name == "Inhabitation" || x.Name == "Possession");
-                                    await mnuCreateMenu.DoThreadSafeAsync(() => mnuSpecialPossess.Visible = blnVisible);
+                                    await CharacterObject.CritterPowers
+                                                         .AnyAsync(x => x.Name == "Inhabitation"
+                                                                        || x.Name == "Possession")
+                                                         .ContinueWith(
+                                                             y => mnuCreateMenu.DoThreadSafeAsync(
+                                                                 () => mnuSpecialPossess.Visible = y.Result,
+                                                                 GenericToken), GenericToken).Unwrap();
                                     RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
                                     RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
                                     RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView,
@@ -458,8 +463,11 @@ namespace Chummer
                                         }
                                         else
                                         {
-                                            await cboTradition.DoThreadSafeAsync(x => x.Visible = false);
-                                            await lblTraditionLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                            await this.DoThreadSafeAsync(() =>
+                                            {
+                                                cboTradition.Visible = false;
+                                                lblTraditionLabel.Visible = false;
+                                            }, GenericToken);
                                         }
                                     }
 
@@ -740,26 +748,19 @@ namespace Chummer
                                 using (_ = await Timekeeper.StartSyncronAsync("load_frm_career_selectStuff",
                                                                               op_load_frm_career))
                                 {
-                                    // Select the Magician's Tradition.
-                                    await cboTradition.DoThreadSafeAsync(x =>
+                                    await this.DoThreadSafeAsync(() =>
                                     {
                                         if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
-                                            x.SelectedValue = CharacterObject.MagicTradition.SourceIDString;
-                                        else if (x.SelectedIndex == -1 && x.Items.Count > 0)
-                                            x.SelectedIndex = 0;
-                                    });
-
+                                            cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceIDString;
+                                        else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
+                                            cboTradition.SelectedIndex = 0;
+                                        if (CharacterObject.MagicTradition.Type == TraditionType.RES)
+                                            cboStream.SelectedValue = CharacterObject.MagicTradition.SourceIDString;
+                                        else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
+                                            cboStream.SelectedIndex = 0;
+                                    }, GenericToken);
                                     txtTraditionName.DoDataBinding("Text", CharacterObject.MagicTradition,
                                                                    nameof(Tradition.Name));
-
-                                    await cboStream.DoThreadSafeAsync(x =>
-                                    {
-                                        // Select the Technomancer's Stream.
-                                        if (CharacterObject.MagicTradition.Type == TraditionType.RES)
-                                            x.SelectedValue = CharacterObject.MagicTradition.SourceIDString;
-                                        else if (x.SelectedIndex == -1 && x.Items.Count > 0)
-                                            x.SelectedIndex = 0;
-                                    });
                                 }
 
                                 using (CustomActivity op_load_frm_career_longloads
@@ -794,49 +795,29 @@ namespace Chummer
                                 using (_ = await Timekeeper.StartSyncronAsync("load_frm_career_databindingCallbacks2",
                                                                               op_load_frm_career))
                                 {
-                                    await treGear.DoThreadSafeAsync(x =>
+                                    await this.DoThreadSafeAsync(() =>
                                     {
-                                        x.ItemDrag += treGear_ItemDrag;
-                                        x.DragEnter += treGear_DragEnter;
-                                        x.DragDrop += treGear_DragDrop;
-                                    });
-
-                                    /*
-                                    treLifestyles.DoThreadSafe(x =>
-                                    {
-                                        x.ItemDrag += treLifestyles_ItemDrag;
-                                        x.DragEnter += treLifestyles_DragEnter;
-                                        x.DragDrop += treLifestyles_DragDrop;
-                                    });
-                                    */
-
-                                    await treArmor.DoThreadSafeAsync(x =>
-                                    {
-                                        x.ItemDrag += treArmor_ItemDrag;
-                                        x.DragEnter += treArmor_DragEnter;
-                                        x.DragDrop += treArmor_DragDrop;
-                                    });
-
-                                    await treWeapons.DoThreadSafeAsync(x =>
-                                    {
-                                        x.ItemDrag += treWeapons_ItemDrag;
-                                        x.DragEnter += treWeapons_DragEnter;
-                                        x.DragDrop += treWeapons_DragDrop;
-                                    });
-
-                                    await treVehicles.DoThreadSafeAsync(x =>
-                                    {
-                                        x.ItemDrag += treVehicles_ItemDrag;
-                                        x.DragEnter += treVehicles_DragEnter;
-                                        x.DragDrop += treVehicles_DragDrop;
-                                    });
-
-                                    await treVehicles.DoThreadSafeAsync(x =>
-                                    {
-                                        x.ItemDrag += treImprovements_ItemDrag;
-                                        x.DragEnter += treImprovements_DragEnter;
-                                        x.DragDrop += treImprovements_DragDrop;
-                                    });
+                                        treGear.ItemDrag += treGear_ItemDrag;
+                                        treGear.DragEnter += treGear_DragEnter;
+                                        treGear.DragDrop += treGear_DragDrop;
+                                        /*
+                                        treLifestyles.ItemDrag += treLifestyles_ItemDrag;
+                                        treLifestyles.DragEnter += treLifestyles_DragEnter;
+                                        treLifestyles.DragDrop += treLifestyles_DragDrop;
+                                        */
+                                        treArmor.ItemDrag += treArmor_ItemDrag;
+                                        treArmor.DragEnter += treArmor_DragEnter;
+                                        treArmor.DragDrop += treArmor_DragDrop;
+                                        treWeapons.ItemDrag += treWeapons_ItemDrag;
+                                        treWeapons.DragEnter += treWeapons_DragEnter;
+                                        treWeapons.DragDrop += treWeapons_DragDrop;
+                                        treVehicles.ItemDrag += treVehicles_ItemDrag;
+                                        treVehicles.DragEnter += treVehicles_DragEnter;
+                                        treVehicles.DragDrop += treVehicles_DragDrop;
+                                        treImprovements.ItemDrag += treImprovements_ItemDrag;
+                                        treImprovements.DragEnter += treImprovements_DragEnter;
+                                        treImprovements.DragDrop += treImprovements_DragDrop;
+                                    }, GenericToken);
 
                                     // Merge the ToolStrips.
                                     ToolStripManager.RevertMerge("toolStrip");
@@ -2287,279 +2268,362 @@ namespace Chummer
 
         private async ValueTask DoOnCharacterSettingsPropertyChanged(PropertyChangedEventArgs e)
         {
-            IsCharacterUpdateRequested = true;
-            switch (e.PropertyName)
+            try
             {
-                case nameof(CharacterSettings.ArmorDegradation):
-                    cmdArmorDecrease.Visible = CharacterObjectSettings.ArmorDegradation;
-                    cmdArmorIncrease.Visible = CharacterObjectSettings.ArmorDegradation;
-                    break;
-                case nameof(CharacterSettings.Books):
+                switch (e.PropertyName)
+                {
+                    case nameof(CharacterSettings.ArmorDegradation):
+                        await this.DoThreadSafeAsync(() =>
+                        {
+                            cmdArmorDecrease.Visible = CharacterObjectSettings.ArmorDegradation;
+                            cmdArmorIncrease.Visible = CharacterObjectSettings.ArmorDegradation;
+                        });
+                        break;
+                    case nameof(CharacterSettings.Books):
                     {
                         if (IsLoading)
                             break;
                         using (CursorWait.New(this))
                         {
-                            SuspendLayout();
-                            cmdAddLifestyle.SplitMenuStrip =
-                                CharacterObjectSettings.BookEnabled("RF") ? cmsAdvancedLifestyle : null;
-
-                            if (!CharacterObjectSettings.BookEnabled("FA"))
+                            await this.DoThreadSafeAsync(x => x.SuspendLayout());
+                            try
                             {
-                                lblWildReputation.Visible = false;
-                                nudWildReputation.Visible = false;
-                                lblWildReputationTotal.Visible = false;
-                                if (!CharacterObjectSettings.BookEnabled("SG"))
-                                {
-                                    lblAstralReputation.Visible = false;
-                                    nudAstralReputation.Visible = false;
-                                    lblAstralReputationTotal.Visible = false;
-                                }
-                                else
-                                {
-                                    lblAstralReputation.Visible = true;
-                                    nudAstralReputation.Visible = true;
-                                    lblAstralReputationTotal.Visible = true;
-                                }
-                            }
-                            else
-                            {
-                                lblWildReputation.Visible = true;
-                                nudWildReputation.Visible = true;
-                                lblWildReputationTotal.Visible = true;
-                                lblAstralReputation.Visible = true;
-                                nudAstralReputation.Visible = true;
-                                lblAstralReputationTotal.Visible = true;
-                            }
+                                await cmdAddLifestyle.DoThreadSafeAsync(x => x.SplitMenuStrip =
+                                                                            CharacterObjectSettings.BookEnabled("RF")
+                                                                                ? cmsAdvancedLifestyle
+                                                                                : null);
 
-                            // Refresh all trees because enabled sources can change the nodes that are visible
-                            RefreshQualities(treQualities, cmsQuality);
-                            await RefreshSpirits(panSpirits, panSprites);
-                            RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
-                            RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
-                            RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
-                            RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
-                            RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
-                            RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
-                            RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-                            RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
-                            RefreshContacts(panContacts, panEnemies, panPets);
-                            RefreshSustainedSpells(flpSustainedSpells, flpSustainedComplexForms,
-                                                   flpSustainedCritterPowers, chkPsycheActiveMagician,
-                                                   chkPsycheActiveTechnomancer);
-
-                            RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
-                            RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
-                            RefreshFociFromGear(treFoci, null);
-                            RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
-                            RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
-                                           cmsWeaponAccessoryGear);
-                            RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
-                                            cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear,
-                                            cmsWeaponMount,
-                                            cmsVehicleCyberware, cmsVehicleCyberwareGear);
-                            RefreshDrugs(treCustomDrugs);
-                            treWeapons.SortCustomOrder();
-                            treArmor.SortCustomOrder();
-                            treGear.SortCustomOrder();
-                            treLifestyles.SortCustomOrder();
-                            treCustomDrugs.SortCustomOrder();
-                            treCyberware.SortCustomOrder();
-                            treVehicles.SortCustomOrder();
-                            treCritterPowers.SortCustomOrder();
-
-                            XPathNavigator xmlTraditionsBaseChummerNode =
-                                await (await CharacterObject.LoadDataXPathAsync("traditions.xml"))
-                                    .SelectSingleNodeAndCacheExpressionAsync("/chummer");
-                            using (new FetchSafelyFromPool<List<ListItem>>(
-                                       Utils.ListItemListPool, out List<ListItem> lstTraditions))
-                            {
-                                if (xmlTraditionsBaseChummerNode != null)
+                                if (!CharacterObjectSettings.BookEnabled("FA"))
                                 {
-                                    foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
-                                                 "traditions/tradition[" + CharacterObjectSettings.BookXPath() + ']'))
+                                    await this.DoThreadSafeAsync(() =>
                                     {
-                                        string strName
-                                            = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync("name"))
-                                            ?.Value;
-                                        if (!string.IsNullOrEmpty(strName))
-                                            lstTraditions.Add(new ListItem(
-                                                                  (await xmlTradition
-                                                                      .SelectSingleNodeAndCacheExpressionAsync("id"))
-                                                                  ?.Value ?? strName,
-                                                                  (await xmlTradition
-                                                                      .SelectSingleNodeAndCacheExpressionAsync(
-                                                                          "translate"))
-                                                                  ?.Value ?? strName));
-                                    }
-                                }
-
-                                if (lstTraditions.Count > 1)
-                                {
-                                    lstTraditions.Sort(CompareListItems.CompareNames);
-                                    lstTraditions.Insert(
-                                        0, new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
-                                    await cboTradition.PopulateWithListItemsAsync(lstTraditions);
-                                }
-                                else
-                                {
-                                    cboTradition.Visible = false;
-                                    lblTraditionLabel.Visible = false;
-                                }
-                            }
-
-                            using (new FetchSafelyFromPool<List<ListItem>>(
-                                       Utils.ListItemListPool, out List<ListItem> lstDrainAttributes))
-                            {
-                                if (xmlTraditionsBaseChummerNode != null)
-                                {
-                                    foreach (XPathNavigator xmlDrain in await xmlTraditionsBaseChummerNode
-                                                 .SelectAndCacheExpressionAsync(
-                                                     "drainattributes/drainattribute"))
-                                    {
-                                        string strName
-                                            = (await xmlDrain.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
-                                        if (!string.IsNullOrEmpty(strName) && lstDrainAttributes.All(x => x.Value.ToString() != strName))
+                                        lblWildReputation.Visible = false;
+                                        nudWildReputation.Visible = false;
+                                        lblWildReputationTotal.Visible = false;
+                                        if (!CharacterObjectSettings.BookEnabled("SG"))
                                         {
-                                            string strTranslatedName = (await xmlDrain
-                                                .SelectSingleNodeAndCacheExpressionAsync(
-                                                    "translate"))?.Value ?? strName;
-                                            lstDrainAttributes.Add(new ListItem(strName, strTranslatedName));
+                                            lblAstralReputation.Visible = false;
+                                            nudAstralReputation.Visible = false;
+                                            lblAstralReputationTotal.Visible = false;
+                                        }
+                                        else
+                                        {
+                                            lblAstralReputation.Visible = true;
+                                            nudAstralReputation.Visible = true;
+                                            lblAstralReputationTotal.Visible = true;
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    await this.DoThreadSafeAsync(() =>
+                                    {
+                                        lblWildReputation.Visible = true;
+                                        nudWildReputation.Visible = true;
+                                        lblWildReputationTotal.Visible = true;
+                                        lblAstralReputation.Visible = true;
+                                        nudAstralReputation.Visible = true;
+                                        lblAstralReputationTotal.Visible = true;
+                                    });
+                                }
+
+                                // Refresh all trees because enabled sources can change the nodes that are visible
+                                RefreshQualities(treQualities, cmsQuality);
+                                await RefreshSpirits(panSpirits, panSprites);
+                                RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
+                                RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
+                                RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                                RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                                RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
+                                RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
+                                RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
+                                RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
+                                RefreshContacts(panContacts, panEnemies, panPets);
+                                RefreshSustainedSpells(flpSustainedSpells, flpSustainedComplexForms,
+                                                       flpSustainedCritterPowers, chkPsycheActiveMagician,
+                                                       chkPsycheActiveTechnomancer);
+
+                                RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                                RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                                RefreshFociFromGear(treFoci, null);
+                                RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
+                                RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
+                                               cmsWeaponAccessoryGear);
+                                RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
+                                                cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
+                                                cmsVehicleGear,
+                                                cmsWeaponMount,
+                                                cmsVehicleCyberware, cmsVehicleCyberwareGear);
+                                RefreshDrugs(treCustomDrugs);
+                                await this.DoThreadSafeAsync(() =>
+                                {
+                                    treWeapons.SortCustomOrder();
+                                    treArmor.SortCustomOrder();
+                                    treGear.SortCustomOrder();
+                                    treLifestyles.SortCustomOrder();
+                                    treCustomDrugs.SortCustomOrder();
+                                    treCyberware.SortCustomOrder();
+                                    treVehicles.SortCustomOrder();
+                                    treCritterPowers.SortCustomOrder();
+                                });
+
+                                XPathNavigator xmlTraditionsBaseChummerNode =
+                                    await (await CharacterObject.LoadDataXPathAsync("traditions.xml"))
+                                        .SelectSingleNodeAndCacheExpressionAsync("/chummer");
+                                using (new FetchSafelyFromPool<List<ListItem>>(
+                                           Utils.ListItemListPool, out List<ListItem> lstTraditions))
+                                {
+                                    if (xmlTraditionsBaseChummerNode != null)
+                                    {
+                                        foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
+                                                     "traditions/tradition[" + CharacterObjectSettings.BookXPath()
+                                                                             + ']'))
+                                        {
+                                            string strName
+                                                = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync("name"))
+                                                ?.Value;
+                                            if (!string.IsNullOrEmpty(strName))
+                                                lstTraditions.Add(new ListItem(
+                                                                      (await xmlTradition
+                                                                          .SelectSingleNodeAndCacheExpressionAsync(
+                                                                              "id"))
+                                                                      ?.Value ?? strName,
+                                                                      (await xmlTradition
+                                                                          .SelectSingleNodeAndCacheExpressionAsync(
+                                                                              "translate"))
+                                                                      ?.Value ?? strName));
                                         }
                                     }
-                                }
 
-                                lstDrainAttributes.Sort(CompareListItems.CompareNames);
-                                lstDrainAttributes.Insert(0, ListItem.Blank);
-                                await cboDrain.PopulateWithListItemsAsync(lstDrainAttributes);
-                            }
-
-                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                            out HashSet<string> limit))
-                            {
-                                foreach (Improvement improvement in await ImprovementManager
-                                             .GetCachedImprovementListForValueOfAsync(
-                                                 CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
-                                {
-                                    limit.Add(improvement.ImprovedName);
+                                    if (lstTraditions.Count > 1)
+                                    {
+                                        lstTraditions.Sort(CompareListItems.CompareNames);
+                                        lstTraditions.Insert(
+                                            0,
+                                            new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
+                                        if (!lstTraditions.SequenceEqual(
+                                                await cboTradition.DoThreadSafeFuncAsync(
+                                                    x => x.Items.Cast<ListItem>())))
+                                        {
+                                            await cboTradition.PopulateWithListItemsAsync(lstTraditions);
+                                            await cboTradition.DoThreadSafeAsync(x =>
+                                            {
+                                                if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
+                                                    x.SelectedValue
+                                                        = CharacterObject.MagicTradition.SourceID.ToString();
+                                                else if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                                                    x.SelectedIndex = 0;
+                                            });
+                                        }
+                                    }
+                                    else
+                                    {
+                                        await this.DoThreadSafeAsync(() =>
+                                        {
+                                            cboTradition.Visible = false;
+                                            lblTraditionLabel.Visible = false;
+                                        });
+                                    }
                                 }
 
                                 using (new FetchSafelyFromPool<List<ListItem>>(
-                                           Utils.ListItemListPool, out List<ListItem> lstSpirit))
+                                           Utils.ListItemListPool, out List<ListItem> lstDrainAttributes))
                                 {
-                                    lstSpirit.Add(ListItem.Blank);
                                     if (xmlTraditionsBaseChummerNode != null)
                                     {
-                                        foreach (XPathNavigator xmlSpirit in await xmlTraditionsBaseChummerNode
-                                                     .SelectAndCacheExpressionAsync("spirits/spirit"))
+                                        foreach (XPathNavigator xmlDrain in await xmlTraditionsBaseChummerNode
+                                                     .SelectAndCacheExpressionAsync(
+                                                         "drainattributes/drainattribute"))
                                         {
-                                            string strSpiritName
-                                                = (await xmlSpirit.SelectSingleNodeAndCacheExpressionAsync("name"))
+                                            string strName
+                                                = (await xmlDrain.SelectSingleNodeAndCacheExpressionAsync("name"))
                                                 ?.Value;
-                                            if (!string.IsNullOrEmpty(strSpiritName)
-                                                && (limit.Count == 0 || limit.Contains(strSpiritName)))
+                                            if (!string.IsNullOrEmpty(strName)
+                                                && lstDrainAttributes.All(x => x.Value.ToString() != strName))
                                             {
-                                                lstSpirit.Add(new ListItem(strSpiritName,
-                                                                           (await xmlSpirit
-                                                                               .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                   "translate"))?.Value
-                                                                           ?? strSpiritName));
+                                                string strTranslatedName = (await xmlDrain
+                                                    .SelectSingleNodeAndCacheExpressionAsync(
+                                                        "translate"))?.Value ?? strName;
+                                                lstDrainAttributes.Add(new ListItem(strName, strTranslatedName));
                                             }
                                         }
                                     }
 
-                                    lstSpirit.Sort(CompareListItems.CompareNames);
-                                    await cboSpiritCombat.PopulateWithListItemsAsync(lstSpirit);
-                                    await cboSpiritDetection.PopulateWithListItemsAsync(lstSpirit);
-                                    await cboSpiritHealth.PopulateWithListItemsAsync(lstSpirit);
-                                    await cboSpiritIllusion.PopulateWithListItemsAsync(lstSpirit);
-                                    await cboSpiritManipulation.PopulateWithListItemsAsync(lstSpirit);
+                                    lstDrainAttributes.Sort(CompareListItems.CompareNames);
+                                    lstDrainAttributes.Insert(0, ListItem.Blank);
+                                    await cboDrain.PopulateWithListItemsAsync(lstDrainAttributes);
                                 }
-                            }
 
-                            // Populate the Technomancer Streams list.
-                            xmlTraditionsBaseChummerNode =
-                                await (await CharacterObject.LoadDataXPathAsync("streams.xml"))
-                                    .SelectSingleNodeAndCacheExpressionAsync("/chummer");
-                            using (new FetchSafelyFromPool<List<ListItem>>(
-                                       Utils.ListItemListPool, out List<ListItem> lstStreams))
-                            {
-                                if (xmlTraditionsBaseChummerNode != null)
+                                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                           out HashSet<string> limit))
                                 {
-                                    foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
-                                                 "traditions/tradition[" + CharacterObjectSettings.BookXPath() + ']'))
+                                    foreach (Improvement improvement in await ImprovementManager
+                                                 .GetCachedImprovementListForValueOfAsync(
+                                                     CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
                                     {
-                                        string strName
-                                            = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync("name"))
-                                            ?.Value;
-                                        if (!string.IsNullOrEmpty(strName))
-                                            lstStreams.Add(new ListItem(
-                                                               (await xmlTradition
-                                                                   .SelectSingleNodeAndCacheExpressionAsync("id"))
-                                                               ?.Value ?? strName,
-                                                               (await xmlTradition
-                                                                   .SelectSingleNodeAndCacheExpressionAsync(
-                                                                       "translate"))
-                                                               ?.Value ?? strName));
+                                        limit.Add(improvement.ImprovedName);
+                                    }
+
+                                    using (new FetchSafelyFromPool<List<ListItem>>(
+                                               Utils.ListItemListPool, out List<ListItem> lstSpirit))
+                                    {
+                                        lstSpirit.Add(ListItem.Blank);
+                                        if (xmlTraditionsBaseChummerNode != null)
+                                        {
+                                            foreach (XPathNavigator xmlSpirit in await xmlTraditionsBaseChummerNode
+                                                         .SelectAndCacheExpressionAsync("spirits/spirit"))
+                                            {
+                                                string strSpiritName
+                                                    = (await xmlSpirit.SelectSingleNodeAndCacheExpressionAsync("name"))
+                                                    ?.Value;
+                                                if (!string.IsNullOrEmpty(strSpiritName)
+                                                    && (limit.Count == 0 || limit.Contains(strSpiritName)))
+                                                {
+                                                    lstSpirit.Add(new ListItem(strSpiritName,
+                                                                               (await xmlSpirit
+                                                                                   .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                       "translate"))?.Value
+                                                                               ?? strSpiritName));
+                                                }
+                                            }
+                                        }
+
+                                        lstSpirit.Sort(CompareListItems.CompareNames);
+                                        await cboSpiritCombat.PopulateWithListItemsAsync(lstSpirit);
+                                        await cboSpiritDetection.PopulateWithListItemsAsync(lstSpirit);
+                                        await cboSpiritHealth.PopulateWithListItemsAsync(lstSpirit);
+                                        await cboSpiritIllusion.PopulateWithListItemsAsync(lstSpirit);
+                                        await cboSpiritManipulation.PopulateWithListItemsAsync(lstSpirit);
                                     }
                                 }
 
-                                if (lstStreams.Count > 1)
+                                // Populate the Technomancer Streams list.
+                                xmlTraditionsBaseChummerNode =
+                                    await (await CharacterObject.LoadDataXPathAsync("streams.xml"))
+                                        .SelectSingleNodeAndCacheExpressionAsync("/chummer");
+                                using (new FetchSafelyFromPool<List<ListItem>>(
+                                           Utils.ListItemListPool, out List<ListItem> lstStreams))
                                 {
-                                    lstStreams.Sort(CompareListItems.CompareNames);
-                                    lstStreams.Insert(
-                                        0, new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
-                                    await cboStream.PopulateWithListItemsAsync(lstStreams);
-                                }
-                                else
-                                {
-                                    cboStream.Visible = false;
-                                    lblStreamLabel.Visible = false;
-                                }
-                            }
+                                    if (xmlTraditionsBaseChummerNode != null)
+                                    {
+                                        foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
+                                                     "traditions/tradition[" + CharacterObjectSettings.BookXPath()
+                                                                             + ']'))
+                                        {
+                                            string strName
+                                                = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync("name"))
+                                                ?.Value;
+                                            if (!string.IsNullOrEmpty(strName))
+                                                lstStreams.Add(new ListItem(
+                                                                   (await xmlTradition
+                                                                       .SelectSingleNodeAndCacheExpressionAsync("id"))
+                                                                   ?.Value ?? strName,
+                                                                   (await xmlTradition
+                                                                       .SelectSingleNodeAndCacheExpressionAsync(
+                                                                           "translate"))
+                                                                   ?.Value ?? strName));
+                                        }
+                                    }
 
-                            await RefreshSelectedVehicle();
-                            ResumeLayout();
+                                    if (lstStreams.Count > 1)
+                                    {
+                                        lstStreams.Sort(CompareListItems.CompareNames);
+                                        lstStreams.Insert(
+                                            0,
+                                            new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
+                                        if (!lstStreams.SequenceEqual(
+                                                await cboStream.DoThreadSafeFuncAsync(x => x.Items.Cast<ListItem>())))
+                                        {
+                                            await cboStream.PopulateWithListItemsAsync(lstStreams);
+                                            await cboStream.DoThreadSafeAsync(x =>
+                                            {
+                                                if (CharacterObject.MagicTradition.Type == TraditionType.RES)
+                                                    x.SelectedValue
+                                                        = CharacterObject.MagicTradition.SourceID.ToString();
+                                                else if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                                                    x.SelectedIndex = 0;
+                                            });
+                                        }
+                                    }
+                                    else
+                                    {
+                                        await this.DoThreadSafeAsync(() =>
+                                        {
+                                            cboStream.Visible = false;
+                                            lblStreamLabel.Visible = false;
+                                        });
+                                    }
+                                }
+
+                                await RefreshSelectedVehicle();
+                            }
+                            finally
+                            {
+                                await this.DoThreadSafeAsync(x => x.ResumeLayout());
+                            }
                         }
 
                         break;
                     }
-                case nameof(CharacterSettings.AllowFreeGrids):
+                    case nameof(CharacterSettings.AllowFreeGrids):
                     {
                         if (!CharacterObjectSettings.BookEnabled("HT"))
                         {
                             using (CursorWait.New(this))
                             {
-                                SuspendLayout();
-                                RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
-                                treLifestyles.SortCustomOrder();
-                                ResumeLayout();
+                                await this.DoThreadSafeAsync(x =>
+                                {
+                                    x.SuspendLayout();
+                                    try
+                                    {
+                                        RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
+                                        treLifestyles.SortCustomOrder();
+                                    }
+                                    finally
+                                    {
+                                        x.ResumeLayout();
+                                    }
+                                }, GenericToken);
                             }
                         }
 
                         break;
                     }
-                case nameof(CharacterSettings.EnableEnemyTracking):
-                {
-                    using (CursorWait.New(this))
+                    case nameof(CharacterSettings.EnableEnemyTracking):
                     {
-                        SuspendLayout();
-                        if (!CharacterObjectSettings.EnableEnemyTracking)
+                        using (CursorWait.New(this))
                         {
-                            tabPeople.TabPages.Remove(tabEnemies);
-                        }
-                        else
-                        {
-                            if (!tabPeople.TabPages.Contains(tabEnemies))
-                                tabPeople.TabPages.Insert(tabPeople.TabPages.IndexOf(tabContacts) + 1, tabEnemies);
-                            RefreshContacts(panContacts, panEnemies, panPets);
+                            await this.DoThreadSafeAsync(x =>
+                            {
+                                x.SuspendLayout();
+                                try
+                                {
+                                    if (!CharacterObjectSettings.EnableEnemyTracking)
+                                    {
+                                        tabPeople.TabPages.Remove(tabEnemies);
+                                    }
+                                    else
+                                    {
+                                        if (!tabPeople.TabPages.Contains(tabEnemies))
+                                            tabPeople.TabPages.Insert(tabPeople.TabPages.IndexOf(tabContacts) + 1,
+                                                                      tabEnemies);
+                                        RefreshContacts(panContacts, panEnemies, panPets);
+                                    }
+                                }
+                                finally
+                                {
+                                    x.ResumeLayout();
+                                }
+                            });
                         }
 
-                        ResumeLayout();
+                        break;
                     }
-
-                    break;
                 }
+            }
+            finally
+            {
+                IsCharacterUpdateRequested = true;
             }
         }
 
@@ -3901,11 +3965,6 @@ namespace Chummer
             }
 
             CopyObject(selectedObject);
-        }
-
-        private void tsbCopy_Click(object sender, EventArgs e)
-        {
-            mnuEditCopy_Click(sender, e);
         }
 
         private async void mnuSpecialConvertToFreeSprite_Click(object sender, EventArgs e)
@@ -7705,7 +7764,15 @@ namespace Chummer
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGearVehicle"), await LanguageManager.GetStringAsync("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
             }
-            await PurchaseVehicleGear(objSelectedVehicle, objLocation);
+
+            try
+            {
+                await PurchaseVehicleGear(objSelectedVehicle, objLocation, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsVehicleSensorAddAsPlugin_Click(object sender, EventArgs e)
@@ -9015,86 +9082,146 @@ namespace Chummer
 
         private async void tsArmorNotes_Click(object sender, EventArgs e)
         {
-            if (!(treArmor.SelectedNode?.Tag is IHasNotes selectedObject))
-                return;
-            await WriteNotes(selectedObject, treArmor.SelectedNode);
+            try
+            {
+                await WriteNotes(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsWeaponNotes_Click(object sender, EventArgs e)
         {
-            if (!(treWeapons.SelectedNode?.Tag is IHasNotes selectedObject))
-                return;
-            await WriteNotes(selectedObject, treWeapons.SelectedNode);
+            try
+            {
+                await WriteNotes(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsCyberwareNotes_Click(object sender, EventArgs e)
         {
-            if (!(treCyberware.SelectedNode?.Tag is IHasNotes selectedObject))
-                return;
-            await WriteNotes(selectedObject, treCyberware.SelectedNode);
+            try
+            {
+                await WriteNotes(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsQualityNotes_Click(object sender, EventArgs e)
         {
-            if (!(treQualities.SelectedNode?.Tag is IHasNotes selectedObject))
-                return;
-            await WriteNotes(selectedObject, treQualities.SelectedNode);
+            try
+            {
+                await WriteNotes(await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsMartialArtsNotes_Click(object sender, EventArgs e)
         {
-            if (!(treMartialArts.SelectedNode?.Tag is IHasNotes selectedObject))
-                return;
-            await WriteNotes(selectedObject, treMartialArts.SelectedNode);
+            try
+            {
+                await WriteNotes(await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsSpellNotes_Click(object sender, EventArgs e)
         {
-            if (!(treSpells.SelectedNode?.Tag is IHasNotes selectedObject))
-                return;
-            await WriteNotes(selectedObject, treSpells.SelectedNode);
+            try
+            {
+                await WriteNotes(await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsComplexFormNotes_Click(object sender, EventArgs e)
         {
-            if (!(treComplexForms.SelectedNode?.Tag is IHasNotes selectedObject))
-                return;
-            await WriteNotes(selectedObject, treComplexForms.SelectedNode);
+            try
+            {
+                await WriteNotes(await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsCritterPowersNotes_Click(object sender, EventArgs e)
         {
-            if (!(treCritterPowers.SelectedNode?.Tag is IHasNotes selectedObject))
-                return;
-            await WriteNotes(selectedObject, treCritterPowers.SelectedNode);
+            try
+            {
+                await WriteNotes(await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsMetamagicNotes_Click(object sender, EventArgs e)
         {
-            if (!(treMetamagic.SelectedNode?.Tag is IHasNotes selectedObject))
-                return;
-            await WriteNotes(selectedObject, treMetamagic.SelectedNode);
+            try
+            {
+                await WriteNotes(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsGearNotes_Click(object sender, EventArgs e)
         {
-            if (!(treGear.SelectedNode?.Tag is IHasNotes selectedObject))
-                return;
-            await WriteNotes(selectedObject, treGear.SelectedNode);
+            try
+            {
+                await WriteNotes(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsVehicleNotes_Click(object sender, EventArgs e)
         {
-            if (!(treVehicles.SelectedNode?.Tag is IHasNotes selectedObject))
-                return;
-            await WriteNotes(selectedObject, treVehicles.SelectedNode);
+            try
+            {
+                await WriteNotes(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsLifestyleNotes_Click(object sender, EventArgs e)
         {
-            if (!(treLifestyles.SelectedNode?.Tag is IHasNotes selectedObject))
-                return;
-            await WriteNotes(selectedObject, treLifestyles.SelectedNode);
+            try
+            {
+                await WriteNotes(await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsVehicleName_Click(object sender, EventArgs e)
@@ -9484,9 +9611,14 @@ namespace Chummer
 
         private async void tsImprovementNotes_Click(object sender, EventArgs e)
         {
-            if (!(treImprovements.SelectedNode?.Tag is IHasNotes selectedObject))
-                return;
-            await WriteNotes(selectedObject, treImprovements.SelectedNode);
+            try
+            {
+                await WriteNotes(await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsArmorRenameLocation_Click(object sender, EventArgs e)
@@ -18809,9 +18941,14 @@ namespace Chummer
 
         private async void tsInitiationNotes_Click(object sender, EventArgs e)
         {
-            if (!(treMetamagic.SelectedNode?.Tag is IHasNotes selectedObject))
-                return;
-            await WriteNotes(selectedObject, treMetamagic.SelectedNode);
+            try
+            {
+                await WriteNotes(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tsMetamagicAddEnhancement_Click(object sender, EventArgs e)
@@ -19071,9 +19208,14 @@ namespace Chummer
 
         private async void tsAIProgramNotes_Click(object sender, EventArgs e)
         {
-            if (!(treAIPrograms.SelectedNode?.Tag is IHasNotes selectedObject))
-                return;
-            await WriteNotes(selectedObject, treAIPrograms.SelectedNode);
+            try
+            {
+                await WriteNotes(await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void cboPrimaryArm_SelectedIndexChanged(object sender, EventArgs e)
