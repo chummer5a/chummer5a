@@ -309,8 +309,16 @@ namespace Chummer
         {
             if (objParent == null)
                 return;
-
-            objParent.DoThreadSafe(x => x.RightToLeft = eIntoRightToLeft);
+            
+            try
+            {
+                objParent.DoThreadSafe(x => x.RightToLeft = eIntoRightToLeft);
+            }
+            catch (NotSupportedException)
+            {
+                if (objParent.GetType() != typeof(WebBrowser))
+                    Utils.BreakIfDebug();
+            }
 
             if (objParent is Form frmForm)
             {
