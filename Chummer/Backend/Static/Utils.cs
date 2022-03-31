@@ -353,11 +353,10 @@ namespace Chummer
                     //still being written to
                     //or being processed by another thread
                     //or does not exist (has already been processed)
-                    token.ThrowIfCancellationRequested();
                     if (blnSync)
-                        SafeSleep(intWaitInterval);
+                        SafeSleep(intWaitInterval, token);
                     else
-                        await SafeSleepAsync(intWaitInterval);
+                        await SafeSleepAsync(intWaitInterval, token);
                     intTimeout -= intWaitInterval;
                 }
                 if (intTimeout < 0)
@@ -486,11 +485,10 @@ namespace Chummer
                     //still being written to
                     //or being processed by another thread
                     //or does not exist (has already been processed)
-                    token.ThrowIfCancellationRequested();
                     if (blnSync)
-                        SafeSleep(intWaitInterval);
+                        SafeSleep(intWaitInterval, token);
                     else
-                        await SafeSleepAsync(intWaitInterval);
+                        await SafeSleepAsync(intWaitInterval, token);
                     intTimeout -= intWaitInterval;
                 }
                 if (intTimeout < 0)
@@ -813,6 +811,18 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar for Thread.Sleep with the default sleep duration done in a way that makes sure the application will run queued up events afterwards.
+        /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
+        /// Because async functions don't lock threads, it does not need to manually call events anyway.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ConfiguredTaskAwaitable SafeSleepAsync(CancellationToken token)
+        {
+            // ReSharper disable once IntroduceOptionalParameters.Global
+            return SafeSleepAsync(DefaultSleepDuration, token);
+        }
+
+        /// <summary>
         /// Syntactic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
         /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
         /// Because async functions don't lock threads, it does not need to manually call events anyway.
@@ -825,6 +835,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
+        /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
+        /// Because async functions don't lock threads, it does not need to manually call events anyway.
+        /// </summary>
+        /// <param name="intDurationMilliseconds">Duration to wait in milliseconds.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ConfiguredTaskAwaitable SafeSleepAsync(int intDurationMilliseconds, CancellationToken token)
+        {
+            return Task.Delay(intDurationMilliseconds, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Syntactic sugar for Thread.Sleep with the default sleep duration done in a way that makes sure the application will run queued up events afterwards.
         /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
         /// </summary>
@@ -833,6 +856,18 @@ namespace Chummer
         public static void SafeSleep(bool blnForceDoEvents = false)
         {
             SafeSleep(DefaultSleepDuration, blnForceDoEvents);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for Thread.Sleep with the default sleep duration done in a way that makes sure the application will run queued up events afterwards.
+        /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
+        /// </summary>
+        /// <param name="token">Cancellation token to use.</param>
+        /// <param name="blnForceDoEvents">Force running of events. Useful for unit tests where running events is normally disabled.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SafeSleep(CancellationToken token, bool blnForceDoEvents = false)
+        {
+            SafeSleep(DefaultSleepDuration, token, blnForceDoEvents);
         }
 
         /// <summary>
@@ -862,6 +897,41 @@ namespace Chummer
         public static void SafeSleep(TimeSpan objTimeSpan, bool blnForceDoEvents = false)
         {
             SafeSleep(objTimeSpan.Milliseconds, blnForceDoEvents);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
+        /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
+        /// </summary>
+        /// <param name="intDurationMilliseconds">Duration to wait in milliseconds.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        /// <param name="blnForceDoEvents">Force running of events. Useful for unit tests where running events is normally disabled.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SafeSleep(int intDurationMilliseconds, CancellationToken token, bool blnForceDoEvents = false)
+        {
+            for (; intDurationMilliseconds > 0; intDurationMilliseconds -= DefaultSleepDuration)
+            {
+                token.ThrowIfCancellationRequested();
+                Thread.Sleep(intDurationMilliseconds);
+                if (EverDoEvents)
+                {
+                    token.ThrowIfCancellationRequested();
+                    DoEventsSafe(blnForceDoEvents);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
+        /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
+        /// </summary>
+        /// <param name="objTimeSpan">Duration to wait. If 0 or less milliseconds, DefaultSleepDuration is used instead.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        /// <param name="blnForceDoEvents">Force running of events. Useful for unit tests where running events is normally disabled.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SafeSleep(TimeSpan objTimeSpan, CancellationToken token, bool blnForceDoEvents = false)
+        {
+            SafeSleep(objTimeSpan.Milliseconds, token, blnForceDoEvents);
         }
 
         public static void DoEventsSafe(bool blnForceDoEvents = false)
@@ -900,17 +970,19 @@ namespace Chummer
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
         /// </summary>
         /// <param name="funcToRun">Code to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void RunWithoutThreadLock(Action funcToRun)
+        public static void RunWithoutThreadLock(Action funcToRun, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!EverDoEvents)
             {
                 funcToRun.Invoke();
                 return;
             }
-            Task objTask = Task.Run(funcToRun);
+            Task objTask = Task.Run(funcToRun, token);
             while (!objTask.IsCompleted)
-                SafeSleep();
+                SafeSleep(token);
             if (objTask.Exception != null)
                 throw objTask.Exception;
         }
@@ -940,16 +1012,18 @@ namespace Chummer
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
         /// </summary>
         /// <param name="funcToRun">Code to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T RunWithoutThreadLock<T>(Func<T> funcToRun)
+        public static T RunWithoutThreadLock<T>(Func<T> funcToRun, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!EverDoEvents)
             {
                 return funcToRun.Invoke();
             }
-            Task<T> objTask = Task.Run(funcToRun);
+            Task<T> objTask = Task.Run(funcToRun, token);
             while (!objTask.IsCompleted)
-                SafeSleep();
+                SafeSleep(token);
             if (objTask.Exception != null)
                 throw objTask.Exception;
             return objTask.Result;
@@ -987,9 +1061,11 @@ namespace Chummer
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
         /// </summary>
         /// <param name="funcToRun">Code to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T RunWithoutThreadLock<T>(Func<Task<T>> funcToRun)
+        public static T RunWithoutThreadLock<T>(Func<Task<T>> funcToRun, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!EverDoEvents)
             {
                 Task<T> objSyncTask = funcToRun.Invoke();
@@ -999,9 +1075,9 @@ namespace Chummer
                     throw objSyncTask.Exception;
                 return objSyncTask.Result;
             }
-            Task<T> objTask = Task.Run(funcToRun);
+            Task<T> objTask = Task.Run(funcToRun, token);
             while (!objTask.IsCompleted)
-                SafeSleep();
+                SafeSleep(token);
             if (objTask.Exception != null)
                 throw objTask.Exception;
             return objTask.Result;
@@ -1012,9 +1088,11 @@ namespace Chummer
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
         /// </summary>
         /// <param name="afuncToRun">Codes to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T[] RunWithoutThreadLock<T>(Func<Task<T>[]> afuncToRun)
+        public static T[] RunWithoutThreadLock<T>(Func<Task<T>[]> afuncToRun, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             Task<T>[] atskToRun = afuncToRun.Invoke();
             T[] aobjReturn = new T[atskToRun.Length];
             if (!EverDoEvents)
@@ -1034,11 +1112,11 @@ namespace Chummer
             for (int i = 0; i < atskToRun.Length; ++i)
             {
                 int intLocal = i;
-                aobjTasks[i] = Task.Run(() => atskToRun[intLocal]);
+                aobjTasks[i] = Task.Run(() => atskToRun[intLocal], token);
             }
-            Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks));
+            Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks), token);
             while (!objTask.IsCompleted)
-                SafeSleep();
+                SafeSleep(token);
             if (objTask.Exception != null)
                 throw objTask.Exception;
             for (int i = 0; i < atskToRun.Length; ++i)
@@ -1086,9 +1164,11 @@ namespace Chummer
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
         /// </summary>
         /// <param name="funcToRun">Code to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void RunWithoutThreadLock(Func<Task> funcToRun)
+        public static void RunWithoutThreadLock(Func<Task> funcToRun, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!EverDoEvents)
             {
                 Task objSyncTask = funcToRun.Invoke();
@@ -1098,9 +1178,9 @@ namespace Chummer
                     throw objSyncTask.Exception;
                 return;
             }
-            Task objTask = Task.Run(funcToRun);
+            Task objTask = Task.Run(funcToRun, token);
             while (!objTask.IsCompleted)
-                SafeSleep();
+                SafeSleep(token);
             if (objTask.Exception != null)
                 throw objTask.Exception;
         }
@@ -1110,9 +1190,11 @@ namespace Chummer
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
         /// </summary>
         /// <param name="afuncToRun">Codes to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void RunWithoutThreadLock(Func<Task[]> afuncToRun)
+        public static void RunWithoutThreadLock(Func<Task[]> afuncToRun, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             Task[] atskToRun;
             if (!EverDoEvents)
             {
@@ -1132,11 +1214,11 @@ namespace Chummer
             for (int i = 0; i < atskToRun.Length; ++i)
             {
                 int intLocal = i;
-                aobjTasks[i] = Task.Run(() => atskToRun[intLocal]);
+                aobjTasks[i] = Task.Run(() => atskToRun[intLocal], token);
             }
-            Task objTask = Task.Run(() => Task.WhenAll(aobjTasks));
+            Task objTask = Task.Run(() => Task.WhenAll(aobjTasks), token);
             while (!objTask.IsCompleted)
-                SafeSleep();
+                SafeSleep(token);
             if (objTask.Exception != null)
                 throw objTask.Exception;
         }

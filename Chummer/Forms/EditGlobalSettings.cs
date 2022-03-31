@@ -946,7 +946,7 @@ namespace Chummer
         private async ValueTask TranslateForm(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await this.TranslateWinFormAsync(_strSelectedLanguage);
+            await this.TranslateWinFormAsync(_strSelectedLanguage, token: token);
             await PopulateDefaultCharacterSettingLists(token);
             await PopulateMugshotCompressionOptions(token);
             await SetToolTips(token);
@@ -975,7 +975,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstSourcebookInfos))
             {
-                foreach (XPathNavigator objXmlBook in await (await XmlManager.LoadXPathAsync("books.xml", null, _strSelectedLanguage))
+                foreach (XPathNavigator objXmlBook in await (await XmlManager.LoadXPathAsync("books.xml", strLanguage: _strSelectedLanguage, token: token))
                              .SelectAndCacheExpressionAsync("/chummer/books/book"))
                 {
                     string strCode = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("code"))?.Value;
@@ -1338,7 +1338,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstPdfParameters))
             {
-                foreach (XPathNavigator objXmlNode in await (await XmlManager.LoadXPathAsync("options.xml", null, _strSelectedLanguage))
+                foreach (XPathNavigator objXmlNode in await (await XmlManager.LoadXPathAsync("options.xml", strLanguage: _strSelectedLanguage, token: token))
                              .SelectAndCacheExpressionAsync(
                                  "/chummer/pdfarguments/pdfargument"))
                 {
@@ -1533,7 +1533,7 @@ namespace Chummer
                                                             out HashSet<string> setLanguagesWithSheets))
             {
                 // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-                foreach (XPathNavigator xmlSheetLanguage in await (await XmlManager.LoadXPathAsync("sheets.xml"))
+                foreach (XPathNavigator xmlSheetLanguage in await (await XmlManager.LoadXPathAsync("sheets.xml", token: token))
                              .SelectAndCacheExpressionAsync(
                                  "/chummer/sheets/@lang"))
                 {
@@ -1598,7 +1598,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstFiles))
             {
                 // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-                foreach (XPathNavigator xmlSheet in await (await XmlManager.LoadXPathAsync("sheets.xml"))
+                foreach (XPathNavigator xmlSheet in await (await XmlManager.LoadXPathAsync("sheets.xml", token: token))
                              .SelectAndCacheExpressionAsync(
                                  "/chummer/sheets[@lang="
                                  + GlobalSettings.Language.CleanXPath()

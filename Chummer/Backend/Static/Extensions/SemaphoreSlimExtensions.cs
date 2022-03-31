@@ -36,5 +36,19 @@ namespace Chummer
             else
                 objSemaphoreSlim.Wait();
         }
+
+        /// <summary>
+        /// Version of SemaphoreSlim::Wait() that also processes application events if this is called on the UI thread
+        /// </summary>
+        public static void SafeWait(this SemaphoreSlim objSemaphoreSlim, CancellationToken token, bool blnForceDoEvents = false)
+        {
+            if (Utils.EverDoEvents)
+            {
+                while (!objSemaphoreSlim.Wait(Utils.DefaultSleepDuration, token))
+                    Utils.DoEventsSafe(blnForceDoEvents);
+            }
+            else
+                objSemaphoreSlim.Wait(token);
+        }
     }
 }

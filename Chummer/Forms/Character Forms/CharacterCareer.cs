@@ -13119,7 +13119,7 @@ namespace Chummer
                 if (await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is Improvement objImprovement)
                 {
                     // Get the human-readable name of the Improvement from the Improvements file.
-                    XmlNode objNode = (await CharacterObject.LoadDataAsync("improvements.xml"))
+                    XmlNode objNode = (await CharacterObject.LoadDataAsync("improvements.xml", token: token))
                                                      .SelectSingleNode(
                                                          "/chummer/improvements/improvement[id = "
                                                          + objImprovement.CustomId.CleanXPath() + ']');

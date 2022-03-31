@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -746,45 +747,55 @@ namespace Chummer
                         do
                         {
                             blnRepeatCheckCache = false;
-                            int intEmergencyRelease = 0;
-                            for (;
-                                 s_SetCurrentlyCalculatingValues.Contains(tupMyValueToCheck)
-                                 && intEmergencyRelease <= Utils.SleepEmergencyReleaseMaxTicks;
-                                 ++intEmergencyRelease)
+                            using (CancellationTokenSource objEmergencyRelease
+                                   = new CancellationTokenSource(
+                                       Utils.SleepEmergencyReleaseMaxTicks * Utils.DefaultSleepDuration))
                             {
-                                if (blnSync)
-                                    Utils.SafeSleep();
-                                else
-                                    await Utils.SafeSleepAsync();
-                            }
-
-                            // Emergency exit, so break if we are debugging and return the default value (just in case)
-                            if (intEmergencyRelease > Utils.SleepEmergencyReleaseMaxTicks)
-                            {
-                                Utils.BreakIfDebug();
-                                return new Tuple<decimal, List<Improvement>>(0, new List<Improvement>());
+                                CancellationToken objEmergencyReleaseToken = objEmergencyRelease.Token;
+                                try
+                                {
+                                    while (s_SetCurrentlyCalculatingValues.Contains(tupMyValueToCheck))
+                                    {
+                                        objEmergencyReleaseToken.ThrowIfCancellationRequested();
+                                        if (blnSync)
+                                            Utils.SafeSleep(objEmergencyReleaseToken);
+                                        else
+                                            await Utils.SafeSleepAsync(objEmergencyReleaseToken);
+                                    }
+                                }
+                                // Emergency exit, so break if we are debugging and return the default value (just in case)
+                                catch (OperationCanceledException)
+                                {
+                                    Utils.BreakIfDebug();
+                                    return new Tuple<decimal, List<Improvement>>(0, new List<Improvement>());
+                                }
                             }
 
                             // Also make sure we block off the conditionless check because we will be adding cached keys that will be used by the conditionless check
                             if (!string.IsNullOrWhiteSpace(strImprovedName) && !blnIncludeNonImproved)
                             {
-                                intEmergencyRelease = 0;
-                                for (;
-                                     s_SetCurrentlyCalculatingValues.Contains(tupBlankValueToCheck)
-                                     && intEmergencyRelease <= Utils.SleepEmergencyReleaseMaxTicks;
-                                     ++intEmergencyRelease)
+                                using (CancellationTokenSource objEmergencyRelease
+                                           = new CancellationTokenSource(
+                                               Utils.SleepEmergencyReleaseMaxTicks * Utils.DefaultSleepDuration))
                                 {
-                                    if (blnSync)
-                                        Utils.SafeSleep();
-                                    else
-                                        await Utils.SafeSleepAsync();
-                                }
-
-                                // Emergency exit, so break if we are debugging and return the default value (just in case)
-                                if (intEmergencyRelease > Utils.SleepEmergencyReleaseMaxTicks)
-                                {
-                                    Utils.BreakIfDebug();
-                                    return new Tuple<decimal, List<Improvement>>(0, new List<Improvement>());
+                                    CancellationToken objEmergencyReleaseToken = objEmergencyRelease.Token;
+                                    try
+                                    {
+                                        while (s_SetCurrentlyCalculatingValues.Contains(tupBlankValueToCheck))
+                                        {
+                                            objEmergencyReleaseToken.ThrowIfCancellationRequested();
+                                            if (blnSync)
+                                                Utils.SafeSleep(objEmergencyReleaseToken);
+                                            else
+                                                await Utils.SafeSleepAsync(objEmergencyReleaseToken);
+                                        }
+                                    }
+                                    // Emergency exit, so break if we are debugging and return the default value (just in case)
+                                    catch (OperationCanceledException)
+                                    {
+                                        Utils.BreakIfDebug();
+                                        return new Tuple<decimal, List<Improvement>>(0, new List<Improvement>());
+                                    }
                                 }
 
                                 ImprovementDictionaryKey objCacheKey

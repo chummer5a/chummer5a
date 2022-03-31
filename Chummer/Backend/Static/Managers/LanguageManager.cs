@@ -106,10 +106,11 @@ namespace Chummer
         /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="objObject">Object to translate.</param>
         /// <param name="blnDoResumeLayout">Whether to suspend and then resume the control being translated.</param>
+        /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void TranslateWinForm(this Control objObject, string strIntoLanguage = "", bool blnDoResumeLayout = true)
+        public static void TranslateWinForm(this Control objObject, string strIntoLanguage = "", bool blnDoResumeLayout = true, CancellationToken token = default)
         {
-            TranslateWinFormCoreAsync(true, objObject, strIntoLanguage, blnDoResumeLayout).GetAwaiter().GetResult();
+            TranslateWinFormCoreAsync(true, objObject, strIntoLanguage, blnDoResumeLayout, token).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -118,10 +119,11 @@ namespace Chummer
         /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="objObject">Object to translate.</param>
         /// <param name="blnDoResumeLayout">Whether to suspend and then resume the control being translated.</param>
+        /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task TranslateWinFormAsync(this Control objObject, string strIntoLanguage = "", bool blnDoResumeLayout = true)
+        public static Task TranslateWinFormAsync(this Control objObject, string strIntoLanguage = "", bool blnDoResumeLayout = true, CancellationToken token = default)
         {
-            return TranslateWinFormCoreAsync(false, objObject, strIntoLanguage, blnDoResumeLayout);
+            return TranslateWinFormCoreAsync(false, objObject, strIntoLanguage, blnDoResumeLayout, token);
         }
 
         /// <summary>
@@ -133,7 +135,8 @@ namespace Chummer
         /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="objObject">Object to translate.</param>
         /// <param name="blnDoResumeLayout">Whether to suspend and then resume the control being translated.</param>
-        private static async Task TranslateWinFormCoreAsync(bool blnSync, Control objObject, string strIntoLanguage, bool blnDoResumeLayout)
+        /// <param name="token">Cancellation token to use.</param>
+        private static async Task TranslateWinFormCoreAsync(bool blnSync, Control objObject, string strIntoLanguage, bool blnDoResumeLayout, CancellationToken token = default)
         {
             if (Utils.IsDesignerMode)
                 return;
@@ -141,17 +144,18 @@ namespace Chummer
             {
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverload
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     objObject.DoThreadSafe(x => x.SuspendLayout());
                 else
-                    await objObject.DoThreadSafeAsync(x => x.SuspendLayout());
+                    await objObject.DoThreadSafeAsync(x => x.SuspendLayout(), token);
             }
 
             if (string.IsNullOrEmpty(strIntoLanguage))
                 strIntoLanguage = GlobalSettings.Language;
             bool blnLanguageLoaded = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
-                ? LoadLanguage(strIntoLanguage)
-                : await LoadLanguageAsync(strIntoLanguage);
+                ? LoadLanguage(strIntoLanguage, token)
+                : await LoadLanguageAsync(strIntoLanguage, token);
             if (blnLanguageLoaded)
             {
                 RightToLeft eIntoRightToLeft = RightToLeft.No;
@@ -176,9 +180,10 @@ namespace Chummer
             {
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverload
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     objObject.DoThreadSafe(x => x.ResumeLayout());
                 else
-                    await objObject.DoThreadSafeAsync(x => x.ResumeLayout());
+                    await objObject.DoThreadSafeAsync(x => x.ResumeLayout(), token);
             }
         }
 
@@ -186,22 +191,24 @@ namespace Chummer
         /// Load a language's string translations.
         /// </summary>
         /// <param name="strLanguage">Language whose data should be loaded.</param>
+        /// <param name="token">Cancellation token to use.</param>
         /// <returns>True if loading is successful, false if not.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool LoadLanguage(string strLanguage)
+        public static bool LoadLanguage(string strLanguage, CancellationToken token = default)
         {
-            return LoadLanguageCoreAsync(true, strLanguage).GetAwaiter().GetResult();
+            return LoadLanguageCoreAsync(true, strLanguage, token).GetAwaiter().GetResult();
         }
 
         /// <summary>
         /// Load a language's string translations.
         /// </summary>
         /// <param name="strLanguage">Language whose data should be loaded.</param>
+        /// <param name="token">Cancellation token to use.</param>
         /// <returns>True if loading is successful, false if not.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task<bool> LoadLanguageAsync(string strLanguage)
+        public static Task<bool> LoadLanguageAsync(string strLanguage, CancellationToken token = default)
         {
-            return LoadLanguageCoreAsync(false, strLanguage);
+            return LoadLanguageCoreAsync(false, strLanguage, token);
         }
 
         /// <summary>
@@ -211,9 +218,11 @@ namespace Chummer
         /// </summary>
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
         /// <param name="strLanguage">Language whose data should be loaded.</param>
+        /// <param name="token">Cancellation token to use.</param>
         /// <returns>True if loading is successful, false if not.</returns>
-        private static async Task<bool> LoadLanguageCoreAsync(bool blnSync, string strLanguage)
+        private static async Task<bool> LoadLanguageCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return true;
             string strKey = strLanguage.ToUpperInvariant();
@@ -228,7 +237,7 @@ namespace Chummer
                     if (s_DicLanguageDataLockers.TryAdd(strKey, objLockerObject))
                         break;
                     objLockerObject.Dispose();
-                    Utils.SafeSleep();
+                    Utils.SafeSleep(token);
                 }
             }
             else
@@ -241,7 +250,7 @@ namespace Chummer
                     if (await s_DicLanguageDataLockers.TryAddAsync(strKey, objLockerObject))
                         break;
                     objLockerObject.Dispose();
-                    await Utils.SafeSleepAsync();
+                    await Utils.SafeSleepAsync(token);
                     (blnSuccess, objLockerObject) = await s_DicLanguageDataLockers.TryGetValueAsync(strKey);
                 }
             }
@@ -249,9 +258,9 @@ namespace Chummer
             LanguageData objNewLanguage;
             if (blnSync)
                 // ReSharper disable once MethodHasAsyncOverload
-                objLockerObject.SafeWait();
+                objLockerObject.SafeWait(token);
             else
-                await objLockerObject.WaitAsync();
+                await objLockerObject.WaitAsync(token);
             try
             {
                 if (blnSync)
@@ -274,7 +283,7 @@ namespace Chummer
                     {
                         if (await s_DicLanguageData.ContainsKeyAsync(strKey))
                             await s_DicLanguageData.RemoveAsync(strKey);
-                        objNewLanguage = await Task.Run(() => new LanguageData(strLanguage));
+                        objNewLanguage = await Task.Run(() => new LanguageData(strLanguage), token);
                         await s_DicLanguageData.AddAsync(strKey, objNewLanguage);
                     }
                 }
@@ -751,20 +760,22 @@ namespace Chummer
         /// Retrieve a string from the language file.
         /// </summary>
         /// <param name="strLanguage">Language whose document should be retrieved.</param>
+        /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static XPathDocument GetDataDocument(string strLanguage)
+        public static XPathDocument GetDataDocument(string strLanguage, CancellationToken token = default)
         {
-            return GetDataDocumentCoreAsync(true, strLanguage).GetAwaiter().GetResult();
+            return GetDataDocumentCoreAsync(true, strLanguage, token).GetAwaiter().GetResult();
         }
 
         /// <summary>
         /// Retrieve a string from the language file.
         /// </summary>
         /// <param name="strLanguage">Language whose document should be retrieved.</param>
+        /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task<XPathDocument> GetDataDocumentAsync(string strLanguage)
+        public static Task<XPathDocument> GetDataDocumentAsync(string strLanguage, CancellationToken token = default)
         {
-            return GetDataDocumentCoreAsync(false, strLanguage);
+            return GetDataDocumentCoreAsync(false, strLanguage, token);
         }
 
         /// <summary>
@@ -774,12 +785,14 @@ namespace Chummer
         /// </summary>
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
         /// <param name="strLanguage">Language whose document should be retrieved.</param>
-        private static async Task<XPathDocument> GetDataDocumentCoreAsync(bool blnSync, string strLanguage)
+        /// <param name="token">Cancellation token to use.</param>
+        private static async Task<XPathDocument> GetDataDocumentCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             bool blnLanguageLoaded = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
-                ? LoadLanguage(strLanguage)
-                : await LoadLanguageAsync(strLanguage);
+                ? LoadLanguage(strLanguage, token)
+                : await LoadLanguageAsync(strLanguage, token);
             if (blnLanguageLoaded)
             {
                 string strKey = strLanguage.ToUpperInvariant();

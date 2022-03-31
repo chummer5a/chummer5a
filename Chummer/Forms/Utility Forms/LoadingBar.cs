@@ -65,10 +65,8 @@ namespace Chummer
         /// Resets the ProgressBar
         /// </summary>
         /// <param name="intMaxProgressBarValue">New Maximum Value the ProgressBar should have.</param>
-        /// <param name="token">Cancellation token to use.</param>
-        public void Reset(int intMaxProgressBarValue = 100, CancellationToken token = default)
+        public void Reset(int intMaxProgressBarValue = 100)
         {
-            token.ThrowIfCancellationRequested();
             if (this.IsNullOrDisposed())
                 return;
             string strNewText = LanguageManager.GetString("String_Initializing");
@@ -77,7 +75,7 @@ namespace Chummer
                 lblLoadingInfo.Text = strNewText;
                 pgbLoadingProgress.Value = 0;
                 pgbLoadingProgress.Maximum = intMaxProgressBarValue + 1;
-            }, token);
+            });
         }
 
         /// <summary>
@@ -104,10 +102,8 @@ namespace Chummer
         /// </summary>
         /// <param name="strStepName">The text that the descriptive label above the ProgressBar should use, i.e. "Loading {strStepName}..."</param>
         /// <param name="eUseTextPattern">The text pattern to use in combination with <paramref name="strStepName"/>, e.g. "Loading", "Saving", et al.</param>
-        /// <param name="token">Cancellation token to use.</param>
-        public void PerformStep(string strStepName = "", ProgressBarTextPatterns eUseTextPattern = ProgressBarTextPatterns.Loading, CancellationToken token = default)
+        public void PerformStep(string strStepName = "", ProgressBarTextPatterns eUseTextPattern = ProgressBarTextPatterns.Loading)
         {
-            token.ThrowIfCancellationRequested();
             if (this.IsNullOrDisposed())
                 return;
             string strNewText;
@@ -160,7 +156,7 @@ namespace Chummer
                                            + '/' + (intLoadingMaximum - 1).ToString(GlobalSettings.CultureInfo) + ')';
                 lblLoadingInfo.Text = strNewText;
                 pgbLoadingProgress.PerformStep();
-            }, token);
+            });
         }
 
         /// <summary>

@@ -1049,13 +1049,13 @@ namespace Chummer
                         // Populate character information fields.
                         if (objCache.Metatype != null)
                         {
-                            XPathNavigator objMetatypeDoc = await XmlManager.LoadXPathAsync("metatypes.xml");
+                            XPathNavigator objMetatypeDoc = await XmlManager.LoadXPathAsync("metatypes.xml", token: token);
                             XPathNavigator objMetatypeNode
                                 = objMetatypeDoc.SelectSingleNode(
                                     "/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + ']');
                             if (objMetatypeNode == null)
                             {
-                                objMetatypeDoc = await XmlManager.LoadXPathAsync("critters.xml");
+                                objMetatypeDoc = await XmlManager.LoadXPathAsync("critters.xml", token: token);
                                 objMetatypeNode = objMetatypeDoc.SelectSingleNode(
                                     "/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + ']');
                             }
@@ -1703,7 +1703,7 @@ namespace Chummer
 
                 cmsRoster.UpdateLightDarkMode();
                 return cmsRoster;
-            }, _objGenericToken);
+            });
         }
 
         /// <summary>

@@ -276,7 +276,7 @@ namespace Chummer
                                                                     out HashSet<string> setValidCodes))
                     {
                         foreach (XPathNavigator xmlBookNode in await (await XmlManager.LoadXPathAsync(
-                                         "books.xml", _objSelectedSetting.EnabledCustomDataDirectoryPaths))
+                                         "books.xml", _objSelectedSetting.EnabledCustomDataDirectoryPaths, token: token))
                                      .SelectAndCacheExpressionAsync("/chummer/books/book/code"))
                         {
                             setValidCodes.Add(xmlBookNode.Value);
@@ -302,7 +302,8 @@ namespace Chummer
                                 XPathNavigator xmlBaseNode
                                     = await XmlManager.LoadXPathAsync(strFileName,
                                                                       _objSelectedSetting
-                                                                          .EnabledCustomDataDirectoryPaths);
+                                                                          .EnabledCustomDataDirectoryPaths,
+                                                                      token: token);
                                 xmlBaseNode = await xmlBaseNode.SelectSingleNodeAndCacheExpressionAsync("/chummer");
                                 if (xmlBaseNode == null)
                                     return;

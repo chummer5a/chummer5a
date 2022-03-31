@@ -935,7 +935,7 @@ namespace Chummer
                 await treSourcebook.DoThreadSafeAsync(x => x.Nodes.Clear(), token);
                 _setPermanentSourcebooks.Clear();
                 foreach (XPathNavigator objXmlBook in await (await XmlManager.LoadXPathAsync(
-                                 "books.xml", _objCharacterSettings.EnabledCustomDataDirectoryPaths))
+                                 "books.xml", _objCharacterSettings.EnabledCustomDataDirectoryPaths, token: token))
                              .SelectAndCacheExpressionAsync("/chummer/books/book"))
                 {
                     if (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("hide") != null)
@@ -1144,7 +1144,7 @@ namespace Chummer
                 {
                     foreach (XPathNavigator objXmlNode in await (await XmlManager
                                      .LoadXPathAsync("priorities.xml",
-                                                     _objCharacterSettings.EnabledCustomDataDirectoryPaths))
+                                                     _objCharacterSettings.EnabledCustomDataDirectoryPaths, token: token))
                                  .SelectAndCacheExpressionAsync(
                                      "/chummer/prioritytables/prioritytable"))
                     {
@@ -1191,7 +1191,7 @@ namespace Chummer
                 {
                     foreach (XPathNavigator objXmlNode in await (await XmlManager
                                      .LoadXPathAsync("options.xml",
-                                                     _objCharacterSettings.EnabledCustomDataDirectoryPaths))
+                                                     _objCharacterSettings.EnabledCustomDataDirectoryPaths, token: token))
                                  .SelectAndCacheExpressionAsync("/chummer/limbcounts/limb"))
                     {
                         string strExclude = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("exclude"))?.Value
@@ -1238,7 +1238,7 @@ namespace Chummer
                 {
                     foreach (XPathNavigator objXmlNode in await (await XmlManager
                                      .LoadXPathAsync("bioware.xml",
-                                                     _objCharacterSettings.EnabledCustomDataDirectoryPaths))
+                                                     _objCharacterSettings.EnabledCustomDataDirectoryPaths, token: token))
                                  .SelectAndCacheExpressionAsync("/chummer/grades/grade[not(hide)]"))
                     {
                         string strName = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
@@ -1265,7 +1265,7 @@ namespace Chummer
 
                     foreach (XPathNavigator objXmlNode in await (await XmlManager
                                      .LoadXPathAsync("cyberware.xml",
-                                                     _objCharacterSettings.EnabledCustomDataDirectoryPaths))
+                                                     _objCharacterSettings.EnabledCustomDataDirectoryPaths, token: token))
                                  .SelectAndCacheExpressionAsync("/chummer/grades/grade[not(hide)]"))
                     {
                         string strName = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;

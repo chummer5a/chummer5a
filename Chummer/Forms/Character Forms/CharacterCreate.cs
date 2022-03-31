@@ -1603,7 +1603,7 @@ namespace Chummer
                             {
                                 CharacterObject.AttributeSection.Attributes.Add(CharacterObject.RES);
                             }
-                            }
+                        }
                         else
                         {
                             if (!CharacterObject.MAGEnabled)
@@ -1612,7 +1612,7 @@ namespace Chummer
                             {
                                 CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.RES);
                             }
-                            }
+                        }
 
                         IsCharacterUpdateRequested = true;
                     }
@@ -10993,7 +10993,7 @@ namespace Chummer
                                                                              objCyberware.SourceType
                                                                              == Improvement.ImprovementSource.Cyberware
                                                                                  ? "cyberware.xml"
-                                                                                 : "bioware.xml"))
+                                                                                 : "bioware.xml", token: token))
                                                                      .SelectSingleNodeAndCacheExpressionAsync(
                                                                          "/chummer"))
                                                              .Contains(objCyberware.Category);
@@ -11115,7 +11115,7 @@ namespace Chummer
                             bool blnEnabled = !objGear.IncludedInParent && CharacterObject
                                                                            .GenerateBlackMarketMappings(
                                                                                await (await CharacterObject
-                                                                                       .LoadDataXPathAsync("gear.xml"))
+                                                                                       .LoadDataXPathAsync("gear.xml", token: token))
                                                                                    .SelectSingleNodeAndCacheExpressionAsync(
                                                                                        "/chummer"))
                                                                            .Contains(objGear.Category);
@@ -11321,7 +11321,7 @@ namespace Chummer
                                                                              .GenerateBlackMarketMappings(
                                                                                  await (await CharacterObject
                                                                                          .LoadDataXPathAsync(
-                                                                                             "weapons.xml"))
+                                                                                             "weapons.xml", token: token))
                                                                                      .SelectSingleNodeAndCacheExpressionAsync(
                                                                                          "/chummer"))
                                                                              .Contains(objWeapon.Category);
@@ -11578,7 +11578,7 @@ namespace Chummer
                                               && CharacterObject
                                                  .GenerateBlackMarketMappings(
                                                      await (await CharacterObject
-                                                             .LoadDataXPathAsync("weapons.xml"))
+                                                             .LoadDataXPathAsync("weapons.xml", token: token))
                                                          .SelectSingleNodeAndCacheExpressionAsync(
                                                              "/chummer"))
                                                  .Contains(objSelectedAccessory.Parent?.Category);
@@ -11777,7 +11777,7 @@ namespace Chummer
                             bool blnEnabled = !objGear.IncludedInParent && CharacterObject
                                                                            .GenerateBlackMarketMappings(
                                                                                await (await CharacterObject
-                                                                                       .LoadDataXPathAsync("gear.xml"))
+                                                                                       .LoadDataXPathAsync("gear.xml", token: token))
                                                                                    .SelectSingleNodeAndCacheExpressionAsync(
                                                                                        "/chummer"))
                                                                            .Contains(objGear.Category);
@@ -11942,7 +11942,7 @@ namespace Chummer
                         bool blnEnabled = CharacterObject
                                           .GenerateBlackMarketMappings(
                                               await (await CharacterObject.LoadDataXPathAsync(
-                                                      "armor.xml"))
+                                                      "armor.xml", token: token))
                                                   .SelectSingleNodeAndCacheExpressionAsync(
                                                       "/chummer")).Contains(objArmor.Category);
                         await chkArmorBlackMarketDiscount.DoThreadSafeAsync(x =>
@@ -12075,7 +12075,7 @@ namespace Chummer
                                                                               .GenerateBlackMarketMappings(
                                                                                   await (await CharacterObject
                                                                                           .LoadDataXPathAsync(
-                                                                                              "armor.xml"))
+                                                                                              "armor.xml", token: token))
                                                                                       .SelectSingleNodeAndCacheExpressionAsync(
                                                                                           "/chummer/modcategories"))
                                                                               .Contains(objArmorMod.Category);
@@ -12164,7 +12164,7 @@ namespace Chummer
                                                          .GenerateBlackMarketMappings(
                                                              await (await CharacterObject
                                                                      .LoadDataXPathAsync(
-                                                                         "gear.xml"))
+                                                                         "gear.xml", token: token))
                                                                  .SelectSingleNodeAndCacheExpressionAsync(
                                                                      "/chummer"))
                                                          .Contains(objSelectedGear.Category);
@@ -12486,7 +12486,7 @@ namespace Chummer
                         bool blnEnabled = !objGear.IncludedInParent && CharacterObject
                                                                        .GenerateBlackMarketMappings(
                                                                            await (await CharacterObject
-                                                                                   .LoadDataXPathAsync("gear.xml"))
+                                                                                   .LoadDataXPathAsync("gear.xml", token: token))
                                                                                .SelectSingleNodeAndCacheExpressionAsync(
                                                                                    "/chummer"))
                                                                        .Contains(objGear.Category);
@@ -12595,7 +12595,7 @@ namespace Chummer
                 if (CharacterObject.MetatypeCategory == "Shapeshifter")
                 {
                     lstAttributesToAdd = new List<CharacterAttrib>(AttributeSection.AttributeStrings.Count);
-                    XmlDocument xmlDoc = await CharacterObject.LoadDataAsync("metatypes.xml");
+                    XmlDocument xmlDoc = await CharacterObject.LoadDataAsync("metatypes.xml", token: token);
                     string strMetavariantXPath = "/chummer/metatypes/metatype[id = "
                                                  + CharacterObject.MetatypeGuid
                                                                   .ToString("D", GlobalSettings.InvariantCultureInfo)
@@ -13573,7 +13573,7 @@ namespace Chummer
                             bool blnEnabled = CharacterObject
                                               .GenerateBlackMarketMappings(
                                                   await (await CharacterObject.LoadDataXPathAsync(
-                                                          "vehicles.xml"))
+                                                          "vehicles.xml", token: token))
                                                       .SelectSingleNodeAndCacheExpressionAsync(
                                                           "/chummer"))
                                               .Contains(objVehicle.Category);
@@ -13749,7 +13749,7 @@ namespace Chummer
                         {
                             bool blnEnabled = !objWeaponMount.IncludedInVehicle && CharacterObject
                                 .GenerateBlackMarketMappings(
-                                    await (await CharacterObject.LoadDataXPathAsync("vehicles.xml"))
+                                    await (await CharacterObject.LoadDataXPathAsync("vehicles.xml", token: token))
                                         .SelectSingleNodeAndCacheExpressionAsync("/chummer/weaponmountcategories"))
                                 .Contains(objWeaponMount.Category);
                             await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
@@ -13866,7 +13866,7 @@ namespace Chummer
                                                                            .GenerateBlackMarketMappings(
                                                                                await (await CharacterObject
                                                                                        .LoadDataXPathAsync(
-                                                                                           "weapons.xml"))
+                                                                                           "weapons.xml", token: token))
                                                                                    .SelectSingleNodeAndCacheExpressionAsync(
                                                                                        "/chummer/modcategories"))
                                                                            .Contains(objMod.Category);
@@ -13964,7 +13964,7 @@ namespace Chummer
                                                                              .GenerateBlackMarketMappings(
                                                                                  await (await CharacterObject
                                                                                          .LoadDataXPathAsync(
-                                                                                             "weapons.xml"))
+                                                                                             "weapons.xml", token: token))
                                                                                      .SelectSingleNodeAndCacheExpressionAsync(
                                                                                          "/chummer"))
                                                                              .Contains(objWeapon.Category);
@@ -14193,7 +14193,7 @@ namespace Chummer
                                 .GenerateBlackMarketMappings(
                                     await (await CharacterObject
                                             .LoadDataXPathAsync(
-                                                "weapons.xml"))
+                                                "weapons.xml", token: token))
                                         .SelectSingleNodeAndCacheExpressionAsync(
                                             "/chummer"))
                                 .Contains(objAccessory.Parent.Category);
@@ -14370,7 +14370,7 @@ namespace Chummer
                                                                              objCyberware.SourceType
                                                                              == Improvement.ImprovementSource.Cyberware
                                                                                  ? "cyberware.xml"
-                                                                                 : "bioware.xml"))
+                                                                                 : "bioware.xml", token: token))
                                                                      .SelectSingleNodeAndCacheExpressionAsync("/chummer"))
                                                              .Contains(objCyberware.Category);
                             await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
@@ -14520,7 +14520,7 @@ namespace Chummer
                             bool blnEnabled = !objGear.IncludedInParent && CharacterObject
                                                                            .GenerateBlackMarketMappings(
                                                                                await (await CharacterObject
-                                                                                       .LoadDataXPathAsync("gear.xml"))
+                                                                                       .LoadDataXPathAsync("gear.xml", token: token))
                                                                                    .SelectSingleNodeAndCacheExpressionAsync(
                                                                                        "/chummer"))
                                                                            .Contains(objGear.Category);
@@ -15655,7 +15655,7 @@ namespace Chummer
                     if (CharacterObject.Lifestyles.Count == 0)
                     {
                         Lifestyle objLifestyle = new Lifestyle(CharacterObject);
-                        XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("lifestyles.xml");
+                        XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("lifestyles.xml", token: token);
                         XmlNode objXmlLifestyle
                             = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"Street\"]");
 

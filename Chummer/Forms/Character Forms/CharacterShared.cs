@@ -5327,7 +5327,7 @@ namespace Chummer
                                             objContactControl.MouseDown += DragContactControl;
 
                                             panContacts.Controls.Add(objContactControl);
-                                        }, GenericToken);
+                                        });
                                     }
                                     break;
 
@@ -5344,7 +5344,7 @@ namespace Chummer
                                             objContactControl.MouseDown += DragContactControl;
 
                                             panEnemies.Controls.Add(objContactControl);
-                                        }, GenericToken);
+                                        });
                                     }
                                     break;
 
@@ -5361,7 +5361,7 @@ namespace Chummer
                                             objContactControl.MouseDown += DragContactControl;
 
                                             panPets.Controls.Add(objContactControl);
-                                        }, GenericToken);
+                                        });
                                     }
                                     break;
                             }
@@ -5397,7 +5397,7 @@ namespace Chummer
                                                     objContactControl.MouseDown += DragContactControl;
 
                                                     x.Controls.Add(objContactControl);
-                                                }, GenericToken);
+                                                });
                                             }
                                             break;
 
@@ -5414,7 +5414,7 @@ namespace Chummer
                                                     objContactControl.MouseDown += DragContactControl;
 
                                                     x.Controls.Add(objContactControl);
-                                                }, GenericToken);
+                                                });
                                             }
                                             break;
 
@@ -5431,7 +5431,7 @@ namespace Chummer
                                                     objContactControl.MouseDown += DragContactControl;
 
                                                     x.Controls.Add(objContactControl);
-                                                }, GenericToken);
+                                                });
                                             }
                                             break;
                                     }
@@ -5463,7 +5463,7 @@ namespace Chummer
                                                             objContactControl.Dispose();
                                                         }
                                                     }
-                                                }, GenericToken);
+                                                });
                                             }
                                             break;
 
@@ -5485,7 +5485,7 @@ namespace Chummer
                                                             objContactControl.Dispose();
                                                         }
                                                     }
-                                                }, GenericToken);
+                                                });
                                             }
                                             break;
 
@@ -5507,7 +5507,7 @@ namespace Chummer
                                                             objPetControl.Dispose();
                                                         }
                                                     }
-                                                }, GenericToken);
+                                                });
                                             }
                                             break;
                                     }
@@ -5539,7 +5539,7 @@ namespace Chummer
                                                             objContactControl.Dispose();
                                                         }
                                                     }
-                                                }, GenericToken);
+                                                });
                                             }
                                             break;
 
@@ -5561,7 +5561,7 @@ namespace Chummer
                                                             objContactControl.Dispose();
                                                         }
                                                     }
-                                                }, GenericToken);
+                                                });
                                             }
                                             break;
 
@@ -5583,7 +5583,7 @@ namespace Chummer
                                                             objPetControl.Dispose();
                                                         }
                                                     }
-                                                }, GenericToken);
+                                                });
                                             }
                                             break;
                                     }
@@ -5606,7 +5606,7 @@ namespace Chummer
                                                     objContactControl.MouseDown += DragContactControl;
 
                                                     x.Controls.Add(objContactControl);
-                                                }, GenericToken);
+                                                });
                                             }
                                             break;
 
@@ -5623,7 +5623,7 @@ namespace Chummer
                                                     objContactControl.MouseDown += DragContactControl;
 
                                                     x.Controls.Add(objContactControl);
-                                                }, GenericToken);
+                                                });
                                             }
                                             break;
 
@@ -5640,7 +5640,7 @@ namespace Chummer
                                                     objContactControl.MouseDown += DragContactControl;
 
                                                     x.Controls.Add(objContactControl);
-                                                }, GenericToken);
+                                                });
                                             }
                                             break;
                                     }
@@ -5743,7 +5743,7 @@ namespace Chummer
                             objSustainedObjectControl.Top = intSustainedObjects * objSustainedObjectControl.Height;
 
                             x.Controls.Add(objSustainedObjectControl);
-                        }, GenericToken);
+                        });
                     }
                 }
                 else
@@ -5789,7 +5789,7 @@ namespace Chummer
                                             = intSustainedObjects * objSustainedObjectControl.Height;
 
                                         x.Controls.Add(objSustainedObjectControl);
-                                    }, GenericToken);
+                                    });
                                 }
                             }
                             break;
@@ -5846,7 +5846,7 @@ namespace Chummer
                                                 chkPsycheActiveTechnomancer.Visible = false;
                                             }
                                         }
-                                    }, GenericToken);
+                                    });
                                 }
                             }
                             break;
@@ -5903,7 +5903,7 @@ namespace Chummer
                                                 chkPsycheActiveTechnomancer.Visible = false;
                                             }
                                         }
-                                    }, GenericToken);
+                                    });
                                 }
 
                                 foreach (SustainedObject objSustained in notifyCollectionChangedEventArgs.NewItems)
@@ -5943,7 +5943,7 @@ namespace Chummer
                                             = intSustainedObjects * objSustainedObjectControl.Height;
 
                                         x.Controls.Add(objSustainedObjectControl);
-                                    }, GenericToken);
+                                    });
                                 }
                             }
                             break;
@@ -7192,7 +7192,7 @@ namespace Chummer
             string strTitle = CharacterObject.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '(' + CharacterObjectSettings.Name + ')';
             if (_blnIsDirty)
                 strTitle += '*';
-            this.DoThreadSafe(x => x.Text = strTitle, token);
+            this.DoThreadSafe(x => x.Text = strTitle);
         }
 
         /// <summary>
@@ -7359,7 +7359,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
-                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: token);
                 bool blnAddAgain;
 
                 do
