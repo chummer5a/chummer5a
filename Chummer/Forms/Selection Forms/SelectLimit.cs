@@ -63,11 +63,20 @@ namespace Chummer
                 
                 await cboLimit.PopulateWithListItemsAsync(lstLimitItems);
                 if (lstLimitItems.Count >= 1)
-                    cboLimit.SelectedIndex = 0;
+                    await cboLimit.DoThreadSafeAsync(x => x.SelectedIndex = 0);
                 else if (lstLimitItems.Count == 1)
-                    cmdOK_Click(sender, e);
+                {
+                    string strSelectedLimit = await cboLimit.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+                    if (!string.IsNullOrEmpty(strSelectedLimit))
+                    {
+                        _strReturnValue = strSelectedLimit;
+                        _strSelectedDisplayLimit
+                            = ((ListItem) await cboLimit.DoThreadSafeFuncAsync(x => x.SelectedItem)).Name;
+                        DialogResult = DialogResult.OK;
+                    }
+                }
                 else
-                    cmdOK.Enabled = false;
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
             }
         }
 

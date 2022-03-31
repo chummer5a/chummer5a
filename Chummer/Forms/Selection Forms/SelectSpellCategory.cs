@@ -62,11 +62,14 @@ namespace Chummer
                 
                 await cboCategory.PopulateWithListItemsAsync(lstCategory);
                 // Select the first Skill in the list.
-                cboCategory.SelectedIndex = 0;
+                await cboCategory.DoThreadSafeAsync(x => x.SelectedIndex = 0);
             }
 
-            if (cboCategory.Items.Count == 1)
-                cmdOK_Click(sender, e);
+            if (await cboCategory.DoThreadSafeFuncAsync(x => x.Items.Count) == 1)
+            {
+                _strSelectedCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
+                DialogResult = DialogResult.OK;
+            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

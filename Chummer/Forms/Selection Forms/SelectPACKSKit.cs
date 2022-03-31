@@ -95,10 +95,13 @@ namespace Chummer
             
             await cboCategory.PopulateWithListItemsAsync(_lstCategory);
             // Select the first Category in the list.
-            if (!string.IsNullOrEmpty(_strSelectCategory))
-                cboCategory.SelectedValue = _strSelectCategory;
-            if (cboCategory.SelectedIndex == -1)
-                cboCategory.SelectedIndex = 0;
+            await cboCategory.DoThreadSafeAsync(x =>
+            {
+                if (!string.IsNullOrEmpty(_strSelectCategory))
+                    x.SelectedValue = _strSelectCategory;
+                if (x.SelectedIndex == -1)
+                    x.SelectedIndex = 0;
+            });
         }
 
         private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -111,9 +114,9 @@ namespace Chummer
             // Update the list of Kits based on the selected Category.
 
             string strFilter = "not(hide)";
-            string strCategory = cboCategory.SelectedValue?.ToString();
+            string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All")
-                strFilter += " and category = " + cboCategory.SelectedValue.ToString().CleanXPath();
+                strFilter += " and category = " + strCategory.CleanXPath();
             else
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategoryFilter))
@@ -145,28 +148,26 @@ namespace Chummer
                 }
 
                 lstKit.Sort(CompareListItems.CompareNames);
-                lstKits.BeginUpdate();
                 await lstKits.PopulateWithListItemsAsync(lstKit);
-                lstKits.EndUpdate();
                 if (lstKit.Count == 0)
-                    treContents.Nodes.Clear();
+                    await treContents.DoThreadSafeAsync(x => x.Nodes.Clear());
             }
 
-            cmdDelete.Visible = false;
+            await cmdDelete.DoThreadSafeAsync(x => x.Visible = false);
         }
 
         private async void lstKits_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string strSelectedKit = lstKits.SelectedValue?.ToString();
+            string strSelectedKit = await lstKits.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             if (string.IsNullOrEmpty(strSelectedKit))
             {
-                cmdDelete.Visible = false;
+                await cmdDelete.DoThreadSafeAsync(x => x.Visible = false);
                 return;
             }
 
-            treContents.Nodes.Clear();
+            await treContents.DoThreadSafeAsync(x => x.Nodes.Clear());
             string[] strIdentifiers = strSelectedKit.Split('<', StringSplitOptions.RemoveEmptyEntries);
-            cmdDelete.Visible = strIdentifiers[1] == "Custom";
+            await cmdDelete.DoThreadSafeAsync(x => x.Visible = strIdentifiers[1] == "Custom");
             XPathNavigator objXmlPack = _xmlBaseChummerNode.SelectSingleNode("packs/pack[name = " + strIdentifiers[0].CleanXPath() + " and category = " + strIdentifiers[1].CleanXPath() + ']');
             if (objXmlPack == null)
             {
@@ -806,7 +807,7 @@ namespace Chummer
                         break;
                 }
                 objParent.ExpandAll();
-                treContents.Nodes.Add(objParent);
+                await treContents.DoThreadSafeAsync(x => x.Nodes.Add(objParent));
             }
         }
 
@@ -829,7 +830,7 @@ namespace Chummer
 
         private async void cmdDelete_Click(object sender, EventArgs e)
         {
-            string strSelectedKit = lstKits.SelectedValue?.ToString();
+            string strSelectedKit = await lstKits.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             if (string.IsNullOrEmpty(strSelectedKit))
                 return;
 
@@ -972,7 +973,10 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strExtra))
                     objChild.Text += strSpace + 'x' + strExtra;
 
-                objParent.Nodes.Add(objChild);
+                if (objParent.TreeView != null)
+                    await objParent.TreeView.DoThreadSafeAsync(() => objParent.Nodes.Add(objChild));
+                else
+                    objParent.Nodes.Add(objChild);
 
                 // Check for children.
                 foreach (XPathNavigator objXmlChild in await objXmlGear.SelectAndCacheExpressionAsync("gears/gear"))
@@ -980,7 +984,10 @@ namespace Chummer
                     await WriteGear(objXmlChild, objChild);
                 }
 
-                objChild.Expand();
+                if (objChild.TreeView != null)
+                    await objChild.TreeView.DoThreadSafeAsync(() => objChild.Expand());
+                else
+                    objChild.Expand();
             }
         }
 

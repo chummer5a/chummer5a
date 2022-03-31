@@ -72,13 +72,13 @@ namespace Chummer
             using (CursorWait.New(this))
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                lblResult.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalSettings.CultureInfo) + ')' +
-                                 strSpace + '×'
-                                 + strSpace + (SelectedLifestyle?.Multiplier ?? 0).ToString(
-                                     _objCharacter.Settings.NuyenFormat + '¥', GlobalSettings.CultureInfo)
-                                 + strSpace + '=' + strSpace +
-                                 StartingNuyen.ToString(_objCharacter.Settings.NuyenFormat + '¥',
-                                                        GlobalSettings.CultureInfo);
+                await lblResult.DoThreadSafeAsync(x => x.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalSettings.CultureInfo) + ')' +
+                                                                strSpace + '×'
+                                                                + strSpace + (SelectedLifestyle?.Multiplier ?? 0).ToString(
+                                                                    _objCharacter.Settings.NuyenFormat + '¥', GlobalSettings.CultureInfo)
+                                                                + strSpace + '=' + strSpace +
+                                                                StartingNuyen.ToString(_objCharacter.Settings.NuyenFormat + '¥',
+                                                                    GlobalSettings.CultureInfo));
             }
         }
 
@@ -91,16 +91,17 @@ namespace Chummer
         {
             if (_blnIsSelectLifestyleRefreshing)
                 return;
-            if (cboSelectLifestyle.SelectedIndex < 0)
+            if (await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedIndex) < 0)
                 return;
             using (CursorWait.New(this))
             {
-                _objLifestyle = ((ListItem) cboSelectLifestyle.SelectedItem).Value as Lifestyle;
-                lblDice.Text = string.Format(GlobalSettings.CultureInfo,
-                                             await LanguageManager.GetStringAsync("Label_LifestyleNuyen_ResultOf"),
-                                             SelectedLifestyle?.Dice ?? 0);
+                _objLifestyle = ((ListItem) await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedItem)).Value as Lifestyle;
+                string strDice = string.Format(GlobalSettings.CultureInfo,
+                                               await LanguageManager.GetStringAsync("Label_LifestyleNuyen_ResultOf"),
+                                               SelectedLifestyle?.Dice ?? 0);
+                await lblDice.DoThreadSafeAsync(x => x.Text = strDice);
                 await RefreshCalculation();
-                cmdRoll.Enabled = SelectedLifestyle?.Dice > 0;
+                await cmdRoll.DoThreadSafeAsync(x => x.Enabled = SelectedLifestyle?.Dice > 0);
             }
         }
 
@@ -113,9 +114,9 @@ namespace Chummer
                 {
                     Lifestyle objPreferredLifestyle = null;
                     ListItem objPreferredLifestyleItem = default;
-                    Lifestyle objCurrentlySelectedLifestyle = cboSelectLifestyle.SelectedIndex >= 0
-                        ? ((ListItem)cboSelectLifestyle.SelectedItem).Value as Lifestyle
-                        : null;
+                    Lifestyle objCurrentlySelectedLifestyle = await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedIndex >= 0
+                        ? ((ListItem)x.SelectedItem).Value as Lifestyle
+                        : null);
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstLifestyleItems))
                     {
@@ -140,10 +141,13 @@ namespace Chummer
                         lstLifestyleItems.Sort(CompareListItems.CompareNames);
                         
                         await cboSelectLifestyle.PopulateWithListItemsAsync(lstLifestyleItems);
-                        cboSelectLifestyle.SelectedItem = objPreferredLifestyleItem;
-                        if (cboSelectLifestyle.SelectedIndex < 0 && lstLifestyleItems.Count > 0)
-                            cboSelectLifestyle.SelectedIndex = 0;
-                        cboSelectLifestyle.Enabled = lstLifestyleItems.Count > 1;
+                        await cboSelectLifestyle.DoThreadSafeAsync(x =>
+                        {
+                            x.SelectedItem = objPreferredLifestyleItem;
+                            if (x.SelectedIndex < 0 && lstLifestyleItems.Count > 0)
+                                x.SelectedIndex = 0;
+                            x.Enabled = lstLifestyleItems.Count > 1;
+                        });
                     }
                 }
                 finally
@@ -158,12 +162,21 @@ namespace Chummer
         {
             using (CursorWait.New(this))
             {
-                nudDiceResult.SuspendLayout();
-                nudDiceResult.MinimumAsInt =
-                    int.MinValue; // Temporarily set this to avoid crashing if we shift from something with more than 6 dice to something with less.
-                nudDiceResult.MaximumAsInt = SelectedLifestyle?.Dice * 6 ?? 0;
-                nudDiceResult.MinimumAsInt = SelectedLifestyle?.Dice ?? 0;
-                nudDiceResult.ResumeLayout();
+                nudDiceResult.DoThreadSafe(x =>
+                {
+                    x.SuspendLayout();
+                    try
+                    {
+                        x.MinimumAsInt =
+                            int.MinValue; // Temporarily set this to avoid crashing if we shift from something with more than 6 dice to something with less.
+                        x.MaximumAsInt = SelectedLifestyle?.Dice * 6 ?? 0;
+                        x.MinimumAsInt = SelectedLifestyle?.Dice ?? 0;
+                    }
+                    finally
+                    {
+                        x.ResumeLayout();
+                    }
+                });
                 return RefreshResultLabel();
             }
         }
@@ -180,7 +193,7 @@ namespace Chummer
                     intResult += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
                 }
 
-                nudDiceResult.ValueAsInt = intResult;
+                await nudDiceResult.DoThreadSafeAsync(x => x.ValueAsInt = intResult);
             }
         }
 

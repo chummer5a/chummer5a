@@ -48,9 +48,9 @@ namespace Chummer
         private bool _blnLockGrade;
         private bool _blnLoading = true;
 
-        private readonly Mode _objMode = Mode.Cyberware;
+        private readonly Mode _eMode = Mode.Cyberware;
         private readonly string _strNodeXPath = "cyberwares/cyberware";
-        private static string _sStrSelectCategory = string.Empty;
+        private static string s_strSelectCategory = string.Empty;
         private static string _sStrSelectGrade = string.Empty;
         private string _strSelectedCategory = string.Empty;
         private string _strOldSelectedGrade = string.Empty;
@@ -81,14 +81,14 @@ namespace Chummer
             switch (objWareSource)
             {
                 case Improvement.ImprovementSource.Cyberware:
-                    _objMode = Mode.Cyberware;
+                    _eMode = Mode.Cyberware;
                     _xmlBaseCyberwareDataNode = objCharacter.LoadDataXPath("cyberware.xml").SelectSingleNodeAndCacheExpression("/chummer");
                     _strNodeXPath = "cyberwares/cyberware";
                     Tag = "Title_SelectCyberware";
                     break;
 
                 case Improvement.ImprovementSource.Bioware:
-                    _objMode = Mode.Bioware;
+                    _eMode = Mode.Bioware;
                     _xmlBaseCyberwareDataNode = objCharacter.LoadDataXPath("bioware.xml").SelectSingleNodeAndCacheExpression("/chummer");
                     _strNodeXPath = "biowares/bioware";
                     Tag = "Title_SelectCyberware_Bioware";
@@ -107,53 +107,71 @@ namespace Chummer
         {
             if (_objCharacter.Created)
             {
-                lblMarkupLabel.Visible = true;
-                nudMarkup.Visible = true;
-                lblMarkupPercentLabel.Visible = true;
-                chkHideBannedGrades.Visible = false;
-                chkHideOverAvailLimit.Visible = false;
-                chkHideOverAvailLimit.Checked = false;
+                await lblMarkupLabel.DoThreadSafeAsync(x => x.Visible = true);
+                await nudMarkup.DoThreadSafeAsync(x => x.Visible = true);
+                await lblMarkupPercentLabel.DoThreadSafeAsync(x => x.Visible = true);
+                await chkHideBannedGrades.DoThreadSafeAsync(x => x.Visible = false);
+                await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
+                {
+                    x.Visible = false;
+                    x.Checked = false;
+                });
             }
             else
             {
-                lblMarkupLabel.Visible = false;
-                nudMarkup.Visible = false;
-                lblMarkupPercentLabel.Visible = false;
-                chkHideBannedGrades.Visible = !_objCharacter.IgnoreRules;
-                chkHideOverAvailLimit.Text = string.Format(GlobalSettings.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.Settings.MaximumAvailability);
-                chkHideOverAvailLimit.Checked = GlobalSettings.HideItemsOverAvailLimit;
+                await lblMarkupLabel.DoThreadSafeAsync(x => x.Visible = false);
+                await nudMarkup.DoThreadSafeAsync(x => x.Visible = false);
+                await lblMarkupPercentLabel.DoThreadSafeAsync(x => x.Visible = false);
+                await chkHideBannedGrades.DoThreadSafeAsync(x => x.Visible = !_objCharacter.IgnoreRules);
+                await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
+                {
+                    x.Text = string.Format(
+                        GlobalSettings.CultureInfo, x.Text,
+                        _objCharacter.Settings.MaximumAvailability);
+                    x.Checked = GlobalSettings.HideItemsOverAvailLimit;
+                });
             }
 
             if (!string.IsNullOrEmpty(DefaultSearchText))
             {
-                txtSearch.Text = DefaultSearchText;
-                txtSearch.Enabled = false;
+                await txtSearch.DoThreadSafeAsync(x =>
+                {
+                    x.Text = DefaultSearchText;
+                    x.Enabled = false;
+                });
             }
 
-            chkPrototypeTranshuman.Visible = _objCharacter.IsPrototypeTranshuman && _objMode == Mode.Bioware && !_objCharacter.Created;
+            await chkPrototypeTranshuman.DoThreadSafeAsync(x => x.Visible = _objCharacter.IsPrototypeTranshuman && _eMode == Mode.Bioware && !_objCharacter.Created);
 
             await PopulateCategories();
-            // Select the first Category in the list.
-            if (!string.IsNullOrEmpty(_sStrSelectCategory))
-                cboCategory.SelectedValue = _sStrSelectCategory;
-            if (cboCategory.SelectedIndex == -1 && cboCategory.Items.Count > 0)
-                cboCategory.SelectedIndex = 0;
-            _strSelectedCategory = cboCategory.SelectedValue?.ToString();
 
-            chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
+            await cboCategory.DoThreadSafeAsync(x =>
+            {
+                // Select the first Category in the list.
+                if (!string.IsNullOrEmpty(s_strSelectCategory))
+                    x.SelectedValue = s_strSelectCategory;
+                if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                    x.SelectedIndex = 0;
+                _strSelectedCategory = x.SelectedValue?.ToString();
+            });
+
+            await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.BlackMarketDiscount);
 
             // Populate the Grade list. Do not show the Adapsin Grades if Adapsin is not enabled for the character.
-            PopulateGrades(false, true, _objForcedGrade?.SourceIDString ?? string.Empty, chkHideBannedGrades.Checked);
+            await PopulateGrades(false, true, _objForcedGrade?.SourceIDString ?? string.Empty, await chkHideBannedGrades.DoThreadSafeFuncAsync(x => x.Checked));
 
-            if (_objForcedGrade != null)
-                cboGrade.SelectedValue = _objForcedGrade.SourceIDString;
-            else if (!string.IsNullOrEmpty(_sStrSelectGrade))
-                cboGrade.SelectedValue = _sStrSelectGrade;
-            if (cboGrade.SelectedIndex == -1 && cboGrade.Items.Count > 0)
-                cboGrade.SelectedIndex = 0;
+            await cboGrade.DoThreadSafeAsync(x =>
+            {
+                if (_objForcedGrade != null)
+                    x.SelectedValue = _objForcedGrade.SourceIDString;
+                else if (!string.IsNullOrEmpty(_sStrSelectGrade))
+                    x.SelectedValue = _sStrSelectGrade;
+                if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                    x.SelectedIndex = 0;
+            });
 
             // Retrieve the information for the selected Grade.
-            string strSelectedGrade = cboGrade.SelectedValue?.ToString();
+            string strSelectedGrade = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             if (!string.IsNullOrEmpty(strSelectedGrade))
             {
                 XPathNavigator xmlGrade = _xmlBaseCyberwareDataNode.SelectSingleNode("grades/grade[id = " + strSelectedGrade.CleanXPath() + ']');
@@ -167,9 +185,9 @@ namespace Chummer
                 }
             }
 
-            lblESSDiscountLabel.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts;
-            lblESSDiscountPercentLabel.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts;
-            nudESSDiscount.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts;
+            await lblESSDiscountLabel.DoThreadSafeAsync(x => x.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts);
+            await lblESSDiscountPercentLabel.DoThreadSafeAsync(x => x.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts);
+            await nudESSDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts);
 
             _blnLoading = false;
             await RefreshList(_strSelectedCategory);
@@ -188,8 +206,8 @@ namespace Chummer
 
             XPathNavigator xmlGrade = null;
             // Retrieve the information for the selected Grade.
-            string strSelectedGrade = cboGrade.SelectedValue?.ToString();
-            if (cboGrade.Enabled && strSelectedGrade != null)
+            string strSelectedGrade = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+            if (await cboGrade.DoThreadSafeFuncAsync(x => x.Enabled) && strSelectedGrade != null)
                 _strOldSelectedGrade = strSelectedGrade;
             if (!string.IsNullOrEmpty(strSelectedGrade))
                 xmlGrade = _xmlBaseCyberwareDataNode.SelectSingleNode("grades/grade[id = " + strSelectedGrade.CleanXPath() + ']');
@@ -215,13 +233,16 @@ namespace Chummer
 
         private async void cboGrade_EnabledChanged(object sender, EventArgs e)
         {
-            if (cboGrade.Enabled != _blnOldGradeEnabled)
+            if (await cboGrade.DoThreadSafeFuncAsync(x => x.Enabled) != _blnOldGradeEnabled)
             {
-                _blnOldGradeEnabled = cboGrade.Enabled;
-                if (_blnOldGradeEnabled)
+                await cboGrade.DoThreadSafeAsync(x =>
                 {
-                    cboGrade.SelectedValue = _strOldSelectedGrade;
-                }
+                    _blnOldGradeEnabled = x.Enabled;
+                    if (_blnOldGradeEnabled)
+                    {
+                        x.SelectedValue = _strOldSelectedGrade;
+                    }
+                });
                 await ProcessGradeChanged();
             }
         }
@@ -231,15 +252,18 @@ namespace Chummer
             if (_blnLoading)
                 return;
             _blnLoading = true;
-            _strSelectedCategory = cboCategory.SelectedValue?.ToString();
+            _strSelectedCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             string strForceGrade = string.Empty;
             // Update the list of Cyberware based on the selected Category.
             cboGrade.Enabled = !_blnLockGrade;
             if (_blnLockGrade)
-                strForceGrade = cboGrade.SelectedValue?.ToString();
+                strForceGrade = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             // We may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as Grade and ForceGrades can change.
             Grade objForcedGrade = _objForcedGrade ?? (string.IsNullOrEmpty(strForceGrade) ? null : _lstGrades.Find(x => x.SourceIDString == strForceGrade));
-            PopulateGrades(!string.IsNullOrEmpty(_strSelectedCategory) && !cboGrade.Enabled && objForcedGrade?.SecondHand != true, false, strForceGrade, chkHideBannedGrades.Checked);
+            await PopulateGrades(
+                !string.IsNullOrEmpty(_strSelectedCategory) && !await cboGrade.DoThreadSafeFuncAsync(x => x.Enabled)
+                                                            && objForcedGrade?.SecondHand != true, false, strForceGrade,
+                await chkHideBannedGrades.DoThreadSafeFuncAsync(x => x.Checked));
             _blnLoading = false;
             await RefreshList(_strSelectedCategory);
         }
@@ -290,7 +314,7 @@ namespace Chummer
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnIsSuccess);
                         intMinRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
                     }
-                    nudRating.Minimum = intMinRating;
+                    await nudRating.DoThreadSafeAsync(x => x.Minimum = intMinRating);
 
                     string strMaxRating = xmlRatingNode.Value;
                     int intMaxRating = 0;
@@ -313,117 +337,149 @@ namespace Chummer
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strMaxRating, out bool blnIsSuccess);
                         intMaxRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
                     }
-                    nudRating.Maximum = intMaxRating;
+                    await nudRating.DoThreadSafeAsync(x => x.Maximum = intMaxRating);
                     if (chkHideOverAvailLimit.Checked)
                     {
                         int intAvailModifier = strForceGrade == "None" ? 0 : _intAvailModifier;
-                        while (nudRating.Maximum > intMinRating && !xmlCyberware.CheckAvailRestriction(_objCharacter, nudRating.MaximumAsInt, intAvailModifier))
+                        await nudRating.DoThreadSafeAsync(x =>
                         {
-                            --nudRating.Maximum;
-                        }
+                            while (x.Maximum > intMinRating
+                                   && !xmlCyberware.CheckAvailRestriction(
+                                       _objCharacter, x.MaximumAsInt, intAvailModifier))
+                            {
+                                --x.Maximum;
+                            }
+                        });
                     }
 
-                    if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
+                    if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked) && !await chkFree.DoThreadSafeFuncAsync(x => x.Checked))
                     {
-                        decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                        decimal decCostMultiplier = 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value) / 100.0m);
                         decCostMultiplier *= _decCostMultiplier;
-                        if (chkBlackMarketDiscount.Checked)
+                        if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked))
                             decCostMultiplier *= 0.9m;
-                        while (nudRating.Maximum > intMinRating && !xmlCyberware.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, nudRating.MaximumAsInt))
+                        await nudRating.DoThreadSafeAsync(x =>
                         {
-                            --nudRating.Maximum;
-                        }
+                            while (x.Maximum > intMinRating
+                                   && !xmlCyberware.CheckNuyenRestriction(
+                                       _objCharacter.Nuyen, decCostMultiplier, x.MaximumAsInt))
+                            {
+                                --x.Maximum;
+                            }
+                        });
                     }
-                    nudRating.Value = nudRating.Minimum;
-                    nudRating.Enabled = nudRating.Minimum != nudRating.Maximum;
-                    nudRating.Visible = true;
-                    lblRatingNALabel.Visible = false;
-                    lblRatingLabel.Visible = true;
+                    await nudRating.DoThreadSafeAsync(x =>
+                    {
+                        x.Value = x.Minimum;
+                        x.Enabled = x.Minimum != x.Maximum;
+                        x.Visible = true;
+                    });
+                    await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
                 }
                 else
                 {
-                    lblRatingLabel.Visible = true;
-                    lblRatingNALabel.Visible = true;
-                    nudRating.Minimum = 0;
-                    nudRating.Value = 0;
-                    nudRating.Visible = false;
+                    await lblRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await nudRating.DoThreadSafeAsync(x =>
+                    {
+                        x.Minimum = 0;
+                        x.Value = 0;
+                        x.Visible = false;
+                    });
                 }
 
                 string strRatingLabel = xmlCyberware.SelectSingleNode("ratinglabel")?.Value;
-                lblRatingLabel.Text = !string.IsNullOrEmpty(strRatingLabel)
-                    ? string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat"),
-                        await LanguageManager.GetStringAsync(strRatingLabel))
+                strRatingLabel = !string.IsNullOrEmpty(strRatingLabel)
+                    ? string.Format(GlobalSettings.CultureInfo,
+                                    await LanguageManager.GetStringAsync("Label_RatingFormat"),
+                                    await LanguageManager.GetStringAsync(strRatingLabel))
                     : await LanguageManager.GetStringAsync("Label_Rating");
+                await lblRatingLabel.DoThreadSafeAsync(x => x.Text = strRatingLabel);
 
                 string strSource = xmlCyberware.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                 string strPage = (await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? xmlCyberware.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                 SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter);
-                lblSource.Text = objSource.ToString();
-                await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
-                lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+                await objSource.SetControlAsync(lblSource);
+                await lblSource.DoThreadSafeFuncAsync(x => x.Text)
+                               .ContinueWith(
+                                   y => lblSourceLabel.DoThreadSafeAsync(
+                                       x => x.Visible = !string.IsNullOrEmpty(y.Result))).Unwrap();
 
                 Grade objForcedGrade = null;
                 if (!string.IsNullOrEmpty(strForceGrade))
                 {
                     // Force the Cyberware to be a particular Grade.
-                    if (cboGrade.Enabled)
-                        cboGrade.Enabled = false;
+                    await cboGrade.DoThreadSafeAsync(x =>
+                    {
+                        if (x.Enabled)
+                            x.Enabled = false;
+                    });
                     objForcedGrade = _lstGrades.Find(x => x.Name == strForceGrade);
                     strForceGrade = objForcedGrade?.SourceIDString;
                 }
                 else
                 {
-                    cboGrade.Enabled = !_blnLockGrade;
+                    await cboGrade.DoThreadSafeAsync(x => x.Enabled = !_blnLockGrade);
                     if (_blnLockGrade)
                     {
-                        strForceGrade = _objForcedGrade?.SourceIDString ?? cboGrade.SelectedValue?.ToString();
+                        strForceGrade = _objForcedGrade?.SourceIDString ?? await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
                         objForcedGrade = _objForcedGrade ?? _lstGrades.Find(x => x.SourceIDString == strForceGrade);
                     }
                 }
 
                 bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains(xmlCyberware.SelectSingleNode("category")?.Value);
-                chkBlackMarketDiscount.Enabled = blnCanBlackMarketDiscount;
-                if (!chkBlackMarketDiscount.Checked)
+                await chkBlackMarketDiscount.DoThreadSafeAsync(x =>
                 {
-                    chkBlackMarketDiscount.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
-                }
-                else if (!blnCanBlackMarketDiscount)
-                {
-                    //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
-                    chkBlackMarketDiscount.Checked = false;
-                }
+                    x.Enabled = blnCanBlackMarketDiscount;
+                    if (!x.Checked)
+                    {
+                        x.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
+                    }
+                    else if (!blnCanBlackMarketDiscount)
+                    {
+                        //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
+                        x.Checked = false;
+                    }
+                });
 
                 // We may need to rebuild the Grade list since Cultured Bioware is not allowed to select Standard (Second-Hand) as Grade and ForceGrades can change.
-                PopulateGrades(xmlCyberware.SelectSingleNode("nosecondhand") != null || (!cboGrade.Enabled && objForcedGrade?.SecondHand != true), false, strForceGrade, chkHideBannedGrades.Checked);
+                await PopulateGrades(
+                    xmlCyberware.SelectSingleNode("nosecondhand") != null
+                    || (!cboGrade.Enabled && objForcedGrade?.SecondHand != true), false, strForceGrade,
+                    await chkHideBannedGrades.DoThreadSafeFuncAsync(x => x.Checked));
 
                 string strNotes = xmlCyberware.SelectSingleNode("altnotes")?.Value ?? xmlCyberware.SelectSingleNode("notes")?.Value;
                 if (!string.IsNullOrEmpty(strNotes))
                 {
-                    lblCyberwareNotes.Visible = true;
-                    lblCyberwareNotesLabel.Visible = true;
-                    lblCyberwareNotes.Text = strNotes;
+                    await lblCyberwareNotesLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblCyberwareNotes.DoThreadSafeAsync(x =>
+                    {
+                        x.Visible = true;
+                        x.Text = strNotes;
+                    });
                 }
                 else
                 {
-                    lblCyberwareNotes.Visible = false;
-                    lblCyberwareNotesLabel.Visible = false;
+                    await lblCyberwareNotes.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblCyberwareNotesLabel.DoThreadSafeAsync(x => x.Visible = false);
                 }
-                tlpRight.Visible = true;
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = true);
             }
             else
             {
-                tlpRight.Visible = false;
-                cboGrade.Enabled = !_blnLockGrade;
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
+                await cboGrade.DoThreadSafeAsync(x => x.Enabled = !_blnLockGrade);
                 strForceGrade = string.Empty;
                 Grade objForcedGrade = null;
                 if (_blnLockGrade)
                 {
-                    strForceGrade = _objForcedGrade?.SourceIDString ?? cboGrade.SelectedValue?.ToString();
+                    strForceGrade = _objForcedGrade?.SourceIDString ?? await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
                     objForcedGrade = _objForcedGrade ?? _lstGrades.Find(x => x.SourceIDString == strForceGrade);
                 }
-                PopulateGrades(_blnLockGrade && objForcedGrade?.SecondHand != true, false, strForceGrade, chkHideBannedGrades.Checked);
-                chkBlackMarketDiscount.Checked = false;
+                await PopulateGrades(_blnLockGrade && objForcedGrade?.SecondHand != true, false, strForceGrade, chkHideBannedGrades.Checked);
+                await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Checked = false);
             }
             _blnLoading = false;
             await UpdateCyberwareInfo();
@@ -445,7 +501,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
+            if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked) && !await chkFree.DoThreadSafeFuncAsync(x => x.Checked))
             {
                 await RefreshList(_strSelectedCategory);
             }
@@ -463,16 +519,18 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void chkHideBannedGrades_CheckedChanged(object sender, EventArgs e)
+        private async void chkHideBannedGrades_CheckedChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
+            bool blnHideBannedGrades = await chkHideBannedGrades.DoThreadSafeFuncAsync(x => x.Checked);
             _lstGrades.Clear();
             _lstGrades.AddRange(_objCharacter.GetGradeList(
-                                    _objMode == Mode.Bioware
+                                    _eMode == Mode.Bioware
                                         ? Improvement.ImprovementSource.Bioware
-                                        : Improvement.ImprovementSource.Cyberware, chkHideBannedGrades.Checked));
-            PopulateGrades(false, false, string.Empty, chkHideBannedGrades.Checked);
+                                        : Improvement.ImprovementSource.Cyberware,
+                                    blnHideBannedGrades));
+            await PopulateGrades(false, false, string.Empty, blnHideBannedGrades);
         }
 
         private async void cmdOKAdd_Click(object sender, EventArgs e)
@@ -490,7 +548,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            if (chkShowOnlyAffordItems.Checked)
+            if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked))
             {
                 await RefreshList(_strSelectedCategory);
             }
@@ -577,7 +635,7 @@ namespace Chummer
         /// <summary>
         /// Set the window's Mode to Cyberware or Bioware.
         /// </summary>
-        private Mode WindowMode => _objMode;
+        private Mode WindowMode => _eMode;
 
         /// <summary>
         /// Set the maximum Capacity the piece of Cyberware is allowed to be.
@@ -662,7 +720,7 @@ namespace Chummer
         /// <summary>
         /// Whether the bioware should be discounted by Prototype Transhuman.
         /// </summary>
-        public bool PrototypeTranshuman => chkPrototypeTranshuman.Checked && _objMode == Mode.Bioware && !_objCharacter.Created;
+        public bool PrototypeTranshuman => chkPrototypeTranshuman.Checked && _eMode == Mode.Bioware && !_objCharacter.Created;
 
         /// <summary>
         /// Parent cyberware that the current selection will be added to.
@@ -684,7 +742,7 @@ namespace Chummer
         private async ValueTask UpdateCyberwareInfo()
         {
             XPathNavigator objXmlCyberware = null;
-            string strSelectedId = lstCyberware.SelectedValue?.ToString();
+            string strSelectedId = await lstCyberware.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retrieve the information for the selected piece of Cyberware.
@@ -692,245 +750,330 @@ namespace Chummer
             }
             if (objXmlCyberware == null)
             {
-                tlpRight.Visible = false;
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
                 return;
             }
 
-            SuspendLayout();
-            tlpRight.Visible = true;
-            tlpRight.SuspendLayout();
-
-            string strSelectCategory = objXmlCyberware.SelectSingleNode("category")?.Value ?? string.Empty;
-            bool blnForceNoESSModifier = objXmlCyberware.SelectSingleNode("forcegrade")?.Value == "None";
-
-            // Place the Genetech cost multiplier in a variable that can be safely modified.
-            decimal decGenetechCostModifier = 1;
-            // Genetech cost modifier only applies to Genetech.
-            if (strSelectCategory.StartsWith("Genetech", StringComparison.Ordinal) || strSelectCategory.StartsWith("Genetic Infusions", StringComparison.Ordinal) || strSelectCategory.StartsWith("Genemods", StringComparison.Ordinal))
-                decGenetechCostModifier = GenetechCostMultiplier;
-
-            // Extract the Avail and Cost values from the Cyberware info since these may contain formulas and/or be based off of the Rating.
-            // This is done using XPathExpression.
-
-            int intRating = nudRating.ValueAsInt;
-            AvailabilityValue objTotalAvail = new AvailabilityValue(nudRating.ValueAsInt, objXmlCyberware.SelectSingleNode("avail")?.Value, _intAvailModifier);
-            lblAvailLabel.Visible = true;
-            lblAvail.Text = objTotalAvail.ToString();
-
-            // Cost.
-            decimal decItemCost = 0;
-            if (chkFree.Checked)
+            await this.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                lblCost.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-            }
-            else
-            {
-                string strCost = objXmlCyberware.SelectSingleNode("cost")?.Value;
-                if (!string.IsNullOrEmpty(strCost))
+                await tlpRight.DoThreadSafeAsync(x =>
                 {
-                    if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal))
-                    {
-                        string strSuffix = string.Empty;
-                        if (!strCost.EndsWith(')'))
-                        {
-                            strSuffix = strCost.Substring(strCost.LastIndexOf(')') + 1);
-                            strCost = strCost.TrimEndOnce(strSuffix);
-                        }
-                        string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                        strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
-                        strCost += strSuffix;
-                    }
-                    // Check for a Variable Cost.
-                    if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
-                    {
-                        decimal decMin;
-                        decimal decMax = decimal.MaxValue;
-                        strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                        if (strCost.Contains('-'))
-                        {
-                            string[] strValues = strCost.Split('-');
-                            decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
-                            decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
-                        }
-                        else
-                            decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
+                    x.Visible = true;
+                    x.SuspendLayout();
+                });
+                try
+                {
+                    string strSelectCategory = objXmlCyberware.SelectSingleNode("category")?.Value ?? string.Empty;
+                    bool blnForceNoESSModifier = objXmlCyberware.SelectSingleNode("forcegrade")?.Value == "None";
 
-                        lblCost.Text = decMax == decimal.MaxValue ?
-                            decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + "¥+" :
-                            decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + " - " + decMax.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+                    // Place the Genetech cost multiplier in a variable that can be safely modified.
+                    decimal decGenetechCostModifier = 1;
+                    // Genetech cost modifier only applies to Genetech.
+                    if (strSelectCategory.StartsWith("Genetech", StringComparison.Ordinal)
+                        || strSelectCategory.StartsWith("Genetic Infusions", StringComparison.Ordinal)
+                        || strSelectCategory.StartsWith("Genemods", StringComparison.Ordinal))
+                        decGenetechCostModifier = GenetechCostMultiplier;
 
-                        decItemCost = decMin;
+                    // Extract the Avail and Cost values from the Cyberware info since these may contain formulas and/or be based off of the Rating.
+                    // This is done using XPathExpression.
+
+                    int intRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+                    AvailabilityValue objTotalAvail = new AvailabilityValue(
+                        intRating, objXmlCyberware.SelectSingleNode("avail")?.Value, _intAvailModifier);
+                    await lblAvailLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblAvail.DoThreadSafeAsync(x => x.Text = objTotalAvail.ToString());
+
+                    // Cost.
+                    decimal decItemCost = 0;
+                    if (await chkFree.DoThreadSafeFuncAsync(x => x.Checked))
+                    {
+                        await lblCost.DoThreadSafeAsync(
+                            x => x.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat,
+                                                          GlobalSettings.CultureInfo)
+                                          + '¥');
                     }
                     else
                     {
-                        strCost = await strCost.CheapReplaceAsync("Parent Cost", () => CyberwareParent?.Cost ?? "0")
-                                               .CheapReplaceAsync("Parent Gear Cost",
-                                                                  async () => CyberwareParent != null
-                                                                      ? (await CyberwareParent.GearChildren
-                                                                          .SumParallelAsync(x => x.TotalCost))
-                                                                      .ToString(GlobalSettings.InvariantCultureInfo)
-                                                                      : "0")
-                                               .CheapReplaceAsync("MinRating",
-                                                                  () => nudRating.Minimum.ToString(
-                                                                      GlobalSettings.InvariantCultureInfo))
-                                               .CheapReplaceAsync("Rating",
-                                                                  () => nudRating.Value.ToString(
-                                                                      GlobalSettings.InvariantCultureInfo));
-
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
-                        if (blnIsSuccess)
+                        string strCost = objXmlCyberware.SelectSingleNode("cost")?.Value;
+                        if (!string.IsNullOrEmpty(strCost))
                         {
-                            decItemCost = (Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) * _decCostMultiplier * decGenetechCostModifier);
-                            decItemCost *= 1 + (nudMarkup.Value / 100.0m);
-
-                            if (chkBlackMarketDiscount.Checked)
+                            if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal))
                             {
-                                decItemCost *= 0.9m;
+                                string strSuffix = string.Empty;
+                                if (!strCost.EndsWith(')'))
+                                {
+                                    strSuffix = strCost.Substring(strCost.LastIndexOf(')') + 1);
+                                    strCost = strCost.TrimEndOnce(strSuffix);
+                                }
+
+                                string[] strValues = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                                                            .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                                strCost = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
+                                strCost += strSuffix;
                             }
 
-                            lblCost.Text = decItemCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+                            // Check for a Variable Cost.
+                            if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
+                            {
+                                decimal decMin;
+                                decimal decMax = decimal.MaxValue;
+                                strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
+                                if (strCost.Contains('-'))
+                                {
+                                    string[] strValues = strCost.Split('-');
+                                    decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
+                                    decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                                }
+                                else
+                                    decMin = Convert.ToDecimal(strCost.FastEscape('+'),
+                                                               GlobalSettings.InvariantCultureInfo);
+
+                                await lblCost.DoThreadSafeAsync(x => x.Text = decMax == decimal.MaxValue
+                                                                    ? decMin.ToString(_objCharacter.Settings.NuyenFormat,
+                                                                          GlobalSettings.CultureInfo)
+                                                                      + "¥+"
+                                                                    : decMin.ToString(_objCharacter.Settings.NuyenFormat,
+                                                                          GlobalSettings.CultureInfo)
+                                                                      + " - " + decMax.ToString(_objCharacter.Settings.NuyenFormat,
+                                                                          GlobalSettings.CultureInfo) + '¥');
+
+                                decItemCost = decMin;
+                            }
+                            else
+                            {
+                                strCost = await strCost
+                                                .CheapReplaceAsync("Parent Cost", () => CyberwareParent?.Cost ?? "0")
+                                                .CheapReplaceAsync("Parent Gear Cost",
+                                                                   async () => CyberwareParent != null
+                                                                       ? (await CyberwareParent.GearChildren
+                                                                           .SumParallelAsync(x => x.TotalCost))
+                                                                       .ToString(GlobalSettings.InvariantCultureInfo)
+                                                                       : "0")
+                                                .CheapReplaceAsync("MinRating",
+                                                                   () => nudRating.Minimum.ToString(
+                                                                       GlobalSettings.InvariantCultureInfo))
+                                                .CheapReplaceAsync("Rating",
+                                                                   () => nudRating.Value.ToString(
+                                                                       GlobalSettings.InvariantCultureInfo));
+
+                                object objProcess
+                                    = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
+                                if (blnIsSuccess)
+                                {
+                                    decItemCost = (Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo)
+                                                   * _decCostMultiplier * decGenetechCostModifier);
+                                    decItemCost *= 1 + (nudMarkup.Value / 100.0m);
+
+                                    if (chkBlackMarketDiscount.Checked)
+                                    {
+                                        decItemCost *= 0.9m;
+                                    }
+
+                                    await lblCost.DoThreadSafeAsync(x => x.Text
+                                                                        = decItemCost.ToString(_objCharacter.Settings.NuyenFormat,
+                                                                            GlobalSettings.CultureInfo) + '¥');
+                                }
+                                else
+                                {
+                                    await lblCost.DoThreadSafeAsync(x => x.Text = strCost + '¥');
+                                }
+                            }
                         }
                         else
-                        {
-                            lblCost.Text = strCost + '¥';
-                        }
-                    }
-                }
-                else
-                    lblCost.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-            }
-
-            lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
-
-            // Test required to find the item.
-            lblTest.Text = _objCharacter.AvailTest(decItemCost, objTotalAvail);
-            lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
-
-            // Essence.
-            lblESSDiscountLabel.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts;
-            lblESSDiscountPercentLabel.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts;
-            nudESSDiscount.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts;
-
-            bool blnAddToParentESS = objXmlCyberware.SelectSingleNode("addtoparentess") != null;
-            if (_objParentNode == null || blnAddToParentESS)
-            {
-                decimal decESS = 0;
-                if (!chkPrototypeTranshuman.Checked)
-                {
-                    // Place the Essence cost multiplier in a variable that can be safely modified.
-                    decimal decCharacterESSModifier = 1.0m;
-
-                    if (!blnForceNoESSModifier)
-                    {
-                        decCharacterESSModifier = CharacterESSMultiplier;
-                        // If Basic Bioware is selected, apply the Basic Bioware ESS Multiplier.
-                        if (strSelectCategory == "Basic")
-                            decCharacterESSModifier -= (1 - BasicBiowareESSMultiplier);
-                        else if (strSelectCategory.StartsWith("Genetech", StringComparison.Ordinal) || strSelectCategory.StartsWith("Genetic Infusions", StringComparison.Ordinal) || strSelectCategory.StartsWith("Genemods", StringComparison.Ordinal))
-                        {
-                            decCharacterESSModifier -= (1 - GenetechEssMultiplier);
-                        }
-
-                        if (nudESSDiscount.Visible)
-                        {
-                            decimal decDiscountModifier = nudESSDiscount.Value / 100.0m;
-                            decCharacterESSModifier *= (1.0m - decDiscountModifier);
-                        }
-
-                        decCharacterESSModifier -= (1 - _decESSMultiplier);
-
-                        decCharacterESSModifier *= CharacterTotalESSMultiplier;
+                            await lblCost.DoThreadSafeAsync(x => x.Text
+                                                                = (0.0m).ToString(_objCharacter.Settings.NuyenFormat,
+                                                                      GlobalSettings.CultureInfo)
+                                                                  + '¥');
                     }
 
-                    string strEss = objXmlCyberware.SelectSingleNode("ess")?.Value ?? string.Empty;
-                    if (strEss.StartsWith("FixedValues(", StringComparison.Ordinal))
+                    await lblCost.DoThreadSafeFuncAsync(x => x.Text)
+                                 .ContinueWith(
+                                     y => lblCostLabel.DoThreadSafeAsync(
+                                         x => x.Visible = !string.IsNullOrEmpty(y.Result))).Unwrap();
+
+                    // Test required to find the item.
+                    string strTest = _objCharacter.AvailTest(decItemCost, objTotalAvail);
+                    await lblTest.DoThreadSafeAsync(x => x.Text = strTest);
+                    await lblTestLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTest));
+
+                    // Essence.
+                    await lblESSDiscountLabel.DoThreadSafeAsync(x => x.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts);
+                    await lblESSDiscountPercentLabel.DoThreadSafeAsync(x => x.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts);
+                    await nudESSDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts);
+
+                    bool blnAddToParentESS = objXmlCyberware.SelectSingleNode("addtoparentess") != null;
+                    if (_objParentNode == null || blnAddToParentESS)
                     {
-                        string strSuffix = string.Empty;
-                        if (!strEss.EndsWith(')'))
+                        decimal decESS = 0;
+                        if (!await chkPrototypeTranshuman.DoThreadSafeFuncAsync(x => x.Checked))
                         {
-                            strSuffix = strEss.Substring(strEss.LastIndexOf(')') + 1);
-                            strEss = strEss.TrimEndOnce(strSuffix);
+                            // Place the Essence cost multiplier in a variable that can be safely modified.
+                            decimal decCharacterESSModifier = 1.0m;
+
+                            if (!blnForceNoESSModifier)
+                            {
+                                decCharacterESSModifier = CharacterESSMultiplier;
+                                // If Basic Bioware is selected, apply the Basic Bioware ESS Multiplier.
+                                if (strSelectCategory == "Basic")
+                                    decCharacterESSModifier -= (1 - BasicBiowareESSMultiplier);
+                                else if (strSelectCategory.StartsWith("Genetech", StringComparison.Ordinal)
+                                         || strSelectCategory.StartsWith("Genetic Infusions", StringComparison.Ordinal)
+                                         || strSelectCategory.StartsWith("Genemods", StringComparison.Ordinal))
+                                {
+                                    decCharacterESSModifier -= (1 - GenetechEssMultiplier);
+                                }
+
+                                if (nudESSDiscount.Visible)
+                                {
+                                    decimal decDiscountModifier = nudESSDiscount.Value / 100.0m;
+                                    decCharacterESSModifier *= (1.0m - decDiscountModifier);
+                                }
+
+                                decCharacterESSModifier -= (1 - _decESSMultiplier);
+
+                                decCharacterESSModifier *= CharacterTotalESSMultiplier;
+                            }
+
+                            string strEss = objXmlCyberware.SelectSingleNode("ess")?.Value ?? string.Empty;
+                            if (strEss.StartsWith("FixedValues(", StringComparison.Ordinal))
+                            {
+                                string strSuffix = string.Empty;
+                                if (!strEss.EndsWith(')'))
+                                {
+                                    strSuffix = strEss.Substring(strEss.LastIndexOf(')') + 1);
+                                    strEss = strEss.TrimEndOnce(strSuffix);
+                                }
+
+                                string[] strValues = strEss.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                                                           .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                                strEss = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
+                                strEss += strSuffix;
+                            }
+
+                            object objProcess = CommonFunctions.EvaluateInvariantXPath(
+                                strEss.Replace("Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)),
+                                out bool blnIsSuccess);
+                            if (blnIsSuccess)
+                            {
+                                decESS = decCharacterESSModifier
+                                         * Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                                if (!_objCharacter.Settings.DontRoundEssenceInternally)
+                                    decESS = decimal.Round(decESS, _objCharacter.Settings.EssenceDecimals,
+                                                           MidpointRounding.AwayFromZero);
+                            }
                         }
-                        string[] strValues = strEss.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                        strEss = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
-                        strEss += strSuffix;
+
+                        await lblEssence.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = decESS.ToString(_objCharacter.Settings.EssenceFormat, GlobalSettings.CultureInfo);
+                            if (blnAddToParentESS)
+                                x.Text = '+' + x.Text;
+                        });
                     }
+                    else
+                        await lblEssence.DoThreadSafeAsync(x => x.Text
+                                                               = (0.0m).ToString(_objCharacter.Settings.EssenceFormat,
+                                                                   GlobalSettings.CultureInfo));
 
-                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strEss.Replace("Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
-                    if (blnIsSuccess)
+                    await lblEssence.DoThreadSafeFuncAsync(x => x.Text)
+                                    .ContinueWith(
+                                        y => lblEssenceLabel.DoThreadSafeAsync(
+                                            x => x.Visible = !string.IsNullOrEmpty(y.Result))).Unwrap();
+
+                    // Capacity.
+                    bool blnAddToParentCapacity = objXmlCyberware.SelectSingleNode("addtoparentcapacity") != null;
+                    // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
+                    string strCapacity = objXmlCyberware.SelectSingleNode("capacity")?.Value ?? string.Empty;
+                    bool blnSquareBrackets = strCapacity.StartsWith('[');
+                    if (string.IsNullOrEmpty(strCapacity))
                     {
-                        decESS = decCharacterESSModifier * Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
-                        if (!_objCharacter.Settings.DontRoundEssenceInternally)
-                            decESS = decimal.Round(decESS, _objCharacter.Settings.EssenceDecimals, MidpointRounding.AwayFromZero);
-                    }
-                }
-
-                lblEssence.Text = decESS.ToString(_objCharacter.Settings.EssenceFormat, GlobalSettings.CultureInfo);
-                if (blnAddToParentESS)
-                    lblEssence.Text = '+' + lblEssence.Text;
-            }
-            else
-                lblEssence.Text = (0.0m).ToString(_objCharacter.Settings.EssenceFormat, GlobalSettings.CultureInfo);
-
-            lblEssenceLabel.Visible = !string.IsNullOrEmpty(lblEssence.Text);
-
-            // Capacity.
-            bool blnAddToParentCapacity = objXmlCyberware.SelectSingleNode("addtoparentcapacity") != null;
-            // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-            string strCapacity = objXmlCyberware.SelectSingleNode("capacity")?.Value ?? string.Empty;
-            bool blnSquareBrackets = strCapacity.StartsWith('[');
-            if (string.IsNullOrEmpty(strCapacity))
-            {
-                lblCapacity.Text = 0.ToString(GlobalSettings.CultureInfo);
-            }
-            else
-            {
-                if (blnSquareBrackets)
-                    strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strCapacity = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
-                }
-                if (strCapacity == "[*]" || strCapacity == "*")
-                    lblCapacity.Text = "*";
-                else
-                {
-                    int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
-                    if (intPos != -1)
-                    {
-                        string strFirstHalf = strCapacity.Substring(0, intPos);
-                        string strSecondHalf = strCapacity.Substring(intPos + 1, strCapacity.Length - intPos - 1);
-
-                        blnSquareBrackets = strFirstHalf.StartsWith('[');
-                        if (blnSquareBrackets && strFirstHalf.Length > 1)
-                            strFirstHalf = strFirstHalf.Substring(1, strCapacity.Length - 2);
-
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strFirstHalf.Replace("Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
-                        lblCapacity.Text = blnIsSuccess ? objProcess.ToString() : strFirstHalf;
-
-                        if (blnSquareBrackets)
-                            lblCapacity.Text = '[' + lblCapacity.Text + ']';
-
-                        strSecondHalf = strSecondHalf.Trim('[', ']');
-                        objProcess = CommonFunctions.EvaluateInvariantXPath(strSecondHalf.Replace("Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), out blnIsSuccess);
-                        strSecondHalf = (blnAddToParentCapacity ? "+[" : "[") + (blnIsSuccess ? objProcess.ToString() : strSecondHalf) + ']';
-
-                        lblCapacity.Text += '/' + strSecondHalf;
+                        await lblCapacity.DoThreadSafeAsync(x => x.Text = 0.ToString(GlobalSettings.CultureInfo));
                     }
                     else
                     {
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
-                        lblCapacity.Text = blnIsSuccess ? objProcess.ToString() : strCapacity;
                         if (blnSquareBrackets)
-                            lblCapacity.Text = blnAddToParentCapacity ? "+[" + lblCapacity.Text + ']' : '[' + lblCapacity.Text + ']';
+                            strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                        if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
+                        {
+                            string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                                                            .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                            strCapacity = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
+                        }
+
+                        if (strCapacity == "[*]" || strCapacity == "*")
+                            await lblCapacity.DoThreadSafeAsync(x => x.Text = "*");
+                        else
+                        {
+                            int intPos = strCapacity.IndexOf("/[", StringComparison.Ordinal);
+                            if (intPos != -1)
+                            {
+                                string strFirstHalf = strCapacity.Substring(0, intPos);
+                                string strSecondHalf
+                                    = strCapacity.Substring(intPos + 1, strCapacity.Length - intPos - 1);
+
+                                blnSquareBrackets = strFirstHalf.StartsWith('[');
+                                if (blnSquareBrackets && strFirstHalf.Length > 1)
+                                    strFirstHalf = strFirstHalf.Substring(1, strCapacity.Length - 2);
+
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(
+                                    strFirstHalf.Replace(
+                                        "Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)),
+                                    out bool blnIsSuccess);
+
+                                await lblCapacity.DoThreadSafeAsync(x =>
+                                {
+                                    x.Text = blnIsSuccess
+                                        ? objProcess.ToString()
+                                        : strFirstHalf;
+                                    if (blnSquareBrackets)
+                                        x.Text = '[' + x.Text + ']';
+                                });
+
+                                strSecondHalf = strSecondHalf.Trim('[', ']');
+                                objProcess = CommonFunctions.EvaluateInvariantXPath(
+                                    strSecondHalf.Replace(
+                                        "Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)),
+                                    out blnIsSuccess);
+                                strSecondHalf = (blnAddToParentCapacity ? "+[" : "[")
+                                                + (blnIsSuccess ? objProcess.ToString() : strSecondHalf) + ']';
+
+                                await lblCapacity.DoThreadSafeAsync(x => x.Text += '/' + strSecondHalf);
+                            }
+                            else
+                            {
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(
+                                    strCapacity.Replace(
+                                        "Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)),
+                                    out bool blnIsSuccess);
+                                await lblCapacity.DoThreadSafeAsync(x =>
+                                {
+                                    x.Text = blnIsSuccess
+                                        ? objProcess.ToString()
+                                        : strCapacity;
+                                    if (blnSquareBrackets)
+                                        x.Text = blnAddToParentCapacity
+                                            ? "+[" + x.Text + ']'
+                                            : '[' + x.Text + ']';
+                                });
+                            }
+                        }
                     }
+
+                    await lblCapacity.DoThreadSafeFuncAsync(x => x.Text)
+                                     .ContinueWith(
+                                         y => lblCapacityLabel.DoThreadSafeAsync(
+                                             x => x.Visible = !string.IsNullOrEmpty(y.Result))).Unwrap();
+                }
+                finally
+                {
+                    await tlpRight.DoThreadSafeAsync(x => x.ResumeLayout());
                 }
             }
-
-            lblCapacityLabel.Visible = !string.IsNullOrEmpty(lblCapacity.Text);
-            tlpRight.ResumeLayout();
-            ResumeLayout();
+            finally
+            {
+                await this.DoThreadSafeAsync(x => x.ResumeLayout());
+            }
         }
 
         private bool _blnSkipListRefresh;
@@ -958,7 +1101,7 @@ namespace Chummer
                 return false;
             }
 
-            string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
+            string strCurrentGradeId = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId)
                 ? null
                 : _lstGrades.Find(x => x.SourceIDString == strCurrentGradeId);
@@ -995,7 +1138,7 @@ namespace Chummer
 
                 if (_objParentNode != null)
                     sbdFilter.Append(" and (requireparent or contains(capacity, \"[\")) and not(mountsto)");
-                else if (ParentVehicle == null && ((!_objCharacter.AddCyberwareEnabled && _objMode == Mode.Cyberware) || (!_objCharacter.AddBiowareEnabled && _objMode == Mode.Bioware)))
+                else if (ParentVehicle == null && ((!_objCharacter.AddCyberwareEnabled && _eMode == Mode.Cyberware) || (!_objCharacter.AddBiowareEnabled && _eMode == Mode.Bioware)))
                     sbdFilter.Append(" and (id = ").Append(Cyberware.EssenceHoleGUID.ToString().CleanXPath())
                              .Append(" or id = ").Append(Cyberware.EssenceAntiHoleGUID.ToString().CleanXPath())
                              .Append(" or mountsto)");
@@ -1009,8 +1152,9 @@ namespace Chummer
                         sbdFilter.Append(" and not(nosecondhand)");
                 }
 
-                if (!string.IsNullOrEmpty(txtSearch.Text))
-                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
+                if (!string.IsNullOrEmpty(strSearch))
+                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
 
                 if (sbdFilter.Length > 0)
                     strFilter = '[' + sbdFilter.ToString() + ']';
@@ -1035,6 +1179,10 @@ namespace Chummer
             {
                 if (xmlIterator.Count > 0)
                 {
+                    bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked);
+                    bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked);
+                    bool blnFree = await chkFree.DoThreadSafeFuncAsync(x => x.Checked);
+                    decimal decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value);
                     foreach (XPathNavigator xmlCyberware in xmlIterator)
                     {
                         bool blnIsForceGrade = await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("forcegrade") != null;
@@ -1212,17 +1360,16 @@ namespace Chummer
                             return true;
                         }
 
-                        if (chkHideOverAvailLimit.Checked
-                            && !xmlCyberware.CheckAvailRestriction(_objCharacter, intMinRating,
+                        if (blnHideOverAvailLimit && !xmlCyberware.CheckAvailRestriction(_objCharacter, intMinRating,
                                                                    blnIsForceGrade ? 0 : _intAvailModifier))
                         {
                             ++intOverLimit;
                             continue;
                         }
 
-                        if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
+                        if (blnShowOnlyAffordItems && !blnFree)
                         {
-                            decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                            decimal decCostMultiplier = 1 + (decMarkup / 100.0m);
                             if (_setBlackMarketMaps.Contains(
                                     (await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("category"))?.Value))
                                 decCostMultiplier *= 0.9m;
@@ -1254,14 +1401,17 @@ namespace Chummer
                                                                      intOverLimit)));
                     }
 
-                    string strOldSelected = lstCyberware.SelectedValue?.ToString();
+                    string strOldSelected = await lstCyberware.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
                     _blnLoading = true;
                     await lstCyberware.PopulateWithListItemsAsync(lstCyberwares);
                     _blnLoading = false;
-                    if (!string.IsNullOrEmpty(strOldSelected))
-                        lstCyberware.SelectedValue = strOldSelected;
-                    else
-                        lstCyberware.SelectedIndex = -1;
+                    await lstCyberware.DoThreadSafeAsync(x =>
+                    {
+                        if (!string.IsNullOrEmpty(strOldSelected))
+                            x.SelectedValue = strOldSelected;
+                        else
+                            x.SelectedIndex = -1;
+                    });
                 }
 
                 return lstCyberwares?.Count > 0;
@@ -1292,10 +1442,10 @@ namespace Chummer
         /// </summary>
         private async ValueTask AcceptForm()
         {
-            string strSelectedId = lstCyberware.SelectedValue?.ToString();
+            string strSelectedId = await lstCyberware.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             if (string.IsNullOrEmpty(strSelectedId))
                 return;
-            if (cboGrade.Text.StartsWith('*'))
+            if ((await cboGrade.DoThreadSafeFuncAsync(x => x.Text)).StartsWith('*'))
             {
                 Program.ShowMessageBox(this,
                     await LanguageManager.GetStringAsync("Message_BannedGrade"),
@@ -1343,7 +1493,7 @@ namespace Chummer
                     }
                 }
             }
-            if (!Upgrading && ParentVehicle == null && !objCyberwareNode.RequirementsMet(_objCharacter, null, await LanguageManager.GetStringAsync(_objMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware")))
+            if (!Upgrading && ParentVehicle == null && !objCyberwareNode.RequirementsMet(_objCharacter, null, await LanguageManager.GetStringAsync(_eMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware")))
                 return;
 
             string strForceGrade = (await objCyberwareNode.SelectSingleNodeAndCacheExpressionAsync("forcegrade"))?.Value;
@@ -1353,21 +1503,26 @@ namespace Chummer
             }
             else
             {
-                strForceGrade = cboGrade.SelectedValue?.ToString();
+                strForceGrade = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
                 if (!string.IsNullOrEmpty(strForceGrade))
                     SelectedGrade = _lstGrades.Find(x => x.SourceIDString == strForceGrade);
                 else
                     return;
             }
-            _sStrSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0) ? _strSelectedCategory : (await objCyberwareNode.SelectSingleNodeAndCacheExpressionAsync("category"))?.Value;
+
+            s_strSelectCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength) == 0)
+                ? _strSelectedCategory
+                : (await objCyberwareNode.SelectSingleNodeAndCacheExpressionAsync("category"))?.Value;
             _sStrSelectGrade = SelectedGrade?.SourceIDString;
             SelectedCyberware = strSelectedId;
-            SelectedRating = nudRating.ValueAsInt;
-            BlackMarketDiscount = chkBlackMarketDiscount.Checked;
-            Markup = nudMarkup.Value;
-
-            if (nudESSDiscount.Visible)
-                SelectedESSDiscount = nudESSDiscount.ValueAsInt;
+            SelectedRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+            BlackMarketDiscount = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked);
+            Markup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value);
+            await nudESSDiscount.DoThreadSafeAsync(x =>
+            {
+                if (x.Visible)
+                    SelectedESSDiscount = x.ValueAsInt;
+            });
 
             await this.DoThreadSafeAsync(x =>
             {
@@ -1385,12 +1540,12 @@ namespace Chummer
         /// <param name="blnForce">Force grades to be repopulated.</param>
         /// <param name="strForceGrade">If not empty, force this grade to be selected.</param>
         /// <param name="blnHideBannedGrades">Whether to hide grades banned by the character's gameplay options.</param>
-        private void PopulateGrades(bool blnIgnoreSecondHand = false, bool blnForce = false, string strForceGrade = "", bool blnHideBannedGrades = true)
+        private async ValueTask PopulateGrades(bool blnIgnoreSecondHand = false, bool blnForce = false, string strForceGrade = "", bool blnHideBannedGrades = true)
         {
             if (_blnPopulatingGrades)
                 return;
             _blnPopulatingGrades = true;
-            if (blnForce || blnIgnoreSecondHand != _blnIgnoreSecondHand || _strForceGrade != strForceGrade || cboGrade.Items.Count == 0)
+            if (blnForce || blnIgnoreSecondHand != _blnIgnoreSecondHand || _strForceGrade != strForceGrade || await cboGrade.DoThreadSafeFuncAsync(x => x.Items.Count) == 0)
             {
                 _blnIgnoreSecondHand = blnIgnoreSecondHand;
                 _strForceGrade = strForceGrade;
@@ -1407,9 +1562,9 @@ namespace Chummer
                                 continue;
                             if (WindowMode == Mode.Bioware)
                             {
-                                if (ImprovementManager
-                                    .GetCachedImprovementListForValueOf(_objCharacter,
-                                                                        Improvement.ImprovementType.DisableBiowareGrade)
+                                if ((await ImprovementManager
+                                        .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                            Improvement.ImprovementType.DisableBiowareGrade))
                                     .Any(x => objWareGrade.Name.Contains(x.ImprovedName)))
                                     continue;
                                 if (objWareGrade.Adapsin)
@@ -1417,10 +1572,10 @@ namespace Chummer
                             }
                             else
                             {
-                                if (ImprovementManager
-                                    .GetCachedImprovementListForValueOf(_objCharacter,
-                                                                        Improvement.ImprovementType
-                                                                            .DisableCyberwareGrade)
+                                if ((await ImprovementManager
+                                        .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                            Improvement.ImprovementType
+                                                       .DisableCyberwareGrade))
                                     .Any(x => objWareGrade.Name.Contains(x.ImprovedName)))
                                     continue;
                                 if (_objCharacter.AdapsinEnabled)
@@ -1457,21 +1612,24 @@ namespace Chummer
                         }
                     }
 
-                    string strOldSelected = cboGrade.SelectedValue?.ToString();
+                    string strOldSelected = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
                     bool blnOldSkipListRefresh = _blnSkipListRefresh;
                     if (strForceGrade == _strNoneGradeId || strOldSelected == _strNoneGradeId
                                                          || lstGrade.Any(x => x.Value.ToString() == strOldSelected))
                         _blnSkipListRefresh = true;
                     bool blnOldLoading = _blnLoading;
                     _blnLoading = true;
-                    cboGrade.PopulateWithListItems(lstGrade);
+                    await cboGrade.PopulateWithListItemsAsync(lstGrade);
                     _blnLoading = blnOldLoading;
-                    if (!string.IsNullOrEmpty(strForceGrade))
-                        cboGrade.SelectedValue = strForceGrade;
-                    else if (cboGrade.SelectedIndex <= 0 && !string.IsNullOrWhiteSpace(strOldSelected))
-                        cboGrade.SelectedValue = strOldSelected;
-                    if (cboGrade.SelectedIndex == -1 && lstGrade.Count > 0)
-                        cboGrade.SelectedIndex = 0;
+                    await cboGrade.DoThreadSafeAsync(x =>
+                    {
+                        if (!string.IsNullOrEmpty(strForceGrade))
+                            x.SelectedValue = strForceGrade;
+                        else if (x.SelectedIndex <= 0 && !string.IsNullOrWhiteSpace(strOldSelected))
+                            x.SelectedValue = strOldSelected;
+                        if (x.SelectedIndex == -1 && lstGrade.Count > 0)
+                            x.SelectedIndex = 0;
+                    });
 
                     _blnSkipListRefresh = blnOldSkipListRefresh;
                 }
@@ -1498,7 +1656,7 @@ namespace Chummer
                 objXmlCategoryList = await _xmlBaseCyberwareDataNode.SelectAndCacheExpressionAsync("categories/category");
             }
 
-            string strOldSelectedCyberware = lstCyberware.SelectedValue?.ToString();
+            string strOldSelectedCyberware = await lstCyberware.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
 
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
             {
@@ -1526,13 +1684,16 @@ namespace Chummer
                 _blnLoading = true;
                 await cboCategory.PopulateWithListItemsAsync(lstCategory);
                 _blnLoading = blnOldLoading;
-                cboCategory.SelectedValue = strOldSelected;
-                if (cboCategory.SelectedIndex == -1 && lstCategory.Count > 0)
-                    cboCategory.SelectedIndex = 0;
+                await cboCategory.DoThreadSafeAsync(x =>
+                {
+                    x.SelectedValue = strOldSelected;
+                    if (x.SelectedIndex == -1 && lstCategory.Count > 0)
+                        x.SelectedIndex = 0;
+                });
             }
 
             if (!string.IsNullOrEmpty(strOldSelectedCyberware))
-                lstCyberware.SelectedValue = strOldSelectedCyberware;
+                await lstCyberware.DoThreadSafeAsync(x => x.SelectedValue = strOldSelectedCyberware);
 
             _blnPopulatingCategories = false;
         }

@@ -87,14 +87,24 @@ namespace Chummer
             dgvc_Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
             if (_objCharacter.Created)
             {
-                chkHideOverAvailLimit.Visible = false;
-                chkHideOverAvailLimit.Checked = false;
+                await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
+                {
+                    x.Visible = false;
+                    x.Checked = false;
+                });
             }
             else
             {
-                chkHideOverAvailLimit.Text = string.Format(GlobalSettings.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.Settings.MaximumAvailability);
-                chkHideOverAvailLimit.Checked = GlobalSettings.HideItemsOverAvailLimit;
+                await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
+                {
+                    x.Text = string.Format(
+                        GlobalSettings.CultureInfo, x.Text,
+                        _objCharacter.Settings.MaximumAvailability);
+                    x.Checked = GlobalSettings.HideItemsOverAvailLimit;
+                });
             }
+
+            await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.BlackMarketDiscount);
 
             // Populate the Vehicle Category list.
             string strFilterPrefix = "vehicles/vehicle[(" + _objCharacter.Settings.BookXPath() + ") and category = ";
@@ -113,18 +123,19 @@ namespace Chummer
             {
                 _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
             }
-            chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
-            
+
             await cboCategory.PopulateWithListItemsAsync(_lstCategory);
             _blnLoading = false;
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(_strSelectCategory))
-                cboCategory.SelectedIndex = 0;
-            else
-                cboCategory.SelectedValue = _strSelectCategory;
-
-            if (cboCategory.SelectedIndex == -1)
-                cboCategory.SelectedIndex = 0;
+            await cboCategory.DoThreadSafeAsync(x =>
+            {
+                if (string.IsNullOrEmpty(_strSelectCategory))
+                    x.SelectedIndex = 0;
+                else
+                    x.SelectedValue = _strSelectCategory;
+                if (x.SelectedIndex == -1)
+                    x.SelectedIndex = 0;
+            });
         }
 
         private async void RefreshCurrentList(object sender, EventArgs e)
@@ -161,16 +172,16 @@ namespace Chummer
 
         private async void ProcessVehicleCostsChanged(object sender, EventArgs e)
         {
-            if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
+            if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked) && !await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked))
                 await RefreshList();
-            UpdateSelectedVehicleCost();
+            await UpdateSelectedVehicleCost();
         }
 
         private async void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkShowOnlyAffordItems.Checked)
+            if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked))
                 await RefreshList();
-            UpdateSelectedVehicleCost();
+            await UpdateSelectedVehicleCost();
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -268,7 +279,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strSelectedId = lstVehicle.SelectedValue?.ToString();
+            string strSelectedId = await lstVehicle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             XPathNavigator objXmlVehicle = null;
             if (!string.IsNullOrEmpty(strSelectedId))
             {
@@ -277,62 +288,86 @@ namespace Chummer
             }
             if (objXmlVehicle == null)
             {
-                tlpRight.Visible = false;
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
                 return;
             }
 
-            SuspendLayout();
-            lblVehicleHandling.Text = objXmlVehicle.SelectSingleNode("handling")?.Value;
-            lblVehicleAccel.Text = objXmlVehicle.SelectSingleNode("accel")?.Value;
-            lblVehicleSpeed.Text = objXmlVehicle.SelectSingleNode("speed")?.Value;
-            lblVehiclePilot.Text = objXmlVehicle.SelectSingleNode("pilot")?.Value;
-            lblVehicleBody.Text = objXmlVehicle.SelectSingleNode("body")?.Value;
-            lblVehicleArmor.Text = objXmlVehicle.SelectSingleNode("armor")?.Value;
-            lblVehicleSeats.Text = objXmlVehicle.SelectSingleNode("seats")?.Value;
-            lblVehicleSensor.Text = objXmlVehicle.SelectSingleNode("sensor")?.Value;
-            lblVehicleHandlingLabel.Visible = !string.IsNullOrEmpty(lblVehicleHandling.Text);
-            lblVehicleAccelLabel.Visible = !string.IsNullOrEmpty(lblVehicleAccel.Text);
-            lblVehicleSpeedLabel.Visible = !string.IsNullOrEmpty(lblVehicleSpeed.Text);
-            lblVehiclePilotLabel.Visible = !string.IsNullOrEmpty(lblVehiclePilot.Text);
-            lblVehicleBodyLabel.Visible = !string.IsNullOrEmpty(lblVehicleBody.Text);
-            lblVehicleArmorLabel.Visible = !string.IsNullOrEmpty(lblVehicleArmor.Text);
-            lblVehicleSeatsLabel.Visible = !string.IsNullOrEmpty(lblVehicleSeats.Text);
-            lblVehicleSensorLabel.Visible = !string.IsNullOrEmpty(lblVehicleSensor.Text);
-            AvailabilityValue objTotalAvail = new AvailabilityValue(0, objXmlVehicle.SelectSingleNode("avail")?.Value, chkUsedVehicle.Checked ? -4 : 0);
-            lblVehicleAvail.Text = objTotalAvail.ToString();
-            lblVehicleAvailLabel.Visible = !string.IsNullOrEmpty(lblVehicleAvail.Text);
-
-            bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains(objXmlVehicle.SelectSingleNode("category")?.Value);
-            chkBlackMarketDiscount.Enabled = blnCanBlackMarketDiscount;
-            if (!chkBlackMarketDiscount.Checked)
+            await this.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                chkBlackMarketDiscount.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
+                string strHandling = objXmlVehicle.SelectSingleNode("handling")?.Value;
+                await lblVehicleHandling.DoThreadSafeAsync(x => x.Text = strHandling);
+                string strAccel = objXmlVehicle.SelectSingleNode("accel")?.Value;
+                await lblVehicleAccel.DoThreadSafeAsync(x => x.Text = strAccel);
+                string strSpeed = objXmlVehicle.SelectSingleNode("speed")?.Value;
+                await lblVehicleSpeed.DoThreadSafeAsync(x => x.Text = strSpeed);
+                string strPilot = objXmlVehicle.SelectSingleNode("pilot")?.Value;
+                await lblVehiclePilot.DoThreadSafeAsync(x => x.Text = strPilot);
+                string strBody = objXmlVehicle.SelectSingleNode("body")?.Value;
+                await lblVehicleBody.DoThreadSafeAsync(x => x.Text = strBody);
+                string strArmor = objXmlVehicle.SelectSingleNode("armor")?.Value;
+                await lblVehicleArmor.DoThreadSafeAsync(x => x.Text = strArmor);
+                string strSeats = objXmlVehicle.SelectSingleNode("seats")?.Value;
+                await lblVehicleSeats.DoThreadSafeAsync(x => x.Text = strSeats);
+                string strSensor = objXmlVehicle.SelectSingleNode("sensor")?.Value;
+                await lblVehicleSensor.DoThreadSafeAsync(x => x.Text = strSensor);
+                await lblVehicleHandlingLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strHandling));
+                await lblVehicleAccelLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAccel));
+                await lblVehicleSpeedLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strSpeed));
+                await lblVehiclePilotLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strPilot));
+                await lblVehicleBodyLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strBody));
+                await lblVehicleArmorLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strArmor));
+                await lblVehicleSeatsLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strSeats));
+                await lblVehicleSensorLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strSensor));
+                AvailabilityValue objTotalAvail
+                    = new AvailabilityValue(0, objXmlVehicle.SelectSingleNode("avail")?.Value,
+                                            await chkUsedVehicle.DoThreadSafeFuncAsync(x => x.Checked) ? -4 : 0);
+                string strAvail = objTotalAvail.ToString();
+                await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = strAvail);
+                await lblVehicleAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail));
+
+                bool blnCanBlackMarketDiscount
+                    = _setBlackMarketMaps.Contains(objXmlVehicle.SelectSingleNode("category")?.Value);
+                await chkBlackMarketDiscount.DoThreadSafeAsync(x =>
+                {
+                    x.Enabled = blnCanBlackMarketDiscount;
+                    if (!x.Checked)
+                    {
+                        x.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
+                    }
+                    else if (!blnCanBlackMarketDiscount)
+                    {
+                        //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
+                        x.Checked = false;
+                    }
+                });
+
+                await UpdateSelectedVehicleCost();
+
+                string strSource = objXmlVehicle.SelectSingleNode("source")?.Value
+                                   ?? await LanguageManager.GetStringAsync("String_Unknown");
+                string strPage = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value
+                                 ?? objXmlVehicle.SelectSingleNode("page")?.Value
+                                 ?? await LanguageManager.GetStringAsync("String_Unknown");
+                SourceString objSource = await SourceString.GetSourceStringAsync(
+                    strSource, strPage, GlobalSettings.Language,
+                    GlobalSettings.CultureInfo, _objCharacter);
+                await objSource.SetControlAsync(lblSource);
+                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSource.ToString()));
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = true);
             }
-            else if (!blnCanBlackMarketDiscount)
+            finally
             {
-                //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
-                chkBlackMarketDiscount.Checked = false;
+                await this.DoThreadSafeAsync(x => x.ResumeLayout());
             }
-
-            UpdateSelectedVehicleCost();
-
-            string strSource = objXmlVehicle.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-            string strPage = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? objXmlVehicle.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-            SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
-                                                                             GlobalSettings.CultureInfo, _objCharacter);
-            lblSource.Text = objSource.ToString();
-            await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
-            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
-            tlpRight.Visible = true;
-            ResumeLayout();
         }
 
         /// <summary>
         /// Refresh the cost information for the selected Vehicle.
         /// </summary>
-        private void UpdateSelectedVehicleCost()
+        private async ValueTask UpdateSelectedVehicleCost()
         {
-            string strSelectedId = lstVehicle.SelectedValue?.ToString();
+            string strSelectedId = await lstVehicle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             XPathNavigator objXmlVehicle = null;
             if (!string.IsNullOrEmpty(strSelectedId))
             {
@@ -341,7 +376,7 @@ namespace Chummer
             }
             if (objXmlVehicle == null)
             {
-                tlpRight.Visible = false;
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
                 return;
             }
 
@@ -349,33 +384,36 @@ namespace Chummer
             string strCost = objXmlVehicle.SelectSingleNode("cost")?.Value ?? string.Empty;
             if (strCost.StartsWith("Variable", StringComparison.Ordinal))
             {
-                lblVehicleCost.Text = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                lblVehicleCostLabel.Visible = !string.IsNullOrEmpty(lblVehicleCost.Text);
-                lblTest.Text = string.Empty;
-                lblTestLabel.Visible = false;
+                strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
+                await lblVehicleCost.DoThreadSafeAsync(x => x.Text = strCost);
+                await lblVehicleCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strCost));
+                await lblTest.DoThreadSafeAsync(x => x.Text = string.Empty);
+                await lblTestLabel.DoThreadSafeAsync(x => x.Visible = false);
             }
             else
             {
                 decimal decCost = 0.0m;
-                if (!chkFreeItem.Checked && decimal.TryParse(strCost, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTmp))
+                if (!await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked) && decimal.TryParse(strCost, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTmp))
                 {
                     decCost = decTmp;
 
-                    if (chkUsedVehicle.Checked)
-                        decCost *= 1.0m - (nudUsedVehicleDiscount.Value / 100.0m);
+                    if (await chkUsedVehicle.DoThreadSafeFuncAsync(x => x.Checked))
+                        decCost *= 1.0m - (await nudUsedVehicleDiscount.DoThreadSafeFuncAsync(x => x.Value) / 100.0m);
                     // Apply the markup if applicable.
-                    decCost *= 1 + (nudMarkup.Value / 100.0m);
+                    decCost *= 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value) / 100.0m);
 
-                    if (chkBlackMarketDiscount.Checked)
+                    if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked))
                         decCost *= 0.9m;
                     if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps, objXmlVehicle.SelectSingleNode("category")?.Value))
                         decCost *= 0.9m;
                 }
 
-                lblVehicleCost.Text = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                lblVehicleCostLabel.Visible = !string.IsNullOrEmpty(lblVehicleCost.Text);
-                lblTest.Text = _objCharacter.AvailTest(decCost, lblVehicleAvail.Text);
-                lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
+                strCost = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+                await lblVehicleCost.DoThreadSafeAsync(x => x.Text = strCost);
+                await lblVehicleCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strCost));
+                string strTest = _objCharacter.AvailTest(decCost, await lblVehicleAvail.DoThreadSafeFuncAsync(x => x.Text));
+                await lblTest.DoThreadSafeAsync(x => x.Text = strTest);
+                await lblTestLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTest));
             }
         }
 
@@ -420,171 +458,63 @@ namespace Chummer
 
         private async ValueTask BuildVehicleList(XPathNodeIterator objXmlVehicleList)
         {
-            SuspendLayout();
-            int intOverLimit = 0;
-            if (tabViews.SelectedIndex == 1)
+            await this.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                XmlDocument dummy = new XmlDocument { XmlResolver = null };
-                DataTable tabVehicles = new DataTable("vehicles");
-                tabVehicles.Columns.Add("VehicleGuid");
-                tabVehicles.Columns.Add("VehicleName");
-                tabVehicles.Columns.Add("Accel");
-                tabVehicles.Columns.Add("Armor");
-                tabVehicles.Columns.Add("Body");
-                tabVehicles.Columns.Add("Handling");
-                tabVehicles.Columns.Add("Pilot");
-                tabVehicles.Columns.Add("Sensor");
-                tabVehicles.Columns.Add("Speed");
-                tabVehicles.Columns.Add("Seats");
-                tabVehicles.Columns.Add("Gear");
-                tabVehicles.Columns.Add("Mods");
-                tabVehicles.Columns.Add("Weapons");
-                tabVehicles.Columns.Add("WeaponMounts");
-                tabVehicles.Columns.Add("Avail", typeof(AvailabilityValue));
-                tabVehicles.Columns.Add("Source", typeof(SourceString));
-                tabVehicles.Columns.Add("Cost", typeof(NuyenString));
-                foreach (XPathNavigator objXmlVehicle in objXmlVehicleList)
+                int intOverLimit = 0;
+                bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked);
+                bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked);
+                bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked);
+                bool blnBlackMarketDiscount = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked);
+                decimal decBaseCostMultiplier = 1.0m;
+                if (await chkUsedVehicle.DoThreadSafeFuncAsync(x => x.Checked))
+                    decBaseCostMultiplier -= (await nudUsedVehicleDiscount.DoThreadSafeFuncAsync(x => x.Value) / 100.0m);
+                decBaseCostMultiplier *= 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value) / 100.0m);
+                bool blnHasSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength != 0);
+                if (await tabViews.DoThreadSafeFuncAsync(x => x.SelectedIndex) == 1)
                 {
-                    if (chkHideOverAvailLimit.Checked && !objXmlVehicle.CheckAvailRestriction(_objCharacter))
-                    {
-                        ++intOverLimit;
-                        continue;
-                    }
+                    XmlDocument dummy = new XmlDocument {XmlResolver = null};
+                    DataTable tabVehicles = new DataTable("vehicles");
+                    tabVehicles.Columns.Add("VehicleGuid");
+                    tabVehicles.Columns.Add("VehicleName");
+                    tabVehicles.Columns.Add("Accel");
+                    tabVehicles.Columns.Add("Armor");
+                    tabVehicles.Columns.Add("Body");
+                    tabVehicles.Columns.Add("Handling");
+                    tabVehicles.Columns.Add("Pilot");
+                    tabVehicles.Columns.Add("Sensor");
+                    tabVehicles.Columns.Add("Speed");
+                    tabVehicles.Columns.Add("Seats");
+                    tabVehicles.Columns.Add("Gear");
+                    tabVehicles.Columns.Add("Mods");
+                    tabVehicles.Columns.Add("Weapons");
+                    tabVehicles.Columns.Add("WeaponMounts");
+                    tabVehicles.Columns.Add("Avail", typeof(AvailabilityValue));
+                    tabVehicles.Columns.Add("Source", typeof(SourceString));
+                    tabVehicles.Columns.Add("Cost", typeof(NuyenString));
 
-                    if (!chkFreeItem.Checked && chkShowOnlyAffordItems.Checked)
-                    {
-                        decimal decCostMultiplier = 1.0m;
-                        if (chkUsedVehicle.Checked)
-                            decCostMultiplier -= (nudUsedVehicleDiscount.Value / 100.0m);
-                        decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
-                        if (chkBlackMarketDiscount.Checked
-                            && _setBlackMarketMaps.Contains((await objXmlVehicle
-                                                                .SelectSingleNodeAndCacheExpressionAsync("category"))
-                                ?.Value))
-                            decCostMultiplier *= 0.9m;
-                        if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps,
-                                (await objXmlVehicle
-                                    .SelectSingleNodeAndCacheExpressionAsync("category"))
-                                    ?.Value))
-                            decCostMultiplier *= 0.9m;
-                        if (!objXmlVehicle.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
-                        {
-                            ++intOverLimit;
-                            continue;
-                        }
-                    }
-
-                    using (Vehicle objVehicle = new Vehicle(_objCharacter))
-                    {
-                        objVehicle.Create(objXmlVehicle.ToXmlNode(dummy), true, true, false, true);
-                        string strID = objVehicle.SourceIDString;
-                        string strVehicleName = objVehicle.CurrentDisplayName;
-                        string strAccel = objVehicle.TotalAccel;
-                        string strArmor = objVehicle.TotalArmor.ToString(GlobalSettings.CultureInfo);
-                        string strBody = objVehicle.TotalBody.ToString(GlobalSettings.CultureInfo);
-                        string strHandling = objVehicle.TotalHandling;
-                        string strPilot = objVehicle.Pilot.ToString(GlobalSettings.CultureInfo);
-                        string strSensor = objVehicle.CalculatedSensor.ToString(GlobalSettings.CultureInfo);
-                        string strSpeed = objVehicle.TotalSpeed;
-                        string strSeats = objVehicle.TotalSeats.ToString(GlobalSettings.CultureInfo);
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdGear))
-                        {
-                            foreach (Gear objGear in objVehicle.GearChildren)
-                            {
-                                sbdGear.AppendLine(objGear.CurrentDisplayName);
-                            }
-
-                            if (sbdGear.Length > 0)
-                                sbdGear.Length -= Environment.NewLine.Length;
-
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdMods))
-                            {
-                                foreach (VehicleMod objMod in objVehicle.Mods)
-                                {
-                                    sbdMods.AppendLine(objMod.CurrentDisplayName);
-                                }
-
-                                if (sbdMods.Length > 0)
-                                    sbdMods.Length -= Environment.NewLine.Length;
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                              out StringBuilder sbdWeapons))
-                                {
-                                    if (sbdWeapons.Length > 0)
-                                        sbdWeapons.Length -= Environment.NewLine.Length;
-                                    foreach (Weapon objWeapon in objVehicle.Weapons)
-                                    {
-                                        sbdWeapons.AppendLine(objWeapon.CurrentDisplayName);
-                                    }
-
-                                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                               out StringBuilder sbdWeaponMounts))
-                                    {
-                                        foreach (WeaponMount objWeaponMount in objVehicle.WeaponMounts)
-                                        {
-                                            sbdWeaponMounts.AppendLine(objWeaponMount.CurrentDisplayName);
-                                        }
-
-                                        if (sbdWeaponMounts.Length > 0)
-                                            sbdWeaponMounts.Length -= Environment.NewLine.Length;
-
-                                        AvailabilityValue objAvail = objVehicle.TotalAvailTuple();
-                                        SourceString strSource = await SourceString.GetSourceStringAsync(objVehicle.Source,
-                                            objVehicle.DisplayPage(GlobalSettings.Language),
-                                            GlobalSettings.Language, GlobalSettings.CultureInfo,
-                                            _objCharacter);
-                                        NuyenString strCost =
-                                            new NuyenString(objVehicle.TotalCost.ToString(GlobalSettings.CultureInfo));
-
-                                        tabVehicles.Rows.Add(strID, strVehicleName, strAccel, strArmor, strBody,
-                                                             strHandling, strPilot, strSensor, strSpeed, strSeats,
-                                                             sbdGear.ToString(), sbdMods.ToString(),
-                                                             sbdWeapons.ToString(), sbdWeaponMounts.ToString(),
-                                                             objAvail, strSource, strCost);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                dgvVehicles.Columns[0].Visible = false;
-                dgvVehicles.Columns[13].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopRight;
-                dgvVehicles.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-
-                DataSet set = new DataSet("vehicles");
-                set.Tables.Add(tabVehicles);
-                dgvVehicles.DataSource = set;
-                dgvVehicles.DataMember = "vehicles";
-            }
-            else
-            {
-                string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstVehicles))
-                {
                     foreach (XPathNavigator objXmlVehicle in objXmlVehicleList)
                     {
-                        if (chkHideOverAvailLimit.Checked && !objXmlVehicle.CheckAvailRestriction(_objCharacter))
+                        if (blnHideOverAvailLimit && !objXmlVehicle.CheckAvailRestriction(_objCharacter))
                         {
                             ++intOverLimit;
                             continue;
                         }
 
-                        if (!chkFreeItem.Checked && chkShowOnlyAffordItems.Checked)
+                        if (!blnFreeItem && blnShowOnlyAffordItems)
                         {
-                            decimal decCostMultiplier = 1.0m;
-                            if (chkUsedVehicle.Checked)
-                                decCostMultiplier -= (nudUsedVehicleDiscount.Value / 100.0m);
-                            decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
-                            if (chkBlackMarketDiscount.Checked
+                            decimal decCostMultiplier = decBaseCostMultiplier;
+                            if (blnBlackMarketDiscount
                                 && _setBlackMarketMaps.Contains((await objXmlVehicle
-                                                                    .SelectSingleNodeAndCacheExpressionAsync("category"))
-                                    ?.Value))
+                                                                    .SelectSingleNodeAndCacheExpressionAsync(
+                                                                        "category"))
+                                                                ?.Value))
                                 decCostMultiplier *= 0.9m;
                             if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps,
-                                    (await objXmlVehicle
-                                        .SelectSingleNodeAndCacheExpressionAsync("category"))
-                                        ?.Value))
+                                                                  (await objXmlVehicle
+                                                                      .SelectSingleNodeAndCacheExpressionAsync(
+                                                                          "category"))
+                                                                  ?.Value))
                                 decCostMultiplier *= 0.9m;
                             if (!objXmlVehicle.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
                             {
@@ -593,49 +523,185 @@ namespace Chummer
                             }
                         }
 
-                        string strDisplayname = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
-                                                ?? (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
-                                                ?? await LanguageManager.GetStringAsync("String_Unknown");
-
-                        if (!GlobalSettings.SearchInCategoryOnly && txtSearch.TextLength != 0)
+                        using (Vehicle objVehicle = new Vehicle(_objCharacter))
                         {
-                            string strCategory = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("category"))?.Value;
-                            if (!string.IsNullOrEmpty(strCategory))
+                            objVehicle.Create(objXmlVehicle.ToXmlNode(dummy), true, true, false, true);
+                            string strID = objVehicle.SourceIDString;
+                            string strVehicleName = objVehicle.CurrentDisplayName;
+                            string strAccel = objVehicle.TotalAccel;
+                            string strArmor = objVehicle.TotalArmor.ToString(GlobalSettings.CultureInfo);
+                            string strBody = objVehicle.TotalBody.ToString(GlobalSettings.CultureInfo);
+                            string strHandling = objVehicle.TotalHandling;
+                            string strPilot = objVehicle.Pilot.ToString(GlobalSettings.CultureInfo);
+                            string strSensor = objVehicle.CalculatedSensor.ToString(GlobalSettings.CultureInfo);
+                            string strSpeed = objVehicle.TotalSpeed;
+                            string strSeats = objVehicle.TotalSeats.ToString(GlobalSettings.CultureInfo);
+                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                          out StringBuilder sbdGear))
                             {
-                                ListItem objFoundItem
-                                    = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
-                                if (!string.IsNullOrEmpty(objFoundItem.Name))
+                                foreach (Gear objGear in objVehicle.GearChildren)
                                 {
-                                    strDisplayname += strSpace + '[' + objFoundItem.Name + ']';
+                                    sbdGear.AppendLine(objGear.CurrentDisplayName);
+                                }
+
+                                if (sbdGear.Length > 0)
+                                    sbdGear.Length -= Environment.NewLine.Length;
+
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdMods))
+                                {
+                                    foreach (VehicleMod objMod in objVehicle.Mods)
+                                    {
+                                        sbdMods.AppendLine(objMod.CurrentDisplayName);
+                                    }
+
+                                    if (sbdMods.Length > 0)
+                                        sbdMods.Length -= Environment.NewLine.Length;
+                                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                               out StringBuilder sbdWeapons))
+                                    {
+                                        if (sbdWeapons.Length > 0)
+                                            sbdWeapons.Length -= Environment.NewLine.Length;
+                                        foreach (Weapon objWeapon in objVehicle.Weapons)
+                                        {
+                                            sbdWeapons.AppendLine(objWeapon.CurrentDisplayName);
+                                        }
+
+                                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                   out StringBuilder sbdWeaponMounts))
+                                        {
+                                            foreach (WeaponMount objWeaponMount in objVehicle.WeaponMounts)
+                                            {
+                                                sbdWeaponMounts.AppendLine(objWeaponMount.CurrentDisplayName);
+                                            }
+
+                                            if (sbdWeaponMounts.Length > 0)
+                                                sbdWeaponMounts.Length -= Environment.NewLine.Length;
+
+                                            AvailabilityValue objAvail = objVehicle.TotalAvailTuple();
+                                            SourceString strSource = await SourceString.GetSourceStringAsync(
+                                                objVehicle.Source,
+                                                objVehicle.DisplayPage(GlobalSettings.Language),
+                                                GlobalSettings.Language, GlobalSettings.CultureInfo,
+                                                _objCharacter);
+                                            NuyenString strCost =
+                                                new NuyenString(
+                                                    objVehicle.TotalCost.ToString(GlobalSettings.CultureInfo));
+
+                                            tabVehicles.Rows.Add(strID, strVehicleName, strAccel, strArmor, strBody,
+                                                                 strHandling, strPilot, strSensor, strSpeed, strSeats,
+                                                                 sbdGear.ToString(), sbdMods.ToString(),
+                                                                 sbdWeapons.ToString(), sbdWeaponMounts.ToString(),
+                                                                 objAvail, strSource, strCost);
+                                        }
+                                    }
                                 }
                             }
                         }
-
-                        lstVehicles.Add(new ListItem(
-                            (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value ?? string.Empty,
-                            strDisplayname));
                     }
 
-                    lstVehicles.Sort(CompareListItems.CompareNames);
-                    if (intOverLimit > 0)
+                    await dgvVehicles.DoThreadSafeAsync(x =>
                     {
-                        // Add after sort so that it's always at the end
-                        lstVehicles.Add(new ListItem(string.Empty,
-                            string.Format(GlobalSettings.CultureInfo,
-                                await LanguageManager.GetStringAsync(
-                                    "String_RestrictedItemsHidden"),
-                                intOverLimit)));
-                    }
+                        x.Columns[0].Visible = false;
+                        x.Columns[13].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopRight;
+                        x.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
 
-                    string strOldSelected = lstVehicle.SelectedValue?.ToString();
-                    _blnLoading = true;
-                    await lstVehicle.PopulateWithListItemsAsync(lstVehicles);
-                    _blnLoading = false;
-                    if (string.IsNullOrEmpty(strOldSelected))
-                        lstVehicle.SelectedIndex = -1;
-                    else
-                        lstVehicle.SelectedValue = strOldSelected;
+                        DataSet set = new DataSet("vehicles");
+                        set.Tables.Add(tabVehicles);
+                        x.DataSource = set;
+                        x.DataMember = "vehicles";
+                    });
                 }
+                else
+                {
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                   out List<ListItem> lstVehicles))
+                    {
+                        foreach (XPathNavigator objXmlVehicle in objXmlVehicleList)
+                        {
+                            if (blnHideOverAvailLimit && !objXmlVehicle.CheckAvailRestriction(_objCharacter))
+                            {
+                                ++intOverLimit;
+                                continue;
+                            }
+
+                            if (!blnFreeItem && blnShowOnlyAffordItems)
+                            {
+                                decimal decCostMultiplier = decBaseCostMultiplier;
+                                if (blnBlackMarketDiscount
+                                    && _setBlackMarketMaps.Contains((await objXmlVehicle
+                                                                        .SelectSingleNodeAndCacheExpressionAsync(
+                                                                            "category"))
+                                                                    ?.Value))
+                                    decCostMultiplier *= 0.9m;
+                                if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps,
+                                                                      (await objXmlVehicle
+                                                                          .SelectSingleNodeAndCacheExpressionAsync(
+                                                                              "category"))
+                                                                      ?.Value))
+                                    decCostMultiplier *= 0.9m;
+                                if (!objXmlVehicle.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
+                                {
+                                    ++intOverLimit;
+                                    continue;
+                                }
+                            }
+
+                            string strDisplayname
+                                = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                  ?? (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
+                                  ?? await LanguageManager.GetStringAsync("String_Unknown");
+
+                            if (!GlobalSettings.SearchInCategoryOnly && blnHasSearch)
+                            {
+                                string strCategory
+                                    = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("category"))?.Value;
+                                if (!string.IsNullOrEmpty(strCategory))
+                                {
+                                    ListItem objFoundItem
+                                        = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
+                                    if (!string.IsNullOrEmpty(objFoundItem.Name))
+                                    {
+                                        strDisplayname += strSpace + '[' + objFoundItem.Name + ']';
+                                    }
+                                }
+                            }
+
+                            lstVehicles.Add(new ListItem(
+                                                (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("id"))
+                                                ?.Value ?? string.Empty,
+                                                strDisplayname));
+                        }
+
+                        lstVehicles.Sort(CompareListItems.CompareNames);
+                        if (intOverLimit > 0)
+                        {
+                            // Add after sort so that it's always at the end
+                            lstVehicles.Add(new ListItem(string.Empty,
+                                                         string.Format(GlobalSettings.CultureInfo,
+                                                                       await LanguageManager.GetStringAsync(
+                                                                           "String_RestrictedItemsHidden"),
+                                                                       intOverLimit)));
+                        }
+
+                        string strOldSelected = await lstVehicle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+                        _blnLoading = true;
+                        await lstVehicle.PopulateWithListItemsAsync(lstVehicles);
+                        _blnLoading = false;
+                        await lstVehicle.DoThreadSafeAsync(x =>
+                        {
+                            if (string.IsNullOrEmpty(strOldSelected))
+                                x.SelectedIndex = -1;
+                            else
+                                x.SelectedValue = strOldSelected;
+                        });
+                    }
+                }
+            }
+            finally
+            {
+                await this.DoThreadSafeAsync(x => x.ResumeLayout());
             }
         }
 
@@ -648,18 +714,18 @@ namespace Chummer
             switch (tabViews.SelectedIndex)
             {
                 case 0:
-                    string strSelectedId = lstVehicle.SelectedValue?.ToString();
+                    string strSelectedId = await lstVehicle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
                     if (!string.IsNullOrEmpty(strSelectedId))
                     {
                         xmlVehicle = _xmlBaseVehicleDataNode.SelectSingleNode("vehicles/vehicle[id = " + strSelectedId.CleanXPath() + ']');
                         if (xmlVehicle != null)
                         {
-                            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0)
-                                ? cboCategory.SelectedValue?.ToString()
+                            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength) == 0)
+                                ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString())
                                 : xmlVehicle.SelectSingleNode("category")?.Value;
                             _strSelectedVehicle = xmlVehicle.SelectSingleNode("id")?.Value;
-                            _decMarkup = nudMarkup.Value;
-                            _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
+                            _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value);
+                            _blnBlackMarketDiscount = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked);
 
                             await this.DoThreadSafeAsync(x =>
                             {
@@ -672,25 +738,22 @@ namespace Chummer
                     break;
 
                 case 1:
-                    if (dgvVehicles.SelectedRows.Count == 1)
+                    if (await dgvVehicles.DoThreadSafeFuncAsync(x => x.SelectedRows.Count) == 1)
                     {
-                        if (txtSearch.Text.Length > 1)
-                        {
-                            string strWeapon = dgvVehicles.SelectedRows[0].Cells[0].Value.ToString();
-                            if (!string.IsNullOrEmpty(strWeapon))
-                                strWeapon = strWeapon.Substring(0, strWeapon.LastIndexOf('(') - 1);
-                            xmlVehicle = _xmlBaseVehicleDataNode.SelectSingleNode("/chummer/vehicles/vehicle[id = " + strWeapon.CleanXPath() + ']');
-                        }
-                        else
-                        {
-                            xmlVehicle = _xmlBaseVehicleDataNode.SelectSingleNode("/chummer/vehicles/vehicle[id = " + dgvVehicles.SelectedRows[0].Cells[0].Value.ToString().CleanXPath() + ']');
-                        }
+                        string strWeapon = await dgvVehicles.DoThreadSafeFuncAsync(x => x.SelectedRows[0].Cells[0].Value.ToString());
+                        if (!string.IsNullOrEmpty(strWeapon))
+                            strWeapon = strWeapon.Substring(0, strWeapon.LastIndexOf('(') - 1);
+                        xmlVehicle = _xmlBaseVehicleDataNode.SelectSingleNode("/chummer/vehicles/vehicle[id = " + strWeapon.CleanXPath() + ']');
                         if (xmlVehicle != null)
                         {
-                            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicle.SelectSingleNode("category")?.Value;
+                            _strSelectCategory
+                                = (GlobalSettings.SearchInCategoryOnly
+                                   || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength) == 0)
+                                    ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString())
+                                    : xmlVehicle.SelectSingleNode("category")?.Value;
                             _strSelectedVehicle = xmlVehicle.SelectSingleNode("id")?.Value;
                         }
-                        _decMarkup = nudMarkup.Value;
+                        _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value);
 
                         await this.DoThreadSafeAsync(x =>
                         {
@@ -701,19 +764,23 @@ namespace Chummer
                     break;
             }
 
-            if (chkUsedVehicle.Checked)
+            if (await chkUsedVehicle.DoThreadSafeFuncAsync(x => x.Checked))
             {
                 decimal decCost = Convert.ToDecimal(xmlVehicle?.SelectSingleNode("cost")?.Value, GlobalSettings.InvariantCultureInfo);
-                decCost *= 1 - (nudUsedVehicleDiscount.Value / 100.0m);
+                decCost *= 1 - (await nudUsedVehicleDiscount.DoThreadSafeFuncAsync(x => x.Value) / 100.0m);
 
                 _blnUsedVehicle = true;
-                _strUsedAvail = lblVehicleAvail.Text.Replace(await LanguageManager.GetStringAsync("String_AvailRestricted"), "R").Replace(await LanguageManager.GetStringAsync("String_AvailForbidden"), "F");
+                _strUsedAvail = (await lblVehicleAvail.DoThreadSafeFuncAsync(x => x.Text))
+                                .Replace(await LanguageManager.GetStringAsync("String_AvailRestricted"), "R")
+                                .Replace(await LanguageManager.GetStringAsync("String_AvailForbidden"), "F");
                 _decUsedCost = decCost;
             }
 
-            _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicle?.SelectSingleNode("category")?.Value;
-            _decMarkup = nudMarkup.Value;
+            _blnBlackMarketDiscount = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked);
+            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength) == 0)
+                ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString())
+                : xmlVehicle?.SelectSingleNode("category")?.Value;
+            _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value);
 
             await this.DoThreadSafeAsync(x =>
             {

@@ -60,11 +60,14 @@ namespace Chummer
                 
                 await cboAttribute.PopulateWithListItemsAsync(lstAttributes);
                 if (lstAttributes.Count >= 1)
-                    cboAttribute.SelectedIndex = 0;
+                    await cboAttribute.DoThreadSafeAsync(x => x.SelectedIndex = 0);
                 else if (lstAttributes.Count == 0)
-                    cmdOK.Enabled = false;
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
                 else
-                    cmdOK_Click(sender, e);
+                {
+                    _strReturnValue = await cboAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
+                    DialogResult = DialogResult.OK;
+                }
             }
         }
 

@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 
@@ -50,13 +51,13 @@ namespace Chummer
         {
             if (_blnSkipRefresh)
                 return;
-            SuspendLayout();
+            await this.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
                 XPathNavigator objXmlMentor = null;
                 if (lstMentor.SelectedIndex >= 0)
                 {
-                    string strSelectedId = lstMentor.SelectedValue?.ToString();
+                    string strSelectedId = await lstMentor.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
                     if (!string.IsNullOrEmpty(strSelectedId))
                         objXmlMentor =
                             _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = " +
@@ -97,40 +98,59 @@ namespace Chummer
                             //If there are more, show the drop down menu
                             if (lstChoice1.Count > 0)
                                 await cboChoice1.PopulateWithListItemsAsync(lstChoice1);
-                            cboChoice1.Visible = lstChoice1.Count > 1;
-                            lblBonusText1.Visible = lstChoice1.Count == 1;
-                            if (lstChoice1.Count == 1)
-                                lblBonusText1.Text = lstChoice1[0].Name;
+                            await cboChoice1.DoThreadSafeAsync(x => x.Visible = lstChoice1.Count > 1);
+                            await lblBonusText1.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = lstChoice1.Count == 1;
+                                if (lstChoice1.Count == 1)
+                                    x.Text = lstChoice1[0].Name;
+                            });
                             if (lstChoice2.Count > 0)
                                 await cboChoice2.PopulateWithListItemsAsync(lstChoice2);
-                            cboChoice2.Visible = lstChoice2.Count > 1;
-                            lblBonusText2.Visible = lstChoice2.Count == 1;
-                            if (lstChoice2.Count == 1)
-                                lblBonusText2.Text = lstChoice2[0].Name;
+                            await cboChoice2.DoThreadSafeAsync(x => x.Visible = lstChoice2.Count > 1);
+                            await lblBonusText2.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = lstChoice2.Count == 1;
+                                if (lstChoice2.Count == 1)
+                                    x.Text = lstChoice2[0].Name;
+                            });
                         }
                     }
                     else
                     {
-                        cboChoice1.Visible = false;
-                        cboChoice2.Visible = false;
-                        lblBonusText1.Visible = false;
-                        lblBonusText2.Visible = false;
+                        await cboChoice1.DoThreadSafeAsync(x => x.Visible = false);
+                        await cboChoice2.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblBonusText1.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblBonusText2.DoThreadSafeAsync(x => x.Visible = false);
                     }
-                    
-                    lblChoice1.Visible = cboChoice1.Visible;
-                    lblChoice2.Visible = cboChoice2.Visible;
-                    lblBonus1.Visible = lblBonusText1.Visible;
-                    lblBonus2.Visible = lblBonusText2.Visible;
+
+                    await cboChoice1.DoThreadSafeFuncAsync(x => x.Visible)
+                                    .ContinueWith(y => lblChoice1.DoThreadSafeAsync(x => x.Visible = y.Result))
+                                    .Unwrap();
+                    await cboChoice2.DoThreadSafeFuncAsync(x => x.Visible)
+                                    .ContinueWith(
+                                        y => lblChoice2.DoThreadSafeAsync(x => x.Visible = y.Result))
+                                    .Unwrap();
+                    await lblBonusText1.DoThreadSafeFuncAsync(x => x.Visible)
+                                       .ContinueWith(
+                                           y => lblBonus1.DoThreadSafeAsync(x => x.Visible = y.Result))
+                                       .Unwrap();
+                    await lblBonusText2.DoThreadSafeFuncAsync(x => x.Visible)
+                                       .ContinueWith(y => lblBonus2.DoThreadSafeAsync(x => x.Visible = y.Result))
+                                       .Unwrap();
 
                     // Get the information for the selected Mentor.
-                    lblAdvantage.Text = objXmlMentor.SelectSingleNode("altadvantage")?.Value ??
-                                        objXmlMentor.SelectSingleNode("advantage")?.Value ??
-                                        await LanguageManager.GetStringAsync("String_Unknown");
-                    lblAdvantageLabel.Visible = !string.IsNullOrEmpty(lblAdvantage.Text);
-                    lblDisadvantage.Text = objXmlMentor.SelectSingleNode("altdisadvantage")?.Value ??
-                                           objXmlMentor.SelectSingleNode("disadvantage")?.Value ??
-                                           await LanguageManager.GetStringAsync("String_Unknown");
-                    lblDisadvantageLabel.Visible = !string.IsNullOrEmpty(lblDisadvantage.Text);
+                    string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
+                    string strAdvantage = objXmlMentor.SelectSingleNode("altadvantage")?.Value ??
+                                          objXmlMentor.SelectSingleNode("advantage")?.Value ??
+                                          strUnknown;
+                    await lblAdvantage.DoThreadSafeAsync(x => x.Text = strAdvantage);
+                    await lblAdvantageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAdvantage));
+                    string strDisadvantage = objXmlMentor.SelectSingleNode("altdisadvantage")?.Value ??
+                                             objXmlMentor.SelectSingleNode("disadvantage")?.Value ??
+                                             strUnknown;
+                    await lblDisadvantage.DoThreadSafeAsync(x => x.Text = strDisadvantage);
+                    await lblDisadvantageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDisadvantage));
 
                     string strSource = objXmlMentor.SelectSingleNode("source")?.Value ??
                                        await LanguageManager.GetStringAsync("String_Unknown");
@@ -140,21 +160,24 @@ namespace Chummer
                     SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter);
                     await objSourceString.SetControlAsync(lblSource);
-                    lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
-                    cmdOK.Enabled = true;
-                    tlpRight.Visible = true;
-                    tlpBottomRight.Visible = true;
+                    await lblSource.DoThreadSafeFuncAsync(x => x.Text)
+                                   .ContinueWith(
+                                       y => lblSourceLabel.DoThreadSafeAsync(
+                                           x => x.Visible = !string.IsNullOrEmpty(y.Result))).Unwrap();
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = true);
+                    await tlpRight.DoThreadSafeAsync(x => x.Visible = true);
+                    await tlpBottomRight.DoThreadSafeAsync(x => x.Visible = true);
                 }
                 else
                 {
-                    tlpRight.Visible = false;
-                    tlpBottomRight.Visible = false;
-                    cmdOK.Enabled = false;
+                    await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
+                    await tlpBottomRight.DoThreadSafeAsync(x => x.Visible = false);
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
                 }
             }
             finally
             {
-                ResumeLayout();
+                await this.DoThreadSafeAsync(x => x.ResumeLayout());
             }
         }
 
@@ -184,8 +207,9 @@ namespace Chummer
             string strForceId = string.Empty;
 
             string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
-            if (!string.IsNullOrEmpty(txtSearch.Text))
-                strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
+            if (!string.IsNullOrEmpty(strSearch))
+                strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMentors))
             {
                 foreach (XPathNavigator objXmlMentor in _xmlBaseMentorSpiritDataNode.Select(
@@ -204,19 +228,22 @@ namespace Chummer
                 }
 
                 lstMentors.Sort(CompareListItems.CompareNames);
-                string strOldSelected = lstMentor.SelectedValue?.ToString();
+                string strOldSelected = await lstMentor.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
                 _blnSkipRefresh = true;
                 await lstMentor.PopulateWithListItemsAsync(lstMentors);
                 _blnSkipRefresh = false;
-                if (!string.IsNullOrEmpty(strOldSelected))
-                    lstMentor.SelectedValue = strOldSelected;
-                else
-                    lstMentor.SelectedIndex = -1;
-                if (!string.IsNullOrEmpty(strForceId))
+                await lstMentor.DoThreadSafeAsync(x =>
                 {
-                    lstMentor.SelectedValue = strForceId;
-                    lstMentor.Enabled = false;
-                }
+                    if (!string.IsNullOrEmpty(strOldSelected))
+                        x.SelectedValue = strOldSelected;
+                    else
+                        x.SelectedIndex = -1;
+                    if (!string.IsNullOrEmpty(strForceId))
+                    {
+                        x.SelectedValue = strForceId;
+                        x.Enabled = false;
+                    }
+                });
             }
         }
 

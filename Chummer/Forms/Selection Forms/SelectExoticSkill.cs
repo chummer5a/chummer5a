@@ -82,11 +82,14 @@ namespace Chummer
                 // Select the first Skill in the list.
                 if (lstSkills.Count > 0)
                 {
-                    cboCategory.SelectedIndex = 0;
-                    cboCategory.Enabled = lstSkills.Count > 1;
+                    await cboCategory.DoThreadSafeAsync(x =>
+                    {
+                        x.SelectedIndex = 0;
+                        x.Enabled = lstSkills.Count > 1;
+                    });
                 }
                 else
-                    cmdOK.Enabled = false;
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
             }
 
             await BuildList();
@@ -121,7 +124,7 @@ namespace Chummer
 
         private async ValueTask BuildList()
         {
-            string strSelectedCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
+            string strSelectedCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) ?? string.Empty;
             if (string.IsNullOrEmpty(strSelectedCategory))
                 return;
             XPathNodeIterator xmlWeaponList = (await _objCharacter.LoadDataXPathAsync("weapons.xml"))
@@ -177,19 +180,22 @@ namespace Chummer
 
                 lstSkillSpecializations.Sort(
                     Comparer<ListItem>.Create((a, b) => string.CompareOrdinal(a.Name, b.Name)));
-                string strOldText = cboSkillSpecialisations.Text;
-                string strOldSelectedValue = cboSkillSpecialisations.SelectedValue?.ToString() ?? string.Empty;
+                string strOldText = await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.Text);
+                string strOldSelectedValue = await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) ?? string.Empty;
                 await cboSkillSpecialisations.PopulateWithListItemsAsync(lstSkillSpecializations);
-                if (!string.IsNullOrEmpty(strOldSelectedValue))
-                    cboSkillSpecialisations.SelectedValue = strOldSelectedValue;
-                if (cboSkillSpecialisations.SelectedIndex == -1)
+                await cboSkillSpecialisations.DoThreadSafeAsync(x =>
                 {
-                    if (!string.IsNullOrEmpty(strOldText))
-                        cboSkillSpecialisations.Text = strOldText;
-                    // Select the first Skill in the list.
-                    else if (lstSkillSpecializations.Count > 0)
-                        cboSkillSpecialisations.SelectedIndex = 0;
-                }
+                    if (!string.IsNullOrEmpty(strOldSelectedValue))
+                        x.SelectedValue = strOldSelectedValue;
+                    if (x.SelectedIndex == -1)
+                    {
+                        if (!string.IsNullOrEmpty(strOldText))
+                            x.Text = strOldText;
+                        // Select the first Skill in the list.
+                        else if (lstSkillSpecializations.Count > 0)
+                            x.SelectedIndex = 0;
+                    }
+                });
             }
         }
     }

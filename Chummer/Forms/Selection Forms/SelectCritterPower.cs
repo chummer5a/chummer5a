@@ -126,57 +126,56 @@ namespace Chummer
 
         private async void trePowers_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            lblPowerPoints.Visible = false;
-            lblPowerPointsLabel.Visible = false;
-            string strSelectedPower = trePowers.SelectedNode.Tag?.ToString();
+            await lblPowerPoints.DoThreadSafeAsync(x => x.Visible = false);
+            await lblPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = false);
+            string strSelectedPower = await trePowers.DoThreadSafeFuncAsync(x => x.SelectedNode.Tag?.ToString());
             if (!string.IsNullOrEmpty(strSelectedPower))
             {
                 XPathNavigator objXmlPower = _xmlBaseCritterPowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedPower.CleanXPath() + ']');
                 if (objXmlPower != null)
                 {
-                    lblCritterPowerCategory.Text = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("category"))?.Value ?? string.Empty;
+                    string strCategory = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("category"))?.Value
+                                         ?? string.Empty;
+                    await lblCritterPowerCategory.DoThreadSafeAsync(x => x.Text = strCategory);
 
-                    switch ((await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("type"))?.Value)
+                    string strType = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("type"))?.Value
+                                     ?? string.Empty;
+                    switch (strType)
                     {
                         case "M":
-                            lblCritterPowerType.Text = await LanguageManager.GetStringAsync("String_SpellTypeMana");
+                            strType = await LanguageManager.GetStringAsync("String_SpellTypeMana");
                             break;
 
                         case "P":
-                            lblCritterPowerType.Text = await LanguageManager.GetStringAsync("String_SpellTypePhysical");
-                            break;
-
-                        default:
-                            lblCritterPowerType.Text = string.Empty;
+                            strType = await LanguageManager.GetStringAsync("String_SpellTypePhysical");
                             break;
                     }
+                    await lblCritterPowerType.DoThreadSafeAsync(x => x.Text = strType);
 
-                    switch (objXmlPower.SelectSingleNode("action")?.Value)
+                    string strAction = objXmlPower.SelectSingleNode("action")?.Value ?? string.Empty;
+                    switch (strAction)
                     {
                         case "Auto":
-                            lblCritterPowerAction.Text = await LanguageManager.GetStringAsync("String_ActionAutomatic");
+                            strAction = await LanguageManager.GetStringAsync("String_ActionAutomatic");
                             break;
 
                         case "Free":
-                            lblCritterPowerAction.Text = await LanguageManager.GetStringAsync("String_ActionFree");
+                            strAction = await LanguageManager.GetStringAsync("String_ActionFree");
                             break;
 
                         case "Simple":
-                            lblCritterPowerAction.Text = await LanguageManager.GetStringAsync("String_ActionSimple");
+                            strAction = await LanguageManager.GetStringAsync("String_ActionSimple");
                             break;
 
                         case "Complex":
-                            lblCritterPowerAction.Text = await LanguageManager.GetStringAsync("String_ActionComplex");
+                            strAction = await LanguageManager.GetStringAsync("String_ActionComplex");
                             break;
 
                         case "Special":
-                            lblCritterPowerAction.Text = await LanguageManager.GetStringAsync("String_SpellDurationSpecial");
-                            break;
-
-                        default:
-                            lblCritterPowerAction.Text = string.Empty;
+                            strAction = await LanguageManager.GetStringAsync("String_SpellDurationSpecial");
                             break;
                     }
+                    await lblCritterPowerAction.DoThreadSafeAsync(x => x.Text = strAction);
 
                     string strRange = objXmlPower.SelectSingleNode("range")?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strRange))
@@ -193,42 +192,41 @@ namespace Chummer
                             .CheapReplaceAsync("(A)", async () => '(' + await LanguageManager.GetStringAsync("String_SpellRangeArea") + ')')
                             .CheapReplaceAsync("MAG", () => LanguageManager.GetStringAsync("String_AttributeMAGShort"));
                     }
-                    lblCritterPowerRange.Text = strRange;
+                    await lblCritterPowerRange.DoThreadSafeAsync(x => x.Text = strRange);
 
                     string strDuration = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("duration"))?.Value ?? string.Empty;
                     switch (strDuration)
                     {
                         case "Instant":
-                            lblCritterPowerDuration.Text = await LanguageManager.GetStringAsync("String_SpellDurationInstantLong");
+                            strDuration = await LanguageManager.GetStringAsync("String_SpellDurationInstantLong");
                             break;
 
                         case "Sustained":
-                            lblCritterPowerDuration.Text = await LanguageManager.GetStringAsync("String_SpellDurationSustained");
+                            strDuration = await LanguageManager.GetStringAsync("String_SpellDurationSustained");
                             break;
 
                         case "Always":
-                            lblCritterPowerDuration.Text = await LanguageManager.GetStringAsync("String_SpellDurationAlways");
+                            strDuration = await LanguageManager.GetStringAsync("String_SpellDurationAlways");
                             break;
 
                         case "Special":
-                            lblCritterPowerDuration.Text = await LanguageManager.GetStringAsync("String_SpellDurationSpecial");
-                            break;
-
-                        default:
-                            lblCritterPowerDuration.Text = strDuration;
+                            strDuration = await LanguageManager.GetStringAsync("String_SpellDurationSpecial");
                             break;
                     }
+                    await lblCritterPowerDuration.DoThreadSafeAsync(x => x.Text = strDuration);
 
                     string strSource = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                     string strPage = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                     SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter);
-                    lblCritterPowerSource.Text = objSource.ToString();
-                    await lblCritterPowerSource.SetToolTipAsync(objSource.LanguageBookTooltip);
+                    await objSource.SetControlAsync(lblCritterPowerSource);
 
-                    nudCritterPowerRating.Visible = await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("rating") != null;
+                    bool blnVisible = await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("rating") != null;
+                    await nudCritterPowerRating.DoThreadSafeAsync(x => x.Visible = blnVisible);
 
-                    lblKarma.Text = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("karma"))?.Value ?? "0";
+                    string strKarma = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("karma"))?.Value
+                                      ?? "0";
+                    await lblKarma.DoThreadSafeAsync(x => x.Text = strKarma);
 
                     // If the character is a Free Spirit, populate the Power Points Cost as well.
                     if (_objCharacter.Metatype == "Free Spirit")
@@ -236,23 +234,31 @@ namespace Chummer
                         XPathNavigator xmlOptionalPowerCostNode = _xmlMetatypeDataNode.SelectSingleNode("optionalpowers/power[. = " + objXmlPower.SelectSingleNode("name")?.Value.CleanXPath() + "]/@cost");
                         if (xmlOptionalPowerCostNode != null)
                         {
-                            lblPowerPoints.Text = xmlOptionalPowerCostNode.Value;
-                            lblPowerPoints.Visible = true;
-                            lblPowerPointsLabel.Visible = true;
+                            await lblPowerPoints.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = xmlOptionalPowerCostNode.Value;
+                                x.Visible = true;
+                            });
+                            await lblPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true);
                         }
                     }
+
+                    await lblCritterPowerTypeLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strType));
+                    await lblCritterPowerActionLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAction));
+                    await lblCritterPowerRangeLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strRange));
+                    await lblCritterPowerDurationLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDuration));
+                    await lblCritterPowerSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSource.ToString()));
+                    await lblKarmaLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strKarma));
+                    await tlpRight.DoThreadSafeAsync(x => x.Visible = true);
                 }
-                lblCritterPowerTypeLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerType.Text);
-                lblCritterPowerActionLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerAction.Text);
-                lblCritterPowerRangeLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerRange.Text);
-                lblCritterPowerDurationLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerDuration.Text);
-                lblCritterPowerSourceLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerSource.Text);
-                lblKarmaLabel.Visible = !string.IsNullOrEmpty(lblKarma.Text);
-                tlpRight.Visible = true;
+                else
+                {
+                    await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
+                }
             }
             else
             {
-                tlpRight.Visible = false;
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
             }
         }
 
@@ -263,9 +269,9 @@ namespace Chummer
 
         private async ValueTask RefreshCategory()
         {
-            trePowers.Nodes.Clear();
+            await trePowers.DoThreadSafeAsync(x => x.Nodes.Clear());
 
-            string strCategory = cboCategory.SelectedValue?.ToString();
+            string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
 
             List<string> lstPowerWhitelist = new List<string>(10);
 
@@ -375,8 +381,9 @@ namespace Chummer
                         sbdFilter.Append(" and (not(toxic) or toxic != ").Append(bool.TrueString.CleanXPath()).Append(')');
                 }
 
-                if (!string.IsNullOrEmpty(txtSearch.Text))
-                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
+                if (!string.IsNullOrEmpty(strSearch))
+                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
 
                 if (sbdFilter.Length > 0)
                     strFilter = '[' + sbdFilter.ToString() + ']';
@@ -393,9 +400,9 @@ namespace Chummer
                     Tag = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value ?? string.Empty,
                     Text = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? strPowerName
                 };
-                trePowers.Nodes.Add(objNode);
+                await trePowers.DoThreadSafeAsync(x => x.Nodes.Add(objNode));
             }
-            trePowers.Sort();
+            await trePowers.DoThreadSafeAsync(x => x.Sort());
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)

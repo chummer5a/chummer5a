@@ -83,11 +83,13 @@ namespace Chummer
                 }
                 
                 await cboLifestyle.PopulateWithListItemsAsync(lstLifestyle);
-
-                if (!string.IsNullOrEmpty(strSelectedId))
-                    cboLifestyle.SelectedValue = strSelectedId;
-                if (cboLifestyle.SelectedIndex == -1)
-                    cboLifestyle.SelectedIndex = 0;
+                await cboLifestyle.DoThreadSafeAsync(x =>
+                {
+                    if (!string.IsNullOrEmpty(strSelectedId))
+                        x.SelectedValue = strSelectedId;
+                    if (x.SelectedIndex == -1)
+                        x.SelectedIndex = 0;
+                });
             }
 
             // Populate the City ComboBox
@@ -155,28 +157,30 @@ namespace Chummer
                                              + decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
                                              + "¥]";
                         }
-                        treQualities.Nodes.Add(nodOption);
+                        await treQualities.DoThreadSafeAsync(x => x.Nodes.Add(nodOption));
                     }
                 }
             }
 
-            SortTree(treQualities);
+            await SortTree(treQualities);
 
             if (_objSourceLifestyle != null)
             {
-                txtLifestyleName.Text = _objSourceLifestyle.Name;
-                nudRoommates.Value = _objSourceLifestyle.Roommates;
-                nudPercentage.Value = _objSourceLifestyle.Percentage;
-
-                foreach (LifestyleQuality objQuality in _objSourceLifestyle.LifestyleQualities)
+                await txtLifestyleName.DoThreadSafeAsync(x => x.Text = _objSourceLifestyle.Name);
+                await nudRoommates.DoThreadSafeAsync(x => x.Value = _objSourceLifestyle.Roommates);
+                await nudPercentage.DoThreadSafeAsync(x => x.Value = _objSourceLifestyle.Percentage);
+                await treQualities.DoThreadSafeAsync(x =>
                 {
-                    TreeNode objNode = treQualities.FindNode(objQuality.SourceIDString);
-                    if (objNode != null)
-                        objNode.Checked = true;
-                }
+                    foreach (LifestyleQuality objQuality in _objSourceLifestyle.LifestyleQualities)
+                    {
 
-                chkPrimaryTenant.Checked = _objSourceLifestyle.PrimaryTenant;
-                chkTrustFund.Checked = _objSourceLifestyle.TrustFund;
+                        TreeNode objNode = x.FindNode(objQuality.SourceIDString);
+                        if (objNode != null)
+                            objNode.Checked = true;
+                    }
+                });
+                await chkPrimaryTenant.DoThreadSafeAsync(x => x.Checked = _objSourceLifestyle.PrimaryTenant);
+                await chkTrustFund.DoThreadSafeAsync(x => x.Checked = _objSourceLifestyle.TrustFund);
             }
 
             _blnSkipRefresh = false;
@@ -185,13 +189,16 @@ namespace Chummer
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtLifestyleName.Text))
+            if (string.IsNullOrEmpty(await txtLifestyleName.DoThreadSafeFuncAsync(x => x.Text)))
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectAdvancedLifestyle_LifestyleName"), await LanguageManager.GetStringAsync("MessageTitle_SelectAdvancedLifestyle_LifestyleName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(
+                    this, await LanguageManager.GetStringAsync("Message_SelectAdvancedLifestyle_LifestyleName"),
+                    await LanguageManager.GetStringAsync("MessageTitle_SelectAdvancedLifestyle_LifestyleName"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             _blnAddAgain = false;
-            AcceptForm();
+            await AcceptForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -199,10 +206,10 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;
-            AcceptForm();
+            await AcceptForm();
         }
 
         private async void treQualities_AfterCheck(object sender, TreeViewEventArgs e)
@@ -221,12 +228,16 @@ namespace Chummer
 
         private async void nudRoommates_ValueChanged(object sender, EventArgs e)
         {
-            if (nudRoommates.Value == 0 && !chkPrimaryTenant.Checked)
+            if (nudRoommates.Value == 0)
             {
-                chkPrimaryTenant.Checked = true;
+                await chkPrimaryTenant.DoThreadSafeAsync(x =>
+                {
+                    x.Checked = true;
+                    x.Enabled = false;
+                });
             }
-
-            chkPrimaryTenant.Enabled = nudRoommates.Value > 0;
+            else
+                await chkPrimaryTenant.DoThreadSafeAsync(x => x.Enabled = true);
 
             if (_blnSkipRefresh)
                 return;
@@ -235,12 +246,16 @@ namespace Chummer
 
         private async void chkTrustFund_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkTrustFund.Checked)
+            if (await chkTrustFund.DoThreadSafeFuncAsync(x => x.Checked))
             {
-                nudRoommates.Value = 0;
+                await nudRoommates.DoThreadSafeAsync(x =>
+                {
+                    x.Value = 0;
+                    x.Enabled = false;
+                });
             }
-
-            nudRoommates.Enabled = !chkTrustFund.Checked;
+            else
+                await nudRoommates.DoThreadSafeAsync(x => x.Enabled = true);
 
             if (_blnSkipRefresh)
                 return;
@@ -251,7 +266,7 @@ namespace Chummer
         {
             string strSource = string.Empty;
             string strPage = string.Empty;
-            string strSourceIDString = treQualities.SelectedNode?.Tag.ToString();
+            string strSourceIDString = await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag.ToString());
             if (!string.IsNullOrEmpty(strSourceIDString))
             {
                 XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strSourceIDString.CleanXPath() + ']');
@@ -266,16 +281,15 @@ namespace Chummer
             {
                 SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter);
-                lblSource.Text = objSource.ToString();
-                await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
+                await objSource.SetControlAsync(lblSource);
+                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
             }
             else
             {
                 lblSource.Text = string.Empty;
                 await lblSource.SetToolTipAsync(string.Empty);
+                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
             }
-
-            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
         private async void cboCity_SelectedIndexChanged(object sender, EventArgs e)
@@ -318,9 +332,9 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
+        private async ValueTask AcceptForm()
         {
-            string strSelectedId = cboLifestyle.SelectedValue?.ToString();
+            string strSelectedId = await cboLifestyle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             if (string.IsNullOrEmpty(strSelectedId))
                 return;
             XmlNode objXmlLifestyle = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = " + strSelectedId.CleanXPath() + ']');
@@ -329,19 +343,19 @@ namespace Chummer
 
             _objLifestyle.Source = objXmlLifestyle["source"]?.InnerText;
             _objLifestyle.Page = objXmlLifestyle["page"]?.InnerText;
-            _objLifestyle.Name = txtLifestyleName.Text;
+            _objLifestyle.Name = await txtLifestyleName.DoThreadSafeFuncAsync(x => x.Text);
             _objLifestyle.BaseLifestyle = objXmlLifestyle["name"]?.InnerText;
             _objLifestyle.Cost = Convert.ToDecimal(objXmlLifestyle["cost"]?.InnerText, GlobalSettings.InvariantCultureInfo);
-            _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : nudRoommates.ValueAsInt;
-            _objLifestyle.Percentage = nudPercentage.Value;
+            _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : await nudRoommates.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+            _objLifestyle.Percentage = await nudPercentage.DoThreadSafeFuncAsync(x => x.Value);
             _objLifestyle.StyleType = StyleType;
             _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalSettings.InvariantCultureInfo);
             _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalSettings.InvariantCultureInfo);
-            _objLifestyle.PrimaryTenant = chkPrimaryTenant.Checked;
-            _objLifestyle.TrustFund = chkTrustFund.Checked;
-            _objLifestyle.City = cboCity.Text;
-            _objLifestyle.District = cboDistrict.Text;
-            _objLifestyle.Borough = cboBorough.Text;
+            _objLifestyle.PrimaryTenant = await chkPrimaryTenant.DoThreadSafeFuncAsync(x => x.Checked);
+            _objLifestyle.TrustFund = await chkTrustFund.DoThreadSafeFuncAsync(x => x.Checked);
+            _objLifestyle.City = await cboCity.DoThreadSafeFuncAsync(x => x.Text);
+            _objLifestyle.District = await cboDistrict.DoThreadSafeFuncAsync(x => x.Text);
+            _objLifestyle.Borough = await cboBorough.DoThreadSafeFuncAsync(x => x.Text);
 
             if (objXmlLifestyle.TryGetField("id", Guid.TryParse, out Guid source))
             {
@@ -354,7 +368,7 @@ namespace Chummer
             }
 
             HashSet<string> setLifestyleQualityIds = new HashSet<string>();
-            foreach (TreeNode objNode in treQualities.Nodes)
+            foreach (TreeNode objNode in await treQualities.DoThreadSafeFuncAsync(x => x.Nodes))
             {
                 if (!objNode.Checked)
                     continue;
@@ -383,13 +397,14 @@ namespace Chummer
             if (_blnSkipRefresh)
                 return;
 
+            decimal decRoommates = await nudRoommates.DoThreadSafeFuncAsync(x => x.Value);
             decimal decBaseCost = 0;
             decimal decCost = 0;
             decimal decMod = 0;
             string strBaseLifestyle = string.Empty;
             // Get the base cost of the lifestyle
-            string strSelectedId = cboLifestyle.SelectedValue?.ToString();
-            if (strSelectedId != null)
+            string strSelectedId = await cboLifestyle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
+            if (!string.IsNullOrEmpty(strSelectedId))
             {
                 XmlNode objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = " + strSelectedId.CleanXPath() + ']');
 
@@ -405,19 +420,18 @@ namespace Chummer
                     {
                         SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                             GlobalSettings.CultureInfo, _objCharacter);
-                        lblSource.Text = objSource.ToString();
-                        await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
+                        await objSource.SetControlAsync(lblSource);
+                        await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
                     }
                     else
                     {
-                        lblSource.Text = await LanguageManager.GetStringAsync("String_Unknown");
-                        await lblSource.SetToolTipAsync(await LanguageManager.GetStringAsync("String_Unknown"));
+                        lblSource.Text = string.Empty;
+                        await lblSource.SetToolTipAsync(string.Empty);
+                        await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
                     }
 
-                    lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
-
                     // Add the flat costs from qualities
-                    foreach (TreeNode objNode in treQualities.Nodes)
+                    foreach (TreeNode objNode in await treQualities.DoThreadSafeFuncAsync(x => x.Nodes))
                     {
                         if (objNode.Checked)
                         {
@@ -435,7 +449,7 @@ namespace Chummer
                     if (blnIncludePercentage)
                     {
                         // Add the modifiers from qualities
-                        foreach (TreeNode objNode in treQualities.Nodes)
+                        foreach (TreeNode objNode in await treQualities.DoThreadSafeFuncAsync(x => x.Nodes))
                         {
                             if (!objNode.Checked)
                                 continue;
@@ -453,40 +467,56 @@ namespace Chummer
                     }
 
                     decBaseCost += decBaseCost * decBaseMultiplier;
-                    if (nudRoommates.Value > 0)
+                    if (decRoommates > 0)
                     {
-                        decBaseCost *= 1.0m + Math.Max(nudRoommates.Value / 10.0m, 0);
+                        decBaseCost *= 1.0m + Math.Max(decRoommates / 10.0m, 0);
                     }
                 }
+                else
+                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
             }
+            else
+                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
 
             decimal decNuyen = decBaseCost + decBaseCost * decMod + decCost;
 
-            lblCost.Text = decNuyen.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-            if (nudPercentage.Value != 100 || nudRoommates.Value != 0 && !chkPrimaryTenant.Checked)
+            await lblCost.DoThreadSafeAsync(x => x.Text = decNuyen.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥');
+            decimal decPercentage = await nudPercentage.DoThreadSafeFuncAsync(x => x.Value);
+            if (decPercentage != 100 || decRoommates != 0 && !await chkPrimaryTenant.DoThreadSafeFuncAsync(x => x.Checked))
             {
                 decimal decDiscount = decNuyen;
-                decDiscount *= nudPercentage.Value / 100;
-                if (nudRoommates.Value != 0)
+                decDiscount *= decPercentage / 100;
+                if (decRoommates != 0)
                 {
-                    decDiscount /= nudRoommates.Value;
+                    decDiscount /= decRoommates;
                 }
 
-                lblCost.Text += await LanguageManager.GetStringAsync("String_Space") + '(' + decDiscount.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + "¥)";
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                await lblCost.DoThreadSafeAsync(x => x.Text += strSpace + '(' + decDiscount.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + "¥)");
             }
 
-            lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
+            await lblCost.DoThreadSafeFuncAsync(x => x.Text)
+                         .ContinueWith(
+                             y => lblCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(y.Result)))
+                         .Unwrap();
 
             // Characters with the Trust Fund Quality can have the lifestyle discounted.
             if (Lifestyle.StaticIsTrustFundEligible(_objCharacter, strBaseLifestyle))
             {
-                chkTrustFund.Visible = true;
-                chkTrustFund.Checked = _objSourceLifestyle?.TrustFund ?? !_objCharacter.Lifestyles.Any(x => x.TrustFund);
+                bool blnTrustFund = _objSourceLifestyle?.TrustFund ?? !await _objCharacter.Lifestyles.AnyAsync(x => x.TrustFund);
+                await chkTrustFund.DoThreadSafeAsync(x =>
+                {
+                    x.Visible = true;
+                    x.Checked = blnTrustFund;
+                });
             }
             else
             {
-                chkTrustFund.Checked = false;
-                chkTrustFund.Visible = false;
+                await chkTrustFund.DoThreadSafeAsync(x =>
+                {
+                    x.Checked = false;
+                    x.Visible = false;
+                });
             }
         }
 
@@ -504,10 +534,10 @@ namespace Chummer
         /// Sort the contents of a TreeView alphabetically.
         /// </summary>
         /// <param name="treTree">TreeView to sort.</param>
-        private static void SortTree(TreeView treTree)
+        private static async ValueTask SortTree(TreeView treTree)
         {
-            List<TreeNode> lstNodes = treTree.Nodes.Cast<TreeNode>().ToList();
-            treTree.Nodes.Clear();
+            List<TreeNode> lstNodes = await treTree.DoThreadSafeFuncAsync(x => x.Nodes.Cast<TreeNode>().ToList());
+            await treTree.DoThreadSafeAsync(x => x.Nodes.Clear());
             try
             {
                 lstNodes.Sort(CompareTreeNodes.CompareText);
@@ -516,8 +546,11 @@ namespace Chummer
             {
                 // Swallow this
             }
-            foreach (TreeNode objNode in lstNodes)
-                treTree.Nodes.Add(objNode);
+            await treTree.DoThreadSafeAsync(x =>
+            {
+                foreach (TreeNode objNode in lstNodes)
+                    x.Nodes.Add(objNode);
+            });
         }
 
         /// <summary>
@@ -525,7 +558,7 @@ namespace Chummer
         /// </summary>
         private async ValueTask RefreshDistrictList()
         {
-            string strSelectedCityRefresh = cboCity.SelectedValue?.ToString() ?? string.Empty;
+            string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) ?? string.Empty;
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstDistrict))
             {
@@ -553,8 +586,8 @@ namespace Chummer
         /// </summary>
         private async ValueTask RefreshBoroughList()
         {
-            string strSelectedCityRefresh = cboCity.SelectedValue?.ToString() ?? string.Empty;
-            string strSelectedDistrictRefresh = cboDistrict.SelectedValue?.ToString() ?? string.Empty;
+            string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) ?? string.Empty;
+            string strSelectedDistrictRefresh = await cboDistrict.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) ?? string.Empty;
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstBorough))
             {

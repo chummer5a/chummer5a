@@ -69,19 +69,27 @@ namespace Chummer
         {
             if (_objCharacter.Created)
             {
-                chkHideOverAvailLimit.Visible = false;
-                chkHideOverAvailLimit.Checked = false;
-                lblMarkupLabel.Visible = true;
-                nudMarkup.Visible = true;
-                lblMarkupPercentLabel.Visible = true;
+                await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
+                {
+                    x.Visible = false;
+                    x.Checked = false;
+                });
+                await lblMarkupLabel.DoThreadSafeAsync(x => x.Visible = true);
+                await nudMarkup.DoThreadSafeAsync(x => x.Visible = true);
+                await lblMarkupPercentLabel.DoThreadSafeAsync(x => x.Visible = true);
             }
             else
             {
-                chkHideOverAvailLimit.Text = string.Format(GlobalSettings.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.Settings.MaximumAvailability);
-                chkHideOverAvailLimit.Checked = GlobalSettings.HideItemsOverAvailLimit;
-                lblMarkupLabel.Visible = false;
-                nudMarkup.Visible = false;
-                lblMarkupPercentLabel.Visible = false;
+                await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
+                {
+                    x.Text = string.Format(
+                        GlobalSettings.CultureInfo, x.Text,
+                        _objCharacter.Settings.MaximumAvailability);
+                    x.Checked = GlobalSettings.HideItemsOverAvailLimit;
+                });
+                await lblMarkupLabel.DoThreadSafeAsync(x => x.Visible = false);
+                await nudMarkup.DoThreadSafeAsync(x => x.Visible = false);
+                await lblMarkupPercentLabel.DoThreadSafeAsync(x => x.Visible = false);
             }
 
             DataGridViewCellStyle dataGridViewNuyenCellStyle = new DataGridViewCellStyle
@@ -115,12 +123,15 @@ namespace Chummer
             }
             
             await cboCategory.PopulateWithListItemsAsync(_lstCategory);
-            chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
-            // Select the first Category in the list.
-            if (!string.IsNullOrEmpty(_strSelectCategory))
-                cboCategory.SelectedValue = _strSelectCategory;
-            if (cboCategory.SelectedIndex == -1)
-                cboCategory.SelectedIndex = 0;
+            await cboCategory.DoThreadSafeAsync(x =>
+            {
+                // Select the first Category in the list.
+                if (!string.IsNullOrEmpty(_strSelectCategory))
+                    x.SelectedValue = _strSelectCategory;
+                if (x.SelectedIndex == -1)
+                    x.SelectedIndex = 0;
+            });
+            await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.BlackMarketDiscount);
 
             _blnLoading = false;
 
@@ -144,7 +155,7 @@ namespace Chummer
                 return;
 
             XmlNode xmlArmor = null;
-            string strSelectedId = lstArmor.SelectedValue?.ToString();
+            string strSelectedId = await lstArmor.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             if (!string.IsNullOrEmpty(strSelectedId))
                 xmlArmor = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = " + strSelectedId.CleanXPath() + ']');
             if (xmlArmor != null)
@@ -160,59 +171,79 @@ namespace Chummer
                 int intRating = 0;
                 if (xmlArmor.TryGetInt32FieldQuickly("rating", ref intRating))
                 {
-                    nudRating.Maximum = intRating;
-                    if (chkHideOverAvailLimit.Checked)
+                    await nudRating.DoThreadSafeAsync(x => x.Maximum = intRating);
+                    if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked))
                     {
-                        while (nudRating.Maximum > 1 && !SelectionShared.CheckAvailRestriction(xmlArmor, _objCharacter, nudRating.MaximumAsInt))
+                        await nudRating.DoThreadSafeAsync(x =>
                         {
-                            --nudRating.Maximum;
-                        }
+                            while (x.Maximum > 1
+                                   && !SelectionShared.CheckAvailRestriction(
+                                       xmlArmor, _objCharacter, x.MaximumAsInt))
+                            {
+                                --x.Maximum;
+                            }
+                        });
                     }
 
-                    if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
+                    if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked) && !await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked))
                     {
-                        decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                        decimal decCostMultiplier = 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value) / 100.0m);
                         if (_setBlackMarketMaps.Contains(xmlArmor.SelectSingleNode("category")?.Value))
                             decCostMultiplier *= 0.9m;
-                        while (nudRating.Maximum > 1 && !SelectionShared.CheckNuyenRestriction(xmlArmor, _objCharacter.Nuyen, decCostMultiplier, nudRating.MaximumAsInt))
+                        await nudRating.DoThreadSafeAsync(x =>
                         {
-                            --nudRating.Maximum;
-                        }
+                            while (x.Maximum > 1
+                                   && !SelectionShared.CheckNuyenRestriction(
+                                       xmlArmor, _objCharacter.Nuyen, decCostMultiplier, x.MaximumAsInt))
+                            {
+                                --x.Maximum;
+                            }
+                        });
                     }
-                    lblRatingLabel.Visible = true;
-                    nudRating.Minimum = 1;
-                    nudRating.Value = 1;
-                    nudRating.Enabled = nudRating.Minimum != nudRating.Maximum;
-                    nudRating.Visible = true;
-                    lblRatingNALabel.Visible = false;
+                    await lblRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await nudRating.DoThreadSafeAsync(x =>
+                    {
+                        x.Minimum = 1;
+                        x.Value = 1;
+                        x.Enabled = nudRating.Minimum != nudRating.Maximum;
+                        x.Visible = true;
+                    });
+                    await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = false);
                 }
                 else
                 {
-                    lblRatingLabel.Visible = true;
-                    lblRatingNALabel.Visible = true;
-                    nudRating.Minimum = 0;
-                    nudRating.Maximum = 0;
-                    nudRating.Value = 0;
-                    nudRating.Enabled = false;
-                    nudRating.Visible = false;
+                    await lblRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await nudRating.DoThreadSafeAsync(x =>
+                    {
+                        x.Minimum = 0;
+                        x.Maximum = 0;
+                        x.Value = 0;
+                        x.Enabled = false;
+                        x.Visible = false;
+                    });
                 }
 
                 string strRatingLabel = xmlArmor.SelectSingleNode("ratinglabel")?.Value;
-                lblRatingLabel.Text = !string.IsNullOrEmpty(strRatingLabel)
+                strRatingLabel = !string.IsNullOrEmpty(strRatingLabel)
                     ? string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat"),
-                        await LanguageManager.GetStringAsync(strRatingLabel))
+                                    await LanguageManager.GetStringAsync(strRatingLabel))
                     : await LanguageManager.GetStringAsync("Label_Rating");
+                await lblRatingLabel.DoThreadSafeAsync(x => x.Text = strRatingLabel);
             }
             else
             {
                 _objSelectedArmor?.Dispose();
                 _objSelectedArmor = null;
-                lblRatingLabel.Visible = false;
-                lblRatingNALabel.Visible = false;
-                nudRating.Visible = false;
-                nudRating.Enabled = false;
-                nudRating.Minimum = 0;
-                nudRating.Value = 0;
+                await lblRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = false);
+                await nudRating.DoThreadSafeAsync(x =>
+                {
+                    x.Visible = false;
+                    x.Enabled = false;
+                    x.Minimum = 0;
+                    x.Value = 0;
+                });
             }
 
             UpdateArmorInfo();
@@ -236,7 +267,7 @@ namespace Chummer
 
         private async void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkShowOnlyAffordItems.Checked)
+            if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked))
             {
                 await RefreshList();
             }
@@ -255,7 +286,7 @@ namespace Chummer
 
         private async void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
-            if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
+            if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked) && !await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked))
             {
                 await RefreshList();
             }
@@ -367,7 +398,7 @@ namespace Chummer
                 string strCategory = cboCategory.SelectedValue?.ToString();
                 if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                        && (GlobalSettings.SearchInCategoryOnly
-                                                           || txtSearch.TextLength == 0))
+                                                           || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength == 0)))
                     sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
                 else
                 {
@@ -388,8 +419,9 @@ namespace Chummer
                     }
                 }
 
-                if (!string.IsNullOrEmpty(txtSearch.Text))
-                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
+                if (!string.IsNullOrEmpty(strSearch))
+                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
 
                 await BuildArmorList(_objXmlDocument.SelectNodes("/chummer/armors/armor[" + sbdFilter + ']'));
             }
@@ -401,7 +433,11 @@ namespace Chummer
         /// <param name="objXmlArmorList">XmlNodeList of Armors to render.</param>
         private async ValueTask BuildArmorList(XmlNodeList objXmlArmorList)
         {
-            switch (tabControl.SelectedIndex)
+            decimal decBaseMarkup = 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value) / 100.0m);
+            bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked);
+            bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked);
+            bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked);
+            switch (await tabControl.DoThreadSafeFuncAsync(x => x.SelectedIndex))
             {
                 case 1:
                     DataTable tabArmor = new DataTable("armor");
@@ -422,12 +458,12 @@ namespace Chummer
                     // Populate the Armor list.
                     foreach (XmlNode objXmlArmor in objXmlArmorList)
                     {
-                        decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                        decimal decCostMultiplier = decBaseMarkup;
                         if (_setBlackMarketMaps.Contains(objXmlArmor["category"]?.InnerText))
                             decCostMultiplier *= 0.9m;
-                        if (!chkHideOverAvailLimit.Checked
-                            || SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter) && (chkFreeItem.Checked
-                                || !chkShowOnlyAffordItems.Checked
+                        if (!blnHideOverAvailLimit
+                            || SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter) && (blnFreeItem
+                                || !blnShowOnlyAffordItems
                                 || SelectionShared.CheckNuyenRestriction(
                                     objXmlArmor, _objCharacter.Nuyen, decCostMultiplier)))
                         {
@@ -485,17 +521,15 @@ namespace Chummer
                         string strSpace = await LanguageManager.GetStringAsync("String_Space");
                         foreach (XmlNode objXmlArmor in objXmlArmorList)
                         {
-                            decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
+                            decimal decCostMultiplier = decBaseMarkup;
                             if (_setBlackMarketMaps.Contains(objXmlArmor["category"]?.InnerText))
                                 decCostMultiplier *= 0.9m;
-                            if ((!chkHideOverAvailLimit.Checked
-                                 || (chkHideOverAvailLimit.Checked
-                                     && SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter)))
-                                && (chkFreeItem.Checked
-                                    || !chkShowOnlyAffordItems.Checked
-                                    || (chkShowOnlyAffordItems.Checked
-                                        && SelectionShared.CheckNuyenRestriction(
-                                            objXmlArmor, _objCharacter.Nuyen, decCostMultiplier))))
+                            if ((!blnHideOverAvailLimit
+                                 || SelectionShared.CheckAvailRestriction(objXmlArmor, _objCharacter))
+                                && (blnFreeItem
+                                    || !blnShowOnlyAffordItems
+                                    || (SelectionShared.CheckNuyenRestriction(
+                                        objXmlArmor, _objCharacter.Nuyen, decCostMultiplier))))
                             {
                                 string strDisplayName = objXmlArmor["translate"]?.InnerText
                                                         ?? objXmlArmor["name"]?.InnerText;
@@ -531,13 +565,13 @@ namespace Chummer
                         }
 
                         _blnLoading = true;
-                        string strOldSelected = lstArmor.SelectedValue?.ToString();
+                        string strOldSelected = await lstArmor.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
                         await lstArmor.PopulateWithListItemsAsync(lstArmors);
                         _blnLoading = false;
                         if (!string.IsNullOrEmpty(strOldSelected))
-                            lstArmor.SelectedValue = strOldSelected;
+                            await lstArmor.DoThreadSafeAsync(x => x.SelectedValue = strOldSelected);
                         else
-                            lstArmor.SelectedIndex = -1;
+                            await lstArmor.DoThreadSafeAsync(x => x.SelectedIndex = -1);
                         break;
                     }
             }

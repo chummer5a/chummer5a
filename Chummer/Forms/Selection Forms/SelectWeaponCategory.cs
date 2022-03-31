@@ -85,9 +85,12 @@ namespace Chummer
                 }
                 
                 await cboCategory.PopulateWithListItemsAsync(lstCategory);
-                // Select the first Skill in the list.
-                if (cboCategory.Items.Count > 0)
-                    cboCategory.SelectedIndex = 0;
+                await cboCategory.DoThreadSafeAsync(x =>
+                {
+                    // Select the first Skill in the list.
+                    if (x.Items.Count > 0)
+                        x.SelectedIndex = 0;
+                });
             }
         }
 
@@ -107,7 +110,7 @@ namespace Chummer
         {
             _strSelectedCategory = strSelection;
             DialogResult = DialogResult.OK;
-            Close();
+            this.DoThreadSafe(x => x.Close());
         }
 
         #region Properties

@@ -78,8 +78,13 @@ namespace Chummer
 
         private async void SelectMetamagic_Load(object sender, EventArgs e)
         {
-            Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Title_SelectGeneric"), _strType);
-            chkLimitList.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Checkbox_SelectGeneric_LimitList"), _strType);
+            string strText = string.Format(GlobalSettings.CultureInfo,
+                                           await LanguageManager.GetStringAsync("Title_SelectGeneric"), _strType);
+            await this.DoThreadSafeAsync(x => x.Text = strText);
+            string strLimitText = string.Format(GlobalSettings.CultureInfo,
+                                                await LanguageManager.GetStringAsync(
+                                                    "Checkbox_SelectGeneric_LimitList"), _strType);
+            await chkLimitList.DoThreadSafeAsync(x => x.Text = strLimitText);
 
             _blnLoading = false;
             await BuildMetamagicList();
@@ -90,10 +95,10 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strSelectedId = lstMetamagic.SelectedValue?.ToString();
+            string strSelectedId = await lstMetamagic.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                // Retireve the information for the selected piece of Cyberware.
+                // Retrieve the information for the selected metamagic/echo.
                 XPathNavigator objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = " + strSelectedId.CleanXPath() + ']');
 
                 if (objXmlMetamagic != null)
@@ -102,17 +107,17 @@ namespace Chummer
                     string strPage = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value;
                     SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                     await objSourceString.SetControlAsync(lblSource);
-                    lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
-                    tlpRight.Visible = true;
+                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSourceString.ToString()));
+                    await tlpRight.DoThreadSafeAsync(x => x.Visible = true);
                 }
                 else
                 {
-                    tlpRight.Visible = false;
+                    await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
                 }
             }
             else
             {
-                tlpRight.Visible = false;
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
             }
         }
 
@@ -185,8 +190,9 @@ namespace Chummer
                 }
             }
 
-            if (!string.IsNullOrEmpty(txtSearch.Text))
-                strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
+            if (!string.IsNullOrEmpty(strSearch))
+                strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetamagics))
             {
                 foreach (XPathNavigator objXmlMetamagic in
@@ -206,14 +212,17 @@ namespace Chummer
                 }
 
                 lstMetamagics.Sort(CompareListItems.CompareNames);
-                string strOldSelected = lstMetamagic.SelectedValue?.ToString();
+                string strOldSelected = await lstMetamagic.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
                 _blnLoading = true;
                 await lstMetamagic.PopulateWithListItemsAsync(lstMetamagics);
                 _blnLoading = false;
-                if (!string.IsNullOrEmpty(strOldSelected))
-                    lstMetamagic.SelectedValue = strOldSelected;
-                else
-                    lstMetamagic.SelectedIndex = -1;
+                await lstMetamagic.DoThreadSafeAsync(x =>
+                {
+                    if (!string.IsNullOrEmpty(strOldSelected))
+                        x.SelectedValue = strOldSelected;
+                    else
+                        x.SelectedIndex = -1;
+                });
             }
         }
 

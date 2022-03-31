@@ -36,10 +36,16 @@ namespace Chummer
         private async void SelectDiceHits_Load(object sender, EventArgs e)
         {
             string strSpace = await LanguageManager.GetStringAsync("String_Space");
-            lblDice.Text = await LanguageManager.GetStringAsync("String_DiceHits_HitsOn") + strSpace + Dice.ToString(GlobalSettings.CultureInfo)
-                           + await LanguageManager.GetStringAsync("String_D6") + await LanguageManager.GetStringAsync("String_Colon") + strSpace;
-            nudDiceResult.Maximum = Dice * 6;
-            nudDiceResult.Minimum = 6;
+            string strText = await LanguageManager.GetStringAsync("String_DiceHits_HitsOn") + strSpace
+                + Dice.ToString(GlobalSettings.CultureInfo)
+                + await LanguageManager.GetStringAsync("String_D6")
+                + await LanguageManager.GetStringAsync("String_Colon") + strSpace;
+            await lblDice.DoThreadSafeAsync(x => x.Text = strText);
+            await nudDiceResult.DoThreadSafeAsync(x =>
+            {
+                x.Maximum = Dice * 6;
+                x.Minimum = 6;
+            });
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -62,7 +68,7 @@ namespace Chummer
                     intResult += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
                 }
 
-                nudDiceResult.ValueAsInt = intResult;
+                await nudDiceResult.DoThreadSafeAsync(x => x.ValueAsInt = intResult);
             }
         }
 

@@ -66,7 +66,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strSelectedId = lstPowers.SelectedValue?.ToString();
+            string strSelectedId = await lstPowers.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             XPathNavigator objXmlPower = null;
             if (!string.IsNullOrEmpty(strSelectedId))
                 objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedId.CleanXPath() + ']');
@@ -85,21 +85,20 @@ namespace Chummer
                 {
                     strPowerPointsText = strExtrPointCost + strSpace + '+' + strSpace + strPowerPointsText;
                 }
-                lblPowerPoints.Text = strPowerPointsText;
+                await lblPowerPoints.DoThreadSafeAsync(x => x.Text = strPowerPointsText);
 
                 string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                 string strPage = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                 SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter);
-                lblSource.Text = objSource.ToString();
-                await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
-                lblPowerPointsLabel.Visible = !string.IsNullOrEmpty(lblPowerPoints.Text);
-                lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
-                tlpRight.Visible = true;
+                await objSource.SetControlAsync(lblSource);
+                await lblPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strPowerPointsText));
+                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSource.ToString()));
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = true);
             }
             else
             {
-                tlpRight.Visible = false;
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
             }
         }
 
@@ -223,8 +222,9 @@ namespace Chummer
                 }
             }
 
-            if (!string.IsNullOrEmpty(txtSearch.Text))
-                strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
+            if (!string.IsNullOrEmpty(strSearch))
+                strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
 
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPower))
             {
@@ -259,13 +259,16 @@ namespace Chummer
 
                 lstPower.Sort(CompareListItems.CompareNames);
                 _blnLoading = true;
-                string strOldSelected = lstPowers.SelectedValue?.ToString();
+                string strOldSelected = await lstPowers.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
                 await lstPowers.PopulateWithListItemsAsync(lstPower);
                 _blnLoading = false;
-                if (!string.IsNullOrEmpty(strOldSelected))
-                    lstPowers.SelectedValue = strOldSelected;
-                else
-                    lstPowers.SelectedIndex = -1;
+                await lstPowers.DoThreadSafeAsync(x =>
+                {
+                    if (!string.IsNullOrEmpty(strOldSelected))
+                        x.SelectedValue = strOldSelected;
+                    else
+                        x.SelectedIndex = -1;
+                });
             }
         }
 
@@ -274,7 +277,7 @@ namespace Chummer
         /// </summary>
         private async ValueTask AcceptForm()
         {
-            string strSelectedId = lstPowers.SelectedValue?.ToString();
+            string strSelectedId = await lstPowers.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Check to see if the user needs to select anything for the Power.

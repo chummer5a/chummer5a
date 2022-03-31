@@ -56,7 +56,7 @@ namespace Chummer
                     case "Gear":
                     {
                         string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                        cboAmmo.DropDownStyle = ComboBoxStyle.DropDownList;
+                        await cboAmmo.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList);
                         // Add each of the items to a new List since we need to also grab their plugin information.
                         foreach (Gear objGear in _lstGear)
                         {
@@ -88,7 +88,7 @@ namespace Chummer
                     }
                     case "Vehicles":
                     {
-                        cboAmmo.DropDownStyle = ComboBoxStyle.DropDownList;
+                        await cboAmmo.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList);
                         // Add each of the items to a new List.
                         foreach (Vehicle objVehicle in _lstVehicles)
                         {
@@ -98,20 +98,26 @@ namespace Chummer
                         break;
                     }
                     case "General":
-                        cboAmmo.DropDownStyle = ComboBoxStyle.DropDownList;
+                        await cboAmmo.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList);
                         lstItems.AddRange(_lstGeneralItems);
                         break;
 
                     case "Dropdown":
-                        cboAmmo.DropDownStyle = ComboBoxStyle.DropDown;
-                        cboAmmo.AutoCompleteMode = AutoCompleteMode.Suggest;
+                        await cboAmmo.DoThreadSafeAsync(x =>
+                        {
+                            x.DropDownStyle = ComboBoxStyle.DropDown;
+                            x.AutoCompleteMode = AutoCompleteMode.Suggest;
+                        });
                         lstItems.AddRange(_lstGeneralItems);
                         break;
 
                     case "Restricted":
                     {
-                        cboAmmo.DropDownStyle = ComboBoxStyle.DropDown;
-                        cboAmmo.AutoCompleteMode = AutoCompleteMode.Suggest;
+                        await cboAmmo.DoThreadSafeAsync(x =>
+                        {
+                            x.DropDownStyle = ComboBoxStyle.DropDown;
+                            x.AutoCompleteMode = AutoCompleteMode.Suggest;
+                        });
                         if (!_objCharacter.Settings.LicenseRestricted)
                         {
                             foreach (XPathNavigator objNode in await (await _objCharacter.LoadDataXPathAsync("licenses.xml"))
@@ -302,32 +308,35 @@ namespace Chummer
                 await cboAmmo.PopulateWithListItemsAsync(lstItems);
 
                 // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
-                if (cboAmmo.Items.Count == 1 && _blnAllowAutoSelect)
+                if (await cboAmmo.DoThreadSafeFuncAsync(x => x.Items.Count) == 1 && _blnAllowAutoSelect)
                     AcceptForm();
 
                 if (!string.IsNullOrEmpty(_strForceItem))
                 {
-                    cboAmmo.SelectedIndex = cboAmmo.FindStringExact(_strForceItem);
-                    if (cboAmmo.SelectedIndex != -1)
+                    await cboAmmo.DoThreadSafeAsync(x => x.SelectedIndex = x.FindStringExact(_strForceItem));
+                    if (await cboAmmo.DoThreadSafeFuncAsync(x => x.SelectedIndex) != -1)
                         AcceptForm();
                 }
 
                 if (!string.IsNullOrEmpty(_strSelectItemOnLoad))
                 {
-                    if (cboAmmo.DropDownStyle == ComboBoxStyle.DropDownList)
+                    await cboAmmo.DoThreadSafeAsync(x =>
                     {
-                        string strOldSelected = cboAmmo.SelectedValue?.ToString();
-                        cboAmmo.SelectedValue = _strSelectItemOnLoad;
-                        if (cboAmmo.SelectedIndex == -1 && !string.IsNullOrEmpty(strOldSelected))
-                            cboAmmo.SelectedValue = strOldSelected;
-                    }
-                    else
-                        cboAmmo.Text = _strSelectItemOnLoad;
+                        if (x.DropDownStyle == ComboBoxStyle.DropDownList)
+                        {
+                            string strOldSelected = x.SelectedValue?.ToString();
+                            x.SelectedValue = _strSelectItemOnLoad;
+                            if (x.SelectedIndex == -1 && !string.IsNullOrEmpty(strOldSelected))
+                                x.SelectedValue = strOldSelected;
+                        }
+                        else
+                            x.Text = _strSelectItemOnLoad;
+                    });
                 }
             }
 
-            if (cboAmmo.Items.Count < 0)
-                cmdOK.Enabled = false;
+            if (await cboAmmo.DoThreadSafeFuncAsync(x => x.Items.Count) < 0)
+                await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)

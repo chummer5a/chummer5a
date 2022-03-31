@@ -249,11 +249,14 @@ namespace Chummer
                 lstSkills.Sort(CompareListItems.CompareNames);
                 await cboSkill.PopulateWithListItemsAsync(lstSkills);
                 // Select the first Skill in the list.
-                cboSkill.SelectedIndex = 0;
+                await cboSkill.DoThreadSafeAsync(x => x.SelectedIndex = 0);
             }
 
-            if (cboSkill.Items.Count == 1)
-                cmdOK_Click(sender, e);
+            if (await cboSkill.DoThreadSafeFuncAsync(x => x.Items.Count) == 1)
+            {
+                _strReturnValue = await cboSkill.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
+                DialogResult = DialogResult.OK;
+            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

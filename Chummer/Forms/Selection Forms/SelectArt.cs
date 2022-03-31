@@ -87,8 +87,13 @@ namespace Chummer
 
         private async void SelectArt_Load(object sender, EventArgs e)
         {
-            Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Title_SelectGeneric"), _strLocalName);
-            chkLimitList.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Checkbox_SelectGeneric_LimitList"), _strLocalName);
+            string strText = string.Format(GlobalSettings.CultureInfo,
+                                           await LanguageManager.GetStringAsync("Title_SelectGeneric"), _strLocalName);
+            await this.DoThreadSafeAsync(x => x.Text = strText);
+            string strLimitText = string.Format(GlobalSettings.CultureInfo,
+                                                await LanguageManager.GetStringAsync(
+                                                    "Checkbox_SelectGeneric_LimitList"), _strLocalName);
+            await chkLimitList.DoThreadSafeAsync(x => x.Text = strLimitText);
 
             _blnLoading = false;
 
@@ -100,10 +105,10 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strSelected = lstArt.SelectedValue?.ToString();
+            string strSelected = await lstArt.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             if (string.IsNullOrEmpty(strSelected))
             {
-                tlpRight.Visible = false;
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
                 return;
             }
 
@@ -112,7 +117,7 @@ namespace Chummer
 
             if (objXmlMetamagic == null)
             {
-                tlpRight.Visible = false;
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
                 return;
             }
 
@@ -120,9 +125,8 @@ namespace Chummer
             string strPage = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
             SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                                                                              GlobalSettings.CultureInfo, _objCharacter);
-            lblSource.Text = objSource.ToString();
-            await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
-            tlpRight.Visible = true;
+            await objSource.SetControlAsync(lblSource);
+            await tlpRight.DoThreadSafeAsync(x => x.Visible = true);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -170,17 +174,19 @@ namespace Chummer
                 return;
             
             string strFilter = _strXPathFilter;
-            if (!string.IsNullOrEmpty(txtSearch.Text))
-                strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
+            if (!string.IsNullOrEmpty(strSearch))
+                strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstArts))
             {
+                bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked);
                 foreach (XPathNavigator objXmlMetamagic in
                          _objXmlDocument.Select(_strBaseXPath + '[' + strFilter + ']'))
                 {
                     string strId = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value;
                     if (!string.IsNullOrEmpty(strId)
-                        && (!chkLimitList.Checked || objXmlMetamagic.RequirementsMet(_objCharacter)))
+                        && (!blnLimitList || objXmlMetamagic.RequirementsMet(_objCharacter)))
                     {
                         lstArts.Add(new ListItem((await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value,
                                                  (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
@@ -190,14 +196,17 @@ namespace Chummer
                 }
 
                 lstArts.Sort(CompareListItems.CompareNames);
-                string strOldSelected = lstArt.SelectedValue?.ToString();
+                string strOldSelected = await lstArt.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
                 _blnLoading = true;
                 await lstArt.PopulateWithListItemsAsync(lstArts);
                 _blnLoading = false;
-                if (!string.IsNullOrEmpty(strOldSelected))
-                    lstArt.SelectedValue = strOldSelected;
-                else
-                    lstArt.SelectedIndex = -1;
+                await lstArt.DoThreadSafeAsync(x =>
+                {
+                    if (!string.IsNullOrEmpty(strOldSelected))
+                        x.SelectedValue = strOldSelected;
+                    else
+                        x.SelectedIndex = -1;
+                });
             }
         }
 

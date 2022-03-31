@@ -68,12 +68,19 @@ namespace Chummer
                 }
                 
                 await cboPower.PopulateWithListItemsAsync(lstPowerItems);
-                if (lstPowerItems.Count >= 1)
-                    cboPower.SelectedIndex = 0;
+                if (lstPowerItems.Count > 1)
+                    await cboPower.DoThreadSafeAsync(x => x.SelectedIndex = 0);
+                else if (lstPowerItems.Count == 1)
+                {
+                    if (await cboPower.DoThreadSafeFuncAsync(x => x.SelectedValue) is Tuple<string, string> objSelectedItem)
+                    {
+                        _strReturnPower = objSelectedItem.Item1;
+                        _strReturnExtra = objSelectedItem.Item2;
+                        DialogResult = DialogResult.OK;
+                    }
+                }
                 else
-                    cmdOK.Enabled = false;
-                if (lstPowerItems.Count == 1)
-                    cmdOK_Click(sender, e);
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
             }
         }
 

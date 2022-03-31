@@ -74,9 +74,12 @@ namespace Chummer
                 lstSettings.Sort(CompareListItems.CompareNames);
                 await cboSetting.PopulateWithListItemsAsync(lstSettings);
                 // Attempt to make default.xml the default one. If it could not be found in the list, select the first item instead.
-                cboSetting.SelectedIndex = cboSetting.FindStringExact("Default Settings");
-                if (cboSetting.SelectedIndex == -1)
-                    cboSetting.SelectedIndex = 0;
+                await cboSetting.DoThreadSafeAsync(x =>
+                {
+                    x.SelectedIndex = x.FindStringExact("Default Settings");
+                    if (x.SelectedIndex == -1)
+                        x.SelectedIndex = 0;
+                });
             }
         }
 

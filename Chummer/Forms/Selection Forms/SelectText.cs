@@ -38,14 +38,15 @@ namespace Chummer
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            if ((PreventXPathErrors && txtValue.Text.Contains('"'))
-                || (PreventFileNameCharErrors && txtValue.Text.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0))
+            string strValue = await txtValue.DoThreadSafeFuncAsync(x => x.Text);
+            if ((PreventXPathErrors && strValue.Contains('"'))
+                || (PreventFileNameCharErrors && strValue.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_InvalidCharacters"), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
-                _strReturnValue = txtValue.Text;
+                _strReturnValue = strValue;
                 DialogResult = DialogResult.OK;
             }
         }

@@ -109,7 +109,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strSelectedId = lstTechniques.SelectedValue?.ToString();
+            string strSelectedId = await lstTechniques.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 XPathNavigator xmlTechnique = _xmlBaseChummerNode.SelectSingleNode("/chummer/techniques/technique[id = " + strSelectedId.CleanXPath() + ']');
@@ -120,17 +120,18 @@ namespace Chummer
                     string strPage = (await xmlTechnique.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? xmlTechnique.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                     SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                     await objSourceString.SetControlAsync(lblSource);
-                    lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
-                    tlpRight.Visible = true;
+                    string strSourceText = lblSource.ToString();
+                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strSourceText));
+                    await tlpRight.DoThreadSafeAsync(x => x.Visible = true);
                 }
                 else
                 {
-                    tlpRight.Visible = false;
+                    await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
                 }
             }
             else
             {
-                tlpRight.Visible = false;
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false);
             }
         }
 
@@ -176,8 +177,9 @@ namespace Chummer
         private async ValueTask RefreshTechniquesList()
         {
             string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
-            if (!string.IsNullOrEmpty(txtSearch.Text))
-                strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text);
+            if (!string.IsNullOrEmpty(strSearch))
+                strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
             XPathNodeIterator objTechniquesList = _xmlBaseChummerNode.Select("techniques/technique[" + strFilter + ']');
 
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTechniqueItems))
@@ -204,14 +206,17 @@ namespace Chummer
                 }
 
                 lstTechniqueItems.Sort(CompareListItems.CompareNames);
-                string strOldSelected = lstTechniques.SelectedValue?.ToString();
+                string strOldSelected = await lstTechniques.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
                 _blnLoading = true;
                 await lstTechniques.PopulateWithListItemsAsync(lstTechniqueItems);
                 _blnLoading = false;
-                if (!string.IsNullOrEmpty(strOldSelected))
-                    lstTechniques.SelectedValue = strOldSelected;
-                else
-                    lstTechniques.SelectedIndex = -1;
+                await lstTechniques.DoThreadSafeAsync(x =>
+                {
+                    if (!string.IsNullOrEmpty(strOldSelected))
+                        x.SelectedValue = strOldSelected;
+                    else
+                        x.SelectedIndex = -1;
+                });
             }
         }
 

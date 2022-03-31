@@ -52,8 +52,11 @@ namespace Chummer
 
                 if (_objCharacter.Created || !_objCharacter.EffectiveBuildMethodUsesPriorityTables)
                 {
-                    chkKarma.Checked = true;
-                    chkKarma.Visible = false;
+                    await chkKarma.DoThreadSafeAsync(x =>
+                    {
+                        x.Checked = true;
+                        x.Visible = false;
+                    });
                 }
 
                 XPathNavigator xmlParentSkill;
@@ -102,18 +105,18 @@ namespace Chummer
                 await cboSpec.PopulateWithListItemsAsync(lstItems);
 
                 // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
-                if (cboSpec.Items.Count == 1 && cboSpec.DropDownStyle == ComboBoxStyle.DropDownList && AllowAutoSelect)
+                if (await cboSpec.DoThreadSafeFuncAsync(x => x.Items.Count == 1 && x.DropDownStyle == ComboBoxStyle.DropDownList) && AllowAutoSelect)
                     AcceptForm();
 
                 if (!string.IsNullOrEmpty(_strForceItem))
                 {
-                    cboSpec.SelectedIndex = cboSpec.FindStringExact(_strForceItem);
-                    if (cboSpec.SelectedIndex != -1)
+                    await cboSpec.DoThreadSafeAsync(x => x.SelectedIndex = x.FindStringExact(_strForceItem));
+                    if (await cboSpec.DoThreadSafeFuncAsync(x => x.SelectedIndex) != -1)
                         AcceptForm();
                     else
                     {
                         await cboSpec.PopulateWithListItemsAsync((new ListItem(_strForceItem, _strForceItem)).Yield());
-                        cboSpec.SelectedIndex = 0;
+                        await cboSpec.DoThreadSafeAsync(x => x.SelectedIndex = 0);
                         AcceptForm();
                     }
                 }

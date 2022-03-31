@@ -55,7 +55,7 @@ namespace Chummer
             }
 
             // Select the first item in the list.
-            cboSide.SelectedIndex = 0;
+            await cboSide.DoThreadSafeAsync(x => x.SelectedIndex = 0);
         }
 
         #endregion Control Events
