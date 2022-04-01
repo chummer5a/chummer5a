@@ -634,7 +634,7 @@ namespace Chummer
         /// <param name="cmsSpell">ContextMenuStrip that will be added to spells in the spell tree.</param>
         /// <param name="cmsInitiationNotes">ContextMenuStrip that will be added to spells in the initiations tree.</param>
         /// <param name="notifyCollectionChangedEventArgs">Arguments for the change to the underlying ObservableCollection.</param>
-        protected void RefreshSpells(TreeView treSpells, TreeView treMetamagic, ContextMenuStrip cmsSpell, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        protected async ValueTask RefreshSpells(TreeView treSpells, TreeView treMetamagic, ContextMenuStrip cmsSpell, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (treSpells == null)
                 return;
@@ -650,44 +650,53 @@ namespace Chummer
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    string strSelectedId = (treSpells.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                    string strSelectedId
+                        = (await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as
+                            IHasInternalId)?.InternalId ?? string.Empty;
                     string strSelectedMetamagicId =
-                        (treMetamagic?.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                        treMetamagic != null
+                            ? (await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as
+                                IHasInternalId)?.InternalId ?? string.Empty
+                            : string.Empty;
 
                     // Clear the default nodes of entries.
-                    treSpells.Nodes.Clear();
+                    await treSpells.DoThreadSafeAsync(x => x.Nodes.Clear(), GenericToken);
 
                     // Add the Spells that exist.
                     foreach (Spell objSpell in CharacterObject.Spells)
                     {
                         if (objSpell.Grade > 0)
                         {
-                            treMetamagic?.FindNodeByTag(objSpell)?.Remove();
+                            if (treMetamagic != null)
+                                await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objSpell)?.Remove(), GenericToken);
                         }
 
-                        AddToTree(objSpell, false);
+                        await AddToTree(objSpell, false);
                     }
 
-                    treSpells.SortCustomAlphabetically(strSelectedId);
+                    await treSpells.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), GenericToken);
                     if (treMetamagic != null)
-                        treMetamagic.SelectedNode = treMetamagic.FindNode(strSelectedMetamagicId);
+                        await treMetamagic.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedMetamagicId), GenericToken);
                 }
                 else
                 {
-                    objCombatNode = treSpells.FindNode("Node_SelectedCombatSpells", false);
-                    objDetectionNode = treSpells.FindNode("Node_SelectedDetectionSpells", false);
-                    objHealthNode = treSpells.FindNode("Node_SelectedHealthSpells", false);
-                    objIllusionNode = treSpells.FindNode("Node_SelectedIllusionSpells", false);
-                    objManipulationNode = treSpells.FindNode("Node_SelectedManipulationSpells", false);
-                    objRitualsNode = treSpells.FindNode("Node_SelectedGeomancyRituals", false);
-                    objEnchantmentsNode = treSpells.FindNode("Node_SelectedEnchantments", false);
+                    await treSpells.DoThreadSafeAsync(x =>
+                    {
+                        objCombatNode = x.FindNode("Node_SelectedCombatSpells", false);
+                        objDetectionNode = x.FindNode("Node_SelectedDetectionSpells", false);
+                        objHealthNode = x.FindNode("Node_SelectedHealthSpells", false);
+                        objIllusionNode = x.FindNode("Node_SelectedIllusionSpells", false);
+                        objManipulationNode = x.FindNode("Node_SelectedManipulationSpells", false);
+                        objRitualsNode = x.FindNode("Node_SelectedGeomancyRituals", false);
+                        objEnchantmentsNode = x.FindNode("Node_SelectedEnchantments", false);
+                    }, GenericToken);
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                             {
                                 foreach (Spell objSpell in notifyCollectionChangedEventArgs.NewItems)
                                 {
-                                    AddToTree(objSpell);
+                                    await AddToTree(objSpell);
                                 }
 
                                 break;
@@ -696,18 +705,22 @@ namespace Chummer
                             {
                                 foreach (Spell objSpell in notifyCollectionChangedEventArgs.OldItems)
                                 {
-                                    TreeNode objNode = treSpells.FindNodeByTag(objSpell);
-                                    if (objNode != null)
+                                    await treSpells.DoThreadSafeAsync(x =>
                                     {
-                                        TreeNode objParent = objNode.Parent;
-                                        objNode.Remove();
-                                        if (objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                            objParent.Remove();
-                                    }
+                                        TreeNode objNode = x.FindNodeByTag(objSpell);
+                                        if (objNode != null)
+                                        {
+                                            TreeNode objParent = objNode.Parent;
+                                            objNode.Remove();
+                                            if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                                objParent.Remove();
+                                        }
+                                    }, GenericToken);
 
                                     if (objSpell.Grade > 0)
                                     {
-                                        treMetamagic?.FindNode(objSpell.InternalId)?.Remove();
+                                        if (treMetamagic != null)
+                                            await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objSpell)?.Remove(), GenericToken);
                                     }
                                 }
 
@@ -719,29 +732,36 @@ namespace Chummer
                                     new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                                 foreach (Spell objSpell in notifyCollectionChangedEventArgs.OldItems)
                                 {
-                                    TreeNode objNode = treSpells.FindNodeByTag(objSpell);
-                                    if (objNode != null)
+                                    await treSpells.DoThreadSafeAsync(x =>
                                     {
-                                        lstOldParents.Add(objNode.Parent);
-                                        objNode.Remove();
-                                    }
+                                        TreeNode objNode = x.FindNodeByTag(objSpell);
+                                        if (objNode != null)
+                                        {
+                                            lstOldParents.Add(objNode.Parent);
+                                            objNode.Remove();
+                                        }
+                                    }, GenericToken);
 
                                     if (objSpell.Grade > 0)
                                     {
-                                        treMetamagic?.FindNode(objSpell.InternalId)?.Remove();
+                                        if (treMetamagic != null)
+                                            await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objSpell)?.Remove(), GenericToken);
                                     }
                                 }
 
                                 foreach (Spell objSpell in notifyCollectionChangedEventArgs.NewItems)
                                 {
-                                    AddToTree(objSpell);
+                                    await AddToTree(objSpell);
                                 }
 
-                                foreach (TreeNode objOldParent in lstOldParents)
+                                await treSpells.DoThreadSafeAsync(() =>
                                 {
-                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                        objOldParent.Remove();
-                                }
+                                    foreach (TreeNode objOldParent in lstOldParents)
+                                    {
+                                        if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                            objOldParent.Remove();
+                                    }
+                                }, GenericToken);
 
                                 break;
                             }
@@ -749,7 +769,7 @@ namespace Chummer
                 }
             }
 
-            void AddToTree(Spell objSpell, bool blnSingleAdd = true)
+            async ValueTask AddToTree(Spell objSpell, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objSpell.CreateTreeNode(cmsSpell);
                 if (objNode == null)
@@ -763,10 +783,14 @@ namespace Chummer
                             objCombatNode = new TreeNode
                             {
                                 Tag = "Node_SelectedCombatSpells",
-                                Text = LanguageManager.GetString("Node_SelectedCombatSpells")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedCombatSpells")
                             };
-                            treSpells.Nodes.Insert(0, objCombatNode);
-                            objCombatNode.Expand();
+                            await treSpells.DoThreadSafeAsync(x =>
+                            {
+                                // ReSharper disable once AssignNullToNotNullAttribute
+                                x.Nodes.Insert(0, objCombatNode);
+                                objCombatNode.Expand();
+                            }, GenericToken);
                         }
                         objParentNode = objCombatNode;
                         break;
@@ -777,10 +801,14 @@ namespace Chummer
                             objDetectionNode = new TreeNode
                             {
                                 Tag = "Node_SelectedDetectionSpells",
-                                Text = LanguageManager.GetString("Node_SelectedDetectionSpells")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedDetectionSpells")
                             };
-                            treSpells.Nodes.Insert(objCombatNode == null ? 0 : 1, objDetectionNode);
-                            objDetectionNode.Expand();
+                            await treSpells.DoThreadSafeAsync(x =>
+                            {
+                                // ReSharper disable once AssignNullToNotNullAttribute
+                                x.Nodes.Insert(objCombatNode == null ? 0 : 1, objDetectionNode);
+                                objDetectionNode.Expand();
+                            }, GenericToken);
                         }
                         objParentNode = objDetectionNode;
                         break;
@@ -791,11 +819,15 @@ namespace Chummer
                             objHealthNode = new TreeNode
                             {
                                 Tag = "Node_SelectedHealthSpells",
-                                Text = LanguageManager.GetString("Node_SelectedHealthSpells")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedHealthSpells")
                             };
-                            treSpells.Nodes.Insert((objCombatNode == null ? 0 : 1) +
-                                (objDetectionNode == null ? 0 : 1), objHealthNode);
-                            objHealthNode.Expand();
+                            await treSpells.DoThreadSafeAsync(x =>
+                            {
+                                x.Nodes.Insert((objCombatNode == null ? 0 : 1) +
+                                               // ReSharper disable once AssignNullToNotNullAttribute
+                                               (objDetectionNode == null ? 0 : 1), objHealthNode);
+                                objHealthNode.Expand();
+                            }, GenericToken);
                         }
                         objParentNode = objHealthNode;
                         break;
@@ -806,12 +838,16 @@ namespace Chummer
                             objIllusionNode = new TreeNode
                             {
                                 Tag = "Node_SelectedIllusionSpells",
-                                Text = LanguageManager.GetString("Node_SelectedIllusionSpells")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedIllusionSpells")
                             };
-                            treSpells.Nodes.Insert((objCombatNode == null ? 0 : 1) +
-                                (objDetectionNode == null ? 0 : 1) +
-                                (objHealthNode == null ? 0 : 1), objIllusionNode);
-                            objIllusionNode.Expand();
+                            await treSpells.DoThreadSafeAsync(x =>
+                            {
+                                x.Nodes.Insert((objCombatNode == null ? 0 : 1) +
+                                               (objDetectionNode == null ? 0 : 1) +
+                                               // ReSharper disable once AssignNullToNotNullAttribute
+                                               (objHealthNode == null ? 0 : 1), objIllusionNode);
+                                objIllusionNode.Expand();
+                            }, GenericToken);
                         }
                         objParentNode = objIllusionNode;
                         break;
@@ -822,13 +858,17 @@ namespace Chummer
                             objManipulationNode = new TreeNode
                             {
                                 Tag = "Node_SelectedManipulationSpells",
-                                Text = LanguageManager.GetString("Node_SelectedManipulationSpells")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedManipulationSpells")
                             };
-                            treSpells.Nodes.Insert((objCombatNode == null ? 0 : 1) +
-                                (objDetectionNode == null ? 0 : 1) +
-                                (objHealthNode == null ? 0 : 1) +
-                                (objIllusionNode == null ? 0 : 1), objManipulationNode);
-                            objManipulationNode.Expand();
+                            await treSpells.DoThreadSafeAsync(x =>
+                            {
+                                x.Nodes.Insert((objCombatNode == null ? 0 : 1) +
+                                               (objDetectionNode == null ? 0 : 1) +
+                                               (objHealthNode == null ? 0 : 1) +
+                                               // ReSharper disable once AssignNullToNotNullAttribute
+                                               (objIllusionNode == null ? 0 : 1), objManipulationNode);
+                                objManipulationNode.Expand();
+                            }, GenericToken);
                         }
                         objParentNode = objManipulationNode;
                         break;
@@ -839,14 +879,18 @@ namespace Chummer
                             objRitualsNode = new TreeNode
                             {
                                 Tag = "Node_SelectedGeomancyRituals",
-                                Text = LanguageManager.GetString("Node_SelectedGeomancyRituals")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedGeomancyRituals")
                             };
-                            treSpells.Nodes.Insert((objCombatNode == null ? 0 : 1) +
-                                (objDetectionNode == null ? 0 : 1) +
-                                (objHealthNode == null ? 0 : 1) +
-                                (objIllusionNode == null ? 0 : 1) +
-                                (objManipulationNode == null ? 0 : 1), objRitualsNode);
-                            objRitualsNode.Expand();
+                            await treSpells.DoThreadSafeAsync(x =>
+                            {
+                                x.Nodes.Insert((objCombatNode == null ? 0 : 1) +
+                                               (objDetectionNode == null ? 0 : 1) +
+                                               (objHealthNode == null ? 0 : 1) +
+                                               (objIllusionNode == null ? 0 : 1) +
+                                               // ReSharper disable once AssignNullToNotNullAttribute
+                                               (objManipulationNode == null ? 0 : 1), objRitualsNode);
+                                objRitualsNode.Expand();
+                            }, GenericToken);
                         }
                         objParentNode = objRitualsNode;
                         break;
@@ -857,10 +901,14 @@ namespace Chummer
                             objEnchantmentsNode = new TreeNode
                             {
                                 Tag = "Node_SelectedEnchantments",
-                                Text = LanguageManager.GetString("Node_SelectedEnchantments")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedEnchantments")
                             };
-                            treSpells.Nodes.Add(objEnchantmentsNode);
-                            objEnchantmentsNode.Expand();
+                            await treSpells.DoThreadSafeAsync(x =>
+                            {
+                                // ReSharper disable once AssignNullToNotNullAttribute
+                                x.Nodes.Add(objEnchantmentsNode);
+                                objEnchantmentsNode.Expand();
+                            }, GenericToken);
                         }
                         objParentNode = objEnchantmentsNode;
                         break;
@@ -868,50 +916,57 @@ namespace Chummer
                 if (objSpell.Grade > 0)
                 {
                     InitiationGrade objGrade = CharacterObject.InitiationGrades.FirstOrDefault(x => x.Grade == objSpell.Grade);
-                    if (objGrade != null)
+                    if (objGrade != null && treMetamagic != null)
                     {
-                        TreeNode nodMetamagicParent = treMetamagic?.FindNodeByTag(objGrade);
-                        if (nodMetamagicParent != null)
+                        await treMetamagic.DoThreadSafeAsync(x =>
                         {
-                            TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
-                            TreeNode objMetamagicNode = objSpell.CreateTreeNode(cmsInitiationNotes, true);
-                            int intNodesCount = nodMetamagicParentChildren.Count;
-                            int intTargetIndex = 0;
-                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                            TreeNode nodMetamagicParent = x.FindNodeByTag(objGrade);
+                            if (nodMetamagicParent != null)
                             {
-                                if (CompareTreeNodes.CompareText(nodMetamagicParentChildren[intTargetIndex], objMetamagicNode) >= 0)
+                                TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
+                                TreeNode objMetamagicNode = objSpell.CreateTreeNode(cmsInitiationNotes, true);
+                                int intNodesCount = nodMetamagicParentChildren.Count;
+                                int intTargetIndex = 0;
+                                for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                                 {
-                                    break;
+                                    if (CompareTreeNodes.CompareText(nodMetamagicParentChildren[intTargetIndex],
+                                                                     objMetamagicNode) >= 0)
+                                    {
+                                        break;
+                                    }
                                 }
-                            }
 
-                            nodMetamagicParentChildren.Insert(intTargetIndex, objMetamagicNode);
-                            if (blnSingleAdd)
-                                treMetamagic.SelectedNode = objMetamagicNode;
-                        }
+                                nodMetamagicParentChildren.Insert(intTargetIndex, objMetamagicNode);
+                                if (blnSingleAdd)
+                                    x.SelectedNode = objMetamagicNode;
+                            }
+                        }, GenericToken);
                     }
                 }
 
                 if (objParentNode == null)
                     return;
-                if (blnSingleAdd)
+                await treSpells.DoThreadSafeAsync(x =>
                 {
-                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                    int intNodesCount = lstParentNodeChildren.Count;
-                    int intTargetIndex = 0;
-                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    if (blnSingleAdd)
                     {
-                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                        TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                        int intNodesCount = lstParentNodeChildren.Count;
+                        int intTargetIndex = 0;
+                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                         {
-                            break;
+                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                            {
+                                break;
+                            }
                         }
-                    }
 
-                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                    treSpells.SelectedNode = objNode;
-                }
-                else
-                    objParentNode.Nodes.Add(objNode);
+                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                        x.SelectedNode = objNode;
+                    }
+                    else
+                        objParentNode.Nodes.Add(objNode);
+                }, GenericToken);
             }
         }
 
@@ -1905,7 +1960,7 @@ namespace Chummer
         /// <param name="treQualities">TreeView to insert the qualities into.</param>
         /// <param name="cmsQuality">ContextMenuStrip to add to each Quality node.</param>
         /// <param name="notifyCollectionChangedEventArgs">Arguments for the change to the underlying ObservableCollection.</param>
-        protected void RefreshQualities(TreeView treQualities, ContextMenuStrip cmsQuality, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        protected async ValueTask RefreshQualities(TreeView treQualities, ContextMenuStrip cmsQuality, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (treQualities == null)
                 return;
@@ -1919,12 +1974,12 @@ namespace Chummer
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     string strSelectedNode =
-                        (treQualities.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                        (await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
                     // Create the root nodes.
                     foreach (Quality objQuality in CharacterObject.Qualities)
                         objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
-                    treQualities.Nodes.Clear();
+                    await treQualities.DoThreadSafeAsync(x => x.Nodes.Clear(), GenericToken);
 
                     // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
@@ -1933,7 +1988,7 @@ namespace Chummer
                         foreach (Quality objQuality in CharacterObject.Qualities)
                         {
                             setQualitiesToPrint.Add(objQuality.SourceIDString + '|' +
-                                                    objQuality.GetSourceName(GlobalSettings.Language) + '|' +
+                                                    await objQuality.GetSourceNameAsync(GlobalSettings.Language) + '|' +
                                                     objQuality.Extra);
                         }
 
@@ -1941,21 +1996,24 @@ namespace Chummer
                         foreach (Quality objQuality in CharacterObject.Qualities)
                         {
                             if (!setQualitiesToPrint.Remove(objQuality.SourceIDString + '|' +
-                                                            objQuality.GetSourceName(GlobalSettings.Language) + '|' +
+                                                            await objQuality.GetSourceNameAsync(GlobalSettings.Language) + '|' +
                                                             objQuality.Extra))
                                 continue;
 
-                            AddToTree(objQuality, false);
+                            await AddToTree(objQuality, false);
                         }
                     }
 
-                    treQualities.SortCustomAlphabetically(strSelectedNode);
+                    await treQualities.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedNode), GenericToken);
                 }
                 else
                 {
-                    objPositiveQualityRoot = treQualities.FindNodeByTag("Node_SelectedPositiveQualities", false);
-                    objNegativeQualityRoot = treQualities.FindNodeByTag("Node_SelectedNegativeQualities", false);
-                    objLifeModuleRoot = treQualities.FindNodeByTag("String_LifeModules", false);
+                    await treQualities.DoThreadSafeAsync(x =>
+                    {
+                        objPositiveQualityRoot = x.FindNodeByTag("Node_SelectedPositiveQualities", false);
+                        objNegativeQualityRoot = x.FindNodeByTag("Node_SelectedNegativeQualities", false);
+                        objLifeModuleRoot = x.FindNodeByTag("String_LifeModules", false);
+                    }, GenericToken);
                     bool blnDoNameRefresh = false;
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
@@ -1966,7 +2024,7 @@ namespace Chummer
                                     if (objQuality.Levels > 1)
                                         blnDoNameRefresh = true;
                                     else
-                                        AddToTree(objQuality);
+                                        await AddToTree(objQuality);
                                 }
 
                                 break;
@@ -1979,15 +2037,18 @@ namespace Chummer
                                         blnDoNameRefresh = true;
                                     else
                                     {
-                                        TreeNode objNode = treQualities.FindNodeByTag(objQuality);
-                                        if (objNode != null)
+                                        await treQualities.DoThreadSafeAsync(x =>
                                         {
-                                            TreeNode objParent = objNode.Parent;
-                                            objNode.Remove();
-                                            objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
-                                            if (objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                                objParent.Remove();
-                                        }
+                                            TreeNode objNode = x.FindNodeByTag(objQuality);
+                                            if (objNode != null)
+                                            {
+                                                TreeNode objParent = objNode.Parent;
+                                                objNode.Remove();
+                                                objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
+                                                if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                                    objParent.Remove();
+                                            }
+                                        }, GenericToken);
                                     }
                                 }
 
@@ -2003,17 +2064,20 @@ namespace Chummer
                                         blnDoNameRefresh = true;
                                     else
                                     {
-                                        TreeNode objNode = treQualities.FindNodeByTag(objQuality);
+                                        TreeNode objNode = await treQualities.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objQuality), GenericToken);
                                         if (objNode != null)
                                         {
-                                            if (objNode.Parent != null)
-                                                lstOldParents.Add(objNode.Parent);
-                                            objNode.Remove();
-                                            objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
+                                            await treQualities.DoThreadSafeAsync(() =>
+                                            {
+                                                if (objNode.Parent != null)
+                                                    lstOldParents.Add(objNode.Parent);
+                                                objNode.Remove();
+                                                objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
+                                            }, GenericToken);
                                         }
                                         else
                                         {
-                                            RefreshQualityNames(treQualities);
+                                            await treQualities.DoThreadSafeAsync(RefreshQualityNames, GenericToken);
                                         }
                                     }
                                 }
@@ -2023,25 +2087,28 @@ namespace Chummer
                                     if (objQuality.Levels > 1)
                                         blnDoNameRefresh = true;
                                     else
-                                        AddToTree(objQuality);
+                                        await AddToTree(objQuality);
                                 }
 
-                                foreach (TreeNode objOldParent in lstOldParents)
+                                await treQualities.DoThreadSafeAsync(() =>
                                 {
-                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                        objOldParent.Remove();
-                                }
+                                    foreach (TreeNode objOldParent in lstOldParents)
+                                    {
+                                        if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                            objOldParent.Remove();
+                                    }
+                                }, GenericToken);
 
                                 break;
                             }
                     }
 
                     if (blnDoNameRefresh)
-                        RefreshQualityNames(treQualities);
+                        await treQualities.DoThreadSafeAsync(RefreshQualityNames, GenericToken);
                 }
             }
 
-            void AddToTree(Quality objQuality, bool blnSingleAdd = true)
+            async ValueTask AddToTree(Quality objQuality, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objQuality.CreateTreeNode(cmsQuality, treQualities);
                 if (objNode == null)
@@ -2055,10 +2122,14 @@ namespace Chummer
                             objPositiveQualityRoot = new TreeNode
                             {
                                 Tag = "Node_SelectedPositiveQualities",
-                                Text = LanguageManager.GetString("Node_SelectedPositiveQualities")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedPositiveQualities")
                             };
-                            treQualities.Nodes.Insert(0, objPositiveQualityRoot);
-                            objPositiveQualityRoot.Expand();
+                            await treQualities.DoThreadSafeAsync(x =>
+                            {
+                                // ReSharper disable once AssignNullToNotNullAttribute
+                                x.Nodes.Insert(0, objPositiveQualityRoot);
+                                objPositiveQualityRoot.Expand();
+                            }, GenericToken);
                         }
                         objParentNode = objPositiveQualityRoot;
                         break;
@@ -2069,10 +2140,18 @@ namespace Chummer
                             objNegativeQualityRoot = new TreeNode
                             {
                                 Tag = "Node_SelectedNegativeQualities",
-                                Text = LanguageManager.GetString("Node_SelectedNegativeQualities")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedNegativeQualities")
                             };
-                            treQualities.Nodes.Insert(objLifeModuleRoot != null && objPositiveQualityRoot == null ? 0 : 1, objNegativeQualityRoot);
-                            objNegativeQualityRoot.Expand();
+                            await treQualities.DoThreadSafeAsync(x =>
+                            {
+                                x.Nodes.Insert(
+                                    objLifeModuleRoot != null
+                                    && objPositiveQualityRoot == null
+                                        ? 0
+                                        // ReSharper disable once AssignNullToNotNullAttribute
+                                        : 1, objNegativeQualityRoot);
+                                objNegativeQualityRoot.Expand();
+                            }, GenericToken);
                         }
                         objParentNode = objNegativeQualityRoot;
                         break;
@@ -2083,10 +2162,14 @@ namespace Chummer
                             objLifeModuleRoot = new TreeNode
                             {
                                 Tag = "String_LifeModules",
-                                Text = LanguageManager.GetString("String_LifeModules")
+                                Text = await LanguageManager.GetStringAsync("String_LifeModules")
                             };
-                            treQualities.Nodes.Add(objLifeModuleRoot);
-                            objLifeModuleRoot.Expand();
+                            await treQualities.DoThreadSafeAsync(x =>
+                            {
+                                // ReSharper disable once AssignNullToNotNullAttribute
+                                x.Nodes.Add(objLifeModuleRoot);
+                                objLifeModuleRoot.Expand();
+                            }, GenericToken);
                         }
                         objParentNode = objLifeModuleRoot;
                         break;
@@ -2094,24 +2177,27 @@ namespace Chummer
 
                 if (objParentNode != null)
                 {
-                    if (blnSingleAdd)
+                    await treQualities.DoThreadSafeAsync(x =>
                     {
-                        TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                        int intNodesCount = lstParentNodeChildren.Count;
-                        int intTargetIndex = 0;
-                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                        if (blnSingleAdd)
                         {
-                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                            TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                            int intNodesCount = lstParentNodeChildren.Count;
+                            int intTargetIndex = 0;
+                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                             {
-                                break;
+                                if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                                {
+                                    break;
+                                }
                             }
-                        }
 
-                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                        treQualities.SelectedNode = objNode;
-                    }
-                    else
-                        objParentNode.Nodes.Add(objNode);
+                            lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                            x.SelectedNode = objNode;
+                        }
+                        else
+                            objParentNode.Nodes.Add(objNode);
+                    }, GenericToken);
                     objQuality.PropertyChanged += AddedQualityOnPropertyChanged;
                 }
             }
@@ -4023,21 +4109,21 @@ namespace Chummer
             }
         }
 
-        public void RefreshFociFromGear(TreeView treFoci, ContextMenuStrip cmsFocus, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        public async ValueTask RefreshFociFromGear(TreeView treFoci, ContextMenuStrip cmsFocus, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (treFoci == null)
                 return;
             using (CursorWait.New(this))
             {
-                string strSelectedId = (treFoci.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId = (await treFoci.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    treFoci.SuspendLayout();
+                    await treFoci.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken);
                     try
                     {
-                        treFoci.Nodes.Clear();
+                        await treFoci.DoThreadSafeAsync(x => x.Nodes.Clear(), GenericToken);
 
                         int intFociTotal = 0;
 
@@ -4055,8 +4141,9 @@ namespace Chummer
                                     TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
                                     if (objNode == null)
                                         continue;
-                                    objNode.Text = objNode.Text.CheapReplace(LanguageManager.GetString("String_Rating"),
-                                                                             () => LanguageManager.GetString(objGear.RatingLabel));
+                                    objNode.Text = await objNode.Text.CheapReplaceAsync(
+                                        await LanguageManager.GetStringAsync("String_Rating"),
+                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel));
                                     for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
                                     {
                                         if (i < CharacterObject.Foci.Count)
@@ -4069,7 +4156,7 @@ namespace Chummer
                                                 if (intFociTotal > intMaxFocusTotal && !CharacterObject.IgnoreRules)
                                                 {
                                                     objGear.Bonded = false;
-                                                    CharacterObject.Foci.RemoveAt(i);
+                                                    await CharacterObject.Foci.RemoveAtAsync(i);
                                                     objNode.Checked = false;
                                                 }
                                                 else
@@ -4078,7 +4165,7 @@ namespace Chummer
                                         }
                                     }
 
-                                    AddToTree(objNode, false);
+                                    await AddToTree(objNode, false);
                                 }
                                     break;
 
@@ -4088,7 +4175,7 @@ namespace Chummer
                                     {
                                         if (objStack.GearId == objGear.InternalId)
                                         {
-                                            ImprovementManager.RemoveImprovements(CharacterObject,
+                                            await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
                                                 Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
 
                                             if (objStack.Bonded)
@@ -4097,19 +4184,19 @@ namespace Chummer
                                                 {
                                                     if (!string.IsNullOrEmpty(objFociGear.Extra))
                                                         ImprovementManager.ForcedValue = objFociGear.Extra;
-                                                    ImprovementManager.CreateImprovements(CharacterObject,
+                                                    await ImprovementManager.CreateImprovementsAsync(CharacterObject,
                                                         Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
                                                         objFociGear.Bonus, objFociGear.Rating,
-                                                        objFociGear.DisplayNameShort(GlobalSettings.Language));
+                                                        await objFociGear.DisplayNameShortAsync(GlobalSettings.Language));
                                                     if (objFociGear.WirelessOn)
-                                                        ImprovementManager.CreateImprovements(CharacterObject,
+                                                        await ImprovementManager.CreateImprovementsAsync(CharacterObject,
                                                             Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
                                                             objFociGear.WirelessBonus, objFociGear.Rating,
-                                                            objFociGear.DisplayNameShort(GlobalSettings.Language));
+                                                            await objFociGear.DisplayNameShortAsync(GlobalSettings.Language));
                                                 }
                                             }
 
-                                            AddToTree(objStack.CreateTreeNode(objGear, cmsFocus), false);
+                                            await AddToTree(objStack.CreateTreeNode(objGear, cmsFocus), false);
                                         }
                                     }
                                 }
@@ -4117,11 +4204,11 @@ namespace Chummer
                             }
                         }
 
-                        treFoci.SortCustomAlphabetically(strSelectedId);
+                        await treFoci.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), GenericToken);
                     }
                     finally
                     {
-                        treFoci.ResumeLayout();
+                        await treFoci.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken);
                     }
                 }
                 else
@@ -4152,9 +4239,9 @@ namespace Chummer
                                                 TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
                                                 if (objNode == null)
                                                     continue;
-                                                objNode.Text = objNode.Text.CheapReplace(
-                                                    LanguageManager.GetString("String_Rating"),
-                                                    () => LanguageManager.GetString("String_Force"));
+                                                objNode.Text = await objNode.Text.CheapReplaceAsync(
+                                                    await LanguageManager.GetStringAsync("String_Rating"),
+                                                    () => LanguageManager.GetStringAsync("String_Force"));
                                                 for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
                                                 {
                                                     if (i < CharacterObject.Foci.Count)
@@ -4168,13 +4255,13 @@ namespace Chummer
                                                             {
                                                                 // Mark the Gear a Bonded.
                                                                 objGear.Bonded = false;
-                                                                CharacterObject.Foci.RemoveAt(i);
+                                                                await CharacterObject.Foci.RemoveAtAsync(i);
                                                                 objNode.Checked = false;
                                                                 if (!blnWarned)
                                                                 {
                                                                     Program.ShowMessageBox(this,
-                                                                        LanguageManager.GetString("Message_FocusMaximumForce"),
-                                                                        LanguageManager.GetString("MessageTitle_FocusMaximum"),
+                                                                        await LanguageManager.GetStringAsync("Message_FocusMaximumForce"),
+                                                                        await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum"),
                                                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                                                                     blnWarned = true;
                                                                     break;
@@ -4186,7 +4273,7 @@ namespace Chummer
                                                     }
                                                 }
 
-                                                AddToTree(objNode);
+                                                await AddToTree(objNode);
                                             }
                                             break;
 
@@ -4196,7 +4283,7 @@ namespace Chummer
                                                 {
                                                     if (objStack.GearId == objGear.InternalId)
                                                     {
-                                                        ImprovementManager.RemoveImprovements(CharacterObject,
+                                                        await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
                                                             Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
 
                                                         if (objStack.Bonded)
@@ -4205,20 +4292,20 @@ namespace Chummer
                                                             {
                                                                 if (!string.IsNullOrEmpty(objFociGear.Extra))
                                                                     ImprovementManager.ForcedValue = objFociGear.Extra;
-                                                                ImprovementManager.CreateImprovements(CharacterObject,
+                                                                await ImprovementManager.CreateImprovementsAsync(CharacterObject,
                                                                     Improvement.ImprovementSource.StackedFocus,
                                                                     objStack.InternalId, objFociGear.Bonus, objFociGear.Rating,
-                                                                    objFociGear.DisplayNameShort(GlobalSettings.Language));
+                                                                    await objFociGear.DisplayNameShortAsync(GlobalSettings.Language));
                                                                 if (objFociGear.WirelessOn)
-                                                                    ImprovementManager.CreateImprovements(CharacterObject,
+                                                                    await ImprovementManager.CreateImprovementsAsync(CharacterObject,
                                                                         Improvement.ImprovementSource.StackedFocus,
                                                                         objStack.InternalId, objFociGear.WirelessBonus,
                                                                         objFociGear.Rating,
-                                                                        objFociGear.DisplayNameShort(GlobalSettings.Language));
+                                                                        await objFociGear.DisplayNameShortAsync(GlobalSettings.Language));
                                                             }
                                                         }
 
-                                                        AddToTree(objStack.CreateTreeNode(objGear, cmsFocus));
+                                                        await AddToTree(objStack.CreateTreeNode(objGear, cmsFocus));
                                                     }
                                                 }
                                             }
@@ -4244,12 +4331,12 @@ namespace Chummer
                                                         Focus objFocus = CharacterObject.Foci[i];
                                                         if (objFocus.GearObject == objGear)
                                                         {
-                                                            CharacterObject.Foci.RemoveAt(i);
+                                                            await CharacterObject.Foci.RemoveAtAsync(i);
                                                         }
                                                     }
                                                 }
 
-                                                treFoci.FindNodeByTag(objGear)?.Remove();
+                                                await treFoci.DoThreadSafeAsync(x => x.FindNodeByTag(objGear)?.Remove(), GenericToken);
                                             }
                                             break;
 
@@ -4262,8 +4349,8 @@ namespace Chummer
                                                         StackedFocus objStack = CharacterObject.StackedFoci[i];
                                                         if (objStack.GearId == objGear.InternalId)
                                                         {
-                                                            CharacterObject.StackedFoci.RemoveAt(i);
-                                                            treFoci.FindNodeByTag(objStack)?.Remove();
+                                                            await CharacterObject.StackedFoci.RemoveAtAsync(i);
+                                                            await treFoci.DoThreadSafeAsync(x => x.FindNodeByTag(objStack)?.Remove(), GenericToken);
                                                         }
                                                     }
                                                 }
@@ -4290,12 +4377,12 @@ namespace Chummer
                                                         Focus objFocus = CharacterObject.Foci[i];
                                                         if (objFocus.GearObject == objGear)
                                                         {
-                                                            CharacterObject.Foci.RemoveAt(i);
+                                                            await CharacterObject.Foci.RemoveAtAsync(i);
                                                         }
                                                     }
                                                 }
 
-                                                treFoci.FindNodeByTag(objGear)?.Remove();
+                                                await treFoci.DoThreadSafeAsync(x => x.FindNodeByTag(objGear)?.Remove(), GenericToken);
                                             }
                                             break;
 
@@ -4308,8 +4395,8 @@ namespace Chummer
                                                         StackedFocus objStack = CharacterObject.StackedFoci[i];
                                                         if (objStack.GearId == objGear.InternalId)
                                                         {
-                                                            CharacterObject.StackedFoci.RemoveAt(i);
-                                                            treFoci.FindNodeByTag(objStack)?.Remove();
+                                                            await CharacterObject.StackedFoci.RemoveAtAsync(i);
+                                                            await treFoci.DoThreadSafeAsync(x => x.FindNodeByTag(objStack)?.Remove(), GenericToken);
                                                         }
                                                     }
                                                 }
@@ -4340,8 +4427,8 @@ namespace Chummer
                                                 TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
                                                 if (objNode == null)
                                                     continue;
-                                                objNode.Text = objNode.Text.CheapReplace(
-                                                    LanguageManager.GetString("String_Rating"),
+                                                objNode.Text = await objNode.Text.CheapReplaceAsync(
+                                                    await LanguageManager.GetStringAsync("String_Rating"),
                                                     () => LanguageManager.GetString("String_Force"));
                                                 for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
                                                 {
@@ -4356,13 +4443,13 @@ namespace Chummer
                                                             {
                                                                 // Mark the Gear a Bonded.
                                                                 objGear.Bonded = false;
-                                                                CharacterObject.Foci.RemoveAt(i);
+                                                                await CharacterObject.Foci.RemoveAtAsync(i);
                                                                 objNode.Checked = false;
                                                                 if (!blnWarned)
                                                                 {
                                                                     Program.ShowMessageBox(this,
-                                                                        LanguageManager.GetString("Message_FocusMaximumForce"),
-                                                                        LanguageManager.GetString("MessageTitle_FocusMaximum"),
+                                                                        await LanguageManager.GetStringAsync("Message_FocusMaximumForce"),
+                                                                        await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum"),
                                                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                                                                     blnWarned = true;
                                                                     break;
@@ -4374,7 +4461,7 @@ namespace Chummer
                                                     }
                                                 }
 
-                                                AddToTree(objNode);
+                                                await AddToTree(objNode);
                                             }
                                             break;
 
@@ -4384,7 +4471,7 @@ namespace Chummer
                                                 {
                                                     if (objStack.GearId == objGear.InternalId)
                                                     {
-                                                        ImprovementManager.RemoveImprovements(CharacterObject,
+                                                        await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
                                                             Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
 
                                                         if (objStack.Bonded)
@@ -4393,20 +4480,20 @@ namespace Chummer
                                                             {
                                                                 if (!string.IsNullOrEmpty(objFociGear.Extra))
                                                                     ImprovementManager.ForcedValue = objFociGear.Extra;
-                                                                ImprovementManager.CreateImprovements(CharacterObject,
+                                                                await ImprovementManager.CreateImprovementsAsync(CharacterObject,
                                                                     Improvement.ImprovementSource.StackedFocus,
                                                                     objStack.InternalId, objFociGear.Bonus, objFociGear.Rating,
-                                                                    objFociGear.DisplayNameShort(GlobalSettings.Language));
+                                                                    await objFociGear.DisplayNameShortAsync(GlobalSettings.Language));
                                                                 if (objFociGear.WirelessOn)
-                                                                    ImprovementManager.CreateImprovements(CharacterObject,
+                                                                    await ImprovementManager.CreateImprovementsAsync(CharacterObject,
                                                                         Improvement.ImprovementSource.StackedFocus,
                                                                         objStack.InternalId, objFociGear.WirelessBonus,
                                                                         objFociGear.Rating,
-                                                                        objFociGear.DisplayNameShort(GlobalSettings.Language));
+                                                                        await objFociGear.DisplayNameShortAsync(GlobalSettings.Language));
                                                             }
                                                         }
 
-                                                        AddToTree(objStack.CreateTreeNode(objGear, cmsFocus));
+                                                        await AddToTree(objStack.CreateTreeNode(objGear, cmsFocus));
                                                     }
                                                 }
                                             }
@@ -4418,26 +4505,29 @@ namespace Chummer
                     }
                 }
 
-                void AddToTree(TreeNode objNode, bool blnSingleAdd = true)
+                Task AddToTree(TreeNode objNode, bool blnSingleAdd = true)
                 {
-                    TreeNodeCollection lstParentNodeChildren = treFoci.Nodes;
-                    if (blnSingleAdd)
+                    return treFoci.DoThreadSafeAsync(x =>
                     {
-                        int intNodesCount = lstParentNodeChildren.Count;
-                        int intTargetIndex = 0;
-                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                        TreeNodeCollection lstParentNodeChildren = x.Nodes;
+                        if (blnSingleAdd)
                         {
-                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                            int intNodesCount = lstParentNodeChildren.Count;
+                            int intTargetIndex = 0;
+                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                             {
-                                break;
+                                if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                                {
+                                    break;
+                                }
                             }
-                        }
 
-                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                        treFoci.SelectedNode = objNode;
-                    }
-                    else
-                        lstParentNodeChildren.Add(objNode);
+                            lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                            x.SelectedNode = objNode;
+                        }
+                        else
+                            lstParentNodeChildren.Add(objNode);
+                    }, GenericToken);
                 }
             }
         }
@@ -4448,7 +4538,7 @@ namespace Chummer
                 return;
             using (CursorWait.New(this))
             {
-                string strSelectedId = (treMartialArts.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId = (await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
                 TreeNode objMartialArtsParentNode = null;
                 TreeNode objQualityNode = null;

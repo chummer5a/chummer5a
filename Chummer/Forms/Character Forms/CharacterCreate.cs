@@ -395,9 +395,9 @@ namespace Chummer
                                         await lblBuildEnemies.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
                                     }
 
-                                    RefreshQualities(treQualities, cmsQuality);
+                                    await RefreshQualities(treQualities, cmsQuality);
                                     await RefreshSpirits(panSpirits, panSprites);
-                                    RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
+                                    await RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
                                     RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm,
                                                         cmsInitiationNotes);
                                     RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
@@ -410,7 +410,7 @@ namespace Chummer
 
                                     RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
                                     RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
-                                    RefreshFociFromGear(treFoci, null);
+                                    await RefreshFociFromGear(treFoci, null);
                                     RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
                                     RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
                                                    cmsWeaponAccessoryGear);
@@ -1131,7 +1131,7 @@ namespace Chummer
                                                           MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation)
                                 == DialogResult.Yes)
                             {
-                                await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
+                                await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements, GenericToken);
                                 await CharacterObject.InternalIdsNeedingReapplyImprovements.ClearAsync();
                             }
 
@@ -2091,9 +2091,9 @@ namespace Chummer
                                 }
 
                                 // Refresh all trees because enabled sources can change the nodes that are visible
-                                RefreshQualities(treQualities, cmsQuality);
+                                await RefreshQualities(treQualities, cmsQuality);
                                 await RefreshSpirits(panSpirits, panSprites);
-                                RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
+                                await RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
                                 RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
                                 RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
                                 RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
@@ -2105,7 +2105,7 @@ namespace Chummer
 
                                 RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
                                 RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
-                                RefreshFociFromGear(treFoci, null);
+                                await RefreshFociFromGear(treFoci, null);
                                 RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
                                 RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
                                                cmsWeaponAccessoryGear);
@@ -17224,7 +17224,10 @@ namespace Chummer
 
         private async void AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            await RefreshAttributes(pnlAttributes, e, lblAttributes, await lblKarma.DoThreadSafeFuncAsync(x => x.PreferredWidth), await lblAttributesAug.DoThreadSafeFuncAsync(x => x.PreferredWidth), await lblAttributesMetatype.DoThreadSafeFuncAsync(x => x.PreferredWidth));
+            await RefreshAttributes(pnlAttributes, e, lblAttributes,
+                                    await lblKarma.DoThreadSafeFuncAsync(x => x.PreferredWidth, GenericToken),
+                                    await lblAttributesAug.DoThreadSafeFuncAsync(x => x.PreferredWidth, GenericToken),
+                                    await lblAttributesMetatype.DoThreadSafeFuncAsync(x => x.PreferredWidth, GenericToken));
         }
 
         private void PowersBeforeRemove(object sender, RemovingOldEventArgs e)
@@ -17237,9 +17240,16 @@ namespace Chummer
             RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
         }
 
-        private void SpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void SpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes, e);
+            try
+            {
+                await RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void ComplexFormCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -17277,9 +17287,16 @@ namespace Chummer
             RefreshCritterPowers(treCritterPowers, cmsCritterPowers, e);
         }
 
-        private void QualityCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void QualityCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshQualities(treQualities, cmsQuality, e);
+            try
+            {
+                await RefreshQualities(treQualities, cmsQuality, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void MartialArtCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -17355,10 +17372,10 @@ namespace Chummer
             RefreshDrugs(treCustomDrugs, e);
         }
 
-        private void GearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void GearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked, e);
-            RefreshFociFromGear(treFoci, null, e);
+            await RefreshFociFromGear(treFoci, null, e);
         }
 
         private void GearLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

@@ -205,7 +205,7 @@ namespace Chummer
                                 if (CharacterObject == null)
                                 {
                                     // Stupid hack to get the MDI icon to show up properly.
-                                    await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon);
+                                    await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon, GenericToken);
                                     return;
                                 }
 
@@ -215,7 +215,7 @@ namespace Chummer
                                     // Set the visibility of the Bioware Suites menu options.
                                     await mnuCreateMenu.DoThreadSafeAsync(
                                         () => mnuSpecialAddBiowareSuite.Visible
-                                            = CharacterObjectSettings.AllowBiowareSuites);
+                                            = CharacterObjectSettings.AllowBiowareSuites, GenericToken);
 
                                     txtGroupName.DoDataBinding("Text", CharacterObject, nameof(Character.GroupName));
                                     txtGroupNotes.DoDataBinding("Text", CharacterObject, nameof(Character.GroupNotes));
@@ -236,7 +236,7 @@ namespace Chummer
                                     txtAlias.DoDataBinding("Text", CharacterObject, nameof(Character.Alias));
                                     txtPlayerName.DoDataBinding("Text", CharacterObject, nameof(Character.PlayerName));
 
-                                    await chkJoinGroup.DoThreadSafeAsync(x => x.Checked = CharacterObject.GroupMember);
+                                    await chkJoinGroup.DoThreadSafeAsync(x => x.Checked = CharacterObject.GroupMember, GenericToken);
                                     chkInitiationGroup.DoOneWayDataBinding("Enabled", CharacterObject,
                                                                            nameof(Character.GroupMember));
 
@@ -248,7 +248,7 @@ namespace Chummer
                                             x.Minimum = 1;
                                             x.Maximum = CharacterObject.Mugshots.Count;
                                             x.Value = Math.Max(CharacterObject.MainMugshotIndex, 0) + 1;
-                                        });
+                                        }, GenericToken);
                                     }
                                     else
                                     {
@@ -257,13 +257,13 @@ namespace Chummer
                                             x.Minimum = 0;
                                             x.Maximum = 0;
                                             x.Value = 0;
-                                        });
+                                        }, GenericToken);
                                     }
 
                                     string strNumMugshots = await LanguageManager.GetStringAsync("String_Of") +
                                                             CharacterObject.Mugshots.Count.ToString(
                                                                 GlobalSettings.CultureInfo);
-                                    await lblNumMugshots.DoThreadSafeAsync(x => x.Text = strNumMugshots);
+                                    await lblNumMugshots.DoThreadSafeAsync(x => x.Text = strNumMugshots, GenericToken);
 
                                     nudStreetCred.DoDataBinding("Value", CharacterObject, nameof(Character.StreetCred));
                                     nudNotoriety.DoDataBinding("Value", CharacterObject, nameof(Character.Notoriety));
@@ -288,43 +288,46 @@ namespace Chummer
 
                                 if (!CharacterObjectSettings.BookEnabled("RF"))
                                 {
-                                    await cmdAddLifestyle.DoThreadSafeAsync(x => x.SplitMenuStrip = null);
+                                    await cmdAddLifestyle.DoThreadSafeAsync(x => x.SplitMenuStrip = null, GenericToken);
                                 }
 
                                 if (!CharacterObjectSettings.BookEnabled("FA"))
                                 {
-                                    await lblWildReputation.DoThreadSafeAsync(x => x.Visible = false);
-                                    await nudWildReputation.DoThreadSafeAsync(x => x.Visible = false);
-                                    await lblWildReputationTotal.DoThreadSafeAsync(x => x.Visible = false);
+                                    await lblWildReputation.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                                    await nudWildReputation.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                                    await lblWildReputationTotal.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
                                     if (!CharacterObjectSettings.BookEnabled("SG"))
                                     {
-                                        await lblAstralReputation.DoThreadSafeAsync(x => x.Visible = false);
-                                        await nudAstralReputation.DoThreadSafeAsync(x => x.Visible = false);
-                                        await lblAstralReputationTotal.DoThreadSafeAsync(x => x.Visible = false);
+                                        await lblAstralReputation.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                                        await nudAstralReputation.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                                        await lblAstralReputationTotal.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
                                     }
                                 }
 
                                 if (!CharacterObjectSettings.EnableEnemyTracking)
                                 {
-                                    await tabPeople.DoThreadSafeAsync(x => x.TabPages.Remove(tabEnemies));
+                                    await tabPeople.DoThreadSafeAsync(x => x.TabPages.Remove(tabEnemies), GenericToken);
                                 }
 
                                 await splitKarmaNuyen.DoThreadSafeAsync(
                                     x => x.SplitterDistance
-                                        = Math.Max(x.SplitterDistance, (x.Width - x.SplitterWidth + 1) / 2));
+                                        = Math.Max(x.SplitterDistance, (x.Width - x.SplitterWidth + 1) / 2),
+                                    GenericToken);
                                 await splitMagician.DoThreadSafeAsync(x => x.SplitterDistance
                                                                           = Math.Max(x.SplitterDistance,
-                                                                              ((x.Height - x.SplitterWidth) * 2 + 2) / 3));
+                                                                              ((x.Height - x.SplitterWidth) * 2 + 2)
+                                                                              / 3), GenericToken);
                                 await splitTechnomancer.DoThreadSafeAsync(
                                     x => x.SplitterDistance
-                                        = Math.Max(x.SplitterDistance, ((x.Height - x.SplitterWidth) * 2 + 2) / 3));
+                                        = Math.Max(x.SplitterDistance, ((x.Height - x.SplitterWidth) * 2 + 2) / 3),
+                                    GenericToken);
 
                                 using (_ = await Timekeeper.StartSyncronAsync(
                                            "load_frm_career_refresh", op_load_frm_career))
                                 {
-                                    RefreshQualities(treQualities, cmsQuality);
+                                    await RefreshQualities(treQualities, cmsQuality);
                                     await RefreshSpirits(panSpirits, panSprites);
-                                    RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
+                                    await RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
                                     await RefreshSustainedSpells(flpSustainedSpells, flpSustainedComplexForms,
                                                            flpSustainedCritterPowers, chkPsycheActiveMagician,
                                                            chkPsycheActiveTechnomancer);
@@ -351,7 +354,7 @@ namespace Chummer
 
                                     RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
                                     RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
-                                    RefreshFociFromGear(treFoci, null);
+                                    await RefreshFociFromGear(treFoci, null);
                                     RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
                                     RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
                                                    cmsWeaponAccessoryGear);
@@ -368,15 +371,15 @@ namespace Chummer
                                 using (_ = await Timekeeper.StartSyncronAsync("load_frm_career_sortAndCallbacks",
                                                                               op_load_frm_career))
                                 {
-                                    await treWeapons.DoThreadSafeAsync(x => x.SortCustomOrder());
-                                    await treArmor.DoThreadSafeAsync(x => x.SortCustomOrder());
-                                    await treGear.DoThreadSafeAsync(x => x.SortCustomOrder());
-                                    await treLifestyles.DoThreadSafeAsync(x => x.SortCustomOrder());
-                                    await treCustomDrugs.DoThreadSafeAsync(x => x.SortCustomOrder());
-                                    await treCyberware.DoThreadSafeAsync(x => x.SortCustomOrder());
-                                    await treVehicles.DoThreadSafeAsync(x => x.SortCustomOrder());
-                                    await treCritterPowers.DoThreadSafeAsync(x => x.SortCustomOrder());
-                                    await treImprovements.DoThreadSafeAsync(x => x.SortCustomOrder());
+                                    await treWeapons.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
+                                    await treArmor.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
+                                    await treGear.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
+                                    await treLifestyles.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
+                                    await treCustomDrugs.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
+                                    await treCyberware.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
+                                    await treVehicles.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
+                                    await treCritterPowers.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
+                                    await treImprovements.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
 
                                     // Set up events that would change various lists
                                     CharacterObject.Spells.CollectionChanged += SpellCollectionChanged;
@@ -423,7 +426,7 @@ namespace Chummer
                                 {
                                     // Populate the Magician Traditions list.
                                     XPathNavigator xmlTraditionsBaseChummerNode =
-                                        await (await CharacterObject.LoadDataXPathAsync("traditions.xml"))
+                                        await (await CharacterObject.LoadDataXPathAsync("traditions.xml", token: GenericToken))
                                             .SelectSingleNodeAndCacheExpressionAsync("/chummer");
                                     using (new FetchSafelyFromPool<List<ListItem>>(
                                                Utils.ListItemListPool, out List<ListItem> lstTraditions))
@@ -459,7 +462,7 @@ namespace Chummer
                                                                      "None",
                                                                      await LanguageManager
                                                                          .GetStringAsync("String_None")));
-                                            await cboTradition.PopulateWithListItemsAsync(lstTraditions);
+                                            await cboTradition.PopulateWithListItemsAsync(lstTraditions, GenericToken);
                                         }
                                         else
                                         {
@@ -497,7 +500,7 @@ namespace Chummer
 
                                         lstDrainAttributes.Sort(CompareListItems.CompareNames);
                                         lstDrainAttributes.Insert(0, ListItem.Blank);
-                                        await cboDrain.PopulateWithListItemsAsync(lstDrainAttributes);
+                                        await cboDrain.PopulateWithListItemsAsync(lstDrainAttributes, GenericToken);
                                         cboDrain.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
                                                                nameof(Tradition.DrainExpression));
                                     }
@@ -509,7 +512,7 @@ namespace Chummer
                                     dpcDrainAttributes.DoOneWayDataBinding(
                                         "ToolTipText", CharacterObject.MagicTradition,
                                         nameof(Tradition.DrainValueToolTip));
-                                    await CharacterObject.MagicTradition.SetSourceDetailAsync(lblTraditionSource);
+                                    await CharacterObject.MagicTradition.SetSourceDetailAsync(lblTraditionSource, GenericToken);
 
                                     lblFadingAttributes.DoOneWayDataBinding("Text", CharacterObject.MagicTradition,
                                                                             nameof(Tradition.DisplayDrainExpression));
@@ -558,80 +561,80 @@ namespace Chummer
 
                                             lstSpirit.Sort(CompareListItems.CompareNames);
 
-                                            await cboSpiritCombat.PopulateWithListItemsAsync(lstSpirit);
+                                            await cboSpiritCombat.PopulateWithListItemsAsync(lstSpirit, GenericToken);
                                             cboSpiritCombat.DoDataBinding(
                                                 "SelectedValue", CharacterObject.MagicTradition,
                                                 nameof(Tradition.SpiritCombat));
                                             await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG);
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG, GenericToken);
                                             await cboSpiritCombat.DoThreadSafeAsync(x =>
                                             {
                                                 x.Visible
                                                     = CharacterObject.MagicTradition.Type == TraditionType.MAG;
                                                 x.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-                                            });
+                                            }, GenericToken);
 
-                                            await cboSpiritDetection.PopulateWithListItemsAsync(lstSpirit);
+                                            await cboSpiritDetection.PopulateWithListItemsAsync(lstSpirit, GenericToken);
                                             cboSpiritDetection.DoDataBinding(
                                                 "SelectedValue", CharacterObject.MagicTradition,
                                                 nameof(Tradition.SpiritDetection));
                                             await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG);
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG, GenericToken);
                                             await cboSpiritDetection.DoThreadSafeAsync(x =>
                                             {
                                                 x.Visible
                                                     = CharacterObject.MagicTradition.Type == TraditionType.MAG;
                                                 x.Enabled
                                                     = CharacterObject.MagicTradition.IsCustomTradition;
-                                            });
+                                            }, GenericToken);
 
-                                            await cboSpiritHealth.PopulateWithListItemsAsync(lstSpirit);
+                                            await cboSpiritHealth.PopulateWithListItemsAsync(lstSpirit, GenericToken);
                                             cboSpiritHealth.DoDataBinding(
                                                 "SelectedValue", CharacterObject.MagicTradition,
                                                 nameof(Tradition.SpiritHealth));
                                             await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG);
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG, GenericToken);
                                             await cboSpiritDetection.DoThreadSafeAsync(x =>
                                             {
                                                 x.Visible
                                                     = CharacterObject.MagicTradition.Type == TraditionType.MAG;
                                                 x.Enabled
                                                     = CharacterObject.MagicTradition.IsCustomTradition;
-                                            });
+                                            }, GenericToken);
 
-                                            await cboSpiritIllusion.PopulateWithListItemsAsync(lstSpirit);
+                                            await cboSpiritIllusion.PopulateWithListItemsAsync(lstSpirit, GenericToken);
                                             cboSpiritIllusion.DoDataBinding(
                                                 "SelectedValue", CharacterObject.MagicTradition,
                                                 nameof(Tradition.SpiritIllusion));
                                             await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG);
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG, GenericToken);
                                             await cboSpiritIllusion.DoThreadSafeAsync(x =>
                                             {
                                                 x.Visible
                                                     = CharacterObject.MagicTradition.Type == TraditionType.MAG;
                                                 x.Enabled
                                                     = CharacterObject.MagicTradition.IsCustomTradition;
-                                            });
+                                            }, GenericToken);
 
-                                            await cboSpiritManipulation.PopulateWithListItemsAsync(lstSpirit);
+                                            await cboSpiritManipulation.PopulateWithListItemsAsync(lstSpirit, GenericToken);
                                             cboSpiritManipulation.DoDataBinding(
                                                 "SelectedValue", CharacterObject.MagicTradition,
                                                 nameof(Tradition.SpiritManipulation));
                                             await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG);
+                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG, GenericToken);
                                             await cboSpiritManipulation.DoThreadSafeAsync(x =>
                                             {
                                                 x.Visible
                                                     = CharacterObject.MagicTradition.Type == TraditionType.MAG;
                                                 x.Enabled
                                                     = CharacterObject.MagicTradition.IsCustomTradition;
-                                            });
+                                            }, GenericToken);
                                         }
                                     }
 
                                     // Populate the Technomancer Streams list.
                                     xmlTraditionsBaseChummerNode =
-                                        await (await CharacterObject.LoadDataXPathAsync("streams.xml"))
+                                        await (await CharacterObject.LoadDataXPathAsync("streams.xml", token: GenericToken))
                                             .SelectSingleNodeAndCacheExpressionAsync("/chummer");
                                     using (new FetchSafelyFromPool<List<ListItem>>(
                                                Utils.ListItemListPool, out List<ListItem> lstStreams))
@@ -667,12 +670,12 @@ namespace Chummer
                                                               new ListItem(
                                                                   "None",
                                                                   await LanguageManager.GetStringAsync("String_None")));
-                                            await cboStream.PopulateWithListItemsAsync(lstStreams);
+                                            await cboStream.PopulateWithListItemsAsync(lstStreams, GenericToken);
                                         }
                                         else
                                         {
-                                            await cboStream.DoThreadSafeAsync(x => x.Visible = false);
-                                            await lblStreamLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                            await cboStream.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                                            await lblStreamLabel.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
                                         }
                                     }
                                 }
@@ -680,11 +683,11 @@ namespace Chummer
                                 using (_ = await Timekeeper.StartSyncronAsync("load_frm_career_shapeshifter",
                                                                               op_load_frm_career))
                                 {
-                                    await cboAttributeCategory.DoThreadSafeAsync(x => x.Visible = CharacterObject.MetatypeCategory == "Shapeshifter");
+                                    await cboAttributeCategory.DoThreadSafeAsync(x => x.Visible = CharacterObject.MetatypeCategory == "Shapeshifter", GenericToken);
                                     if (CharacterObject.MetatypeCategory == "Shapeshifter")
                                     {
                                         XPathNavigator objDoc
-                                            = await CharacterObject.LoadDataXPathAsync("metatypes.xml");
+                                            = await CharacterObject.LoadDataXPathAsync("metatypes.xml", token: GenericToken);
                                         XPathNavigator node =
                                             objDoc.SelectSingleNode(
                                                 "/chummer/metatypes/metatype[name = "
@@ -713,8 +716,8 @@ namespace Chummer
 
                                             lstAttributeCategories.Sort(CompareListItems.CompareNames);
                                             await cboAttributeCategory.PopulateWithListItemsAsync(
-                                                lstAttributeCategories);
-                                            await cboAttributeCategory.DoThreadSafeAsync(x => x.SelectedValue = "Standard");
+                                                lstAttributeCategories, GenericToken);
+                                            await cboAttributeCategory.DoThreadSafeAsync(x => x.SelectedValue = "Standard", GenericToken);
                                         }
                                     }
 
@@ -1109,8 +1112,8 @@ namespace Chummer
                                 await SetTooltips();
 
                                 await RefreshAttributes(pnlAttributes, null, lblAttributes, -1,
-                                                  await lblAttributesAug.DoThreadSafeFuncAsync(x => x.PreferredWidth),
-                                                  await lblAttributesMetatype.DoThreadSafeFuncAsync(x => x.PreferredWidth));
+                                                  await lblAttributesAug.DoThreadSafeFuncAsync(x => x.PreferredWidth, GenericToken),
+                                                  await lblAttributesMetatype.DoThreadSafeFuncAsync(x => x.PreferredWidth, GenericToken));
 
                                 CharacterObject.AttributeSection.Attributes.CollectionChanged
                                     += AttributeCollectionChanged;
@@ -1122,12 +1125,12 @@ namespace Chummer
                                     CharacterObject.PhysicalCMThresholdOffset,
                                     CharacterObject.CMOverflow,
                                     chkPhysicalCM_CheckedChanged, true,
-                                    CharacterObject.PhysicalCMFilled);
+                                    CharacterObject.PhysicalCMFilled, GenericToken);
                                 await ProcessCharacterConditionMonitorBoxDisplays(panStunCM, CharacterObject.StunCM,
                                     CharacterObject.CMThreshold,
                                     CharacterObject.StunCMThresholdOffset, 0,
                                     chkStunCM_CheckedChanged,
-                                    true, CharacterObject.StunCMFilled);
+                                    true, CharacterObject.StunCMFilled, GenericToken);
 
                                 IsCharacterUpdateRequested = true;
                                 // Directly awaiting here so that we can properly unset the dirty flag after the update
@@ -1144,9 +1147,9 @@ namespace Chummer
                                 if (!CharacterObject.LoadAsDirty)
                                     IsDirty = false;
                                 await RefreshPasteStatus();
-                                await ProcessMugshot();
+                                await ProcessMugshot(GenericToken);
                                 // Stupid hack to get the MDI icon to show up properly.
-                                await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon);
+                                await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon, GenericToken);
 
                                 Program.PluginLoader.CallPlugins(this, op_load_frm_career_finishingStuff);
                             }
@@ -1160,7 +1163,7 @@ namespace Chummer
                                                           MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation)
                                 == DialogResult.Yes)
                             {
-                                await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
+                                await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements, GenericToken);
                                 await CharacterObject.InternalIdsNeedingReapplyImprovements.ClearAsync();
                             }
 
@@ -1196,9 +1199,16 @@ namespace Chummer
             RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
         }
 
-        private void SpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void SpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes, e);
+            try
+            {
+                await RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void ComplexFormCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1246,9 +1256,16 @@ namespace Chummer
             }
         }
 
-        private void QualityCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void QualityCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshQualities(treQualities, cmsQuality, e);
+            try
+            {
+                await RefreshQualities(treQualities, cmsQuality, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void MartialArtCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1372,10 +1389,10 @@ namespace Chummer
             RefreshWeaponLocations(treWeapons, cmsWeaponLocation, e);
         }
 
-        private void GearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void GearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked, e);
-            RefreshFociFromGear(treFoci, null, e);
+            await RefreshFociFromGear(treFoci, null, e);
         }
 
         private void DrugCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -2393,9 +2410,9 @@ namespace Chummer
                                 }
 
                                 // Refresh all trees because enabled sources can change the nodes that are visible
-                                RefreshQualities(treQualities, cmsQuality);
+                                await RefreshQualities(treQualities, cmsQuality);
                                 await RefreshSpirits(panSpirits, panSprites);
-                                RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
+                                await RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
                                 RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
                                 RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
                                 RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
@@ -2410,7 +2427,7 @@ namespace Chummer
 
                                 RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
                                 RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
-                                RefreshFociFromGear(treFoci, null);
+                                await RefreshFociFromGear(treFoci, null);
                                 RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
                                 RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
                                                cmsWeaponAccessoryGear);
@@ -2842,15 +2859,23 @@ namespace Chummer
             if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ConfirmReapplyImprovements"), await LanguageManager.GetStringAsync("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
-            await DoReapplyImprovements();
+            try
+            {
+                await DoReapplyImprovements(token: GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
-        private async ValueTask DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null)
+        private async ValueTask DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
                 IAsyncDisposable objLocker
-                    = await CharacterObject.LockObject.EnterWriteLockAsync();
+                    = await CharacterObject.LockObject.EnterWriteLockAsync(token);
                 try
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -14116,7 +14141,7 @@ namespace Chummer
                             await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError"),
                             MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     {
-                        await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
+                        await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements, GenericToken);
                         await CharacterObject.InternalIdsNeedingReapplyImprovements.ClearAsync();
                     }
                 }
