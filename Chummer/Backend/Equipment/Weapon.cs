@@ -6727,7 +6727,10 @@ namespace Chummer.Backend.Equipment
 
                 foreach (WeaponAccessory objChild in WeaponAccessories)
                 {
-                    objChild.GearChildren.AddTaggedCollectionChanged(treWeapons, (x, y) => objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y));
+                    async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                        await objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y);
+
+                    objChild.GearChildren.AddTaggedCollectionChanged(treWeapons, FuncDelegateToAdd);
                     foreach (Gear objGear in objChild.GearChildren)
                         objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear);
                 }

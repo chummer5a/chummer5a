@@ -2418,78 +2418,87 @@ namespace Chummer
 
         #region Locations
 
-        protected void RefreshArmorLocations(TreeView treArmor, ContextMenuStrip cmsArmorLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        protected async ValueTask RefreshArmorLocations(TreeView treArmor, ContextMenuStrip cmsArmorLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (treArmor == null || notifyCollectionChangedEventArgs == null)
                 return;
 
             using (CursorWait.New(this))
             {
-                string strSelectedId = (treArmor.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
-                TreeNode nodRoot = treArmor.FindNode("Node_SelectedImprovements", false);
-                RefreshLocation(treArmor, nodRoot, cmsArmorLocation, notifyCollectionChangedEventArgs, strSelectedId,
-                    "Node_SelectedArmor");
+                TreeNode nodRoot = await treArmor.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedArmor", false), GenericToken);
+                await RefreshLocation(treArmor, nodRoot, cmsArmorLocation, notifyCollectionChangedEventArgs,
+                                strSelectedId,
+                                "Node_SelectedArmor");
             }
         }
 
-        protected void RefreshGearLocations(TreeView treGear, ContextMenuStrip cmsGearLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        protected async ValueTask RefreshGearLocations(TreeView treGear, ContextMenuStrip cmsGearLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (treGear == null || notifyCollectionChangedEventArgs == null)
                 return;
 
             using (CursorWait.New(this))
             {
-                string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
-                TreeNode nodRoot = treGear.FindNode("Node_SelectedGear", false);
-                RefreshLocation(treGear, nodRoot, cmsGearLocation, notifyCollectionChangedEventArgs, strSelectedId,
-                    "Node_SelectedGear");
+                TreeNode nodRoot = await treGear.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedGear", false), GenericToken);
+                await RefreshLocation(treGear, nodRoot, cmsGearLocation, notifyCollectionChangedEventArgs,
+                                      strSelectedId,
+                                      "Node_SelectedGear");
             }
         }
 
-        protected void RefreshVehicleLocations(TreeView treVehicles, ContextMenuStrip cmsVehicleLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        protected async ValueTask RefreshVehicleLocations(TreeView treVehicles, ContextMenuStrip cmsVehicleLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (treVehicles == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            TreeNode nodRoot = treVehicles.FindNode("Node_SelectedVehicles", false);
-            string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
-            RefreshLocation(treVehicles, nodRoot, cmsVehicleLocation, notifyCollectionChangedEventArgs, strSelectedId,
-                "Node_SelectedVehicles");
+            using (CursorWait.New(this))
+            {
+                string strSelectedId = (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
+
+                TreeNode nodRoot = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedVehicles", false), GenericToken);
+                await RefreshLocation(treVehicles, nodRoot, cmsVehicleLocation, notifyCollectionChangedEventArgs,
+                                      strSelectedId,
+                                      "Node_SelectedVehicles");
+            }
         }
 
-        protected void RefreshLocationsInVehicle(TreeView treVehicles, Vehicle objVehicle, ContextMenuStrip cmsVehicleLocation, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        protected async ValueTask RefreshLocationsInVehicle(TreeView treVehicles, Vehicle objVehicle, ContextMenuStrip cmsVehicleLocation, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (treVehicles == null || objVehicle == null || notifyCollectionChangedEventArgs == null)
                 return;
 
             using (CursorWait.New(this))
             {
-                string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId = (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
-                TreeNode nodRoot = treVehicles.FindNodeByTag(objVehicle);
-                RefreshLocation(treVehicles, nodRoot, cmsVehicleLocation, funcOffset, notifyCollectionChangedEventArgs,
-                    strSelectedId, "Node_SelectedVehicles", false);
+                TreeNode nodRoot = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objVehicle), GenericToken);
+                await RefreshLocation(treVehicles, nodRoot, cmsVehicleLocation, funcOffset,
+                                      notifyCollectionChangedEventArgs,
+                                      strSelectedId, "Node_SelectedVehicles", false);
             }
         }
 
-        protected void RefreshWeaponLocations(TreeView treWeapons, ContextMenuStrip cmsWeaponLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        protected async ValueTask RefreshWeaponLocations(TreeView treWeapons, ContextMenuStrip cmsWeaponLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (treWeapons == null || notifyCollectionChangedEventArgs == null)
                 return;
 
             using (CursorWait.New(this))
             {
-                string strSelectedId = (treWeapons.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId = (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
-                TreeNode nodRoot = treWeapons.FindNode("Node_SelectedWeapons", false);
-                RefreshLocation(treWeapons, nodRoot, cmsWeaponLocation, notifyCollectionChangedEventArgs, strSelectedId,
-                    "Node_SelectedWeapons");
+                TreeNode nodRoot = await treWeapons.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedWeapons", false), GenericToken);
+                await RefreshLocation(treWeapons, nodRoot, cmsWeaponLocation, notifyCollectionChangedEventArgs,
+                                      strSelectedId,
+                                      "Node_SelectedWeapons");
             }
         }
 
-        protected void RefreshCustomImprovementLocations(TreeView treImprovements, ContextMenuStrip cmsImprovementLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        protected async ValueTask RefreshCustomImprovementLocations(TreeView treImprovements, ContextMenuStrip cmsImprovementLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (treImprovements == null || notifyCollectionChangedEventArgs == null)
                 return;
@@ -2497,9 +2506,9 @@ namespace Chummer
             using (CursorWait.New(this))
             {
                 string strSelectedId =
-                    (treImprovements.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                    (await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
-                TreeNode nodRoot = treImprovements.FindNode("Node_SelectedImprovements", false);
+                TreeNode nodRoot = await treImprovements.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedImprovements", false), GenericToken);
 
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
@@ -2514,7 +2523,7 @@ namespace Chummer
                                     Text = strLocation,
                                     ContextMenuStrip = cmsImprovementLocation
                                 };
-                                treImprovements.Nodes.Insert(intNewIndex, objLocation);
+                                await treImprovements.DoThreadSafeAsync(x => x.Nodes.Insert(intNewIndex, objLocation), GenericToken);
                                 ++intNewIndex;
                             }
                         }
@@ -2524,10 +2533,10 @@ namespace Chummer
                         {
                             foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objNode = treImprovements.FindNodeByTag(strLocation, false);
+                                TreeNode objNode = await treImprovements.DoThreadSafeFuncAsync(x => x.FindNodeByTag(strLocation, false), GenericToken);
                                 if (objNode != null)
                                 {
-                                    objNode.Remove();
+                                    await treImprovements.DoThreadSafeAsync(() => objNode.Remove(), GenericToken);
                                     if (objNode.Nodes.Count > 0)
                                     {
                                         if (nodRoot == null)
@@ -2535,17 +2544,20 @@ namespace Chummer
                                             nodRoot = new TreeNode
                                             {
                                                 Tag = "Node_SelectedImprovements",
-                                                Text = LanguageManager.GetString("Node_SelectedImprovements")
+                                                Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements")
                                             };
-                                            treImprovements.Nodes.Insert(0, nodRoot);
+                                            await treImprovements.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), GenericToken);
                                         }
 
-                                        for (int i = objNode.Nodes.Count - 1; i >= 0; --i)
+                                        await treImprovements.DoThreadSafeAsync(() =>
                                         {
-                                            TreeNode nodImprovement = objNode.Nodes[i];
-                                            nodImprovement.Remove();
-                                            nodRoot.Nodes.Add(nodImprovement);
-                                        }
+                                            for (int i = objNode.Nodes.Count - 1; i >= 0; --i)
+                                            {
+                                                TreeNode nodImprovement = objNode.Nodes[i];
+                                                nodImprovement.Remove();
+                                                nodRoot.Nodes.Add(nodImprovement);
+                                            }
+                                        }, GenericToken);
                                     }
                                 }
                             }
@@ -2557,14 +2569,17 @@ namespace Chummer
                             int intNewItemsIndex = 0;
                             foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objNode = treImprovements.FindNodeByTag(strLocation, false);
+                                TreeNode objNode = await treImprovements.DoThreadSafeFuncAsync(x => x.FindNodeByTag(strLocation, false), GenericToken);
                                 if (objNode != null)
                                 {
                                     if (notifyCollectionChangedEventArgs
                                         .NewItems[intNewItemsIndex] is string objNewLocation)
                                     {
-                                        objNode.Tag = objNewLocation;
-                                        objNode.Text = objNewLocation;
+                                        await treImprovements.DoThreadSafeAsync(() =>
+                                        {
+                                            objNode.Tag = objNewLocation;
+                                            objNode.Text = objNewLocation;
+                                        }, GenericToken);
                                     }
 
                                     ++intNewItemsIndex;
@@ -2579,7 +2594,7 @@ namespace Chummer
                                 new List<Tuple<string, TreeNode>>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objLocation = treImprovements.FindNode(strLocation, false);
+                                TreeNode objLocation = await treImprovements.DoThreadSafeFuncAsync(x => x.FindNode(strLocation, false), GenericToken);
                                 if (objLocation != null)
                                 {
                                     lstMoveNodes.Add(new Tuple<string, TreeNode>(strLocation, objLocation));
@@ -2594,7 +2609,7 @@ namespace Chummer
                                     lstMoveNodes.Find(x => x.Item1 == strLocation);
                                 if (objLocationTuple != null)
                                 {
-                                    treImprovements.Nodes.Insert(intNewIndex, objLocationTuple.Item2);
+                                    await treImprovements.DoThreadSafeAsync(x => x.Nodes.Insert(intNewIndex, objLocationTuple.Item2), GenericToken);
                                     ++intNewIndex;
                                     lstMoveNodes.Remove(objLocationTuple);
                                 }
@@ -2606,10 +2621,10 @@ namespace Chummer
                         {
                             foreach (string strLocation in CharacterObject.ImprovementGroups)
                             {
-                                TreeNode objLocation = treImprovements.FindNode(strLocation, false);
+                                TreeNode objLocation = await treImprovements.DoThreadSafeFuncAsync(x => x.FindNode(strLocation, false), GenericToken);
                                 if (objLocation != null)
                                 {
-                                    objLocation.Remove();
+                                    await treImprovements.DoThreadSafeAsync(() => objLocation.Remove(), GenericToken);
                                     if (objLocation.Nodes.Count > 0)
                                     {
                                         if (nodRoot == null)
@@ -2617,17 +2632,20 @@ namespace Chummer
                                             nodRoot = new TreeNode
                                             {
                                                 Tag = "Node_SelectedImprovements",
-                                                Text = LanguageManager.GetString("Node_SelectedImprovements")
+                                                Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements")
                                             };
-                                            treImprovements.Nodes.Insert(0, nodRoot);
+                                            await treImprovements.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), GenericToken);
                                         }
 
-                                        for (int i = objLocation.Nodes.Count - 1; i >= 0; --i)
+                                        await treImprovements.DoThreadSafeAsync(() =>
                                         {
-                                            TreeNode nodImprovement = objLocation.Nodes[i];
-                                            nodImprovement.Remove();
-                                            nodRoot.Nodes.Add(nodImprovement);
-                                        }
+                                            for (int i = objLocation.Nodes.Count - 1; i >= 0; --i)
+                                            {
+                                                TreeNode nodImprovement = objLocation.Nodes[i];
+                                                nodImprovement.Remove();
+                                                nodRoot.Nodes.Add(nodImprovement);
+                                            }
+                                        }, GenericToken);
                                     }
                                 }
                             }
@@ -2635,17 +2653,17 @@ namespace Chummer
                         break;
                 }
 
-                treImprovements.SelectedNode = treImprovements.FindNode(strSelectedId);
+                await treImprovements.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), GenericToken);
             }
         }
 
-        private void RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
+        private async ValueTask RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
             NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, string strSelectedId, string strNodeName)
         {
-            RefreshLocation(treSelected, nodRoot, cmsLocation, null, notifyCollectionChangedEventArgs, strSelectedId, strNodeName);
+            await RefreshLocation(treSelected, nodRoot, cmsLocation, null, notifyCollectionChangedEventArgs, strSelectedId, strNodeName);
         }
 
-        private void RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
+        private async ValueTask RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
             Func<int> funcOffset,
             NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, string strSelectedId, string strNodeName,
             bool rootSibling = true)
@@ -2659,19 +2677,22 @@ namespace Chummer
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             if (funcOffset != null)
                                 intNewIndex += funcOffset.Invoke();
-                            foreach (Location objLocation in notifyCollectionChangedEventArgs.NewItems)
+                            await treSelected.DoThreadSafeAsync(x =>
                             {
-                                if (rootSibling)
+                                foreach (Location objLocation in notifyCollectionChangedEventArgs.NewItems)
                                 {
-                                    treSelected.Nodes.Insert(intNewIndex, objLocation.CreateTreeNode(cmsLocation));
-                                }
-                                else
-                                {
-                                    nodRoot.Nodes.Insert(intNewIndex, objLocation.CreateTreeNode(cmsLocation));
-                                }
+                                    if (rootSibling)
+                                    {
+                                        x.Nodes.Insert(intNewIndex, objLocation.CreateTreeNode(cmsLocation));
+                                    }
+                                    else
+                                    {
+                                        nodRoot.Nodes.Insert(intNewIndex, objLocation.CreateTreeNode(cmsLocation));
+                                    }
 
-                                ++intNewIndex;
-                            }
+                                    ++intNewIndex;
+                                }
+                            }, GenericToken);
                         }
                         break;
 
@@ -2679,7 +2700,7 @@ namespace Chummer
                         {
                             foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode nodLocation = treSelected.FindNodeByTag(objLocation, false);
+                                TreeNode nodLocation = await treSelected.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objLocation, false), GenericToken);
                                 if (nodLocation == null)
                                     continue;
                                 if (nodLocation.Nodes.Count > 0)
@@ -2689,20 +2710,23 @@ namespace Chummer
                                         nodRoot = new TreeNode
                                         {
                                             Tag = strNodeName,
-                                            Text = LanguageManager.GetString(strNodeName)
+                                            Text = await LanguageManager.GetStringAsync(strNodeName)
                                         };
-                                        treSelected.Nodes.Insert(0, nodRoot);
+                                        await treSelected.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), GenericToken);
                                     }
 
-                                    for (int i = nodLocation.Nodes.Count - 1; i >= 0; --i)
+                                    await treSelected.DoThreadSafeAsync(() =>
                                     {
-                                        TreeNode nodWeapon = nodLocation.Nodes[i];
-                                        nodWeapon.Remove();
-                                        nodRoot.Nodes.Add(nodWeapon);
-                                    }
+                                        for (int i = nodLocation.Nodes.Count - 1; i >= 0; --i)
+                                        {
+                                            TreeNode nodWeapon = nodLocation.Nodes[i];
+                                            nodWeapon.Remove();
+                                            nodRoot.Nodes.Add(nodWeapon);
+                                        }
+                                    }, GenericToken);
                                 }
 
-                                nodLocation.Remove();
+                                await treSelected.DoThreadSafeAsync(() => nodLocation.Remove(), GenericToken);
                             }
                         }
                         break;
@@ -2712,14 +2736,17 @@ namespace Chummer
                             int intNewItemsIndex = 0;
                             foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objNode = treSelected.FindNodeByTag(objLocation, false);
+                                TreeNode objNode = await treSelected.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objLocation, false), GenericToken);
                                 if (objNode != null)
                                 {
                                     if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is Location
                                         objNewLocation)
                                     {
-                                        objNode.Tag = objNewLocation;
-                                        objNode.Text = objNewLocation.DisplayName();
+                                        await treSelected.DoThreadSafeAsync(() =>
+                                        {
+                                            objNode.Tag = objNewLocation;
+                                            objNode.Text = objNewLocation.DisplayName();
+                                        }, GenericToken);
                                     }
 
                                     ++intNewItemsIndex;
@@ -2734,7 +2761,7 @@ namespace Chummer
                                 new List<Tuple<Location, TreeNode>>(notifyCollectionChangedEventArgs.OldItems.Count);
                             foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                TreeNode objNode = treSelected.FindNodeByTag(objLocation, false);
+                                TreeNode objNode = await treSelected.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objLocation, false), GenericToken);
                                 if (objNode != null)
                                 {
                                     lstMoveNodes.Add(new Tuple<Location, TreeNode>(objLocation, objNode));
@@ -2749,7 +2776,7 @@ namespace Chummer
                                     lstMoveNodes.Find(x => x.Item1 == objLocation);
                                 if (objLocationTuple != null)
                                 {
-                                    treSelected.Nodes.Insert(intNewIndex, objLocationTuple.Item2);
+                                    await treSelected.DoThreadSafeAsync(x => x.Nodes.Insert(intNewIndex, objLocationTuple.Item2), GenericToken);
                                     ++intNewIndex;
                                     lstMoveNodes.Remove(objLocationTuple);
                                 }
@@ -2771,7 +2798,7 @@ namespace Chummer
                             lstLocations.AddRange(CharacterObject.Vehicles.SelectMany(x => x.Locations));
                             foreach (Location objLocation in lstLocations)
                             {
-                                TreeNode nodLocation = treSelected.FindNode(objLocation.InternalId, false);
+                                TreeNode nodLocation = await treSelected.DoThreadSafeFuncAsync(x => x.FindNode(objLocation.InternalId, false), GenericToken);
                                 if (nodLocation == null)
                                     continue;
                                 if (nodLocation.Nodes.Count > 0)
@@ -2781,17 +2808,20 @@ namespace Chummer
                                         nodRoot = new TreeNode
                                         {
                                             Tag = strNodeName,
-                                            Text = LanguageManager.GetString(strNodeName)
+                                            Text = await LanguageManager.GetStringAsync(strNodeName)
                                         };
-                                        treSelected.Nodes.Insert(0, nodRoot);
+                                        await treSelected.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), GenericToken);
                                     }
 
-                                    for (int i = nodLocation.Nodes.Count - 1; i >= 0; --i)
+                                    await treSelected.DoThreadSafeAsync(() =>
                                     {
-                                        TreeNode nodWeapon = nodLocation.Nodes[i];
-                                        nodWeapon.Remove();
-                                        nodRoot.Nodes.Add(nodWeapon);
-                                    }
+                                        for (int i = nodLocation.Nodes.Count - 1; i >= 0; --i)
+                                        {
+                                            TreeNode nodWeapon = nodLocation.Nodes[i];
+                                            nodWeapon.Remove();
+                                            nodRoot.Nodes.Add(nodWeapon);
+                                        }
+                                    }, GenericToken);
                                 }
 
                                 objLocation.Remove(false);
@@ -2800,7 +2830,7 @@ namespace Chummer
                         break;
                 }
 
-                treSelected.SelectedNode = treSelected.FindNode(strSelectedId);
+                await treSelected.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), GenericToken);
             }
         }
 
@@ -2998,16 +3028,24 @@ namespace Chummer
                             objArmor.ArmorMods.AddTaggedCollectionChanged(treArmor,
                                                                           (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y));
                             objArmor.GearChildren.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
+
+                            async void FuncArmorDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                await objArmor.RefreshChildrenGears(treArmor, cmsArmorGear,
+                                                                    () => objArmor.ArmorMods.Count, y);
+
                             objArmor.GearChildren.AddTaggedCollectionChanged(treArmor,
-                                                                             (x, y) => objArmor.RefreshChildrenGears(treArmor, cmsArmorGear,
-                                                                                 () => objArmor.ArmorMods.Count, y));
+                                                                             FuncArmorDelegateToAdd);
                             foreach (Gear objGear in objArmor.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
                             foreach (ArmorMod objArmorMod in objArmor.ArmorMods)
                             {
                                 objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
+
+                                async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                    await objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y);
+
                                 objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor,
-                                    (x, y) => objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y));
+                                                                                    FuncDelegateToAdd);
                                 foreach (Gear objGear in objArmorMod.GearChildren)
                                     objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
                             }
@@ -3037,16 +3075,24 @@ namespace Chummer
                                     objArmor.ArmorMods.AddTaggedCollectionChanged(treArmor,
                                         (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y));
                                     objArmor.GearChildren.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
+
+                                    async void FuncArmorDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                        await objArmor.RefreshChildrenGears(
+                                            treArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y);
+
                                     objArmor.GearChildren.AddTaggedCollectionChanged(treArmor,
-                                        (x, y) => objArmor.RefreshChildrenGears(treArmor, cmsArmorGear,
-                                            () => objArmor.ArmorMods.Count, y));
+                                        FuncArmorDelegateToAdd);
                                     foreach (Gear objGear in objArmor.GearChildren)
                                         objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
                                     foreach (ArmorMod objArmorMod in objArmor.ArmorMods)
                                     {
                                         objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
+
+                                        async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                            await objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y);
+
                                         objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor,
-                                            (x, y) => objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y));
+                                                                                            FuncDelegateToAdd);
                                         foreach (Gear objGear in objArmorMod.GearChildren)
                                             objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
                                     }
@@ -3106,16 +3152,24 @@ namespace Chummer
                                     objArmor.ArmorMods.AddTaggedCollectionChanged(treArmor,
                                         (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y));
                                     objArmor.GearChildren.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
+
+                                    async void FuncArmorDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                        await objArmor.RefreshChildrenGears(
+                                            treArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y);
+
                                     objArmor.GearChildren.AddTaggedCollectionChanged(treArmor,
-                                        (x, y) => objArmor.RefreshChildrenGears(treArmor, cmsArmorGear,
-                                            () => objArmor.ArmorMods.Count, y));
+                                        FuncArmorDelegateToAdd);
                                     foreach (Gear objGear in objArmor.GearChildren)
                                         objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
                                     foreach (ArmorMod objArmorMod in objArmor.ArmorMods)
                                     {
                                         objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
+
+                                        async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                            await objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y);
+
                                         objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor,
-                                            (x, y) => objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y));
+                                                                                            FuncDelegateToAdd);
                                         foreach (Gear objGear in objArmorMod.GearChildren)
                                             objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
                                     }
@@ -3210,8 +3264,12 @@ namespace Chummer
                             {
                                 AddToTree(objArmorMod, intNewIndex);
                                 objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
+
+                                async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                    await objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y);
+
                                 objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor,
-                                    (x, y) => objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y));
+                                                                                    FuncDelegateToAdd);
                                 foreach (Gear objGear in objArmorMod.GearChildren)
                                     objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
                                 ++intNewIndex;
@@ -3248,8 +3306,12 @@ namespace Chummer
                             {
                                 AddToTree(objArmorMod, intNewIndex);
                                 objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
+
+                                async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                    await objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y);
+
                                 objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor,
-                                    (x, y) => objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y));
+                                                                                    FuncDelegateToAdd);
                                 foreach (Gear objGear in objArmorMod.GearChildren)
                                     objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
                                 ++intNewIndex;
@@ -3309,47 +3371,47 @@ namespace Chummer
             }
         }
 
-        protected void RefreshGears(TreeView treGear, ContextMenuStrip cmsGearLocation, ContextMenuStrip cmsGear, bool blnCommlinksOnly, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        protected async ValueTask RefreshGears(TreeView treGear, ContextMenuStrip cmsGearLocation, ContextMenuStrip cmsGear, bool blnCommlinksOnly, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (treGear == null)
                 return;
             using (CursorWait.New(this))
             {
-                string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
                 TreeNode nodRoot = null;
 
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    treGear.SuspendLayout();
+                    await treGear.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken);
                     try
                     {
-                        treGear.Nodes.Clear();
+                        await treGear.DoThreadSafeAsync(x => x.Nodes.Clear(), GenericToken);
 
                         // Start by populating Locations.
                         foreach (Location objLocation in CharacterObject.GearLocations)
                         {
-                            treGear.Nodes.Add(objLocation.CreateTreeNode(cmsGearLocation));
+                            await treGear.DoThreadSafeAsync(x => x.Nodes.Add(objLocation.CreateTreeNode(cmsGearLocation)), GenericToken);
                         }
 
                         // Add Gear.
                         foreach (Gear objGear in CharacterObject.Gear)
                         {
-                            AddToTree(objGear, -1, false);
+                            await AddToTree(objGear, -1, false);
                             objGear.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear);
                         }
 
-                        treGear.SelectedNode = treGear.FindNode(strSelectedId);
+                        await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), GenericToken);
                     }
                     finally
                     {
-                        treGear.ResumeLayout();
+                        await treGear.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken);
                     }
                 }
                 else
                 {
-                    nodRoot = treGear.FindNode("Node_SelectedGear", false);
+                    nodRoot = await treGear.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedGear", false), GenericToken);
 
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
@@ -3358,7 +3420,7 @@ namespace Chummer
                                 int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                                 foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                                 {
-                                    AddToTree(objGear, intNewIndex);
+                                    await AddToTree(objGear, intNewIndex);
                                     objGear.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear);
                                     ++intNewIndex;
                                 }
@@ -3370,7 +3432,7 @@ namespace Chummer
                                 foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                                 {
                                     objGear.SetupChildrenGearsCollectionChanged(false, treGear);
-                                    treGear.FindNodeByTag(objGear)?.Remove();
+                                    await treGear.DoThreadSafeAsync(x => x.FindNodeByTag(objGear)?.Remove(), GenericToken);
                                 }
                             }
                             break;
@@ -3380,45 +3442,52 @@ namespace Chummer
                                 foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                                 {
                                     objGear.SetupChildrenGearsCollectionChanged(false, treGear, cmsGear);
-                                    treGear.FindNodeByTag(objGear)?.Remove();
+                                    await treGear.DoThreadSafeAsync(x => x.FindNodeByTag(objGear)?.Remove(), GenericToken);
                                 }
 
                                 int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                                 foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                                 {
-                                    AddToTree(objGear, intNewIndex);
-                                    objGear.Children.AddTaggedCollectionChanged(treGear, MakeDirtyWithCharacterUpdate);
-                                    objGear.Children.AddTaggedCollectionChanged(treGear,
-                                        (x, y) => objGear.RefreshChildrenGears(treGear, cmsGear, null, y));
+                                    await AddToTree(objGear, intNewIndex);
+                                    await objGear.Children.AddTaggedCollectionChangedAsync(treGear, MakeDirtyWithCharacterUpdate);
+
+                                    async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                        await objGear.RefreshChildrenGears(treGear, cmsGear, null, y);
+
+                                    await objGear.Children.AddTaggedCollectionChangedAsync(treGear,
+                                                                                           FuncDelegateToAdd);
                                     objGear.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear);
                                     ++intNewIndex;
                                 }
 
-                                treGear.SelectedNode = treGear.FindNode(strSelectedId);
+                                await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), GenericToken);
                             }
                             break;
 
                         case NotifyCollectionChangedAction.Move:
+                        {
+                            await treGear.DoThreadSafeAsync(x =>
                             {
                                 foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                                 {
-                                    treGear.FindNodeByTag(objGear)?.Remove();
+                                    x.FindNodeByTag(objGear)?.Remove();
                                 }
+                            }, GenericToken);
 
                                 int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                                 foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                                 {
-                                    AddToTree(objGear, intNewIndex);
+                                    await AddToTree(objGear, intNewIndex);
                                     ++intNewIndex;
                                 }
 
-                                treGear.SelectedNode = treGear.FindNode(strSelectedId);
-                            }
+                                await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), GenericToken);
+                        }
                             break;
                     }
                 }
 
-                void AddToTree(Gear objGear, int intIndex = -1, bool blnSingleAdd = true)
+                async ValueTask AddToTree(Gear objGear, int intIndex = -1, bool blnSingleAdd = true)
                 {
                     if (blnCommlinksOnly && !objGear.IsCommlink)
                         return;
@@ -3429,7 +3498,7 @@ namespace Chummer
                     TreeNode nodParent = null;
                     if (objGear.Location != null)
                     {
-                        nodParent = treGear.FindNodeByTag(objGear.Location, false);
+                        nodParent = await treGear.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objGear.Location, false), GenericToken);
                     }
 
                     if (nodParent == null)
@@ -3439,21 +3508,27 @@ namespace Chummer
                             nodRoot = new TreeNode
                             {
                                 Tag = "Node_SelectedGear",
-                                Text = LanguageManager.GetString("Node_SelectedGear")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedGear")
                             };
-                            treGear.Nodes.Insert(0, nodRoot);
+                            // ReSharper disable once AssignNullToNotNullAttribute
+                            await treGear.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), GenericToken);
                         }
 
                         nodParent = nodRoot;
                     }
 
-                    if (intIndex >= 0)
-                        nodParent.Nodes.Insert(intIndex, objNode);
-                    else
-                        nodParent.Nodes.Add(objNode);
-                    nodParent.Expand();
-                    if (blnSingleAdd)
-                        treGear.SelectedNode = objNode;
+                    await treGear.DoThreadSafeAsync(x =>
+                    {
+                        if (nodParent == null)
+                            return;
+                        if (intIndex >= 0)
+                            nodParent.Nodes.Insert(intIndex, objNode);
+                        else
+                            nodParent.Nodes.Add(objNode);
+                        nodParent.Expand();
+                        if (blnSingleAdd)
+                            x.SelectedNode = objNode;
+                    }, GenericToken);
                 }
             }
         }
@@ -3894,18 +3969,28 @@ namespace Chummer
                                 objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon,
                                     cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
                             objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+
+                            async void DelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                await objVehicle.RefreshChildrenGears(treVehicles, cmsVehicleGear,
+                                                                      () => objVehicle.Mods.Count
+                                                                            + objVehicle.Weapons.Count
+                                                                            + (objVehicle.WeaponMounts.Count > 0
+                                                                                ? 1
+                                                                                : 0), y);
+
                             objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles,
-                                                                               (x, y) => objVehicle.RefreshChildrenGears(treVehicles, cmsVehicleGear,
-                                                                                   () => objVehicle.Mods.Count + objVehicle.Weapons.Count +
-                                                                                       (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
+                                                                               DelegateToAdd);
                             foreach (Gear objGear in objVehicle.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(true, treVehicles, cmsVehicleGear);
                             objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, MakeDirty);
-                            objVehicle.Locations.AddTaggedCollectionChanged(treVehicles,
-                                                                            (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
-                                                                                () => objVehicle.Mods.Count + objVehicle.Weapons.Count +
-                                                                                    (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) +
-                                                                                    objVehicle.GearChildren.Count(z => z.Location == null), y));
+                            objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, FuncDelegateToAdd);
+
+                            async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                await RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
+                                                                () => objVehicle.Mods.Count + objVehicle.Weapons.Count
+                                                                    + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0)
+                                                                    + objVehicle.GearChildren.Count(
+                                                                        z => z.Location == null), y);
                         }
 
                         treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
@@ -3992,18 +4077,27 @@ namespace Chummer
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon,
                                             cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
                                     objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+
+                                    async void DelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                        await objVehicle.RefreshChildrenGears(
+                                            treVehicles, cmsVehicleGear,
+                                            () => objVehicle.Mods.Count + objVehicle.Weapons.Count
+                                                                        + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
+                                            y);
+
                                     objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles,
-                                        (x, y) => objVehicle.RefreshChildrenGears(treVehicles, cmsVehicleGear,
-                                            () => objVehicle.Mods.Count + objVehicle.Weapons.Count +
-                                                  (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
+                                                                                       DelegateToAdd);
                                     foreach (Gear objGear in objVehicle.GearChildren)
                                         objGear.SetupChildrenGearsCollectionChanged(true, treVehicles, cmsVehicleGear);
                                     objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, MakeDirty);
-                                    objVehicle.Locations.AddTaggedCollectionChanged(treVehicles,
-                                        (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
-                                            () => objVehicle.Mods.Count + objVehicle.Weapons.Count +
-                                                  (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) +
-                                                  objVehicle.GearChildren.Count(z => z.Location == null), y));
+                                    objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, FuncDelegateToAdd);
+
+                                    async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                        await RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
+                                                                        () => objVehicle.Mods.Count + objVehicle.Weapons.Count
+                                                                            + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0)
+                                                                            + objVehicle.GearChildren.Count(
+                                                                                z => z.Location == null), y);
                                     ++intNewIndex;
                                 }
                             }
@@ -4175,18 +4269,27 @@ namespace Chummer
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon,
                                             cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
                                     objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+
+                                    async void DelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                        await objVehicle.RefreshChildrenGears(
+                                            treVehicles, cmsVehicleGear,
+                                            () => objVehicle.Mods.Count + objVehicle.Weapons.Count
+                                                                        + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
+                                            y);
+
                                     objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles,
-                                        (x, y) => objVehicle.RefreshChildrenGears(treVehicles, cmsVehicleGear,
-                                            () => objVehicle.Mods.Count + objVehicle.Weapons.Count +
-                                                  (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
+                                                                                       DelegateToAdd);
                                     foreach (Gear objGear in objVehicle.GearChildren)
                                         objGear.SetupChildrenGearsCollectionChanged(true, treVehicles, cmsVehicleGear);
                                     objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                    objVehicle.Locations.AddTaggedCollectionChanged(treVehicles,
-                                        (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
-                                            () => objVehicle.Mods.Count + objVehicle.Weapons.Count +
-                                                  (objVehicle.WeaponMounts.Count > 0 ? 1 : 0) +
-                                                  objVehicle.GearChildren.Count(z => z.Location != null), y));
+                                    objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, FuncDelegateToAdd);
+
+                                    async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                        await RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
+                                                                        () => objVehicle.Mods.Count + objVehicle.Weapons.Count
+                                                                            + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0)
+                                                                            + objVehicle.GearChildren.Count(
+                                                                                z => z.Location == null), y);
                                     ++intNewIndex;
                                 }
 

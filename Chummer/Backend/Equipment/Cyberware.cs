@@ -5436,8 +5436,11 @@ namespace Chummer.Backend.Equipment
             {
                 Children.AddTaggedCollectionChanged(treCyberware,
                     (x, y) => this.RefreshChildrenCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, null, y));
-                GearChildren.AddTaggedCollectionChanged(treCyberware,
-                    (x, y) => this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, () => Children.Count, y));
+
+                async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                    await this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, () => Children.Count, y);
+
+                GearChildren.AddTaggedCollectionChanged(treCyberware, FuncDelegateToAdd);
 
                 foreach (Cyberware objChild in Children)
                 {

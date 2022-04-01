@@ -353,7 +353,7 @@ namespace Chummer
                                     await RefreshContacts(panContacts, panEnemies, panPets);
 
                                     RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
-                                    RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                                    await RefreshGears(treGear, cmsGearLocation, cmsGear, await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken));
                                     await RefreshFociFromGear(treFoci, null);
                                     RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
                                     RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
@@ -1353,9 +1353,16 @@ namespace Chummer
             }
         }
 
-        private void ImprovementGroupCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void ImprovementGroupCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshCustomImprovementLocations(treImprovements, cmsImprovementLocation, e);
+            try
+            {
+                await RefreshCustomImprovementLocations(treImprovements, cmsImprovementLocation, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void CalendarWeekListChanged(object sender, ListChangedEventArgs listChangedEventArgs)
@@ -1425,9 +1432,16 @@ namespace Chummer
             RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear, e);
         }
 
-        private void ArmorLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void ArmorLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshArmorLocations(treArmor, cmsArmorLocation, e);
+            try
+            {
+                await RefreshArmorLocations(treArmor, cmsArmorLocation, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void WeaponCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1435,15 +1449,29 @@ namespace Chummer
             RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, e);
         }
 
-        private void WeaponLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void WeaponLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshWeaponLocations(treWeapons, cmsWeaponLocation, e);
+            try
+            {
+                await RefreshWeaponLocations(treWeapons, cmsWeaponLocation, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void GearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked, e);
-            await RefreshFociFromGear(treFoci, null, e);
+            try
+            {
+                await RefreshGears(treGear, cmsGearLocation, cmsGear, await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken), e);
+                await RefreshFociFromGear(treFoci, null, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void DrugCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1458,9 +1486,16 @@ namespace Chummer
             }
         }
 
-        private void GearLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void GearLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshGearLocations(treGear, cmsGearLocation, e);
+            try
+            {
+                await RefreshGearLocations(treGear, cmsGearLocation, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void CyberwareCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1473,9 +1508,16 @@ namespace Chummer
             RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsVehicleCyberware, cmsVehicleCyberwareGear, e);
         }
 
-        private void VehicleLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void VehicleLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshVehicleLocations(treVehicles, cmsVehicleLocation, e);
+            try
+            {
+                await RefreshVehicleLocations(treVehicles, cmsVehicleLocation, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void CharacterCareer_FormClosing(object sender, FormClosingEventArgs e)
@@ -2484,7 +2526,7 @@ namespace Chummer
                                                        chkPsycheActiveTechnomancer);
 
                                 RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
-                                RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                                await RefreshGears(treGear, cmsGearLocation, cmsGear, await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken));
                                 await RefreshFociFromGear(treFoci, null);
                                 RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
                                 RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
@@ -11613,9 +11655,16 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void chkCommlinks_CheckedChanged(object sender, EventArgs e)
+        private async void chkCommlinks_CheckedChanged(object sender, EventArgs e)
         {
-            RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+            try
+            {
+                await RefreshGears(treGear, cmsGearLocation, cmsGear, await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken));
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void chkGearActiveCommlink_CheckedChanged(object sender, EventArgs e)

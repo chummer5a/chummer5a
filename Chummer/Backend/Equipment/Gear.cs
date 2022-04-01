@@ -3979,8 +3979,10 @@ namespace Chummer.Backend.Equipment
         {
             if (blnAdd)
             {
-                Children.AddTaggedCollectionChanged(treGear,
-                    (x, y) => this.RefreshChildrenGears(treGear, cmsGear, null, y));
+                async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                    await this.RefreshChildrenGears(treGear, cmsGear, null, y);
+
+                Children.AddTaggedCollectionChanged(treGear, FuncDelegateToAdd);
                 foreach (Gear objChild in Children)
                 {
                     objChild.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear);
