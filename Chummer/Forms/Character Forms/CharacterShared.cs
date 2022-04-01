@@ -54,7 +54,7 @@ namespace Chummer
         private int _intRefreshingCount;
         private int _intLoadingCount = 1;
         private CharacterSheetViewer _frmPrintView;
-        private readonly FileSystemWatcher _objCharacterFileWatcher;
+        private FileSystemWatcher _objCharacterFileWatcher;
 
         protected CancellationTokenSource GenericCancellationTokenSource { get; } = new CancellationTokenSource();
 
@@ -64,7 +64,7 @@ namespace Chummer
         {
             GenericToken = GenericCancellationTokenSource.Token;
             _objCharacter = objCharacter;
-            _objCharacter.PropertyChanged += RecacheSettingsOnSettingsChange;
+            _objCharacter.PropertyChanged += CharacterPropertyChanged;
             string name = "Show_Form_" + GetType();
             PageViewTelemetry pvt = new PageViewTelemetry(name)
             {
@@ -84,14 +84,10 @@ namespace Chummer
                 }
                 TelemetryClient.TrackPageView(pvt);
             };
-            if (GlobalSettings.LiveUpdateCleanCharacterFiles && objCharacter?.FileName != null)
+            if (GlobalSettings.LiveUpdateCleanCharacterFiles && !string.IsNullOrEmpty(objCharacter?.FileName) && File.Exists(objCharacter.FileName))
             {
-                string strBasePath = Path.GetFullPath(objCharacter.FileName);
-                if (File.Exists(strBasePath))
-                {
-                    _objCharacterFileWatcher = new FileSystemWatcher(Path.GetDirectoryName(strBasePath) ?? Path.GetPathRoot(strBasePath), Path.GetFileName(strBasePath));
-                    _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
-                }
+                _objCharacterFileWatcher = new FileSystemWatcher(Path.GetDirectoryName(objCharacter.FileName) ?? Path.GetPathRoot(objCharacter.FileName), Path.GetFileName(objCharacter.FileName));
+                _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
             }
         }
 
@@ -104,13 +100,38 @@ namespace Chummer
         {
         }
 
-        private void RecacheSettingsOnSettingsChange(object sender, PropertyChangedEventArgs e)
+        private void CharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Character.Settings))
+            switch (e.PropertyName)
             {
-                _objCachedSettings = null;
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
+                case nameof(Character.Settings):
+                {
+                    _objCachedSettings = null;
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                    break;
+                }
+                case nameof(Character.FileName):
+                {
+                    if (_objCharacterFileWatcher != null)
+                    {
+                        _objCharacterFileWatcher.Dispose();
+                        _objCharacterFileWatcher = null;
+                    }
+                    if (GlobalSettings.LiveUpdateCleanCharacterFiles)
+                    {
+                        string strFileName = Path.GetFileName(CharacterObject.FileName);
+                        if (!string.IsNullOrEmpty(strFileName))
+                        {
+                            _objCharacterFileWatcher = new FileSystemWatcher(
+                                Path.GetDirectoryName(CharacterObject.FileName)
+                                ?? Path.GetPathRoot(CharacterObject.FileName), strFileName);
+                            _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
+                        }
+                    }
+                    
+                    break;
+                }
             }
         }
 
@@ -7236,8 +7257,18 @@ namespace Chummer
                 {
                     await frmLoadingBar.PerformStepAsync(CharacterObject.CharacterName,
                                                          LoadingBar.ProgressBarTextPatterns.Saving, token);
-                    if (!await CharacterObject.SaveAsync(token: token))
-                        return false;
+                    if (_objCharacterFileWatcher != null)
+                        _objCharacterFileWatcher.Changed -= LiveUpdateFromCharacterFile;
+                    try
+                    {
+                        if (!await CharacterObject.SaveAsync(token: token))
+                            return false;
+                    }
+                    finally
+                    {
+                        if (_objCharacterFileWatcher != null)
+                            _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
+                    }
                     GlobalSettings.MostRecentlyUsedCharacters.Insert(0, CharacterObject.FileName);
                     IsDirty = false;
                 }
@@ -7259,6 +7290,7 @@ namespace Chummer
                     return false;
                 }
 
+                string strOldFileName = CharacterObject.FileName;
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog
                        {
                            Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
@@ -7282,7 +7314,10 @@ namespace Chummer
                     CharacterObject.FileName = saveFileDialog.FileName;
                 }
 
-                return await SaveCharacter(false, blnDoCreated, token);
+                bool blnReturn = await SaveCharacter(false, blnDoCreated, token);
+                if (!blnReturn)
+                    CharacterObject.FileName = strOldFileName;
+                return blnReturn;
             }
         }
 
@@ -7339,7 +7374,7 @@ namespace Chummer
         {
             if (disposing)
             {
-                _objCharacter.PropertyChanged -= RecacheSettingsOnSettingsChange;
+                _objCharacter.PropertyChanged -= CharacterPropertyChanged;
                 _frmPrintView?.Dispose();
                 _objCharacterFileWatcher?.Dispose();
                 if (_objUpdateCharacterInfoCancellationTokenSource?.IsCancellationRequested == false)

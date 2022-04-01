@@ -12637,19 +12637,27 @@ namespace Chummer
                 {
                     await frmLoadingBar.PerformStepAsync(CharacterObject.CharacterName,
                                                         LoadingBar.ProgressBarTextPatterns.Saving, token);
-                    if (!await CharacterObject.SaveAsync(token: token))
+                    _blnFileUpdateQueued = true;
+                    try
                     {
-                        CharacterObject.ExpenseEntries.Clear();
-                        if (lstAttributesToAdd != null)
+                        if (!await CharacterObject.SaveAsync(token: token))
                         {
-                            foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
+                            CharacterObject.ExpenseEntries.Clear();
+                            if (lstAttributesToAdd != null)
                             {
-                                CharacterObject.AttributeSection.AttributeList.Remove(objAttributeToAdd);
+                                foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
+                                {
+                                    CharacterObject.AttributeSection.AttributeList.Remove(objAttributeToAdd);
+                                }
                             }
-                        }
 
-                        CharacterObject.Created = false;
-                        return false;
+                            CharacterObject.Created = false;
+                            return false;
+                        }
+                    }
+                    finally
+                    {
+                        _blnFileUpdateQueued = false;
                     }
 
                     IsDirty = false;
