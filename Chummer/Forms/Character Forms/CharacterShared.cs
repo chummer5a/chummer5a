@@ -4702,31 +4702,31 @@ namespace Chummer
         /// <summary>
         /// Refresh the list of Improvements.
         /// </summary>
-        protected void RefreshCustomImprovements(TreeView treImprovements, TreeView treLimit, ContextMenuStrip cmsImprovementLocation, ContextMenuStrip cmsImprovement, ContextMenuStrip cmsLimitModifier, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        protected async ValueTask RefreshCustomImprovements(TreeView treImprovements, TreeView treLimit, ContextMenuStrip cmsImprovementLocation, ContextMenuStrip cmsImprovement, ContextMenuStrip cmsLimitModifier, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (treImprovements == null)
                 return;
             using (CursorWait.New(this))
             {
                 string strSelectedId =
-                    (treImprovements.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                    (await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag as IHasInternalId, GenericToken))?.InternalId ?? string.Empty;
 
                 TreeNode objRoot;
 
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    treImprovements.SuspendLayout();
+                    await treImprovements.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken);
                     try
                     {
-                        treImprovements.Nodes.Clear();
+                        await treImprovements.DoThreadSafeAsync(x => x.Nodes.Clear(), GenericToken);
 
                         objRoot = new TreeNode
                         {
                             Tag = "Node_SelectedImprovements",
-                            Text = LanguageManager.GetString("Node_SelectedImprovements")
+                            Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements")
                         };
-                        treImprovements.Nodes.Add(objRoot);
+                        await treImprovements.DoThreadSafeAsync(x => x.Nodes.Add(objRoot), GenericToken);
 
                         // Add the Locations.
                         foreach (string strGroup in CharacterObject.ImprovementGroups)
@@ -4737,7 +4737,7 @@ namespace Chummer
                                 Text = strGroup,
                                 ContextMenuStrip = cmsImprovementLocation
                             };
-                            treImprovements.Nodes.Add(objGroup);
+                            await treImprovements.DoThreadSafeAsync(x => x.Nodes.Add(objGroup), GenericToken);
                         }
 
                         foreach (Improvement objImprovement in CharacterObject.Improvements)
@@ -4745,28 +4745,30 @@ namespace Chummer
                             if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
                                 objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                             {
-                                AddToTree(objImprovement, false);
+                                await AddToTree(objImprovement, false);
                             }
                         }
 
                         // Sort the list of Custom Improvements in alphabetical order based on their Custom Name within each Group.
-                        treImprovements.SortCustomAlphabetically(strSelectedId);
+                        await treImprovements.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), GenericToken);
                     }
                     finally
                     {
-                        treImprovements.ResumeLayout();
+                        await treImprovements.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken);
                     }
                 }
                 else
                 {
-                    objRoot = treImprovements.FindNode("Node_SelectedImprovements", false);
-                    TreeNode[] aobjLimitNodes =
-                    {
-                        treLimit?.FindNode("Node_Physical", false),
-                        treLimit?.FindNode("Node_Mental", false),
-                        treLimit?.FindNode("Node_Social", false),
-                        treLimit?.FindNode("Node_Astral", false)
-                    };
+                    objRoot = await treImprovements.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedImprovements", false), GenericToken);
+                    TreeNode[] aobjLimitNodes = new TreeNode[4];
+                    if (treLimit != null)
+                        await treLimit.DoThreadSafeAsync(x =>
+                        {
+                            aobjLimitNodes[0] = x.FindNode("Node_Physical", false);
+                            aobjLimitNodes[1] = x.FindNode("Node_Mental", false);
+                            aobjLimitNodes[2] = x.FindNode("Node_Social", false);
+                            aobjLimitNodes[3] = x.FindNode("Node_Astral", false);
+                        }, GenericToken);
 
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
@@ -4777,21 +4779,23 @@ namespace Chummer
                                     if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
                                         objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                                     {
-                                        AddToTree(objImprovement);
-                                        AddToLimitTree(objImprovement);
+                                        await AddToTree(objImprovement);
+                                        await AddToLimitTree(objImprovement);
                                     }
                                 }
 
                                 break;
                             }
                         case NotifyCollectionChangedAction.Remove:
+                        {
+                            await treImprovements.DoThreadSafeAsync(x =>
                             {
                                 foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.OldItems)
                                 {
                                     if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
                                         objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                                     {
-                                        TreeNode objNode = treImprovements.FindNodeByTag(objImprovement);
+                                        TreeNode objNode = x.FindNodeByTag(objImprovement);
                                         if (objNode != null)
                                         {
                                             TreeNode objParent = objNode.Parent;
@@ -4801,65 +4805,78 @@ namespace Chummer
                                                 objParent.Remove();
                                         }
 
-                                        objNode = treLimit?.FindNodeByTag(objImprovement);
-                                        if (objNode != null)
+                                        treLimit?.DoThreadSafe(y =>
                                         {
-                                            TreeNode objParent = objNode.Parent;
-                                            objNode.Remove();
-                                            if (objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                                objParent.Remove();
-                                        }
+                                            objNode = y.FindNodeByTag(objImprovement);
+                                            if (objNode != null)
+                                            {
+                                                TreeNode objParent = objNode.Parent;
+                                                objNode.Remove();
+                                                if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                                    objParent.Remove();
+                                            }
+                                        });
                                     }
                                 }
+                            }, GenericToken);
 
-                                break;
-                            }
+                            break;
+                        }
                         case NotifyCollectionChangedAction.Replace:
+                        {
+                            List<TreeNode> lstOldParents =
+                                new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
+                            await treImprovements.DoThreadSafeAsync(x =>
                             {
-                                List<TreeNode> lstOldParents =
-                                    new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                                 foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.OldItems)
                                 {
                                     if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
                                         objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                                     {
-                                        TreeNode objNode = treImprovements.FindNodeByTag(objImprovement);
+                                        TreeNode objNode = x.FindNodeByTag(objImprovement);
                                         if (objNode != null)
                                         {
                                             lstOldParents.Add(objNode.Parent);
                                             objNode.Remove();
                                         }
 
-                                        objNode = treLimit?.FindNodeByTag(objImprovement);
-                                        if (objNode != null)
+                                        treLimit?.DoThreadSafe(y =>
                                         {
-                                            lstOldParents.Add(objNode.Parent);
-                                            objNode.Remove();
-                                        }
+                                            objNode = y.FindNodeByTag(objImprovement);
+                                            if (objNode != null)
+                                            {
+                                                lstOldParents.Add(objNode.Parent);
+                                                objNode.Remove();
+                                            }
+                                        });
                                     }
                                 }
+                            }, GenericToken);
 
-                                foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
+                                    objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                                 {
-                                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
-                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
-                                    {
-                                        AddToTree(objImprovement);
-                                        AddToLimitTree(objImprovement);
-                                    }
+                                    await AddToTree(objImprovement);
+                                    await AddToLimitTree(objImprovement);
                                 }
+                            }
 
+                            await treImprovements.DoThreadSafeAsync(() =>
+                            {
                                 foreach (TreeNode objOldParent in lstOldParents)
                                 {
                                     if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
                                         objOldParent.Remove();
                                 }
+                            }, GenericToken);
 
-                                break;
-                            }
+                            break;
+                        }
                     }
 
-                    void AddToLimitTree(Improvement objImprovement)
+                    async ValueTask AddToLimitTree(Improvement objImprovement)
                     {
                         if (treLimit == null)
                             return;
@@ -4894,51 +4911,53 @@ namespace Chummer
                                         objParentNode = new TreeNode
                                         {
                                             Tag = "Node_Physical",
-                                            Text = LanguageManager.GetString("Node_Physical")
+                                            Text = await LanguageManager.GetStringAsync("Node_Physical")
                                         };
-                                        treLimit.Nodes.Insert(0, objParentNode);
+                                        await treLimit.DoThreadSafeAsync(x => x.Nodes.Insert(0, objParentNode), GenericToken);
                                         break;
 
                                     case 1:
                                         objParentNode = new TreeNode
                                         {
                                             Tag = "Node_Mental",
-                                            Text = LanguageManager.GetString("Node_Mental")
+                                            Text = await LanguageManager.GetStringAsync("Node_Mental")
                                         };
-                                        treLimit.Nodes.Insert(aobjLimitNodes[0] == null ? 0 : 1, objParentNode);
+                                        await treLimit.DoThreadSafeAsync(x => x.Nodes.Insert(aobjLimitNodes[0] == null ? 0 : 1, objParentNode), GenericToken);
                                         break;
 
                                     case 2:
                                         objParentNode = new TreeNode
                                         {
                                             Tag = "Node_Social",
-                                            Text = LanguageManager.GetString("Node_Social")
+                                            Text = await LanguageManager.GetStringAsync("Node_Social")
                                         };
-                                        treLimit.Nodes.Insert(
-                                            (aobjLimitNodes[0] == null ? 0 : 1) + (aobjLimitNodes[1] == null ? 0 : 1),
-                                            objParentNode);
+                                        await treLimit.DoThreadSafeAsync(x => x.Nodes.Insert(
+                                                                             (aobjLimitNodes[0] == null ? 0 : 1)
+                                                                             + (aobjLimitNodes[1] == null ? 0 : 1),
+                                                                             objParentNode), GenericToken);
                                         break;
 
                                     case 3:
                                         objParentNode = new TreeNode
                                         {
                                             Tag = "Node_Astral",
-                                            Text = LanguageManager.GetString("Node_Astral")
+                                            Text = await LanguageManager.GetStringAsync("Node_Astral")
                                         };
-                                        treLimit.Nodes.Add(objParentNode);
+                                        await treLimit.DoThreadSafeAsync(x => x.Nodes.Add(objParentNode), GenericToken);
                                         break;
                                 }
 
-                                objParentNode?.Expand();
+                                if (objParentNode != null)
+                                    await treLimit.DoThreadSafeAsync(() => objParentNode.Expand(), GenericToken);
                             }
 
-                            string strName = objImprovement.UniqueName + LanguageManager.GetString("String_Colon") +
-                                             LanguageManager.GetString("String_Space");
+                            string strName = objImprovement.UniqueName + await LanguageManager.GetStringAsync("String_Colon") +
+                                             await LanguageManager.GetStringAsync("String_Space");
                             if (objImprovement.Value > 0)
                                 strName += '+';
                             strName += objImprovement.Value.ToString(GlobalSettings.CultureInfo);
                             if (!string.IsNullOrEmpty(objImprovement.Condition))
-                                strName += ',' + LanguageManager.GetString("String_Space") + objImprovement.Condition;
+                                strName += ',' + await LanguageManager.GetStringAsync("String_Space") + objImprovement.Condition;
                             if (objParentNode?.Nodes.ContainsKey(strName) == false)
                             {
                                 TreeNode objNode = new TreeNode
@@ -4968,40 +4987,47 @@ namespace Chummer
                                     }
                                 }
 
-                                TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                                int intNodesCount = lstParentNodeChildren.Count;
-                                int intTargetIndex = 0;
-                                for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                                await treLimit.DoThreadSafeAsync(x =>
                                 {
-                                    if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >=
-                                        0)
+                                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                                    int intNodesCount = lstParentNodeChildren.Count;
+                                    int intTargetIndex = 0;
+                                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                                     {
-                                        break;
+                                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode)
+                                            >=
+                                            0)
+                                        {
+                                            break;
+                                        }
                                     }
-                                }
 
-                                lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                                treLimit.SelectedNode = objNode;
+                                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                                    x.SelectedNode = objNode;
+                                }, GenericToken);
                             }
                         }
                     }
                 }
 
-                void AddToTree(Improvement objImprovement, bool blnSingleAdd = true)
+                async ValueTask AddToTree(Improvement objImprovement, bool blnSingleAdd = true)
                 {
                     TreeNode objNode = objImprovement.CreateTreeNode(cmsImprovement);
 
                     TreeNode objParentNode = objRoot;
                     if (!string.IsNullOrEmpty(objImprovement.CustomGroup))
                     {
-                        foreach (TreeNode objFind in treImprovements.Nodes)
+                        await treImprovements.DoThreadSafeAsync(x =>
                         {
-                            if (objFind.Text == objImprovement.CustomGroup)
+                            foreach (TreeNode objFind in x.Nodes)
                             {
-                                objParentNode = objFind;
-                                break;
+                                if (objFind.Text == objImprovement.CustomGroup)
+                                {
+                                    objParentNode = objFind;
+                                    break;
+                                }
                             }
-                        }
+                        }, GenericToken);
                     }
                     else
                     {
@@ -5010,128 +5036,140 @@ namespace Chummer
                             objParentNode = new TreeNode
                             {
                                 Tag = "Node_SelectedImprovements",
-                                Text = LanguageManager.GetString("Node_SelectedImprovements")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements")
                             };
-                            treImprovements.Nodes.Add(objParentNode);
+                            await treImprovements.DoThreadSafeAsync(x => x.Nodes.Add(objParentNode), GenericToken);
                         }
                     }
 
-                    if (blnSingleAdd)
+                    await treImprovements.DoThreadSafeAsync(x =>
                     {
-                        TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                        int intNodesCount = lstParentNodeChildren.Count;
-                        int intTargetIndex = 0;
-                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                        if (blnSingleAdd)
                         {
-                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                            TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                            int intNodesCount = lstParentNodeChildren.Count;
+                            int intTargetIndex = 0;
+                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                             {
-                                break;
+                                if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                                {
+                                    break;
+                                }
                             }
+
+                            lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                            x.SelectedNode = objNode;
                         }
+                        else
+                            objParentNode.Nodes.Add(objNode);
 
-                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                        treImprovements.SelectedNode = objNode;
-                    }
-                    else
-                        objParentNode.Nodes.Add(objNode);
-
-                    objParentNode.Expand();
+                        objParentNode.Expand();
+                    }, GenericToken);
                 }
             }
         }
 
-        protected void RefreshLifestyles(TreeView treLifestyles, ContextMenuStrip cmsBasicLifestyle,
+        protected async ValueTask RefreshLifestyles(TreeView treLifestyles, ContextMenuStrip cmsBasicLifestyle,
                                          ContextMenuStrip cmsAdvancedLifestyle, NotifyCollectionChangedEventArgs e = null)
         {
             if (treLifestyles == null)
                 return;
             using (CursorWait.New(this))
             {
-                string strSelectedId = (treLifestyles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId = (await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
                 TreeNode objParentNode = null;
 
                 if (e == null || e.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    treLifestyles.SuspendLayout();
+                    await treLifestyles.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken);
                     try
                     {
-                        treLifestyles.Nodes.Clear();
+                        await treLifestyles.DoThreadSafeAsync(x => x.Nodes.Clear(), GenericToken);
 
                         if (CharacterObject.Lifestyles.Count > 0)
                         {
                             foreach (Lifestyle objLifestyle in CharacterObject.Lifestyles)
                             {
-                                AddToTree(objLifestyle, false);
+                                await AddToTree(objLifestyle, false);
                             }
 
-                            treLifestyles.SortCustomAlphabetically(strSelectedId);
+                            await treLifestyles.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), GenericToken);
                         }
                     }
                     finally
                     {
-                        treLifestyles.ResumeLayout();
+                        await treLifestyles.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken);
                     }
                 }
                 else
                 {
-                    objParentNode = treLifestyles.FindNode("Node_SelectedLifestyles", false);
+                    objParentNode = await treLifestyles.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedLifestyles", false), GenericToken);
                     switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                             {
                                 foreach (Lifestyle objLifestyle in e.NewItems)
                                 {
-                                    AddToTree(objLifestyle);
+                                    await AddToTree(objLifestyle);
                                 }
 
                                 break;
                             }
                         case NotifyCollectionChangedAction.Remove:
                         {
-                            foreach (Lifestyle objLifestyle in e.OldItems)
+                            await treLifestyles.DoThreadSafeAsync(x =>
                             {
-                                TreeNode objNode = treLifestyles.FindNodeByTag(objLifestyle);
-                                if (objNode != null)
+                                foreach (Lifestyle objLifestyle in e.OldItems)
                                 {
-                                    TreeNode objParent = objNode.Parent;
-                                    objNode.Remove();
-                                    if (objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                        objParent.Remove();
+                                    TreeNode objNode = x.FindNodeByTag(objLifestyle);
+                                    if (objNode != null)
+                                    {
+                                        TreeNode objParent = objNode.Parent;
+                                        objNode.Remove();
+                                        if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                            objParent.Remove();
+                                    }
                                 }
-                            }
+                            }, GenericToken);
 
                             break;
                         }
                         case NotifyCollectionChangedAction.Replace:
                         {
                             HashSet<TreeNode> setOldParentNodes = new HashSet<TreeNode>();
-                            foreach (Lifestyle objLifestyle in e.OldItems)
+                            await treLifestyles.DoThreadSafeAsync(x =>
                             {
-                                TreeNode objNode = treLifestyles.FindNodeByTag(objLifestyle);
-                                if (objNode != null)
+                                foreach (Lifestyle objLifestyle in e.OldItems)
                                 {
-                                    setOldParentNodes.Add(objNode.Parent);
-                                    objNode.Remove();
+                                    TreeNode objNode = x.FindNodeByTag(objLifestyle);
+                                    if (objNode != null)
+                                    {
+                                        setOldParentNodes.Add(objNode.Parent);
+                                        objNode.Remove();
+                                    }
                                 }
-                            }
+                            }, GenericToken);
 
                             foreach (Lifestyle objLifestyle in e.NewItems)
                             {
-                                AddToTree(objLifestyle);
+                                await AddToTree(objLifestyle);
                             }
 
-                            foreach (TreeNode nodOldParent in setOldParentNodes)
+                            await treLifestyles.DoThreadSafeAsync(() =>
                             {
-                                if (nodOldParent.Level == 0 && nodOldParent.Nodes.Count == 0)
-                                    nodOldParent.Remove();
-                            }
-                            
+                                foreach (TreeNode nodOldParent in setOldParentNodes)
+                                {
+                                    if (nodOldParent.Level == 0 && nodOldParent.Nodes.Count == 0)
+                                        nodOldParent.Remove();
+                                }
+                            }, GenericToken);
+
                             break;
                         }
                     }
                 }
 
-                void AddToTree(Lifestyle objLifestyle, bool blnSingleAdd = true)
+                async ValueTask AddToTree(Lifestyle objLifestyle, bool blnSingleAdd = true)
                 {
                     TreeNode objNode = objLifestyle.CreateTreeNode(cmsBasicLifestyle, cmsAdvancedLifestyle);
                     if (objNode == null)
@@ -5142,30 +5180,39 @@ namespace Chummer
                         objParentNode = new TreeNode
                         {
                             Tag = "Node_SelectedLifestyles",
-                            Text = LanguageManager.GetString("Node_SelectedLifestyles")
+                            Text = await LanguageManager.GetStringAsync("Node_SelectedLifestyles")
                         };
-                        treLifestyles.Nodes.Add(objParentNode);
-                        objParentNode.Expand();
-                    }
-
-                    if (blnSingleAdd)
-                    {
-                        TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                        int intNodesCount = lstParentNodeChildren.Count;
-                        int intTargetIndex = 0;
-                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                        await treLifestyles.DoThreadSafeAsync(x =>
                         {
-                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
-                            {
-                                break;
-                            }
-                        }
-
-                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                        treLifestyles.SelectedNode = objNode;
+                            // ReSharper disable once AssignNullToNotNullAttribute
+                            x.Nodes.Add(objParentNode);
+                            objParentNode.Expand();
+                        }, GenericToken);
                     }
-                    else
-                        objParentNode.Nodes.Add(objNode);
+
+                    await treLifestyles.DoThreadSafeAsync(x =>
+                    {
+                        if (objParentNode == null)
+                            return;
+                        if (blnSingleAdd)
+                        {
+                            TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                            int intNodesCount = lstParentNodeChildren.Count;
+                            int intTargetIndex = 0;
+                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                            {
+                                if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                                {
+                                    break;
+                                }
+                            }
+
+                            lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                            x.SelectedNode = objNode;
+                        }
+                        else
+                            objParentNode.Nodes.Add(objNode);
+                    }, GenericToken);
                 }
             }
         }
@@ -5173,7 +5220,7 @@ namespace Chummer
         /// <summary>
         /// Refresh the Calendar List.
         /// </summary>
-        public void RefreshCalendar(ListView lstCalendar, ListChangedEventArgs listChangedEventArgs = null)
+        public async ValueTask RefreshCalendar(ListView lstCalendar, ListChangedEventArgs listChangedEventArgs = null)
         {
             if (lstCalendar == null)
                 return;
@@ -5181,10 +5228,10 @@ namespace Chummer
             {
                 if (listChangedEventArgs == null || listChangedEventArgs.ListChangedType == ListChangedType.Reset)
                 {
-                    lstCalendar.SuspendLayout();
+                    await lstCalendar.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken);
                     try
                     {
-                        lstCalendar.Items.Clear();
+                        await lstCalendar.DoThreadSafeAsync(x => x.Items.Clear(), GenericToken);
                         foreach (CalendarWeek objWeek in CharacterObject.Calendar)
                         {
                             ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
@@ -5206,12 +5253,12 @@ namespace Chummer
                             objItem.SubItems.Add(objNoteItem);
                             objItem.SubItems.Add(objInternalIdItem);
 
-                            lstCalendar.Items.Add(objItem);
+                            await lstCalendar.DoThreadSafeAsync(x => x.Items.Add(objItem), GenericToken);
                         }
                     }
                     finally
                     {
-                        lstCalendar.ResumeLayout();
+                        await lstCalendar.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken);
                     }
                 }
                 else
@@ -5242,19 +5289,19 @@ namespace Chummer
                                 objItem.SubItems.Add(objNoteItem);
                                 objItem.SubItems.Add(objInternalIdItem);
 
-                                lstCalendar.Items.Insert(intInsertIndex, objItem);
+                                await lstCalendar.DoThreadSafeAsync(x => x.Items.Insert(intInsertIndex, objItem), GenericToken);
                             }
                             break;
 
                         case ListChangedType.ItemDeleted:
                             {
-                                lstCalendar.Items.RemoveAt(listChangedEventArgs.NewIndex);
+                                await lstCalendar.DoThreadSafeAsync(x => x.Items.RemoveAt(listChangedEventArgs.NewIndex), GenericToken);
                             }
                             break;
 
                         case ListChangedType.ItemChanged:
                             {
-                                lstCalendar.Items.RemoveAt(listChangedEventArgs.NewIndex);
+                                await lstCalendar.DoThreadSafeAsync(x => x.Items.RemoveAt(listChangedEventArgs.NewIndex), GenericToken);
                                 int intInsertIndex = listChangedEventArgs.NewIndex;
                                 CalendarWeek objWeek = CharacterObject.Calendar[intInsertIndex];
 
@@ -5277,13 +5324,13 @@ namespace Chummer
                                 objItem.SubItems.Add(objNoteItem);
                                 objItem.SubItems.Add(objInternalIdItem);
 
-                                lstCalendar.Items.Insert(intInsertIndex, objItem);
+                                await lstCalendar.DoThreadSafeAsync(x => x.Items.Insert(intInsertIndex, objItem), GenericToken);
                             }
                             break;
 
                         case ListChangedType.ItemMoved:
                             {
-                                lstCalendar.Items.RemoveAt(listChangedEventArgs.OldIndex);
+                                await lstCalendar.DoThreadSafeAsync(x => x.Items.RemoveAt(listChangedEventArgs.OldIndex), GenericToken);
                                 int intInsertIndex = listChangedEventArgs.NewIndex;
                                 CalendarWeek objWeek = CharacterObject.Calendar[intInsertIndex];
 
@@ -5306,7 +5353,7 @@ namespace Chummer
                                 objItem.SubItems.Add(objNoteItem);
                                 objItem.SubItems.Add(objInternalIdItem);
 
-                                lstCalendar.Items.Insert(intInsertIndex, objItem);
+                                await lstCalendar.DoThreadSafeAsync(x => x.Items.Insert(intInsertIndex, objItem), GenericToken);
                             }
                             break;
                     }
@@ -5314,7 +5361,7 @@ namespace Chummer
             }
         }
 
-        public void RefreshContacts(FlowLayoutPanel panContacts, FlowLayoutPanel panEnemies, FlowLayoutPanel panPets, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        public async Task RefreshContacts(FlowLayoutPanel panContacts, FlowLayoutPanel panEnemies, FlowLayoutPanel panPets, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (panContacts == null && panEnemies == null && panPets == null)
                 return;
@@ -5323,14 +5370,20 @@ namespace Chummer
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    panContacts?.SuspendLayout();
-                    panEnemies?.SuspendLayout();
-                    panPets?.SuspendLayout();
+                    if (panContacts != null)
+                        await panContacts.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken);
+                    if (panEnemies != null)
+                        await panEnemies.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken);
+                    if (panPets != null)
+                        await panPets.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken);
                     try
                     {
-                        panContacts?.Controls.Clear();
-                        panEnemies?.Controls.Clear();
-                        panPets?.Controls.Clear();
+                        if (panContacts != null)
+                            await panContacts.DoThreadSafeAsync(x => x.Controls.Clear(), GenericToken);
+                        if (panEnemies != null)
+                            await panEnemies.DoThreadSafeAsync(x => x.Controls.Clear(), GenericToken);
+                        if (panPets != null)
+                            await panPets.DoThreadSafeAsync(x => x.Controls.Clear(), GenericToken);
                         foreach (Contact objContact in CharacterObject.Contacts)
                         {
                             switch (objContact.EntityType)
@@ -5339,7 +5392,7 @@ namespace Chummer
                                     {
                                         if (panContacts == null)
                                             break;
-                                        this.DoThreadSafe(() =>
+                                        await this.DoThreadSafeAsync(() =>
                                         {
                                             ContactControl objContactControl = new ContactControl(objContact);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
@@ -5348,7 +5401,7 @@ namespace Chummer
                                             objContactControl.MouseDown += DragContactControl;
 
                                             panContacts.Controls.Add(objContactControl);
-                                        });
+                                        }, GenericToken);
                                     }
                                     break;
 
@@ -5356,7 +5409,7 @@ namespace Chummer
                                     {
                                         if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
                                             break;
-                                        this.DoThreadSafe(() =>
+                                        await this.DoThreadSafeAsync(() =>
                                         {
                                             ContactControl objContactControl = new ContactControl(objContact);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
@@ -5365,7 +5418,7 @@ namespace Chummer
                                             objContactControl.MouseDown += DragContactControl;
 
                                             panEnemies.Controls.Add(objContactControl);
-                                        });
+                                        }, GenericToken);
                                     }
                                     break;
 
@@ -5373,7 +5426,7 @@ namespace Chummer
                                     {
                                         if (panPets == null)
                                             break;
-                                        this.DoThreadSafe(() =>
+                                        await this.DoThreadSafeAsync(() =>
                                         {
                                             PetControl objContactControl = new PetControl(objContact);
                                             // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
@@ -5382,7 +5435,7 @@ namespace Chummer
                                             objContactControl.MouseDown += DragContactControl;
 
                                             panPets.Controls.Add(objContactControl);
-                                        });
+                                        }, GenericToken);
                                     }
                                     break;
                             }
@@ -5390,9 +5443,12 @@ namespace Chummer
                     }
                     finally
                     {
-                        panContacts?.ResumeLayout();
-                        panEnemies?.ResumeLayout();
-                        panPets?.ResumeLayout();
+                        if (panContacts != null)
+                            await panContacts.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken);
+                        if (panEnemies != null)
+                            await panEnemies.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken);
+                        if (panPets != null)
+                            await panPets.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken);
                     }
                 }
                 else
@@ -5409,7 +5465,7 @@ namespace Chummer
                                             {
                                                 if (panContacts == null)
                                                     break;
-                                                panContacts.DoThreadSafe(x =>
+                                                await panContacts.DoThreadSafeAsync(x =>
                                                 {
                                                     ContactControl objContactControl = new ContactControl(objContact);
                                                     // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
@@ -5418,7 +5474,7 @@ namespace Chummer
                                                     objContactControl.MouseDown += DragContactControl;
 
                                                     x.Controls.Add(objContactControl);
-                                                });
+                                                }, GenericToken);
                                             }
                                             break;
 
@@ -5426,7 +5482,7 @@ namespace Chummer
                                             {
                                                 if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
                                                     break;
-                                                panEnemies.DoThreadSafe(x =>
+                                                await panEnemies.DoThreadSafeAsync(x =>
                                                 {
                                                     ContactControl objContactControl = new ContactControl(objContact);
                                                     // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
@@ -5435,7 +5491,7 @@ namespace Chummer
                                                     objContactControl.MouseDown += DragContactControl;
 
                                                     x.Controls.Add(objContactControl);
-                                                });
+                                                }, GenericToken);
                                             }
                                             break;
 
@@ -5443,7 +5499,7 @@ namespace Chummer
                                             {
                                                 if (panPets == null)
                                                     break;
-                                                panPets.DoThreadSafe(x =>
+                                                await panPets.DoThreadSafeAsync(x =>
                                                 {
                                                     PetControl objContactControl = new PetControl(objContact);
                                                     // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
@@ -5452,7 +5508,7 @@ namespace Chummer
                                                     objContactControl.MouseDown += DragContactControl;
 
                                                     x.Controls.Add(objContactControl);
-                                                });
+                                                }, GenericToken);
                                             }
                                             break;
                                     }
@@ -5470,7 +5526,7 @@ namespace Chummer
                                             {
                                                 if (panContacts == null)
                                                     break;
-                                                panContacts.DoThreadSafe(x =>
+                                                await panContacts.DoThreadSafeAsync(x =>
                                                 {
                                                     for (int i = x.Controls.Count - 1; i >= 0; i--)
                                                     {
@@ -5484,7 +5540,7 @@ namespace Chummer
                                                             objContactControl.Dispose();
                                                         }
                                                     }
-                                                });
+                                                }, GenericToken);
                                             }
                                             break;
 
@@ -5492,7 +5548,7 @@ namespace Chummer
                                             {
                                                 if (panEnemies == null)
                                                     break;
-                                                panEnemies.DoThreadSafe(x =>
+                                                await panEnemies.DoThreadSafeAsync(x =>
                                                 {
                                                     for (int i = x.Controls.Count - 1; i >= 0; i--)
                                                     {
@@ -5506,7 +5562,7 @@ namespace Chummer
                                                             objContactControl.Dispose();
                                                         }
                                                     }
-                                                });
+                                                }, GenericToken);
                                             }
                                             break;
 
@@ -5514,7 +5570,7 @@ namespace Chummer
                                             {
                                                 if (panPets == null)
                                                     break;
-                                                panPets.DoThreadSafe(x =>
+                                                await panPets.DoThreadSafeAsync(x =>
                                                 {
                                                     for (int i = x.Controls.Count - 1; i >= 0; i--)
                                                     {
@@ -5528,7 +5584,7 @@ namespace Chummer
                                                             objPetControl.Dispose();
                                                         }
                                                     }
-                                                });
+                                                }, GenericToken);
                                             }
                                             break;
                                     }
@@ -5546,7 +5602,7 @@ namespace Chummer
                                             {
                                                 if (panContacts == null)
                                                     break;
-                                                panContacts.DoThreadSafe(x =>
+                                                await panContacts.DoThreadSafeAsync(x =>
                                                 {
                                                     for (int i = x.Controls.Count - 1; i >= 0; i--)
                                                     {
@@ -5560,7 +5616,7 @@ namespace Chummer
                                                             objContactControl.Dispose();
                                                         }
                                                     }
-                                                });
+                                                }, GenericToken);
                                             }
                                             break;
 
@@ -5568,7 +5624,7 @@ namespace Chummer
                                             {
                                                 if (panEnemies == null)
                                                     break;
-                                                panEnemies.DoThreadSafe(x =>
+                                                await panEnemies.DoThreadSafeAsync(x =>
                                                 {
                                                     for (int i = x.Controls.Count - 1; i >= 0; i--)
                                                     {
@@ -5582,7 +5638,7 @@ namespace Chummer
                                                             objContactControl.Dispose();
                                                         }
                                                     }
-                                                });
+                                                }, GenericToken);
                                             }
                                             break;
 
@@ -5590,7 +5646,7 @@ namespace Chummer
                                             {
                                                 if (panPets == null)
                                                     break;
-                                                panPets.DoThreadSafe(x =>
+                                                await panPets.DoThreadSafeAsync(x =>
                                                 {
                                                     for (int i = x.Controls.Count - 1; i >= 0; i--)
                                                     {
@@ -5604,7 +5660,7 @@ namespace Chummer
                                                             objPetControl.Dispose();
                                                         }
                                                     }
-                                                });
+                                                }, GenericToken);
                                             }
                                             break;
                                     }
@@ -5618,7 +5674,7 @@ namespace Chummer
                                             {
                                                 if (panContacts == null)
                                                     break;
-                                                panContacts.DoThreadSafe(x =>
+                                                await panContacts.DoThreadSafeAsync(x =>
                                                 {
                                                     ContactControl objContactControl = new ContactControl(objContact);
                                                     // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
@@ -5627,7 +5683,7 @@ namespace Chummer
                                                     objContactControl.MouseDown += DragContactControl;
 
                                                     x.Controls.Add(objContactControl);
-                                                });
+                                                }, GenericToken);
                                             }
                                             break;
 
@@ -5635,7 +5691,7 @@ namespace Chummer
                                             {
                                                 if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
                                                     break;
-                                                panEnemies.DoThreadSafe(x =>
+                                                await panEnemies.DoThreadSafeAsync(x =>
                                                 {
                                                     ContactControl objContactControl = new ContactControl(objContact);
                                                     // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
@@ -5644,7 +5700,7 @@ namespace Chummer
                                                     objContactControl.MouseDown += DragContactControl;
 
                                                     x.Controls.Add(objContactControl);
-                                                });
+                                                }, GenericToken);
                                             }
                                             break;
 
@@ -5652,7 +5708,7 @@ namespace Chummer
                                             {
                                                 if (panPets == null)
                                                     break;
-                                                panPets.DoThreadSafe(x =>
+                                                await panPets.DoThreadSafeAsync(x =>
                                                 {
                                                     PetControl objContactControl = new PetControl(objContact);
                                                     // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
@@ -5661,7 +5717,7 @@ namespace Chummer
                                                     objContactControl.MouseDown += DragContactControl;
 
                                                     x.Controls.Add(objContactControl);
-                                                });
+                                                }, GenericToken);
                                             }
                                             break;
                                     }
@@ -5682,7 +5738,7 @@ namespace Chummer
         /// <param name="chkPsycheActiveMagician">Checkbox for Psyche in the tab for spells.</param>
         /// <param name="chkPsycheActiveTechnomancer">Checkbox for Psyche in the tab for complex forms.</param>
         /// <param name="notifyCollectionChangedEventArgs"></param>
-        public void RefreshSustainedSpells(Panel pnlSustainedSpells, Panel pnlSustainedComplexForms, Panel pnlSustainedCritterPowers, CheckBox chkPsycheActiveMagician, CheckBox chkPsycheActiveTechnomancer, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        public async ValueTask RefreshSustainedSpells(Panel pnlSustainedSpells, Panel pnlSustainedComplexForms, Panel pnlSustainedCritterPowers, CheckBox chkPsycheActiveMagician, CheckBox chkPsycheActiveTechnomancer, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (pnlSustainedSpells == null && pnlSustainedComplexForms == null && pnlSustainedCritterPowers == null)
                 return;
@@ -5711,25 +5767,40 @@ namespace Chummer
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    if (chkPsycheActiveMagician != null)
-                        chkPsycheActiveMagician.Visible = false;
-                    if (chkPsycheActiveTechnomancer != null)
-                        chkPsycheActiveTechnomancer.Visible = false;
-                    if (pnlSustainedSpells != null)
+                    await chkPsycheActiveMagician.DoThreadSafeAsync(x =>
                     {
-                        pnlSustainedSpells.Controls.Clear();
-                        pnlSustainedSpells.Visible = false;
-                    }
-                    if (pnlSustainedComplexForms != null)
+                        if (x != null)
+                            x.Visible = false;
+                    }, GenericToken);
+                    await chkPsycheActiveTechnomancer.DoThreadSafeAsync(x =>
                     {
-                        pnlSustainedComplexForms.Controls.Clear();
-                        pnlSustainedComplexForms.Visible = false;
-                    }
-                    if (pnlSustainedCritterPowers != null)
+                        if (x != null)
+                            x.Visible = false;
+                    }, GenericToken);
+                    await pnlSustainedSpells.DoThreadSafeAsync(x =>
                     {
-                        pnlSustainedCritterPowers.Controls.Clear();
-                        pnlSustainedCritterPowers.Visible = false;
-                    }
+                        if (x != null)
+                        {
+                            x.Controls.Clear();
+                            x.Visible = false;
+                        }
+                    }, GenericToken);
+                    await pnlSustainedComplexForms.DoThreadSafeAsync(x =>
+                    {
+                        if (x != null)
+                        {
+                            x.Controls.Clear();
+                            x.Visible = false;
+                        }
+                    }, GenericToken);
+                    await pnlSustainedCritterPowers.DoThreadSafeAsync(x =>
+                    {
+                        if (x != null)
+                        {
+                            x.Controls.Clear();
+                            x.Visible = false;
+                        }
+                    }, GenericToken);
                     foreach (SustainedObject objSustained in CharacterObject.SustainedCollection)
                     {
                         Panel refreshingPanel = DetermineRefreshingPanel(objSustained, pnlSustainedSpells,
@@ -5738,19 +5809,25 @@ namespace Chummer
                         if (refreshingPanel == null)
                             continue;
 
-                        refreshingPanel.DoThreadSafe(x =>
+                        await refreshingPanel.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
                             switch (objSustained.LinkedObjectType)
                             {
                                 case Improvement.ImprovementSource.Spell:
-                                    if (chkPsycheActiveMagician != null)
-                                        chkPsycheActiveMagician.Visible = true;
+                                    chkPsycheActiveMagician.DoThreadSafe(y =>
+                                    {
+                                        if (y != null)
+                                            y.Visible = true;
+                                    });
                                     break;
 
                                 case Improvement.ImprovementSource.ComplexForm:
-                                    if (chkPsycheActiveTechnomancer != null)
-                                        chkPsycheActiveTechnomancer.Visible = true;
+                                    chkPsycheActiveTechnomancer.DoThreadSafe(y =>
+                                    {
+                                        if (y != null)
+                                            y.Visible = true;
+                                    });
                                     break;
                             }
 
@@ -5764,7 +5841,7 @@ namespace Chummer
                             objSustainedObjectControl.Top = intSustainedObjects * objSustainedObjectControl.Height;
 
                             x.Controls.Add(objSustainedObjectControl);
-                        });
+                        }, GenericToken);
                     }
                 }
                 else
@@ -5781,19 +5858,25 @@ namespace Chummer
                                     if (refreshingPanel == null)
                                         continue;
 
-                                    refreshingPanel.DoThreadSafe(x =>
+                                    await refreshingPanel.DoThreadSafeAsync(x =>
                                     {
                                         x.Visible = true;
                                         switch (objSustained.LinkedObjectType)
                                         {
                                             case Improvement.ImprovementSource.Spell:
-                                                if (chkPsycheActiveMagician != null)
-                                                    chkPsycheActiveMagician.Visible = true;
+                                                chkPsycheActiveMagician.DoThreadSafe(y =>
+                                                {
+                                                    if (y != null)
+                                                        y.Visible = true;
+                                                });
                                                 break;
 
                                             case Improvement.ImprovementSource.ComplexForm:
-                                                if (chkPsycheActiveTechnomancer != null)
-                                                    chkPsycheActiveTechnomancer.Visible = true;
+                                                chkPsycheActiveTechnomancer.DoThreadSafe(y =>
+                                                {
+                                                    if (y != null)
+                                                        y.Visible = true;
+                                                });
                                                 break;
                                         }
 
@@ -5810,7 +5893,7 @@ namespace Chummer
                                             = intSustainedObjects * objSustainedObjectControl.Height;
 
                                         x.Controls.Add(objSustainedObjectControl);
-                                    });
+                                    }, GenericToken);
                                 }
                             }
                             break;
@@ -5826,7 +5909,7 @@ namespace Chummer
                                         continue;
 
                                     int intMoveUpAmount = 0;
-                                    refreshingPanel.DoThreadSafe(x =>
+                                    await refreshingPanel.DoThreadSafeAsync(x =>
                                     {
                                         int intSustainedObjects = x.Controls.Count;
 
@@ -5858,16 +5941,22 @@ namespace Chummer
                                             x.Visible = false;
                                             if (x == pnlSustainedSpells)
                                             {
-                                                if (chkPsycheActiveMagician != null)
-                                                    chkPsycheActiveMagician.Visible = false;
+                                                chkPsycheActiveMagician.DoThreadSafe(y =>
+                                                {
+                                                    if (y != null)
+                                                        y.Visible = false;
+                                                });
                                             }
-                                            else if (x == pnlSustainedComplexForms
-                                                     && chkPsycheActiveTechnomancer != null)
+                                            else if (x == pnlSustainedComplexForms)
                                             {
-                                                chkPsycheActiveTechnomancer.Visible = false;
+                                                chkPsycheActiveTechnomancer.DoThreadSafe(y =>
+                                                {
+                                                    if (y != null)
+                                                        y.Visible = false;
+                                                });
                                             }
                                         }
-                                    });
+                                    }, GenericToken);
                                 }
                             }
                             break;
@@ -5883,7 +5972,7 @@ namespace Chummer
                                         continue;
 
                                     int intMoveUpAmount = 0;
-                                    refreshingPanel.DoThreadSafe(x =>
+                                    await refreshingPanel.DoThreadSafeAsync(x =>
                                     {
                                         int intSustainedObjects = x.Controls.Count;
 
@@ -5915,16 +6004,22 @@ namespace Chummer
                                             x.Visible = false;
                                             if (x == pnlSustainedSpells)
                                             {
-                                                if (chkPsycheActiveMagician != null)
-                                                    chkPsycheActiveMagician.Visible = false;
+                                                chkPsycheActiveMagician.DoThreadSafe(y =>
+                                                {
+                                                    if (y != null)
+                                                        y.Visible = false;
+                                                });
                                             }
-                                            else if (x == pnlSustainedComplexForms
-                                                     && chkPsycheActiveTechnomancer != null)
+                                            else if (x == pnlSustainedComplexForms)
                                             {
-                                                chkPsycheActiveTechnomancer.Visible = false;
+                                                chkPsycheActiveTechnomancer.DoThreadSafe(y =>
+                                                {
+                                                    if (y != null)
+                                                        y.Visible = false;
+                                                });
                                             }
                                         }
-                                    });
+                                    }, GenericToken);
                                 }
 
                                 foreach (SustainedObject objSustained in notifyCollectionChangedEventArgs.NewItems)
@@ -5935,19 +6030,25 @@ namespace Chummer
                                     if (refreshingPanel == null)
                                         continue;
 
-                                    refreshingPanel.DoThreadSafe(x =>
+                                    await refreshingPanel.DoThreadSafeAsync(x =>
                                     {
                                         x.Visible = true;
                                         switch (objSustained.LinkedObjectType)
                                         {
                                             case Improvement.ImprovementSource.Spell:
-                                                if (chkPsycheActiveMagician != null)
-                                                    chkPsycheActiveMagician.Visible = true;
+                                                chkPsycheActiveMagician.DoThreadSafe(y =>
+                                                {
+                                                    if (y != null)
+                                                        y.Visible = true;
+                                                });
                                                 break;
 
                                             case Improvement.ImprovementSource.ComplexForm:
-                                                if (chkPsycheActiveTechnomancer != null)
-                                                    chkPsycheActiveTechnomancer.Visible = true;
+                                                chkPsycheActiveTechnomancer.DoThreadSafe(y =>
+                                                {
+                                                    if (y != null)
+                                                        y.Visible = true;
+                                                });
                                                 break;
                                         }
 
@@ -5964,7 +6065,7 @@ namespace Chummer
                                             = intSustainedObjects * objSustainedObjectControl.Height;
 
                                         x.Controls.Add(objSustainedObjectControl);
-                                    });
+                                    }, GenericToken);
                                 }
                             }
                             break;
@@ -6581,12 +6682,16 @@ namespace Chummer
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    panSpirits?.SuspendLayout();
-                    panSprites?.SuspendLayout();
+                    if (panSpirits != null)
+                        await panSpirits.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken);
+                    if (panSprites != null)
+                        await panSprites.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken);
                     try
                     {
-                        panSpirits?.Controls.Clear();
-                        panSprites?.Controls.Clear();
+                        if (panSpirits != null)
+                            await panSpirits.DoThreadSafeAsync(x => x.Controls.Clear(), GenericToken);
+                        if (panSprites != null)
+                            await panSprites.DoThreadSafeAsync(x => x.Controls.Clear(), GenericToken);
                         int intSpirits = -1;
                         int intSprites = -1;
                         foreach (Spirit objSpirit in CharacterObject.Spirits)
@@ -6600,7 +6705,7 @@ namespace Chummer
                             else if (panSprites == null)
                                 continue;
 
-                            SpiritControl objSpiritControl = new SpiritControl(objSpirit);
+                            SpiritControl objSpiritControl = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit), GenericToken);
 
                             // Attach an EventHandler for the ServicesOwedChanged Event.
                             objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
@@ -6611,21 +6716,23 @@ namespace Chummer
                             if (blnIsSpirit)
                             {
                                 ++intSpirits;
-                                objSpiritControl.Top = intSpirits * objSpiritControl.Height;
-                                panSpirits.Controls.Add(objSpiritControl);
+                                await objSpiritControl.DoThreadSafeAsync(x => x.Top = intSpirits * x.Height, GenericToken);
+                                await panSpirits.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), GenericToken);
                             }
                             else
                             {
                                 ++intSprites;
-                                objSpiritControl.Top = intSprites * objSpiritControl.Height;
-                                panSprites.Controls.Add(objSpiritControl);
+                                await objSpiritControl.DoThreadSafeAsync(x => x.Top = intSprites * x.Height, GenericToken);
+                                await panSprites.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), GenericToken);
                             }
                         }
                     }
                     finally
                     {
-                        panSpirits?.ResumeLayout();
-                        panSprites?.ResumeLayout();
+                        if (panSpirits != null)
+                            await panSpirits.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken);
+                        if (panSprites != null)
+                            await panSprites.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken);
                     }
                 }
                 else
@@ -6634,8 +6741,8 @@ namespace Chummer
                     {
                         case NotifyCollectionChangedAction.Add:
                             {
-                                int intSpirits = panSpirits?.Controls.Count ?? 0;
-                                int intSprites = panSprites?.Controls.Count ?? 0;
+                                int intSpirits = panSpirits != null ? await panSpirits.DoThreadSafeFuncAsync(x => x.Controls.Count, GenericToken) : 0;
+                                int intSprites = panSprites != null ? await panSprites.DoThreadSafeFuncAsync(x => x.Controls.Count, GenericToken) : 0;
                                 foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.NewItems)
                                 {
                                     bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
@@ -6647,7 +6754,7 @@ namespace Chummer
                                     else if (panSprites == null)
                                         continue;
 
-                                    SpiritControl objSpiritControl = new SpiritControl(objSpirit);
+                                    SpiritControl objSpiritControl = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit), GenericToken);
 
                                     // Attach an EventHandler for the ServicesOwedChanged Event.
                                     objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
@@ -6657,14 +6764,14 @@ namespace Chummer
 
                                     if (blnIsSpirit)
                                     {
-                                        objSpiritControl.Top = intSpirits * objSpiritControl.Height;
-                                        panSpirits.Controls.Add(objSpiritControl);
+                                        await objSpiritControl.DoThreadSafeAsync(x => x.Top = intSpirits * x.Height, GenericToken);
+                                        await panSpirits.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), GenericToken);
                                         ++intSpirits;
                                     }
                                     else
                                     {
-                                        objSpiritControl.Top = intSprites * objSpiritControl.Height;
-                                        panSprites.Controls.Add(objSpiritControl);
+                                        await objSpiritControl.DoThreadSafeAsync(x => x.Top = intSprites * x.Height, GenericToken);
+                                        await panSprites.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), GenericToken);
                                         ++intSprites;
                                     }
                                 }
@@ -6680,24 +6787,28 @@ namespace Chummer
                                     {
                                         if (panSpirits == null)
                                             continue;
-                                        int intSpirits = panSpirits.Controls.Count;
+                                        int intSpirits = await panSpirits.DoThreadSafeFuncAsync(x => x.Controls.Count, GenericToken);
                                         for (int i = 0; i < intSpirits; ++i)
                                         {
-                                            Control objLoopControl = panSpirits.Controls[i];
+                                            Control objLoopControl = await panSpirits.DoThreadSafeFuncAsync(x => x.Controls[i], GenericToken);
                                             if (objLoopControl is SpiritControl objSpiritControl &&
                                                 objSpiritControl.SpiritObject == objSpirit)
                                             {
-                                                intMoveUpAmount = objSpiritControl.Height;
-                                                panSpirits.Controls.RemoveAt(i);
-                                                objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                objSpiritControl.DeleteSpirit -= DeleteSpirit;
-                                                objSpiritControl.Dispose();
+                                                intMoveUpAmount = await objSpiritControl.DoThreadSafeFuncAsync(x => x.Height, GenericToken);
+                                                await panSpirits.DoThreadSafeAsync(x => x.Controls.RemoveAt(i), GenericToken);
+                                                await objSpiritControl.DoThreadSafeAsync(x =>
+                                                {
+                                                    x.ContactDetailChanged
+                                                        -= MakeDirtyWithCharacterUpdate;
+                                                    x.DeleteSpirit -= DeleteSpirit;
+                                                    x.Dispose();
+                                                }, GenericToken);
                                                 --i;
                                                 --intSpirits;
                                             }
                                             else if (intMoveUpAmount != 0)
                                             {
-                                                objLoopControl.Top -= intMoveUpAmount;
+                                                await objLoopControl.DoThreadSafeAsync(x => x.Top -= intMoveUpAmount, GenericToken);
                                             }
                                         }
                                     }
@@ -6710,17 +6821,21 @@ namespace Chummer
                                             if (objLoopControl is SpiritControl objSpiritControl &&
                                                 objSpiritControl.SpiritObject == objSpirit)
                                             {
-                                                intMoveUpAmount = objSpiritControl.Height;
-                                                panSprites.Controls.RemoveAt(i);
-                                                objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                objSpiritControl.DeleteSpirit -= DeleteSpirit;
-                                                objSpiritControl.Dispose();
+                                                intMoveUpAmount = await objSpiritControl.DoThreadSafeFuncAsync(x => x.Height, GenericToken);
+                                                await panSprites.DoThreadSafeAsync(x => x.Controls.RemoveAt(i), GenericToken);
+                                                await objSpiritControl.DoThreadSafeAsync(x =>
+                                                {
+                                                    x.ContactDetailChanged
+                                                        -= MakeDirtyWithCharacterUpdate;
+                                                    x.DeleteSpirit -= DeleteSpirit;
+                                                    x.Dispose();
+                                                }, GenericToken);
                                                 --i;
                                                 --intSprites;
                                             }
                                             else if (intMoveUpAmount != 0)
                                             {
-                                                objLoopControl.Top -= intMoveUpAmount;
+                                                await objLoopControl.DoThreadSafeAsync(x => x.Top -= intMoveUpAmount, GenericToken);
                                             }
                                         }
                                     }
@@ -6730,8 +6845,8 @@ namespace Chummer
 
                         case NotifyCollectionChangedAction.Replace:
                             {
-                                int intSpirits = panSpirits?.Controls.Count ?? 0;
-                                int intSprites = panSprites?.Controls.Count ?? 0;
+                                int intSpirits = panSpirits != null ? await panSpirits.DoThreadSafeFuncAsync(x => x.Controls.Count, GenericToken) : 0;
+                                int intSprites = panSprites != null ? await panSprites.DoThreadSafeFuncAsync(x => x.Controls.Count, GenericToken) : 0;
                                 foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.OldItems)
                                 {
                                     int intMoveUpAmount = 0;
@@ -6741,21 +6856,25 @@ namespace Chummer
                                             continue;
                                         for (int i = 0; i < intSpirits; ++i)
                                         {
-                                            Control objLoopControl = panSpirits.Controls[i];
+                                            Control objLoopControl = await panSpirits.DoThreadSafeFuncAsync(x => x.Controls[i], GenericToken);
                                             if (objLoopControl is SpiritControl objSpiritControl &&
                                                 objSpiritControl.SpiritObject == objSpirit)
                                             {
-                                                intMoveUpAmount = objSpiritControl.Height;
-                                                panSpirits.Controls.RemoveAt(i);
-                                                objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                objSpiritControl.DeleteSpirit -= DeleteSpirit;
-                                                objSpiritControl.Dispose();
+                                                intMoveUpAmount = await objSpiritControl.DoThreadSafeFuncAsync(x => x.Height, GenericToken);
+                                                await panSpirits.DoThreadSafeAsync(x => x.Controls.RemoveAt(i), GenericToken);
+                                                await objSpiritControl.DoThreadSafeAsync(x =>
+                                                {
+                                                    x.ContactDetailChanged
+                                                        -= MakeDirtyWithCharacterUpdate;
+                                                    x.DeleteSpirit -= DeleteSpirit;
+                                                    x.Dispose();
+                                                }, GenericToken);
                                                 --i;
                                                 --intSpirits;
                                             }
                                             else if (intMoveUpAmount != 0)
                                             {
-                                                objLoopControl.Top -= intMoveUpAmount;
+                                                await objLoopControl.DoThreadSafeAsync(x => x.Top -= intMoveUpAmount, GenericToken);
                                             }
                                         }
                                     }
@@ -6767,17 +6886,21 @@ namespace Chummer
                                             if (objLoopControl is SpiritControl objSpiritControl &&
                                                 objSpiritControl.SpiritObject == objSpirit)
                                             {
-                                                intMoveUpAmount = objSpiritControl.Height;
-                                                panSprites.Controls.RemoveAt(i);
-                                                objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                objSpiritControl.DeleteSpirit -= DeleteSpirit;
-                                                objSpiritControl.Dispose();
+                                                intMoveUpAmount = await objSpiritControl.DoThreadSafeFuncAsync(x => x.Height, GenericToken);
+                                                await panSprites.DoThreadSafeAsync(x => x.Controls.RemoveAt(i), GenericToken);
+                                                await objSpiritControl.DoThreadSafeAsync(x =>
+                                                {
+                                                    x.ContactDetailChanged
+                                                        -= MakeDirtyWithCharacterUpdate;
+                                                    x.DeleteSpirit -= DeleteSpirit;
+                                                    x.Dispose();
+                                                }, GenericToken);
                                                 --i;
                                                 --intSprites;
                                             }
                                             else if (intMoveUpAmount != 0)
                                             {
-                                                objLoopControl.Top -= intMoveUpAmount;
+                                                await objLoopControl.DoThreadSafeAsync(x => x.Top -= intMoveUpAmount, GenericToken);
                                             }
                                         }
                                     }
@@ -6794,7 +6917,7 @@ namespace Chummer
                                     else if (panSprites == null)
                                         continue;
 
-                                    SpiritControl objSpiritControl = new SpiritControl(objSpirit);
+                                    SpiritControl objSpiritControl = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit), GenericToken);
 
                                     // Attach an EventHandler for the ServicesOwedChanged Event.
                                     objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
@@ -6804,14 +6927,14 @@ namespace Chummer
 
                                     if (blnIsSpirit)
                                     {
-                                        objSpiritControl.Top = intSpirits * objSpiritControl.Height;
-                                        panSpirits.Controls.Add(objSpiritControl);
+                                        await objSpiritControl.DoThreadSafeAsync(x => x.Top = intSpirits * x.Height, GenericToken);
+                                        await panSpirits.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), GenericToken);
                                         ++intSpirits;
                                     }
                                     else
                                     {
-                                        objSpiritControl.Top = intSprites * objSpiritControl.Height;
-                                        panSprites.Controls.Add(objSpiritControl);
+                                        await objSpiritControl.DoThreadSafeAsync(x => x.Top = intSprites * x.Height, GenericToken);
+                                        await panSprites.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), GenericToken);
                                         ++intSprites;
                                     }
                                 }
@@ -6829,7 +6952,10 @@ namespace Chummer
             // The number of bound Spirits cannot exceed the character's CHA.
             if (!CharacterObject.IgnoreRules && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Spirit && x.Bound && !x.Fettered) >= CharacterObject.BoundSpiritLimit)
             {
-                Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_BoundSpiritLimit"), CharacterObject.Settings.BoundSpiritExpression, CharacterObject.BoundSpiritLimit),
+                Program.ShowMessageBox(
+                    this,
+                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_BoundSpiritLimit"),
+                                  CharacterObject.Settings.BoundSpiritExpression, CharacterObject.BoundSpiritLimit),
                     LanguageManager.GetString("MessageTitle_BoundSpiritLimit"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6854,7 +6980,12 @@ namespace Chummer
                 CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite && x.Bound && !x.Fettered) >=
                 CharacterObject.RegisteredSpriteLimit)
             {
-                Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_RegisteredSpriteLimit"), CharacterObject.Settings.RegisteredSpriteExpression, CharacterObject.RegisteredSpriteLimit),
+                Program.ShowMessageBox(
+                    this,
+                    string.Format(GlobalSettings.CultureInfo,
+                                  LanguageManager.GetString("Message_RegisteredSpriteLimit"),
+                                  CharacterObject.Settings.RegisteredSpriteExpression,
+                                  CharacterObject.RegisteredSpriteLimit),
                     LanguageManager.GetString("MessageTitle_RegisteredSpriteLimit"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -7174,8 +7305,6 @@ namespace Chummer
         private CharacterSettings _objCachedSettings;
 
         protected CharacterSettings CharacterObjectSettings => _objCachedSettings ?? (_objCachedSettings = CharacterObject?.Settings);
-
-
 
         protected virtual string FormMode => string.Empty;
 

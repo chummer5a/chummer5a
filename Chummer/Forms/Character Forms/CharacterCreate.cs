@@ -405,8 +405,8 @@ namespace Chummer
                                     RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
                                     RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
                                     RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-                                    RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
-                                    RefreshContacts(panContacts, panEnemies, panPets);
+                                    await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
+                                    await RefreshContacts(panContacts, panEnemies, panPets);
 
                                     RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
                                     RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
@@ -2053,13 +2053,13 @@ namespace Chummer
                             break;
                         using (CursorWait.New(this))
                         {
-                            await this.DoThreadSafeAsync(x => x.SuspendLayout());
+                            await this.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken);
                             try
                             {
                                 await cmdAddLifestyle.DoThreadSafeAsync(x => x.SplitMenuStrip =
                                                                             CharacterObjectSettings.BookEnabled("RF")
                                                                                 ? cmsAdvancedLifestyle
-                                                                                : null);
+                                                                                : null, GenericToken);
 
                                 if (!CharacterObjectSettings.BookEnabled("FA"))
                                 {
@@ -2077,7 +2077,7 @@ namespace Chummer
                                             lblAstralReputation.Visible = true;
                                             lblAstralReputationTotal.Visible = true;
                                         }
-                                    });
+                                    }, GenericToken);
                                 }
                                 else
                                 {
@@ -2087,7 +2087,7 @@ namespace Chummer
                                         lblWildReputationTotal.Visible = true;
                                         lblAstralReputation.Visible = true;
                                         lblAstralReputationTotal.Visible = true;
-                                    });
+                                    }, GenericToken);
                                 }
 
                                 // Refresh all trees because enabled sources can change the nodes that are visible
@@ -2100,8 +2100,8 @@ namespace Chummer
                                 RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
                                 RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
                                 RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-                                RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
-                                RefreshContacts(panContacts, panEnemies, panPets);
+                                await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
+                                await RefreshContacts(panContacts, panEnemies, panPets);
 
                                 RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
                                 RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
@@ -2125,7 +2125,7 @@ namespace Chummer
                                     treCyberware.SortCustomOrder();
                                     treVehicles.SortCustomOrder();
                                     treCritterPowers.SortCustomOrder();
-                                });
+                                }, GenericToken);
 
                                 XPathNavigator xmlTraditionsBaseChummerNode =
                                     await (await CharacterObject.LoadDataXPathAsync("traditions.xml"))
@@ -2163,9 +2163,9 @@ namespace Chummer
                                             new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
                                         if (!lstTraditions.SequenceEqual(
                                                 await cboTradition.DoThreadSafeFuncAsync(
-                                                    x => x.Items.Cast<ListItem>())))
+                                                    x => x.Items.Cast<ListItem>(), GenericToken)))
                                         {
-                                            await cboTradition.PopulateWithListItemsAsync(lstTraditions);
+                                            await cboTradition.PopulateWithListItemsAsync(lstTraditions, GenericToken);
                                             await cboTradition.DoThreadSafeAsync(x =>
                                             {
                                                 if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
@@ -2173,7 +2173,7 @@ namespace Chummer
                                                         = CharacterObject.MagicTradition.SourceID.ToString();
                                                 else if (x.SelectedIndex == -1 && x.Items.Count > 0)
                                                     x.SelectedIndex = 0;
-                                            });
+                                            }, GenericToken);
                                         }
                                     }
                                     else
@@ -2182,7 +2182,7 @@ namespace Chummer
                                         {
                                             cboTradition.Visible = false;
                                             lblTraditionLabel.Visible = false;
-                                        });
+                                        }, GenericToken);
                                     }
                                 }
 
@@ -2211,7 +2211,7 @@ namespace Chummer
 
                                     lstDrainAttributes.Sort(CompareListItems.CompareNames);
                                     lstDrainAttributes.Insert(0, ListItem.Blank);
-                                    await cboDrain.PopulateWithListItemsAsync(lstDrainAttributes);
+                                    await cboDrain.PopulateWithListItemsAsync(lstDrainAttributes, GenericToken);
                                 }
 
                                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
@@ -2249,11 +2249,11 @@ namespace Chummer
                                         }
 
                                         lstSpirit.Sort(CompareListItems.CompareNames);
-                                        await cboSpiritCombat.PopulateWithListItemsAsync(lstSpirit);
-                                        await cboSpiritDetection.PopulateWithListItemsAsync(lstSpirit);
-                                        await cboSpiritHealth.PopulateWithListItemsAsync(lstSpirit);
-                                        await cboSpiritIllusion.PopulateWithListItemsAsync(lstSpirit);
-                                        await cboSpiritManipulation.PopulateWithListItemsAsync(lstSpirit);
+                                        await cboSpiritCombat.PopulateWithListItemsAsync(lstSpirit, GenericToken);
+                                        await cboSpiritDetection.PopulateWithListItemsAsync(lstSpirit, GenericToken);
+                                        await cboSpiritHealth.PopulateWithListItemsAsync(lstSpirit, GenericToken);
+                                        await cboSpiritIllusion.PopulateWithListItemsAsync(lstSpirit, GenericToken);
+                                        await cboSpiritManipulation.PopulateWithListItemsAsync(lstSpirit, GenericToken);
                                     }
                                 }
 
@@ -2291,9 +2291,9 @@ namespace Chummer
                                         lstStreams.Insert(
                                             0,
                                             new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
-                                        if (!lstStreams.SequenceEqual(await cboStream.DoThreadSafeFuncAsync(x => x.Items.Cast<ListItem>())))
+                                        if (!lstStreams.SequenceEqual(await cboStream.DoThreadSafeFuncAsync(x => x.Items.Cast<ListItem>(), GenericToken)))
                                         {
-                                            await cboStream.PopulateWithListItemsAsync(lstStreams);
+                                            await cboStream.PopulateWithListItemsAsync(lstStreams, GenericToken);
                                             await cboStream.DoThreadSafeAsync(x =>
                                             {
                                                 if (CharacterObject.MagicTradition.Type == TraditionType.RES)
@@ -2301,7 +2301,7 @@ namespace Chummer
                                                         = CharacterObject.MagicTradition.SourceID.ToString();
                                                 else if (x.SelectedIndex == -1 && x.Items.Count > 0)
                                                     x.SelectedIndex = 0;
-                                            });
+                                            }, GenericToken);
                                         }
                                     }
                                     else
@@ -2310,13 +2310,13 @@ namespace Chummer
                                         {
                                             cboStream.Visible = false;
                                             lblStreamLabel.Visible = false;
-                                        });
+                                        }, GenericToken);
                                     }
                                 }
                             }
                             finally
                             {
-                                await this.DoThreadSafeAsync(x => x.ResumeLayout());
+                                await this.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken);
                             }
                         }
 
@@ -2328,19 +2328,8 @@ namespace Chummer
                         {
                             using (CursorWait.New(this))
                             {
-                                await this.DoThreadSafeAsync(x =>
-                                {
-                                    x.SuspendLayout();
-                                    try
-                                    {
-                                        RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
-                                        treLifestyles.SortCustomOrder();
-                                    }
-                                    finally
-                                    {
-                                        x.ResumeLayout();
-                                    }
-                                }, GenericToken);
+                                await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
+                                await treLifestyles.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
                             }
                         }
 
@@ -2351,31 +2340,34 @@ namespace Chummer
                         using (CursorWait.New(this))
                         {
                             await this.DoThreadSafeAsync(x =>
-                            {
-                                x.SuspendLayout();
-                                try
-                                {
-                                    if (!CharacterObjectSettings.EnableEnemyTracking)
-                                    {
-                                        tabPeople.TabPages.Remove(tabEnemies);
-                                        lblEnemiesBP.Visible = false;
-                                        lblBuildEnemies.Visible = false;
-                                    }
-                                    else
-                                    {
-                                        lblEnemiesBP.Visible = true;
-                                        lblBuildEnemies.Visible = true;
-                                        if (!tabPeople.TabPages.Contains(tabEnemies))
-                                            tabPeople.TabPages.Insert(tabPeople.TabPages.IndexOf(tabContacts) + 1,
-                                                                      tabEnemies);
-                                        RefreshContacts(panContacts, panEnemies, panPets);
-                                    }
-                                }
-                                finally
-                                {
-                                    x.ResumeLayout();
-                                }
-                            });
+                                      {
+                                          x.SuspendLayout();
+                                          try
+                                          {
+                                              if (!CharacterObjectSettings.EnableEnemyTracking)
+                                              {
+                                                  tabPeople.TabPages.Remove(tabEnemies);
+                                                  lblEnemiesBP.Visible = false;
+                                                  lblBuildEnemies.Visible = false;
+                                              }
+                                              else
+                                              {
+                                                  lblEnemiesBP.Visible = true;
+                                                  lblBuildEnemies.Visible = true;
+                                                  if (!tabPeople.TabPages.Contains(tabEnemies))
+                                                      tabPeople.TabPages.Insert(
+                                                          tabPeople.TabPages.IndexOf(tabContacts) + 1,
+                                                          tabEnemies);
+                                              }
+                                          }
+                                          finally
+                                          {
+                                              x.ResumeLayout();
+                                          }
+                                      }, GenericToken)
+                                      .ContinueWith(y => RefreshContacts(panContacts, panEnemies, panPets),
+                                                    GenericToken)
+                                      .Unwrap();
                         }
 
                         break;
@@ -17295,19 +17287,40 @@ namespace Chummer
             RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique, notifyCollectionChangedEventArgs);
         }
 
-        private void LifestyleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void LifestyleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle, e);
+            try
+            {
+                await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
-        private void ContactCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private async void ContactCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            RefreshContacts(panContacts, panEnemies, panPets, notifyCollectionChangedEventArgs);
+            try
+            {
+                await RefreshContacts(panContacts, panEnemies, panPets, notifyCollectionChangedEventArgs);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void SpiritCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            await RefreshSpirits(panSpirits, panSprites, notifyCollectionChangedEventArgs);
+            try
+            {
+                await RefreshSpirits(panSpirits, panSprites, notifyCollectionChangedEventArgs);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void ArmorCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -17363,7 +17376,14 @@ namespace Chummer
 
         private async void picMugshot_SizeChanged(object sender, EventArgs e)
         {
-            await ProcessMugshot();
+            try
+            {
+                await ProcessMugshot(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async ValueTask ProcessMugshot(CancellationToken token = default)
