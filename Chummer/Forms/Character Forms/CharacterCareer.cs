@@ -362,7 +362,7 @@ namespace Chummer
                                                     cmsVehicleCyberware, cmsVehicleCyberwareGear);
                                     RefreshDrugs(treCustomDrugs);
 
-                                    ExpenseEntriesCollectionChanged(this, null);
+                                    await DoExpenseEntriesCollectionChanged(null);
                                 }
 
                                 using (_ = await Timekeeper.StartSyncronAsync("load_frm_career_sortAndCallbacks",
@@ -13007,7 +13007,7 @@ namespace Chummer
             }
 
             if (blnDoRepopulateList)
-                RepopulateKarmaExpenseList();
+                await RepopulateKarmaExpenseList();
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -13065,7 +13065,7 @@ namespace Chummer
             }
 
             if (blnDoRepopulateList)
-                RepopulateNuyenExpenseList();
+                await RepopulateNuyenExpenseList();
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -17866,7 +17866,12 @@ namespace Chummer
             }
         }
 
-        private void ExpenseEntriesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void ExpenseEntriesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            await DoExpenseEntriesCollectionChanged(e);
+        }
+
+        private async ValueTask DoExpenseEntriesCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             bool blnDoRepopulateKarmaExpenseList = false;
             bool blnDoRepopulateNuyenExpenseList = false;
@@ -17886,11 +17891,11 @@ namespace Chummer
                             switch (objEntry.Type)
                             {
                                 case ExpenseType.Karma:
-                                    blnDoRepopulateKarmaExpenseList = blnDoRepopulateKarmaExpenseList || objEntry.Amount != 0 || chkShowFreeKarma.Checked;
+                                    blnDoRepopulateKarmaExpenseList = blnDoRepopulateKarmaExpenseList || objEntry.Amount != 0 || await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked);
                                     break;
 
                                 case ExpenseType.Nuyen:
-                                    blnDoRepopulateNuyenExpenseList = blnDoRepopulateNuyenExpenseList || objEntry.Amount != 0 || chkShowFreeNuyen.Checked;
+                                    blnDoRepopulateNuyenExpenseList = blnDoRepopulateNuyenExpenseList || objEntry.Amount != 0 || await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked);
                                     break;
                             }
                             if (blnDoRepopulateKarmaExpenseList && blnDoRepopulateNuyenExpenseList)
@@ -17904,11 +17909,11 @@ namespace Chummer
                             switch (objEntry.Type)
                             {
                                 case ExpenseType.Karma:
-                                    blnDoRepopulateKarmaExpenseList = blnDoRepopulateKarmaExpenseList || objEntry.Amount != 0 || chkShowFreeKarma.Checked;
+                                    blnDoRepopulateKarmaExpenseList = blnDoRepopulateKarmaExpenseList || objEntry.Amount != 0 || await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked);
                                     break;
 
                                 case ExpenseType.Nuyen:
-                                    blnDoRepopulateNuyenExpenseList = blnDoRepopulateNuyenExpenseList || objEntry.Amount != 0 || chkShowFreeNuyen.Checked;
+                                    blnDoRepopulateNuyenExpenseList = blnDoRepopulateNuyenExpenseList || objEntry.Amount != 0 || await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked);
                                     break;
                             }
                             if (blnDoRepopulateKarmaExpenseList && blnDoRepopulateNuyenExpenseList)
@@ -17922,11 +17927,11 @@ namespace Chummer
                             switch (objEntry.Type)
                             {
                                 case ExpenseType.Karma:
-                                    blnDoRepopulateKarmaExpenseList = blnDoRepopulateKarmaExpenseList || objEntry.Amount != 0 || chkShowFreeKarma.Checked;
+                                    blnDoRepopulateKarmaExpenseList = blnDoRepopulateKarmaExpenseList || objEntry.Amount != 0 || await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked);
                                     break;
 
                                 case ExpenseType.Nuyen:
-                                    blnDoRepopulateNuyenExpenseList = blnDoRepopulateNuyenExpenseList || objEntry.Amount != 0 || chkShowFreeNuyen.Checked;
+                                    blnDoRepopulateNuyenExpenseList = blnDoRepopulateNuyenExpenseList || objEntry.Amount != 0 || await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked);
                                     break;
                             }
                             if (blnDoRepopulateKarmaExpenseList && blnDoRepopulateNuyenExpenseList)
@@ -17940,11 +17945,11 @@ namespace Chummer
                                 switch (objEntry.Type)
                                 {
                                     case ExpenseType.Karma:
-                                        blnDoRepopulateKarmaExpenseList = blnDoRepopulateKarmaExpenseList || objEntry.Amount != 0 || chkShowFreeKarma.Checked;
+                                        blnDoRepopulateKarmaExpenseList = blnDoRepopulateKarmaExpenseList || objEntry.Amount != 0 || await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked);
                                         break;
 
                                     case ExpenseType.Nuyen:
-                                        blnDoRepopulateNuyenExpenseList = blnDoRepopulateNuyenExpenseList || objEntry.Amount != 0 || chkShowFreeNuyen.Checked;
+                                        blnDoRepopulateNuyenExpenseList = blnDoRepopulateNuyenExpenseList || objEntry.Amount != 0 || await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked);
                                         break;
                                 }
                                 if (blnDoRepopulateKarmaExpenseList && blnDoRepopulateNuyenExpenseList)
@@ -17958,170 +17963,198 @@ namespace Chummer
                 }
             }
             if (blnDoRepopulateKarmaExpenseList)
-                RepopulateKarmaExpenseList();
+                await RepopulateKarmaExpenseList();
             if (blnDoRepopulateNuyenExpenseList)
-                RepopulateNuyenExpenseList();
+                await RepopulateNuyenExpenseList();
         }
 
-        private void chkShowFreeKarma_CheckedChanged(object sender, EventArgs e)
+        private async void chkShowFreeKarma_CheckedChanged(object sender, EventArgs e)
         {
-            if (CharacterObject.ExpenseEntries.Any(x => x.Type == ExpenseType.Karma && x.Amount == 0))
+            if (await CharacterObject.ExpenseEntries.AnyAsync(x => x.Type == ExpenseType.Karma && x.Amount == 0))
             {
-                RepopulateKarmaExpenseList();
+                await RepopulateKarmaExpenseList();
             }
         }
 
-        private void RepopulateKarmaExpenseList()
+        private async ValueTask RepopulateKarmaExpenseList()
         {
             using (CursorWait.New(this))
             {
-                lstKarma.Items.Clear();
-                lstKarma.ContextMenuStrip = null;
-                chtKarma.SuspendLayout();
-                chtKarma.ExpenseValues.Clear();
-                decimal decKarmaValue = 0;
-                //Find the last karma/nuyen entry as well in case a chart only contains one point
-                DateTime KarmaLast = DateTime.MinValue;
-                foreach (ExpenseLogEntry objExpense in CharacterObject.ExpenseEntries)
+                await lstKarma.DoThreadSafeAsync(x =>
                 {
-                    if (objExpense.Type != ExpenseType.Karma || (objExpense.Amount == 0 && !chkShowFreeKarma.Checked))
-                        continue;
-                    ListViewItemWithValue.ListViewSubItemWithValue objAmountItem =
-                        new ListViewItemWithValue.ListViewSubItemWithValue
-                        {
-                            Value = objExpense.Amount,
-                            Text = objExpense.Amount.ToString("#,0.##", GlobalSettings.CultureInfo)
-                        };
-                    ListViewItemWithValue.ListViewSubItemWithValue objReasonItem =
-                        new ListViewItemWithValue.ListViewSubItemWithValue
-                        {
-                            Value = objExpense.Reason,
-                            Text = objExpense.DisplayReason(GlobalSettings.Language)
-                        };
-                    ListViewItemWithValue.ListViewSubItemWithValue objInternalIdItem =
-                        new ListViewItemWithValue.ListViewSubItemWithValue
-                        {
-                            Value = objExpense,
-                            Text = objExpense.InternalId
-                        };
-
-                    ListViewItemWithValue objItem = new ListViewItemWithValue(objExpense.Date,
-                        objExpense.Date.ToString(GlobalSettings.CustomDateTimeFormats
-                                ? GlobalSettings.CustomDateFormat
-                                  + ' ' + GlobalSettings.CustomTimeFormat
-                                : GlobalSettings.CultureInfo.DateTimeFormat.ShortDatePattern
-                                  + ' ' + GlobalSettings.CultureInfo.DateTimeFormat.ShortTimePattern,
-                            GlobalSettings.CultureInfo)
-                    );
-                    objItem.SubItems.Add(objAmountItem);
-                    objItem.SubItems.Add(objReasonItem);
-                    objItem.SubItems.Add(objInternalIdItem);
-
-                    lstKarma.Items.Add(objItem);
-                    if (objExpense.Undo != null)
-                        lstKarma.ContextMenuStrip = cmsUndoKarmaExpense;
-                    if (objExpense.Amount == 0)
-                        continue;
-                    if (objExpense.Date > KarmaLast)
-                        KarmaLast = objExpense.Date;
-                    decKarmaValue += objExpense.Amount;
-                    chtKarma.ExpenseValues.Add(new DateTimePoint(objExpense.Date, decimal.ToDouble(decKarmaValue)));
-                }
-
-                if (KarmaLast == DateTime.MinValue)
-                    KarmaLast = File.Exists(CharacterObject.FileName)
-                        ? File.GetCreationTime(CharacterObject.FileName)
-                        : new DateTime(DateTime.Now.Ticks - 1000);
-                if (chtKarma.ExpenseValues.Count < 2)
+                    x.Items.Clear();
+                    x.ContextMenuStrip = null;
+                });
+                await chtKarma.DoThreadSafeAsync(x => x.SuspendLayout());
+                try
                 {
-                    if (chtKarma.ExpenseValues.Count < 1)
-                        chtKarma.ExpenseValues.Add(new DateTimePoint(KarmaLast, decimal.ToDouble(decKarmaValue)));
-                    chtKarma.ExpenseValues.Add(new DateTimePoint(DateTime.Now, decimal.ToDouble(decKarmaValue)));
-                }
+                    chtKarma.ExpenseValues.Clear();
+                    decimal decKarmaValue = 0;
+                    bool blnShowFreeKarma = await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked);
+                    //Find the last karma/nuyen entry as well in case a chart only contains one point
+                    DateTime KarmaLast = DateTime.MinValue;
+                    foreach (ExpenseLogEntry objExpense in CharacterObject.ExpenseEntries)
+                    {
+                        if (objExpense.Type != ExpenseType.Karma || (objExpense.Amount == 0 && !blnShowFreeKarma))
+                            continue;
+                        ListViewItemWithValue.ListViewSubItemWithValue objAmountItem =
+                            new ListViewItemWithValue.ListViewSubItemWithValue
+                            {
+                                Value = objExpense.Amount,
+                                Text = objExpense.Amount.ToString("#,0.##", GlobalSettings.CultureInfo)
+                            };
+                        ListViewItemWithValue.ListViewSubItemWithValue objReasonItem =
+                            new ListViewItemWithValue.ListViewSubItemWithValue
+                            {
+                                Value = objExpense.Reason,
+                                Text = await objExpense.DisplayReasonAsync(GlobalSettings.Language)
+                            };
+                        ListViewItemWithValue.ListViewSubItemWithValue objInternalIdItem =
+                            new ListViewItemWithValue.ListViewSubItemWithValue
+                            {
+                                Value = objExpense,
+                                Text = objExpense.InternalId
+                            };
 
-                chtKarma.NormalizeYAxis();
-                chtKarma.ResumeLayout();
+                        ListViewItemWithValue objItem = new ListViewItemWithValue(objExpense.Date,
+                                objExpense.Date.ToString(GlobalSettings.CustomDateTimeFormats
+                                                             ? GlobalSettings.CustomDateFormat
+                                                               + ' ' + GlobalSettings.CustomTimeFormat
+                                                             : GlobalSettings.CultureInfo.DateTimeFormat.ShortDatePattern
+                                                               + ' ' + GlobalSettings.CultureInfo.DateTimeFormat.ShortTimePattern,
+                                                         GlobalSettings.CultureInfo)
+                        );
+                        objItem.SubItems.Add(objAmountItem);
+                        objItem.SubItems.Add(objReasonItem);
+                        objItem.SubItems.Add(objInternalIdItem);
+
+                        await lstKarma.DoThreadSafeAsync(x =>
+                        {
+                            x.Items.Add(objItem);
+                            if (objExpense.Undo != null)
+                                x.ContextMenuStrip = cmsUndoKarmaExpense;
+                        });
+                        if (objExpense.Amount == 0)
+                            continue;
+                        if (objExpense.Date > KarmaLast)
+                            KarmaLast = objExpense.Date;
+                        decKarmaValue += objExpense.Amount;
+                        chtKarma.ExpenseValues.Add(new DateTimePoint(objExpense.Date, decimal.ToDouble(decKarmaValue)));
+                    }
+
+                    if (KarmaLast == DateTime.MinValue)
+                        KarmaLast = File.Exists(CharacterObject.FileName)
+                            ? File.GetCreationTime(CharacterObject.FileName)
+                            : new DateTime(DateTime.Now.Ticks - 1000);
+                    if (chtKarma.ExpenseValues.Count < 2)
+                    {
+                        if (chtKarma.ExpenseValues.Count < 1)
+                            chtKarma.ExpenseValues.Add(new DateTimePoint(KarmaLast, decimal.ToDouble(decKarmaValue)));
+                        chtKarma.ExpenseValues.Add(new DateTimePoint(DateTime.Now, decimal.ToDouble(decKarmaValue)));
+                    }
+
+                    await chtKarma.NormalizeYAxis();
+                }
+                finally
+                {
+                    await chtKarma.DoThreadSafeAsync(x => x.ResumeLayout());
+                }
             }
         }
 
-        private void chkShowFreeNuyen_CheckedChanged(object sender, EventArgs e)
+        private async void chkShowFreeNuyen_CheckedChanged(object sender, EventArgs e)
         {
-            if (CharacterObject.ExpenseEntries.Any(x => x.Type == ExpenseType.Nuyen && x.Amount == 0))
+            if (await CharacterObject.ExpenseEntries.AnyAsync(x => x.Type == ExpenseType.Nuyen && x.Amount == 0))
             {
-                RepopulateNuyenExpenseList();
+                await RepopulateNuyenExpenseList();
             }
         }
 
-        private void RepopulateNuyenExpenseList()
+        private async ValueTask RepopulateNuyenExpenseList()
         {
             using (CursorWait.New(this))
             {
-                lstNuyen.Items.Clear();
-                lstNuyen.ContextMenuStrip = null;
-                chtNuyen.SuspendLayout();
-                chtNuyen.ExpenseValues.Clear();
-                decimal decNuyenValue = 0;
-                //Find the last karma/nuyen entry as well in case a chart only contains one point
-                DateTime NuyenLast = DateTime.MinValue;
-                foreach (ExpenseLogEntry objExpense in CharacterObject.ExpenseEntries)
+                await lstNuyen.DoThreadSafeAsync(x =>
                 {
-                    if (objExpense.Type != ExpenseType.Nuyen || (objExpense.Amount == 0 && !chkShowFreeNuyen.Checked))
-                        continue;
-                    ListViewItemWithValue.ListViewSubItemWithValue objAmountItem =
-                        new ListViewItemWithValue.ListViewSubItemWithValue
-                        {
-                            Value = objExpense.Amount,
-                            Text = objExpense.Amount.ToString("#,0.##", GlobalSettings.CultureInfo)
-                        };
-                    ListViewItemWithValue.ListViewSubItemWithValue objReasonItem =
-                        new ListViewItemWithValue.ListViewSubItemWithValue
-                        {
-                            Value = objExpense.Reason,
-                            Text = objExpense.DisplayReason(GlobalSettings.Language)
-                        };
-                    ListViewItemWithValue.ListViewSubItemWithValue objInternalIdItem =
-                        new ListViewItemWithValue.ListViewSubItemWithValue
-                        {
-                            Value = objExpense,
-                            Text = objExpense.InternalId
-                        };
-
-                    ListViewItemWithValue objItem = new ListViewItemWithValue(objExpense.Date,
-                        objExpense.Date.ToString(GlobalSettings.CustomDateTimeFormats
-                                ? GlobalSettings.CustomDateFormat
-                                  + ' ' + GlobalSettings.CustomTimeFormat
-                                : GlobalSettings.CultureInfo.DateTimeFormat.ShortDatePattern
-                                  + ' ' + GlobalSettings.CultureInfo.DateTimeFormat.ShortTimePattern,
-                            GlobalSettings.CultureInfo)
-                    );
-                    objItem.SubItems.Add(objAmountItem);
-                    objItem.SubItems.Add(objReasonItem);
-                    objItem.SubItems.Add(objInternalIdItem);
-
-                    lstNuyen.Items.Add(objItem);
-                    if (objExpense.Undo != null)
-                        lstNuyen.ContextMenuStrip = cmsUndoNuyenExpense;
-                    if (objExpense.Amount == 0)
-                        continue;
-                    if (objExpense.Date > NuyenLast)
-                        NuyenLast = objExpense.Date;
-                    decNuyenValue += objExpense.Amount;
-                    chtNuyen.ExpenseValues.Add(new DateTimePoint(objExpense.Date, decimal.ToDouble(decNuyenValue)));
-                }
-
-                if (NuyenLast == DateTime.MinValue)
-                    NuyenLast = File.Exists(CharacterObject.FileName)
-                        ? File.GetCreationTime(CharacterObject.FileName)
-                        : new DateTime(DateTime.Now.Ticks - 1000);
-                if (chtNuyen.ExpenseValues.Count < 2)
+                    x.Items.Clear();
+                    x.ContextMenuStrip = null;
+                });
+                await chtNuyen.DoThreadSafeAsync(x => x.SuspendLayout());
+                try
                 {
-                    if (chtNuyen.ExpenseValues.Count < 1)
-                        chtNuyen.ExpenseValues.Add(new DateTimePoint(NuyenLast, decimal.ToDouble(decNuyenValue)));
-                    chtNuyen.ExpenseValues.Add(new DateTimePoint(DateTime.Now, decimal.ToDouble(decNuyenValue)));
-                }
+                    chtNuyen.ExpenseValues.Clear();
+                    decimal decNuyenValue = 0;
+                    bool blnShowFreeNuyen = await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked);
+                    //Find the last karma/nuyen entry as well in case a chart only contains one point
+                    DateTime NuyenLast = DateTime.MinValue;
+                    foreach (ExpenseLogEntry objExpense in CharacterObject.ExpenseEntries)
+                    {
+                        if (objExpense.Type != ExpenseType.Nuyen || (objExpense.Amount == 0 && !blnShowFreeNuyen))
+                            continue;
+                        ListViewItemWithValue.ListViewSubItemWithValue objAmountItem =
+                            new ListViewItemWithValue.ListViewSubItemWithValue
+                            {
+                                Value = objExpense.Amount,
+                                Text = objExpense.Amount.ToString("#,0.##", GlobalSettings.CultureInfo)
+                            };
+                        ListViewItemWithValue.ListViewSubItemWithValue objReasonItem =
+                            new ListViewItemWithValue.ListViewSubItemWithValue
+                            {
+                                Value = objExpense.Reason,
+                                Text = await objExpense.DisplayReasonAsync(GlobalSettings.Language)
+                            };
+                        ListViewItemWithValue.ListViewSubItemWithValue objInternalIdItem =
+                            new ListViewItemWithValue.ListViewSubItemWithValue
+                            {
+                                Value = objExpense,
+                                Text = objExpense.InternalId
+                            };
 
-                chtNuyen.NormalizeYAxis();
-                chtNuyen.ResumeLayout();
+                        ListViewItemWithValue objItem = new ListViewItemWithValue(objExpense.Date,
+                                objExpense.Date.ToString(GlobalSettings.CustomDateTimeFormats
+                                                             ? GlobalSettings.CustomDateFormat
+                                                               + ' ' + GlobalSettings.CustomTimeFormat
+                                                             : GlobalSettings.CultureInfo.DateTimeFormat
+                                                                             .ShortDatePattern
+                                                               + ' ' + GlobalSettings.CultureInfo.DateTimeFormat
+                                                                   .ShortTimePattern,
+                                                         GlobalSettings.CultureInfo)
+                        );
+                        objItem.SubItems.Add(objAmountItem);
+                        objItem.SubItems.Add(objReasonItem);
+                        objItem.SubItems.Add(objInternalIdItem);
+
+                        await lstNuyen.DoThreadSafeAsync(x =>
+                        {
+                            x.Items.Add(objItem);
+                            if (objExpense.Undo != null)
+                                x.ContextMenuStrip = cmsUndoNuyenExpense;
+                        });
+                        if (objExpense.Amount == 0)
+                            continue;
+                        if (objExpense.Date > NuyenLast)
+                            NuyenLast = objExpense.Date;
+                        decNuyenValue += objExpense.Amount;
+                        chtNuyen.ExpenseValues.Add(new DateTimePoint(objExpense.Date, decimal.ToDouble(decNuyenValue)));
+                    }
+
+                    if (NuyenLast == DateTime.MinValue)
+                        NuyenLast = File.Exists(CharacterObject.FileName)
+                            ? File.GetCreationTime(CharacterObject.FileName)
+                            : new DateTime(DateTime.Now.Ticks - 1000);
+                    if (chtNuyen.ExpenseValues.Count < 2)
+                    {
+                        if (chtNuyen.ExpenseValues.Count < 1)
+                            chtNuyen.ExpenseValues.Add(new DateTimePoint(NuyenLast, decimal.ToDouble(decNuyenValue)));
+                        chtNuyen.ExpenseValues.Add(new DateTimePoint(DateTime.Now, decimal.ToDouble(decNuyenValue)));
+                    }
+
+                    await chtNuyen.NormalizeYAxis();
+                }
+                finally
+                {
+                    await chtNuyen.DoThreadSafeAsync(x => x.ResumeLayout());
+                }
             }
         }
 

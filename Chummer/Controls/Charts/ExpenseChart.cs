@@ -19,6 +19,7 @@
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
 using LiveCharts;
@@ -68,29 +69,30 @@ namespace Chummer.UI.Charts
             chtCartesian.AxisY.Add(_objYAxis);
         }
 
-        private void ExpenseChart_Load(object sender, EventArgs e)
+        private async void ExpenseChart_Load(object sender, EventArgs e)
         {
-            if (_objCharacter == null)
+            if (_objCharacter != null)
+                return;
+            if (ParentForm is CharacterShared frmParent)
+                _objCharacter = frmParent.CharacterObject;
+            else
             {
-                if (ParentForm is CharacterShared frmParent)
-                    _objCharacter = frmParent.CharacterObject;
-                else
-                {
-                    _blnDisposeCharacterOnDispose = true;
-                    _objCharacter = new Character();
-                    Utils.BreakIfDebug();
-                }
-                if (NuyenMode)
-                {
-                    _objYAxis.LabelFormatter = val => val.ToString((_objCharacter?.Settings.NuyenFormat ?? "#,0.##") + '¥', GlobalSettings.CultureInfo);
-                }
+                _blnDisposeCharacterOnDispose = true;
+                _objCharacter = new Character();
+                Utils.BreakIfDebug();
+            }
+            if (NuyenMode)
+            {
+                await _objYAxis.DoThreadSafeAsync(x => x.LabelFormatter = val =>
+                                                      val.ToString((_objCharacter?.Settings.NuyenFormat ?? "#,0.##") + '¥',
+                                                                   GlobalSettings.CultureInfo));
             }
         }
 
-        public void NormalizeYAxis()
+        public Task NormalizeYAxis()
         {
             if (ExpenseValues.Count == 0)
-                return;
+                return Task.CompletedTask;
             double dblActualMin = ExpenseValues[0].Value;
             double dblActualMax = dblActualMin;
             foreach (double dblValue in ExpenseValues.Select(x => x.Value))
@@ -110,8 +112,12 @@ namespace Chummer.UI.Charts
                 dblActualMax = Math.Max(Math.Ceiling(dblActualMax / 5.0), Math.Floor(dblActualMin / 5.0) + 1) * 5.0;
                 dblActualMin = Math.Floor(dblActualMin / 5.0) * 5.0;
             }
-            _objYAxis.MinValue = dblActualMin;
-            _objYAxis.MaxValue = dblActualMax;
+
+            return _objYAxis.DoThreadSafeAsync(x =>
+            {
+                x.MinValue = dblActualMin;
+                x.MaxValue = dblActualMax;
+            });
         }
 
         #region Properties
@@ -134,21 +140,33 @@ namespace Chummer.UI.Charts
                 {
                     if (value)
                     {
-                        _objYAxis.Title = LanguageManager.GetString("Label_SummaryNuyen");
-                        _objYAxis.LabelFormatter = val =>
-                            val.ToString((_objCharacter?.Settings.NuyenFormat ?? "#,0.##") + '¥',
-                                GlobalSettings.CultureInfo);
-                        _objMainSeries.Title = LanguageManager.GetString("String_NuyenRemaining");
-                        _objMainSeries.Stroke = Brushes.Red;
-                        _objMainSeries.Fill = s_ObjNuyenFillBrush;
+                        _objYAxis.DoThreadSafe(x =>
+                        {
+                            x.Title = LanguageManager.GetString("Label_SummaryNuyen");
+                            x.LabelFormatter = val =>
+                                val.ToString((_objCharacter?.Settings.NuyenFormat ?? "#,0.##") + '¥',
+                                             GlobalSettings.CultureInfo);
+                        });
+                        _objMainSeries.DoThreadSafe(x =>
+                        {
+                            x.Title = LanguageManager.GetString("String_NuyenRemaining");
+                            x.Stroke = Brushes.Red;
+                            x.Fill = s_ObjNuyenFillBrush;
+                        });
                     }
                     else
                     {
-                        _objYAxis.Title = LanguageManager.GetString("String_Karma");
-                        _objYAxis.LabelFormatter = val => val.ToString("#,0.##", GlobalSettings.CultureInfo);
-                        _objMainSeries.Title = LanguageManager.GetString("String_KarmaRemaining");
-                        _objMainSeries.Stroke = Brushes.Blue;
-                        _objMainSeries.Fill = s_ObjKarmaFillBrush;
+                        _objYAxis.DoThreadSafe(x =>
+                        {
+                            x.Title = LanguageManager.GetString("String_Karma");
+                            x.LabelFormatter = val => val.ToString("#,0.##", GlobalSettings.CultureInfo);
+                        });
+                        _objMainSeries.DoThreadSafe(x =>
+                        {
+                            x.Title = LanguageManager.GetString("String_KarmaRemaining");
+                            x.Stroke = Brushes.Blue;
+                            x.Fill = s_ObjKarmaFillBrush;
+                        });
                     }
                 }
                 finally
