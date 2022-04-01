@@ -4442,7 +4442,7 @@ namespace Chummer
             }
         }
 
-        protected void RefreshMartialArts(TreeView treMartialArts, ContextMenuStrip cmsMartialArts, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        protected async ValueTask RefreshMartialArts(TreeView treMartialArts, ContextMenuStrip cmsMartialArts, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (treMartialArts == null)
                 return;
@@ -4456,51 +4456,54 @@ namespace Chummer
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    treMartialArts.SuspendLayout();
+                    await treMartialArts.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken);
                     try
                     {
-                        treMartialArts.Nodes.Clear();
+                        await treMartialArts.DoThreadSafeAsync(x => x.Nodes.Clear(), GenericToken);
 
                         foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
                         {
-                            AddToTree(objMartialArt, false);
-                            objMartialArt.Techniques.AddTaggedCollectionChanged(treMartialArts, MakeDirtyWithCharacterUpdate);
-                            objMartialArt.Techniques.AddTaggedCollectionChanged(treMartialArts,
-                                (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y));
+                            await AddToTree(objMartialArt, false);
+                            await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(treMartialArts, MakeDirtyWithCharacterUpdate);
+                            await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(treMartialArts, FuncDelegateToAdd);
+                            async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                await RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y);
                         }
 
-                        treMartialArts.SortCustomAlphabetically(strSelectedId);
+                        await treMartialArts.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), GenericToken);
                     }
                     finally
                     {
-                        treMartialArts.ResumeLayout();
+                        await treMartialArts.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken);
                     }
                 }
                 else
                 {
-                    objMartialArtsParentNode = treMartialArts.FindNode("Node_SelectedMartialArts", false);
-                    objQualityNode = treMartialArts.FindNode("Node_SelectedQualities", false);
+                    objMartialArtsParentNode = await treMartialArts.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedMartialArts", false), GenericToken);
+                    objQualityNode = await treMartialArts.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedQualities", false), GenericToken);
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                             {
                                 foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.NewItems)
                                 {
-                                    AddToTree(objMartialArt);
-                                    objMartialArt.Techniques.AddTaggedCollectionChanged(treMartialArts, MakeDirtyWithCharacterUpdate);
-                                    objMartialArt.Techniques.AddTaggedCollectionChanged(treMartialArts,
-                                        (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique,
-                                            y));
+                                    await AddToTree(objMartialArt);
+                                    await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(treMartialArts, MakeDirtyWithCharacterUpdate);
+                                    await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(treMartialArts, FuncDelegateToAdd);
+                                    async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                        await RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y);
                                 }
                             }
                             break;
 
                         case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.OldItems)
+                                await objMartialArt.Techniques.RemoveTaggedCollectionChangedAsync(treMartialArts);
+                                await treMartialArts.DoThreadSafeAsync(x =>
                                 {
-                                    objMartialArt.Techniques.RemoveTaggedCollectionChanged(treMartialArts);
-                                    TreeNode objNode = treMartialArts.FindNodeByTag(objMartialArt);
+                                    TreeNode objNode = x.FindNodeByTag(objMartialArt);
                                     if (objNode != null)
                                     {
                                         TreeNode objParent = objNode.Parent;
@@ -4508,46 +4511,51 @@ namespace Chummer
                                         if (objParent.Nodes.Count == 0)
                                             objParent.Remove();
                                     }
-                                }
+                                }, GenericToken);
                             }
                             break;
-
+                        }
                         case NotifyCollectionChangedAction.Replace:
                             {
                                 List<TreeNode> lstOldParents =
                                     new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                                 foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.OldItems)
                                 {
-                                    objMartialArt.Techniques.RemoveTaggedCollectionChanged(treMartialArts);
-
-                                    TreeNode objNode = treMartialArts.FindNodeByTag(objMartialArt);
-                                    if (objNode != null)
+                                    await objMartialArt.Techniques.RemoveTaggedCollectionChangedAsync(treMartialArts);
+                                    await treMartialArts.DoThreadSafeAsync(x =>
                                     {
-                                        lstOldParents.Add(objNode.Parent);
-                                        objNode.Remove();
-                                    }
+                                        TreeNode objNode = x.FindNodeByTag(objMartialArt);
+                                        if (objNode != null)
+                                        {
+                                            lstOldParents.Add(objNode.Parent);
+                                            objNode.Remove();
+                                        }
+                                    }, GenericToken);
                                 }
 
                                 foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.NewItems)
                                 {
-                                    AddToTree(objMartialArt);
-                                    objMartialArt.Techniques.AddTaggedCollectionChanged(treMartialArts, MakeDirtyWithCharacterUpdate);
-                                    objMartialArt.Techniques.AddTaggedCollectionChanged(treMartialArts,
-                                        (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique,
-                                            y));
+                                    await AddToTree(objMartialArt);
+                                    await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(treMartialArts, MakeDirtyWithCharacterUpdate);
+                                    await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(treMartialArts, FuncDelegateToAdd);
+                                    async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                        await RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y);
                                 }
 
-                                foreach (TreeNode objOldParent in lstOldParents)
+                                await treMartialArts.DoThreadSafeAsync(() =>
                                 {
-                                    if (objOldParent.Nodes.Count == 0)
-                                        objOldParent.Remove();
-                                }
+                                    foreach (TreeNode objOldParent in lstOldParents)
+                                    {
+                                        if (objOldParent.Nodes.Count == 0)
+                                            objOldParent.Remove();
+                                    }
+                                }, GenericToken);
                             }
                             break;
                     }
                 }
 
-                void AddToTree(MartialArt objMartialArt, bool blnSingleAdd = true)
+                async ValueTask AddToTree(MartialArt objMartialArt, bool blnSingleAdd = true)
                 {
                     TreeNode objNode = objMartialArt.CreateTreeNode(cmsMartialArts, cmsTechnique);
                     if (objNode == null)
@@ -4561,10 +4569,14 @@ namespace Chummer
                             objQualityNode = new TreeNode
                             {
                                 Tag = "Node_SelectedQualities",
-                                Text = LanguageManager.GetString("Node_SelectedQualities")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedQualities")
                             };
-                            treMartialArts.Nodes.Add(objQualityNode);
-                            objQualityNode.Expand();
+                            await treMartialArts.DoThreadSafeAsync(x =>
+                            {
+                                // ReSharper disable once AssignNullToNotNullAttribute
+                                x.Nodes.Add(objQualityNode);
+                                objQualityNode.Expand();
+                            }, GenericToken);
                         }
 
                         objParentNode = objQualityNode;
@@ -4576,44 +4588,53 @@ namespace Chummer
                             objMartialArtsParentNode = new TreeNode
                             {
                                 Tag = "Node_SelectedMartialArts",
-                                Text = LanguageManager.GetString("Node_SelectedMartialArts")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedMartialArts")
                             };
-                            treMartialArts.Nodes.Insert(0, objMartialArtsParentNode);
-                            objMartialArtsParentNode.Expand();
+                            await treMartialArts.DoThreadSafeAsync(x =>
+                            {
+                                // ReSharper disable once AssignNullToNotNullAttribute
+                                x.Nodes.Insert(0, objMartialArtsParentNode);
+                                objMartialArtsParentNode.Expand();
+                            }, GenericToken);
                         }
 
                         objParentNode = objMartialArtsParentNode;
                     }
 
-                    if (blnSingleAdd)
+                    await treMartialArts.DoThreadSafeAsync(x =>
                     {
-                        TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                        int intNodesCount = lstParentNodeChildren.Count;
-                        int intTargetIndex = 0;
-                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                        if (objParentNode == null)
+                            return;
+                        if (blnSingleAdd)
                         {
-                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                            TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                            int intNodesCount = lstParentNodeChildren.Count;
+                            int intTargetIndex = 0;
+                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                             {
-                                break;
+                                if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                                {
+                                    break;
+                                }
                             }
+
+                            lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                            x.SelectedNode = objNode;
                         }
+                        else
+                            objParentNode.Nodes.Add(objNode);
 
-                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                        treMartialArts.SelectedNode = objNode;
-                    }
-                    else
-                        objParentNode.Nodes.Add(objNode);
-
-                    objParentNode.Expand();
+                        objParentNode.Expand();
+                    }, GenericToken);
                 }
             }
         }
 
-        protected void RefreshMartialArtTechniques(TreeView treMartialArts, MartialArt objMartialArt, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        protected async ValueTask RefreshMartialArtTechniques(TreeView treMartialArts, MartialArt objMartialArt, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (treMartialArts == null || objMartialArt == null || notifyCollectionChangedEventArgs == null)
                 return;
-            TreeNode nodMartialArt = treMartialArts.FindNodeByTag(objMartialArt);
+            TreeNode nodMartialArt = await treMartialArts.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objMartialArt), GenericToken);
             if (nodMartialArt == null)
                 return;
             using (CursorWait.New(this))
@@ -4621,24 +4642,32 @@ namespace Chummer
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
+                    {
+                        await treMartialArts.DoThreadSafeAsync(() =>
                         {
                             foreach (MartialArtTechnique objTechnique in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 AddToTree(objTechnique);
                             }
-                        }
+                        }, GenericToken);
+                    }
                         break;
 
                     case NotifyCollectionChangedAction.Remove:
+                    {
+                        await treMartialArts.DoThreadSafeAsync(() =>
                         {
                             foreach (MartialArtTechnique objTechnique in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 nodMartialArt.FindNodeByTag(objTechnique)?.Remove();
                             }
-                        }
+                        }, GenericToken);
+                    }
                         break;
 
                     case NotifyCollectionChangedAction.Replace:
+                    {
+                        await treMartialArts.DoThreadSafeAsync(() =>
                         {
                             foreach (MartialArtTechnique objTechnique in notifyCollectionChangedEventArgs.OldItems)
                             {
@@ -4649,13 +4678,15 @@ namespace Chummer
                             {
                                 AddToTree(objTechnique);
                             }
-                        }
+                        }, GenericToken);
+                    }
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
+                    {
+                        await treMartialArts.DoThreadSafeAsync(x =>
                         {
-                            string strSelectedId = (treMartialArts.SelectedNode?.Tag as IHasInternalId)?.InternalId ??
-                                                   string.Empty;
+                            string strSelectedId = (x.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
                             nodMartialArt.Nodes.Clear();
 
@@ -4664,8 +4695,9 @@ namespace Chummer
                                 AddToTree(objTechnique, false);
                             }
 
-                            treMartialArts.SortCustomAlphabetically(strSelectedId);
-                        }
+                            x.SortCustomAlphabetically(strSelectedId);
+                        }, GenericToken);
+                    }
                         break;
                 }
 

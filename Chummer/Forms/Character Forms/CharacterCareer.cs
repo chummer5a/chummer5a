@@ -341,7 +341,7 @@ namespace Chummer
                                                              y => mnuCreateMenu.DoThreadSafeAsync(
                                                                  () => mnuSpecialPossess.Visible = y.Result,
                                                                  GenericToken), GenericToken).Unwrap();
-                                    RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
+                                    await RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
                                     await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
                                     await RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView,
                                                               cmsImprovementLocation,
@@ -1196,55 +1196,71 @@ namespace Chummer
             RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
         }
 
-        private void SpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void SpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes, notifyCollectionChangedEventArgs);
+            RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes, e);
         }
 
-        private void ComplexFormCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void ComplexFormCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes, notifyCollectionChangedEventArgs);
+            RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes, e);
         }
 
-        private void ArtCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void ArtCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshArtCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, notifyCollectionChangedEventArgs);
+            RefreshArtCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
         }
 
-        private void EnhancementCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void EnhancementCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, notifyCollectionChangedEventArgs);
+            RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
         }
 
-        private void MetamagicCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void MetamagicCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshMetamagicCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, notifyCollectionChangedEventArgs);
+            RefreshMetamagicCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
         }
 
-        private void InitiationGradeCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void InitiationGradeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, notifyCollectionChangedEventArgs);
+            RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
         }
 
-        private void AIProgramCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void AIProgramCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram, notifyCollectionChangedEventArgs);
+            RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram, e);
         }
 
-        private void CritterPowerCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private async void CritterPowerCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshCritterPowers(treCritterPowers, cmsCritterPowers, notifyCollectionChangedEventArgs);
-            mnuSpecialPossess.Visible = CharacterObject.CritterPowers.Any(x => x.Name == "Inhabitation" || x.Name == "Possession");
+            try
+            {
+                RefreshCritterPowers(treCritterPowers, cmsCritterPowers, e);
+                bool blnVisible
+                    = await CharacterObject.CritterPowers.AnyAsync(x => x.Name == "Inhabitation" || x.Name == "Possession");
+                await mnuCreateMenu.DoThreadSafeAsync(() => mnuSpecialPossess.Visible = blnVisible, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
-        private void QualityCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void QualityCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshQualities(treQualities, cmsQuality, notifyCollectionChangedEventArgs);
+            RefreshQualities(treQualities, cmsQuality, e);
         }
 
-        private void MartialArtCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private async void MartialArtCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique, notifyCollectionChangedEventArgs);
+            try
+            {
+                await RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void LifestylesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1259,11 +1275,11 @@ namespace Chummer
             }
         }
 
-        private async void ImprovementCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private async void ImprovementCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
-                await RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView, cmsImprovementLocation, cmsImprovement, lmtControl.LimitContextMenuStrip, notifyCollectionChangedEventArgs);
+                await RefreshCustomImprovements(treImprovements, lmtControl.LimitTreeView, cmsImprovementLocation, cmsImprovement, lmtControl.LimitContextMenuStrip, e);
             }
             catch (OperationCanceledException)
             {
@@ -1271,9 +1287,9 @@ namespace Chummer
             }
         }
 
-        private void ImprovementGroupCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void ImprovementGroupCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshCustomImprovementLocations(treImprovements, cmsImprovementLocation, notifyCollectionChangedEventArgs);
+            RefreshCustomImprovementLocations(treImprovements, cmsImprovementLocation, e);
         }
 
         private async void CalendarWeekListChanged(object sender, ListChangedEventArgs listChangedEventArgs)
@@ -1288,11 +1304,11 @@ namespace Chummer
             }
         }
 
-        private async void ContactCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private async void ContactCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
-                await RefreshContacts(panContacts, panEnemies, panPets, notifyCollectionChangedEventArgs);
+                await RefreshContacts(panContacts, panEnemies, panPets, e);
             }
             catch (OperationCanceledException)
             {
@@ -1300,11 +1316,11 @@ namespace Chummer
             }
         }
 
-        private async void SpiritCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private async void SpiritCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
-                await RefreshSpirits(panSpirits, panSprites, notifyCollectionChangedEventArgs);
+                await RefreshSpirits(panSpirits, panSprites, e);
             }
             catch (OperationCanceledException)
             {
@@ -1312,11 +1328,11 @@ namespace Chummer
             }
         }
 
-        private async void SustainedSpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private async void SustainedSpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
-                await RefreshSustainedSpells(flpSustainedSpells, flpSustainedComplexForms, flpSustainedCritterPowers, chkPsycheActiveMagician, chkPsycheActiveTechnomancer, notifyCollectionChangedEventArgs);
+                await RefreshSustainedSpells(flpSustainedSpells, flpSustainedComplexForms, flpSustainedCritterPowers, chkPsycheActiveMagician, chkPsycheActiveTechnomancer, e);
             }
             catch (OperationCanceledException)
             {
@@ -1324,11 +1340,11 @@ namespace Chummer
             }
         }
 
-        private async void AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private async void AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
-                await RefreshAttributes(pnlAttributes, notifyCollectionChangedEventArgs, lblAttributes, -1, await lblAttributesAug.DoThreadSafeFuncAsync(x => x.PreferredWidth), await lblAttributesMetatype.DoThreadSafeFuncAsync(x => x.PreferredWidth));
+                await RefreshAttributes(pnlAttributes, e, lblAttributes, -1, await lblAttributesAug.DoThreadSafeFuncAsync(x => x.PreferredWidth), await lblAttributesMetatype.DoThreadSafeFuncAsync(x => x.PreferredWidth));
             }
             catch (OperationCanceledException)
             {
@@ -1336,55 +1352,55 @@ namespace Chummer
             }
         }
 
-        private void ArmorCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void ArmorCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear, notifyCollectionChangedEventArgs);
+            RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear, e);
         }
 
-        private void ArmorLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void ArmorLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshArmorLocations(treArmor, cmsArmorLocation, notifyCollectionChangedEventArgs);
+            RefreshArmorLocations(treArmor, cmsArmorLocation, e);
         }
 
-        private void WeaponCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void WeaponCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, notifyCollectionChangedEventArgs);
+            RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, e);
         }
 
-        private void WeaponLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void WeaponLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshWeaponLocations(treWeapons, cmsWeaponLocation, notifyCollectionChangedEventArgs);
+            RefreshWeaponLocations(treWeapons, cmsWeaponLocation, e);
         }
 
-        private void GearCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void GearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked, notifyCollectionChangedEventArgs);
-            RefreshFociFromGear(treFoci, null, notifyCollectionChangedEventArgs);
+            RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked, e);
+            RefreshFociFromGear(treFoci, null, e);
         }
 
-        private void DrugCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void DrugCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshDrugs(treCustomDrugs, notifyCollectionChangedEventArgs);
+            RefreshDrugs(treCustomDrugs, e);
         }
 
-        private void GearLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void GearLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshGearLocations(treGear, cmsGearLocation, notifyCollectionChangedEventArgs);
+            RefreshGearLocations(treGear, cmsGearLocation, e);
         }
 
-        private void CyberwareCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void CyberwareCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, notifyCollectionChangedEventArgs);
+            RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, e);
         }
 
-        private void VehicleCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void VehicleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsVehicleCyberware, cmsVehicleCyberwareGear, notifyCollectionChangedEventArgs);
+            RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsVehicleCyberware, cmsVehicleCyberwareGear, e);
         }
 
-        private void VehicleLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void VehicleLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshVehicleLocations(treVehicles, cmsVehicleLocation, notifyCollectionChangedEventArgs);
+            RefreshVehicleLocations(treVehicles, cmsVehicleLocation, e);
         }
 
         private async void CharacterCareer_FormClosing(object sender, FormClosingEventArgs e)
@@ -2385,7 +2401,7 @@ namespace Chummer
                                 RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
                                 RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
                                 RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
-                                RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
+                                await RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
                                 await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
                                 await RefreshContacts(panContacts, panEnemies, panPets);
                                 await RefreshSustainedSpells(flpSustainedSpells, flpSustainedComplexForms,
