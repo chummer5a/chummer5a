@@ -915,7 +915,7 @@ namespace Chummer
                 }
                 if (objSpell.Grade > 0)
                 {
-                    InitiationGrade objGrade = CharacterObject.InitiationGrades.FirstOrDefault(x => x.Grade == objSpell.Grade);
+                    InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objSpell.Grade);
                     if (objGrade != null && treMetamagic != null)
                     {
                         await treMetamagic.DoThreadSafeAsync(x =>
@@ -970,7 +970,7 @@ namespace Chummer
             }
         }
 
-        protected void RefreshAIPrograms(TreeView treAIPrograms, ContextMenuStrip cmsAdvancedProgram, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        protected async ValueTask RefreshAIPrograms(TreeView treAIPrograms, ContextMenuStrip cmsAdvancedProgram, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (treAIPrograms == null)
                 return;
@@ -981,37 +981,40 @@ namespace Chummer
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     string strSelectedId =
-                        (treAIPrograms.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                        (await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
-                    treAIPrograms.Nodes.Clear();
+                    await treAIPrograms.DoThreadSafeAsync(x => x.Nodes.Clear(), GenericToken);
 
                     // Add AI Programs.
                     foreach (AIProgram objAIProgram in CharacterObject.AIPrograms)
                     {
-                        AddToTree(objAIProgram, false);
+                        await AddToTree(objAIProgram, false);
                     }
 
-                    treAIPrograms.SortCustomAlphabetically(strSelectedId);
+                    await treAIPrograms.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), GenericToken);
                 }
                 else
                 {
-                    objParentNode = treAIPrograms.FindNode("Node_SelectedAIPrograms", false);
+                    objParentNode = await treAIPrograms.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedAIPrograms", false), GenericToken);
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                             {
                                 foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.NewItems)
                                 {
-                                    AddToTree(objAIProgram);
+                                    await AddToTree(objAIProgram);
                                 }
 
                                 break;
                             }
                         case NotifyCollectionChangedAction.Remove:
+                        {
+                            await treAIPrograms.DoThreadSafeAsync(x =>
                             {
                                 foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.OldItems)
                                 {
-                                    TreeNode objNode = treAIPrograms.FindNodeByTag(objAIProgram);
+
+                                    TreeNode objNode = x.FindNodeByTag(objAIProgram);
                                     if (objNode != null)
                                     {
                                         TreeNode objParent = objNode.Parent;
@@ -1020,33 +1023,40 @@ namespace Chummer
                                             objParent.Remove();
                                     }
                                 }
+                            }, GenericToken);
 
-                                break;
-                            }
+                            break;
+                        }
                         case NotifyCollectionChangedAction.Replace:
                             {
                                 List<TreeNode> lstOldParents =
                                     new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
-                                foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.OldItems)
+                                await treAIPrograms.DoThreadSafeAsync(x =>
                                 {
-                                    TreeNode objNode = treAIPrograms.FindNodeByTag(objAIProgram);
-                                    if (objNode != null)
+                                    foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.OldItems)
                                     {
-                                        lstOldParents.Add(objNode.Parent);
-                                        objNode.Remove();
+                                        TreeNode objNode = x.FindNodeByTag(objAIProgram);
+                                        if (objNode != null)
+                                        {
+                                            lstOldParents.Add(objNode.Parent);
+                                            objNode.Remove();
+                                        }
                                     }
-                                }
+                                }, GenericToken);
 
                                 foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.NewItems)
                                 {
-                                    AddToTree(objAIProgram);
+                                    await AddToTree(objAIProgram);
                                 }
 
-                                foreach (TreeNode objOldParent in lstOldParents)
+                                await treAIPrograms.DoThreadSafeAsync(() =>
                                 {
-                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                        objOldParent.Remove();
-                                }
+                                    foreach (TreeNode objOldParent in lstOldParents)
+                                    {
+                                        if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                            objOldParent.Remove();
+                                    }
+                                }, GenericToken);
 
                                 break;
                             }
@@ -1054,7 +1064,7 @@ namespace Chummer
                 }
             }
 
-            void AddToTree(AIProgram objAIProgram, bool blnSingleAdd = true)
+            async ValueTask AddToTree(AIProgram objAIProgram, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objAIProgram.CreateTreeNode(cmsAdvancedProgram);
                 if (objNode == null)
@@ -1065,34 +1075,43 @@ namespace Chummer
                     objParentNode = new TreeNode
                     {
                         Tag = "Node_SelectedAIPrograms",
-                        Text = LanguageManager.GetString("Node_SelectedAIPrograms")
+                        Text = await LanguageManager.GetStringAsync("Node_SelectedAIPrograms")
                     };
-                    treAIPrograms.Nodes.Add(objParentNode);
-                    objParentNode.Expand();
-                }
-
-                if (blnSingleAdd)
-                {
-                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                    int intNodesCount = lstParentNodeChildren.Count;
-                    int intTargetIndex = 0;
-                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    await treAIPrograms.DoThreadSafeAsync(x =>
                     {
-                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
-                        {
-                            break;
-                        }
-                    }
-
-                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                    treAIPrograms.SelectedNode = objNode;
+                        // ReSharper disable once AssignNullToNotNullAttribute
+                        x.Nodes.Add(objParentNode);
+                        objParentNode.Expand();
+                    }, GenericToken);
                 }
-                else
-                    objParentNode.Nodes.Add(objNode);
+
+                await treAIPrograms.DoThreadSafeAsync(x =>
+                {
+                    if (objParentNode == null)
+                        return;
+                    if (blnSingleAdd)
+                    {
+                        TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                        int intNodesCount = lstParentNodeChildren.Count;
+                        int intTargetIndex = 0;
+                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                        {
+                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                            {
+                                break;
+                            }
+                        }
+
+                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                        x.SelectedNode = objNode;
+                    }
+                    else
+                        objParentNode.Nodes.Add(objNode);
+                }, GenericToken);
             }
         }
 
-        protected void RefreshComplexForms(TreeView treComplexForms, TreeView treMetamagic, ContextMenuStrip cmsComplexForm, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        protected async ValueTask RefreshComplexForms(TreeView treComplexForms, TreeView treMetamagic, ContextMenuStrip cmsComplexForm, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (treComplexForms == null)
                 return;
@@ -1103,46 +1122,50 @@ namespace Chummer
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     string strSelectedId =
-                        (treComplexForms.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                        (await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
                     string strSelectedMetamagicId =
-                        (treMetamagic?.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                        treMetamagic != null ? (await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty : string.Empty;
 
-                    treComplexForms.Nodes.Clear();
+                    await treComplexForms.DoThreadSafeAsync(x => x.Nodes.Clear(), GenericToken);
 
                     // Add Complex Forms.
                     foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms)
                     {
                         if (objComplexForm.Grade > 0)
                         {
-                            treMetamagic?.FindNodeByTag(objComplexForm)?.Remove();
+                            if (treMetamagic != null)
+                                await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objComplexForm)?.Remove(), GenericToken);
                         }
 
-                        AddToTree(objComplexForm, false);
+                        await AddToTree(objComplexForm, false);
                     }
 
-                    treComplexForms.SortCustomAlphabetically(strSelectedId);
+                    await treComplexForms.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), GenericToken);
                     if (treMetamagic != null)
-                        treMetamagic.SelectedNode = treMetamagic.FindNode(strSelectedMetamagicId);
+                        await treMetamagic.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedMetamagicId), GenericToken);
                 }
                 else
                 {
-                    objParentNode = treComplexForms.FindNode("Node_SelectedAdvancedComplexForms", false);
+                    objParentNode = await treComplexForms.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedAdvancedComplexForms", false), GenericToken);
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                             {
                                 foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.NewItems)
                                 {
-                                    AddToTree(objComplexForm);
+                                    await AddToTree(objComplexForm);
                                 }
 
                                 break;
                             }
                         case NotifyCollectionChangedAction.Remove:
+                        {
+
+                            foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.OldItems)
+                                await treComplexForms.DoThreadSafeAsync(x =>
                                 {
-                                    TreeNode objNode = treComplexForms.FindNodeByTag(objComplexForm);
+                                    TreeNode objNode = x.FindNodeByTag(objComplexForm);
                                     if (objNode != null)
                                     {
                                         TreeNode objParent = objNode.Parent;
@@ -1150,44 +1173,53 @@ namespace Chummer
                                         if (objParent.Level == 0 && objParent.Nodes.Count == 0)
                                             objParent.Remove();
                                     }
+                                }, GenericToken);
 
-                                    if (objComplexForm.Grade > 0)
-                                    {
-                                        treMetamagic?.FindNodeByTag(objComplexForm)?.Remove();
-                                    }
+                                if (objComplexForm.Grade > 0)
+                                {
+                                    if (treMetamagic != null)
+                                        await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objComplexForm)?.Remove(), GenericToken);
                                 }
-
-                                break;
                             }
+
+                            break;
+                        }
                         case NotifyCollectionChangedAction.Replace:
                             {
                                 List<TreeNode> lstOldParents =
                                     new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
                                 foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.OldItems)
                                 {
-                                    TreeNode objNode = treComplexForms.FindNodeByTag(objComplexForm);
-                                    if (objNode != null)
+                                    await treComplexForms.DoThreadSafeAsync(x =>
                                     {
-                                        lstOldParents.Add(objNode.Parent);
-                                        objNode.Remove();
-                                    }
+                                        TreeNode objNode = x.FindNodeByTag(objComplexForm);
+                                        if (objNode != null)
+                                        {
+                                            lstOldParents.Add(objNode.Parent);
+                                            objNode.Remove();
+                                        }
+                                    }, GenericToken);
 
                                     if (objComplexForm.Grade > 0)
                                     {
-                                        treMetamagic?.FindNodeByTag(objComplexForm)?.Remove();
+                                        if (treMetamagic != null)
+                                            await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objComplexForm)?.Remove(), GenericToken);
                                     }
                                 }
 
                                 foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.NewItems)
                                 {
-                                    AddToTree(objComplexForm);
+                                    await AddToTree(objComplexForm);
                                 }
 
-                                foreach (TreeNode objOldParent in lstOldParents)
+                                await treComplexForms.DoThreadSafeAsync(() =>
                                 {
-                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                        objOldParent.Remove();
-                                }
+                                    foreach (TreeNode objOldParent in lstOldParents)
+                                    {
+                                        if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                            objOldParent.Remove();
+                                    }
+                                }, GenericToken);
 
                                 break;
                             }
@@ -1195,7 +1227,7 @@ namespace Chummer
                 }
             }
 
-            void AddToTree(ComplexForm objComplexForm, bool blnSingleAdd = true)
+            async ValueTask AddToTree(ComplexForm objComplexForm, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objComplexForm.CreateTreeNode(cmsComplexForm);
                 if (objNode == null)
@@ -1205,59 +1237,73 @@ namespace Chummer
                     objParentNode = new TreeNode
                     {
                         Tag = "Node_SelectedAdvancedComplexForms",
-                        Text = LanguageManager.GetString("Node_SelectedAdvancedComplexForms")
+                        Text = await LanguageManager.GetStringAsync("Node_SelectedAdvancedComplexForms")
                     };
-                    treComplexForms.Nodes.Add(objParentNode);
-                    objParentNode.Expand();
+                    await treComplexForms.DoThreadSafeAsync(x =>
+                    {
+                        // ReSharper disable once AssignNullToNotNullAttribute
+                        x.Nodes.Add(objParentNode);
+                        objParentNode.Expand();
+                    }, GenericToken);
                 }
                 if (objComplexForm.Grade > 0)
                 {
-                    InitiationGrade objGrade = CharacterObject.InitiationGrades.FirstOrDefault(x => x.Grade == objComplexForm.Grade);
-                    if (objGrade != null)
+                    InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objComplexForm.Grade);
+                    if (objGrade != null && treMetamagic != null)
                     {
-                        TreeNode nodMetamagicParent = treMetamagic?.FindNodeByTag(objGrade);
-                        if (nodMetamagicParent != null)
+                        await treMetamagic.DoThreadSafeAsync(x =>
                         {
-                            TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
-                            TreeNode objMetamagicNode = objComplexForm.CreateTreeNode(cmsInitiationNotes);
-                            int intNodesCount = nodMetamagicParentChildren.Count;
-                            int intTargetIndex = 0;
-                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                            TreeNode nodMetamagicParent = x.FindNodeByTag(objGrade);
+                            if (nodMetamagicParent != null)
                             {
-                                if (CompareTreeNodes.CompareText(nodMetamagicParentChildren[intTargetIndex], objMetamagicNode) >= 0)
+                                TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
+                                TreeNode objMetamagicNode = objComplexForm.CreateTreeNode(cmsInitiationNotes);
+                                int intNodesCount = nodMetamagicParentChildren.Count;
+                                int intTargetIndex = 0;
+                                for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                                 {
-                                    break;
+                                    if (CompareTreeNodes.CompareText(nodMetamagicParentChildren[intTargetIndex],
+                                                                     objMetamagicNode) >= 0)
+                                    {
+                                        break;
+                                    }
                                 }
+
+                                nodMetamagicParentChildren.Insert(intTargetIndex, objMetamagicNode);
+                                if (blnSingleAdd)
+                                    x.SelectedNode = objMetamagicNode;
                             }
-
-                            nodMetamagicParentChildren.Insert(intTargetIndex, objMetamagicNode);
-                            if (blnSingleAdd)
-                                treMetamagic.SelectedNode = objMetamagicNode;
-                        }
+                        }, GenericToken);
                     }
                 }
-                if (blnSingleAdd)
+
+                await treComplexForms.DoThreadSafeAsync(x =>
                 {
-                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                    int intNodesCount = lstParentNodeChildren.Count;
-                    int intTargetIndex = 0;
-                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    if (objParentNode == null)
+                        return;
+                    if (blnSingleAdd)
                     {
-                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                        TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                        int intNodesCount = lstParentNodeChildren.Count;
+                        int intTargetIndex = 0;
+                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                         {
-                            break;
+                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                            {
+                                break;
+                            }
                         }
-                    }
 
-                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                    treComplexForms.SelectedNode = objNode;
-                }
-                else
-                    objParentNode.Nodes.Add(objNode);
+                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                        x.SelectedNode = objNode;
+                    }
+                    else
+                        objParentNode.Nodes.Add(objNode);
+                }, GenericToken);
             }
         }
 
-        protected void RefreshInitiationGrades(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        protected async ValueTask RefreshInitiationGrades(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (treMetamagic == null)
                 return;
@@ -1266,41 +1312,44 @@ namespace Chummer
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    string strSelectedId =
-                        (treMetamagic.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
-                    TreeNodeCollection lstRootNodes = treMetamagic.Nodes;
-                    lstRootNodes.Clear();
-
-                    foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
+                    await treMetamagic.DoThreadSafeAsync(x =>
                     {
-                        AddToTree(objGrade);
-                    }
+                        string strSelectedId =
+                            (x.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                        TreeNodeCollection lstRootNodes = x.Nodes;
+                        lstRootNodes.Clear();
 
-                    int intOffset = lstRootNodes.Count;
-                    foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
-                    {
-                        if (objMetamagic.Grade < 0)
+                        foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
                         {
-                            TreeNode objNode = objMetamagic.CreateTreeNode(cmsInitiationNotes, true);
-                            if (objNode != null)
-                            {
-                                int intNodesCount = lstRootNodes.Count;
-                                int intTargetIndex = intOffset;
-                                for (; intTargetIndex < intNodesCount; ++intTargetIndex)
-                                {
-                                    if (CompareTreeNodes.CompareText(lstRootNodes[intTargetIndex], objNode) >= 0)
-                                    {
-                                        break;
-                                    }
-                                }
+                            AddToTree(objGrade);
+                        }
 
-                                lstRootNodes.Insert(intTargetIndex, objNode);
-                                objNode.Expand();
+                        int intOffset = lstRootNodes.Count;
+                        foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
+                        {
+                            if (objMetamagic.Grade < 0)
+                            {
+                                TreeNode objNode = objMetamagic.CreateTreeNode(cmsInitiationNotes, true);
+                                if (objNode != null)
+                                {
+                                    int intNodesCount = lstRootNodes.Count;
+                                    int intTargetIndex = intOffset;
+                                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                                    {
+                                        if (CompareTreeNodes.CompareText(lstRootNodes[intTargetIndex], objNode) >= 0)
+                                        {
+                                            break;
+                                        }
+                                    }
+
+                                    lstRootNodes.Insert(intTargetIndex, objNode);
+                                    objNode.Expand();
+                                }
                             }
                         }
-                    }
 
-                    treMetamagic.SelectedNode = treMetamagic.FindNode(strSelectedId);
+                        x.SelectedNode = x.FindNode(strSelectedId);
+                    }, GenericToken);
                 }
                 else
                 {
@@ -1311,32 +1360,38 @@ namespace Chummer
                                 int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                                 foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.NewItems)
                                 {
-                                    AddToTree(objGrade, intNewIndex);
+                                    await AddToTree(objGrade, intNewIndex);
                                     ++intNewIndex;
                                 }
                             }
                             break;
 
                         case NotifyCollectionChangedAction.Remove:
+                        {
+                            await treMetamagic.DoThreadSafeAsync(x =>
                             {
                                 foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
                                 {
-                                    treMetamagic.FindNodeByTag(objGrade)?.Remove();
+                                    x.FindNodeByTag(objGrade)?.Remove();
                                 }
-                            }
+                            }, GenericToken);
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Replace:
                             {
-                                foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
+                                await treMetamagic.DoThreadSafeAsync(x =>
                                 {
-                                    treMetamagic.FindNodeByTag(objGrade)?.Remove();
-                                }
+                                    foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
+                                    {
+                                        x.FindNodeByTag(objGrade)?.Remove();
+                                    }
+                                }, GenericToken);
 
                                 int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                                 foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.NewItems)
                                 {
-                                    AddToTree(objGrade, intNewIndex);
+                                    await AddToTree(objGrade, intNewIndex);
                                     ++intNewIndex;
                                 }
                             }
@@ -1345,23 +1400,26 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Move:
                             {
                                 int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                                foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
+                                await treMetamagic.DoThreadSafeAsync(x =>
                                 {
-                                    TreeNode nodGrade = treMetamagic.FindNodeByTag(objGrade);
-                                    if (nodGrade != null)
+                                    foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
                                     {
-                                        nodGrade.Remove();
-                                        treMetamagic.Nodes.Insert(intNewIndex, nodGrade);
-                                        ++intNewIndex;
+                                        TreeNode nodGrade = x.FindNodeByTag(objGrade);
+                                        if (nodGrade != null)
+                                        {
+                                            nodGrade.Remove();
+                                            x.Nodes.Insert(intNewIndex, nodGrade);
+                                            ++intNewIndex;
+                                        }
                                     }
-                                }
+                                }, GenericToken);
                             }
                             break;
                     }
                 }
             }
 
-            void AddToTree(InitiationGrade objInitiationGrade, int intIndex = -1)
+            Task AddToTree(InitiationGrade objInitiationGrade, int intIndex = -1)
             {
                 TreeNode nodGrade = objInitiationGrade.CreateTreeNode(cmsMetamagic);
                 TreeNodeCollection lstParentNodeChildren = nodGrade.Nodes;
@@ -1483,14 +1541,17 @@ namespace Chummer
                     }
                 }
                 nodGrade.Expand();
-                if (intIndex < 0)
-                    treMetamagic.Nodes.Add(nodGrade);
-                else
-                    treMetamagic.Nodes.Insert(intIndex, nodGrade);
+                return treMetamagic.DoThreadSafeAsync(x =>
+                {
+                    if (intIndex < 0)
+                        x.Nodes.Add(nodGrade);
+                    else
+                        x.Nodes.Insert(intIndex, nodGrade);
+                }, GenericToken);
             }
         }
 
-        protected void RefreshArtCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        protected async ValueTask RefreshArtCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
@@ -1502,74 +1563,85 @@ namespace Chummer
                         {
                             foreach (Art objArt in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                AddToTree(objArt);
+                                await AddToTree(objArt);
                             }
                         }
                         break;
 
                     case NotifyCollectionChangedAction.Remove:
+                    {
+                        await treMetamagic.DoThreadSafeAsync(x =>
                         {
                             foreach (Art objArt in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                treMetamagic.FindNodeByTag(objArt)?.Remove();
+                                x.FindNodeByTag(objArt)?.Remove();
                             }
-                        }
+                        }, GenericToken);
+                    }
                         break;
 
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            foreach (Art objArt in notifyCollectionChangedEventArgs.OldItems)
+                            await treMetamagic.DoThreadSafeAsync(x =>
                             {
-                                treMetamagic.FindNodeByTag(objArt)?.Remove();
-                            }
+                                foreach (Art objArt in notifyCollectionChangedEventArgs.OldItems)
+                                {
+                                    x.FindNodeByTag(objArt)?.Remove();
+                                }
+                            }, GenericToken);
 
                             foreach (Art objArt in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                AddToTree(objArt);
+                                await AddToTree(objArt);
                             }
                         }
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
                         {
-                            RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                            await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
                         }
                         break;
                 }
             }
 
-            void AddToTree(Art objArt, bool blnSingleAdd = true)
+            async ValueTask AddToTree(Art objArt, bool blnSingleAdd = true)
             {
-                InitiationGrade objGrade = CharacterObject.InitiationGrades.FirstOrDefault(x => x.Grade == objArt.Grade);
+                InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objArt.Grade);
 
                 if (objGrade != null)
                 {
-                    TreeNode nodMetamagicParent = treMetamagic.FindNodeByTag(objGrade);
-                    if (nodMetamagicParent != null)
+                    await treMetamagic.DoThreadSafeAsync(x =>
                     {
-                        TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
-                        TreeNode objNode = objArt.CreateTreeNode(cmsInitiationNotes, true);
-                        if (objNode == null)
-                            return;
-                        int intNodesCount = nodMetamagicParentChildren.Count;
-                        int intTargetIndex = 0;
-                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                        TreeNode nodMetamagicParent = x.FindNodeByTag(objGrade);
+                        if (nodMetamagicParent != null)
                         {
-                            if (CompareTreeNodes.CompareText(nodMetamagicParentChildren[intTargetIndex], objNode) >= 0)
+                            TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
+                            TreeNode objNode = objArt.CreateTreeNode(cmsInitiationNotes, true);
+                            if (objNode == null)
+                                return;
+                            int intNodesCount = nodMetamagicParentChildren.Count;
+                            int intTargetIndex = 0;
+                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                             {
-                                break;
+                                if (CompareTreeNodes.CompareText(nodMetamagicParentChildren[intTargetIndex], objNode)
+                                    >= 0)
+                                {
+                                    break;
+                                }
                             }
+
+                            nodMetamagicParentChildren.Insert(intTargetIndex, objNode);
+                            nodMetamagicParent.Expand();
+                            if (blnSingleAdd)
+                                x.SelectedNode = objNode;
                         }
-                        nodMetamagicParentChildren.Insert(intTargetIndex, objNode);
-                        nodMetamagicParent.Expand();
-                        if (blnSingleAdd)
-                            treMetamagic.SelectedNode = objNode;
-                    }
+                    }, GenericToken);
                 }
             }
         }
 
-        protected void RefreshEnhancementCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        protected async ValueTask RefreshEnhancementCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
@@ -1582,74 +1654,85 @@ namespace Chummer
                         {
                             foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                AddToTree(objEnhancement);
+                                await AddToTree(objEnhancement);
                             }
                         }
                         break;
 
                     case NotifyCollectionChangedAction.Remove:
+                    {
+                        await treMetamagic.DoThreadSafeAsync(x =>
                         {
                             foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                treMetamagic.FindNodeByTag(objEnhancement)?.Remove();
+                                x.FindNodeByTag(objEnhancement)?.Remove();
                             }
-                        }
+                        }, GenericToken);
+                    }
                         break;
 
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.OldItems)
+                            await treMetamagic.DoThreadSafeAsync(x =>
                             {
-                                treMetamagic.FindNodeByTag(objEnhancement)?.Remove();
-                            }
+                                foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.OldItems)
+                                {
+                                    x.FindNodeByTag(objEnhancement)?.Remove();
+                                }
+                            }, GenericToken);
 
                             foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                AddToTree(objEnhancement);
+                                await AddToTree(objEnhancement);
                             }
                         }
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
                         {
-                            RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                            await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
                         }
                         break;
                 }
             }
 
-            void AddToTree(Enhancement objEnhancement, bool blnSingleAdd = true)
+            async ValueTask AddToTree(Enhancement objEnhancement, bool blnSingleAdd = true)
             {
-                InitiationGrade objGrade = CharacterObject.InitiationGrades.FirstOrDefault(x => x.Grade == objEnhancement.Grade);
+                InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objEnhancement.Grade);
 
                 if (objGrade != null)
                 {
-                    TreeNode nodMetamagicParent = treMetamagic.FindNodeByTag(objGrade);
-                    if (nodMetamagicParent != null)
+                    await treMetamagic.DoThreadSafeAsync(x =>
                     {
-                        TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
-                        TreeNode objNode = objEnhancement.CreateTreeNode(cmsInitiationNotes, true);
-                        if (objNode == null)
-                            return;
-                        int intNodesCount = nodMetamagicParentChildren.Count;
-                        int intTargetIndex = 0;
-                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                        TreeNode nodMetamagicParent = x.FindNodeByTag(objGrade);
+                        if (nodMetamagicParent != null)
                         {
-                            if (CompareTreeNodes.CompareText(nodMetamagicParentChildren[intTargetIndex], objNode) >= 0)
+                            TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
+                            TreeNode objNode = objEnhancement.CreateTreeNode(cmsInitiationNotes, true);
+                            if (objNode == null)
+                                return;
+                            int intNodesCount = nodMetamagicParentChildren.Count;
+                            int intTargetIndex = 0;
+                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                             {
-                                break;
+                                if (CompareTreeNodes.CompareText(nodMetamagicParentChildren[intTargetIndex], objNode)
+                                    >= 0)
+                                {
+                                    break;
+                                }
                             }
+
+                            nodMetamagicParentChildren.Insert(intTargetIndex, objNode);
+                            nodMetamagicParent.Expand();
+                            if (blnSingleAdd)
+                                x.SelectedNode = objNode;
                         }
-                        nodMetamagicParentChildren.Insert(intTargetIndex, objNode);
-                        nodMetamagicParent.Expand();
-                        if (blnSingleAdd)
-                            treMetamagic.SelectedNode = objNode;
-                    }
+                    }, GenericToken);
                 }
             }
         }
 
-        protected void RefreshPowerCollectionListChanged(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, ListChangedEventArgs e = null)
+        protected async ValueTask RefreshPowerCollectionListChanged(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, ListChangedEventArgs e = null)
         {
             using (CursorWait.New(this))
             {
@@ -1657,16 +1740,19 @@ namespace Chummer
                 {
                     case ListChangedType.ItemAdded:
                         {
-                            CharacterObject.Powers[e.NewIndex].Enhancements.AddTaggedCollectionChanged(treMetamagic,
-                                MakeDirtyWithCharacterUpdate);
-                            CharacterObject.Powers[e.NewIndex].Enhancements.AddTaggedCollectionChanged(treMetamagic,
-                                (x, y) => RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, y));
+                            await CharacterObject.Powers[e.NewIndex].Enhancements
+                                                 .AddTaggedCollectionChangedAsync(treMetamagic, MakeDirtyWithCharacterUpdate);
+                            await CharacterObject.Powers[e.NewIndex].Enhancements
+                                                 .AddTaggedCollectionChangedAsync(treMetamagic, FuncDelegateToAdd);
+                            async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                await RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes,
+                                                                   y);
                         }
                         break;
 
                     case ListChangedType.Reset:
                         {
-                            RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                            await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
                         }
                         break;
 
@@ -1682,18 +1768,21 @@ namespace Chummer
                         {
                             foreach (Power objPower in CharacterObject.Powers)
                             {
-                                objPower.Enhancements.AddTaggedCollectionChanged(treMetamagic,
+                                await objPower.Enhancements.AddTaggedCollectionChangedAsync(treMetamagic,
                                     MakeDirtyWithCharacterUpdate);
-                                objPower.Enhancements.AddTaggedCollectionChanged(treMetamagic,
-                                    (x, y) => RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes,
-                                        y));
+                                await objPower.Enhancements.AddTaggedCollectionChangedAsync(treMetamagic, FuncDelegateToAdd);
+                                async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                    await RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes,
+                                                                       y);
                             }
                         }
                         break;
                 }
             }
 
-            MakeDirtyWithCharacterUpdate(this, EventArgs.Empty);
+            IsCharacterUpdateRequested = true;
+
+            IsDirty = true;
         }
 
         protected void RefreshPowerCollectionBeforeRemove(TreeView treMetamagic, RemovingOldEventArgs removingOldEventArgs)
@@ -1707,7 +1796,7 @@ namespace Chummer
             }
         }
 
-        protected void RefreshMetamagicCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        protected async ValueTask RefreshMetamagicCollection(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
@@ -1719,91 +1808,106 @@ namespace Chummer
                         {
                             foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                AddToTree(objMetamagic);
+                                await AddToTree(objMetamagic);
                             }
                         }
                         break;
 
                     case NotifyCollectionChangedAction.Remove:
+                    {
+                        await treMetamagic.DoThreadSafeAsync(x =>
                         {
                             foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                treMetamagic.FindNodeByTag(objMetamagic)?.Remove();
+                                x.FindNodeByTag(objMetamagic)?.Remove();
                             }
-                        }
+                        }, GenericToken);
+                    }
                         break;
 
                     case NotifyCollectionChangedAction.Replace:
                         {
-                            foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.OldItems)
+                            await treMetamagic.DoThreadSafeAsync(x =>
                             {
-                                treMetamagic.FindNodeByTag(objMetamagic)?.Remove();
-                            }
+                                foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.OldItems)
+                                {
+                                    x.FindNodeByTag(objMetamagic)?.Remove();
+                                }
+                            }, GenericToken);
 
                             foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                AddToTree(objMetamagic);
+                                await AddToTree(objMetamagic);
                             }
                         }
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
                         {
-                            RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                            await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
                         }
                         break;
                 }
             }
 
-            void AddToTree(Metamagic objMetamagic, bool blnSingleAdd = true)
+            async ValueTask AddToTree(Metamagic objMetamagic, bool blnSingleAdd = true)
             {
                 if (objMetamagic.Grade < 0)
                 {
-                    TreeNodeCollection nodMetamagicParentChildren = treMetamagic.Nodes;
-                    TreeNode objNode = objMetamagic.CreateTreeNode(cmsInitiationNotes, true);
-                    if (objNode == null)
-                        return;
-                    int intNodesCount = nodMetamagicParentChildren.Count;
-                    int intTargetIndex = CharacterObject.InitiationGrades.Count;
-                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    await treMetamagic.DoThreadSafeAsync(x =>
                     {
-                        if (CompareTreeNodes.CompareText(nodMetamagicParentChildren[intTargetIndex], objNode) >= 0)
+                        TreeNodeCollection nodMetamagicParentChildren = x.Nodes;
+                        TreeNode objNode = objMetamagic.CreateTreeNode(cmsInitiationNotes, true);
+                        if (objNode == null)
+                            return;
+                        int intNodesCount = nodMetamagicParentChildren.Count;
+                        int intTargetIndex = CharacterObject.InitiationGrades.Count;
+                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                         {
-                            break;
+                            if (CompareTreeNodes.CompareText(nodMetamagicParentChildren[intTargetIndex], objNode) >= 0)
+                            {
+                                break;
+                            }
                         }
-                    }
-                    nodMetamagicParentChildren.Insert(intTargetIndex, objNode);
-                    objNode.Expand();
-                    if (blnSingleAdd)
-                        treMetamagic.SelectedNode = objNode;
+
+                        nodMetamagicParentChildren.Insert(intTargetIndex, objNode);
+                        objNode.Expand();
+                        if (blnSingleAdd)
+                            x.SelectedNode = objNode;
+                    }, GenericToken);
                 }
                 else
                 {
-                    InitiationGrade objGrade = CharacterObject.InitiationGrades.FirstOrDefault(x => x.Grade == objMetamagic.Grade);
+                    InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objMetamagic.Grade);
 
                     if (objGrade != null)
                     {
-                        TreeNode nodMetamagicParent = treMetamagic.FindNodeByTag(objGrade);
-                        if (nodMetamagicParent != null)
+                        await treMetamagic.DoThreadSafeAsync(x =>
                         {
-                            TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
-                            TreeNode objNode = objMetamagic.CreateTreeNode(cmsInitiationNotes, true);
-                            if (objNode == null)
-                                return;
-                            int intNodesCount = nodMetamagicParentChildren.Count;
-                            int intTargetIndex = 0;
-                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                            TreeNode nodMetamagicParent = x.FindNodeByTag(objGrade);
+                            if (nodMetamagicParent != null)
                             {
-                                if (CompareTreeNodes.CompareText(nodMetamagicParentChildren[intTargetIndex], objNode) >= 0)
+                                TreeNodeCollection nodMetamagicParentChildren = nodMetamagicParent.Nodes;
+                                TreeNode objNode = objMetamagic.CreateTreeNode(cmsInitiationNotes, true);
+                                if (objNode == null)
+                                    return;
+                                int intNodesCount = nodMetamagicParentChildren.Count;
+                                int intTargetIndex = 0;
+                                for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                                 {
-                                    break;
+                                    if (CompareTreeNodes.CompareText(nodMetamagicParentChildren[intTargetIndex],
+                                                                     objNode) >= 0)
+                                    {
+                                        break;
+                                    }
                                 }
+
+                                nodMetamagicParentChildren.Insert(intTargetIndex, objNode);
+                                objNode.Expand();
+                                if (blnSingleAdd)
+                                    x.SelectedNode = objNode;
                             }
-                            nodMetamagicParentChildren.Insert(intTargetIndex, objNode);
-                            objNode.Expand();
-                            if (blnSingleAdd)
-                                treMetamagic.SelectedNode = objNode;
-                        }
+                        }, GenericToken);
                     }
                 }
             }
@@ -1815,7 +1919,7 @@ namespace Chummer
         /// <param name="treCritterPowers">TreeNode that will be cleared and populated.</param>
         /// <param name="cmsCritterPowers">ContextMenuStrip that will be added to each power.</param>
         /// <param name="notifyCollectionChangedEventArgs">Arguments for the change to the underlying ObservableCollection.</param>
-        protected void RefreshCritterPowers(TreeView treCritterPowers, ContextMenuStrip cmsCritterPowers, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        protected async ValueTask RefreshCritterPowers(TreeView treCritterPowers, ContextMenuStrip cmsCritterPowers, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (treCritterPowers == null)
                 return;
@@ -1825,37 +1929,44 @@ namespace Chummer
             {
                 if (notifyCollectionChangedEventArgs == null || notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    string strSelectedId = (treCritterPowers.SelectedNode?.Tag as IHasInternalId)?.InternalId ??
-                                           string.Empty;
-                    treCritterPowers.Nodes.Clear();
+                    string strSelectedId
+                        = (await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)
+                          ?.InternalId ??
+                          string.Empty;
+                    await treCritterPowers.DoThreadSafeAsync(x => x.Nodes.Clear(), GenericToken);
                     // Add the Critter Powers that exist.
                     foreach (CritterPower objPower in CharacterObject.CritterPowers)
                     {
-                        AddToTree(objPower, false);
+                        await AddToTree(objPower, false);
                     }
 
-                    treCritterPowers.SortCustomAlphabetically(strSelectedId);
+                    await treCritterPowers.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), GenericToken);
                 }
                 else
                 {
-                    objPowersNode = treCritterPowers.FindNode("Node_CritterPowers", false);
-                    objWeaknessesNode = treCritterPowers.FindNode("Node_CritterWeaknesses", false);
+                    await treCritterPowers.DoThreadSafeAsync(x =>
+                    {
+                        objPowersNode = x.FindNode("Node_CritterPowers", false);
+                        objWeaknessesNode = x.FindNode("Node_CritterWeaknesses", false);
+                    }, GenericToken);
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                             {
                                 foreach (CritterPower objPower in notifyCollectionChangedEventArgs.NewItems)
                                 {
-                                    AddToTree(objPower);
+                                    await AddToTree(objPower);
                                 }
 
                                 break;
                             }
                         case NotifyCollectionChangedAction.Remove:
+                        {
+                            await treCritterPowers.DoThreadSafeAsync(x =>
                             {
                                 foreach (CritterPower objPower in notifyCollectionChangedEventArgs.OldItems)
                                 {
-                                    TreeNode objNode = treCritterPowers.FindNodeByTag(objPower);
+                                    TreeNode objNode = x.FindNodeByTag(objPower);
                                     if (objNode != null)
                                     {
                                         TreeNode objParent = objNode.Parent;
@@ -1864,33 +1975,40 @@ namespace Chummer
                                             objParent.Remove();
                                     }
                                 }
+                            }, GenericToken);
 
-                                break;
-                            }
+                            break;
+                        }
                         case NotifyCollectionChangedAction.Replace:
                             {
                                 List<TreeNode> lstOldParents =
                                     new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
-                                foreach (CritterPower objPower in notifyCollectionChangedEventArgs.OldItems)
+                                await treCritterPowers.DoThreadSafeAsync(x =>
                                 {
-                                    TreeNode objNode = treCritterPowers.FindNode(objPower.InternalId);
-                                    if (objNode != null)
+                                    foreach (CritterPower objPower in notifyCollectionChangedEventArgs.OldItems)
                                     {
-                                        lstOldParents.Add(objNode.Parent);
-                                        objNode.Remove();
+                                        TreeNode objNode = x.FindNode(objPower.InternalId);
+                                        if (objNode != null)
+                                        {
+                                            lstOldParents.Add(objNode.Parent);
+                                            objNode.Remove();
+                                        }
                                     }
-                                }
+                                }, GenericToken);
 
                                 foreach (CritterPower objPower in notifyCollectionChangedEventArgs.NewItems)
                                 {
-                                    AddToTree(objPower);
+                                    await AddToTree(objPower);
                                 }
 
-                                foreach (TreeNode objOldParent in lstOldParents)
+                                await treCritterPowers.DoThreadSafeAsync(() =>
                                 {
-                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                        objOldParent.Remove();
-                                }
+                                    foreach (TreeNode objOldParent in lstOldParents)
+                                    {
+                                        if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                            objOldParent.Remove();
+                                    }
+                                }, GenericToken);
 
                                 break;
                             }
@@ -1898,7 +2016,7 @@ namespace Chummer
                 }
             }
 
-            void AddToTree(CritterPower objPower, bool blnSingleAdd = true)
+            async ValueTask AddToTree(CritterPower objPower, bool blnSingleAdd = true)
             {
                 TreeNode objNode = objPower.CreateTreeNode(cmsCritterPowers);
                 if (objNode == null)
@@ -1912,10 +2030,14 @@ namespace Chummer
                             objWeaknessesNode = new TreeNode
                             {
                                 Tag = "Node_CritterWeaknesses",
-                                Text = LanguageManager.GetString("Node_CritterWeaknesses")
+                                Text = await LanguageManager.GetStringAsync("Node_CritterWeaknesses")
                             };
-                            treCritterPowers.Nodes.Add(objWeaknessesNode);
-                            objWeaknessesNode.Expand();
+                            await treCritterPowers.DoThreadSafeAsync(x =>
+                            {
+                                // ReSharper disable once AssignNullToNotNullAttribute
+                                x.Nodes.Add(objWeaknessesNode);
+                                objWeaknessesNode.Expand();
+                            }, GenericToken);
                         }
                         objParentNode = objWeaknessesNode;
                         break;
@@ -1926,31 +2048,42 @@ namespace Chummer
                             objPowersNode = new TreeNode
                             {
                                 Tag = "Node_CritterPowers",
-                                Text = LanguageManager.GetString("Node_CritterPowers")
+                                Text = await LanguageManager.GetStringAsync("Node_CritterPowers")
                             };
-                            treCritterPowers.Nodes.Insert(0, objPowersNode);
-                            objPowersNode.Expand();
+                            await treCritterPowers.DoThreadSafeAsync(x =>
+                            {
+                                // ReSharper disable once AssignNullToNotNullAttribute
+                                x.Nodes.Insert(0, objPowersNode);
+                                objPowersNode.Expand();
+                            }, GenericToken);
                         }
                         objParentNode = objPowersNode;
                         break;
                 }
-                if (blnSingleAdd)
+
+                await treCritterPowers.DoThreadSafeAsync(x =>
                 {
-                    TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                    int intNodesCount = lstParentNodeChildren.Count;
-                    int intTargetIndex = 0;
-                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                    if (objParentNode == null)
+                        return;
+                    if (blnSingleAdd)
                     {
-                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                        TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                        int intNodesCount = lstParentNodeChildren.Count;
+                        int intTargetIndex = 0;
+                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                         {
-                            break;
+                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                            {
+                                break;
+                            }
                         }
+
+                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                        x.SelectedNode = objNode;
                     }
-                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                    treCritterPowers.SelectedNode = objNode;
-                }
-                else
-                    objParentNode.Nodes.Add(objNode);
+                    else
+                        objParentNode.Nodes.Add(objNode);
+                }, GenericToken);
             }
         }
 
@@ -3325,40 +3458,40 @@ namespace Chummer
             }
         }
 
-        protected void RefreshDrugs(TreeView treGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        protected async ValueTask RefreshDrugs(TreeView treGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (treGear == null)
                 return;
             using (CursorWait.New(this))
             {
-                string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
                 TreeNode nodRoot = null;
 
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    treGear.SuspendLayout();
+                    await treGear.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken);
                     try
                     {
-                        treGear.Nodes.Clear();
+                        await treGear.DoThreadSafeAsync(x => x.Nodes.Clear(), GenericToken);
 
                         // Add Gear.
                         foreach (Drug d in CharacterObject.Drugs)
                         {
-                            AddToTree(d, -1, false);
+                            await AddToTree(d, -1, false);
                         }
 
-                        treGear.SelectedNode = treGear.FindNode(strSelectedId);
+                        await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), GenericToken);
                     }
                     finally
                     {
-                        treGear.ResumeLayout();
+                        await treGear.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken);
                     }
                 }
                 else
                 {
-                    nodRoot = treGear.FindNode("Node_SelectedDrugs", false);
+                    nodRoot = await treGear.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedDrugs", false), GenericToken);
 
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
@@ -3367,43 +3500,49 @@ namespace Chummer
                                 int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                                 foreach (Drug d in notifyCollectionChangedEventArgs.NewItems)
                                 {
-                                    AddToTree(d, intNewIndex);
+                                    await AddToTree(d, intNewIndex);
                                     ++intNewIndex;
                                 }
                             }
                             break;
 
                         case NotifyCollectionChangedAction.Remove:
+                        {
+                            await treGear.DoThreadSafeAsync(x =>
                             {
                                 foreach (Drug d in notifyCollectionChangedEventArgs.OldItems)
                                 {
-                                    treGear.FindNodeByTag(d)?.Remove();
+                                    x.FindNodeByTag(d)?.Remove();
                                 }
-                            }
+                            }, GenericToken);
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Replace:
                         case NotifyCollectionChangedAction.Move:
                             {
-                                foreach (Drug d in notifyCollectionChangedEventArgs.OldItems)
+                                await treGear.DoThreadSafeAsync(x =>
                                 {
-                                    treGear.FindNodeByTag(d)?.Remove();
-                                }
+                                    foreach (Drug d in notifyCollectionChangedEventArgs.OldItems)
+                                    {
+                                        x.FindNodeByTag(d)?.Remove();
+                                    }
+                                }, GenericToken);
 
                                 int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                                 foreach (Drug d in notifyCollectionChangedEventArgs.NewItems)
                                 {
-                                    AddToTree(d, intNewIndex);
+                                    await AddToTree(d, intNewIndex);
                                     ++intNewIndex;
                                 }
 
-                                treGear.SelectedNode = treGear.FindNode(strSelectedId);
+                                await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), GenericToken);
                             }
                             break;
                     }
                 }
 
-                void AddToTree(Drug objGear, int intIndex = -1, bool blnSingleAdd = true)
+                async ValueTask AddToTree(Drug objGear, int intIndex = -1, bool blnSingleAdd = true)
                 {
                     TreeNode objNode = objGear.CreateTreeNode();
                     if (objNode == null)
@@ -3413,18 +3552,24 @@ namespace Chummer
                         nodRoot = new TreeNode
                         {
                             Tag = "Node_SelectedDrugs",
-                            Text = LanguageManager.GetString("Node_SelectedDrugs")
+                            Text = await LanguageManager.GetStringAsync("Node_SelectedDrugs")
                         };
-                        treGear.Nodes.Insert(0, nodRoot);
+                        // ReSharper disable once AssignNullToNotNullAttribute
+                        await treGear.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), GenericToken);
                     }
 
-                    if (intIndex >= 0)
-                        nodRoot.Nodes.Insert(intIndex, objNode);
-                    else
-                        nodRoot.Nodes.Add(objNode);
-                    nodRoot.Expand();
-                    if (blnSingleAdd)
-                        treGear.SelectedNode = objNode;
+                    await treGear.DoThreadSafeAsync(x =>
+                    {
+                        if (nodRoot == null)
+                            return;
+                        if (intIndex >= 0)
+                            nodRoot.Nodes.Insert(intIndex, objNode);
+                        else
+                            nodRoot.Nodes.Add(objNode);
+                        nodRoot.Expand();
+                        if (blnSingleAdd)
+                            x.SelectedNode = objNode;
+                    }, GenericToken);
                 }
             }
         }

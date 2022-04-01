@@ -331,12 +331,12 @@ namespace Chummer
                                     await RefreshSustainedSpells(flpSustainedSpells, flpSustainedComplexForms,
                                                            flpSustainedCritterPowers, chkPsycheActiveMagician,
                                                            chkPsycheActiveTechnomancer);
-                                    RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm,
+                                    await RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm,
                                                         cmsInitiationNotes);
-                                    RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
-                                    RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
-                                    RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
-                                    RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
+                                    await RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                                    await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                                    await RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
+                                    await RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
                                     await CharacterObject.CritterPowers
                                                          .AnyAsync(x => x.Name == "Inhabitation"
                                                                         || x.Name == "Possession")
@@ -363,7 +363,7 @@ namespace Chummer
                                                     cmsVehicleGear,
                                                     cmsWeaponMount,
                                                     cmsVehicleCyberware, cmsVehicleCyberwareGear);
-                                    RefreshDrugs(treCustomDrugs);
+                                    await RefreshDrugs(treCustomDrugs);
 
                                     await DoExpenseEntriesCollectionChanged(null);
                                 }
@@ -1194,9 +1194,16 @@ namespace Chummer
             RefreshPowerCollectionBeforeRemove(treMetamagic, e);
         }
 
-        private void PowersListChanged(object sender, ListChangedEventArgs e)
+        private async void PowersListChanged(object sender, ListChangedEventArgs e)
         {
-            RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
+            try
+            {
+                await RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void SpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1211,41 +1218,83 @@ namespace Chummer
             }
         }
 
-        private void ComplexFormCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void ComplexFormCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes, e);
+            try
+            {
+                await RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
-        private void ArtCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void ArtCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshArtCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
+            try
+            {
+                await RefreshArtCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
-        private void EnhancementCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void EnhancementCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
+            try
+            {
+                await RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
-        private void MetamagicCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void MetamagicCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshMetamagicCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
+            try
+            {
+                await RefreshMetamagicCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
-        private void InitiationGradeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void InitiationGradeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
+            try
+            {
+                await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
-        private void AIProgramCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void AIProgramCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram, e);
+            try
+            {
+                await RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void CritterPowerCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             try
             {
-                RefreshCritterPowers(treCritterPowers, cmsCritterPowers, e);
+                await RefreshCritterPowers(treCritterPowers, cmsCritterPowers, e);
                 bool blnVisible
                     = await CharacterObject.CritterPowers.AnyAsync(x => x.Name == "Inhabitation" || x.Name == "Possession");
                 await mnuCreateMenu.DoThreadSafeAsync(() => mnuSpecialPossess.Visible = blnVisible, GenericToken);
@@ -1361,7 +1410,9 @@ namespace Chummer
         {
             try
             {
-                await RefreshAttributes(pnlAttributes, e, lblAttributes, -1, await lblAttributesAug.DoThreadSafeFuncAsync(x => x.PreferredWidth), await lblAttributesMetatype.DoThreadSafeFuncAsync(x => x.PreferredWidth));
+                await RefreshAttributes(pnlAttributes, e, lblAttributes, -1,
+                                        await lblAttributesAug.DoThreadSafeFuncAsync(x => x.PreferredWidth, GenericToken),
+                                        await lblAttributesMetatype.DoThreadSafeFuncAsync(x => x.PreferredWidth, GenericToken));
             }
             catch (OperationCanceledException)
             {
@@ -1395,9 +1446,16 @@ namespace Chummer
             await RefreshFociFromGear(treFoci, null, e);
         }
 
-        private void DrugCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void DrugCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshDrugs(treCustomDrugs, e);
+            try
+            {
+                await RefreshDrugs(treCustomDrugs, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void GearLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -2413,11 +2471,11 @@ namespace Chummer
                                 await RefreshQualities(treQualities, cmsQuality);
                                 await RefreshSpirits(panSpirits, panSprites);
                                 await RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
-                                RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
-                                RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
-                                RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
-                                RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
-                                RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
+                                await RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
+                                await RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                                await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                                await RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
+                                await RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
                                 await RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
                                 await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
                                 await RefreshContacts(panContacts, panEnemies, panPets);
@@ -2436,7 +2494,7 @@ namespace Chummer
                                                 cmsVehicleGear,
                                                 cmsWeaponMount,
                                                 cmsVehicleCyberware, cmsVehicleCyberwareGear);
-                                RefreshDrugs(treCustomDrugs);
+                                await RefreshDrugs(treCustomDrugs);
                                 await this.DoThreadSafeAsync(() =>
                                 {
                                     treWeapons.SortCustomOrder();
