@@ -352,13 +352,13 @@ namespace Chummer
                                     await RefreshCalendar(lstCalendar);
                                     await RefreshContacts(panContacts, panEnemies, panPets);
 
-                                    RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                                    await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
                                     await RefreshGears(treGear, cmsGearLocation, cmsGear, await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken));
                                     await RefreshFociFromGear(treFoci, null);
-                                    RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
-                                    RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
+                                    await RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
+                                    await RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
                                                    cmsWeaponAccessoryGear);
-                                    RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
+                                    await RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
                                                     cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
                                                     cmsVehicleGear,
                                                     cmsWeaponMount,
@@ -1427,9 +1427,16 @@ namespace Chummer
             }
         }
 
-        private void ArmorCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void ArmorCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear, e);
+            try
+            {
+                await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void ArmorLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1444,9 +1451,16 @@ namespace Chummer
             }
         }
 
-        private void WeaponCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void WeaponCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, e);
+            try
+            {
+                await RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void WeaponLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1498,14 +1512,30 @@ namespace Chummer
             }
         }
 
-        private void CyberwareCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void CyberwareCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, e);
+            try
+            {
+                await RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
-        private void VehicleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void VehicleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsVehicleCyberware, cmsVehicleCyberwareGear, e);
+            try
+            {
+                await RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
+                                      cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear,
+                                      cmsWeaponMount, cmsVehicleCyberware, cmsVehicleCyberwareGear, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void VehicleLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -2525,13 +2555,13 @@ namespace Chummer
                                                        flpSustainedCritterPowers, chkPsycheActiveMagician,
                                                        chkPsycheActiveTechnomancer);
 
-                                RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                                await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
                                 await RefreshGears(treGear, cmsGearLocation, cmsGear, await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken));
                                 await RefreshFociFromGear(treFoci, null);
-                                RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
-                                RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
+                                await RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
+                                await RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
                                                cmsWeaponAccessoryGear);
-                                RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
+                                await RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
                                                 cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
                                                 cmsVehicleGear,
                                                 cmsWeaponMount,

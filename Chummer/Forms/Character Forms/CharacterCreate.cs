@@ -408,13 +408,13 @@ namespace Chummer
                                     await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
                                     await RefreshContacts(panContacts, panEnemies, panPets);
 
-                                    RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                                    await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
                                     await RefreshGears(treGear, cmsGearLocation, cmsGear, await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken));
                                     await RefreshFociFromGear(treFoci, null);
-                                    RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
-                                    RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
+                                    await RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
+                                    await RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
                                                    cmsWeaponAccessoryGear);
-                                    RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
+                                    await RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
                                                     cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
                                                     cmsVehicleGear,
                                                     cmsWeaponMount,
@@ -2103,13 +2103,13 @@ namespace Chummer
                                 await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
                                 await RefreshContacts(panContacts, panEnemies, panPets);
 
-                                RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                                await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
                                 await RefreshGears(treGear, cmsGearLocation, cmsGear, await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken));
                                 await RefreshFociFromGear(treFoci, null);
-                                RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
-                                RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
+                                await RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
+                                await RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
                                                cmsWeaponAccessoryGear);
-                                RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
+                                await RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
                                                 cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
                                                 cmsVehicleGear,
                                                 cmsWeaponMount,
@@ -12553,9 +12553,9 @@ namespace Chummer
         /// <summary>
         /// Save the Character.
         /// </summary>
-        public override ValueTask<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false, CancellationToken token = default)
+        public override async ValueTask<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false, CancellationToken token = default)
         {
-            return base.SaveCharacter(blnNeedConfirm, blnDoCreated || chkCharacterCreated.Checked, token);
+            return await base.SaveCharacter(blnNeedConfirm, blnDoCreated || await chkCharacterCreated.DoThreadSafeFuncAsync(x => x.Checked, token), token);
         }
 
         /// <summary>
@@ -12563,9 +12563,9 @@ namespace Chummer
         /// </summary>
         /// <param name="blnDoCreated">If True, forces the character to be saved in Career Mode (if possible to do so).</param>
         /// <param name="token">Cancellation token to use.</param>
-        public override ValueTask<bool> SaveCharacterAs(bool blnDoCreated = false, CancellationToken token = default)
+        public override async ValueTask<bool> SaveCharacterAs(bool blnDoCreated = false, CancellationToken token = default)
         {
-            return base.SaveCharacterAs(blnDoCreated || chkCharacterCreated.Checked, token);
+            return await base.SaveCharacterAs(blnDoCreated || await chkCharacterCreated.DoThreadSafeFuncAsync(x => x.Checked, token), token);
         }
 
         /// <summary>
@@ -17417,9 +17417,16 @@ namespace Chummer
             }
         }
 
-        private void ArmorCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void ArmorCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear, e);
+            try
+            {
+                await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void ArmorLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -17434,9 +17441,16 @@ namespace Chummer
             }
         }
 
-        private void WeaponCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void WeaponCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, e);
+            try
+            {
+                await RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void WeaponLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -17488,14 +17502,30 @@ namespace Chummer
             }
         }
 
-        private void CyberwareCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void CyberwareCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, e);
+            try
+            {
+                await RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
-        private void VehicleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void VehicleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsWeaponMount, cmsVehicleCyberware, cmsVehicleCyberwareGear, e);
+            try
+            {
+                await RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
+                                      cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear,
+                                      cmsWeaponMount, cmsVehicleCyberware, cmsVehicleCyberwareGear, e);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void VehicleLocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
