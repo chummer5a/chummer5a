@@ -6714,32 +6714,39 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public void SetupChildrenWeaponsCollectionChanged(bool blnAdd, TreeView treWeapons, ContextMenuStrip cmsWeapon = null, ContextMenuStrip cmsWeaponAccessory = null, ContextMenuStrip cmsWeaponAccessoryGear = null)
+        public void SetupChildrenWeaponsCollectionChanged(bool blnAdd, TreeView treWeapons, ContextMenuStrip cmsWeapon = null, ContextMenuStrip cmsWeaponAccessory = null, ContextMenuStrip cmsWeaponAccessoryGear = null, NotifyCollectionChangedEventHandler funcMakeDirty = null)
         {
             if (blnAdd)
             {
                 async void FuncUnderbarrelWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                     await this.RefreshChildrenWeapons(treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear,
-                                                      null, y);
+                                                      null, y, funcMakeDirty);
                 async void FuncWeaponAccessoriesToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                     await this.RefreshWeaponAccessories(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear,
-                                                        () => UnderbarrelWeapons.Count, y);
+                                                        () => UnderbarrelWeapons.Count, y, funcMakeDirty);
 
                 UnderbarrelWeapons.AddTaggedCollectionChanged(treWeapons, FuncUnderbarrelWeaponsToAdd);
                 WeaponAccessories.AddTaggedCollectionChanged(treWeapons, FuncWeaponAccessoriesToAdd);
+                if (funcMakeDirty != null)
+                {
+                    UnderbarrelWeapons.AddTaggedCollectionChanged(treWeapons, funcMakeDirty);
+                    WeaponAccessories.AddTaggedCollectionChanged(treWeapons, funcMakeDirty);
+                }
                 foreach (Weapon objChild in UnderbarrelWeapons)
                 {
-                    objChild.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
+                    objChild.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, funcMakeDirty);
                 }
 
                 foreach (WeaponAccessory objChild in WeaponAccessories)
                 {
                     async void FuncWeaponAccessoryGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                        await objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y);
+                        await objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y, funcMakeDirty);
 
                     objChild.GearChildren.AddTaggedCollectionChanged(treWeapons, FuncWeaponAccessoryGearToAdd);
+                    if (funcMakeDirty != null)
+                        objChild.GearChildren.AddTaggedCollectionChanged(treWeapons, funcMakeDirty);
                     foreach (Gear objGear in objChild.GearChildren)
-                        objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear);
+                        objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear, funcMakeDirty);
                 }
             }
             else

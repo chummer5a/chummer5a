@@ -3975,17 +3975,19 @@ namespace Chummer.Backend.Equipment
                 objParentNode.Expand();
         }
 
-        public void SetupChildrenGearsCollectionChanged(bool blnAdd, TreeView treGear, ContextMenuStrip cmsGear = null)
+        public void SetupChildrenGearsCollectionChanged(bool blnAdd, TreeView treGear, ContextMenuStrip cmsGear = null, NotifyCollectionChangedEventHandler funcMakeDirty = null)
         {
             if (blnAdd)
             {
                 async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                    await this.RefreshChildrenGears(treGear, cmsGear, null, y);
+                    await this.RefreshChildrenGears(treGear, cmsGear, null, y, funcMakeDirty);
 
                 Children.AddTaggedCollectionChanged(treGear, FuncDelegateToAdd);
+                if (funcMakeDirty != null)
+                    Children.AddTaggedCollectionChanged(treGear, funcMakeDirty);
                 foreach (Gear objChild in Children)
                 {
-                    objChild.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear);
+                    objChild.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear, funcMakeDirty);
                 }
             }
             else
