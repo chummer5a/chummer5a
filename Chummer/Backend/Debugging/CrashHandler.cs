@@ -209,10 +209,15 @@ namespace Chummer.Backend
                 byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
                 File.WriteAllBytes(Path.Combine(Utils.GetStartupPath, "json.txt"), info);
 
-                //Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt") + " --debug");
-                Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt"));
-
-                crashHandler?.WaitForExit();
+#if DEBUG
+                using (Process crashHandler
+                       = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt")
+                                                                + " --debug"))
+#else
+                using (Process crashHandler
+                       = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt")))
+#endif
+                    crashHandler?.WaitForExit();
             }
             catch (Exception nex)
             {

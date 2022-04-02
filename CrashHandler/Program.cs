@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
 using System.Windows.Forms;
 
 [assembly: CLSCompliant(true)]
@@ -17,8 +16,6 @@ namespace CrashHandler
                 {"crash", ShowCrashReport}
             };
 
-        internal static HttpClient UploadClient { get; } = new HttpClient();
-
         private static void ShowCrashReport(string[] args)
         {
             if (args.Contains("--debug") && !Debugger.IsAttached)
@@ -26,30 +23,9 @@ namespace CrashHandler
                 Debugger.Launch();
             }
 
-            CrashDumper dmper = null;
-            try
+            using (CrashDumper objDumper = new CrashDumper(args[0]))
             {
-                dmper = new CrashDumper(args[0]);
-                CrashReporter reporter = new CrashReporter(dmper);
-
-                Application.Run(reporter);
-
-                if (reporter.DialogResult == DialogResult.OK)
-                {
-                    Application.Run(new NoMoreUserInput(dmper));
-                }
-            }
-            finally
-            {
-                //Last ditch attempt at closing chummer if not done yet
-                try
-                {
-                    dmper?.Process?.Kill();
-                }
-                catch
-                {
-                    // ignored
-                }
+                Application.Run(new CrashReporter(objDumper));
             }
         }
 

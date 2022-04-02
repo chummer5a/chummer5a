@@ -1,12 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30523.141
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chummer", "Chummer\Chummer.csproj", "{95279469-5A3E-42E6-993C-6A403586C86E}"
-	ProjectSection(ProjectDependencies) = postProject
-		{8C904468-F3A3-4034-B2DE-ED532803AD38} = {8C904468-F3A3-4034-B2DE-ED532803AD38}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3BA63651-26F7-43C4-B47A-AEA1E4181434}"
 	ProjectSection(SolutionItems) = preProject
@@ -17,6 +14,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrashHandler", "CrashHandler\CrashHandler.csproj", "{8C904468-F3A3-4034-B2DE-ED532803AD38}"
+	ProjectSection(ProjectDependencies) = postProject
+		{95279469-5A3E-42E6-993C-6A403586C86E} = {95279469-5A3E-42E6-993C-6A403586C86E}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChummerDataViewer", "ChummerDataViewer\ChummerDataViewer.csproj", "{9951D983-ED70-4F91-A958-8C13F006CB24}"
 EndProject

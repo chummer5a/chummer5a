@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,18 +6,11 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Web.Script.Serialization;
-using System.Windows.Forms;
-using Org.BouncyCastle.Crypto.Engines;
-using Org.BouncyCastle.Crypto.Modes;
-using Org.BouncyCastle.Crypto.Parameters;
+using Chummer;
+using Microsoft.Win32.SafeHandles;
 
 namespace CrashHandler
 {
@@ -26,13 +18,12 @@ namespace CrashHandler
     {
         public Dictionary<string, string> PretendFiles => _lstPretendFilePaths;
         public Dictionary<string, string> Attributes => _attributes;
-        public CrashDumperProgress Progress => _progress;
+        public CrashDumperProgress Progress => _eProgress;
 
         public event Action<object, CrashDumperProgressChangedEventArgs> CrashDumperProgressChanged;
 
         public string WorkingDirectory { get; }
         public Process Process { get; private set; }
-        public bool DoCleanUp { get; set; } = true;
 
         private readonly ConcurrentDictionary<string, string> _dicFilePaths;
         private readonly Dictionary<string, string> _lstPretendFilePaths;
@@ -40,32 +31,24 @@ namespace CrashHandler
         private readonly short _procId;
         private readonly IntPtr _exceptionPrt;
         private readonly uint _threadId;
-        private volatile CrashDumperProgress _progress;
+        private volatile CrashDumperProgress _eProgress;
         private readonly BackgroundWorker _worker = new BackgroundWorker();
-        private readonly ManualResetEventSlim _startSendEvent = new ManualResetEventSlim(false);
-        private string _strLatestDumpName = string.Empty;
-        private readonly Random _objRandom = new Random();
 
         private readonly StreamWriter CrashLogWriter;
+        private bool _blnDumpCreationSuccessful;
 
         /// <summary>
-        ///
+        /// Start up the crash dump collector from a Base64-encoded string containing the serialized info for the crash.
         /// </summary>
-        /// <param name="b64Json">String path of the text file that contains our JSON package.</param>
-        public CrashDumper(string b64Json)
+        /// <param name="strBase64Json">String path of the text file that contains our JSON package.</param>
+        public CrashDumper(string strBase64Json)
         {
-            CrashLogWriter = new StreamWriter(
-                Path.ChangeExtension(
-                    Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory),
-                        GenerateFolderName()
-                    ),
-                    "txt"), false, Encoding.UTF8);
+            CrashLogWriter = new StreamWriter(CrashDumpLogName, false, Encoding.UTF8);
 
             CrashLogWriter.WriteLine("This file contains information on a crash report for Chummer5A.");
             CrashLogWriter.WriteLine("You can safely delete this file, but a developer might want to look at it.");
 
-            if (!Deserialize(b64Json, out _procId, out _dicFilePaths, out _lstPretendFilePaths, out _attributes,
+            if (!Deserialize(strBase64Json, out _procId, out _dicFilePaths, out _lstPretendFilePaths, out _attributes,
                 out _threadId, out _exceptionPrt))
             {
                 throw new ArgumentException("Could not deserialize");
@@ -80,16 +63,9 @@ namespace CrashHandler
             CrashLogWriter.WriteLine("Crash id is " + _attributes["visible-crash-id"]);
             CrashLogWriter.Flush();
 
-            //		    _filesList = new List<string>();
-            //		    _attributes = new Dictionary<string, string>()
-            //		    {
-            //		        {"visible-error-friendly", "FAKE"},
-            //		        {"visible-crash-id", Guid.NewGuid().ToString()}
-            //		    };
-            //		    _pretendFiles = new Dictionary<string, string>();
-
-            WorkingDirectory = Path.Combine(Path.GetTempPath(), GenerateFolderName());
+            WorkingDirectory = Path.Combine(Utils.GetTempPath(), CrashDumpName);
             Directory.CreateDirectory(WorkingDirectory);
+
             Attributes["visible-crashhandler-major-minor"] = "v3_0";
 
             CrashLogWriter.WriteLine("Crash working directory is " + WorkingDirectory);
@@ -98,11 +74,12 @@ namespace CrashHandler
             _worker.WorkerReportsProgress = false;
             _worker.WorkerSupportsCancellation = false;
             _worker.DoWork += CollectCrashDump;
+            _worker.RunWorkerCompleted += SetProgressFinishedIfAppropriate;
         }
 
-        private void AttemptDebug(Process process)
+        private void AttemptDebug(Process objProcess)
         {
-            bool blnSuccess = NativeMethods.DebugActiveProcess(new IntPtr(process.Id));
+            bool blnSuccess = NativeMethods.DebugActiveProcess(new IntPtr(objProcess.Id));
             int intLastError = Marshal.GetLastWin32Error();
             if (blnSuccess)
             {
@@ -114,19 +91,13 @@ namespace CrashHandler
             }
         }
 
-        public void AllowSending()
-        {
-            _startSendEvent.Set();
-        }
+        private static string CrashDumpName { get; } = "chummer_crash_" + DateTime.UtcNow.ToFileTimeUtc();
 
-        private static string GenerateFolderName()
-        {
-            return $"chummer_crash_{DateTime.UtcNow.ToFileTimeUtc()}";
-        }
+        private static string CrashDumpLogName { get; } = Path.Combine(Utils.GetStartupPath, CrashDumpName + ".log");
 
         private void SetProgress(CrashDumperProgress progress)
         {
-            _progress = progress;
+            _eProgress = progress;
             CrashDumperProgressChanged?.Invoke(this, new CrashDumperProgressChangedEventArgs(progress));
         }
 
@@ -139,106 +110,99 @@ namespace CrashHandler
         private async void CollectCrashDump(object sender, DoWorkEventArgs e)
         {
             SetProgress(CrashDumperProgress.Started);
+            await CrashLogWriter.WriteLineAsync("Starting dump collection");
+            await CrashLogWriter.FlushAsync();
             try
             {
                 Process = Process.GetProcessById(_procId);
 
                 SetProgress(CrashDumperProgress.Debugger);
+                await CrashLogWriter.WriteLineAsync("Attempting to attach debugger");
+                await CrashLogWriter.FlushAsync();
                 AttemptDebug(Process);
-
+                await CrashLogWriter.WriteLineAsync("Debugger handled");
+                await CrashLogWriter.FlushAsync();
                 SetProgress(CrashDumperProgress.CreateDmp);
-                if (CreateDump(Process, _exceptionPrt, _threadId, Attributes.ContainsKey("debugger-attached-success")))
+                await CrashLogWriter.WriteLineAsync("Creating minidump");
+                await CrashLogWriter.FlushAsync();
+                if (!CreateDump(Process, _exceptionPrt, _threadId, Attributes.ContainsKey("debugger-attached-success")))
                 {
-                    Process.Kill();
+                    await CrashLogWriter.WriteLineAsync("Failed to create minidump, aborting");
+                    await CrashLogWriter.FlushAsync();
                     SetProgress(CrashDumperProgress.Error);
                     return;
                 }
 
+                await CrashLogWriter.WriteLineAsync("Successfully created minidump");
+                await CrashLogWriter.FlushAsync();
                 SetProgress(CrashDumperProgress.CreateFiles);
+                await CrashLogWriter.WriteLineAsync("Creating files containing crash information");
+                await CrashLogWriter.FlushAsync();
                 GetValue();
-
+                await CrashLogWriter.WriteLineAsync("Successfully created files containing crash information");
+                await CrashLogWriter.FlushAsync();
                 SetProgress(CrashDumperProgress.CopyFiles);
+                await CrashLogWriter.WriteLineAsync("Copying all needed files to working directory");
+                await CrashLogWriter.FlushAsync();
                 CopyFiles();
-
-                SetProgress(CrashDumperProgress.FinishedCollecting);
-
-                _startSendEvent.Wait();
-
                 await CrashLogWriter.WriteLineAsync("Files collected");
                 await CrashLogWriter.FlushAsync();
-
                 SetProgress(CrashDumperProgress.Compressing);
-                byte[] zip = GetZip();
-
-                SetProgress(CrashDumperProgress.Encrypting);
-                byte[] encrypted = Encrypt(zip, out byte[] iv, out byte[] key);
-
-                SetProgress(CrashDumperProgress.Uploading);
-                string location = await Upload(encrypted);
-
-                await CrashLogWriter.WriteLineAsync("Files uploaded");
+                await CrashLogWriter.WriteLineAsync("Creating .zip file");
                 await CrashLogWriter.FlushAsync();
-
-                SetProgress(CrashDumperProgress.Saving);
-                Attributes["visible-key"] = MakeStringKey(iv, key);
-                Attributes["visible-location"] = location;
-
-                Task tskUpload = UploadToAws();
-
-                await CrashLogWriter.WriteLineAsync("Key saved");
+                ZipFile.CreateFromDirectory(WorkingDirectory,
+                                            Path.Combine(Utils.GetStartupPath, CrashDumpName) + ".zip",
+                                            CompressionLevel.Optimal, false, Encoding.UTF8);
+                await CrashLogWriter.WriteLineAsync("Zip file created");
                 await CrashLogWriter.FlushAsync();
-
-                SetProgress(CrashDumperProgress.Cleanup);
-
-                if (DoCleanUp)
-                {
-                    Clean();
-
-                    await CrashLogWriter.WriteLineAsync("Cleanup done");
-                    await CrashLogWriter.FlushAsync();
-                }
-
-                await tskUpload;
-
-                SetProgress(CrashDumperProgress.FinishedSending);
-                Process.Kill();
-            }
-            catch (WebException rex)
-            {
-                SetProgress(CrashDumperProgress.Error);
-
-                MessageBox.Show("Upload service had an error."
-                                + Environment.NewLine + "Reason: " + rex.Message
-                                + Environment.NewLine + Environment.NewLine +
-                                "Please manually submit an issue to https://github.com/chummer5a/chummer5a/issues and attach the file \"" +
-                                _strLatestDumpName + "\" found in \"" + WorkingDirectory + "\".");
-                Process?.Kill();
-            }
-            catch (RemoteServiceException rex)
-            {
-                SetProgress(CrashDumperProgress.Error);
-
-                MessageBox.Show("Upload service had an error."
-                                + Environment.NewLine + "Reason: " + rex.Message
-                                + Environment.NewLine + Environment.NewLine +
-                                "Please manually submit an issue to https://github.com/chummer5a/chummer5a/issues and attach the file \"" +
-                                _strLatestDumpName + "\" found in \"" + WorkingDirectory + "\".");
-                Process?.Kill();
+                e.Result = true;
+                _blnDumpCreationSuccessful = true;
             }
             catch (Exception ex)
             {
-                SetProgress(CrashDumperProgress.Error);
-                MessageBox.Show(ex.ToString());
+                e.Result = false;
+                await CrashLogWriter.WriteLineAsync(
+                    "Encountered the following exception while collecting crash information, aborting");
+                await CrashLogWriter.WriteLineAsync(ex.ToString());
+                await CrashLogWriter.FlushAsync();
+            }
+            finally
+            {
+                SetProgress(CrashDumperProgress.Cleanup);
+                try
+                {
+                    await CrashLogWriter.WriteLineAsync("Cleaning up working directory");
+                    await CrashLogWriter.FlushAsync();
+                    Clean();
+                    await CrashLogWriter.WriteLineAsync("Cleanup done");
+                    await CrashLogWriter.FlushAsync();
+                }
+                catch (Exception ex)
+                {
+                    await CrashLogWriter.WriteLineAsync(
+                        "Encountered the following exception while cleaning up working directory, skipping cleanup");
+                    await CrashLogWriter.WriteLineAsync(ex.ToString());
+                    await CrashLogWriter.FlushAsync();
+                }
+            }
+        }
 
-                Process?.Kill();
+        private void SetProgressFinishedIfAppropriate(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if ((bool)e.Result)
+            {
+                SetProgress(CrashDumperProgress.Finished);
+            }
+            else
+            {
+                SetProgress(CrashDumperProgress.Error);
             }
         }
 
         private bool CreateDump(Process process, IntPtr exceptionInfo, uint threadId, bool debugger)
         {
-            bool ret;
-            _strLatestDumpName = "crashdump-" + DateTime.Now.ToFileTimeUtc().ToString() + ".dmp";
-            using (FileStream file = File.Create(Path.Combine(WorkingDirectory, _strLatestDumpName)))
+            bool blnSuccess = false;
+            using (FileStream file = File.Create(Path.Combine(WorkingDirectory, CrashDumpName + ".dmp")))
             {
                 MiniDumpExceptionInformation info = new MiniDumpExceptionInformation
                 {
@@ -256,31 +220,31 @@ namespace CrashHandler
 
                 bool extraInfo = !(exceptionInfo == IntPtr.Zero || threadId == 0 || !debugger);
 
-                if (extraInfo)
+                using (SafeFileHandle objHandle = file.SafeFileHandle)
                 {
-                    ret = !NativeMethods.MiniDumpWriteDump(process.Handle, _procId,
-                        file.SafeFileHandle?.DangerousGetHandle() ?? IntPtr.Zero,
-                        dtype, ref info, IntPtr.Zero, IntPtr.Zero);
-                }
-                else if (NativeMethods.MiniDumpWriteDump(process.Handle, _procId,
-                    file.SafeFileHandle?.DangerousGetHandle() ?? IntPtr.Zero,
-                    dtype, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero))
-                {
-                    ret = false;
+                    if (extraInfo)
+                    {
+                        blnSuccess = NativeMethods.MiniDumpWriteDump(process.Handle, _procId,
+                                                                     objHandle?.DangerousGetHandle()
+                                                                     ?? IntPtr.Zero,
+                                                                     dtype, ref info, IntPtr.Zero, IntPtr.Zero);
+                    }
+                    else if (NativeMethods.MiniDumpWriteDump(process.Handle, _procId,
+                                                             objHandle?.DangerousGetHandle() ?? IntPtr.Zero,
+                                                             dtype, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero))
+                    {
+                        blnSuccess = true;
 
-                    //Might solve the problem if crashhandler stops working on remote (hah)
-                    Attributes["debug-debug-exception-info"] = exceptionInfo.ToString();
-                    Attributes["debug-debug-thread-id"] = threadId.ToString();
-                }
-                else
-                {
-                    ret = true;
+                        //Might solve the problem if crashhandler stops working on remote (hah)
+                        Attributes["debug-debug-exception-info"] = exceptionInfo.ToString();
+                        Attributes["debug-debug-thread-id"] = threadId.ToString();
+                    }
                 }
 
                 file.Flush();
             }
 
-            return ret;
+            return blnSuccess;
         }
 
         private void GetValue()
@@ -308,142 +272,32 @@ namespace CrashHandler
                     if (!File.Exists(strFilePath))
                         continue;
 
-                    string name = Path.GetFileName(strFilePath) ?? string.Empty;
-                    string destination = Path.Combine(WorkingDirectory, name);
-                    File.Copy(strFilePath, destination);
+                    string strFileName = Path.GetFileName(strFilePath) ?? string.Empty;
+                    if (string.IsNullOrEmpty(strFileName))
+                        continue;
+                    string strDestination = Path.Combine(WorkingDirectory, strFileName);
+                    File.Copy(strFilePath, strDestination);
                 }
-            }
-        }
-
-        private byte[] GetZip()
-        {
-            byte[] objReturn;
-            using (MemoryStream mem = new MemoryStream())
-            {
-                // archive.Dispose() should call mem.Dispose()
-                using (ZipArchive archive = new ZipArchive(mem, ZipArchiveMode.Create, false))
-                {
-                    foreach (string file in Directory.EnumerateFiles(WorkingDirectory))
-                    {
-                        archive.CreateEntryFromFile(file, Path.GetFileName(file));
-                    }
-
-                    objReturn = mem.ToArray();
-                }
-            }
-
-            return objReturn;
-        }
-
-        private byte[] Encrypt(byte[] unencrypted, out byte[] Iv, out byte[] Key)
-        {
-            // Generate a 256-bit key for AES-256
-            Key = new byte[32];
-            _objRandom.NextBytes(Key);
-            // Using random nonce large enough not to repeat
-            Iv = new byte[12];
-            _objRandom.NextBytes(Iv);
-            GcmBlockCipher objCipher = new GcmBlockCipher(new AesEngine());
-            objCipher.Init(true, new AeadParameters(new KeyParameter(Key), 128, Iv, null));
-
-            byte[] encrypted = new byte[objCipher.GetOutputSize(unencrypted.Length)];
-            int len = objCipher.ProcessBytes(unencrypted, 0, unencrypted.Length, encrypted, 0);
-            objCipher.DoFinal(encrypted, len);
-            return encrypted;
-        }
-
-        private static async Task<string> Upload(byte[] payload)
-        {
-            using (MemoryStream stream = new MemoryStream(payload))
-            {
-                using (StreamContent content = new StreamContent(stream))
-                {
-                    content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
-                    using (HttpResponseMessage response =
-                           await Program.UploadClient.PostAsync(@"http://crashdump.chummer.net/api/crashdumper/upload", content))
-                    {
-                        string resp = await response.Content.ReadAsStringAsync();
-
-                        return ExtractUrl(resp);
-                    }
-                }
-            }
-        }
-
-        private static string ExtractUrl(string input)
-        {
-            try
-            {
-                Dictionary<string, object> top =
-                    new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(input);
-                if ("success".Equals(top["status"]))
-                {
-                    Dictionary<string, object> files = (Dictionary<string, object>) ((ArrayList) top["files"])[0];
-                    string ret = (string) files["url"];
-                    return ret;
-                }
-
-                throw new RemoteServiceException(top["reason"].ToString());
-            }
-            catch (ArgumentException)
-            {
-                throw new RemoteServiceException("Unable to connect to Crash Dump upload server.");
-            }
-        }
-
-        private async Task UploadToAws()
-        {
-            Dictionary<string, string> upload = Attributes
-                .Where(x => x.Key.StartsWith("visible-", StringComparison.Ordinal))
-                .ToDictionary(x => x.Key.Replace("visible-", string.Empty).Replace('-', '_'), x => x.Value);
-            string payload = new JavaScriptSerializer().Serialize(upload);
-
-            using (StringContent payloadString = new StringContent(payload))
-            {
-                await Program.UploadClient.PostAsync(
-                    "https://ccbysveroa.execute-api.eu-central-1.amazonaws.com/prod/ChummerCrashService",
-                    payloadString);
-                //HttpResponseMessage msg = client.PostAsync("https://ccbysveroa.execute-api.eu-central-1.amazonaws.com/prod/ChummerCrashService", new StringContent(payload)).Result;
-
-                //string result = msg.Content.ReadAsStringAsync().Result;
             }
         }
 
         private void Clean()
         {
-            Directory.Delete(WorkingDirectory, true);
+            if (!Directory.Exists(WorkingDirectory))
+                return;
+            try
+            {
+                Directory.Delete(WorkingDirectory, true);
+            }
+            catch (IOException)
+            {
+                // swallow this
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // swallow this
+            }
         }
-
-        //public void StartPoint(string[] args)
-        //{
-        //	if (args.Length == 0)
-        //	{
-        //		{
-        //			return ;
-        //		}
-        //	}
-
-        //	 return;
-
-        //	Process process = Process.GetProcessById(procId);
-
-        //	FileStream file = File.Create("dump.dmp");
-
-        //	if (DbgHlp.MiniDumpWriteDump(process.Handle, procId, file.SafeFileHandle.DangerousGetHandle(),
-        //		MINIDUMP_TYPE.MiniDumpWithPrivateReadWriteMemory |
-        //		MINIDUMP_TYPE.MiniDumpWithDataSegs |
-        //		MINIDUMP_TYPE.MiniDumpWithHandleData |
-        //		MINIDUMP_TYPE.MiniDumpWithFullMemoryInfo |
-        //		MINIDUMP_TYPE.MiniDumpWithThreadInfo |
-        //		MINIDUMP_TYPE.MiniDumpWithUnloadedModules, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero))
-        //	{
-        //	}
-        //	else
-        //	{
-        //		int errorNo = Marshal.GetLastWin32Error();
-        //		return;
-        //	}
-        //}
 
         private static bool Deserialize(string strBase64json,
             out short shrProcessId,
@@ -491,28 +345,35 @@ namespace CrashHandler
             return false;
         }
 
-        private static string MakeStringKey(IEnumerable<byte> iv, IEnumerable<byte> key)
-        {
-            return string.Concat(iv.Select(x => x.ToString("X2"))) + ':' +
-                   string.Concat(key.Select(x => x.ToString("X2")));
-        }
-
         #region IDisposable Support
 
-        private bool disposedValue; // To detect redundant calls
+        private bool _blnIsDisposed; // To detect redundant calls
 
         private void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (_blnIsDisposed)
+                return;
+            if (disposing)
             {
-                if (disposing)
+                CrashLogWriter?.Close();
+                if (_blnDumpCreationSuccessful && File.Exists(CrashDumpLogName))
                 {
-                    _startSendEvent.Dispose();
-                    CrashLogWriter?.Close();
+                    try
+                    {
+                        File.Delete(CrashDumpLogName);
+                    }
+                    catch (IOException)
+                    {
+                        //swallow this
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        //swallow this
+                    }
                 }
-
-                disposedValue = true;
             }
+
+            _blnIsDisposed = true;
         }
 
         // Override destructor only if Dispose(bool disposing) above has code to free unmanaged resources.
@@ -530,14 +391,6 @@ namespace CrashHandler
         #endregion IDisposable Support
     }
 
-    [Serializable]
-    public sealed class RemoteServiceException : Exception
-    {
-        public RemoteServiceException(string toString) : base(toString)
-        {
-        }
-    }
-
     public class CrashDumperProgressChangedEventArgs : EventArgs
     {
         public CrashDumperProgress Progress { get; }
@@ -553,7 +406,8 @@ namespace CrashHandler
         [Description("Started collecting error information")]
         Started,
 
-        [Description("Attaching Debugger")] Debugger,
+        [Description("Attaching Debugger")]
+        Debugger,
 
         [Description("Saving crash dump (this might take a while)")]
         CreateDmp,
@@ -561,27 +415,17 @@ namespace CrashHandler
         [Description("Saving additional information")]
         CreateFiles,
 
-        [Description("Copying relevant files")]
+        [Description("Copying relevant files to a temporary location")]
         CopyFiles,
 
-        [Description("Ready to send crash information")]
-        FinishedCollecting,
-
-        [Description("Compressing crash information")]
+        [Description("Creating .zip file of all crash information")]
         Compressing,
-
-        [Description("Encrypting crash information")]
-        Encrypting,
-
-        [Description("Uploading (this might take a while)")]
-        Uploading,
-
-        [Description("Saving and verifying")] Saving,
 
         [Description("Cleaning temporary files")]
         Cleanup,
 
-        [Description("Finished")] FinishedSending,
+        [Description("Finished creating .zip file containing all crash information")]
+        Finished,
 
         [Description("An error happened while collecting crash information")]
         Error

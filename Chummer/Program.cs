@@ -244,9 +244,9 @@ namespace Chummer
                             {
                                 Log.Error(ex1);
                             }
-#if !DEBUG
+
+                            Utils.BreakIfDebug();
                             CrashHandler.WebMiniDumpHandler(ex);
-#endif
                         }
                     }
 
