@@ -6718,8 +6718,15 @@ namespace Chummer.Backend.Equipment
         {
             if (blnAdd)
             {
-                UnderbarrelWeapons.AddTaggedCollectionChanged(treWeapons, (x, y) => this.RefreshChildrenWeapons(treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, null, y));
-                WeaponAccessories.AddTaggedCollectionChanged(treWeapons, (x, y) => this.RefreshWeaponAccessories(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear, () => UnderbarrelWeapons.Count, y));
+                async void FuncUnderbarrelWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                    await this.RefreshChildrenWeapons(treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear,
+                                                      null, y);
+                async void FuncWeaponAccessoriesToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                    await this.RefreshWeaponAccessories(treWeapons, cmsWeaponAccessory, cmsWeaponAccessoryGear,
+                                                        () => UnderbarrelWeapons.Count, y);
+
+                UnderbarrelWeapons.AddTaggedCollectionChanged(treWeapons, FuncUnderbarrelWeaponsToAdd);
+                WeaponAccessories.AddTaggedCollectionChanged(treWeapons, FuncWeaponAccessoriesToAdd);
                 foreach (Weapon objChild in UnderbarrelWeapons)
                 {
                     objChild.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear);
@@ -6727,10 +6734,10 @@ namespace Chummer.Backend.Equipment
 
                 foreach (WeaponAccessory objChild in WeaponAccessories)
                 {
-                    async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                    async void FuncWeaponAccessoryGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                         await objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y);
 
-                    objChild.GearChildren.AddTaggedCollectionChanged(treWeapons, FuncDelegateToAdd);
+                    objChild.GearChildren.AddTaggedCollectionChanged(treWeapons, FuncWeaponAccessoryGearToAdd);
                     foreach (Gear objGear in objChild.GearChildren)
                         objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear);
                 }

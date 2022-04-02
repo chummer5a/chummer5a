@@ -3905,92 +3905,130 @@ namespace Chummer
                         foreach (Vehicle objVehicle in CharacterObject.Vehicles)
                         {
                             AddToTree(objVehicle, -1, false);
+
+                            async void FuncVehicleModsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                await objVehicle.RefreshVehicleMods(
+                                    treVehicles, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon,
+                                    cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y);
+
+                            async void
+                                FuncVehicleWeaponMountsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                await objVehicle.RefreshVehicleWeaponMounts(
+                                    treVehicles, cmsVehicleWeaponMount, cmsVehicleWeapon,
+                                    cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware,
+                                    cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y);
+
+                            async void FuncVehicleWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                await objVehicle.RefreshChildrenWeapons(
+                                    treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
+                                    cmsVehicleWeaponAccessoryGear,
+                                    () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
+                                    y);
+
                             objVehicle.Mods.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                            objVehicle.Mods.AddTaggedCollectionChanged(treVehicles,
-                                                                       (x, y) => objVehicle.RefreshVehicleMods(treVehicles, cmsVehicle, cmsCyberware,
-                                                                           cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                                                           cmsVehicleWeaponAccessoryGear, null, y));
+                            objVehicle.Mods.AddTaggedCollectionChanged(treVehicles, FuncVehicleModsToAdd);
                             objVehicle.WeaponMounts.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                            objVehicle.WeaponMounts.AddTaggedCollectionChanged(treVehicles,
-                                                                               (x, y) => objVehicle.RefreshVehicleWeaponMounts(treVehicles, cmsVehicleWeaponMount,
-                                                                                   cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
-                                                                                   cmsCyberware, cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y));
+                            objVehicle.WeaponMounts.AddTaggedCollectionChanged(treVehicles, FuncVehicleWeaponMountsToAdd);
                             objVehicle.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                            objVehicle.Weapons.AddTaggedCollectionChanged(treVehicles,
-                                                                          (x, y) => objVehicle.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
-                                                                              cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
-                                                                              () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
+                            objVehicle.Weapons.AddTaggedCollectionChanged(treVehicles, FuncVehicleWeaponsToAdd);
                             foreach (VehicleMod objMod in objVehicle.Mods)
                             {
+                                async void FuncVehicleModCyberwareToAdd(
+                                    object x, NotifyCollectionChangedEventArgs y) =>
+                                    await objMod.RefreshChildrenCyberware(
+                                        treVehicles, cmsCyberware, cmsCyberwareGear, null, y);
+
+                                async void FuncVehicleModWeaponsToAdd(
+                                    object x, NotifyCollectionChangedEventArgs y) =>
+                                    await objMod.RefreshChildrenWeapons(
+                                        treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
+                                        cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y);
+
                                 objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                objMod.Cyberware.AddTaggedCollectionChanged(treVehicles,
-                                                                            (x, y) => objMod.RefreshChildrenCyberware(treVehicles, cmsCyberware, cmsCyberwareGear,
-                                                                                null, y));
+                                objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, FuncVehicleModCyberwareToAdd);
                                 foreach (Cyberware objCyberware in objMod.Cyberware)
-                                    objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles, cmsCyberware,
-                                        cmsCyberwareGear);
+                                    objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles,
+                                        cmsCyberware, cmsCyberwareGear);
                                 objMod.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                objMod.Weapons.AddTaggedCollectionChanged(treVehicles,
-                                                                          (x, y) => objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
-                                                                              cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
-                                                                              () => objMod.Cyberware.Count, y));
+                                objMod.Weapons.AddTaggedCollectionChanged(treVehicles, FuncVehicleModWeaponsToAdd);
                                 foreach (Weapon objWeapon in objMod.Weapons)
-                                    objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon,
-                                        cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                                    objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
+                                        cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
                             }
 
                             foreach (WeaponMount objMount in objVehicle.WeaponMounts)
                             {
+                                async void FuncWeaponMountVehicleModToAdd(
+                                    object x, NotifyCollectionChangedEventArgs y) =>
+                                    await objMount.RefreshVehicleMods(treVehicles, cmsVehicle, cmsCyberware,
+                                                                      cmsCyberwareGear, cmsVehicleWeapon,
+                                                                      cmsVehicleWeaponAccessory,
+                                                                      cmsVehicleWeaponAccessoryGear, null, y);
+
+                                async void FuncWeaponMountWeaponsToAdd(
+                                    object x, NotifyCollectionChangedEventArgs y) =>
+                                    await objMount.RefreshChildrenWeapons(
+                                        treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
+                                        cmsVehicleWeaponAccessoryGear, () => objMount.Mods.Count, y);
+
                                 objMount.Mods.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                objMount.Mods.AddTaggedCollectionChanged(treVehicles,
-                                                                         (x, y) => objMount.RefreshVehicleMods(treVehicles, cmsVehicle, cmsCyberware,
-                                                                             cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                                                             cmsVehicleWeaponAccessoryGear, null, y));
+                                objMount.Mods.AddTaggedCollectionChanged(treVehicles, FuncWeaponMountVehicleModToAdd);
                                 objMount.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                objMount.Weapons.AddTaggedCollectionChanged(treVehicles,
-                                                                            (x, y) => objMount.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
-                                                                                cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objMount.Mods.Count,
-                                                                                y));
+                                objMount.Weapons.AddTaggedCollectionChanged(treVehicles, FuncWeaponMountWeaponsToAdd);
                                 foreach (Weapon objWeapon in objMount.Weapons)
-                                    objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon,
-                                        cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                                    objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
+                                        cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
                                 foreach (VehicleMod objMod in objMount.Mods)
                                 {
+                                    async void FuncWeaponMountVehicleModCyberwareToAdd(
+                                        object x, NotifyCollectionChangedEventArgs y) =>
+                                        await objMod.RefreshChildrenCyberware(
+                                            treVehicles, cmsCyberware, cmsCyberwareGear, null, y);
+
+                                    async void FuncWeaponMountVehicleModWeaponsToAdd(
+                                        object x, NotifyCollectionChangedEventArgs y) =>
+                                        await objMod.RefreshChildrenWeapons(
+                                            treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
+                                            cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y);
+
+                                    objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+                                    objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, FuncWeaponMountVehicleModCyberwareToAdd);
                                     foreach (Cyberware objCyberware in objMod.Cyberware)
                                         objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles,
                                             cmsCyberware, cmsCyberwareGear);
+                                    objMod.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+                                    objMod.Weapons.AddTaggedCollectionChanged(treVehicles, FuncWeaponMountVehicleModWeaponsToAdd);
                                     foreach (Weapon objWeapon in objMod.Weapons)
-                                        objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon,
-                                            cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                                        objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
+                                            cmsVehicleWeapon, cmsVehicleWeaponAccessory,
+                                            cmsVehicleWeaponAccessoryGear);
                                 }
                             }
 
                             foreach (Weapon objWeapon in objVehicle.Weapons)
-                                objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon,
+                                objWeapon.SetupChildrenWeaponsCollectionChanged(
+                                    true, treVehicles, cmsVehicleWeapon,
                                     cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
-                            objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
 
-                            async void DelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                                await objVehicle.RefreshChildrenGears(treVehicles, cmsVehicleGear,
-                                                                      () => objVehicle.Mods.Count
-                                                                            + objVehicle.Weapons.Count
-                                                                            + (objVehicle.WeaponMounts.Count > 0
-                                                                                ? 1
-                                                                                : 0), y);
-
-                            objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles,
-                                                                               DelegateToAdd);
-                            foreach (Gear objGear in objVehicle.GearChildren)
-                                objGear.SetupChildrenGearsCollectionChanged(true, treVehicles, cmsVehicleGear);
-                            objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, MakeDirty);
-                            objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, FuncDelegateToAdd);
-
-                            async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                            async void FuncVehicleGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                await objVehicle.RefreshChildrenGears(
+                                    treVehicles, cmsVehicleGear,
+                                    () => objVehicle.Mods.Count + objVehicle.Weapons.Count
+                                                                + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
+                                    y);
+                            async void FuncVehicleLocationsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
                                                                 () => objVehicle.Mods.Count + objVehicle.Weapons.Count
                                                                     + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0)
                                                                     + objVehicle.GearChildren.Count(
                                                                         z => z.Location == null), y);
+
+                            objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+                            objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles, FuncVehicleGearToAdd);
+                            foreach (Gear objGear in objVehicle.GearChildren)
+                                objGear.SetupChildrenGearsCollectionChanged(true, treVehicles, cmsVehicleGear);
+                            objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+                            objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, FuncVehicleLocationsToAdd);
                         }
 
                         treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
@@ -4012,35 +4050,52 @@ namespace Chummer
                                 foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.NewItems)
                                 {
                                     AddToTree(objVehicle, intNewIndex);
+
+                                    async void FuncVehicleModsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                        await objVehicle.RefreshVehicleMods(
+                                            treVehicles, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon,
+                                            cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y);
+
+                                    async void
+                                        FuncVehicleWeaponMountsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                        await objVehicle.RefreshVehicleWeaponMounts(
+                                            treVehicles, cmsVehicleWeaponMount, cmsVehicleWeapon,
+                                            cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware,
+                                            cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y);
+
+                                    async void FuncVehicleWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                        await objVehicle.RefreshChildrenWeapons(
+                                            treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
+                                            cmsVehicleWeaponAccessoryGear,
+                                            () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
+                                            y);
+
                                     objVehicle.Mods.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                    objVehicle.Mods.AddTaggedCollectionChanged(treVehicles,
-                                        (x, y) => objVehicle.RefreshVehicleMods(treVehicles, cmsVehicle, cmsCyberware,
-                                            cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                            cmsVehicleWeaponAccessoryGear, null, y));
+                                    objVehicle.Mods.AddTaggedCollectionChanged(treVehicles, FuncVehicleModsToAdd);
                                     objVehicle.WeaponMounts.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                    objVehicle.WeaponMounts.AddTaggedCollectionChanged(treVehicles,
-                                        (x, y) => objVehicle.RefreshVehicleWeaponMounts(treVehicles, cmsVehicleWeaponMount,
-                                            cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
-                                            cmsCyberware, cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y));
+                                    objVehicle.WeaponMounts.AddTaggedCollectionChanged(treVehicles, FuncVehicleWeaponMountsToAdd);
                                     objVehicle.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                    objVehicle.Weapons.AddTaggedCollectionChanged(treVehicles,
-                                        (x, y) => objVehicle.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
-                                            cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
-                                            () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
+                                    objVehicle.Weapons.AddTaggedCollectionChanged(treVehicles, FuncVehicleWeaponsToAdd);
                                     foreach (VehicleMod objMod in objVehicle.Mods)
                                     {
+                                        async void FuncVehicleModCyberwareToAdd(
+                                            object x, NotifyCollectionChangedEventArgs y) =>
+                                            await objMod.RefreshChildrenCyberware(
+                                                treVehicles, cmsCyberware, cmsCyberwareGear, null, y);
+
+                                        async void FuncVehicleModWeaponsToAdd(
+                                            object x, NotifyCollectionChangedEventArgs y) =>
+                                            await objMod.RefreshChildrenWeapons(
+                                                treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
+                                                cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y);
+
                                         objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                        objMod.Cyberware.AddTaggedCollectionChanged(treVehicles,
-                                            (x, y) => objMod.RefreshChildrenCyberware(treVehicles, cmsCyberware,
-                                                cmsCyberwareGear, null, y));
+                                        objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, FuncVehicleModCyberwareToAdd);
                                         foreach (Cyberware objCyberware in objMod.Cyberware)
                                             objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles,
                                                 cmsCyberware, cmsCyberwareGear);
                                         objMod.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                        objMod.Weapons.AddTaggedCollectionChanged(treVehicles,
-                                            (x, y) => objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
-                                                cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
-                                                () => objMod.Cyberware.Count, y));
+                                        objMod.Weapons.AddTaggedCollectionChanged(treVehicles, FuncVehicleModWeaponsToAdd);
                                         foreach (Weapon objWeapon in objMod.Weapons)
                                             objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
                                                 cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
@@ -4048,24 +4103,46 @@ namespace Chummer
 
                                     foreach (WeaponMount objMount in objVehicle.WeaponMounts)
                                     {
+                                        async void FuncWeaponMountVehicleModToAdd(
+                                            object x, NotifyCollectionChangedEventArgs y) =>
+                                            await objMount.RefreshVehicleMods(treVehicles, cmsVehicle, cmsCyberware,
+                                                                              cmsCyberwareGear, cmsVehicleWeapon,
+                                                                              cmsVehicleWeaponAccessory,
+                                                                              cmsVehicleWeaponAccessoryGear, null, y);
+
+                                        async void FuncWeaponMountWeaponsToAdd(
+                                            object x, NotifyCollectionChangedEventArgs y) =>
+                                            await objMount.RefreshChildrenWeapons(
+                                                treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
+                                                cmsVehicleWeaponAccessoryGear, () => objMount.Mods.Count, y);
+
                                         objMount.Mods.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                        objMount.Mods.AddTaggedCollectionChanged(treVehicles,
-                                            (x, y) => objMount.RefreshVehicleMods(treVehicles, cmsVehicle, cmsCyberware,
-                                                cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                                cmsVehicleWeaponAccessoryGear, null, y));
+                                        objMount.Mods.AddTaggedCollectionChanged(treVehicles, FuncWeaponMountVehicleModToAdd);
                                         objMount.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                        objMount.Weapons.AddTaggedCollectionChanged(treVehicles,
-                                            (x, y) => objMount.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
-                                                cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
-                                                () => objMount.Mods.Count, y));
+                                        objMount.Weapons.AddTaggedCollectionChanged(treVehicles, FuncWeaponMountWeaponsToAdd);
                                         foreach (Weapon objWeapon in objMount.Weapons)
                                             objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
                                                 cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
                                         foreach (VehicleMod objMod in objMount.Mods)
                                         {
+                                            async void FuncWeaponMountVehicleModCyberwareToAdd(
+                                                object x, NotifyCollectionChangedEventArgs y) =>
+                                                await objMod.RefreshChildrenCyberware(
+                                                    treVehicles, cmsCyberware, cmsCyberwareGear, null, y);
+
+                                            async void FuncWeaponMountVehicleModWeaponsToAdd(
+                                                object x, NotifyCollectionChangedEventArgs y) =>
+                                                await objMod.RefreshChildrenWeapons(
+                                                    treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
+                                                    cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y);
+
+                                            objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+                                            objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, FuncWeaponMountVehicleModCyberwareToAdd);
                                             foreach (Cyberware objCyberware in objMod.Cyberware)
                                                 objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles,
                                                     cmsCyberware, cmsCyberwareGear);
+                                            objMod.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+                                            objMod.Weapons.AddTaggedCollectionChanged(treVehicles, FuncWeaponMountVehicleModWeaponsToAdd);
                                             foreach (Weapon objWeapon in objMod.Weapons)
                                                 objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
                                                     cmsVehicleWeapon, cmsVehicleWeaponAccessory,
@@ -4074,30 +4151,30 @@ namespace Chummer
                                     }
 
                                     foreach (Weapon objWeapon in objVehicle.Weapons)
-                                        objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon,
+                                        objWeapon.SetupChildrenWeaponsCollectionChanged(
+                                            true, treVehicles, cmsVehicleWeapon,
                                             cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
-                                    objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
 
-                                    async void DelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                    async void FuncVehicleGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                         await objVehicle.RefreshChildrenGears(
                                             treVehicles, cmsVehicleGear,
                                             () => objVehicle.Mods.Count + objVehicle.Weapons.Count
                                                                         + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
                                             y);
-
-                                    objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles,
-                                                                                       DelegateToAdd);
-                                    foreach (Gear objGear in objVehicle.GearChildren)
-                                        objGear.SetupChildrenGearsCollectionChanged(true, treVehicles, cmsVehicleGear);
-                                    objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, MakeDirty);
-                                    objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, FuncDelegateToAdd);
-
-                                    async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                    async void FuncVehicleLocationsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                         await RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
                                                                         () => objVehicle.Mods.Count + objVehicle.Weapons.Count
                                                                             + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0)
                                                                             + objVehicle.GearChildren.Count(
                                                                                 z => z.Location == null), y);
+
+                                    objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+                                    objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles, FuncVehicleGearToAdd);
+                                    foreach (Gear objGear in objVehicle.GearChildren)
+                                        objGear.SetupChildrenGearsCollectionChanged(true, treVehicles, cmsVehicleGear);
+                                    objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+                                    objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, FuncVehicleLocationsToAdd);
+
                                     ++intNewIndex;
                                 }
                             }
@@ -4195,35 +4272,52 @@ namespace Chummer
                                 foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.NewItems)
                                 {
                                     AddToTree(objVehicle, intNewIndex);
+
+                                    async void FuncVehicleModsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                        await objVehicle.RefreshVehicleMods(
+                                            treVehicles, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon,
+                                            cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y);
+
+                                    async void
+                                        FuncVehicleWeaponMountsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                        await objVehicle.RefreshVehicleWeaponMounts(
+                                            treVehicles, cmsVehicleWeaponMount, cmsVehicleWeapon,
+                                            cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware,
+                                            cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y);
+
+                                    async void FuncVehicleWeaponsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                        await objVehicle.RefreshChildrenWeapons(
+                                            treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
+                                            cmsVehicleWeaponAccessoryGear,
+                                            () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
+                                            y);
+
                                     objVehicle.Mods.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                    objVehicle.Mods.AddTaggedCollectionChanged(treVehicles,
-                                        (x, y) => objVehicle.RefreshVehicleMods(treVehicles, cmsVehicle, cmsCyberware,
-                                            cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                            cmsVehicleWeaponAccessoryGear, null, y));
+                                    objVehicle.Mods.AddTaggedCollectionChanged(treVehicles, FuncVehicleModsToAdd);
                                     objVehicle.WeaponMounts.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                    objVehicle.WeaponMounts.AddTaggedCollectionChanged(treVehicles,
-                                        (x, y) => objVehicle.RefreshVehicleWeaponMounts(treVehicles, cmsVehicleWeaponMount,
-                                            cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
-                                            cmsCyberware, cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y));
+                                    objVehicle.WeaponMounts.AddTaggedCollectionChanged(treVehicles, FuncVehicleWeaponMountsToAdd);
                                     objVehicle.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                    objVehicle.Weapons.AddTaggedCollectionChanged(treVehicles,
-                                        (x, y) => objVehicle.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
-                                            cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
-                                            () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
+                                    objVehicle.Weapons.AddTaggedCollectionChanged(treVehicles, FuncVehicleWeaponsToAdd);
                                     foreach (VehicleMod objMod in objVehicle.Mods)
                                     {
+                                        async void FuncVehicleModCyberwareToAdd(
+                                            object x, NotifyCollectionChangedEventArgs y) =>
+                                            await objMod.RefreshChildrenCyberware(
+                                                treVehicles, cmsCyberware, cmsCyberwareGear, null, y);
+
+                                        async void FuncVehicleModWeaponsToAdd(
+                                            object x, NotifyCollectionChangedEventArgs y) =>
+                                            await objMod.RefreshChildrenWeapons(
+                                                treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
+                                                cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y);
+
                                         objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                        objMod.Cyberware.AddTaggedCollectionChanged(treVehicles,
-                                            (x, y) => objMod.RefreshChildrenCyberware(treVehicles, cmsCyberware,
-                                                cmsCyberwareGear, null, y));
+                                        objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, FuncVehicleModCyberwareToAdd);
                                         foreach (Cyberware objCyberware in objMod.Cyberware)
                                             objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles,
                                                 cmsCyberware, cmsCyberwareGear);
                                         objMod.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                        objMod.Weapons.AddTaggedCollectionChanged(treVehicles,
-                                            (x, y) => objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
-                                                cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
-                                                () => objMod.Cyberware.Count, y));
+                                        objMod.Weapons.AddTaggedCollectionChanged(treVehicles, FuncVehicleModWeaponsToAdd);
                                         foreach (Weapon objWeapon in objMod.Weapons)
                                             objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
                                                 cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
@@ -4231,33 +4325,46 @@ namespace Chummer
 
                                     foreach (WeaponMount objMount in objVehicle.WeaponMounts)
                                     {
+                                        async void FuncWeaponMountVehicleModToAdd(
+                                            object x, NotifyCollectionChangedEventArgs y) =>
+                                            await objMount.RefreshVehicleMods(treVehicles, cmsVehicle, cmsCyberware,
+                                                                              cmsCyberwareGear, cmsVehicleWeapon,
+                                                                              cmsVehicleWeaponAccessory,
+                                                                              cmsVehicleWeaponAccessoryGear, null, y);
+
+                                        async void FuncWeaponMountWeaponsToAdd(
+                                            object x, NotifyCollectionChangedEventArgs y) =>
+                                            await objMount.RefreshChildrenWeapons(
+                                                treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
+                                                cmsVehicleWeaponAccessoryGear, () => objMount.Mods.Count, y);
+
                                         objMount.Mods.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                        objMount.Mods.AddTaggedCollectionChanged(treVehicles,
-                                            (x, y) => objMount.RefreshVehicleMods(treVehicles, cmsVehicle, cmsCyberware,
-                                                cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                                                cmsVehicleWeaponAccessoryGear, null, y));
+                                        objMount.Mods.AddTaggedCollectionChanged(treVehicles, FuncWeaponMountVehicleModToAdd);
                                         objMount.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                        objMount.Weapons.AddTaggedCollectionChanged(treVehicles,
-                                            (x, y) => objMount.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
-                                                cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
-                                                () => objMount.Mods.Count, y));
+                                        objMount.Weapons.AddTaggedCollectionChanged(treVehicles, FuncWeaponMountWeaponsToAdd);
                                         foreach (Weapon objWeapon in objMount.Weapons)
                                             objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
                                                 cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
                                         foreach (VehicleMod objMod in objMount.Mods)
                                         {
+                                            async void FuncWeaponMountVehicleModCyberwareToAdd(
+                                                object x, NotifyCollectionChangedEventArgs y) =>
+                                                await objMod.RefreshChildrenCyberware(
+                                                    treVehicles, cmsCyberware, cmsCyberwareGear, null, y);
+
+                                            async void FuncWeaponMountVehicleModWeaponsToAdd(
+                                                object x, NotifyCollectionChangedEventArgs y) =>
+                                                await objMod.RefreshChildrenWeapons(
+                                                    treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
+                                                    cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y);
+
                                             objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                            objMod.Cyberware.AddTaggedCollectionChanged(treVehicles,
-                                                (x, y) => objMod.RefreshChildrenCyberware(treVehicles, cmsCyberware,
-                                                    cmsCyberwareGear, null, y));
+                                            objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, FuncWeaponMountVehicleModCyberwareToAdd);
                                             foreach (Cyberware objCyberware in objMod.Cyberware)
                                                 objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles,
                                                     cmsCyberware, cmsCyberwareGear);
                                             objMod.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                            objMod.Weapons.AddTaggedCollectionChanged(treVehicles,
-                                                (x, y) => objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
-                                                    cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
-                                                    () => objMod.Cyberware.Count, y));
+                                            objMod.Weapons.AddTaggedCollectionChanged(treVehicles, FuncWeaponMountVehicleModWeaponsToAdd);
                                             foreach (Weapon objWeapon in objMod.Weapons)
                                                 objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
                                                     cmsVehicleWeapon, cmsVehicleWeaponAccessory,
@@ -4266,30 +4373,30 @@ namespace Chummer
                                     }
 
                                     foreach (Weapon objWeapon in objVehicle.Weapons)
-                                        objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon,
+                                        objWeapon.SetupChildrenWeaponsCollectionChanged(
+                                            true, treVehicles, cmsVehicleWeapon,
                                             cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
-                                    objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
 
-                                    async void DelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                    async void FuncVehicleGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                         await objVehicle.RefreshChildrenGears(
                                             treVehicles, cmsVehicleGear,
                                             () => objVehicle.Mods.Count + objVehicle.Weapons.Count
                                                                         + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
                                             y);
-
-                                    objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles,
-                                                                                       DelegateToAdd);
-                                    foreach (Gear objGear in objVehicle.GearChildren)
-                                        objGear.SetupChildrenGearsCollectionChanged(true, treVehicles, cmsVehicleGear);
-                                    objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
-                                    objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, FuncDelegateToAdd);
-
-                                    async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                    async void FuncVehicleLocationsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                         await RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
                                                                         () => objVehicle.Mods.Count + objVehicle.Weapons.Count
                                                                             + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0)
                                                                             + objVehicle.GearChildren.Count(
                                                                                 z => z.Location == null), y);
+
+                                    objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+                                    objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles, FuncVehicleGearToAdd);
+                                    foreach (Gear objGear in objVehicle.GearChildren)
+                                        objGear.SetupChildrenGearsCollectionChanged(true, treVehicles, cmsVehicleGear);
+                                    objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
+                                    objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, FuncVehicleLocationsToAdd);
+
                                     ++intNewIndex;
                                 }
 
