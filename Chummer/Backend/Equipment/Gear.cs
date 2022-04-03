@@ -3759,24 +3759,24 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
-        public void ReaddImprovements(TreeView treGears, StringBuilder sbdOutdatedItems,
+        public async ValueTask ReaddImprovements(TreeView treGears, StringBuilder sbdOutdatedItems,
             ICollection<string> lstInternalIdFilter,
             Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Gear, bool blnStackEquipped = true)
         {
             // We're only re-apply improvements a list of items, not all of them
             if (lstInternalIdFilter?.Contains(InternalId) != false)
             {
-                XmlNode objNode = this.GetNode();
+                XmlNode objNode = await this.GetNodeAsync();
                 if (objNode != null)
                 {
                     if (Category == "Stacked Focus")
                     {
-                        StackedFocus objStack = _objCharacter.StackedFoci.Find(x => x.GearId == InternalId);
+                        StackedFocus objStack = await _objCharacter.StackedFoci.FindAsync(x => x.GearId == InternalId);
                         if (objStack != null)
                         {
                             foreach (Gear objFociGear in objStack.Gear)
                             {
-                                objFociGear.ReaddImprovements(treGears, sbdOutdatedItems, lstInternalIdFilter,
+                                await objFociGear.ReaddImprovements(treGears, sbdOutdatedItems, lstInternalIdFilter,
                                     Improvement.ImprovementSource.StackedFocus, blnStackEquipped);
                             }
                         }
@@ -3789,8 +3789,8 @@ namespace Chummer.Backend.Equipment
                         if (Bonus != null)
                         {
                             ImprovementManager.ForcedValue = Extra;
-                            ImprovementManager.CreateImprovements(_objCharacter, eSource, InternalId, Bonus, Rating,
-                                DisplayNameShort(GlobalSettings.Language));
+                            await ImprovementManager.CreateImprovementsAsync(_objCharacter, eSource, InternalId, Bonus, Rating,
+                                                                             await DisplayNameShortAsync(GlobalSettings.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             {
                                 Extra = ImprovementManager.SelectedValue;
@@ -3803,14 +3803,17 @@ namespace Chummer.Backend.Equipment
                         if (WirelessOn && WirelessBonus != null)
                         {
                             ImprovementManager.ForcedValue = Extra;
-                            ImprovementManager.CreateImprovements(_objCharacter, eSource, InternalId, WirelessBonus,
-                                Rating, DisplayNameShort(GlobalSettings.Language));
+                            await ImprovementManager.CreateImprovementsAsync(_objCharacter, eSource, InternalId, WirelessBonus,
+                                                                             Rating, await DisplayNameShortAsync(GlobalSettings.Language));
                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                             {
                                 Extra = ImprovementManager.SelectedValue;
-                                TreeNode objGearNode = treGears.FindNode(InternalId);
-                                if (objGearNode != null)
-                                    objGearNode.Text = CurrentDisplayName;
+                                await treGears.DoThreadSafeAsync(x =>
+                                {
+                                    TreeNode objGearNode = x.FindNode(InternalId);
+                                    if (objGearNode != null)
+                                        objGearNode.Text = CurrentDisplayName;
+                                });
                             }
                         }
                     }
@@ -3822,7 +3825,7 @@ namespace Chummer.Backend.Equipment
             }
 
             foreach (Gear objChild in Children)
-                objChild.ReaddImprovements(treGears, sbdOutdatedItems, lstInternalIdFilter, eSource, blnStackEquipped);
+                await objChild.ReaddImprovements(treGears, sbdOutdatedItems, lstInternalIdFilter, eSource, blnStackEquipped);
         }
 
         /// <summary>

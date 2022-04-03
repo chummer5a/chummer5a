@@ -3179,9 +3179,12 @@ namespace Chummer
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                         {
                                             objQuality.Extra = ImprovementManager.SelectedValue;
-                                            TreeNode objTreeNode = treQualities.FindNodeByTag(objQuality);
-                                            if (objTreeNode != null)
-                                                objTreeNode.Text = objQuality.CurrentDisplayName;
+                                            await treQualities.DoThreadSafeAsync(x =>
+                                            {
+                                                TreeNode objTreeNode = x.FindNodeByTag(objQuality);
+                                                if (objTreeNode != null)
+                                                    objTreeNode.Text = objQuality.CurrentDisplayName;
+                                            }, token);
                                         }
                                     }
                                 }
@@ -3196,9 +3199,12 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objQuality.Extra = ImprovementManager.SelectedValue;
-                                        TreeNode objTreeNode = treQualities.FindNodeByTag(objQuality);
-                                        if (objTreeNode != null)
-                                            objTreeNode.Text = objQuality.CurrentDisplayName;
+                                        await treQualities.DoThreadSafeAsync(x =>
+                                        {
+                                            TreeNode objTreeNode = x.FindNodeByTag(objQuality);
+                                            if (objTreeNode != null)
+                                                objTreeNode.Text = objQuality.CurrentDisplayName;
+                                        }, token);
                                     }
                                 }
                             }
@@ -3264,9 +3270,12 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objSpell.Extra = ImprovementManager.SelectedValue;
-                                        TreeNode objSpellNode = treSpells.FindNode(objSpell.InternalId);
-                                        if (objSpellNode != null)
-                                            objSpellNode.Text = objSpell.CurrentDisplayName;
+                                        await treSpells.DoThreadSafeAsync(x =>
+                                        {
+                                            TreeNode objSpellNode = x.FindNode(objSpell.InternalId);
+                                            if (objSpellNode != null)
+                                                objSpellNode.Text = objSpell.CurrentDisplayName;
+                                        }, token);
                                     }
                                 }
                             }
@@ -3316,9 +3325,12 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objComplexForm.Extra = ImprovementManager.SelectedValue;
-                                        TreeNode objCFNode = treComplexForms.FindNode(objComplexForm.InternalId);
-                                        if (objCFNode != null)
-                                            objCFNode.Text = objComplexForm.CurrentDisplayName;
+                                        await treComplexForms.DoThreadSafeAsync(x =>
+                                        {
+                                            TreeNode objCFNode = x.FindNode(objComplexForm.InternalId);
+                                            if (objCFNode != null)
+                                                objCFNode.Text = objComplexForm.CurrentDisplayName;
+                                        }, token);
                                     }
                                 }
                             }
@@ -3344,9 +3356,12 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objProgram.Extra = ImprovementManager.SelectedValue;
-                                        TreeNode objProgramNode = treAIPrograms.FindNode(objProgram.InternalId);
-                                        if (objProgramNode != null)
-                                            objProgramNode.Text = objProgram.CurrentDisplayNameShort;
+                                        await treAIPrograms.DoThreadSafeAsync(x =>
+                                        {
+                                            TreeNode objProgramNode = x.FindNode(objProgram.InternalId);
+                                            if (objProgramNode != null)
+                                                objProgramNode.Text = objProgram.CurrentDisplayNameShort;
+                                        }, token);
                                     }
                                 }
                             }
@@ -3380,9 +3395,12 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objPower.Extra = ImprovementManager.SelectedValue;
-                                        TreeNode objPowerNode = treCritterPowers.FindNode(objPower.InternalId);
-                                        if (objPowerNode != null)
-                                            objPowerNode.Text = objPower.CurrentDisplayName;
+                                        await treCritterPowers.DoThreadSafeAsync(x =>
+                                        {
+                                            TreeNode objPowerNode = x.FindNode(objPower.InternalId);
+                                            if (objPowerNode != null)
+                                                objPowerNode.Text = objPower.CurrentDisplayName;
+                                        }, token);
                                     }
                                 }
                             }
@@ -3467,10 +3485,10 @@ namespace Chummer
 
                                     TreeNode objWareNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID
                                                            || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
-                                        ? treCyberware.FindNode(objCyberware.SourceIDString)
-                                        : treCyberware.FindNode(objCyberware.InternalId);
+                                        ? await treCyberware.DoThreadSafeFuncAsync(x => x.FindNode(objCyberware.SourceIDString), token)
+                                        : await treCyberware.DoThreadSafeFuncAsync(x => x.FindNode(objCyberware.InternalId), token);
                                     if (objWareNode != null)
-                                        objWareNode.Text = objCyberware.CurrentDisplayName;
+                                        await treCyberware.DoThreadSafeAsync(() => objWareNode.Text = objCyberware.CurrentDisplayName, token);
                                 }
                                 else
                                 {
@@ -3480,7 +3498,7 @@ namespace Chummer
 
                             foreach (Gear objGear in objCyberware.GearChildren)
                             {
-                                objGear.ReaddImprovements(treCyberware, sbdOutdatedItems, lstInternalIdFilter);
+                                await objGear.ReaddImprovements(treCyberware, sbdOutdatedItems, lstInternalIdFilter);
                             }
                         }
 
@@ -3531,10 +3549,10 @@ namespace Chummer
                                             objCyberware.Extra = ImprovementManager.SelectedValue;
                                         TreeNode objNode = objLoopCyberware.SourceID == Cyberware.EssenceHoleGUID
                                                            || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
-                                            ? treCyberware.FindNode(objCyberware.SourceIDString)
-                                            : treCyberware.FindNode(objLoopCyberware.InternalId);
+                                            ? await treCyberware.DoThreadSafeFuncAsync(x => x.FindNode(objCyberware.SourceIDString), token)
+                                            : await treCyberware.DoThreadSafeFuncAsync(x => x.FindNode(objLoopCyberware.InternalId), token);
                                         if (objNode != null)
-                                            objNode.Text = objLoopCyberware.CurrentDisplayName;
+                                            await treCyberware.DoThreadSafeAsync(() => objNode.Text = objLoopCyberware.CurrentDisplayName, token);
                                     }
 
                                     --intCyberwaresCount;
@@ -3563,10 +3581,12 @@ namespace Chummer
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                         {
                                             objArmor.Extra = ImprovementManager.SelectedValue;
-
-                                            TreeNode objArmorNode = treArmor.FindNode(objArmor.InternalId);
-                                            if (objArmorNode != null)
-                                                objArmorNode.Text = objArmor.CurrentDisplayName;
+                                            await treArmor.DoThreadSafeAsync(x =>
+                                            {
+                                                TreeNode objArmorNode = x.FindNode(objArmor.InternalId);
+                                                if (objArmorNode != null)
+                                                    objArmorNode.Text = objArmor.CurrentDisplayName;
+                                            }, token);
                                         }
                                     }
                                 }
@@ -3596,10 +3616,12 @@ namespace Chummer
                                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                             {
                                                 objMod.Extra = ImprovementManager.SelectedValue;
-
-                                                TreeNode objPluginNode = treArmor.FindNode(objMod.InternalId);
-                                                if (objPluginNode != null)
-                                                    objPluginNode.Text = objMod.CurrentDisplayName;
+                                                await treArmor.DoThreadSafeAsync(x =>
+                                                {
+                                                    TreeNode objPluginNode = x.FindNode(objMod.InternalId);
+                                                    if (objPluginNode != null)
+                                                        objPluginNode.Text = objMod.CurrentDisplayName;
+                                                }, token);
                                             }
                                         }
                                     }
@@ -3611,13 +3633,13 @@ namespace Chummer
 
                                 foreach (Gear objGear in objMod.GearChildren)
                                 {
-                                    objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter);
+                                    await objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter);
                                 }
                             }
 
                             foreach (Gear objGear in objArmor.GearChildren)
                             {
-                                objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter);
+                                await objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter);
                             }
 
                             objArmor.RefreshWirelessBonuses();
@@ -3626,7 +3648,7 @@ namespace Chummer
                         // Refresh Gear.
                         foreach (Gear objGear in CharacterObject.Gear)
                         {
-                            objGear.ReaddImprovements(treGear, sbdOutdatedItems, lstInternalIdFilter);
+                            await objGear.ReaddImprovements(treGear, sbdOutdatedItems, lstInternalIdFilter);
                             objGear.RefreshWirelessBonuses();
                         }
 
@@ -3637,7 +3659,7 @@ namespace Chummer
                             {
                                 foreach (Gear objGear in objAccessory.GearChildren)
                                 {
-                                    objGear.ReaddImprovements(treWeapons, sbdOutdatedItems, lstInternalIdFilter);
+                                    await objGear.ReaddImprovements(treWeapons, sbdOutdatedItems, lstInternalIdFilter);
                                 }
                             }
 
@@ -4859,13 +4881,24 @@ namespace Chummer
 
         private async void cmdAddMugshot_Click(object sender, EventArgs e)
         {
-            if (!await AddMugshot())
-                return;
-            lblNumMugshots.Text = await LanguageManager.GetStringAsync("String_Of") + CharacterObject.Mugshots.Count.ToString(GlobalSettings.CultureInfo);
-            ++nudMugshotIndex.Maximum;
-            nudMugshotIndex.Value = CharacterObject.Mugshots.Count;
-
-            IsDirty = true;
+            try
+            {
+                if (!await AddMugshot(GenericToken))
+                    return;
+                string strText = await LanguageManager.GetStringAsync("String_Of")
+                                 + CharacterObject.Mugshots.Count.ToString(GlobalSettings.CultureInfo);
+                await lblNumMugshots.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
+                await nudMugshotIndex.DoThreadSafeAsync(x =>
+                {
+                    ++x.Maximum;
+                    x.Value = CharacterObject.Mugshots.Count;
+                }, GenericToken);
+                IsDirty = true;
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void cmdDeleteMugshot_Click(object sender, EventArgs e)

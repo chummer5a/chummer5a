@@ -7705,8 +7705,9 @@ namespace Chummer
         /// <summary>
         /// Add a mugshot to the character.
         /// </summary>
-        protected async ValueTask<bool> AddMugshot()
+        protected async ValueTask<bool> AddMugshot(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
                 using (OpenFileDialog dlgOpenFileDialog = new OpenFileDialog())
@@ -7733,6 +7734,7 @@ namespace Chummer
                     bool blnMakeLoop = true;
                     while (blnMakeLoop)
                     {
+                        token.ThrowIfCancellationRequested();
                         blnMakeLoop = false;
                         if (dlgOpenFileDialog.ShowDialog(this) != DialogResult.OK)
                             return false;
