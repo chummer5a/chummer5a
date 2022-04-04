@@ -2368,7 +2368,7 @@ namespace Chummer
                         CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerText, intForce, 0, 0);
 
                     objWare.Create(objXmlCyberwareNode,
-                        GetGradeList(Improvement.ImprovementSource.Cyberware, true)
+                        GetGrades(Improvement.ImprovementSource.Cyberware, true)
                             .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
                         Weapons, Vehicles, true, true, strForcedValue);
                     Cyberware.Add(objWare);
@@ -2391,7 +2391,7 @@ namespace Chummer
                         CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerText, intForce, 0, 0);
 
                     objWare.Create(objXmlCyberwareNode,
-                        GetGradeList(Improvement.ImprovementSource.Bioware, true)
+                        GetGrades(Improvement.ImprovementSource.Bioware, true)
                             .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
                         Weapons, Vehicles, true, true, strForcedValue);
                     Cyberware.Add(objWare);
@@ -9977,11 +9977,11 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Return a list of CyberwareGrades from XML files.
+        /// Return an enumerable of CyberwareGrades from XML files.
         /// </summary>
         /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
         /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
-        public IEnumerable<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
+        public IEnumerable<Grade> GetGrades(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
         {
             using (EnterReadLock.Enter(LockObject))
             {
@@ -10024,6 +10024,69 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Return a list of CyberwareGrades from XML files.
+        /// </summary>
+        /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
+        /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
+        public List<Grade> GetGradesList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
+        {
+            return GetGrades(objSource, blnIgnoreBannedGrades).ToList();
+        }
+
+        /// <summary>
+        /// Return a list of CyberwareGrades from XML files.
+        /// </summary>
+        /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
+        /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
+        public async Task<List<Grade>> GetGradesListAsync(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
+        {
+            List<Grade> lstReturn = new List<Grade>();
+            using (await EnterReadLock.EnterAsync(LockObject))
+            {
+                string strXPath;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                {
+                    if (Settings != null)
+                    {
+                        sbdFilter.Append('(').Append(Settings.BookXPath()).Append(") and ");
+                        if (!IgnoreRules && !Created && !blnIgnoreBannedGrades)
+                        {
+                            foreach (string strBannedGrade in Settings.BannedWareGrades)
+                            {
+                                sbdFilter.Append("not(contains(name, ").Append(strBannedGrade.CleanXPath())
+                                         .Append(")) and ");
+                            }
+                        }
+                    }
+
+                    if (sbdFilter.Length != 0)
+                    {
+                        sbdFilter.Length -= 5;
+                        strXPath = "/chummer/grades/grade[(" + sbdFilter + ")]";
+                    }
+                    else
+                        strXPath = "/chummer/grades/grade";
+                }
+
+                using (XmlNodeList xmlGradeList = (await LoadDataAsync(Grade.GetDataFileNameFromImprovementSource(objSource)))
+                           .SelectNodes(strXPath))
+                {
+                    if (xmlGradeList?.Count > 0)
+                    {
+                        foreach (XmlNode objNode in xmlGradeList)
+                        {
+                            Grade objGrade = new Grade(this, objSource);
+                            objGrade.Load(objNode);
+                            lstReturn.Add(objGrade);
+                        }
+                    }
+                }
+            }
+
+            return lstReturn;
         }
 
         /// <summary>
@@ -15545,7 +15608,7 @@ namespace Chummer
                         List<Vehicle> lstVehicles = new List<Vehicle>(1);
                         objHole.Create(
                             xmlEssHole,
-                            GetGradeList(Improvement.ImprovementSource.Cyberware, true)
+                            GetGrades(Improvement.ImprovementSource.Cyberware, true)
                                 .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Cyberware,
                             intCentiessence, lstWeapons,
                             lstVehicles);
@@ -15620,7 +15683,7 @@ namespace Chummer
                         List<Weapon> lstWeapons = new List<Weapon>(1);
                         List<Vehicle> lstVehicles = new List<Vehicle>(1);
                         objAntiHole.Create(xmlEssAntiHole,
-                                           GetGradeList(Improvement.ImprovementSource.Cyberware, true)
+                                           GetGrades(Improvement.ImprovementSource.Cyberware, true)
                                                .FirstOrDefault(x => x.Name == "None"),
                                            Improvement.ImprovementSource.Cyberware, intCentiessence, lstWeapons,
                                            lstVehicles);

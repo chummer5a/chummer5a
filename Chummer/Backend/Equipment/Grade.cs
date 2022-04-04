@@ -153,7 +153,7 @@ namespace Chummer.Backend.Equipment
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
             Grade objStandardGrade = null;
-            foreach (Grade objGrade in objCharacter.GetGradeList(objSource, true))
+            foreach (Grade objGrade in objCharacter.GetGrades(objSource, true))
             {
                 if (objGrade.Name == strValue)
                     return objGrade;

@@ -177,7 +177,7 @@ namespace Chummer.Backend.Equipment
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
             Grade objStandardGrade = null;
-            foreach (Grade objGrade in objCharacter.GetGradeList(objSource, true))
+            foreach (Grade objGrade in objCharacter.GetGrades(objSource, true))
             {
                 if (objGrade.Name == strValue)
                     return objGrade;
@@ -5482,9 +5482,9 @@ namespace Chummer.Backend.Equipment
                 string strGradeName = objSelectedGrade?.Name ?? "Standard";
                 bool blnCyberware = true;
                 Lazy<List<Grade>> objCyberwareGradeList = new Lazy<List<Grade>>(() =>
-                    _objCharacter.GetGradeList(Improvement.ImprovementSource.Cyberware).ToList());
+                    _objCharacter.GetGradesList(Improvement.ImprovementSource.Cyberware));
                 Lazy<List<Grade>> objBiowareGradeList = new Lazy<List<Grade>>(() =>
-                    _objCharacter.GetGradeList(Improvement.ImprovementSource.Bioware).ToList());
+                    _objCharacter.GetGradesList(Improvement.ImprovementSource.Bioware));
                 if (objSelectedGrade == null)
                 {
                     bool blnDoBiowareGradeCheck = true;

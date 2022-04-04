@@ -63,7 +63,7 @@ namespace Chummer
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
-            _lstGrades = _objCharacter.GetGradeList(Improvement.ImprovementSource.Drug).ToList();
+            _lstGrades = _objCharacter.GetGradesList(Improvement.ImprovementSource.Drug);
             _strNoneGradeId = _lstGrades.Find(x => x.Name == "None")?.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo);
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseDrugDataNode));
         }
@@ -423,7 +423,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
             _lstGrades.Clear();
-            _lstGrades.AddRange(_objCharacter.GetGradeList(Improvement.ImprovementSource.Drug, await chkHideBannedGrades.DoThreadSafeFuncAsync(x => x.Checked)));
+            _lstGrades.AddRange(await _objCharacter.GetGradesListAsync(Improvement.ImprovementSource.Drug, await chkHideBannedGrades.DoThreadSafeFuncAsync(x => x.Checked)));
             await PopulateGrades();
         }
 

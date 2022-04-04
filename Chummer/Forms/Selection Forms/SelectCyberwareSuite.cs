@@ -84,7 +84,7 @@ namespace Chummer
             {
                 if (xmlSuiteList?.Count > 0)
                 {
-                    List<Grade> lstGrades = _objCharacter.GetGradeList(_eSource).ToList();
+                    List<Grade> lstGrades = _objCharacter.GetGradesList(_eSource);
 
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                out List<ListItem> lstSuitesToAdd))
@@ -141,7 +141,7 @@ namespace Chummer
                     strGrade = CyberwareGradeName(strSuiteGradeEntry);
                     if (!string.IsNullOrEmpty(strGrade))
                     {
-                        objGrade = _objCharacter.GetGradeList(_eSource).FirstOrDefault(x => x.Name == strGrade);
+                        objGrade = _objCharacter.GetGrades(_eSource).FirstOrDefault(x => x.Name == strGrade);
                     }
                 }
             }

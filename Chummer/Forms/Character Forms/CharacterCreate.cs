@@ -7528,8 +7528,15 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshSelectedCyberware();
-            await DoRefreshPasteStatus();
+            try
+            {
+                await RefreshSelectedCyberware(GenericToken);
+                await DoRefreshPasteStatus(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void cboCyberwareGrade_SelectedIndexChanged(object sender, EventArgs e)
@@ -7541,7 +7548,7 @@ namespace Chummer
                 !(treCyberware.SelectedNode?.Tag is Cyberware objCyberware))
                 return;
             // Locate the selected piece of Cyberware.
-            Grade objNewGrade = CharacterObject.GetGradeList(objCyberware.SourceType).FirstOrDefault(x => x.Name == strSelectedGrade);
+            Grade objNewGrade = CharacterObject.GetGrades(objCyberware.SourceType).FirstOrDefault(x => x.Name == strSelectedGrade);
             if (objNewGrade == null)
                 return;
             // Updated the selected Cyberware Grade.
@@ -7679,8 +7686,15 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshSelectedWeapon();
-            await DoRefreshPasteStatus();
+            try
+            {
+                await RefreshSelectedWeapon(GenericToken);
+                await DoRefreshPasteStatus(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void treWeapons_ItemDrag(object sender, ItemDragEventArgs e)
@@ -7764,8 +7778,15 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshSelectedArmor();
-            await DoRefreshPasteStatus();
+            try
+            {
+                await RefreshSelectedArmor(GenericToken);
+                await DoRefreshPasteStatus(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void treArmor_ItemDrag(object sender, ItemDragEventArgs e)
@@ -7845,8 +7866,15 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshSelectedLifestyle();
-            await DoRefreshPasteStatus();
+            try
+            {
+                await RefreshSelectedLifestyle(GenericToken);
+                await DoRefreshPasteStatus(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void treLifestyles_DoubleClick(object sender, EventArgs e)
@@ -7993,8 +8021,15 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshSelectedGear();
-            await DoRefreshPasteStatus();
+            try
+            {
+                await RefreshSelectedGear(GenericToken);
+                await DoRefreshPasteStatus(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void nudGearRating_ValueChanged(object sender, EventArgs e)
@@ -8690,8 +8725,15 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshSelectedDrug();
-            await DoRefreshPasteStatus();
+            try
+            {
+                await RefreshSelectedDrug(GenericToken);
+                await DoRefreshPasteStatus(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         #endregion Additional Drug Tab Control Events
@@ -8702,8 +8744,15 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshSelectedVehicle();
-            await DoRefreshPasteStatus();
+            try
+            {
+                await RefreshSelectedVehicle(GenericToken);
+                await DoRefreshPasteStatus(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void treVehicles_ItemDrag(object sender, ItemDragEventArgs e)
@@ -9699,14 +9748,28 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await DoRefreshPasteStatus();
+            try
+            {
+                await DoRefreshPasteStatus(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tabStreetGearTabs_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            await DoRefreshPasteStatus();
+            try
+            {
+                await DoRefreshPasteStatus(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private enum CmdOperation { None, Up, Down }
@@ -14828,9 +14891,9 @@ namespace Chummer
         /// <summary>
         /// Add or remove the Adapsin Cyberware Grade categories.
         /// </summary>
-        public Task PopulateCyberwareGradeList(bool blnBioware = false, bool blnIgnoreSecondHand = false, string strForceGrade = "")
+        public async Task PopulateCyberwareGradeList(bool blnBioware = false, bool blnIgnoreSecondHand = false, string strForceGrade = "")
         {
-            List<Grade> objGradeList = CharacterObject.GetGradeList(blnBioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware).ToList();
+            List<Grade> objGradeList = await CharacterObject.GetGradesListAsync(blnBioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware);
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstCyberwareGrades))
             {
@@ -14845,9 +14908,9 @@ namespace Chummer
                         if (objWareGrade.Adapsin)
                             continue;
 
-                        if (ImprovementManager
-                            .GetCachedImprovementListForValueOf(CharacterObject,
-                                                                Improvement.ImprovementType.DisableBiowareGrade).Any(
+                        if ((await ImprovementManager
+                                .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                                                         Improvement.ImprovementType.DisableBiowareGrade)).Any(
                                 x => objWareGrade.Name.Contains(x.ImprovedName)))
                             continue;
                     }
@@ -14863,9 +14926,9 @@ namespace Chummer
                         else if (objWareGrade.Adapsin)
                             continue;
 
-                        if (ImprovementManager
-                            .GetCachedImprovementListForValueOf(CharacterObject,
-                                                                Improvement.ImprovementType.DisableCyberwareGrade).Any(
+                        if ((await ImprovementManager
+                                .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                                                         Improvement.ImprovementType.DisableCyberwareGrade)).Any(
                                 x => objWareGrade.Name.Contains(x.ImprovedName)))
                             continue;
                     }
@@ -14888,14 +14951,13 @@ namespace Chummer
                     lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.CurrentDisplayName));
                 }
                 
-                return cboCyberwareGrade.PopulateWithListItemsAsync(lstCyberwareGrades);
+                await cboCyberwareGrade.PopulateWithListItemsAsync(lstCyberwareGrades);
             }
         }
 
         /// <summary>
         /// Check the character and determine if it has broken any of the rules.
         /// </summary>
-        /// <returns></returns>
         public async ValueTask<bool> CheckCharacterValidity(bool blnUseArgBuildPoints = false, int intBuildPoints = 0, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -16556,11 +16618,11 @@ namespace Chummer
             string strInitTip;
             if (CharacterObject.MAGEnabled)
             {
-                if (chkInitiationGroup.Checked)
+                if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, token))
                     decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationGroupPercent;
-                if (chkInitiationOrdeal.Checked)
+                if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, token))
                     decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationOrdealPercent;
-                if (chkInitiationSchooling.Checked)
+                if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, token))
                     decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent;
                 intAmount = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
                 token.ThrowIfCancellationRequested();
@@ -16570,11 +16632,11 @@ namespace Chummer
             }
             else
             {
-                if (chkInitiationGroup.Checked)
+                if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, token))
                     decMultiplier -= CharacterObjectSettings.KarmaRESInitiationGroupPercent;
-                if (chkInitiationOrdeal.Checked)
+                if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, token))
                     decMultiplier -= CharacterObjectSettings.KarmaRESInitiationOrdealPercent;
-                if (chkInitiationSchooling.Checked)
+                if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, token))
                     decMultiplier -= CharacterObjectSettings.KarmaRESInitiationSchoolingPercent;
                 intAmount = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
                 token.ThrowIfCancellationRequested();
@@ -16740,7 +16802,14 @@ namespace Chummer
         /// </summary>
         private async void RefreshPasteStatus(object sender, EventArgs e)
         {
-            await DoRefreshPasteStatus();
+            try
+            {
+                await DoRefreshPasteStatus(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async ValueTask DoRefreshPasteStatus(CancellationToken token = default)
@@ -17658,8 +17727,6 @@ namespace Chummer
                 return;
             await picMugshot.DoThreadSafeAsync(x =>
             {
-                if (x.IsNullOrDisposed())
-                    return;
                 try
                 {
                     x.SizeMode = x.Image != null && x.Height >= x.Image.Height

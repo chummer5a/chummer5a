@@ -1146,7 +1146,7 @@ namespace Chummer
                                 // Clear the Dirty flag which gets set when creating a new Character.
                                 if (!CharacterObject.LoadAsDirty)
                                     IsDirty = false;
-                                await RefreshPasteStatus();
+                                await RefreshPasteStatus(GenericToken);
                                 await ProcessMugshot(GenericToken);
                                 // Stupid hack to get the MDI icon to show up properly.
                                 await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon, GenericToken);
@@ -2108,8 +2108,11 @@ namespace Chummer
                         // Change to the status of Magician being enabled.
                         if (CharacterObject.MagicianEnabled || CharacterObject.AdeptEnabled)
                         {
-                            if (!tabCharacterTabs.TabPages.Contains(tabMagician))
-                                tabCharacterTabs.TabPages.Insert(3, tabMagician);
+                            await tabCharacterTabs.DoThreadSafeAsync(x =>
+                            {
+                                if (!x.TabPages.Contains(tabMagician))
+                                    x.TabPages.Insert(3, tabMagician);
+                            }, GenericToken);
                             await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true, GenericToken);
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
                             {
@@ -2123,7 +2126,7 @@ namespace Chummer
                         }
                         else
                         {
-                            tabCharacterTabs.TabPages.Remove(tabMagician);
+                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabMagician), GenericToken);
                             await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = false, GenericToken);
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute)
                             {
@@ -2146,8 +2149,11 @@ namespace Chummer
                         // Change to the status of Adept being enabled.
                         if (CharacterObject.AdeptEnabled)
                         {
-                            if (!tabCharacterTabs.TabPages.Contains(tabMagician))
-                                tabCharacterTabs.TabPages.Insert(3, tabMagician);
+                            await tabCharacterTabs.DoThreadSafeAsync(x =>
+                            {
+                                if (!x.TabPages.Contains(tabMagician))
+                                    x.TabPages.Insert(3, tabMagician);
+                            }, GenericToken);
                             await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true, GenericToken);
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
                             {
@@ -2159,14 +2165,17 @@ namespace Chummer
                                 }
                             }
 
-                            if (!tabCharacterTabs.TabPages.Contains(tabAdept))
-                                tabCharacterTabs.TabPages.Insert(3, tabAdept);
+                            await tabCharacterTabs.DoThreadSafeAsync(x =>
+                            {
+                                if (!x.TabPages.Contains(tabAdept))
+                                    x.TabPages.Insert(3, tabAdept);
+                            }, GenericToken);
                         }
                         else
                         {
                             if (!CharacterObject.MagicianEnabled)
                             {
-                                tabCharacterTabs.TabPages.Remove(tabMagician);
+                                await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabMagician), GenericToken);
                                 await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = false, GenericToken);
                                 if (CharacterObjectSettings.MysAdeptSecondMAGAttribute)
                                 {
@@ -2181,7 +2190,7 @@ namespace Chummer
                             else
                                 await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true, GenericToken);
 
-                            tabCharacterTabs.TabPages.Remove(tabAdept);
+                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabAdept), GenericToken);
                         }
                     }
                         break;
@@ -2191,12 +2200,15 @@ namespace Chummer
                         // Change to the status of Technomancer being enabled.
                         if (CharacterObject.TechnomancerEnabled)
                         {
-                            if (!tabCharacterTabs.TabPages.Contains(tabTechnomancer))
-                                tabCharacterTabs.TabPages.Insert(3, tabTechnomancer);
+                            await tabCharacterTabs.DoThreadSafeAsync(x =>
+                            {
+                                if (!x.TabPages.Contains(tabTechnomancer))
+                                    x.TabPages.Insert(3, tabTechnomancer);
+                            }, GenericToken);
                         }
                         else
                         {
-                            tabCharacterTabs.TabPages.Remove(tabTechnomancer);
+                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabTechnomancer), GenericToken);
                         }
                     }
                         break;
@@ -2206,12 +2218,15 @@ namespace Chummer
                         // Change to the status of Advanced Programs being enabled.
                         if (CharacterObject.AdvancedProgramsEnabled)
                         {
-                            if (!tabCharacterTabs.TabPages.Contains(tabAdvancedPrograms))
-                                tabCharacterTabs.TabPages.Insert(3, tabAdvancedPrograms);
+                            await tabCharacterTabs.DoThreadSafeAsync(x =>
+                            {
+                                if (!x.TabPages.Contains(tabAdvancedPrograms))
+                                    x.TabPages.Insert(3, tabAdvancedPrograms);
+                            }, GenericToken);
                         }
                         else
                         {
-                            tabCharacterTabs.TabPages.Remove(tabAdvancedPrograms);
+                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabAdvancedPrograms), GenericToken);
                         }
                     }
                         break;
@@ -2221,12 +2236,15 @@ namespace Chummer
                         // Change the status of Critter being enabled.
                         if (CharacterObject.CritterEnabled)
                         {
-                            if (!tabCharacterTabs.TabPages.Contains(tabCritter))
-                                tabCharacterTabs.TabPages.Insert(3, tabCritter);
+                            await tabCharacterTabs.DoThreadSafeAsync(x =>
+                            {
+                                if (!x.TabPages.Contains(tabCritter))
+                                    x.TabPages.Insert(3, tabCritter);
+                            }, GenericToken);
                         }
                         else
                         {
-                            tabCharacterTabs.TabPages.Remove(tabCritter);
+                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabCritter), GenericToken);
                         }
                     }
                         break;
@@ -2389,12 +2407,15 @@ namespace Chummer
                         // Change the status of the Initiation tab being show.
                         if (CharacterObject.InitiationEnabled)
                         {
-                            if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
-                                tabCharacterTabs.TabPages.Insert(3, tabInitiation);
+                            await tabCharacterTabs.DoThreadSafeAsync(x =>
+                            {
+                                if (!x.TabPages.Contains(tabInitiation))
+                                    x.TabPages.Insert(3, tabInitiation);
+                            }, GenericToken);
                         }
                         else
                         {
-                            tabCharacterTabs.TabPages.Remove(tabInitiation);
+                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabInitiation), GenericToken);
                         }
 
                         await gpbInitiationType.DoThreadSafeAsync(x => x.Visible = CharacterObject.InitiationEnabled, GenericToken);
@@ -2580,7 +2601,7 @@ namespace Chummer
                                 }, GenericToken);
 
                                 XPathNavigator xmlTraditionsBaseChummerNode =
-                                    await (await CharacterObject.LoadDataXPathAsync("traditions.xml"))
+                                    await (await CharacterObject.LoadDataXPathAsync("traditions.xml", token: GenericToken))
                                         .SelectSingleNodeAndCacheExpressionAsync("/chummer");
                                 using (new FetchSafelyFromPool<List<ListItem>>(
                                            Utils.ListItemListPool, out List<ListItem> lstTraditions))
@@ -2711,7 +2732,7 @@ namespace Chummer
 
                                 // Populate the Technomancer Streams list.
                                 xmlTraditionsBaseChummerNode =
-                                    await (await CharacterObject.LoadDataXPathAsync("streams.xml"))
+                                    await (await CharacterObject.LoadDataXPathAsync("streams.xml", token: GenericToken))
                                         .SelectSingleNodeAndCacheExpressionAsync("/chummer");
                                 using (new FetchSafelyFromPool<List<ListItem>>(
                                            Utils.ListItemListPool, out List<ListItem> lstStreams))
@@ -2864,12 +2885,26 @@ namespace Chummer
 
         private async void mnuFileSave_Click(object sender, EventArgs e)
         {
-            await SaveCharacter();
+            try
+            {
+                await SaveCharacter(token: GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void mnuFileSaveAs_Click(object sender, EventArgs e)
         {
-            await SaveCharacterAs();
+            try
+            {
+                await SaveCharacterAs(token: GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void mnuFileClose_Click(object sender, EventArgs e)
@@ -2879,12 +2914,26 @@ namespace Chummer
 
         private async void mnuFilePrint_Click(object sender, EventArgs e)
         {
-            await DoPrint();
+            try
+            {
+                await DoPrint(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void mnuFileExport_Click(object sender, EventArgs e)
         {
-            await DoExport();
+            try
+            {
+                await DoExport(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void mnuSpecialCyberzombie_Click(object sender, EventArgs e)
@@ -3142,9 +3191,12 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objQuality.Extra = ImprovementManager.SelectedValue;
-                                        TreeNode objTreeNode = treQualities.FindNodeByTag(objQuality);
-                                        if (objTreeNode != null)
-                                            objTreeNode.Text = objQuality.CurrentDisplayName;
+                                        await treQualities.DoThreadSafeAsync(x =>
+                                        {
+                                            TreeNode objTreeNode = x.FindNodeByTag(objQuality);
+                                            if (objTreeNode != null)
+                                                objTreeNode.Text = objQuality.CurrentDisplayName;
+                                        }, token);
                                     }
                                 }
 
@@ -6035,7 +6087,7 @@ namespace Chummer
         private async ValueTask DoDeleteQuality()
         {
             // Locate the selected Quality.
-            if (!(treQualities.SelectedNode?.Tag is Quality objSelectedQuality))
+            if (!(await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Quality objSelectedQuality))
                 return;
             string strInternalIDToRemove = objSelectedQuality.InternalId;
             // Can't do a foreach because we're removing items, this is the next best thing
@@ -6275,12 +6327,12 @@ namespace Chummer
         private async void nudQualityLevel_ValueChanged(object sender, EventArgs e)
         {
             // Locate the selected Quality.
-            if (treQualities.SelectedNode?.Tag is Quality objSelectedQuality)
+            if (await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Quality objSelectedQuality)
             {
                 int intCurrentLevels = objSelectedQuality.Levels;
-
+                int intSelectedLevels = await nudQualityLevel.DoThreadSafeFuncAsync(x => x.ValueAsInt);
                 // Adding a new level
-                for (; nudQualityLevel.Value > intCurrentLevels; ++intCurrentLevels)
+                for (; intSelectedLevels > intCurrentLevels; ++intCurrentLevels)
                 {
                     XPathNavigator objXmlSelectedQuality = await objSelectedQuality.GetNodeXPathAsync();
                     if (!objXmlSelectedQuality.RequirementsMet(CharacterObject, await LanguageManager.GetStringAsync("String_Quality")))
@@ -6403,7 +6455,7 @@ namespace Chummer
                     }
                 }
                 // Removing a level
-                for (; nudQualityLevel.Value < intCurrentLevels; --intCurrentLevels)
+                for (; intSelectedLevels < intCurrentLevels; --intCurrentLevels)
                 {
                     Quality objInvisibleQuality = CharacterObject.Qualities.FirstOrDefault(x => x.SourceIDString == objSelectedQuality.SourceIDString && x.Extra == objSelectedQuality.Extra && x.SourceName == objSelectedQuality.SourceName && x.InternalId != objSelectedQuality.InternalId);
                     if (objInvisibleQuality == null || !await RemoveQuality(objInvisibleQuality, false, false))
@@ -10968,8 +11020,15 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshSelectedCyberware();
-            await RefreshPasteStatus();
+            try
+            {
+                await RefreshSelectedCyberware(GenericToken);
+                await RefreshPasteStatus(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         #endregion Additional Cyberware Tab Control Events
@@ -10980,8 +11039,15 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshSelectedWeapon();
-            await RefreshPasteStatus();
+            try
+            {
+                await RefreshSelectedWeapon(GenericToken);
+                await RefreshPasteStatus(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void treWeapons_ItemDrag(object sender, ItemDragEventArgs e)
@@ -11063,8 +11129,15 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshSelectedArmor();
-            await RefreshPasteStatus();
+            try
+            {
+                await RefreshSelectedArmor(GenericToken);
+                await RefreshPasteStatus(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void treArmor_ItemDrag(object sender, ItemDragEventArgs e)
@@ -11141,8 +11214,15 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshSelectedLifestyle();
-            await RefreshPasteStatus();
+            try
+            {
+                await RefreshSelectedLifestyle(GenericToken);
+                await RefreshPasteStatus(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void treLifestyles_DoubleClick(object sender, EventArgs e)
@@ -11275,8 +11355,15 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshSelectedGear();
-            await RefreshPasteStatus();
+            try
+            {
+                await RefreshSelectedGear(GenericToken);
+                await RefreshPasteStatus(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void chkArmorEquipped_CheckedChanged(object sender, EventArgs e)
@@ -12283,8 +12370,15 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshSelectedVehicle();
-            await RefreshPasteStatus();
+            try
+            {
+                await RefreshSelectedVehicle(GenericToken);
+                await RefreshPasteStatus(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void treVehicles_ItemDrag(object sender, ItemDragEventArgs e)
@@ -13735,14 +13829,28 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshPasteStatus();
+            try
+            {
+                await RefreshPasteStatus(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void tabStreetGearTabs_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            await RefreshPasteStatus();
+            try
+            {
+                await RefreshPasteStatus(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private enum CmdOperation { None, Up, Down }
@@ -18428,11 +18536,11 @@ namespace Chummer
             string strInitTip;
             if (CharacterObject.MAGEnabled)
             {
-                if (chkInitiationGroup.Checked)
+                if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, token))
                     decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationGroupPercent;
-                if (chkInitiationOrdeal.Checked)
+                if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, token))
                     decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationOrdealPercent;
-                if (chkInitiationSchooling.Checked)
+                if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, token))
                     decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent;
                 intAmount = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
                 token.ThrowIfCancellationRequested();
@@ -18442,11 +18550,11 @@ namespace Chummer
             }
             else
             {
-                if (chkInitiationGroup.Checked)
+                if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, token))
                     decMultiplier -= CharacterObjectSettings.KarmaRESInitiationGroupPercent;
-                if (chkInitiationOrdeal.Checked)
+                if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, token))
                     decMultiplier -= CharacterObjectSettings.KarmaRESInitiationOrdealPercent;
-                if (chkInitiationSchooling.Checked)
+                if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, token))
                     decMultiplier -= CharacterObjectSettings.KarmaRESInitiationSchoolingPercent;
                 intAmount = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
                 token.ThrowIfCancellationRequested();
@@ -18662,52 +18770,53 @@ namespace Chummer
         /// <summary>
         /// Enable/Disable the Paste Menu and ToolStrip items as appropriate.
         /// </summary>
-        private async ValueTask RefreshPasteStatus()
+        private async ValueTask RefreshPasteStatus(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             bool blnCopyEnabled = false;
 
-            if (await tabCharacterTabs.DoThreadSafeFuncAsync(x => x.SelectedTab) == tabStreetGear)
+            if (await tabCharacterTabs.DoThreadSafeFuncAsync(x => x.SelectedTab, token) == tabStreetGear)
             {
                 // Lifestyle Tab.
-                if (await tabStreetGearTabs.DoThreadSafeFuncAsync(x => x.SelectedTab) == tabLifestyle)
+                if (await tabStreetGearTabs.DoThreadSafeFuncAsync(x => x.SelectedTab, token) == tabLifestyle)
                 {
-                    blnCopyEnabled = await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag is Lifestyle);
+                    blnCopyEnabled = await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag is Lifestyle, token);
                 }
                 // Armor Tab.
-                else if (await tabStreetGearTabs.DoThreadSafeFuncAsync(x => x.SelectedTab) == tabArmor)
+                else if (await tabStreetGearTabs.DoThreadSafeFuncAsync(x => x.SelectedTab, token) == tabArmor)
                 {
                     blnCopyEnabled
-                        = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag is Armor || x.SelectedNode?.Tag is Gear);
+                        = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag is Armor || x.SelectedNode?.Tag is Gear, token);
                 }
 
                 // Weapons Tab.
-                if (await tabStreetGearTabs.DoThreadSafeFuncAsync(x => x.SelectedTab) == tabWeapons)
+                if (await tabStreetGearTabs.DoThreadSafeFuncAsync(x => x.SelectedTab, token) == tabWeapons)
                 {
                     blnCopyEnabled = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag is Weapon ||
-                                                                           x.SelectedNode?.Tag is Gear);
+                                                                           x.SelectedNode?.Tag is Gear, token);
                 }
                 // Gear Tab.
-                else if (await tabStreetGearTabs.DoThreadSafeFuncAsync(x => x.SelectedTab) == tabGear)
+                else if (await tabStreetGearTabs.DoThreadSafeFuncAsync(x => x.SelectedTab, token) == tabGear)
                 {
-                    blnCopyEnabled = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag is Gear);
+                    blnCopyEnabled = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag is Gear, token);
                 }
             }
             // Cyberware Tab.
-            else if (await tabCharacterTabs.DoThreadSafeFuncAsync(x => x.SelectedTab) == tabCyberware)
+            else if (await tabCharacterTabs.DoThreadSafeFuncAsync(x => x.SelectedTab, token) == tabCyberware)
             {
                 blnCopyEnabled = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag is Cyberware ||
-                                                                         x.SelectedNode?.Tag is Gear);
+                                                                         x.SelectedNode?.Tag is Gear, token);
             }
             // Vehicles Tab.
-            else if (await tabCharacterTabs.DoThreadSafeFuncAsync(x => x.SelectedTab) == tabVehicles)
+            else if (await tabCharacterTabs.DoThreadSafeFuncAsync(x => x.SelectedTab, token) == tabVehicles)
             {
                 blnCopyEnabled = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag is Vehicle ||
                                                                         x.SelectedNode?.Tag is Gear ||
-                                                                        x.SelectedNode?.Tag is Weapon);
+                                                                        x.SelectedNode?.Tag is Weapon, token);
             }
 
-            await mnuCreateMenu.DoThreadSafeAsync(() => mnuEditCopy.Enabled = blnCopyEnabled);
-            await tsMain.DoThreadSafeAsync(() => tsbCopy.Enabled = blnCopyEnabled);
+            await mnuCreateMenu.DoThreadSafeAsync(() => mnuEditCopy.Enabled = blnCopyEnabled, token);
+            await tsMain.DoThreadSafeAsync(() => tsbCopy.Enabled = blnCopyEnabled, token);
         }
 
         /// <summary>
@@ -19533,8 +19642,6 @@ namespace Chummer
                 return;
             await picMugshot.DoThreadSafeAsync(x =>
             {
-                if (x.IsNullOrDisposed())
-                    return;
                 try
                 {
                     x.SizeMode = x.Image != null && x.Height >= x.Image.Height

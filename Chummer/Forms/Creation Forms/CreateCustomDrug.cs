@@ -114,14 +114,14 @@ namespace Chummer
         /// <summary>
         /// Populate the list of Drug Grades.
         /// </summary>
-        private Task PopulateGrades()
+        private async Task PopulateGrades()
         {
             _lstGrade.Clear();
-            foreach (Grade objGrade in _objCharacter.GetGradeList(Improvement.ImprovementSource.Drug))
+            foreach (Grade objGrade in await _objCharacter.GetGradesListAsync(Improvement.ImprovementSource.Drug))
             {
                 _lstGrade.Add(new ListItem(objGrade.Name, objGrade.CurrentDisplayName));
             }
-            return cboGrade.PopulateWithListItemsAsync(_lstGrade);
+            await cboGrade.PopulateWithListItemsAsync(_lstGrade);
         }
 
         private async ValueTask UpdateCustomDrugStats(CancellationToken token = default)

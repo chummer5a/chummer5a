@@ -98,7 +98,7 @@ namespace Chummer
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
-            _lstGrades = _objCharacter.GetGradeList(objWareSource).ToList();
+            _lstGrades = _objCharacter.GetGradesList(objWareSource);
             _strNoneGradeId = _lstGrades.Find(x => x.Name == "None")?.SourceIDString;
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseCyberwareDataNode));
         }
@@ -525,7 +525,7 @@ namespace Chummer
                 return;
             bool blnHideBannedGrades = await chkHideBannedGrades.DoThreadSafeFuncAsync(x => x.Checked);
             _lstGrades.Clear();
-            _lstGrades.AddRange(_objCharacter.GetGradeList(
+            _lstGrades.AddRange(await _objCharacter.GetGradesListAsync(
                                     _eMode == Mode.Bioware
                                         ? Improvement.ImprovementSource.Bioware
                                         : Improvement.ImprovementSource.Cyberware,

@@ -449,7 +449,10 @@ namespace Chummer
                     using (MemoryStream objStream = new MemoryStream())
                     {
                         using (XmlWriter objWriter = objSettings != null ? XmlWriter.Create(objStream, objSettings) : Utils.GetXslTransformXmlWriter(objStream))
-                            objXslTransform.Transform(_objCharacterXml, null, objWriter);
+                        {
+                            token.ThrowIfCancellationRequested();
+                            await Task.Run(() => objXslTransform.Transform(_objCharacterXml, objWriter), token);
+                        }
                         token.ThrowIfCancellationRequested();
                         objStream.Position = 0;
 
