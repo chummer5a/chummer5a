@@ -16211,7 +16211,7 @@ namespace Chummer
                 {
                     i++;
                     await tsMain.DoThreadSafeAsync(() => pgbProgress.Value = i);
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
 
                     XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[(" + CharacterObjectSettings.BookXPath() + ") and name = " + objXmlWeapon["name"].InnerText.CleanXPath() + ']');
                     if (objXmlWeaponNode != null)
@@ -16286,7 +16286,7 @@ namespace Chummer
                         }
                     }
 
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
                 }
             }
 
@@ -16309,11 +16309,11 @@ namespace Chummer
                 {
                     i++;
                     await tsMain.DoThreadSafeAsync(() => pgbProgress.Value = i);
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
 
                     AddPACKSCyberware(objXmlCyberwareDocument, objXmlBiowareDocument, objXmlGearDocument, objXmlCyberware, CharacterObject, blnCreateChildren);
 
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
                 }
             }
 
@@ -16333,11 +16333,11 @@ namespace Chummer
                 {
                     i++;
                     await tsMain.DoThreadSafeAsync(() => pgbProgress.Value = i);
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
 
                     AddPACKSCyberware(objXmlCyberwareDocument, objXmlBiowareDocument, objXmlGearDocument, objXmlBioware, CharacterObject, blnCreateChildren);
 
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
                 }
             }
 
@@ -16357,11 +16357,11 @@ namespace Chummer
                 {
                     i++;
                     await tsMain.DoThreadSafeAsync(() => pgbProgress.Value = i);
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
 
                     AddPACKSGear(objXmlGearDocument, objXmlGear, CharacterObject, blnCreateChildren);
 
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
                 }
             }
 
@@ -16382,7 +16382,7 @@ namespace Chummer
                 {
                     i++;
                     await tsMain.DoThreadSafeAsync(() => pgbProgress.Value = i);
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
 
                     Gear objDefaultSensor = null;
 
@@ -16520,7 +16520,7 @@ namespace Chummer
                         }
                     }
 
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
                 }
             }
 

@@ -108,7 +108,7 @@ namespace Chummer
                     string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                     if (string.IsNullOrEmpty(strName))
                         continue;
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
                     try
                     {
                         Vehicle objTemp = new Vehicle(_objCharacter);
@@ -150,7 +150,7 @@ namespace Chummer
                     string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                     if (string.IsNullOrEmpty(strName))
                         continue;
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
                     try
                     {
                         VehicleMod objTemp = new VehicleMod(_objCharacter);
@@ -216,7 +216,7 @@ namespace Chummer
                     string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                     if (string.IsNullOrEmpty(strName))
                         continue;
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
                     try
                     {
                         Weapon objTemp = new Weapon(_objCharacter);
@@ -258,7 +258,7 @@ namespace Chummer
                     string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                     if (string.IsNullOrEmpty(strName))
                         continue;
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
                     try
                     {
                         WeaponAccessory objTemp = new WeaponAccessory(_objCharacter);
@@ -312,7 +312,7 @@ namespace Chummer
                     string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                     if (string.IsNullOrEmpty(strName))
                         continue;
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
                     try
                     {
                         Armor objTemp = new Armor(_objCharacter);
@@ -355,7 +355,7 @@ namespace Chummer
                     string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                     if (string.IsNullOrEmpty(strName))
                         continue;
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
                     try
                     {
                         ArmorMod objTemp = new ArmorMod(_objCharacter);
@@ -409,7 +409,7 @@ namespace Chummer
                         string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                         if (string.IsNullOrEmpty(strName))
                             continue;
-                        Application.DoEvents();
+                        Utils.DoEventsSafe();
                         try
                         {
                             Gear objTemp = new Gear(_objCharacter);
@@ -474,7 +474,7 @@ namespace Chummer
                         string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                         if (string.IsNullOrEmpty(strName))
                             continue;
-                        Application.DoEvents();
+                        Utils.DoEventsSafe();
                         try
                         {
                             using (Cyberware objTemp = new Cyberware(_objCharacter))
@@ -536,7 +536,7 @@ namespace Chummer
                         string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                         if (string.IsNullOrEmpty(strName))
                             continue;
-                        Application.DoEvents();
+                        Utils.DoEventsSafe();
                         try
                         {
                             List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -590,7 +590,7 @@ namespace Chummer
                         string strName = objXmlMetatype["name"]?.InnerText ?? objXmlMetatype["id"]?.InnerText;
                         if (string.IsNullOrEmpty(strName))
                             continue;
-                        Application.DoEvents();
+                        Utils.DoEventsSafe();
 
                         objXmlDocument = XmlManager.Load(strFile);
                         _objCharacter.ResetCharacter();
