@@ -1323,7 +1323,7 @@ namespace Chummer
         private async void ReopenCharacter(object sender, FormClosedEventArgs e)
         {
             await Program.OpenCharacter(CharacterObject);
-            FormClosed -= ReopenCharacter;
+            await this.DoThreadSafeAsync(x => x.FormClosed -= ReopenCharacter);
         }
 
         #endregion Form Events
@@ -3862,7 +3862,7 @@ namespace Chummer
         {
             bool blnAddAgain;
             Location location = null;
-            if (treWeapons.SelectedNode?.Tag is Location objLocation)
+            if (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Location objLocation)
             {
                 location = objLocation;
             }
@@ -3958,7 +3958,7 @@ namespace Chummer
         {
             bool blnAddAgain;
             string strSelectedId = string.Empty;
-            if (treGear.SelectedNode?.Tag is Location objNode)
+            if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Location objNode)
             {
                 strSelectedId = objNode.InternalId;
             }
@@ -4019,7 +4019,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = await AddVehicle(treVehicles.SelectedNode?.Tag as Location);
+                blnAddAgain = await AddVehicle(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) as Location);
             }
             while (blnAddAgain);
         }
@@ -4242,11 +4242,15 @@ namespace Chummer
                 }
                 else if (CharacterObject.RESEnabled)
                 {
-                    tsMetamagicAddArt.Visible = false;
-                    tsMetamagicAddEnchantment.Visible = false;
-                    tsMetamagicAddEnhancement.Visible = false;
-                    tsMetamagicAddRitual.Visible = false;
-                    tsMetamagicAddMetamagic.Text = await LanguageManager.GetStringAsync("Button_AddEcho");
+                    string strText = await LanguageManager.GetStringAsync("Button_AddEcho");
+                    await cmsMetamagic.DoThreadSafeAsync(() =>
+                    {
+                        tsMetamagicAddArt.Visible = false;
+                        tsMetamagicAddEnchantment.Visible = false;
+                        tsMetamagicAddEnhancement.Visible = false;
+                        tsMetamagicAddRitual.Visible = false;
+                        tsMetamagicAddMetamagic.Text = strText;
+                    });
 
                     // Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
                     if (CharacterObject.SubmersionGrade + 1 > CharacterObject.RES.TotalValue)
@@ -4878,7 +4882,7 @@ namespace Chummer
                 bool blnAddAgain;
                 do
                 {
-                    blnAddAgain = await AddArmor(treArmor.SelectedNode?.Tag as Location);
+                    blnAddAgain = await AddArmor(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) as Location);
                 } while (blnAddAgain);
             }
         }
@@ -5002,11 +5006,12 @@ namespace Chummer
         {
             ICollection<Location> destCollection;
             // Make sure a Vehicle is selected.
-            if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle)
+            object objSelected = treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+            if (objSelected is Vehicle objVehicle)
             {
                 destCollection = objVehicle.Locations;
             }
-            else if (treVehicles.SelectedNode?.Tag == null || treVehicles.SelectedNode?.Tag.ToString() == "Node_SelectedVehicles")
+            else if (objSelected == null || objSelected.ToString() == "Node_SelectedVehicles")
             {
                 destCollection = CharacterObject.VehicleLocations;
             }
@@ -5036,7 +5041,7 @@ namespace Chummer
         private async void tsCyberwareAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Cyberware window.
-            if (!(treCyberware.SelectedNode?.Tag is Cyberware objCyberware && !string.IsNullOrWhiteSpace(objCyberware.AllowedSubsystems)))
+            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Cyberware objCyberware && !string.IsNullOrWhiteSpace(objCyberware.AllowedSubsystems)))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5053,7 +5058,7 @@ namespace Chummer
         private async void tsVehicleCyberwareAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Cyberware window.
-            if (!(treVehicles.SelectedNode?.Tag is Cyberware objCyberware && !string.IsNullOrWhiteSpace(objCyberware.AllowedSubsystems)))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Cyberware objCyberware && !string.IsNullOrWhiteSpace(objCyberware.AllowedSubsystems)))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5069,7 +5074,7 @@ namespace Chummer
 
         private async void tsWeaponAddAccessory_Click(object sender, EventArgs e)
         {
-            if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon))
+            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Weapon objWeapon))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponAccessory"),
                     await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon"),
@@ -5143,7 +5148,7 @@ namespace Chummer
         private async void tsAddArmorMod_Click(object sender, EventArgs e)
         {
             // Make sure a parent item is selected, then open the Select Accessory window.
-            if (!(treArmor.SelectedNode?.Tag is Armor objArmor))
+            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Armor objArmor))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5229,7 +5234,7 @@ namespace Chummer
         private async void tsGearAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Cyberware window.
-            if (!(treGear.SelectedNode?.Tag is Gear objGear))
+            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Gear objGear))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5245,7 +5250,7 @@ namespace Chummer
 
         private async void tsVehicleAddWeaponMount_Click(object sender, EventArgs e)
         {
-            if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Vehicle objVehicle))
                 return;
             using (CursorWait.New(this))
             using (ThreadSafeForm<CreateWeaponMount> frmPickVehicleMod
@@ -5259,9 +5264,13 @@ namespace Chummer
 
         private async void tsVehicleAddMod_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treVehicles.SelectedNode;
-            while (objSelectedNode?.Level > 1)
-                objSelectedNode = objSelectedNode.Parent;
+            TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x =>
+            {
+                TreeNode objTemp = x.SelectedNode;
+                while (objTemp?.Level > 1)
+                    objTemp = objTemp.Parent;
+                return objTemp;
+            });
 
             // Make sure a parent items is selected, then open the Select Vehicle Mod window.
             if (!(objSelectedNode?.Tag is Vehicle objVehicle))
@@ -5396,7 +5405,7 @@ namespace Chummer
             WeaponMount objWeaponMount = null;
             VehicleMod objMod = null;
             Vehicle objVehicle = null;
-            switch (treVehicles.SelectedNode?.Tag)
+            switch (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag))
             {
                 case WeaponMount selectedMount:
                     objWeaponMount = selectedMount;
@@ -5484,7 +5493,7 @@ namespace Chummer
         private async void tsVehicleAddWeaponAccessory_Click(object sender, EventArgs e)
         {
             // Attempt to locate the selected VehicleWeapon.
-            if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Weapon objWeapon))
             {
                 Program.ShowMessageBox(
                     this, await LanguageManager.GetStringAsync("Message_VehicleWeaponAccessories"),
@@ -5556,7 +5565,7 @@ namespace Chummer
         private async void tsVehicleAddUnderbarrelWeapon_Click(object sender, EventArgs e)
         {
             // Attempt to locate the selected VehicleWeapon.
-            if (!(treVehicles.SelectedNode?.Tag is Weapon objSelectedWeapon))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Weapon objSelectedWeapon))
             {
                 Program.ShowMessageBox(
                     this, await LanguageManager.GetStringAsync("Message_VehicleWeaponUnderbarrel"),
@@ -5615,16 +5624,19 @@ namespace Chummer
         private async void tsMartialArtsAddTechnique_Click(object sender, EventArgs e)
         {
             // Select the Martial Arts node if we're currently on a child.
-            while (treMartialArts.SelectedNode?.Level > 1)
-                treMartialArts.SelectedNode = treMartialArts.SelectedNode.Parent;
+            await treMartialArts.DoThreadSafeAsync(x =>
+            {
+                while (x.SelectedNode?.Level > 1)
+                    x.SelectedNode = x.SelectedNode.Parent;
+            });
 
-            if (treMartialArts.SelectedNode == null || treMartialArts.SelectedNode.Level <= 0)
+            if (await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level <= 0))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectMartialArtTechnique"), await LanguageManager.GetStringAsync("MessageTitle_SelectMartialArtTechnique"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (!(treMartialArts.SelectedNode?.Tag is MartialArt objMartialArt))
+            if (!(await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is MartialArt objMartialArt))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectMartialArtTechnique"), await LanguageManager.GetStringAsync("MessageTitle_SelectMartialArtTechnique"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5668,7 +5680,7 @@ namespace Chummer
         {
             Vehicle objSelectedVehicle;
             Location objLocation = null;
-            switch (treVehicles.SelectedNode?.Tag)
+            switch (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag))
             {
                 case Vehicle vehicle:
                     objSelectedVehicle = vehicle;
@@ -5676,7 +5688,7 @@ namespace Chummer
 
                 case Location location:
                     objLocation = location;
-                    objSelectedVehicle = treVehicles.SelectedNode.Parent.Tag as Vehicle;
+                    objSelectedVehicle = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode.Parent.Tag) as Vehicle;
                     break;
 
                 default:
@@ -5695,7 +5707,7 @@ namespace Chummer
 
         private async void tsVehicleSensorAddAsPlugin_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treVehicles.SelectedNode;
+            TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode);
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null || objSelectedNode.Level < 2)
             {
@@ -5858,18 +5870,21 @@ namespace Chummer
 
         private async void tsWeaponName_Click(object sender, EventArgs e)
         {
-            while (treWeapons.SelectedNode?.Level > 1)
-                treWeapons.SelectedNode = treWeapons.SelectedNode.Parent;
+            await treWeapons.DoThreadSafeAsync(x =>
+            {
+                while (x.SelectedNode?.Level > 1)
+                    x.SelectedNode = x.SelectedNode.Parent;
+            });
 
             // Make sure a parent item is selected, then open the Select Accessory window.
-            if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level <= 0)
+            if (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level <= 0))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponName"), await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Get the information for the currently selected Weapon.
-            if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon))
+            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Weapon objWeapon))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponName"), await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5889,21 +5904,21 @@ namespace Chummer
                 objWeapon.CustomName = frmPickText.MyForm.SelectedValue;
             }
 
-            treWeapons.SelectedNode.Text = objWeapon.CurrentDisplayName;
+            await treWeapons.DoThreadSafeAsync(x => x.SelectedNode.Text = objWeapon.CurrentDisplayName);
 
             await SetDirty(true);
         }
 
         private async void tsGearName_Click(object sender, EventArgs e)
         {
-            if (treGear.SelectedNode == null || treGear.SelectedNode.Level <= 0)
+            if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level <= 0))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGearName"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Get the information for the currently selected Gear.
-            if (!(treGear.SelectedNode?.Tag is Gear objGear))
+            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Gear objGear))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGearName"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -5923,14 +5938,14 @@ namespace Chummer
                 objGear.GearName = frmPickText.MyForm.SelectedValue;
             }
 
-            treGear.SelectedNode.Text = objGear.CurrentDisplayName;
+            await treGear.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName);
 
             await SetDirty(true);
         }
 
         private async void tsWeaponAddUnderbarrel_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treWeapons.SelectedNode;
+            TreeNode objSelectedNode = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode);
             // Locate the Weapon that is selected in the tree.
             if (!(objSelectedNode?.Tag is Weapon objSelectedWeapon))
             {
@@ -5984,17 +5999,16 @@ namespace Chummer
 
         private async void tsGearRename_Click(object sender, EventArgs e)
         {
-            if (treGear.SelectedNode?.Tag is Gear objGear)
+            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Gear objGear))
+                return;
+            using (ThreadSafeForm<SelectText> frmPickText
+                   = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText()))
             {
-                using (ThreadSafeForm<SelectText> frmPickText
-                       = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText()))
-                {
-                    if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel)
-                        return;
-                    objGear.Extra = frmPickText.MyForm.SelectedValue;
-                    treGear.SelectedNode.Text = objGear.CurrentDisplayName;
-                    await SetDirty(true);
-                }
+                if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                    return;
+                objGear.Extra = frmPickText.MyForm.SelectedValue;
+                await treGear.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName);
+                await SetDirty(true);
             }
         }
 
@@ -6003,7 +6017,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = await AddArmor(treArmor.SelectedNode?.Tag as Location);
+                blnAddAgain = await AddArmor(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) as Location);
             }
             while (blnAddAgain);
         }
@@ -6011,7 +6025,7 @@ namespace Chummer
         private async void tsAddArmorGear_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Gear window.
-            if (!(treArmor.SelectedNode?.Tag is Armor objArmor))
+            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Armor objArmor))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6028,7 +6042,7 @@ namespace Chummer
 
         private async void tsArmorGearAddAsPlugin_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treArmor.SelectedNode;
+            TreeNode objSelectedNode = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode);
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null || objSelectedNode.Level <= 0)
             {
@@ -6064,7 +6078,7 @@ namespace Chummer
         {
             try
             {
-                await WriteNotes(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+                await WriteNotes(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken), GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -6076,7 +6090,7 @@ namespace Chummer
         {
             try
             {
-                await WriteNotes(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+                await WriteNotes(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken), GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -6088,7 +6102,7 @@ namespace Chummer
         {
             try
             {
-                await WriteNotes(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+                await WriteNotes(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken), GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -6100,7 +6114,7 @@ namespace Chummer
         {
             try
             {
-                await WriteNotes(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+                await WriteNotes(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken), GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -6112,7 +6126,7 @@ namespace Chummer
         {
             try
             {
-                await WriteNotes(await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+                await WriteNotes(await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken), GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -6124,7 +6138,7 @@ namespace Chummer
         {
             try
             {
-                await WriteNotes(await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+                await WriteNotes(await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken), GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -6136,7 +6150,7 @@ namespace Chummer
         {
             try
             {
-                await WriteNotes(await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+                await WriteNotes(await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken), GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -6148,7 +6162,7 @@ namespace Chummer
         {
             try
             {
-                await WriteNotes(await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+                await WriteNotes(await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken), GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -6160,7 +6174,7 @@ namespace Chummer
         {
             try
             {
-                await WriteNotes(await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+                await WriteNotes(await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken), GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -6172,7 +6186,7 @@ namespace Chummer
         {
             try
             {
-                await WriteNotes(await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+                await WriteNotes(await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken), GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -6184,7 +6198,7 @@ namespace Chummer
         {
             try
             {
-                await WriteNotes(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+                await WriteNotes(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken), GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -6196,7 +6210,7 @@ namespace Chummer
         {
             try
             {
-                await WriteNotes(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+                await WriteNotes(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken), GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -6208,7 +6222,7 @@ namespace Chummer
         {
             try
             {
-                await WriteNotes(await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+                await WriteNotes(await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken), GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -6218,7 +6232,7 @@ namespace Chummer
 
         private async void tsWeaponMountLocation_Click(object sender, EventArgs e)
         {
-            if (!(treVehicles.SelectedNode?.Tag is WeaponMount objWeaponMount))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is WeaponMount objWeaponMount))
                 return;
             string strDescription = await LanguageManager.GetStringAsync("String_VehicleName");
             using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
@@ -6238,20 +6252,23 @@ namespace Chummer
 
         private async void tsVehicleName_Click(object sender, EventArgs e)
         {
-            while (treVehicles.SelectedNode?.Level > 1)
+            await treVehicles.DoThreadSafeAsync(x =>
             {
-                treVehicles.SelectedNode = treVehicles.SelectedNode.Parent;
-            }
+                while (x.SelectedNode?.Level > 1)
+                {
+                    x.SelectedNode = x.SelectedNode.Parent;
+                }
+            });
 
             // Make sure a parent item is selected.
-            if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0)
+            if (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level <= 0))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicleName"), await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Get the information for the currently selected Vehicle.
-            if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Vehicle objVehicle))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicleName"), await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6271,19 +6288,19 @@ namespace Chummer
                 objVehicle.CustomName = frmPickText.MyForm.SelectedValue;
             }
 
-            treVehicles.SelectedNode.Text = objVehicle.CurrentDisplayName;
+            await treVehicles.DoThreadSafeAsync(x => x.SelectedNode.Text = objVehicle.CurrentDisplayName);
         }
 
         private async void tsVehicleAddCyberware_Click(object sender, EventArgs e)
         {
-            if (treVehicles.SelectedNode?.Tag is string)
+            if (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is string)
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_VehicleCyberwarePlugin"), await LanguageManager.GetStringAsync("MessageTitle_NoCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             Cyberware objCyberwareParent = null;
-            string strNeedleId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId;
+            string strNeedleId = (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) as IHasInternalId)?.InternalId;
             VehicleMod objMod = CharacterObject.Vehicles.FindVehicleMod(x => x.InternalId == strNeedleId, out Vehicle objVehicle, out WeaponMount _);
             if (objMod == null)
                 objCyberwareParent = CharacterObject.Vehicles.FindVehicleCyberware(x => x.InternalId == strNeedleId, out objMod);
@@ -6471,18 +6488,21 @@ namespace Chummer
 
         private async void tsArmorName_Click(object sender, EventArgs e)
         {
-            while (treArmor.SelectedNode?.Level > 1)
-                treArmor.SelectedNode = treArmor.SelectedNode.Parent;
+            await treArmor.DoThreadSafeAsync(x =>
+            {
+                while (x.SelectedNode?.Level > 1)
+                    x.SelectedNode = x.SelectedNode.Parent;
+            });
 
             // Make sure a parent item is selected, then open the Select Accessory window.
-            if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level <= 0)
+            if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level <= 0))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmorName"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Get the information for the currently selected Armor.
-            if (!(treArmor.SelectedNode?.Tag is Armor objArmor))
+            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Armor objArmor))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmorName"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6502,7 +6522,7 @@ namespace Chummer
                 objArmor.CustomName = frmPickText.MyForm.SelectedValue;
             }
 
-            treArmor.SelectedNode.Text = objArmor.CurrentDisplayName;
+            await treArmor.DoThreadSafeAsync(x => x.SelectedNode.Text = objArmor.CurrentDisplayName);
 
             await SetDirty(true);
         }
@@ -6510,7 +6530,7 @@ namespace Chummer
         private async void tsLifestyleName_Click(object sender, EventArgs e)
         {
             // Get the information for the currently selected Lifestyle.
-            if (!(treLifestyles.SelectedNode?.Tag is IHasCustomName objCustomName))
+            if (!(await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasCustomName objCustomName))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectLifestyleName"), await LanguageManager.GetStringAsync("MessageTitle_SelectLifestyle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6531,7 +6551,7 @@ namespace Chummer
                     return;
                 objCustomName.CustomName = frmPickText.MyForm.SelectedValue;
 
-                treLifestyles.SelectedNode.Text = objCustomName.CurrentDisplayName;
+                await treLifestyles.DoThreadSafeAsync(x => x.SelectedNode.Text = objCustomName.CurrentDisplayName);
 
                 await SetDirty(true);
             }
@@ -6539,7 +6559,7 @@ namespace Chummer
 
         private async void tsGearRenameLocation_Click(object sender, EventArgs e)
         {
-            if (!(treGear.SelectedNode?.Tag is Location objLocation))
+            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Location objLocation))
                 return;
             string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
             using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
@@ -6555,14 +6575,14 @@ namespace Chummer
                 objLocation.Name = frmPickText.MyForm.SelectedValue;
             }
 
-            treGear.SelectedNode.Text = objLocation.DisplayName();
+            await treGear.DoThreadSafeAsync(x => x.SelectedNode.Text = objLocation.DisplayName());
 
             await SetDirty(true);
         }
 
         private async void tsWeaponRenameLocation_Click(object sender, EventArgs e)
         {
-            if (!(treWeapons.SelectedNode?.Tag is Location objLocation))
+            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Location objLocation))
                 return;
             string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
             using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
@@ -6578,7 +6598,7 @@ namespace Chummer
                 objLocation.Name = frmPickText.MyForm.SelectedValue;
             }
 
-            treWeapons.SelectedNode.Text = objLocation.DisplayName();
+            await treWeapons.DoThreadSafeAsync(x => x.SelectedNode.Text = objLocation.DisplayName());
 
             await SetDirty(true);
         }
@@ -6608,7 +6628,7 @@ namespace Chummer
 
         private async void tsArmorRenameLocation_Click(object sender, EventArgs e)
         {
-            if (!(treArmor.SelectedNode?.Tag is Location objLocation))
+            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Location objLocation))
                 return;
             string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
             using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(
@@ -6624,14 +6644,14 @@ namespace Chummer
                 objLocation.Name = frmPickText.MyForm.SelectedValue;
             }
 
-            treArmor.SelectedNode.Text = objLocation.DisplayName();
+            await treArmor.DoThreadSafeAsync(x => x.SelectedNode.Text = objLocation.DisplayName());
 
             await SetDirty(true);
         }
 
         private async void tsCyberwareAddGear_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treCyberware.SelectedNode;
+            TreeNode objSelectedNode = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode);
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null || objSelectedNode.Level <= 0)
             {
@@ -6741,7 +6761,7 @@ namespace Chummer
         private async void tsVehicleCyberwareAddGear_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Gear window.
-            if (!(treVehicles.SelectedNode?.Tag is Cyberware objCyberware))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Cyberware objCyberware))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6825,7 +6845,7 @@ namespace Chummer
 
         private async void tsCyberwareGearMenuAddAsPlugin_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treCyberware.SelectedNode;
+            TreeNode objSelectedNode = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode);
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null || objSelectedNode.Level < 2)
             {
@@ -6916,7 +6936,7 @@ namespace Chummer
 
         private async void tsVehicleCyberwareGearMenuAddAsPlugin_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treVehicles.SelectedNode;
+            TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode);
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null)
             {
@@ -7004,7 +7024,7 @@ namespace Chummer
 
         private async void tsWeaponAccessoryAddGear_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treWeapons.SelectedNode;
+            TreeNode objSelectedNode = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode);
 
             // Make sure the Weapon Accessory is allowed to accept Gear.
             if (!(objSelectedNode?.Tag is WeaponAccessory objAccessory) || objAccessory.AllowGear == null)
@@ -7082,7 +7102,7 @@ namespace Chummer
 
         private async void tsWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
         {
-            if (!(treWeapons.SelectedNode?.Tag is Gear objSensor))
+            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Gear objSensor))
             // Make sure the Gear was found.
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -7167,7 +7187,7 @@ namespace Chummer
 
         private async void tsVehicleRenameLocation_Click(object sender, EventArgs e)
         {
-            if (!(treVehicles.SelectedNode?.Tag is Location objLocation))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Location objLocation))
                 return;
 
             string strDescription = await LanguageManager.GetStringAsync("String_AddLocation");
@@ -7204,7 +7224,7 @@ namespace Chummer
         private async void tsVehicleWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
         {
             // Make sure the Gear was found.
-            if (!(treVehicles.SelectedNode?.Tag is Gear objSensor))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Gear objSensor))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -7289,7 +7309,7 @@ namespace Chummer
 
         private async void tsVehicleWeaponAccessoryAddGear_Click(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treVehicles.SelectedNode;
+            TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode);
 
             // Make sure the Weapon Accessory is allowed to accept Gear.
             if (!(objSelectedNode?.Tag is WeaponAccessory objAccessory) || objAccessory.AllowGear == null)
@@ -7865,7 +7885,7 @@ namespace Chummer
 
         private async void treLifestyles_DoubleClick(object sender, EventArgs e)
         {
-            if (!(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
+            if (!(await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Lifestyle objLifestyle))
                 return;
 
             string strGuid = objLifestyle.InternalId;
@@ -8371,10 +8391,10 @@ namespace Chummer
 
         private async void cboGearAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !cboGearAttack.Enabled)
+            if (IsRefreshing || !await cboGearAttack.DoThreadSafeFuncAsync(x => x.Enabled))
                 return;
 
-            if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasMatrixAttributes objTarget))
                 return;
 
             IsRefreshing = true;
@@ -8396,10 +8416,10 @@ namespace Chummer
 
         private async void cboGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !cboGearSleaze.Enabled)
+            if (IsRefreshing || !await cboGearSleaze.DoThreadSafeFuncAsync(x => x.Enabled))
                 return;
 
-            if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasMatrixAttributes objTarget))
                 return;
 
             IsRefreshing = true;
@@ -8421,10 +8441,10 @@ namespace Chummer
 
         private async void cboGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !cboGearDataProcessing.Enabled)
+            if (IsRefreshing || !await cboGearDataProcessing.DoThreadSafeFuncAsync(x => x.Enabled))
                 return;
 
-            if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasMatrixAttributes objTarget))
                 return;
 
             IsRefreshing = true;
@@ -8446,10 +8466,10 @@ namespace Chummer
 
         private async void cboGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !cboGearFirewall.Enabled)
+            if (IsRefreshing || !await cboGearFirewall.DoThreadSafeFuncAsync(x => x.Enabled))
                 return;
 
-            if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasMatrixAttributes objTarget))
                 return;
 
             IsRefreshing = true;
@@ -8471,10 +8491,10 @@ namespace Chummer
 
         private async void cboVehicleAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !cboVehicleAttack.Enabled)
+            if (IsRefreshing || !await cboVehicleAttack.DoThreadSafeFuncAsync(x => x.Enabled))
                 return;
 
-            if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasMatrixAttributes objTarget))
                 return;
 
             IsRefreshing = true;
@@ -8496,10 +8516,10 @@ namespace Chummer
 
         private async void cboVehicleSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !cboVehicleSleaze.Enabled)
+            if (IsRefreshing || !await cboVehicleSleaze.DoThreadSafeFuncAsync(x => x.Enabled))
                 return;
 
-            if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasMatrixAttributes objTarget))
                 return;
 
             IsRefreshing = true;
@@ -8521,10 +8541,10 @@ namespace Chummer
 
         private async void cboVehicleFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !cboVehicleFirewall.Enabled)
+            if (IsRefreshing || !await cboVehicleFirewall.DoThreadSafeFuncAsync(x => x.Enabled))
                 return;
 
-            if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasMatrixAttributes objTarget))
                 return;
 
             IsRefreshing = true;
@@ -8546,10 +8566,10 @@ namespace Chummer
 
         private async void cboVehicleDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !cboVehicleDataProcessing.Enabled)
+            if (IsRefreshing || !await cboVehicleDataProcessing.DoThreadSafeFuncAsync(x => x.Enabled))
                 return;
 
-            if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasMatrixAttributes objTarget))
                 return;
 
             IsRefreshing = true;
@@ -8571,10 +8591,10 @@ namespace Chummer
 
         private async void cboCyberwareAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !cboCyberwareAttack.Enabled)
+            if (IsRefreshing || !await cboCyberwareAttack.DoThreadSafeFuncAsync(x => x.Enabled))
                 return;
 
-            if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasMatrixAttributes objTarget))
                 return;
 
             IsRefreshing = true;
@@ -8596,10 +8616,10 @@ namespace Chummer
 
         private async void cboCyberwareSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !cboCyberwareSleaze.Enabled)
+            if (IsRefreshing || !await cboCyberwareSleaze.DoThreadSafeFuncAsync(x => x.Enabled))
                 return;
 
-            if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasMatrixAttributes objTarget))
                 return;
 
             IsRefreshing = true;
@@ -8621,10 +8641,10 @@ namespace Chummer
 
         private async void cboCyberwareDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !cboCyberwareDataProcessing.Enabled)
+            if (IsRefreshing || !await cboCyberwareDataProcessing.DoThreadSafeFuncAsync(x => x.Enabled))
                 return;
 
-            if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasMatrixAttributes objTarget))
                 return;
 
             IsRefreshing = true;
@@ -8646,10 +8666,10 @@ namespace Chummer
 
         private async void cboCyberwareFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !cboCyberwareFirewall.Enabled)
+            if (IsRefreshing || !await cboCyberwareFirewall.DoThreadSafeFuncAsync(x => x.Enabled))
                 return;
 
-            if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasMatrixAttributes objTarget))
                 return;
 
             IsRefreshing = true;
@@ -17033,7 +17053,7 @@ namespace Chummer
 
         private async void tsMetamagicAddMetamagic_Click(object sender, EventArgs e)
         {
-            if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
+            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is InitiationGrade objGrade))
                 return;
 
             using (ThreadSafeForm<SelectMetamagic> frmPickMetamagic = await ThreadSafeForm<SelectMetamagic>.GetAsync(() => new SelectMetamagic(CharacterObject, objGrade)))
@@ -17068,7 +17088,7 @@ namespace Chummer
 
         private async void tsMetamagicAddArt_Click(object sender, EventArgs e)
         {
-            if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
+            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is InitiationGrade objGrade))
                 return;
 
             using (ThreadSafeForm<SelectArt> frmPickArt
@@ -17094,7 +17114,7 @@ namespace Chummer
 
         private async void tsMetamagicAddEnchantment_Click(object sender, EventArgs e)
         {
-            if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
+            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is InitiationGrade objGrade))
                 return;
 
             using (ThreadSafeForm<SelectArt> frmPickArt
@@ -17123,7 +17143,7 @@ namespace Chummer
 
         private async void tsMetamagicAddRitual_Click(object sender, EventArgs e)
         {
-            if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
+            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is InitiationGrade objGrade))
                 return;
 
             using (ThreadSafeForm<SelectArt> frmPickArt
@@ -17164,7 +17184,7 @@ namespace Chummer
 
         private async void tsMetamagicAddEnhancement_Click(object sender, EventArgs e)
         {
-            if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
+            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is InitiationGrade objGrade))
                 return;
 
             using (ThreadSafeForm<SelectArt> frmPickArt
@@ -17282,7 +17302,7 @@ namespace Chummer
                 if (_objStoryBuilder == null)
                 {
                     _objStoryBuilder = new StoryBuilder(CharacterObject);
-                    btnCreateBackstory.Enabled = false;
+                    await btnCreateBackstory.DoThreadSafeAsync(x => x.Enabled = false);
                 }
 
                 CharacterObject.Background = await _objStoryBuilder.GetStory(GlobalSettings.Language);
@@ -17668,7 +17688,7 @@ namespace Chummer
 
         private async void cmdCyberwareChangeMount_Click(object sender, EventArgs e)
         {
-            if (!(treCyberware.SelectedNode?.Tag is Cyberware objModularCyberware))
+            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Cyberware objModularCyberware))
                 return;
             string strSelectedParentID;
             using (new FetchSafelyFromPool<List<ListItem>>(
@@ -17765,7 +17785,7 @@ namespace Chummer
 
         private async void cmdVehicleCyberwareChangeMount_Click(object sender, EventArgs e)
         {
-            if (!(treVehicles.SelectedNode?.Tag is Cyberware objModularCyberware))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Cyberware objModularCyberware))
                 return;
             string strSelectedParentID;
             using (new FetchSafelyFromPool<List<ListItem>>(
@@ -17891,7 +17911,7 @@ namespace Chummer
 
         private async void tsWeaponLocationAddWeapon_Click(object sender, EventArgs e)
         {
-            if (!(treWeapons.SelectedNode?.Tag is Location objLocation))
+            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Location objLocation))
                 return;
             bool blnAddAgain;
             do
@@ -17906,14 +17926,14 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = await AddVehicle(treVehicles.SelectedNode?.Tag is Location objSelectedNode ? objSelectedNode : null);
+                blnAddAgain = await AddVehicle(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Location objSelectedNode ? objSelectedNode : null);
             }
             while (blnAddAgain);
         }
 
         private async void tsEditWeaponMount_Click(object sender, EventArgs e)
         {
-            if (!(treVehicles.SelectedNode?.Tag is WeaponMount objWeaponMount))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is WeaponMount objWeaponMount))
                 return;
             using (ThreadSafeForm<CreateWeaponMount> frmCreateWeaponMount
                    = await ThreadSafeForm<CreateWeaponMount>.GetAsync(
