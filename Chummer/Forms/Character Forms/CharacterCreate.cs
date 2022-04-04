@@ -51,8 +51,6 @@ namespace Chummer
         private bool _blnFreestyle;
         private bool _blnIsReopenQueued;
         private int _intDragLevel;
-        private MouseButtons _eDragButton = MouseButtons.None;
-        private bool _blnDraggingGear;
         private StoryBuilder _objStoryBuilder;
 
         public TabControl TabCharacterTabs => tabCharacterTabs;
@@ -1098,7 +1096,7 @@ namespace Chummer
                                 CharacterObject.AttributeSection.Attributes.CollectionChanged
                                     += AttributeCollectionChanged;
 
-                                IsCharacterUpdateRequested = true;
+                                await RequestCharacterUpdate();
                                 // Directly awaiting here so that we can properly unset the dirty flag after the update
                                 try
                                 {
@@ -1201,7 +1199,6 @@ namespace Chummer
                         return;
 
                     GenericCancellationTokenSource?.Cancel(false);
-                    IsCharacterUpdateRequested = false;
 
                     if (Program.MainForm.ActiveMdiChild == this)
                         ToolStripManager.RevertMerge("toolStrip");
@@ -1343,7 +1340,7 @@ namespace Chummer
             if (_blnReapplyImprovements)
                 return;
 
-            IsDirty = true;
+            await SetDirty(true);
 
             try
             {
@@ -1398,7 +1395,7 @@ namespace Chummer
                     case nameof(Character.GroupMember):
                     case nameof(Character.HomeNode):
                     case nameof(Character.ActiveCommlink):
-                        IsCharacterUpdateRequested = true;
+                        await RequestCharacterUpdate();
                         break;
 
                     case nameof(Character.Source):
@@ -1511,7 +1508,7 @@ namespace Chummer
                         await gpbGearBondedFoci.DoThreadSafeAsync(x => x.Visible = CharacterObject.MAGEnabled, GenericToken);
                         await lblAstralINI.DoThreadSafeAsync(x => x.Visible = CharacterObject.MAGEnabled, GenericToken);
 
-                        IsCharacterUpdateRequested = true;
+                        await RequestCharacterUpdate();
                     }
                         break;
 
@@ -1614,7 +1611,7 @@ namespace Chummer
                             }
                         }
 
-                        IsCharacterUpdateRequested = true;
+                        await RequestCharacterUpdate();
                     }
                         break;
 
@@ -1863,7 +1860,7 @@ namespace Chummer
 
                             if (blnDoRefresh)
                             {
-                                IsCharacterUpdateRequested = true;
+                                await RequestCharacterUpdate();
                             }
                         }
                     }
@@ -1906,7 +1903,7 @@ namespace Chummer
 
                             if (blnDoRefresh)
                             {
-                                IsCharacterUpdateRequested = true;
+                                await RequestCharacterUpdate();
                             }
                         }
                     }
@@ -1949,7 +1946,7 @@ namespace Chummer
 
                             if (blnDoRefresh)
                             {
-                                IsCharacterUpdateRequested = true;
+                                await RequestCharacterUpdate();
                             }
                         }
                     }
@@ -2007,7 +2004,7 @@ namespace Chummer
                     }
                     case nameof(Character.IsPrototypeTranshuman):
                     {
-                        IsCharacterUpdateRequested = true;
+                        await RequestCharacterUpdate();
                         await lblPrototypeTranshumanESS.DoThreadSafeAsync(
                             x => x.Visible = CharacterObject.IsPrototypeTranshuman);
                         await lblPrototypeTranshumanESSLabel.DoThreadSafeAsync(
@@ -2016,7 +2013,7 @@ namespace Chummer
                     }
                     case nameof(Character.MetatypeCategory):
                     {
-                        IsCharacterUpdateRequested = true;
+                        await RequestCharacterUpdate();
                         await mnuCreateMenu.DoThreadSafeAsync(
                             () => mnuSpecialCyberzombie.Visible = CharacterObject.MetatypeCategory != "Cyberzombie",
                             GenericToken);
@@ -2024,7 +2021,7 @@ namespace Chummer
                     }
                     case nameof(Character.IsSprite):
                     {
-                        IsCharacterUpdateRequested = true;
+                        await RequestCharacterUpdate();
                         await mnuCreateMenu.DoThreadSafeAsync(
                             () => mnuSpecialConvertToFreeSprite.Visible = CharacterObject.IsSprite, GenericToken);
                         break;
@@ -2397,7 +2394,7 @@ namespace Chummer
             }
             finally
             {
-                IsCharacterUpdateRequested = true;
+                await RequestCharacterUpdate();
             }
         }
 
@@ -3233,7 +3230,7 @@ namespace Chummer
                             await DoOnCharacterPropertyChanged(
                                 new PropertyChangedEventArgs(nameof(Character.DEPEnabled)));
 
-                        IsCharacterUpdateRequested = true;
+                        await RequestCharacterUpdate();
                         // Immediately await character update because it re-applies essence loss improvements
                         try
                         {
@@ -3264,7 +3261,7 @@ namespace Chummer
                 }
             }
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
         private void mnuEditCopy_Click(object sender, EventArgs e)
@@ -3688,29 +3685,29 @@ namespace Chummer
             objSpell.Remove();
         }
 
-        private void cmdAddSpirit_Click(object sender, EventArgs e)
+        private async void cmdAddSpirit_Click(object sender, EventArgs e)
         {
-            AddSpirit();
+            await AddSpirit();
         }
 
-        private void cmdAddSprite_Click(object sender, EventArgs e)
+        private async void cmdAddSprite_Click(object sender, EventArgs e)
         {
-            AddSprite();
+            await AddSprite();
         }
 
-        private void cmdAddContact_Click(object sender, EventArgs e)
+        private async void cmdAddContact_Click(object sender, EventArgs e)
         {
-            AddContact();
+            await AddContact();
         }
 
-        private void cmdAddEnemy_Click(object sender, EventArgs e)
+        private async void cmdAddEnemy_Click(object sender, EventArgs e)
         {
-            AddEnemy();
+            await AddEnemy();
         }
 
-        private void cmdAddPet_Click(object sender, EventArgs e)
+        private async void cmdAddPet_Click(object sender, EventArgs e)
         {
-            AddPet();
+            await AddPet();
         }
 
         private async void tsAddFromFile_Click(object sender, EventArgs e)
@@ -4081,7 +4078,7 @@ namespace Chummer
                             // Create a Vehicle Mod for the Retrofit.
                             VehicleMod objRetrofit = new VehicleMod(CharacterObject);
 
-                            XmlDocument objVehiclesDoc = await CharacterObject.LoadDataAsync("vehicles.xml");
+                            XmlDocument objVehiclesDoc = await CharacterObject.LoadDataAsync("vehicles.xml", token: token);
                             XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
                             objRetrofit.Create(objXmlNode, 0, objMod.Parent);
                             objRetrofit.Cost = decCost.ToString(GlobalSettings.InvariantCultureInfo);
@@ -4126,7 +4123,7 @@ namespace Chummer
                     ++x.Maximum;
                     x.Value = CharacterObject.Mugshots.Count;
                 }, GenericToken);
-                IsDirty = true;
+                await SetDirty(true);
             }
             catch (OperationCanceledException)
             {
@@ -4134,27 +4131,40 @@ namespace Chummer
             }
         }
 
-        private void cmdDeleteMugshot_Click(object sender, EventArgs e)
+        private async void cmdDeleteMugshot_Click(object sender, EventArgs e)
         {
             if (CharacterObject.Mugshots.Count == 0)
                 return;
-            RemoveMugshot(nudMugshotIndex.ValueAsInt - 1);
-
-            lblNumMugshots.Text = LanguageManager.GetString("String_Of") + CharacterObject.Mugshots.Count.ToString(GlobalSettings.CultureInfo);
-            --nudMugshotIndex.Maximum;
-            if (nudMugshotIndex.Value > nudMugshotIndex.Maximum)
-                nudMugshotIndex.Value = nudMugshotIndex.Maximum;
-            else
+            try
             {
-                if (nudMugshotIndex.ValueAsInt - 1 == CharacterObject.MainMugshotIndex)
-                    chkIsMainMugshot.Checked = true;
-                else if (chkIsMainMugshot.Checked)
-                    chkIsMainMugshot.Checked = false;
+                RemoveMugshot(await nudMugshotIndex.DoThreadSafeFuncAsync(x => x.ValueAsInt) - 1);
+                string strText = await LanguageManager.GetStringAsync("String_Of")
+                                 + CharacterObject.Mugshots.Count.ToString(GlobalSettings.CultureInfo);
+                await lblNumMugshots.DoThreadSafeAsync(x => x.Text = strText, GenericToken);
+                await nudMugshotIndex.DoThreadSafeAsync(x =>
+                {
+                    --x.Maximum;
+                    if (x.Value > x.Maximum)
+                        x.Value = x.Maximum;
+                    else
+                    {
+                        chkIsMainMugshot.DoThreadSafe(y =>
+                        {
+                            if (x.ValueAsInt - 1 == CharacterObject.MainMugshotIndex)
+                                y.Checked = true;
+                            else if (y.Checked)
+                                y.Checked = false;
+                        });
 
-                UpdateMugshot(picMugshot, nudMugshotIndex.ValueAsInt - 1);
+                        UpdateMugshot(picMugshot, x.ValueAsInt - 1);
+                    }
+                }, GenericToken);
+                await SetDirty(true);
             }
-
-            IsDirty = true;
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void nudMugshotIndex_ValueChanged(object sender, EventArgs e)
@@ -4182,17 +4192,18 @@ namespace Chummer
             UpdateMugshot(picMugshot, nudMugshotIndex.ValueAsInt - 1);
         }
 
-        private void chkIsMainMugshot_CheckedChanged(object sender, EventArgs e)
+        private async void chkIsMainMugshot_CheckedChanged(object sender, EventArgs e)
         {
             bool blnStatusChanged = false;
-            switch (chkIsMainMugshot.Checked)
+            int intSelectedIndex = await nudMugshotIndex.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+            switch (await chkIsMainMugshot.DoThreadSafeFuncAsync(x => x.Checked))
             {
-                case true when CharacterObject.MainMugshotIndex != nudMugshotIndex.ValueAsInt - 1:
-                    CharacterObject.MainMugshotIndex = nudMugshotIndex.ValueAsInt - 1;
+                case true when CharacterObject.MainMugshotIndex != intSelectedIndex - 1:
+                    CharacterObject.MainMugshotIndex = intSelectedIndex - 1;
                     blnStatusChanged = true;
                     break;
 
-                case false when nudMugshotIndex.ValueAsInt - 1 == CharacterObject.MainMugshotIndex:
+                case false when intSelectedIndex - 1 == CharacterObject.MainMugshotIndex:
                     CharacterObject.MainMugshotIndex = -1;
                     blnStatusChanged = true;
                     break;
@@ -4200,7 +4211,7 @@ namespace Chummer
 
             if (blnStatusChanged)
             {
-                IsDirty = true;
+                await SetDirty(true);
             }
         }
 
@@ -4926,28 +4937,65 @@ namespace Chummer
             }
         }
 
-        private void cmdArmorEquipAll_Click(object sender, EventArgs e)
+        private async void cmdArmorEquipAll_Click(object sender, EventArgs e)
         {
-            if (!(treArmor.SelectedNode?.Tag is Location objLocation))
-                return;
-            foreach (Armor objArmor in objLocation.Children.OfType<Armor>())
+            object objSelected = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+            if (objSelected is Location selectedLocation)
             {
-                objArmor.Equipped = true;
+                // Equip all of the Armor in the Armor Bundle.
+                foreach (Armor objArmor in selectedLocation.Children.OfType<Armor>())
+                {
+                    if (objArmor.Location == selectedLocation)
+                    {
+                        objArmor.Equipped = true;
+                    }
+                }
             }
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            else if (objSelected?.ToString() == "Node_SelectedArmor")
+            {
+                foreach (Armor objArmor in CharacterObject.Armor.Where(objArmor => !objArmor.Equipped && objArmor.Location == null))
+                {
+                    objArmor.Equipped = true;
+                }
+            }
+            else
+            {
+                return;
+            }
+
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
-        private void cmdArmorUnEquipAll_Click(object sender, EventArgs e)
+        private async void cmdArmorUnEquipAll_Click(object sender, EventArgs e)
         {
-            if (!(treArmor.SelectedNode?.Tag is Location objLocation))
-                return;
-            foreach (Armor objArmor in objLocation.Children.OfType<Armor>())
+            object objSelected = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+            if (objSelected is Location selectedLocation)
             {
-                objArmor.Equipped = false;
+                // Equip all of the Armor in the Armor Bundle.
+                foreach (Armor objArmor in selectedLocation.Children.OfType<Armor>())
+                {
+                    if (objArmor.Location == selectedLocation)
+                    {
+                        objArmor.Equipped = false;
+                    }
+                }
             }
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            else if (objSelected?.ToString() == "Node_SelectedArmor")
+            {
+                foreach (Armor objArmor in CharacterObject.Armor.Where(objArmor =>
+                                                                           objArmor.Equipped && objArmor.Location == null))
+                {
+                    objArmor.Equipped = false;
+                }
+            }
+            else
+            {
+                return;
+            }
+
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
         private async void cmdAddVehicleLocation_Click(object sender, EventArgs e)
@@ -5762,7 +5810,7 @@ namespace Chummer
                                 return;
                             objGear.Notes = frmItemNotes.MyForm.Notes;
                             objGear.NotesColor = frmItemNotes.MyForm.NotesColor;
-                            IsDirty = true;
+                            await SetDirty(true);
 
                             await treVehicles.DoThreadSafeAsync(x =>
                             {
@@ -5843,7 +5891,7 @@ namespace Chummer
 
             treWeapons.SelectedNode.Text = objWeapon.CurrentDisplayName;
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
         private async void tsGearName_Click(object sender, EventArgs e)
@@ -5877,7 +5925,7 @@ namespace Chummer
 
             treGear.SelectedNode.Text = objGear.CurrentDisplayName;
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
         private async void tsWeaponAddUnderbarrel_Click(object sender, EventArgs e)
@@ -5945,7 +5993,7 @@ namespace Chummer
                         return;
                     objGear.Extra = frmPickText.MyForm.SelectedValue;
                     treGear.SelectedNode.Text = objGear.CurrentDisplayName;
-                    IsDirty = true;
+                    await SetDirty(true);
                 }
             }
         }
@@ -6456,7 +6504,7 @@ namespace Chummer
 
             treArmor.SelectedNode.Text = objArmor.CurrentDisplayName;
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
         private async void tsLifestyleName_Click(object sender, EventArgs e)
@@ -6485,7 +6533,7 @@ namespace Chummer
 
                 treLifestyles.SelectedNode.Text = objCustomName.CurrentDisplayName;
 
-                IsDirty = true;
+                await SetDirty(true);
             }
         }
 
@@ -6509,7 +6557,7 @@ namespace Chummer
 
             treGear.SelectedNode.Text = objLocation.DisplayName();
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
         private async void tsWeaponRenameLocation_Click(object sender, EventArgs e)
@@ -6532,7 +6580,7 @@ namespace Chummer
 
             treWeapons.SelectedNode.Text = objLocation.DisplayName();
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
         private async void tsCreateSpell_Click(object sender, EventArgs e)
@@ -6578,7 +6626,7 @@ namespace Chummer
 
             treArmor.SelectedNode.Text = objLocation.DisplayName();
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
         private async void tsCyberwareAddGear_Click(object sender, EventArgs e)
@@ -7138,7 +7186,7 @@ namespace Chummer
 
             treVehicles.SelectedNode.Text = objLocation.DisplayName();
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
         private async void tsCreateNaturalWeapon_Click(object sender, EventArgs e)
@@ -7539,13 +7587,13 @@ namespace Chummer
             }
         }
 
-        private void cboCyberwareGrade_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCyberwareGrade_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || IsLoading)
                 return;
-            string strSelectedGrade = cboCyberwareGrade.SelectedValue?.ToString();
+            string strSelectedGrade = await cboCyberwareGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             if (string.IsNullOrEmpty(strSelectedGrade) ||
-                !(treCyberware.SelectedNode?.Tag is Cyberware objCyberware))
+                !(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Cyberware objCyberware))
                 return;
             // Locate the selected piece of Cyberware.
             Grade objNewGrade = CharacterObject.GetGrades(objCyberware.SourceType).FirstOrDefault(x => x.Name == strSelectedGrade);
@@ -7554,42 +7602,42 @@ namespace Chummer
             // Updated the selected Cyberware Grade.
             objCyberware.Grade = objNewGrade;
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
-        private void chkPrototypeTranshuman_CheckedChanged(object sender, EventArgs e)
+        private async void chkPrototypeTranshuman_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !(treCyberware.SelectedNode?.Tag is Cyberware objCyberware))
+            if (IsRefreshing || !(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Cyberware objCyberware))
                 return;
             // Update the selected Cyberware Rating.
-            objCyberware.PrototypeTranshuman = chkPrototypeTranshuman.Checked;
+            objCyberware.PrototypeTranshuman = await chkPrototypeTranshuman.DoThreadSafeFuncAsync(x => x.Checked);
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
-        private void nudCyberwareRating_ValueChanged(object sender, EventArgs e)
+        private async void nudCyberwareRating_ValueChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            switch (treCyberware.SelectedNode?.Tag)
+            switch (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag))
             {
                 // Locate the selected piece of Cyberware.
                 case Cyberware objCyberware:
                     {
                         // Update the selected Cyberware Rating.
-                        objCyberware.Rating = nudCyberwareRating.ValueAsInt;
+                        objCyberware.Rating = await nudCyberwareRating.DoThreadSafeFuncAsync(x => x.ValueAsInt);
 
                         // See if a Bonus node exists.
                         if (objCyberware.Bonus?.InnerXml.Contains("Rating") == true || objCyberware.PairBonus?.InnerXml.Contains("Rating") == true || objCyberware.WirelessOn && objCyberware.WirelessBonus?.InnerXml.Contains("Rating") == true)
                         {
                             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-                            ImprovementManager.RemoveImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId);
+                            await ImprovementManager.RemoveImprovementsAsync(CharacterObject, objCyberware.SourceType, objCyberware.InternalId);
                             if (objCyberware.Bonus != null)
-                                ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, objCyberware.Rating, objCyberware.CurrentDisplayNameShort);
+                                await ImprovementManager.CreateImprovementsAsync(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, objCyberware.Rating, objCyberware.CurrentDisplayNameShort);
                             if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
-                                ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, objCyberware.Rating, objCyberware.CurrentDisplayNameShort);
+                                await ImprovementManager.CreateImprovementsAsync(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, objCyberware.Rating, objCyberware.CurrentDisplayNameShort);
 
                             if (objCyberware.PairBonus != null)
                             {
@@ -7612,11 +7660,11 @@ namespace Chummer
                                 }
                                 foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
                                 {
-                                    ImprovementManager.RemoveImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair");
+                                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair");
                                     // Go down the list and create pair bonuses for every second item
                                     if (intCyberwaresCount > 0 && (intCyberwaresCount & 1) == 0)
                                     {
-                                        ImprovementManager.CreateImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, objLoopCyberware.Rating, objLoopCyberware.CurrentDisplayNameShort);
+                                        await ImprovementManager.CreateImprovementsAsync(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, objLoopCyberware.Rating, objLoopCyberware.CurrentDisplayNameShort);
                                     }
                                     --intCyberwaresCount;
                                 }
@@ -7626,7 +7674,7 @@ namespace Chummer
                                 objCyberware.ChangeModularEquip(false);
                         }
 
-                        treCyberware.SelectedNode.Text = objCyberware.CurrentDisplayName;
+                        await treCyberware.DoThreadSafeAsync(x => x.SelectedNode.Text = objCyberware.CurrentDisplayName);
                         break;
                     }
                 case Gear objGear:
@@ -7634,12 +7682,12 @@ namespace Chummer
                         // Find the selected piece of Gear.
                         if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
                         {
-                            if (!objGear.RefreshSingleFocusRating(treFoci, nudCyberwareRating.ValueAsInt))
+                            if (!await objGear.RefreshSingleFocusRating(treFoci, await nudCyberwareRating.DoThreadSafeFuncAsync(x => x.ValueAsInt)))
                             {
                                 IsRefreshing = true;
                                 try
                                 {
-                                    nudCyberwareRating.Value = objGear.Rating;
+                                    await nudCyberwareRating.DoThreadSafeAsync(x => x.ValueAsInt = objGear.Rating);
                                 }
                                 finally
                                 {
@@ -7650,32 +7698,32 @@ namespace Chummer
                             }
                         }
                         else
-                            objGear.Rating = nudCyberwareRating.ValueAsInt;
+                            objGear.Rating = await nudCyberwareRating.DoThreadSafeFuncAsync(x => x.ValueAsInt);
 
                         // See if a Bonus node exists.
                         if (objGear.Bonus != null || objGear.WirelessOn && objGear.WirelessBonus != null)
                         {
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
+                            await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
                             if (!string.IsNullOrEmpty(objGear.Extra))
                             {
                                 ImprovementManager.ForcedValue = objGear.Extra.TrimEndOnce(", Hacked");
                             }
                             if (objGear.Bonus != null)
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, objGear.Rating, objGear.CurrentDisplayNameShort);
+                                await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, objGear.Rating, objGear.CurrentDisplayNameShort);
                             if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.CurrentDisplayNameShort);
+                                await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.CurrentDisplayNameShort);
 
                             if (!objGear.Equipped)
                                 objGear.ChangeEquippedStatus(false);
                         }
 
-                        treCyberware.SelectedNode.Text = objGear.CurrentDisplayName;
+                        await treCyberware.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName);
                         break;
                     }
             }
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
         #endregion Additional Cyberware Tab Control Events
@@ -7715,47 +7763,16 @@ namespace Chummer
             e.Effect = DragDropEffects.Move;
         }
 
-        private void treWeapons_DragDrop(object sender, DragEventArgs e)
+        private async void treWeapons_DragDrop(object sender, DragEventArgs e)
         {
-            Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
-            TreeNode nodDestination = ((TreeView)sender).GetNodeAt(pt);
-
-            TreeNode objSelected = treWeapons.SelectedNode;
-            for (TreeNode nodLoop = nodDestination; nodLoop != null; nodLoop = nodLoop.Parent)
+            try
             {
-                if (nodLoop == objSelected)
-                    return;
+                await DoTreeDragDrop(sender, e, treWeapons, ItemTreeViewTypes.Weapons, GenericToken);
             }
-
-            int intNewIndex;
-            if (nodDestination != null)
+            catch (OperationCanceledException)
             {
-                intNewIndex = nodDestination.Index;
+                //swallow this
             }
-            else
-            {
-                intNewIndex = treWeapons.Nodes[treWeapons.Nodes.Count - 1].Nodes.Count;
-                nodDestination = treWeapons.Nodes[treWeapons.Nodes.Count - 1];
-            }
-
-            // Put the weapon in the right location (or lack thereof)
-            if (treWeapons.SelectedNode.Level == 1)
-                CharacterObject.MoveWeaponNode(intNewIndex, nodDestination, objSelected);
-            else
-                CharacterObject.MoveWeaponRoot(intNewIndex, nodDestination, objSelected);
-
-            // Put the weapon in the right order in the tree
-            MoveTreeNode(treWeapons.FindNodeByTag(objSelected?.Tag), intNewIndex);
-            // Update the entire tree to prevent any holes in the sort order
-            treWeapons.CacheSortOrder();
-
-            // Clear the background color for all Nodes.
-            treWeapons.ClearNodeBackground(null);
-
-            // Store our new order so it's loaded properly the next time we open the character
-            treWeapons.CacheSortOrder();
-
-            IsDirty = true;
         }
 
         private void treWeapons_DragOver(object sender, DragEventArgs e)
@@ -7803,47 +7820,16 @@ namespace Chummer
             e.Effect = DragDropEffects.Move;
         }
 
-        private void treArmor_DragDrop(object sender, DragEventArgs e)
+        private async void treArmor_DragDrop(object sender, DragEventArgs e)
         {
-            Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
-            TreeNode nodDestination = ((TreeView)sender).GetNodeAt(pt);
-
-            TreeNode objSelected = treArmor.SelectedNode;
-            for (TreeNode nodLoop = nodDestination; nodLoop != null; nodLoop = nodLoop.Parent)
+            try
             {
-                if (nodLoop == objSelected)
-                    return;
+                await DoTreeDragDrop(sender, e, treArmor, ItemTreeViewTypes.Armor, GenericToken);
             }
-
-            int intNewIndex;
-            if (nodDestination != null)
+            catch (OperationCanceledException)
             {
-                intNewIndex = nodDestination.Index;
+                //swallow this
             }
-            else
-            {
-                intNewIndex = treArmor.Nodes[treArmor.Nodes.Count - 1].Nodes.Count;
-                nodDestination = treArmor.Nodes[treArmor.Nodes.Count - 1];
-            }
-
-            // Put the armor in the right location (or lack thereof)
-            if (treArmor.SelectedNode.Level == 1)
-                CharacterObject.MoveArmorNode(intNewIndex, nodDestination, objSelected);
-            else
-                CharacterObject.MoveArmorRoot(intNewIndex, nodDestination, objSelected);
-
-            // Put the armor in the right order in the tree
-            MoveTreeNode(treArmor.FindNodeByTag(objSelected?.Tag), intNewIndex);
-            // Update the entire tree to prevent any holes in the sort order
-            treArmor.CacheSortOrder();
-
-            // Clear the background color for all Nodes.
-            treArmor.ClearNodeBackground(null);
-
-            // Store our new order so it's loaded properly the next time we open the character
-            treArmor.CacheSortOrder();
-
-            IsDirty = true;
         }
 
         private void treArmor_DragOver(object sender, DragEventArgs e)
@@ -7928,8 +7914,8 @@ namespace Chummer
             objLifestyle.SetInternalId(strGuid);
             CharacterObject.Lifestyles[intPosition] = objLifestyle;
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
         /*
@@ -7974,7 +7960,7 @@ namespace Chummer
             // Clear the background color for all Nodes.
             treLifestyles.ClearNodeBackground(null);
 
-            IsDirty = true;
+            await SetDirty(true);
         }
         */
 
@@ -7994,27 +7980,26 @@ namespace Chummer
             treLifestyles.ClearNodeBackground(objNode);
         }
 
-        private void nudLifestyleMonths_ValueChanged(object sender, EventArgs e)
+        private async void nudLifestyleMonths_ValueChanged(object sender, EventArgs e)
         {
-            if (!(treLifestyles.SelectedNode?.Level > 0))
+            if (IsRefreshing)
                 return;
-
             // Locate the selected Lifestyle.
-            if (!(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
+            if (!(await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Lifestyle objLifestyle))
                 return;
 
             IsRefreshing = true;
             try
             {
-                objLifestyle.Increments = nudLifestyleMonths.ValueAsInt;
+                objLifestyle.Increments = await nudLifestyleMonths.DoThreadSafeFuncAsync(x => x.ValueAsInt);
             }
             finally
             {
                 IsRefreshing = false;
             }
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
         private async void treGear_AfterSelect(object sender, TreeViewEventArgs e)
@@ -8032,27 +8017,22 @@ namespace Chummer
             }
         }
 
-        private void nudGearRating_ValueChanged(object sender, EventArgs e)
+        private async void nudGearRating_ValueChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-
-            if (treGear?.SelectedNode == null)
-                return;
-
-            if (treGear.SelectedNode.Level <= 0)
-                return;
-            if (!(treGear.SelectedNode?.Tag is Gear objGear))
+            
+            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Gear objGear))
                 return;
 
             if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
             {
-                if (!objGear.RefreshSingleFocusRating(treFoci, nudGearRating.ValueAsInt))
+                if (!await objGear.RefreshSingleFocusRating(treFoci, await nudGearRating.DoThreadSafeFuncAsync(x => x.ValueAsInt)))
                 {
                     IsRefreshing = true;
                     try
                     {
-                        nudGearRating.Value = objGear.Rating;
+                        await nudGearRating.DoThreadSafeAsync(x => x.ValueAsInt = objGear.Rating);
                     }
                     finally
                     {
@@ -8063,10 +8043,11 @@ namespace Chummer
                 }
             }
             else
-                objGear.Rating = nudGearRating.ValueAsInt;
+                objGear.Rating = await nudGearRating.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+
             if (objGear.Bonus != null || objGear.WirelessOn && objGear.WirelessBonus != null)
             {
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
+                await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
                 if (!string.IsNullOrEmpty(objGear.Extra))
                 {
                     ImprovementManager.ForcedValue = objGear.Extra.TrimEndOnce(", Hacked");
@@ -8074,30 +8055,30 @@ namespace Chummer
                 if (objGear.Bonded || (objGear.Category != "Foci" && objGear.Category != "Metamagic Foci" && objGear.Category != "Stacked Focus"))
                 {
                     if (objGear.Bonus != null)
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, objGear.Rating, objGear.CurrentDisplayNameShort);
+                        await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, objGear.Rating, objGear.CurrentDisplayNameShort);
                     if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.CurrentDisplayNameShort);
+                        await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.CurrentDisplayNameShort);
                 }
 
                 if (!objGear.Equipped)
                     objGear.ChangeEquippedStatus(false);
             }
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
-        private void nudGearQty_ValueChanged(object sender, EventArgs e)
+        private async void nudGearQty_ValueChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || treGear.SelectedNode == null)
+            if (IsRefreshing)
                 return;
             // Attempt to locate the selected piece of Gear.
-            if (treGear.SelectedNode.Level <= 0 || !(treGear.SelectedNode?.Tag is Gear objGear))
+            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Gear objGear))
                 return;
-            objGear.Quantity = nudGearQty.Value;
+            objGear.Quantity = await nudGearQty.DoThreadSafeFuncAsync(x => x.Value);
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
         private async void nudDrugQty_ValueChanged(object sender, EventArgs e)
@@ -8106,34 +8087,40 @@ namespace Chummer
             if (IsLoading || IsRefreshing)
                 return;
 
-            if (!(treCustomDrugs.SelectedNode?.Tag is Drug objDrug))
+            if (!(await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Drug objDrug))
                 return;
-            objDrug.Quantity = Convert.ToInt32(nudDrugQty.Value);
+            objDrug.Quantity = await nudDrugQty.DoThreadSafeFuncAsync(x => x.ValueAsInt);
             await RefreshSelectedDrug();
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
-        private void chkArmorEquipped_CheckedChanged(object sender, EventArgs e)
+        private async void chkArmorEquipped_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || treArmor.SelectedNode == null)
+            if (IsRefreshing)
                 return;
 
+            object objSelected = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+            if (objSelected == null)
+                return;
+
+            bool blnChecked = await chkArmorEquipped.DoThreadSafeFuncAsync(x => x.Checked);
+
             // Locate the selected Armor or Armor Mod.
-            switch (treArmor.SelectedNode?.Tag)
+            switch (objSelected)
             {
                 case Armor objArmor:
-                    objArmor.Equipped = chkArmorEquipped.Checked;
+                    objArmor.Equipped = blnChecked;
                     break;
 
                 case ArmorMod objMod:
-                    objMod.Equipped = chkArmorEquipped.Checked;
+                    objMod.Equipped = blnChecked;
                     break;
 
                 case Gear objGear:
-                    objGear.Equipped = chkArmorEquipped.Checked;
-                    if (chkArmorEquipped.Checked)
+                    objGear.Equipped = blnChecked;
+                    if (blnChecked)
                     {
                         CharacterObject.Armor.FindArmorGear(objGear.InternalId, out Armor objParentArmor, out ArmorMod objParentMod);
                         // Add the Gear's Improvements to the character.
@@ -8153,49 +8140,56 @@ namespace Chummer
                     return;
             }
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
-        private void chkWeaponEquipped_CheckedChanged(object sender, EventArgs e)
+        private async void chkWeaponEquipped_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || treWeapons.SelectedNode == null)
+            if (IsRefreshing)
                 return;
-            switch (treWeapons.SelectedNode?.Tag)
-            {
-                // Locate the selected Weapon Accessory or Modification.
-                case WeaponAccessory objAccessory:
-                    objAccessory.Equipped = chkWeaponEquipped.Checked;
-                    break;
 
+            object objSelected = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+            if (objSelected == null)
+                return;
+
+            bool blnChecked = await chkWeaponEquipped.DoThreadSafeFuncAsync(x => x.Checked);
+            // Determine if this is a Weapon.
+            switch (objSelected)
+            {
                 case Weapon objWeapon:
-                    objWeapon.Equipped = chkWeaponEquipped.Checked;
+                    objWeapon.Equipped = blnChecked;
                     break;
 
                 case Gear objGear:
-                    objGear.Equipped = chkWeaponEquipped.Checked;
-                    objGear.ChangeEquippedStatus(chkWeaponEquipped.Checked);
+                    // Find the selected Gear.
+                    objGear.Equipped = blnChecked;
+                    objGear.ChangeEquippedStatus(blnChecked);
+                    break;
+
+                case WeaponAccessory objAccessory:
+                    objAccessory.Equipped = blnChecked;
                     break;
 
                 default:
                     return;
             }
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
-        private void chkIncludedInWeapon_CheckedChanged(object sender, EventArgs e)
+        private async void chkIncludedInWeapon_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || treWeapons.SelectedNode == null)
+            if (IsRefreshing)
                 return;
             // Locate the selected Weapon Accessory or Modification.
-            if (!(treWeapons.SelectedNode?.Tag is WeaponAccessory objAccessory))
+            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is WeaponAccessory objAccessory))
                 return;
-            objAccessory.IncludedInWeapon = chkIncludedInWeapon.Checked;
+            objAccessory.IncludedInWeapon = await chkIncludedInWeapon.DoThreadSafeFuncAsync(x => x.Checked);
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
         private void treGear_ItemDrag(object sender, ItemDragEventArgs e)
@@ -8207,13 +8201,13 @@ namespace Chummer
             {
                 if (treGear.SelectedNode.Level > 1 || treGear.SelectedNode.Level < 0)
                     return;
-                _eDragButton = MouseButtons.Left;
+                DragButton = MouseButtons.Left;
             }
             else
             {
                 if (treGear.SelectedNode.Level == 0)
                     return;
-                _eDragButton = MouseButtons.Right;
+                DragButton = MouseButtons.Right;
             }
 
             _intDragLevel = treGear.SelectedNode.Level;
@@ -8225,59 +8219,16 @@ namespace Chummer
             e.Effect = DragDropEffects.Move;
         }
 
-        private void treGear_DragDrop(object sender, DragEventArgs e)
+        private async void treGear_DragDrop(object sender, DragEventArgs e)
         {
-            Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
-            TreeNode nodDestination = ((TreeView)sender).GetNodeAt(pt);
-
-            TreeNode objSelected = treGear.SelectedNode;
-            for (TreeNode nodLoop = nodDestination; nodLoop != null; nodLoop = nodLoop.Parent)
+            try
             {
-                if (nodLoop == objSelected)
-                    return;
+                await DoTreeDragDrop(sender, e, treGear, ItemTreeViewTypes.Gear, GenericToken);
             }
-
-            int intNewIndex;
-            if (nodDestination != null)
+            catch (OperationCanceledException)
             {
-                intNewIndex = nodDestination.Index;
+                //swallow this
             }
-            else
-            {
-                intNewIndex = treGear.Nodes[treGear.Nodes.Count - 1].Nodes.Count;
-                nodDestination = treGear.Nodes[treGear.Nodes.Count - 1];
-            }
-
-            switch (_eDragButton)
-            {
-                // If the item was moved using the left mouse button, change the order of things.
-                case MouseButtons.Left when treGear.SelectedNode.Level == 1:
-                    CharacterObject.MoveGearNode(intNewIndex, nodDestination, objSelected);
-                    break;
-
-                case MouseButtons.Left:
-                    CharacterObject.MoveGearRoot(intNewIndex, nodDestination, objSelected);
-                    break;
-
-                case MouseButtons.Right:
-                    CharacterObject.MoveGearParent(nodDestination, objSelected);
-                    break;
-            }
-
-            // Put the gear in the right order in the tree
-            MoveTreeNode(treGear.FindNodeByTag(objSelected?.Tag), intNewIndex);
-            // Update the entire tree to prevent any holes in the sort order
-            treGear.CacheSortOrder();
-
-            // Clear the background color for all Nodes.
-            treGear.ClearNodeBackground(null);
-
-            // Store our new order so it's loaded properly the next time we open the character
-            treGear.CacheSortOrder();
-
-            _eDragButton = MouseButtons.None;
-
-            IsDirty = true;
         }
 
         private void treGear_DragOver(object sender, DragEventArgs e)
@@ -8289,7 +8240,7 @@ namespace Chummer
                 return;
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
-            if (_eDragButton == MouseButtons.Left)
+            if (DragButton == MouseButtons.Left)
             {
                 if (objNode.Level <= _intDragLevel)
                     objNode.BackColor = ColorManager.ControlDarker;
@@ -8301,19 +8252,20 @@ namespace Chummer
             treGear.ClearNodeBackground(objNode);
         }
 
-        private void chkGearEquipped_CheckedChanged(object sender, EventArgs e)
+        private async void chkGearEquipped_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || treGear.SelectedNode == null)
+            if (IsRefreshing)
                 return;
 
             // Attempt to locate the selected piece of Gear.
-            if (!(treGear.SelectedNode?.Tag is Gear objGear))
+            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Gear objSelectedGear))
                 return;
-            objGear.Equipped = chkGearEquipped.Checked;
-            objGear.ChangeEquippedStatus(chkGearEquipped.Checked);
+            bool blnChecked = await chkGearEquipped.DoThreadSafeFuncAsync(x => x.Checked);
+            objSelectedGear.Equipped = blnChecked;
+            objSelectedGear.ChangeEquippedStatus(blnChecked);
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
         private void chkGearHomeNode_CheckedChanged(object sender, EventArgs e)
@@ -8432,8 +8384,8 @@ namespace Chummer
                         CharacterObject, cboGearAttack, cboGearAttack,
                         cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
                 {
-                    IsCharacterUpdateRequested = true;
-                    IsDirty = true;
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
             }
             finally
@@ -8457,8 +8409,8 @@ namespace Chummer
                         CharacterObject, cboGearSleaze, cboGearAttack,
                         cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
                 {
-                    IsCharacterUpdateRequested = true;
-                    IsDirty = true;
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
             }
             finally
@@ -8482,8 +8434,8 @@ namespace Chummer
                         CharacterObject, cboGearDataProcessing, cboGearAttack,
                         cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
                 {
-                    IsCharacterUpdateRequested = true;
-                    IsDirty = true;
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
             }
             finally
@@ -8507,8 +8459,8 @@ namespace Chummer
                         CharacterObject, cboGearFirewall, cboGearAttack,
                         cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
                 {
-                    IsCharacterUpdateRequested = true;
-                    IsDirty = true;
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
             }
             finally
@@ -8532,8 +8484,8 @@ namespace Chummer
                         CharacterObject, cboVehicleAttack, cboVehicleAttack,
                         cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
                 {
-                    IsCharacterUpdateRequested = true;
-                    IsDirty = true;
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
             }
             finally
@@ -8557,8 +8509,8 @@ namespace Chummer
                         CharacterObject, cboVehicleSleaze, cboVehicleAttack,
                         cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
                 {
-                    IsCharacterUpdateRequested = true;
-                    IsDirty = true;
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
             }
             finally
@@ -8582,8 +8534,8 @@ namespace Chummer
                         CharacterObject, cboVehicleFirewall, cboVehicleAttack,
                         cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
                 {
-                    IsCharacterUpdateRequested = true;
-                    IsDirty = true;
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
             }
             finally
@@ -8607,8 +8559,8 @@ namespace Chummer
                         CharacterObject, cboVehicleDataProcessing, cboVehicleAttack,
                         cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
                 {
-                    IsCharacterUpdateRequested = true;
-                    IsDirty = true;
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
             }
             finally
@@ -8632,8 +8584,8 @@ namespace Chummer
                         CharacterObject, cboCyberwareAttack, cboCyberwareAttack,
                         cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
                 {
-                    IsCharacterUpdateRequested = true;
-                    IsDirty = true;
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
             }
             finally
@@ -8657,8 +8609,8 @@ namespace Chummer
                         CharacterObject, cboCyberwareSleaze, cboCyberwareAttack,
                         cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
                 {
-                    IsCharacterUpdateRequested = true;
-                    IsDirty = true;
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
             }
             finally
@@ -8682,8 +8634,8 @@ namespace Chummer
                         CharacterObject, cboCyberwareDataProcessing, cboCyberwareAttack,
                         cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
                 {
-                    IsCharacterUpdateRequested = true;
-                    IsDirty = true;
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
             }
             finally
@@ -8707,8 +8659,8 @@ namespace Chummer
                         CharacterObject, cboCyberwareFirewall, cboCyberwareAttack,
                         cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
                 {
-                    IsCharacterUpdateRequested = true;
-                    IsDirty = true;
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
             }
             finally
@@ -8761,15 +8713,15 @@ namespace Chummer
             {
                 // Determine if this is a piece of Gear or a Vehicle. If not, don't let the user drag it.
                 case Gear _:
-                    _eDragButton = e.Button;
-                    _blnDraggingGear = true;
+                    DragButton = e.Button;
+                    DraggingGear = true;
                     _intDragLevel = treVehicles.SelectedNode.Level;
                     DoDragDrop(e.Item, DragDropEffects.Move);
                     break;
 
                 case Vehicle _:
-                    _eDragButton = e.Button;
-                    _blnDraggingGear = false;
+                    DragButton = e.Button;
+                    DraggingGear = false;
                     _intDragLevel = treVehicles.SelectedNode.Level;
                     DoDragDrop(e.Item, DragDropEffects.Move);
                     break;
@@ -8781,52 +8733,16 @@ namespace Chummer
             e.Effect = DragDropEffects.Move;
         }
 
-        private void treVehicles_DragDrop(object sender, DragEventArgs e)
+        private async void treVehicles_DragDrop(object sender, DragEventArgs e)
         {
-            Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
-            TreeNode nodDestination = ((TreeView)sender).GetNodeAt(pt);
-
-            TreeNode objSelected = treVehicles.SelectedNode;
-            for (TreeNode nodLoop = nodDestination; nodLoop != null; nodLoop = nodLoop.Parent)
+            try
             {
-                if (nodLoop == objSelected)
-                    return;
+                await DoTreeDragDrop(sender, e, treVehicles, ItemTreeViewTypes.Vehicles, GenericToken);
             }
-
-            int intNewIndex;
-            if (nodDestination != null)
+            catch (OperationCanceledException)
             {
-                intNewIndex = nodDestination.Index;
+                //swallow this
             }
-            else
-            {
-                intNewIndex = treVehicles.Nodes[treVehicles.Nodes.Count - 1].Nodes.Count;
-                nodDestination = treVehicles.Nodes[treVehicles.Nodes.Count - 1];
-            }
-
-            if (!_blnDraggingGear)
-            {
-                CharacterObject.MoveVehicleNode(intNewIndex, nodDestination, objSelected);
-            }
-            else
-            {
-                CharacterObject.MoveVehicleGearParent(nodDestination, objSelected);
-            }
-
-            // Put the vehicle in the right order in the tree
-            MoveTreeNode(treVehicles.FindNodeByTag(objSelected?.Tag), intNewIndex);
-            // Update the entire tree to prevent any holes in the sort order
-            treVehicles.CacheSortOrder();
-
-            // Clear the background color for all Nodes.
-            treVehicles.ClearNodeBackground(null);
-
-            // Store our new order so it's loaded properly the next time we open the character
-            treWeapons.CacheSortOrder();
-
-            _blnDraggingGear = false;
-
-            IsDirty = true;
         }
 
         private void treVehicles_DragOver(object sender, DragEventArgs e)
@@ -8838,7 +8754,7 @@ namespace Chummer
                 return;
 
             // Highlight the Node that we're currently dragging over, provided it is of the same level or higher.
-            if (_eDragButton == MouseButtons.Left)
+            if (DragButton == MouseButtons.Left)
             {
                 if (objNode.Level <= _intDragLevel)
                     objNode.BackColor = ColorManager.ControlDarker;
@@ -8850,28 +8766,28 @@ namespace Chummer
             treVehicles.ClearNodeBackground(objNode);
         }
 
-        private void nudVehicleRating_ValueChanged(object sender, EventArgs e)
+        private async void nudVehicleRating_ValueChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
 
-            switch (treVehicles.SelectedNode?.Tag)
+            switch (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag))
             {
                 case VehicleMod objMod:
-                    objMod.Rating = nudVehicleRating.ValueAsInt;
-                    treVehicles.SelectedNode.Text = objMod.CurrentDisplayName;
+                    objMod.Rating = await nudVehicleRating.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+                    await treVehicles.DoThreadSafeAsync(x => x.SelectedNode.Text = objMod.CurrentDisplayName);
                     break;
 
                 case Gear objGear:
                     {
                         if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
                         {
-                            if (!objGear.RefreshSingleFocusRating(treFoci, nudVehicleRating.ValueAsInt))
+                            if (!await objGear.RefreshSingleFocusRating(treFoci, await nudVehicleRating.DoThreadSafeFuncAsync(x => x.ValueAsInt)))
                             {
                                 IsRefreshing = true;
                                 try
                                 {
-                                    nudVehicleRating.Value = objGear.Rating;
+                                    await nudVehicleRating.DoThreadSafeAsync(x => x.ValueAsInt = objGear.Rating);
                                 }
                                 finally
                                 {
@@ -8881,70 +8797,51 @@ namespace Chummer
                             }
                         }
                         else
-                            objGear.Rating = nudVehicleRating.ValueAsInt;
-                        treVehicles.SelectedNode.Text = objGear.CurrentDisplayName;
+                            objGear.Rating = await nudVehicleRating.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+                        await treVehicles.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName);
                         break;
                     }
                 case WeaponAccessory objAccessory:
-                    objAccessory.Rating = nudVehicleRating.ValueAsInt;
-                    treVehicles.SelectedNode.Text = objAccessory.CurrentDisplayName;
+                    objAccessory.Rating = await nudVehicleRating.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+                    await treVehicles.DoThreadSafeAsync(x => x.SelectedNode.Text = objAccessory.CurrentDisplayName);
                     break;
 
                 case Cyberware objCyberware:
-                    objCyberware.Rating = nudVehicleRating.ValueAsInt;
-                    treVehicles.SelectedNode.Text = objCyberware.CurrentDisplayName;
+                    objCyberware.Rating = await nudVehicleRating.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+                    await treVehicles.DoThreadSafeAsync(x => x.SelectedNode.Text = objCyberware.CurrentDisplayName);
                     break;
 
                 default:
                     return;
             }
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
-        private void chkVehicleWeaponAccessoryInstalled_CheckedChanged(object sender, EventArgs e)
+        private async void chkVehicleWeaponAccessoryInstalled_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            switch (treVehicles.SelectedNode?.Tag)
-            {
-                case WeaponAccessory objAccessory:
-                    objAccessory.Equipped = chkVehicleWeaponAccessoryInstalled.Checked;
-                    break;
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is ICanEquip objEquippable))
+                return;
+            objEquippable.Equipped = await chkVehicleWeaponAccessoryInstalled.DoThreadSafeFuncAsync(x => x.Checked);
 
-                case Weapon objWeapon:
-                    objWeapon.Equipped = chkVehicleWeaponAccessoryInstalled.Checked;
-                    break;
-
-                case VehicleMod objMod:
-                    objMod.Equipped = chkVehicleWeaponAccessoryInstalled.Checked;
-                    break;
-
-                case WeaponMount objWeaponMount:
-                    objWeaponMount.Equipped = chkVehicleWeaponAccessoryInstalled.Checked;
-                    break;
-
-                default:
-                    return;
-            }
-
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await SetDirty(true);
         }
 
-        private void nudVehicleGearQty_ValueChanged(object sender, EventArgs e)
+        private async void nudVehicleGearQty_ValueChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
 
-            if (!(treVehicles.SelectedNode?.Tag is Gear objGear))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Gear objGear))
                 return;
-            objGear.Quantity = nudVehicleGearQty.Value;
-            treVehicles.SelectedNode.Text = objGear.CurrentDisplayName;
+            objGear.Quantity = await nudVehicleGearQty.DoThreadSafeFuncAsync(x => x.Value);
+            await treVehicles.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName);
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
         private void chkVehicleHomeNode_CheckedChanged(object sender, EventArgs e)
@@ -8967,12 +8864,13 @@ namespace Chummer
             await RefreshSelectedSpell();
         }
 
-        private void treFoci_AfterCheck(object sender, TreeViewEventArgs e)
+        private async void treFoci_AfterCheck(object sender, TreeViewEventArgs e)
         {
             if (!e.Node.Checked)
             {
-                if (!(e.Node.Tag is IHasInternalId objId)) return;
-                Focus objFocus = CharacterObject.Foci.Find(x => x.GearObject.InternalId == objId.InternalId);
+                if (!(e.Node.Tag is IHasInternalId objId))
+                    return;
+                Focus objFocus = await CharacterObject.Foci.FindAsync(x => x.GearObject.InternalId == objId.InternalId);
 
                 // Mark the Gear as not Bonded and remove any Improvements.
                 Gear objGear = objFocus?.GearObject;
@@ -8980,33 +8878,38 @@ namespace Chummer
                 if (objGear != null)
                 {
                     objGear.Bonded = false;
-                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
-                    CharacterObject.Foci.Remove(objFocus);
+                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
+                    await CharacterObject.Foci.RemoveAsync(objFocus);
                 }
                 else
                 {
                     // This is a Stacked Focus.
-                    StackedFocus objStack = CharacterObject.StackedFoci.Find(x => x.InternalId == objId.InternalId);
+                    StackedFocus objStack = await CharacterObject.StackedFoci.FindAsync(x => x.InternalId == objId.InternalId);
 
                     if (objStack != null)
                     {
                         objStack.Bonded = false;
-                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+                        await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
                     }
                 }
             }
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
-        private void treFoci_BeforeCheck(object sender, TreeViewCancelEventArgs e)
+        private async void treFoci_BeforeCheck(object sender, TreeViewCancelEventArgs e)
         {
-            // Don't bother to do anything since a node is being unchecked.
-            if (e.Node.Checked)
+            if (IsRefreshing)
                 return;
 
-            string strSelectedId = (e.Node?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+            TreeView treViewToUse = e.Node.TreeView;
+
+            // Don't bother to do anything since a node is being unchecked.
+            if (await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Checked))
+                return;
+
+            string strSelectedId = (await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Tag) as IHasInternalId)?.InternalId ?? string.Empty;
 
             // Locate the Focus that is being touched.
             Gear objSelectedFocus = CharacterObject.Gear.DeepFindById(strSelectedId);
@@ -9020,26 +8923,32 @@ namespace Chummer
             else
             {
                 // This is a Stacked Focus.
-                intFociTotal = CharacterObject.StackedFoci.Find(x => x.InternalId == strSelectedId)?.TotalForce ?? 0;
+                intFociTotal = (await CharacterObject.StackedFoci.FindAsync(x => x.InternalId == strSelectedId))?.TotalForce ?? 0;
             }
 
-            // Run through the list of items. Count the number of Foci the character would have bonded including this one, plus the total Force of all checked Foci.
-            foreach (TreeNode objNode in treFoci.Nodes)
+            await treViewToUse.DoThreadSafeAsync(y =>
             {
-                if (!objNode.Checked)
-                    continue;
-                string strNodeId = objNode.Tag.ToString();
-                ++intFociCount;
-                intFociTotal += CharacterObject.Gear.FirstOrDefault(x => x.InternalId == strNodeId && x.Bonded)?.Rating ?? 0;
-                intFociTotal += CharacterObject.StackedFoci.Find(x => x.InternalId == strNodeId && x.Bonded)?.TotalForce ?? 0;
-            }
+                // Run through the list of items. Count the number of Foci the character would have bonded including this one, plus the total Force of all checked Foci.
+                foreach (TreeNode objNode in y.Nodes)
+                {
+                    if (objNode.Checked)
+                    {
+                        string strNodeId = objNode.Tag.ToString();
+                        ++intFociCount;
+                        intFociTotal += CharacterObject.Gear.FirstOrDefault(x => x.InternalId == strNodeId && x.Bonded)
+                                                       ?.Rating ?? 0;
+                        intFociTotal += CharacterObject.StackedFoci.Find(x => x.InternalId == strNodeId && x.Bonded)
+                                                       ?.TotalForce ?? 0;
+                    }
+                }
+            });
 
             if (!CharacterObject.IgnoreRules)
             {
                 if (intFociTotal > CharacterObject.MAG.TotalValue * 5 ||
                     CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && CharacterObject.InitiateGrade + 1 > CharacterObject.MAGAdept.TotalValue)
                 {
-                    Program.ShowMessageBox(this, LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_FocusMaximumForce"), await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     e.Cancel = true;
                     return;
                 }
@@ -9047,7 +8956,7 @@ namespace Chummer
                 if (intFociCount > CharacterObject.MAG.TotalValue ||
                     CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && intFociCount > CharacterObject.MAGAdept.TotalValue)
                 {
-                    Program.ShowMessageBox(this, LanguageManager.GetString("Message_FocusMaximumNumber"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_FocusMaximumNumber"), await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     e.Cancel = true;
                     return;
                 }
@@ -9066,7 +8975,7 @@ namespace Chummer
                         ImprovementManager.ForcedValue = objSelectedFocus.Extra;
                     if (objSelectedFocus.Bonus != null)
                     {
-                        if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, objSelectedFocus.Rating, objSelectedFocus.CurrentDisplayNameShort))
+                        if (!await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, objSelectedFocus.Rating, objSelectedFocus.CurrentDisplayNameShort))
                         {
                             // Clear created improvements
                             objSelectedFocus.ChangeEquippedStatus(false);
@@ -9078,7 +8987,7 @@ namespace Chummer
                     }
                     if (objSelectedFocus.WirelessOn
                         && objSelectedFocus.WirelessBonus != null
-                        && !ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, objSelectedFocus.Rating, objSelectedFocus.CurrentDisplayNameShort))
+                        && !await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, objSelectedFocus.Rating, objSelectedFocus.CurrentDisplayNameShort))
                     {
                         // Clear created improvements
                         objSelectedFocus.ChangeEquippedStatus(false);
@@ -9089,13 +8998,13 @@ namespace Chummer
                 }
 
                 e.Node.Text = objSelectedFocus.CurrentDisplayName;
-                CharacterObject.Foci.Add(objFocus);
+                await CharacterObject.Foci.AddAsync(objFocus);
                 objSelectedFocus.Bonded = true;
             }
             else
             {
                 // This is a Stacked Focus.
-                StackedFocus objStack = CharacterObject.StackedFoci.Find(x => x.InternalId == strSelectedId);
+                StackedFocus objStack = await CharacterObject.StackedFoci.FindAsync(x => x.InternalId == strSelectedId);
                 if (objStack != null)
                 {
                     Gear objStackGear = CharacterObject.Gear.DeepFindById(objStack.GearId);
@@ -9109,7 +9018,7 @@ namespace Chummer
                                 ImprovementManager.ForcedValue = objGear.Extra;
                             if (objGear.Bonus != null)
                             {
-                                if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.Bonus, objGear.Rating, objGear.CurrentDisplayNameShort))
+                                if (!await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.Bonus, objGear.Rating, objGear.CurrentDisplayNameShort))
                                 {
                                     // Clear created improvements
                                     objStackGear.ChangeEquippedStatus(false);
@@ -9121,7 +9030,7 @@ namespace Chummer
                             }
                             if (objGear.WirelessOn
                                 && objGear.WirelessBonus != null
-                                && !ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.CurrentDisplayNameShort))
+                                && !await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.CurrentDisplayNameShort))
                             {
                                 // Clear created improvements
                                 objStackGear.ChangeEquippedStatus(false);
@@ -9132,36 +9041,36 @@ namespace Chummer
                         }
                     }
                     objStack.Bonded = true;
-                    treFoci.SelectedNode.Text = objStackGear.CurrentDisplayName;
+                    await treViewToUse.DoThreadSafeAsync(x => x.SelectedNode.Text = objStackGear.CurrentDisplayName);
                 }
             }
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
-        private void nudArmorRating_ValueChanged(object sender, EventArgs e)
+        private async void nudArmorRating_ValueChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
 
-            switch (treArmor.SelectedNode?.Tag)
+            switch (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag))
             {
                 // Locate the selected ArmorMod.
                 case ArmorMod objMod:
                     {
-                        objMod.Rating = nudArmorRating.ValueAsInt;
-                        treArmor.SelectedNode.Text = objMod.CurrentDisplayName;
+                        objMod.Rating = await nudArmorRating.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+                        await treArmor.DoThreadSafeAsync(x => x.SelectedNode.Text = objMod.CurrentDisplayName);
 
                         // See if a Bonus node exists.
                         if (objMod.Bonus?.InnerXml.Contains("Rating") == true || objMod.WirelessOn && objMod.WirelessBonus?.InnerXml.Contains("Rating") == true)
                         {
                             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
+                            await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
                             if (objMod.Bonus != null)
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, objMod.Rating, objMod.CurrentDisplayNameShort);
+                                await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, objMod.Rating, objMod.CurrentDisplayNameShort);
                             if (objMod.WirelessOn && objMod.WirelessBonus != null)
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.WirelessBonus, objMod.Rating, objMod.CurrentDisplayNameShort);
+                                await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.WirelessBonus, objMod.Rating, objMod.CurrentDisplayNameShort);
                         }
 
                         break;
@@ -9170,12 +9079,12 @@ namespace Chummer
                     {
                         if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
                         {
-                            if (!objGear.RefreshSingleFocusRating(treFoci, nudArmorRating.ValueAsInt))
+                            if (!await objGear.RefreshSingleFocusRating(treFoci, await nudArmorRating.DoThreadSafeFuncAsync(x => x.ValueAsInt)))
                             {
                                 IsRefreshing = true;
                                 try
                                 {
-                                    nudArmorRating.Value = objGear.Rating;
+                                    await nudArmorRating.DoThreadSafeAsync(x => x.ValueAsInt = objGear.Rating);
                                 }
                                 finally
                                 {
@@ -9185,18 +9094,18 @@ namespace Chummer
                             }
                         }
                         else
-                            objGear.Rating = nudArmorRating.ValueAsInt;
-                        treArmor.SelectedNode.Text = objGear.CurrentDisplayName;
+                            objGear.Rating = await nudArmorRating.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+                        await treArmor.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName);
 
                         // See if a Bonus node exists.
                         if (objGear.Bonus?.InnerXml.Contains("Rating") == true || objGear.WirelessOn && objGear.WirelessBonus?.InnerXml.Contains("Rating") == true)
                         {
                             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
+                            await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
                             if (objGear.Bonus != null)
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, objGear.Rating, objGear.CurrentDisplayNameShort);
+                                await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, objGear.Rating, objGear.CurrentDisplayNameShort);
                             if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.CurrentDisplayNameShort);
+                                await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.CurrentDisplayNameShort);
 
                             if (!objGear.Equipped)
                                 objGear.ChangeEquippedStatus(false);
@@ -9205,122 +9114,121 @@ namespace Chummer
                         break;
                     }
                 case Armor objArmor:
-                    objArmor.Rating = nudArmorRating.ValueAsInt;
-                    treArmor.SelectedNode.Text = objArmor.CurrentDisplayName;
+                    objArmor.Rating = await nudArmorRating.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+                    await treArmor.DoThreadSafeAsync(x => x.SelectedNode.Text = objArmor.CurrentDisplayName);
                     break;
             }
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
-        private void cboTradition_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboTradition_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsLoading || IsRefreshing || IsDisposed)
                 return;
 
-            string strSelectedId = cboTradition.SelectedValue?.ToString();
+            string strSelectedId = await cboTradition.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             if (string.IsNullOrEmpty(strSelectedId))
                 return;
 
             XmlNode xmlTradition = CharacterObject.MagicTradition.Type == TraditionType.MAG
-                ? CharacterObject.LoadData("traditions.xml")
+                ? (await CharacterObject.LoadDataAsync("traditions.xml"))
                                  .SelectSingleNode("/chummer/traditions/tradition[id = " + strSelectedId.CleanXPath()
                                                    + ']')
                 : null;
 
             if (xmlTradition == null)
             {
-                cboDrain.Visible = false;
-                lblTraditionName.Visible = false;
-                txtTraditionName.Visible = false;
-                lblSpiritCombat.Visible = false;
-                lblSpiritDetection.Visible = false;
-                lblSpiritHealth.Visible = false;
-                lblSpiritIllusion.Visible = false;
-                lblSpiritManipulation.Visible = false;
-                lblTraditionSource.Visible = false;
-                lblTraditionSourceLabel.Visible = false;
-                cboSpiritCombat.Visible = false;
-                cboSpiritDetection.Visible = false;
-                cboSpiritHealth.Visible = false;
-                cboSpiritIllusion.Visible = false;
-                cboSpiritManipulation.Visible = false;
+                await lblTraditionName.DoThreadSafeAsync(x => x.Visible = false);
+                await txtTraditionName.DoThreadSafeAsync(x => x.Visible = false);
+                await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible = false);
+                await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible = false);
+                await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible = false);
+                await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible = false);
+                await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible = false);
+                await lblTraditionSource.DoThreadSafeAsync(x => x.Visible = false);
+                await lblTraditionSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                await cboSpiritCombat.DoThreadSafeAsync(x => x.Visible = false);
+                await cboSpiritDetection.DoThreadSafeAsync(x => x.Visible = false);
+                await cboSpiritHealth.DoThreadSafeAsync(x => x.Visible = false);
+                await cboSpiritIllusion.DoThreadSafeAsync(x => x.Visible = false);
+                await cboSpiritManipulation.DoThreadSafeAsync(x => x.Visible = false);
 
                 if (CharacterObject.MagicTradition.Type != TraditionType.RES)
                     CharacterObject.MagicTradition.ResetTradition();
 
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             else if (strSelectedId == Tradition.CustomMagicalTraditionGuid)
             {
                 if (CharacterObject.MagicTradition.Create(xmlTradition))
                 {
-                    lblTraditionName.Visible = true;
-                    txtTraditionName.Visible = true;
-                    lblSpiritCombat.Visible = true;
-                    lblSpiritDetection.Visible = true;
-                    lblSpiritHealth.Visible = true;
-                    lblSpiritIllusion.Visible = true;
-                    lblSpiritManipulation.Visible = true;
-                    lblTraditionSource.Visible = false;
-                    lblTraditionSourceLabel.Visible = false;
-                    cboSpiritCombat.Enabled = true;
-                    cboSpiritDetection.Enabled = true;
-                    cboSpiritHealth.Enabled = true;
-                    cboSpiritIllusion.Enabled = true;
-                    cboSpiritManipulation.Enabled = true;
-                    cboSpiritCombat.Visible = true;
-                    cboSpiritDetection.Visible = true;
-                    cboSpiritHealth.Visible = true;
-                    cboSpiritIllusion.Visible = true;
-                    cboSpiritManipulation.Visible = true;
+                    await lblTraditionName.DoThreadSafeAsync(x => x.Visible = true);
+                    await txtTraditionName.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblTraditionSource.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblTraditionSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await cboSpiritCombat.DoThreadSafeAsync(x => x.Enabled = true);
+                    await cboSpiritDetection.DoThreadSafeAsync(x => x.Enabled = true);
+                    await cboSpiritHealth.DoThreadSafeAsync(x => x.Enabled = true);
+                    await cboSpiritIllusion.DoThreadSafeAsync(x => x.Enabled = true);
+                    await cboSpiritManipulation.DoThreadSafeAsync(x => x.Enabled = true);
+                    await cboSpiritCombat.DoThreadSafeAsync(x => x.Visible = true);
+                    await cboSpiritDetection.DoThreadSafeAsync(x => x.Visible = true);
+                    await cboSpiritHealth.DoThreadSafeAsync(x => x.Visible = true);
+                    await cboSpiritIllusion.DoThreadSafeAsync(x => x.Visible = true);
+                    await cboSpiritManipulation.DoThreadSafeAsync(x => x.Visible = true);
 
-                    IsCharacterUpdateRequested = true;
-                    IsDirty = true;
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                 }
                 else
                 {
                     CharacterObject.MagicTradition.ResetTradition();
-                    cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID.ToString();
+                    await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID);
                 }
             }
             else if (CharacterObject.MagicTradition.Create(xmlTradition))
             {
-                lblTraditionName.Visible = false;
-                txtTraditionName.Visible = false;
-                lblSpiritCombat.Visible = true;
-                lblSpiritDetection.Visible = true;
-                lblSpiritHealth.Visible = true;
-                lblSpiritIllusion.Visible = true;
-                lblSpiritManipulation.Visible = true;
-                cboSpiritCombat.Enabled = false;
-                cboSpiritDetection.Enabled = false;
-                cboSpiritHealth.Enabled = false;
-                cboSpiritIllusion.Enabled = false;
-                cboSpiritManipulation.Enabled = false;
-                cboSpiritCombat.Visible = true;
-                cboSpiritDetection.Visible = true;
-                cboSpiritHealth.Visible = true;
-                cboSpiritIllusion.Visible = true;
-                cboSpiritManipulation.Visible = true;
+                await lblTraditionName.DoThreadSafeAsync(x => x.Visible = false);
+                await txtTraditionName.DoThreadSafeAsync(x => x.Visible = false);
+                await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible = true);
+                await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible = true);
+                await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible = true);
+                await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible = true);
+                await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible = true);
+                await cboSpiritCombat.DoThreadSafeAsync(x => x.Enabled = false);
+                await cboSpiritDetection.DoThreadSafeAsync(x => x.Enabled = false);
+                await cboSpiritHealth.DoThreadSafeAsync(x => x.Enabled = false);
+                await cboSpiritIllusion.DoThreadSafeAsync(x => x.Enabled = false);
+                await cboSpiritManipulation.DoThreadSafeAsync(x => x.Enabled = false);
+                await cboSpiritCombat.DoThreadSafeAsync(x => x.Visible = true);
+                await cboSpiritDetection.DoThreadSafeAsync(x => x.Visible = true);
+                await cboSpiritHealth.DoThreadSafeAsync(x => x.Visible = true);
+                await cboSpiritIllusion.DoThreadSafeAsync(x => x.Visible = true);
+                await cboSpiritManipulation.DoThreadSafeAsync(x => x.Visible = true);
 
-                lblTraditionSource.Visible = true;
-                lblTraditionSourceLabel.Visible = true;
-                CharacterObject.MagicTradition.SetSourceDetail(lblTraditionSource);
+                await lblTraditionSource.DoThreadSafeAsync(x => x.Visible = true);
+                await lblTraditionSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
+                await CharacterObject.MagicTradition.SetSourceDetailAsync(lblTraditionSource);
 
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             else
             {
                 CharacterObject.MagicTradition.ResetTradition();
-                cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID);
             }
 
-            cboDrain.Visible = (!CharacterObject.AdeptEnabled || CharacterObject.MagicianEnabled) &&
-                               CharacterObject.MagicTradition.CanChooseDrainAttribute;
+            await cboDrain.DoThreadSafeAsync(x => x.Visible = (!CharacterObject.AdeptEnabled || CharacterObject.MagicianEnabled) &&
+                                                              CharacterObject.MagicTradition.CanChooseDrainAttribute);
         }
 
         #endregion Additional Spells and Spirits Tab Control Events
@@ -9334,24 +9242,24 @@ namespace Chummer
             await RefreshSelectedComplexForm();
         }
 
-        private void cboStream_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboStream_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsLoading || IsRefreshing || CharacterObject.MagicTradition.Type == TraditionType.MAG)
                 return;
-            string strSelectedId = cboStream.SelectedValue?.ToString();
+            string strSelectedId = await cboStream.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
             if (string.IsNullOrEmpty(strSelectedId) || strSelectedId == CharacterObject.MagicTradition.SourceIDString)
                 return;
 
-            XmlNode xmlNewStreamNode = CharacterObject.LoadData("streams.xml").SelectSingleNode("/chummer/traditions/tradition[id = " + strSelectedId.CleanXPath() + ']');
+            XmlNode xmlNewStreamNode = (await CharacterObject.LoadDataAsync("streams.xml")).SelectSingleNode("/chummer/traditions/tradition[id = " + strSelectedId.CleanXPath() + ']');
             if (xmlNewStreamNode != null && CharacterObject.MagicTradition.Create(xmlNewStreamNode, true))
             {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
             else
             {
                 CharacterObject.MagicTradition.ResetTradition();
-                cboStream.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                await cboStream.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID);
             }
         }
 
@@ -9371,7 +9279,14 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshSelectedAIProgram();
+            try
+            {
+                await RefreshSelectedAIProgram(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async Task RefreshSelectedAIProgram(CancellationToken token = default)
@@ -9419,14 +9334,12 @@ namespace Chummer
             }
         }
 
-        private void chkInitiationSchooling_CheckedChanged(object sender, EventArgs e)
+        private async void chkInitiationSchooling_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
 
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
+            await UpdateInitiationCost();
         }
 
         private void chkInitiationSchooling_EnabledChanged(object sender, EventArgs e)
@@ -9621,17 +9534,17 @@ namespace Chummer
             }
         }
 
-        private void chkCritterPowerCount_CheckedChanged(object sender, EventArgs e)
+        private async void chkCritterPowerCount_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
             // Locate the selected Critter Power.
-            if (!(treCritterPowers.SelectedNode?.Tag is CritterPower objPower))
+            if (!(await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is CritterPower objPower))
                 return;
-            objPower.CountTowardsLimit = chkCritterPowerCount.Checked;
+            objPower.CountTowardsLimit = await chkCritterPowerCount.DoThreadSafeFuncAsync(x => x.Checked);
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
         #endregion Additional Critter Powers Tab Control Events
@@ -9853,7 +9766,7 @@ namespace Chummer
             int intNewIndex = lstNodes.IndexOf(objSelectedNode);
             intNewIndex = up ? Math.Max(0, intNewIndex - 1) : Math.Min(lstNodes.Count - 1, intNewIndex + 1);
 
-            MoveTreeNode(objSelectedNode, intNewIndex);
+            Utils.RunWithoutThreadLock(() => MoveTreeNode(objSelectedNode, intNewIndex));
 
             // Returning true tells the program to consume the input
             return true;
@@ -10761,7 +10674,7 @@ namespace Chummer
             try
             {
                 while (IsDirty || IsLoading || SkipUpdate || IsCharacterUpdateRequested)
-                    await Utils.SafeSleepAsync();
+                    await Utils.SafeSleepAsync(GenericToken);
 
                 string strCharacterFile = CharacterObject.FileName;
                 if (string.IsNullOrEmpty(strCharacterFile) || !File.Exists(strCharacterFile))
@@ -10804,7 +10717,7 @@ namespace Chummer
                     }
 
                     // Immediately call character update because we know it's necessary
-                    IsCharacterUpdateRequested = true;
+                    await RequestCharacterUpdate();
                     try
                     {
                         await UpdateCharacterInfoTask;
@@ -10843,9 +10756,8 @@ namespace Chummer
         protected override async Task DoUpdateCharacterInfo(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (IsLoading || SkipUpdate || token.IsCancellationRequested)
-                return;
-
+            while (SkipUpdate)
+                await Utils.SafeSleepAsync(token);
             SkipUpdate = true;
             try
             {
@@ -10900,7 +10812,6 @@ namespace Chummer
             }
             finally
             {
-                IsCharacterUpdateRequested = false;
                 SkipUpdate = false;
             }
         }
@@ -13324,8 +13235,8 @@ namespace Chummer
                     }
                     else
                     {
-                        IsCharacterUpdateRequested = true;
-                        IsDirty = true;
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
                     }
 
                     return frmPickGear.MyForm.AddAgain;
@@ -16670,8 +16581,8 @@ namespace Chummer
                 }
             }
 
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
         /// <summary>
@@ -17356,7 +17267,7 @@ namespace Chummer
         {
             try
             {
-                await WriteNotes(await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+                await WriteNotes(await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken), GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -17380,21 +17291,28 @@ namespace Chummer
 
         private async void mnuSpecialConfirmValidity_Click(object sender, EventArgs e)
         {
-            if (await CheckCharacterValidity())
+            try
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ValidCharacter"),
-                                       await LanguageManager.GetStringAsync("MessageTitle_ValidCharacter"),
-                                       MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (await CheckCharacterValidity(token: GenericToken))
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ValidCharacter"),
+                                           await LanguageManager.GetStringAsync("MessageTitle_ValidCharacter"),
+                                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
-        private void cboPrimaryArm_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboPrimaryArm_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsLoading || IsRefreshing || CharacterObject.Ambidextrous)
                 return;
-            CharacterObject.PrimaryArm = cboPrimaryArm.SelectedValue.ToString();
+            CharacterObject.PrimaryArm = await cboPrimaryArm.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
         private async void AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -18005,9 +17923,9 @@ namespace Chummer
                     return;
             }
 
-            IsCharacterUpdateRequested = true;
+            await RequestCharacterUpdate();
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
         private async void btnCreateCustomDrug_Click_1(object sender, EventArgs e)
@@ -18053,65 +17971,65 @@ namespace Chummer
 
         #region Stolen Property Changes
 
-        private void chkDrugStolen_CheckedChanged(object sender, EventArgs e)
+        private async void chkDrugStolen_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            if (!(treCustomDrugs.SelectedNode?.Tag is IHasStolenProperty loot))
+            if (!(await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasStolenProperty loot))
                 return;
-            ProcessStolenChanged(loot, chkDrugStolen.Checked);
+            await ProcessStolenChanged(loot, await chkDrugStolen.DoThreadSafeFuncAsync(x => x.Checked));
         }
 
-        private void chkCyberwareStolen_CheckedChanged(object sender, EventArgs e)
+        private async void chkCyberwareStolen_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            if (!(treCyberware.SelectedNode?.Tag is IHasStolenProperty loot))
+            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasStolenProperty loot))
                 return;
-            ProcessStolenChanged(loot, chkCyberwareStolen.Checked);
+            await ProcessStolenChanged(loot, await chkCyberwareStolen.DoThreadSafeFuncAsync(x => x.Checked));
         }
 
-        private void chkGearStolen_CheckedChanged(object sender, EventArgs e)
+        private async void chkGearStolen_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            if (!(treGear.SelectedNode?.Tag is IHasStolenProperty loot))
+            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasStolenProperty loot))
                 return;
-            ProcessStolenChanged(loot, chkGearStolen.Checked);
+            await ProcessStolenChanged(loot, await chkGearStolen.DoThreadSafeFuncAsync(x => x.Checked));
         }
 
-        private void chkArmorStolen_CheckedChanged(object sender, EventArgs e)
+        private async void chkArmorStolen_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            if (!(treArmor.SelectedNode?.Tag is IHasStolenProperty loot))
+            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasStolenProperty loot))
                 return;
-            ProcessStolenChanged(loot, chkArmorStolen.Checked);
+            await ProcessStolenChanged(loot, await chkArmorStolen.DoThreadSafeFuncAsync(x => x.Checked));
         }
 
-        private void chkWeaponStolen_CheckedChanged(object sender, EventArgs e)
+        private async void chkWeaponStolen_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            if (!(treWeapons.SelectedNode?.Tag is IHasStolenProperty loot))
+            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasStolenProperty loot))
                 return;
-            ProcessStolenChanged(loot, chkWeaponStolen.Checked);
+            await ProcessStolenChanged(loot, await chkWeaponStolen.DoThreadSafeFuncAsync(x => x.Checked));
         }
 
-        private void chkVehicleStolen_CheckedChanged(object sender, EventArgs e)
+        private async void chkVehicleStolen_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            if (!(treVehicles.SelectedNode?.Tag is IHasStolenProperty loot))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasStolenProperty loot))
                 return;
-            ProcessStolenChanged(loot, chkVehicleStolen.Checked);
+            await ProcessStolenChanged(loot, await chkVehicleStolen.DoThreadSafeFuncAsync(x => x.Checked));
         }
 
-        private void ProcessStolenChanged(IHasStolenProperty loot, bool state)
+        private async ValueTask ProcessStolenChanged(IHasStolenProperty loot, bool state)
         {
             loot.Stolen = state;
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
         #endregion Stolen Property Changes
@@ -18128,74 +18046,81 @@ namespace Chummer
             if (IsRefreshing)
                 return;
 
-            if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Weapon objWeapon))
                 return;
-            objWeapon.FireMode = cboVehicleWeaponFiringMode.SelectedIndex >= 0
-                ? (Weapon.FiringMode)cboVehicleWeaponFiringMode.SelectedValue
-                : Weapon.FiringMode.DogBrain;
+            objWeapon.FireMode = await cboVehicleWeaponFiringMode.DoThreadSafeFuncAsync(x => x.SelectedIndex >= 0
+                ? (Weapon.FiringMode) x.SelectedValue
+                : Weapon.FiringMode.DogBrain);
             await RefreshSelectedVehicle();
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
-        private void chkCyberwareBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        private async void chkCyberwareBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            if (!(treCyberware.SelectedNode?.Tag is ICanBlackMarketDiscount objItem))
+            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is ICanBlackMarketDiscount objItem))
                 return;
             objItem.DiscountCost = chkCyberwareBlackMarketDiscount.Checked;
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
-        private void chkGearBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        private async void chkGearBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            if (!(treGear.SelectedNode?.Tag is ICanBlackMarketDiscount objItem))
+            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is ICanBlackMarketDiscount objItem))
                 return;
-            objItem.DiscountCost = chkGearBlackMarketDiscount.Checked;
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            objItem.DiscountCost = await chkGearBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked);
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
-        private void chkArmorBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        private async void chkArmorBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            if (!(treArmor.SelectedNode?.Tag is ICanBlackMarketDiscount objItem))
+            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is ICanBlackMarketDiscount objItem))
                 return;
-            objItem.DiscountCost = chkArmorBlackMarketDiscount.Checked;
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            objItem.DiscountCost = await chkArmorBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked);
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
-        private void chkWeaponBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        private async void chkWeaponBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            if (!(treWeapons.SelectedNode?.Tag is ICanBlackMarketDiscount objItem))
+            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is ICanBlackMarketDiscount objItem))
                 return;
-            objItem.DiscountCost = chkWeaponBlackMarketDiscount.Checked;
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            objItem.DiscountCost = await chkWeaponBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked);
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
-        private void chkVehicleBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        private async void chkVehicleBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            if (!(treVehicles.SelectedNode?.Tag is ICanBlackMarketDiscount objItem))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is ICanBlackMarketDiscount objItem))
                 return;
-            objItem.DiscountCost = chkVehicleBlackMarketDiscount.Checked;
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            objItem.DiscountCost = await chkVehicleBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked);
+            await RequestCharacterUpdate();
+            await SetDirty(true);
         }
 
         private async void mnuFileExport_Click(object sender, EventArgs e)
         {
-            await DoExport();
+            try
+            {
+                await DoExport(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
     }
 }

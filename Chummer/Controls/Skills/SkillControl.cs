@@ -366,7 +366,7 @@ namespace Chummer.UI.Skills
                     break;
 
                 case nameof(Skill.TopMostDisplaySpecialization):
-                    if (!_blnUpdatingSpec)
+                    if (cboSpec != null && !_blnUpdatingSpec)
                     {
                         string strDisplaySpec = _objSkill.TopMostDisplaySpecialization;
                         _blnUpdatingSpec = true;
@@ -409,7 +409,16 @@ namespace Chummer.UI.Skills
                             _blnUpdatingSpec = false;
                         }
                     }
+                    if (blnUpdateAll)
+                        goto case nameof(Skill.Specializations);
                     break;
+
+                case nameof(Skill.Specializations):
+                {
+                    if (await Program.GetFormForDialogAsync(_objSkill.CharacterObject) is CharacterShared frmParent)
+                        await frmParent.RequestCharacterUpdate();
+                    break;
+                }
             }
         }
 
@@ -483,8 +492,6 @@ namespace Chummer.UI.Skills
                     return;
                 _objSkill.AddSpecialization(selectForm.MyForm.SelectedItem);
             }
-            if (await Program.GetFormForDialogAsync(_objSkill.CharacterObject) is CharacterShared frmParent)
-                frmParent.IsCharacterUpdateRequested = true;
         }
 
         private void btnAttribute_Click(object sender, EventArgs e)

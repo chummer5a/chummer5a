@@ -4009,7 +4009,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="treFoci">TreeView of foci.</param>
         /// <param name="intNewRating">New rating that the focus is supposed to have.</param>
         /// <returns>True if the new rating complies by focus limits or the gear is not bonded, false otherwise</returns>
-        public bool RefreshSingleFocusRating(TreeView treFoci, int intNewRating)
+        public async ValueTask<bool> RefreshSingleFocusRating(TreeView treFoci, int intNewRating)
         {
             if (Bonded)
             {
@@ -4017,12 +4017,12 @@ namespace Chummer.Backend.Equipment
                 if (_objCharacter.Settings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
                     intMaxFocusTotal = Math.Min(intMaxFocusTotal, _objCharacter.MAGAdept.TotalValue * 5);
 
-                int intFociTotal = _objCharacter.Foci.Where(x => x.GearObject != this).Sum(x => x.Rating);
+                int intFociTotal = await _objCharacter.Foci.SumAsync(x => x.GearObject != this, x => x.Rating);
 
                 if (intFociTotal + intNewRating > intMaxFocusTotal && !_objCharacter.IgnoreRules)
                 {
-                    Program.ShowMessageBox(LanguageManager.GetString("Message_FocusMaximumForce"),
-                        LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK,
+                    Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_FocusMaximumForce"),
+                        await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum"), MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
                     return false;
                 }
@@ -4035,11 +4035,13 @@ namespace Chummer.Backend.Equipment
                 case "Foci":
                 case "Metamagic Foci":
                     {
-                        TreeNode nodFocus = treFoci.FindNodeByTag(this);
+                        TreeNode nodFocus = await treFoci.DoThreadSafeFuncAsync(x => x.FindNodeByTag(this));
                         if (nodFocus != null)
                         {
-                            nodFocus.Text = CurrentDisplayName.Replace(LanguageManager.GetString(RatingLabel),
-                                LanguageManager.GetString("String_Force"));
+                            string strText = CurrentDisplayName.Replace(
+                                await LanguageManager.GetStringAsync(RatingLabel),
+                                await LanguageManager.GetStringAsync("String_Force"));
+                            await treFoci.DoThreadSafeFuncAsync(() => nodFocus.Text = strText);
                         }
                     }
                     break;
@@ -4048,15 +4050,18 @@ namespace Chummer.Backend.Equipment
                     {
                         for (int i = _objCharacter.StackedFoci.Count - 1; i >= 0; --i)
                         {
-                            if (i >= _objCharacter.StackedFoci.Count) continue;
+                            if (i >= _objCharacter.StackedFoci.Count)
+                                continue;
                             StackedFocus objStack = _objCharacter.StackedFoci[i];
-                            if (objStack.GearId != InternalId) continue;
-                            TreeNode nodFocus = treFoci.FindNode(objStack.InternalId);
+                            if (objStack.GearId != InternalId)
+                                continue;
+                            TreeNode nodFocus = await treFoci.DoThreadSafeFuncAsync(x => x.FindNode(objStack.InternalId));
                             if (nodFocus != null)
                             {
-                                nodFocus.Text = CurrentDisplayName
-                                    .Replace(LanguageManager.GetString(RatingLabel),
-                                        LanguageManager.GetString("String_Force"));
+                                string strText = CurrentDisplayName.Replace(
+                                    await LanguageManager.GetStringAsync(RatingLabel),
+                                    await LanguageManager.GetStringAsync("String_Force"));
+                                await treFoci.DoThreadSafeFuncAsync(() => nodFocus.Text = strText);
                             }
 
                             break;

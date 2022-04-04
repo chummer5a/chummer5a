@@ -524,8 +524,7 @@ namespace Chummer.UI.Powers
 
                                                                                 if (frmParent is CharacterShared
                                                                                  objParent)
-                                                                                    objParent.IsCharacterUpdateRequested
-                                                                                        = true;
+                                                                                    await objParent.RequestCharacterUpdate();
                                                                             },
                                                                             EnabledExtractor = (p => p.FreeLevels == 0)
                                                                         }));

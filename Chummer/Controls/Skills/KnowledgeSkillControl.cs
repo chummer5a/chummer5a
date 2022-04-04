@@ -324,7 +324,7 @@ namespace Chummer.UI.Skills
                     break;
 
                 case nameof(KnowledgeSkill.TopMostDisplaySpecialization):
-                    if (!_blnUpdatingSpec)
+                    if (cboSpec != null && !_blnUpdatingSpec)
                     {
                         string strDisplaySpec = _objSkill.TopMostDisplaySpecialization;
                         _blnUpdatingSpec = true;
@@ -348,7 +348,16 @@ namespace Chummer.UI.Skills
                                           _objSkill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
                         await chkNativeLanguage.DoThreadSafeAsync(x => x.Enabled = blnEnabled);
                     }
+                    if (blnAll)
+                        goto case nameof(Skill.Specializations);
                     break;
+
+                case nameof(Skill.Specializations):
+                {
+                    if (await Program.GetFormForDialogAsync(_objSkill.CharacterObject) is CharacterShared frmParent)
+                        await frmParent.RequestCharacterUpdate();
+                    break;
+                }
             }
         }
 
@@ -424,8 +433,6 @@ namespace Chummer.UI.Skills
                     return;
                 _objSkill.AddSpecialization(selectForm.MyForm.SelectedItem);
             }
-            if (await Program.GetFormForDialogAsync(_objSkill.CharacterObject) is CharacterShared frmParent)
-                frmParent.IsCharacterUpdateRequested = true;
         }
 
         private async void cmdDelete_Click(object sender, EventArgs e)

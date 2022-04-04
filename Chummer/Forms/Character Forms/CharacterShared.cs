@@ -53,6 +53,7 @@ namespace Chummer
         private bool _blnIsDirty;
         private int _intRefreshingCount;
         private int _intLoadingCount = 1;
+        private int _intUpdatingCount;
         private CharacterSheetViewer _frmPrintView;
         private FileSystemWatcher _objCharacterFileWatcher;
 
@@ -63,6 +64,7 @@ namespace Chummer
         protected CharacterShared(Character objCharacter)
         {
             GenericToken = GenericCancellationTokenSource.Token;
+            _objUpdateCharacterInfoSemaphoreSlim = Utils.SemaphorePool.Get();
             _objCharacter = objCharacter;
             _objCharacter.PropertyChanged += CharacterPropertyChanged;
             string name = "Show_Form_" + GetType();
@@ -100,23 +102,23 @@ namespace Chummer
         {
         }
 
-        private void CharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void CharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
                 case nameof(Character.Settings):
                 {
                     _objCachedSettings = null;
-                    IsCharacterUpdateRequested = true;
-                    IsDirty = true;
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
                     break;
                 }
                 case nameof(Character.FileName):
                 {
-                    if (_objCharacterFileWatcher != null)
+                    FileSystemWatcher objTemp = _objCharacterFileWatcher;
+                    if (Interlocked.CompareExchange(ref _objCharacterFileWatcher, null, objTemp) != null)
                     {
-                        _objCharacterFileWatcher.Dispose();
-                        _objCharacterFileWatcher = null;
+                        objTemp.Dispose();
                     }
                     if (GlobalSettings.LiveUpdateCleanCharacterFiles)
                     {
@@ -389,7 +391,7 @@ namespace Chummer
                     return;
                 objNotes.Notes = frmItemNotes.MyForm.Notes;
                 objNotes.NotesColor = frmItemNotes.MyForm.NotesColor;
-                IsDirty = true;
+                await SetDirty(true);
                 TreeView objTreeView = treNode.TreeView;
                 if (objTreeView != null)
                 {
@@ -663,10 +665,9 @@ namespace Chummer
                     // Add the Spells that exist.
                     foreach (Spell objSpell in CharacterObject.Spells)
                     {
-                        if (objSpell.Grade > 0)
+                        if (objSpell.Grade > 0 && treMetamagic != null)
                         {
-                            if (treMetamagic != null)
-                                await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objSpell)?.Remove(), GenericToken);
+                            await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objSpell)?.Remove(), GenericToken);
                         }
 
                         await AddToTree(objSpell, false);
@@ -715,10 +716,9 @@ namespace Chummer
                                         }
                                     }, GenericToken);
 
-                                    if (objSpell.Grade > 0)
+                                    if (objSpell.Grade > 0 && treMetamagic != null)
                                     {
-                                        if (treMetamagic != null)
-                                            await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objSpell)?.Remove(), GenericToken);
+                                        await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objSpell)?.Remove(), GenericToken);
                                     }
                                 }
 
@@ -740,10 +740,9 @@ namespace Chummer
                                         }
                                     }, GenericToken);
 
-                                    if (objSpell.Grade > 0)
+                                    if (objSpell.Grade > 0 && treMetamagic != null)
                                     {
-                                        if (treMetamagic != null)
-                                            await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objSpell)?.Remove(), GenericToken);
+                                        await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objSpell)?.Remove(), GenericToken);
                                     }
                                 }
 
@@ -1129,10 +1128,9 @@ namespace Chummer
                     // Add Complex Forms.
                     foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms)
                     {
-                        if (objComplexForm.Grade > 0)
+                        if (objComplexForm.Grade > 0 && treMetamagic != null)
                         {
-                            if (treMetamagic != null)
-                                await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objComplexForm)?.Remove(), GenericToken);
+                            await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objComplexForm)?.Remove(), GenericToken);
                         }
 
                         await AddToTree(objComplexForm, false);
@@ -1173,10 +1171,9 @@ namespace Chummer
                                     }
                                 }, GenericToken);
 
-                                if (objComplexForm.Grade > 0)
+                                if (objComplexForm.Grade > 0 && treMetamagic != null)
                                 {
-                                    if (treMetamagic != null)
-                                        await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objComplexForm)?.Remove(), GenericToken);
+                                    await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objComplexForm)?.Remove(), GenericToken);
                                 }
                             }
 
@@ -1198,10 +1195,9 @@ namespace Chummer
                                         }
                                     }, GenericToken);
 
-                                    if (objComplexForm.Grade > 0)
+                                    if (objComplexForm.Grade > 0 && treMetamagic != null)
                                     {
-                                        if (treMetamagic != null)
-                                            await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objComplexForm)?.Remove(), GenericToken);
+                                        await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objComplexForm)?.Remove(), GenericToken);
                                     }
                                 }
 
@@ -1778,9 +1774,9 @@ namespace Chummer
                 }
             }
 
-            IsCharacterUpdateRequested = true;
+            await RequestCharacterUpdate();
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
         protected void RefreshPowerCollectionBeforeRemove(TreeView treMetamagic, RemovingOldEventArgs removingOldEventArgs)
@@ -6774,7 +6770,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objNode">The item to move</param>
         /// <param name="intNewIndex">The new index in the parent array</param>
-        public void MoveTreeNode(TreeNode objNode, int intNewIndex)
+        public async Task MoveTreeNode(TreeNode objNode, int intNewIndex)
         {
             if (!(objNode?.Tag is ICanSort objSortable))
                 return;
@@ -6787,7 +6783,10 @@ namespace Chummer
                 return;
             using (CursorWait.New(this))
             {
-                List<ICanSort> lstSorted = lstNodes.Cast<TreeNode>().Select(n => n.Tag).OfType<ICanSort>().ToList();
+                List<ICanSort> lstSorted = treOwningTree != null
+                    ? await treOwningTree.DoThreadSafeFuncAsync(
+                        () => lstNodes.Cast<TreeNode>().Select(n => n.Tag).OfType<ICanSort>().ToList(), GenericToken)
+                    : lstNodes.Cast<TreeNode>().Select(n => n.Tag).OfType<ICanSort>().ToList();
 
                 // Anything that can't be sorted gets sent to the front of the list, so subtract that number from our new
                 // sorting index and make sure we're still inside the array
@@ -6804,9 +6803,10 @@ namespace Chummer
                 }
 
                 // Sort the actual tree
-                treOwningTree.SortCustomOrder();
+                if (treOwningTree != null)
+                    await treOwningTree.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
 
-                IsDirty = true;
+                await SetDirty(true);
             }
         }
 
@@ -7205,7 +7205,7 @@ namespace Chummer
                 source.DoDragDrop(new TransportWrapper(source), DragDropEffects.Move);
         }
 
-        protected void AddContact()
+        protected async ValueTask AddContact()
         {
             Contact objContact = new Contact(CharacterObject)
             {
@@ -7213,23 +7213,23 @@ namespace Chummer
             };
             CharacterObject.Contacts.Add(objContact);
 
-            IsCharacterUpdateRequested = true;
+            await RequestCharacterUpdate();
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
-        protected void DeleteContact(object sender, EventArgs e)
+        protected async void DeleteContact(object sender, EventArgs e)
         {
             if (sender is ContactControl objSender)
             {
-                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact")))
+                if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteContact")))
                     return;
 
                 CharacterObject.Contacts.Remove(objSender.ContactObject);
 
-                IsCharacterUpdateRequested = true;
+                await RequestCharacterUpdate();
 
-                IsDirty = true;
+                await SetDirty(true);
             }
         }
 
@@ -7237,7 +7237,7 @@ namespace Chummer
 
         #region PetControl Events
 
-        protected void AddPet()
+        protected async ValueTask AddPet()
         {
             Contact objContact = new Contact(CharacterObject)
             {
@@ -7246,23 +7246,23 @@ namespace Chummer
 
             CharacterObject.Contacts.Add(objContact);
 
-            IsCharacterUpdateRequested = true;
+            await RequestCharacterUpdate();
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
-        protected void DeletePet(object sender, EventArgs e)
+        protected async void DeletePet(object sender, EventArgs e)
         {
             if (sender is PetControl objSender)
             {
-                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteContact")))
+                if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteContact")))
                     return;
 
                 CharacterObject.Contacts.Remove(objSender.ContactObject);
 
-                IsCharacterUpdateRequested = true;
+                await RequestCharacterUpdate();
 
-                IsDirty = true;
+                await SetDirty(true);
             }
         }
 
@@ -7270,7 +7270,7 @@ namespace Chummer
 
         #region EnemyControl Events
 
-        protected void AddEnemy()
+        protected async ValueTask AddEnemy()
         {
             // Handle the ConnectionRatingChanged Event for the ContactControl object.
             Contact objContact = new Contact(CharacterObject)
@@ -7280,23 +7280,23 @@ namespace Chummer
 
             CharacterObject.Contacts.Add(objContact);
 
-            IsCharacterUpdateRequested = true;
+            await RequestCharacterUpdate();
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
-        protected void DeleteEnemy(object sender, EventArgs e)
+        protected async void DeleteEnemy(object sender, EventArgs e)
         {
             if (sender is ContactControl objSender)
             {
-                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnemy")))
+                if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteEnemy")))
                     return;
 
                 CharacterObject.Contacts.Remove(objSender.ContactObject);
 
-                IsCharacterUpdateRequested = true;
+                await RequestCharacterUpdate();
 
-                IsDirty = true;
+                await SetDirty(true);
             }
         }
 
@@ -7628,16 +7628,16 @@ namespace Chummer
 
         #region SpiritControl Events
 
-        protected void AddSpirit()
+        protected async ValueTask AddSpirit()
         {
             // The number of bound Spirits cannot exceed the character's CHA.
             if (!CharacterObject.IgnoreRules && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Spirit && x.Bound && !x.Fettered) >= CharacterObject.BoundSpiritLimit)
             {
                 Program.ShowMessageBox(
                     this,
-                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_BoundSpiritLimit"),
+                    string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_BoundSpiritLimit"),
                                   CharacterObject.Settings.BoundSpiritExpression, CharacterObject.BoundSpiritLimit),
-                    LanguageManager.GetString("MessageTitle_BoundSpiritLimit"),
+                    await LanguageManager.GetStringAsync("MessageTitle_BoundSpiritLimit"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -7649,12 +7649,12 @@ namespace Chummer
             };
             CharacterObject.Spirits.Add(objSpirit);
 
-            IsCharacterUpdateRequested = true;
+            await RequestCharacterUpdate();
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
-        protected void AddSprite()
+        protected async ValueTask AddSprite()
         {
             // In create, all sprites are added as Bound/Registered. The number of registered Sprites cannot exceed the character's LOG.
             if (!CharacterObject.IgnoreRules &&
@@ -7664,10 +7664,10 @@ namespace Chummer
                 Program.ShowMessageBox(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
-                                  LanguageManager.GetString("Message_RegisteredSpriteLimit"),
+                                  await LanguageManager.GetStringAsync("Message_RegisteredSpriteLimit"),
                                   CharacterObject.Settings.RegisteredSpriteExpression,
                                   CharacterObject.RegisteredSpriteLimit),
-                    LanguageManager.GetString("MessageTitle_RegisteredSpriteLimit"),
+                    await LanguageManager.GetStringAsync("MessageTitle_RegisteredSpriteLimit"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -7679,25 +7679,25 @@ namespace Chummer
             };
             CharacterObject.Spirits.Add(objSprite);
 
-            IsCharacterUpdateRequested = true;
+            await RequestCharacterUpdate();
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
-        protected void DeleteSpirit(object sender, EventArgs e)
+        protected async void DeleteSpirit(object sender, EventArgs e)
         {
             if (!(sender is SpiritControl objSender))
                 return;
             Spirit objSpirit = objSender.SpiritObject;
             bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
-            if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite")))
+            if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite")))
                 return;
             objSpirit.Fettered = false; // Fettered spirits consume MAG.
             CharacterObject.Spirits.Remove(objSpirit);
 
-            IsCharacterUpdateRequested = true;
+            await RequestCharacterUpdate();
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
         #endregion SpiritControl Events
@@ -7825,6 +7825,133 @@ namespace Chummer
             }
         }
 
+        protected enum ItemTreeViewTypes
+        {
+            Misc,
+            Weapons,
+            Armor,
+            Gear,
+            Vehicles,
+            Improvements
+        }
+
+        protected MouseButtons DragButton { get; set; } = MouseButtons.None;
+        protected bool DraggingGear { get; set; }
+
+        protected async ValueTask DoTreeDragDrop(object sender, DragEventArgs e, TreeView treView, ItemTreeViewTypes eType, CancellationToken token = default)
+        {
+            Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
+            TreeNode nodDestination = await ((TreeView)sender).DoThreadSafeFuncAsync(x => x.GetNodeAt(pt), token);
+
+            TreeNode objSelected = await treView.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
+            for (TreeNode nodLoop = nodDestination; nodLoop != null; nodLoop = nodLoop.Parent)
+            {
+                if (nodLoop == objSelected)
+                    return;
+            }
+
+            int intNewIndex = 0;
+            if (nodDestination != null)
+            {
+                intNewIndex = nodDestination.Index;
+            }
+            else
+            {
+                int intNodesCount = await treView.DoThreadSafeFuncAsync(x => x.Nodes.Count, token);
+                if (intNodesCount > 0)
+                {
+                    await treView.DoThreadSafeAsync(x =>
+                    {
+                        intNewIndex = x.Nodes[intNodesCount - 1].Nodes.Count;
+                        nodDestination = x.Nodes[intNodesCount - 1];
+                    }, token);
+                }
+            }
+
+            // Put the weapon in the right location (or lack thereof)
+            await treView.DoThreadSafeAsync(() =>
+            {
+                switch (eType)
+                {
+                    case ItemTreeViewTypes.Misc:
+                        break;
+                    case ItemTreeViewTypes.Weapons:
+                    {
+                        if (objSelected.Level == 1)
+                            CharacterObject.MoveWeaponNode(intNewIndex, nodDestination, objSelected);
+                        else
+                            CharacterObject.MoveWeaponRoot(intNewIndex, nodDestination, objSelected);
+                        break;
+                    }
+                    case ItemTreeViewTypes.Armor:
+                    {
+                        if (objSelected.Level == 1)
+                            CharacterObject.MoveArmorNode(intNewIndex, nodDestination, objSelected);
+                        else
+                            CharacterObject.MoveArmorRoot(intNewIndex, nodDestination, objSelected);
+                        break;
+                    }
+                    case ItemTreeViewTypes.Gear:
+                    {
+                        switch (DragButton)
+                        {
+                            // If the item was moved using the left mouse button, change the order of things.
+                            case MouseButtons.Left when objSelected.Level == 1:
+                                CharacterObject.MoveGearNode(intNewIndex, nodDestination, objSelected);
+                                break;
+
+                            case MouseButtons.Left:
+                                CharacterObject.MoveGearRoot(intNewIndex, nodDestination, objSelected);
+                                break;
+
+                            case MouseButtons.Right:
+                                CharacterObject.MoveGearParent(objSelected, objSelected);
+                                break;
+                        }
+                        break;
+                    }
+                    case ItemTreeViewTypes.Vehicles:
+                    {
+                        if (!DraggingGear)
+                        {
+                            CharacterObject.MoveVehicleNode(intNewIndex, nodDestination, objSelected);
+                        }
+                        else
+                        {
+                            CharacterObject.MoveVehicleGearParent(nodDestination, objSelected);
+                            DraggingGear = false;
+                        }
+                        break;
+                    }
+                    case ItemTreeViewTypes.Improvements:
+                    {
+                        if (objSelected.Level == 1)
+                            CharacterObject.MoveImprovementNode(nodDestination, objSelected);
+                        else
+                            CharacterObject.MoveImprovementRoot(intNewIndex, nodDestination, objSelected);
+                        break;
+                    }
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(eType), eType, null);
+                }
+            }, token);
+
+            // Put the weapon in the right order in the tree
+            await MoveTreeNode(await treView.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objSelected.Tag), token), intNewIndex);
+
+            await treView.DoThreadSafeAsync(x =>
+            {
+                // Update the entire tree to prevent any holes in the sort order
+                x.CacheSortOrder();
+                // Clear the background color for all Nodes.
+                x.ClearNodeBackground(null);
+                // Store our new order so it's loaded properly the next time we open the character
+                x.CacheSortOrder();
+            }, token);
+
+            await SetDirty(true);
+        }
+
         /// <summary>
         /// Whether or not the character has changes that can be saved
         /// </summary>
@@ -7838,6 +7965,14 @@ namespace Chummer
                 _blnIsDirty = value;
                 UpdateWindowTitle(true);
             }
+        }
+
+        public Task SetDirty(bool blnValue)
+        {
+            if (_blnIsDirty == blnValue)
+                return Task.CompletedTask;
+            _blnIsDirty = blnValue;
+            return UpdateWindowTitleAsync(true, GenericToken);
         }
 
         /// <summary>
@@ -7877,17 +8012,17 @@ namespace Chummer
 
         public bool IsFinishedInitializing { get; protected set; }
 
-        public void MakeDirtyWithCharacterUpdate(object sender, NotifyCollectionChangedEventArgs e)
+        public async void MakeDirtyWithCharacterUpdate(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
 
-            IsCharacterUpdateRequested = true;
+            await RequestCharacterUpdate();
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
-        public void MakeDirtyWithCharacterUpdate(object sender, ListChangedEventArgs e)
+        public async void MakeDirtyWithCharacterUpdate(object sender, ListChangedEventArgs e)
         {
             if (e.ListChangedType != ListChangedType.ItemAdded
                 && e.ListChangedType != ListChangedType.ItemChanged
@@ -7895,71 +8030,84 @@ namespace Chummer
                 && e.ListChangedType != ListChangedType.Reset)
                 return;
 
-            IsCharacterUpdateRequested = true;
+            await RequestCharacterUpdate();
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
-        public void MakeDirtyWithCharacterUpdate(object sender, EventArgs e)
+        public async void MakeDirtyWithCharacterUpdate(object sender, EventArgs e)
         {
-            IsCharacterUpdateRequested = true;
+            await RequestCharacterUpdate();
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
-        public void MakeDirty(object sender, NotifyCollectionChangedEventArgs e)
+        public async void MakeDirty(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
 
-            IsDirty = true;
+            await SetDirty(true);
         }
 
-        public void MakeDirty(object sender, EventArgs e)
+        public async void MakeDirty(object sender, EventArgs e)
         {
-            IsDirty = true;
+            await SetDirty(true);
         }
 
-        public bool IsCharacterUpdateRequested
+        public async ValueTask RequestCharacterUpdate()
         {
-            get => !_tskUpdateCharacterInfo.IsCompleted;
-            set
+            if (IsLoading)
+                return;
+            if (!await _objUpdateCharacterInfoSemaphoreSlim.WaitAsync(0, GenericToken))
+                return;
+            try
             {
-                if (!value)
+                CancellationTokenSource objTemp = _objUpdateCharacterInfoCancellationTokenSource;
+                if (Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objTemp) != null && !objTemp.IsCancellationRequested)
                 {
-                    if (_objUpdateCharacterInfoCancellationTokenSource != null)
+                    try
                     {
-                        if (!_objUpdateCharacterInfoCancellationTokenSource.IsCancellationRequested)
-                        {
-                            _objUpdateCharacterInfoCancellationTokenSource.Cancel(false);
-                            _objUpdateCharacterInfoCancellationTokenSource.Dispose();
-                        }
-                        _objUpdateCharacterInfoCancellationTokenSource = null;
+                        objTemp.Cancel(false);
                     }
-
-                    return;
+                    catch (ObjectDisposedException)
+                    {
+                        //swallow this
+                    }
+                    finally
+                    {
+                        objTemp.Dispose();
+                    }
                 }
 
-                if (IsLoading || _blnSkipUpdate)
-                    return;
-                if (_tskUpdateCharacterInfo?.IsCompleted == false)
-                    return;
-                if (_objUpdateCharacterInfoCancellationTokenSource?.IsCancellationRequested == false)
+                try
                 {
-                    _objUpdateCharacterInfoCancellationTokenSource.Cancel(false);
-                    _objUpdateCharacterInfoCancellationTokenSource.Dispose();
-                    _objUpdateCharacterInfoCancellationTokenSource = null;
+                    if (_tskUpdateCharacterInfo?.IsCompleted == false)
+                        await _tskUpdateCharacterInfo;
                 }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+
                 _objUpdateCharacterInfoCancellationTokenSource = new CancellationTokenSource();
                 CancellationToken objToken = _objUpdateCharacterInfoCancellationTokenSource.Token;
-                _tskUpdateCharacterInfo
-                    = Task.Run(() => DoUpdateCharacterInfo(objToken), objToken);
+                _tskUpdateCharacterInfo = Task.Run(() => DoUpdateCharacterInfo(objToken), objToken);
+            }
+            finally
+            {
+                _objUpdateCharacterInfoSemaphoreSlim.Release();
             }
         }
+
+        public bool IsCharacterUpdateRequested => _objUpdateCharacterInfoSemaphoreSlim.CurrentCount == 0
+                                                  || _tskUpdateCharacterInfo?.IsCompleted == false;
 
         protected Task UpdateCharacterInfoTask => _tskUpdateCharacterInfo;
 
         private Task _tskUpdateCharacterInfo = Task.CompletedTask;
+
+        private readonly SemaphoreSlim _objUpdateCharacterInfoSemaphoreSlim;
 
         private CancellationTokenSource _objUpdateCharacterInfoCancellationTokenSource;
 
@@ -7970,11 +8118,19 @@ namespace Chummer
 
         protected bool SkipUpdate
         {
-            get => _blnSkipUpdate;
-            set => _blnSkipUpdate = value;
+            get => _intUpdatingCount > 0;
+            set
+            {
+                if (value)
+                    Interlocked.Increment(ref _intUpdatingCount);
+                else
+                {
+                    int intCurrentUpdatingCount = Interlocked.Decrement(ref _intUpdatingCount);
+                    if (intCurrentUpdatingCount < 0)
+                        Interlocked.CompareExchange(ref _intUpdatingCount, 0, intCurrentUpdatingCount);
+                }
+            }
         }
-
-        private bool _blnSkipUpdate;
 
         public Character CharacterObject => _objCharacter;
 
@@ -8023,7 +8179,7 @@ namespace Chummer
         /// <summary>
         /// Update the Window title to show the Character's name and unsaved changes status.
         /// </summary>
-        protected async ValueTask UpdateWindowTitleAsync(bool blnCanSkip, CancellationToken token = default)
+        protected async Task UpdateWindowTitleAsync(bool blnCanSkip, CancellationToken token = default)
         {
             if (Text.EndsWith('*') == _blnIsDirty && blnCanSkip)
                 return;
@@ -8181,12 +8337,23 @@ namespace Chummer
                 _objCharacter.PropertyChanged -= CharacterPropertyChanged;
                 _frmPrintView?.Dispose();
                 _objCharacterFileWatcher?.Dispose();
-                if (_objUpdateCharacterInfoCancellationTokenSource?.IsCancellationRequested == false)
+                CancellationTokenSource objTemp = _objUpdateCharacterInfoCancellationTokenSource;
+                if (Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objTemp) != null)
                 {
-                    _objUpdateCharacterInfoCancellationTokenSource.Cancel(false);
-                    _objUpdateCharacterInfoCancellationTokenSource.Dispose();
-                    _objUpdateCharacterInfoCancellationTokenSource = null;
+                    try
+                    {
+                        objTemp.Cancel(false);
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //swallow this
+                    }
+                    finally
+                    {
+                        objTemp.Dispose();
+                    }
                 }
+                Utils.SemaphorePool.Return(_objUpdateCharacterInfoSemaphoreSlim);
             }
             base.Dispose(disposing);
         }
@@ -8313,9 +8480,9 @@ namespace Chummer
                         }
                     }
 
-                    IsCharacterUpdateRequested = true;
+                    await RequestCharacterUpdate();
 
-                    IsDirty = true;
+                    await SetDirty(true);
                 } while (blnAddAgain);
             }
         }

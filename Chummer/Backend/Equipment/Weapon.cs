@@ -6358,10 +6358,10 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public void Reload(ICollection<Gear> lstGears, TreeView treGearView)
+        public async ValueTask Reload(ICollection<Gear> lstGears, TreeView treGearView)
         {
             List<string> lstCount = new List<string>(1);
-            string ammoString = CalculatedAmmo(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage);
+            string ammoString = await CalculatedAmmoAsync(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage);
             if (!RequireAmmo)
             {
                 // For weapons that have ammo capacities but no requirement for ammo, these are charges
@@ -6419,15 +6419,15 @@ namespace Chummer.Backend.Equipment
                 if (intMaxAmmoCount <= intCurrentAmmoCount)
                     return;
 
-                using (ThreadSafeForm<SelectNumber> frmNewAmmoCount = ThreadSafeForm<SelectNumber>.Get(() => new SelectNumber(0)
+                using (ThreadSafeForm<SelectNumber> frmNewAmmoCount = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber(0)
+                       {
+                           AllowCancel = true,
+                           Maximum = intMaxAmmoCount,
+                           Minimum = intCurrentAmmoCount,
+                           Description = string.Format(LanguageManager.GetString("Message_SelectNumberOfCharges"), CurrentDisplayName)
+                       }))
                 {
-                    AllowCancel = true,
-                    Maximum = intMaxAmmoCount,
-                    Minimum = intCurrentAmmoCount,
-                    Description = string.Format(LanguageManager.GetString("Message_SelectNumberOfCharges"), CurrentDisplayName)
-                }))
-                {
-                    if (frmNewAmmoCount.ShowDialogSafe(_objCharacter) != DialogResult.OK)
+                    if (await frmNewAmmoCount.ShowDialogSafeAsync(_objCharacter) != DialogResult.OK)
                         return;
 
                     objInternalClip.Ammo = frmNewAmmoCount.MyForm.SelectedValue.ToInt32();
@@ -6474,10 +6474,10 @@ namespace Chummer.Backend.Equipment
             Gear objExternalSource = null;
             if (blnExternalSource)
             {
-                lstCount.Add(LanguageManager.GetString("String_ExternalSource"));
+                lstCount.Add(await LanguageManager.GetStringAsync("String_ExternalSource"));
                 objExternalSource = new Gear(_objCharacter)
                 {
-                    Name = LanguageManager.GetString("String_ExternalSource"),
+                    Name = await LanguageManager.GetStringAsync("String_ExternalSource"),
                     SourceID = Guid.Empty
                 };
             }
@@ -6489,9 +6489,9 @@ namespace Chummer.Backend.Equipment
                 if (lstAmmo.Count == 0)
                 {
                     Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
-                                                                  LanguageManager.GetString("Message_OutOfAmmoType"),
+                                                                  await LanguageManager.GetStringAsync("Message_OutOfAmmoType"),
                                                                   CurrentDisplayName),
-                                                    LanguageManager.GetString("Message_OutOfAmmo"),
+                                                    await LanguageManager.GetStringAsync("Message_OutOfAmmo"),
                                                     icon: MessageBoxIcon.Warning);
                     return;
                 }
@@ -6500,13 +6500,13 @@ namespace Chummer.Backend.Equipment
                 lstAmmo.Add(objExternalSource);
 
             // Show the Ammunition Selection window.
-            using (ThreadSafeForm<ReloadWeapon> frmReloadWeapon = ThreadSafeForm<ReloadWeapon>.Get(() => new ReloadWeapon(this)
+            using (ThreadSafeForm<ReloadWeapon> frmReloadWeapon = await ThreadSafeForm<ReloadWeapon>.GetAsync(() => new ReloadWeapon(this)
+                   {
+                       Ammo = lstAmmo,
+                       Count = lstCount
+                   }))
             {
-                Ammo = lstAmmo,
-                Count = lstCount
-            }))
-            {
-                if (frmReloadWeapon.ShowDialogSafe(_objCharacter) != DialogResult.OK)
+                if (await frmReloadWeapon.ShowDialogSafeAsync(_objCharacter) != DialogResult.OK)
                     return;
 
                 // Return any unspent rounds to the Ammo.
@@ -6528,13 +6528,16 @@ namespace Chummer.Backend.Equipment
                         else
                         {
                             objAmmo.Quantity += AmmoRemaining;
-
-                            // Refresh the Gear tree.
-                            TreeNode objNode = treGearView.FindNode(objAmmo.InternalId);
-                            if (objNode != null)
+                            
+                            await treGearView.DoThreadSafeAsync(x =>
                             {
-                                objNode.Text = objAmmo.CurrentDisplayName;
-                            }
+                                // Refresh the Gear tree.
+                                TreeNode objNode = x.FindNode(objAmmo.InternalId);
+                                if (objNode != null)
+                                {
+                                    objNode.Text = objAmmo.CurrentDisplayName;
+                                }
+                            });
                         }
                     }
                 }
@@ -6554,8 +6557,11 @@ namespace Chummer.Backend.Equipment
                         {
                             if (objParent.Quantity > 0)
                                 --objParent.Quantity;
-                            TreeNode objNode = treGearView.FindNode(objParent.InternalId);
-                            objNode.Text = objParent.CurrentDisplayName;
+                            await treGearView.DoThreadSafeAsync(x =>
+                            {
+                                TreeNode objNode = x.FindNode(objParent.InternalId);
+                                objNode.Text = objParent.CurrentDisplayName;
+                            });
                         }
                     }
                     else
@@ -6570,10 +6576,13 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    // Refresh the Gear tree.
-                    TreeNode objSelectedNode = treGearView.FindNode(objSelectedAmmo.InternalId);
-                    if (objSelectedNode != null)
-                        objSelectedNode.Text = objSelectedAmmo.CurrentDisplayName;
+                    await treGearView.DoThreadSafeAsync(x =>
+                    {
+                        // Refresh the Gear tree.
+                        TreeNode objSelectedNode = x.FindNode(objSelectedAmmo.InternalId);
+                        if (objSelectedNode != null)
+                            objSelectedNode.Text = objSelectedAmmo.CurrentDisplayName;
+                    });
                 }
                 else
                 {
