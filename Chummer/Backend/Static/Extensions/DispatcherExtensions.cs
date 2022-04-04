@@ -72,12 +72,17 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
             catch (Exception e)
             {
                 Log.Error(e);
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
+                throw;
             }
         }
 
@@ -122,12 +127,17 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
             catch (Exception e)
             {
                 Log.Error(e);
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
+                throw;
             }
         }
 
@@ -180,12 +190,17 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
             catch (Exception e)
             {
                 Log.Error(e);
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
+                throw;
             }
         }
 
@@ -238,12 +253,17 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
             catch (Exception e)
             {
                 Log.Error(e);
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
+                throw;
             }
         }
 
@@ -295,12 +315,17 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
             catch (Exception e)
             {
                 Log.Error(e);
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
+                throw;
             }
         }
 
@@ -359,12 +384,17 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
             catch (Exception e)
             {
                 Log.Error(e);
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
+                throw;
             }
         }
 
@@ -423,12 +453,17 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
             catch (Exception e)
             {
                 Log.Error(e);
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
+                throw;
             }
         }
 
@@ -487,12 +522,17 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
             catch (Exception e)
             {
                 Log.Error(e);
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
+                throw;
             }
         }
 
@@ -534,12 +574,17 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
             catch (Exception e)
             {
                 Log.Error(e);
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
+                throw;
             }
 
             return objReturn;
@@ -593,12 +638,17 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
             catch (Exception e)
             {
                 Log.Error(e);
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
+                throw;
             }
 
             return objReturn;
@@ -658,12 +708,17 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
             catch (Exception e)
             {
                 Log.Error(e);
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
+                throw;
             }
 
             return objReturn;
@@ -723,12 +778,17 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
             catch (Exception e)
             {
                 Log.Error(e);
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
+                throw;
             }
 
             return objReturn;
@@ -781,12 +841,17 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
             catch (Exception e)
             {
                 Log.Error(e);
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
+                throw;
             }
 
             return objReturn;
@@ -856,12 +921,17 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
             catch (Exception e)
             {
                 Log.Error(e);
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
+                throw;
             }
 
             return objReturn;
@@ -931,12 +1001,17 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
             catch (Exception e)
             {
                 Log.Error(e);
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
+                throw;
             }
 
             return objReturn;
@@ -1006,12 +1081,17 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
             catch (Exception e)
             {
                 Log.Error(e);
 #if DEBUG
                 Program.ShowMessageBox(e.ToString());
 #endif
+                throw;
             }
 
             return objReturn;
