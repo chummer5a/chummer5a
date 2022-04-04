@@ -105,7 +105,7 @@ namespace Chummer
                 if (_blnIsUnitTest == value)
                     return;
                 _blnIsUnitTest = value;
-                _blnIsOkToRunDoEvents = DefaultIsOkToRunDoEvents;
+                _intIsOkToRunDoEvents = DefaultIsOkToRunDoEvents ? 1 : 0;
             }
         }
 
@@ -936,17 +936,17 @@ namespace Chummer
 
         public static void DoEventsSafe(bool blnForceDoEvents = false)
         {
-            if (blnForceDoEvents || _blnIsOkToRunDoEvents)
+            try
             {
-                try
+                int intIsOkToRunDoEvents = Interlocked.CompareExchange(ref _intIsOkToRunDoEvents, 0, 1);
+                if (blnForceDoEvents || intIsOkToRunDoEvents > 0)
                 {
-                    _blnIsOkToRunDoEvents = false;
                     Application.DoEvents();
                 }
-                finally
-                {
-                    _blnIsOkToRunDoEvents = DefaultIsOkToRunDoEvents;
-                }
+            }
+            finally
+            {
+                Interlocked.CompareExchange(ref _intIsOkToRunDoEvents, DefaultIsOkToRunDoEvents ? 1 : 0, 0);
             }
         }
 
@@ -963,7 +963,7 @@ namespace Chummer
         /// <summary>
         /// This member makes sure we aren't swamping the program with massive amounts of Application.DoEvents() calls
         /// </summary>
-        private static bool _blnIsOkToRunDoEvents = DefaultIsOkToRunDoEvents;
+        private static int _intIsOkToRunDoEvents = DefaultIsOkToRunDoEvents ? 1 : 0;
 
         /// <summary>
         /// Syntactic sugar for synchronously waiting for code to complete while still allowing queued invocations to go through.
