@@ -49,6 +49,8 @@ namespace Chummer
         private string _strPrintLanguage = GlobalSettings.Language;
         private CancellationTokenSource _objRefresherCancellationTokenSource;
         private CancellationTokenSource _objOutputGeneratorCancellationTokenSource;
+        private SemaphoreSlim _objRefresherSemaphoreSlim;
+        private SemaphoreSlim _objOutputGeneratorSemaphoreSlim;
         private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objGenericToken;
         private Task _tskRefresher;
@@ -59,6 +61,8 @@ namespace Chummer
 
         public CharacterSheetViewer()
         {
+            _objRefresherSemaphoreSlim = Utils.SemaphorePool.Get();
+            _objOutputGeneratorSemaphoreSlim = Utils.SemaphorePool.Get();
             _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
             if (_strSelectedSheet.StartsWith("Shadowrun 4", StringComparison.Ordinal))
             {
@@ -229,17 +233,64 @@ namespace Chummer
 
         private async void CharacterSheetViewer_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_objRefresherCancellationTokenSource?.IsCancellationRequested == false)
+            try
             {
-                _objRefresherCancellationTokenSource.Cancel(false);
-                _objRefresherCancellationTokenSource.Dispose();
-                _objRefresherCancellationTokenSource = null;
+                CancellationTokenSource objTempTokenSource = _objRefresherCancellationTokenSource;
+                if (Interlocked.CompareExchange(ref _objRefresherCancellationTokenSource, null, objTempTokenSource) != null)
+                {
+                    SemaphoreSlim objTemp = _objRefresherSemaphoreSlim;
+                    if (Interlocked.CompareExchange(ref _objRefresherSemaphoreSlim, null, objTemp) != null)
+                    {
+                        await objTemp.WaitAsync(_objGenericToken);
+                        try
+                        {
+                            if (objTempTokenSource?.IsCancellationRequested == false)
+                            {
+                                objTempTokenSource.Cancel(false);
+                                objTempTokenSource.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            objTemp.Release();
+                            Utils.SemaphorePool.Return(objTemp);
+                        }
+                    }
+                }
             }
-            if (_objOutputGeneratorCancellationTokenSource?.IsCancellationRequested == false)
+            catch (OperationCanceledException)
             {
-                _objOutputGeneratorCancellationTokenSource.Cancel(false);
-                _objOutputGeneratorCancellationTokenSource.Dispose();
-                _objOutputGeneratorCancellationTokenSource = null;
+                //swallow this
+            }
+
+            try
+            {
+                CancellationTokenSource objTempTokenSource = _objOutputGeneratorCancellationTokenSource;
+                if (Interlocked.CompareExchange(ref _objOutputGeneratorCancellationTokenSource, null, objTempTokenSource) != null)
+                {
+                    SemaphoreSlim objTemp = _objOutputGeneratorSemaphoreSlim;
+                    if (Interlocked.CompareExchange(ref _objOutputGeneratorSemaphoreSlim, null, objTemp) != null)
+                    {
+                        await objTemp.WaitAsync(_objGenericToken);
+                        try
+                        {
+                            if (objTempTokenSource?.IsCancellationRequested == false)
+                            {
+                                objTempTokenSource.Cancel(false);
+                                objTempTokenSource.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            objTemp.Release();
+                            Utils.SemaphorePool.Return(objTemp);
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
 
             // Remove the mugshots directory when the form closes.
@@ -522,24 +573,64 @@ namespace Chummer
         /// <summary>
         /// Asynchronously update the characters (and therefore content) of the Viewer window.
         /// </summary>
-        public async ValueTask RefreshCharacters(CancellationToken token = default)
+        private async ValueTask RefreshCharacters(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (_objOutputGeneratorCancellationTokenSource?.IsCancellationRequested == false)
+            CancellationTokenSource objTempTokenSource = _objOutputGeneratorCancellationTokenSource;
+            if (Interlocked.CompareExchange(ref _objOutputGeneratorCancellationTokenSource, null, objTempTokenSource) != null)
             {
-                _objOutputGeneratorCancellationTokenSource.Cancel(false);
-                _objOutputGeneratorCancellationTokenSource.Dispose();
-                _objOutputGeneratorCancellationTokenSource = null;
+                try
+                {
+                    await _objOutputGeneratorSemaphoreSlim.WaitAsync(token);
+                    try
+                    {
+                        if (objTempTokenSource?.IsCancellationRequested == false)
+                        {
+                            objTempTokenSource.Cancel(false);
+                            objTempTokenSource.Dispose();
+                            objTempTokenSource = null;
+                        }
+                    }
+                    finally
+                    {
+                        _objOutputGeneratorSemaphoreSlim.Release();
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    objTempTokenSource?.Dispose();
+                }
             }
+
             token.ThrowIfCancellationRequested();
-            if (_objRefresherCancellationTokenSource?.IsCancellationRequested == false)
+            objTempTokenSource = _objRefresherCancellationTokenSource;
+            if (Interlocked.CompareExchange(ref _objRefresherCancellationTokenSource, null, objTempTokenSource) != null)
             {
-                _objRefresherCancellationTokenSource.Cancel(false);
-                _objRefresherCancellationTokenSource.Dispose();
-                _objRefresherCancellationTokenSource = null;
+                try
+                {
+                    await _objRefresherSemaphoreSlim.WaitAsync(token);
+                    try
+                    {
+                        if (objTempTokenSource?.IsCancellationRequested == false)
+                        {
+                            objTempTokenSource.Cancel(false);
+                            objTempTokenSource.Dispose();
+                            objTempTokenSource = null;
+                        }
+                        token.ThrowIfCancellationRequested();
+                        _objRefresherCancellationTokenSource = new CancellationTokenSource();
+                    }
+                    finally
+                    {
+                        _objRefresherSemaphoreSlim.Release();
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    objTempTokenSource?.Dispose();
+                }
             }
-            token.ThrowIfCancellationRequested();
-            _objRefresherCancellationTokenSource = new CancellationTokenSource();
+
             try
             {
                 if (_tskRefresher?.IsCompleted == false)
@@ -560,14 +651,33 @@ namespace Chummer
         private async ValueTask RefreshSheet(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (_objOutputGeneratorCancellationTokenSource?.IsCancellationRequested == false)
+            CancellationTokenSource objTempTokenSource = _objOutputGeneratorCancellationTokenSource;
+            if (Interlocked.CompareExchange(ref _objOutputGeneratorCancellationTokenSource, null, objTempTokenSource) != null)
             {
-                _objOutputGeneratorCancellationTokenSource.Cancel(false);
-                _objOutputGeneratorCancellationTokenSource.Dispose();
-                _objOutputGeneratorCancellationTokenSource = null;
+                try
+                {
+                    await _objOutputGeneratorSemaphoreSlim.WaitAsync(token);
+                    try
+                    {
+                        if (objTempTokenSource?.IsCancellationRequested == false)
+                        {
+                            objTempTokenSource.Cancel(false);
+                            objTempTokenSource.Dispose();
+                            objTempTokenSource = null;
+                        }
+                        token.ThrowIfCancellationRequested();
+                        _objOutputGeneratorCancellationTokenSource = new CancellationTokenSource();
+                    }
+                    finally
+                    {
+                        _objOutputGeneratorSemaphoreSlim.Release();
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    objTempTokenSource?.Dispose();
+                }
             }
-            token.ThrowIfCancellationRequested();
-            _objOutputGeneratorCancellationTokenSource = new CancellationTokenSource();
             try
             {
                 if (_tskOutputGenerator?.IsCompleted == false)

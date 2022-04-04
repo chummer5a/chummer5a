@@ -606,7 +606,9 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
         /// Create a Cyberware from an XmlNode.
+        /// </summary>
         /// <param name="objXmlCyberware">XmlNode to create the object from.</param>
         /// <param name="objGrade">Grade of the selected piece.</param>
         /// <param name="objSource">Source of the piece.</param>

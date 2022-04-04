@@ -1843,12 +1843,12 @@ namespace Chummer
                     {
                         T objCurrent = objEnumerator.Current;
                         lstTasks.Add(Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent), objToken).ContinueWith(
-                                         x =>
+                                         async x =>
                                          {
-                                             if (x.Result)
+                                             if (await x)
                                                  // ReSharper disable once AccessToDisposedClosure
                                                  objSource.Cancel(false);
-                                         }, objToken));
+                                         }, objToken).Unwrap());
                     }
                 }
 
@@ -1878,12 +1878,12 @@ namespace Chummer
                         T objCurrent = objEnumerator.Current;
                         lstTasks.Add(Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent),
                                               objToken).ContinueWith(
-                                         x =>
+                                         async x =>
                                          {
-                                             if (x.Result)
+                                             if (await x)
                                                  // ReSharper disable once AccessToDisposedClosure
                                                  objSource.Cancel(false);
-                                         }, objToken));
+                                         }, objToken).Unwrap());
                     }
                 }
 

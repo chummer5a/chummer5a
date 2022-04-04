@@ -135,7 +135,7 @@ namespace Chummer
             if (_objCharacter != null)
             {
                 string strSelectedGrade = cboGrade != null
-                    ? await cboGrade?.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
+                    ? await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
                     : string.Empty;
                 if (!string.IsNullOrEmpty(strSelectedGrade))
                     _objDrug.Grade = Grade.ConvertToCyberwareGrade(strSelectedGrade, Improvement.ImprovementSource.Drug, _objCharacter);
