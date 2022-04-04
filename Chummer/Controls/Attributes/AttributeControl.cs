@@ -201,7 +201,7 @@ namespace Chummer.UI.Attributes
 
                 if (intLimitsWidth >= 0)
                 {
-                    lblValue.DoThreadSafe(x =>
+                    lblLimits.DoThreadSafe(x =>
                     {
                         if (x.MinimumSize.Width > intLimitsWidth)
                             x.MinimumSize = new Size(intLimitsWidth, x.MinimumSize.Height);
