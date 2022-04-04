@@ -189,7 +189,7 @@ namespace CrashHandler
 
         private void SetProgressFinishedIfAppropriate(object sender, RunWorkerCompletedEventArgs e)
         {
-            if ((bool)e.Result)
+            if (e?.Result is bool blnResult && blnResult)
             {
                 SetProgress(CrashDumperProgress.Finished);
             }
