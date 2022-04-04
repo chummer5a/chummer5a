@@ -938,7 +938,7 @@ namespace Chummer
         {
             try
             {
-                int intIsOkToRunDoEvents = Interlocked.CompareExchange(ref _intIsOkToRunDoEvents, 0, 1);
+                int intIsOkToRunDoEvents = Interlocked.Decrement(ref _intIsOkToRunDoEvents);
                 if (blnForceDoEvents || intIsOkToRunDoEvents > 0)
                 {
                     Application.DoEvents();
@@ -946,7 +946,7 @@ namespace Chummer
             }
             finally
             {
-                Interlocked.CompareExchange(ref _intIsOkToRunDoEvents, DefaultIsOkToRunDoEvents ? 1 : 0, 0);
+                Interlocked.Increment(ref _intIsOkToRunDoEvents);
             }
         }
 
