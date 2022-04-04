@@ -30,8 +30,7 @@ namespace Chummer
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private static int _intApplicationWaitCursors;
-        private static readonly ConcurrentDictionary<Control, int> s_DicWaitCursorControls = new ConcurrentDictionary<Control, int>();
-        private static readonly ConcurrentDictionary<Control, int> s_DicApplicationStartingControls = new ConcurrentDictionary<Control, int>();
+        private static readonly ConcurrentDictionary<Control, int> s_DicCursorControls = new ConcurrentDictionary<Control, int>();
         private readonly bool _blnAppStartingCursor;
         private bool _blnDisposed;
         private readonly Control _objControl;
@@ -57,16 +56,12 @@ namespace Chummer
             {
                 if (objReturn._blnAppStartingCursor)
                 {
-
-                    s_DicApplicationStartingControls.AddOrUpdate(objReturn._objControl, 1,
-                                                                 (x, y) => Interlocked.Increment(ref y));
-                    if (!s_DicWaitCursorControls.TryGetValue(objReturn._objControl, out int intExitingWaits)
-                        || intExitingWaits == 0)
-                        objReturn.SetControlCursor(Cursors.AppStarting);
+                    int intNewValue = s_DicCursorControls.AddOrUpdate(objReturn._objControl, 1, (x, y) => Interlocked.Increment(ref y));
+                    objReturn.SetControlCursor(intNewValue < short.MaxValue ? Cursors.AppStarting : Cursors.WaitCursor);
                 }
                 else
                 {
-                    s_DicWaitCursorControls.AddOrUpdate(objReturn._objControl, 1, (x, y) => Interlocked.Increment(ref y));
+                    s_DicCursorControls.AddOrUpdate(objReturn._objControl, short.MaxValue, (x, y) => Interlocked.Add(ref y, short.MaxValue));
                     objReturn.SetControlCursor(Cursors.WaitCursor);
                 }
             }
@@ -134,22 +129,23 @@ namespace Chummer
             _objTimer.Stop();
             if (_blnAppStartingCursor)
             {
-                if (s_DicApplicationStartingControls.TryRemove(_objControl, out int intCurrentValue))
+                if (s_DicCursorControls.TryRemove(_objControl, out int intCurrentValue))
                 {
-                    if (Interlocked.Decrement(ref intCurrentValue) > 0)
-                        s_DicApplicationStartingControls.AddOrUpdate(_objControl, intCurrentValue,
-                                                                     (x, y) => y + intCurrentValue);
-                    else if (!s_DicWaitCursorControls.TryGetValue(_objControl, out int intExitingWaits) || intExitingWaits == 0)
+                    int intDecrementedValue = Interlocked.Decrement(ref intCurrentValue);
+                    if (intDecrementedValue > 0)
+                        s_DicCursorControls.AddOrUpdate(_objControl, intDecrementedValue, (x, y) => y + intDecrementedValue);
+                    else
                         SetControlCursor(null);
                 }
             }
-            else if (s_DicWaitCursorControls.TryRemove(_objControl, out int intCurrentValue))
+            else if (s_DicCursorControls.TryRemove(_objControl, out int intCurrentValue))
             {
-                if (Interlocked.Decrement(ref intCurrentValue) > 0)
-                    s_DicWaitCursorControls.AddOrUpdate(_objControl, intCurrentValue,
-                                                        (x, y) => y + intCurrentValue);
-                else if (s_DicApplicationStartingControls.TryGetValue(_objControl, out int intExitingWaits) && intExitingWaits > 0)
-                    SetControlCursor(Cursors.AppStarting);
+                int intDecrementedValue = Interlocked.Add(ref intCurrentValue, -short.MaxValue);
+                if (intDecrementedValue > 0)
+                {
+                    s_DicCursorControls.AddOrUpdate(_objControl, intDecrementedValue, (x, y) => y + intDecrementedValue);
+                    SetControlCursor(intDecrementedValue < short.MaxValue ? Cursors.AppStarting : Cursors.WaitCursor);
+                }
                 else
                     SetControlCursor(null);
             }
