@@ -5006,7 +5006,7 @@ namespace Chummer
         {
             ICollection<Location> destCollection;
             // Make sure a Vehicle is selected.
-            object objSelected = treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+            object objSelected = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
             if (objSelected is Vehicle objVehicle)
             {
                 destCollection = objVehicle.Locations;
