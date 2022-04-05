@@ -19,30 +19,25 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using NLog;
 
 namespace Chummer
 {
     public sealed class CursorWait : IDisposable, IAsyncDisposable
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private static int _intApplicationWaitCursors;
         private static readonly ConcurrentDictionary<Control, int> s_DicCursorControls = new ConcurrentDictionary<Control, int>();
         private readonly bool _blnAppStartingCursor;
         private bool _blnDisposed;
         private readonly Control _objControl;
         private Form _frmControlTopParent;
-        private readonly Stopwatch _objTimer = new Stopwatch();
-        private readonly Guid _guidInstance = Guid.NewGuid();
 
         public static CursorWait New(Control objControl = null, bool blnAppStarting = false)
         {
             CursorWait objReturn = new CursorWait(objControl, blnAppStarting);
-            if (objReturn._objControl.IsNullOrDisposed())
+            if (objReturn._objControl == null)
             {
                 if (Interlocked.Increment(ref _intApplicationWaitCursors) == 1)
                 {
@@ -73,8 +68,6 @@ namespace Chummer
                     }
                 }
             }
-            objReturn._objTimer.Start();
-            Log.Trace("CursorWait for Control \"" + objControl + "\" started with Guid \"" + objReturn._guidInstance + "\".");
 
             if (objReturn._objControl != null)
             {
@@ -95,7 +88,7 @@ namespace Chummer
         public static async Task<CursorWait> NewAsync(Control objControl = null, bool blnAppStarting = false)
         {
             CursorWait objReturn = new CursorWait(objControl, blnAppStarting);
-            if (objReturn._objControl.IsNullOrDisposed())
+            if (objReturn._objControl == null)
             {
                 if (Interlocked.Increment(ref _intApplicationWaitCursors) == 1)
                 {
@@ -126,8 +119,6 @@ namespace Chummer
                     }
                 }
             }
-            objReturn._objTimer.Start();
-            Log.Trace("CursorWait for Control \"" + objControl + "\" started with Guid \"" + objReturn._guidInstance + "\".");
 
             if (objReturn._objControl != null)
             {
@@ -194,8 +185,6 @@ namespace Chummer
                 }
                 return;
             }
-            Log.Trace("CursorWait for Control \"" + _objControl + "\" disposing with Guid \"" + _guidInstance + "\" after " + _objTimer.ElapsedMilliseconds + "ms.");
-            _objTimer.Stop();
             if (_blnAppStartingCursor)
             {
                 if (s_DicCursorControls.TryRemove(_objControl, out int intCurrentValue))
@@ -234,8 +223,6 @@ namespace Chummer
                 }
                 return;
             }
-            Log.Trace("CursorWait for Control \"" + _objControl + "\" disposing with Guid \"" + _guidInstance + "\" after " + _objTimer.ElapsedMilliseconds + "ms.");
-            _objTimer.Stop();
             if (_blnAppStartingCursor)
             {
                 if (s_DicCursorControls.TryRemove(_objControl, out int intCurrentValue))

@@ -287,85 +287,87 @@ namespace Codaxy.WkHtmlToPdf
                         Task<int> tskAsyncProcess = null;
                         try
                         {
-                            CancellationTokenSource objCancellationTokenSource = null;
-                            if (blnSync)
-                                process.Start();
-                            else
+                            using (CancellationTokenSource objCancellationTokenSource
+                                   = new CancellationTokenSource(environment.Timeout))
                             {
-                                objCancellationTokenSource = new CancellationTokenSource(environment.Timeout);
-#pragma warning disable AsyncFixer04 // Fire-and-forget async call inside a using block
-                                tskAsyncProcess = process.StartAsync(objCancellationTokenSource.Token);
-#pragma warning restore AsyncFixer04 // Fire-and-forget async call inside a using block
-                            }
-
-                            process.BeginOutputReadLine();
-                            process.BeginErrorReadLine();
-
-                            if (document.Html != null)
-                            {
-                                using (StreamWriter stream = process.StandardInput)
+                                CancellationToken objToken = objCancellationTokenSource.Token;
+                                if (blnSync)
+                                    process.Start();
+                                else
                                 {
-                                    byte[] buffer = Encoding.UTF8.GetBytes(document.Html);
-                                    if (blnSync)
+#pragma warning disable AsyncFixer04 // Fire-and-forget async call inside a using block
+                                    tskAsyncProcess = process.StartAsync(objToken);
+#pragma warning restore AsyncFixer04 // Fire-and-forget async call inside a using block
+                                }
+
+                                process.BeginOutputReadLine();
+                                process.BeginErrorReadLine();
+
+                                if (document.Html != null)
+                                {
+                                    using (StreamWriter stream = process.StandardInput)
                                     {
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        stream.BaseStream.Write(buffer, 0, buffer.Length);
-                                        // ReSharper disable once MethodHasAsyncOverload
-                                        stream.WriteLine();
+                                        byte[] buffer = Encoding.UTF8.GetBytes(document.Html);
+                                        if (blnSync)
+                                        {
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            stream.BaseStream.Write(buffer, 0, buffer.Length);
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            stream.WriteLine();
+                                        }
+                                        else
+                                        {
+                                            try
+                                            {
+                                                await stream.BaseStream.WriteAsync(buffer, 0, buffer.Length, objToken);
+                                                await stream.WriteLineAsync();
+                                            }
+                                            catch (OperationCanceledException)
+                                            {
+                                                // Swallow this
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (blnSync)
+                                {
+                                    if (process.WaitForExit(environment.Timeout) &&
+                                        outputWaitHandle.WaitOne(environment.Timeout) &&
+                                        errorWaitHandle.WaitOne(environment.Timeout))
+                                    {
+                                        if (process.ExitCode != 0 && !File.Exists(outputPdfFilePath))
+                                        {
+                                            throw new PdfConvertException(
+                                                $"Html to PDF conversion of '{document.Url}' failed. Wkhtmltopdf output: \r\n{error}");
+                                        }
                                     }
                                     else
                                     {
-                                        try
-                                        {
-                                            await stream.BaseStream.WriteAsync(
-                                                buffer, 0, buffer.Length, objCancellationTokenSource.Token);
-                                            await stream.WriteLineAsync();
-                                        }
-                                        catch (OperationCanceledException)
-                                        {
-                                            // Swallow this
-                                        }
-                                    }
-                                }
-                            }
+                                        if (!process.HasExited)
+                                            process.Kill();
 
-                            if (blnSync)
-                            {
-                                if (process.WaitForExit(environment.Timeout) &&
-                                    outputWaitHandle.WaitOne(environment.Timeout) &&
-                                    errorWaitHandle.WaitOne(environment.Timeout))
-                                {
-                                    if (process.ExitCode != 0 && !File.Exists(outputPdfFilePath))
-                                    {
-                                        throw new PdfConvertException(
-                                            $"Html to PDF conversion of '{document.Url}' failed. Wkhtmltopdf output: \r\n{error}");
+                                        throw new PdfConvertTimeoutException();
                                     }
                                 }
                                 else
                                 {
-                                    if (!process.HasExited)
-                                        process.Kill();
-
-                                    throw new PdfConvertTimeoutException();
-                                }
-                            }
-                            else
-                            {
-                                int intTaskResult = await tskAsyncProcess;
-                                if (tskAsyncProcess.IsCompleted && objCancellationTokenSource?.IsCancellationRequested != true)
-                                {
-                                    if (intTaskResult != 0 && !File.Exists(outputPdfFilePath))
+                                    int intTaskResult = await tskAsyncProcess;
+                                    if (tskAsyncProcess.IsCompleted && !objToken.IsCancellationRequested)
                                     {
-                                        throw new PdfConvertException(
-                                            $"Html to PDF conversion of '{document.Url}' failed. Wkhtmltopdf output: \r\n{error}");
+                                        if (intTaskResult != 0 && !File.Exists(outputPdfFilePath))
+                                        {
+                                            throw new PdfConvertException(
+                                                $"Html to PDF conversion of '{document.Url}' failed. Wkhtmltopdf output: \r\n{error}");
+                                        }
                                     }
-                                }
-                                else
-                                {
-                                    if (!process.HasExited)
-                                        process.Kill();
+                                    else
+                                    {
+                                        if (!process.HasExited)
+                                            process.Kill();
 
-                                    throw new PdfConvertTimeoutException();
+                                        throw new PdfConvertTimeoutException();
+                                    }
                                 }
                             }
                         }

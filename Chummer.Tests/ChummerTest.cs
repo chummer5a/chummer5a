@@ -284,17 +284,23 @@ namespace Chummer.Tests
                         {
                             try
                             {
-                                CharacterShared frmCharacterForm = objCharacter.Created
+                                // ReSharper disable once AccessToDisposedClosure
+                                CharacterShared frmCharacterForm = Program.MainForm.DoThreadSafeFunc(() => objCharacter.Created
+                                    // ReSharper disable once AccessToDisposedClosure
                                     ? (CharacterShared) new CharacterCareer(objCharacter)
-                                    : new CharacterCreate(objCharacter);
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    : new CharacterCreate(objCharacter));
                                 try
                                 {
-                                    frmCharacterForm.MdiParent = frmTestForm;
-                                    frmCharacterForm.ShowInTaskbar = false;
+                                    frmCharacterForm.DoThreadSafe(x =>
+                                    {
+                                        x.MdiParent = frmTestForm;
+                                        x.ShowInTaskbar = false;
 #if DEBUG
-                                    frmCharacterForm.WindowState = FormWindowState.Minimized;
+                                        x.WindowState = FormWindowState.Minimized;
 #endif
-                                    frmCharacterForm.Show();
+                                        x.Show();
+                                    });
                                     while
                                         (!frmCharacterForm
                                             .IsFinishedInitializing) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
@@ -306,7 +312,14 @@ namespace Chummer.Tests
                                 {
                                     try
                                     {
-                                        frmCharacterForm.Dispose();
+                                        frmCharacterForm.DoThreadSafe(x => x.Dispose());
+                                    }
+                                    catch (ApplicationException e)
+                                    {
+                                        string strErrorMessage = "Encountered (non-fatal) exception while disposing of character form." + Environment.NewLine
+                                            + e.Message;
+                                        Debug.WriteLine(strErrorMessage);
+                                        Console.WriteLine(strErrorMessage);
                                     }
                                     catch (InvalidOperationException e)
                                     {
@@ -314,7 +327,6 @@ namespace Chummer.Tests
                                             + e.Message;
                                         Debug.WriteLine(strErrorMessage);
                                         Console.WriteLine(strErrorMessage);
-                                        Utils.BreakIfDebug();
                                     }
                                 }
                             }

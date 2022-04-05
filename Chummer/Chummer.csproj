@@ -362,6 +362,7 @@
     <Compile Include="Backend\Static\Extensions\StringBuilderExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\StringExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\VersionExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\WaitHandleExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\WinFormsExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\XmlDocumentExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\XmlWriterExtensions.cs" />
