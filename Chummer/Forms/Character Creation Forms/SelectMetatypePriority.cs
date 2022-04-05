@@ -2014,8 +2014,7 @@ namespace Chummer
                         SourceString objSource = await SourceString.GetSourceStringAsync(
                             strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo,
                             _objCharacter);
-                        lblSource.Text = objSource.ToString();
-                        await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip, token);
+                        await objSource.SetControlAsync(lblSource, token);
                     }
                     else
                     {

@@ -939,7 +939,7 @@ namespace Chummer
             try
             {
                 int intIsOkToRunDoEvents = Interlocked.Decrement(ref _intIsOkToRunDoEvents);
-                if (blnForceDoEvents || intIsOkToRunDoEvents > 0)
+                if (blnForceDoEvents || intIsOkToRunDoEvents == 0)
                 {
                     Application.DoEvents();
                 }
