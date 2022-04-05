@@ -256,16 +256,16 @@ namespace Chummer.Tests
             // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
             try
             {
-                frmTestForm = new ChummerMainForm(true)
+                frmTestForm = frmOldMainForm.DoThreadSafeFunc(() => new ChummerMainForm(true)
                 {
 #if DEBUG
                     WindowState = FormWindowState.Minimized,
 #endif
                     ShowInTaskbar =
                         false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactive)
-                };
+                });
                 Program.MainForm = frmTestForm; // Set program Main form to Unit test version
-                frmTestForm.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
+                frmTestForm.DoThreadSafe(x => x.Show()); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
                 while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                 {
                     Utils.SafeSleep(true);
@@ -284,9 +284,10 @@ namespace Chummer.Tests
                         {
                             try
                             {
-                                using (CharacterShared frmCharacterForm = objCharacter.Created
-                                           ? (CharacterShared) new CharacterCareer(objCharacter)
-                                           : new CharacterCreate(objCharacter))
+                                CharacterShared frmCharacterForm = objCharacter.Created
+                                    ? (CharacterShared) new CharacterCareer(objCharacter)
+                                    : new CharacterCreate(objCharacter);
+                                try
                                 {
                                     frmCharacterForm.MdiParent = frmTestForm;
                                     frmCharacterForm.ShowInTaskbar = false;
@@ -296,9 +297,24 @@ namespace Chummer.Tests
                                     frmCharacterForm.Show();
                                     while
                                         (!frmCharacterForm
-                                         .IsFinishedInitializing) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                                            .IsFinishedInitializing) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                                     {
                                         Utils.SafeSleep(true);
+                                    }
+                                }
+                                finally
+                                {
+                                    try
+                                    {
+                                        frmCharacterForm.Dispose();
+                                    }
+                                    catch (ApplicationException e)
+                                    {
+                                        string strErrorMessage = "Encountered (non-fatal) exception while disposing of character form." + Environment.NewLine
+                                            + e.Message;
+                                        Debug.WriteLine(strErrorMessage);
+                                        Console.WriteLine(strErrorMessage);
+                                        Utils.BreakIfDebug();
                                     }
                                 }
                             }
@@ -314,13 +330,13 @@ namespace Chummer.Tests
                         }
                     }
                 }
-                frmTestForm.Close();
+                frmTestForm.DoThreadSafe(x => x.Close());
             }
             finally
             {
                 try
                 {
-                    frmTestForm?.Dispose();
+                    frmTestForm?.DoThreadSafe(x => x.Dispose());
                 }
                 catch (Exception e)
                 {
