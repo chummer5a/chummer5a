@@ -79,9 +79,9 @@ namespace Chummer
                 OnMyMouseDown += OnDefaultMouseDown;
                 if (_watcherCharacterRosterFolder != null)
                 {
-                    _watcherCharacterRosterFolder.Changed += RefreshWatchList;
+                    _watcherCharacterRosterFolder.Changed += RefreshSingleWatchNode;
                     _watcherCharacterRosterFolder.Created += RefreshWatchList;
-                    _watcherCharacterRosterFolder.Deleted += RefreshWatchList;
+                    _watcherCharacterRosterFolder.Deleted += DeleteSingleWatchNode;
                     _watcherCharacterRosterFolder.Renamed += RefreshWatchList;
                 }
             }
@@ -101,9 +101,9 @@ namespace Chummer
 
                 if (_watcherCharacterRosterFolder != null)
                 {
-                    _watcherCharacterRosterFolder.Changed -= RefreshWatchList;
+                    _watcherCharacterRosterFolder.Changed -= RefreshSingleWatchNode;
                     _watcherCharacterRosterFolder.Created -= RefreshWatchList;
-                    _watcherCharacterRosterFolder.Deleted -= RefreshWatchList;
+                    _watcherCharacterRosterFolder.Deleted -= DeleteSingleWatchNode;
                     _watcherCharacterRosterFolder.Renamed -= RefreshWatchList;
                 }
             }
@@ -123,6 +123,104 @@ namespace Chummer
                 {
                     act.Invoke();
                 }
+            }
+        }
+
+        private async void DeleteSingleWatchNode(object sender, FileSystemEventArgs e)
+        {
+            try
+            {
+                if (e.ChangeType == WatcherChangeTypes.Deleted)
+                {
+                    // Use the watcher folder refresher's cancellation token so that the task gets canceled if we go for a full refresh
+                    CancellationTokenSource objTemp = new CancellationTokenSource();
+                    CancellationTokenSource objTemp2 = objTemp;
+                    if (Interlocked.CompareExchange(ref _objWatchFolderRefreshCancellationTokenSource, objTemp, null)
+                        != null)
+                    {
+                        objTemp = _objWatchFolderRefreshCancellationTokenSource;
+                        objTemp2.Dispose();
+                    }
+
+                    CancellationToken objTokenToUse = objTemp.Token;
+                    (bool blnSuccess, CharacterCache objCacheToRemove)
+                        = await _dicSavedCharacterCaches.TryRemoveAsync(e.FullPath);
+                    if (blnSuccess)
+                    {
+                        await treCharacterList.DoThreadSafeAsync(x =>
+                        {
+                            foreach (TreeNode objNode in x.Nodes.OfType<TreeNode>()
+                                                          .DeepWhere(y => y.Nodes.OfType<TreeNode>(),
+                                                                     y => y.Tag == objCacheToRemove).ToList())
+                            {
+                                objNode.Remove();
+                            }
+                        }, objTokenToUse);
+                        await objCacheToRemove.DisposeAsync();
+                    }
+                }
+            }
+            catch (ObjectDisposedException)
+            {
+                //swallow this, just in case
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void RefreshSingleWatchNode(object sender, FileSystemEventArgs e)
+        {
+            try
+            {
+                if (e.ChangeType == WatcherChangeTypes.Changed)
+                {
+                    // Use the watcher folder refresher's cancellation token so that the task gets canceled if we go for a full refresh
+                    CancellationTokenSource objTemp = new CancellationTokenSource();
+                    CancellationTokenSource objTemp2 = objTemp;
+                    if (Interlocked.CompareExchange(ref _objWatchFolderRefreshCancellationTokenSource, objTemp, null)
+                        != null)
+                    {
+                        objTemp = _objWatchFolderRefreshCancellationTokenSource;
+                        objTemp2.Dispose();
+                    }
+
+                    CancellationToken objTokenToUse = objTemp.Token;
+                    TreeNode objNewNode = await CacheCharacter(e.FullPath, true, objTokenToUse);
+                    if (objNewNode.Tag is CharacterCache objNewCache)
+                    {
+                        HashSet<CharacterCache> setCachesToDispose = new HashSet<CharacterCache>(2);
+                        await treCharacterList.DoThreadSafeAsync(x =>
+                        {
+                            foreach (TreeNode objNode in x.Nodes.OfType<TreeNode>()
+                                                          .DeepWhere(y => y.Nodes.OfType<TreeNode>(),
+                                                                     y => y.Tag is CharacterCache z
+                                                                          && z.FilePath == objNewCache.FilePath))
+                            {
+                                objNode.Text = objNewNode.Text;
+                                objNode.ToolTipText = objNewNode.ToolTipText;
+                                objNode.ForeColor = objNewNode.ForeColor;
+                                if (objNode.Tag is CharacterCache objOldCache)
+                                    setCachesToDispose.Add(objOldCache);
+                                objNode.Tag = objNewCache;
+                            }
+                        }, objTokenToUse);
+                        foreach (CharacterCache objOldCache in setCachesToDispose)
+                        {
+                            if (!_dicSavedCharacterCaches.Values.Contains(objOldCache))
+                                await objOldCache.DisposeAsync();
+                        }
+                    }
+                }
+            }
+            catch (ObjectDisposedException)
+            {
+                //swallow this, just in case
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -518,14 +616,14 @@ namespace Chummer
                 {
                     int iLocal = i;
                     atskCachingTasks[i]
-                        = Task.Run(() => CacheCharacter(lstFavorites[iLocal], token), token);
+                        = Task.Run(() => CacheCharacter(lstFavorites[iLocal], token: token), token);
                 }
 
                 for (int i = 0; i < intRecentsCount; ++i)
                 {
                     int iLocal = i;
                     atskCachingTasks[intFavoritesCount + i]
-                        = Task.Run(() => CacheCharacter(lstRecents[iLocal], token), token);
+                        = Task.Run(() => CacheCharacter(lstRecents[iLocal], token: token), token);
                 }
 
                 try
@@ -696,7 +794,7 @@ namespace Chummer
             Dictionary<TreeNode, string> dicWatchNodes = new Dictionary<TreeNode, string>(dicWatch.Count);
             List<Task<TreeNode>> lstCachingTasks = new List<Task<TreeNode>>(dicWatch.Count);
             foreach (string strKey in dicWatch.Keys)
-                lstCachingTasks.Add(Task.Run(() => CacheCharacter(strKey, token), token));
+                lstCachingTasks.Add(Task.Run(() => CacheCharacter(strKey, token: token), token));
             token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstCachingTasks);
             token.ThrowIfCancellationRequested();
@@ -907,7 +1005,7 @@ namespace Chummer
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
         /// The cache is then saved in a dictionary to prevent us from storing duplicate image data in memory (which can get expensive!)
         /// </summary>
-        private async Task<TreeNode> CacheCharacter(string strFile, CancellationToken token = default)
+        private async Task<TreeNode> CacheCharacter(string strFile, bool blnForceRecache = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CharacterCache objCache = null;
@@ -918,10 +1016,17 @@ namespace Chummer
                     while (true)
                     {
                         token.ThrowIfCancellationRequested();
-                        bool blnSuccess;
-                        (blnSuccess, objCache) = await _dicSavedCharacterCaches.TryGetValueAsync(strFile);
-                        if (blnSuccess)
-                            break;
+                        if (blnForceRecache)
+                        {
+                            await _dicSavedCharacterCaches.TryRemoveAsync(strFile);
+                        }
+                        else
+                        {
+                            bool blnSuccess;
+                            (blnSuccess, objCache) = await _dicSavedCharacterCaches.TryGetValueAsync(strFile);
+                            if (blnSuccess)
+                                break;
+                        }
                         objCache = await CharacterCache.CreateFromFileAsync(strFile);
                         if (await _dicSavedCharacterCaches.TryAddAsync(strFile, objCache))
                             break;
