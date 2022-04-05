@@ -112,7 +112,7 @@ namespace Chummer
 
         private async void cmdGlobalOptionsCustomData_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             using (ThreadSafeForm<EditGlobalSettings> frmOptions =
                    await ThreadSafeForm<EditGlobalSettings>.GetAsync(() =>
                        new EditGlobalSettings("tabCustomDataDirectories")))
@@ -133,7 +133,7 @@ namespace Chummer
                 _objCharacterSettings.Name = frmSelectName.MyForm.SelectedValue;
             }
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
                 if (blnDoResumeLayout)
@@ -182,7 +182,7 @@ namespace Chummer
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 (bool blnSuccess, CharacterSettings objDeletedSettings)
                     = await SettingsManager.LoadedCharacterSettingsAsModifiable.TryRemoveAsync(
@@ -307,7 +307,7 @@ namespace Chummer
                 }
             } while (string.IsNullOrWhiteSpace(strSelectedName));
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 _objCharacterSettings.Name = strSelectedName;
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
@@ -356,7 +356,7 @@ namespace Chummer
 
         private async void cmdSave_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 if (_objReferenceCharacterSettings.BuildMethod != _objCharacterSettings.BuildMethod)
                 {
@@ -438,7 +438,7 @@ namespace Chummer
                 IsDirty = false;
             }
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 _blnLoading = true;
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
@@ -490,7 +490,7 @@ namespace Chummer
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 _blnLoading = true;
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
@@ -747,9 +747,13 @@ namespace Chummer
             }
         }
 
-        private void txtPriorities_TextChanged(object sender, EventArgs e)
+        private async void txtPriorities_TextChanged(object sender, EventArgs e)
         {
-            txtPriorities.ForeColor = txtPriorities.Text.Length == 5 ? ColorManager.WindowText : ColorManager.ErrorColor;
+            Color objWindowTextColor = await ColorManager.WindowTextAsync;
+            await txtPriorities.DoThreadSafeAsync(x => x.ForeColor
+                                                      = x.TextLength == 5
+                                                          ? objWindowTextColor
+                                                          : ColorManager.ErrorColor);
         }
 
         private async void txtContactPoints_TextChanged(object sender, EventArgs e)
@@ -757,7 +761,7 @@ namespace Chummer
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                     await txtContactPoints.DoThreadSafeFuncAsync(x => x.Text))
-                    ? ColorManager.WindowText
+                    ? await ColorManager.WindowTextAsync
                     : ColorManager.ErrorColor;
             await txtContactPoints.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
@@ -767,7 +771,7 @@ namespace Chummer
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                     await txtKnowledgePoints.DoThreadSafeFuncAsync(x => x.Text))
-                    ? ColorManager.WindowText
+                    ? await ColorManager.WindowTextAsync
                     : ColorManager.ErrorColor;
             await txtKnowledgePoints.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
@@ -777,7 +781,7 @@ namespace Chummer
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                     await txtNuyenExpression.DoThreadSafeFuncAsync(x => x.Text))
-                    ? ColorManager.WindowText
+                    ? await ColorManager.WindowTextAsync
                     : ColorManager.ErrorColor;
             await txtNuyenExpression.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
@@ -787,7 +791,7 @@ namespace Chummer
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                     await txtBoundSpiritLimit.DoThreadSafeFuncAsync(x => x.Text))
-                    ? ColorManager.WindowText
+                    ? await ColorManager.WindowTextAsync
                     : ColorManager.ErrorColor;
             await txtBoundSpiritLimit.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
@@ -797,7 +801,7 @@ namespace Chummer
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                     await txtRegisteredSpriteLimit.DoThreadSafeFuncAsync(x => x.Text))
-                    ? ColorManager.WindowText
+                    ? await ColorManager.WindowTextAsync
                     : ColorManager.ErrorColor;
             await txtRegisteredSpriteLimit.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
@@ -807,7 +811,7 @@ namespace Chummer
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                     await txtLiftLimit.DoThreadSafeFuncAsync(x => x.Text))
-                    ? ColorManager.WindowText
+                    ? await ColorManager.WindowTextAsync
                     : ColorManager.ErrorColor;
             await txtLiftLimit.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
@@ -817,7 +821,7 @@ namespace Chummer
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                     await txtCarryLimit.DoThreadSafeFuncAsync(x => x.Text))
-                    ? ColorManager.WindowText
+                    ? await ColorManager.WindowTextAsync
                     : ColorManager.ErrorColor;
             await txtCarryLimit.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
@@ -827,7 +831,7 @@ namespace Chummer
             Color objColor
                 = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
                     await txtEncumbranceInterval.DoThreadSafeFuncAsync(x => x.Text))
-                    ? ColorManager.WindowText
+                    ? await ColorManager.WindowTextAsync
                     : ColorManager.ErrorColor;
             await txtEncumbranceInterval.DoThreadSafeAsync(x => x.ForeColor = objColor);
         }
@@ -987,6 +991,7 @@ namespace Chummer
             try
             {
                 string strFileNotFound = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound");
+                Color objGrayTextColor = await ColorManager.GrayTextAsync;
                 if (_dicCharacterCustomDataDirectoryInfos.Count != treCustomDataDirectories.Nodes.Count)
                 {
                     await treCustomDataDirectories.DoThreadSafeAsync(x =>
@@ -1026,7 +1031,7 @@ namespace Chummer
                             else
                             {
                                 objNode.Text = kvpInfo.Key.ToString();
-                                objNode.ForeColor = ColorManager.GrayText;
+                                objNode.ForeColor = objGrayTextColor;
                                 objNode.ToolTipText = strFileNotFound;
                             }
 
@@ -1036,6 +1041,7 @@ namespace Chummer
                 }
                 else
                 {
+                    Color objWindowTextColor = await ColorManager.WindowTextAsync;
                     await treCustomDataDirectories.DoThreadSafeAsync(x =>
                     {
                         for (int i = 0; i < x.Nodes.Count; ++i)
@@ -1071,19 +1077,19 @@ namespace Chummer
                                     else
                                     {
                                         objNode.ToolTipText = string.Empty;
-                                        objNode.ForeColor = ColorManager.WindowText;
+                                        objNode.ForeColor = objWindowTextColor;
                                     }
                                 }
                                 else
                                 {
                                     objNode.ToolTipText = string.Empty;
-                                    objNode.ForeColor = ColorManager.WindowText;
+                                    objNode.ForeColor = objWindowTextColor;
                                 }
                             }
                             else
                             {
                                 objNode.Text = kvpInfo.Key.ToString();
-                                objNode.ForeColor = ColorManager.GrayText;
+                                objNode.ForeColor = objGrayTextColor;
                                 objNode.ToolTipText = strFileNotFound;
                             }
                         }
@@ -1106,7 +1112,7 @@ namespace Chummer
         private async ValueTask PopulateOptions(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
                 if (blnDoResumeLayout)
@@ -1137,7 +1143,7 @@ namespace Chummer
         private async ValueTask PopulatePriorityTableList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstPriorityTables))
@@ -1184,7 +1190,7 @@ namespace Chummer
         private async ValueTask PopulateLimbCountList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstLimbCount))
@@ -1231,7 +1237,7 @@ namespace Chummer
         private async ValueTask PopulateAllowedGrades(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstGrades))
@@ -1531,7 +1537,7 @@ namespace Chummer
         private async ValueTask PopulateSettingsList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strSelect = string.Empty;
                 if (!_blnLoading)
@@ -1563,7 +1569,7 @@ namespace Chummer
 
         private async void SettingsChanged(object sender, PropertyChangedEventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 if (!_blnLoading)
                 {

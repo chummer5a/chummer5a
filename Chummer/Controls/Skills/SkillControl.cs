@@ -583,7 +583,7 @@ namespace Chummer.UI.Skills
 
         private async void lblName_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(ParentForm))
+            using (await CursorWait.NewAsync(ParentForm))
             {
                 await CommonFunctions.OpenPdf(_objSkill.Source + ' ' + _objSkill.DisplayPage(GlobalSettings.Language), _objSkill.CharacterObject);
             }

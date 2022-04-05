@@ -150,7 +150,7 @@ namespace Chummer
             await lblTotalConnectionModifier.DoThreadSafeAsync(x => x.Text = (_intMembership + _intAreaOfInfluence + _intMagicalResources + _intMatrixResources).ToString(GlobalSettings.CultureInfo));
         }
 
-        private void cmdChangeColour_Click(object sender, EventArgs e)
+        private async void cmdChangeColour_Click(object sender, EventArgs e)
         {
             using (ColorDialog dlgColour = new ColorDialog())
             {
@@ -158,12 +158,13 @@ namespace Chummer
 
                 if (dlgColour.Color.Name == "White" || dlgColour.Color.Name == "Black")
                 {
-                    cmdChangeColour.BackColor = ColorManager.Control;
-                    _objColour = ColorManager.Control;
+                    Color objColor = await ColorManager.ControlAsync;
+                    await cmdChangeColour.DoThreadSafeAsync(x => x.BackColor = objColor);
+                    _objColour = objColor;
                 }
                 else
                 {
-                    cmdChangeColour.BackColor = dlgColour.Color;
+                    await cmdChangeColour.DoThreadSafeAsync(x => x.BackColor = dlgColour.Color);
                     _objColour = dlgColour.Color;
                 }
             }

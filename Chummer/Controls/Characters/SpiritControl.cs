@@ -170,7 +170,7 @@ namespace Chummer
                 Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(_objSpirit.LinkedCharacter)
                     ? _objSpirit.LinkedCharacter
                     : null;
-                using (CursorWait.New(ParentForm))
+                using (await CursorWait.NewAsync(ParentForm))
                 {
                     if (objOpenCharacter == null)
                     {
@@ -545,7 +545,7 @@ namespace Chummer
                 return;
             }
 
-            using (CursorWait.New(ParentForm))
+            using (await CursorWait.NewAsync(ParentForm))
             {
                 // The Critter should use the same settings file as the character.
                 Character objCharacter = new Character

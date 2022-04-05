@@ -69,7 +69,7 @@ namespace Chummer
 
         private async ValueTask RefreshResultLabel()
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 await lblResult.DoThreadSafeAsync(x => x.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalSettings.CultureInfo) + ')' +
@@ -93,7 +93,7 @@ namespace Chummer
                 return;
             if (await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedIndex) < 0)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 _objLifestyle = ((ListItem) await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedItem)).Value as Lifestyle;
                 string strDice = string.Format(GlobalSettings.CultureInfo,
@@ -108,7 +108,7 @@ namespace Chummer
         private async ValueTask RefreshSelectLifestyle()
         {
             _blnIsSelectLifestyleRefreshing = true;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 try
                 {
@@ -158,11 +158,11 @@ namespace Chummer
             }
         }
 
-        private ValueTask RefreshCalculation()
+        private async ValueTask RefreshCalculation()
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
-                nudDiceResult.DoThreadSafe(x =>
+                await nudDiceResult.DoThreadSafeAsync(x =>
                 {
                     x.SuspendLayout();
                     try
@@ -177,7 +177,7 @@ namespace Chummer
                         x.ResumeLayout();
                     }
                 });
-                return RefreshResultLabel();
+                await RefreshResultLabel();
             }
         }
 
@@ -185,7 +185,7 @@ namespace Chummer
         {
             if (SelectedLifestyle == null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 int intResult = 0;
                 for (int i = 0; i < SelectedLifestyle.Dice; ++i)

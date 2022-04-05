@@ -149,7 +149,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(_strXslt))
                 return;
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 if (_strXslt == "JSON")
                 {
@@ -226,7 +226,7 @@ namespace Chummer
                     _strXslt = await cboXSLT.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
                     if (!string.IsNullOrEmpty(_strXslt))
                     {
-                        using (CursorWait.New(this))
+                        using (await CursorWait.NewAsync(this))
                         {
                             token.ThrowIfCancellationRequested();
                             string strText = await LanguageManager.GetStringAsync("String_Generating_Data");
@@ -313,7 +313,7 @@ namespace Chummer
         private async Task GenerateCharacterXml(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strText = await LanguageManager.GetStringAsync("String_Generating_Data");
                 await Task.WhenAll(cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token),
@@ -383,7 +383,7 @@ namespace Chummer
         private async Task GenerateXml(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token);
                 try
@@ -473,7 +473,7 @@ namespace Chummer
         private async Task GenerateJson(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token);
                 try

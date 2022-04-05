@@ -329,7 +329,7 @@ namespace Chummer
 
         private async void cmdSaveAsPdf_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 // Check to see if we have any "Print to PDF" printers, as they will be a lot more reliable than wkhtmltopdf
                 string strPdfPrinter = string.Empty;
@@ -698,7 +698,7 @@ namespace Chummer
         private async Task RefreshCharacterXml(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (CursorWait.New(this, true))
+            using (await CursorWait.NewAsync(this, true))
             {
                 await Task.WhenAll(this.DoThreadSafeAsync(() =>
                                    {
@@ -728,7 +728,7 @@ namespace Chummer
         private async Task AsyncGenerateOutput(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 await Task.WhenAll(this.DoThreadSafeAsync(() =>
                                    {

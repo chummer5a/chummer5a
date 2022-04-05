@@ -930,7 +930,7 @@ namespace ChummerHub.Client.Backend
                         group = ge.MySINnerGroupCreate.MyGroup;
                         try
                         {
-                            using (CursorWait.New(Program.MainForm))
+                            using (await CursorWait.NewAsync(Program.MainForm))
                             {
                                 SINnerGroup a = await CreateGroup(ge.MySINnerGroupCreate.MyGroup);
                                 return a;
@@ -1023,7 +1023,7 @@ namespace ChummerHub.Client.Backend
             {
                 try
                 {
-                    using (CursorWait.New(PluginHandler.MainForm, true))
+                    using (await CursorWait.NewAsync(PluginHandler.MainForm, true))
                     {
                         if (args.Item1.KeyCode == Keys.Delete)
                         {
@@ -1060,7 +1060,7 @@ namespace ChummerHub.Client.Backend
                 {
                     if (sinner.Id == null)
                         return;
-                    using (CursorWait.New(PluginHandler.MainForm, true))
+                    using (await CursorWait.NewAsync(PluginHandler.MainForm, true))
                     {
                         SinnersClient client = StaticUtils.GetClient();
                         ConfiguredTaskAwaitable<ResultSinnerDelete> res = client.DeleteAsync(sinner.Id.Value).ConfigureAwait(false);
@@ -1089,7 +1089,7 @@ namespace ChummerHub.Client.Backend
 
         private static async Task OnMyAfterSelect(SINner sinner, CharacterCache objCache, TreeViewEventArgs treeViewEventArgs)
         {
-            using (CursorWait.New(PluginHandler.MainForm, true))
+            using (await CursorWait.NewAsync(PluginHandler.MainForm, true))
             {
                 if (string.IsNullOrEmpty(sinner.FilePath))
                 {
@@ -1176,7 +1176,7 @@ namespace ChummerHub.Client.Backend
 
         private static async ValueTask SwitchToCharacter(CharacterCache objCache)
         {
-            using (CursorWait.New(PluginHandler.MainForm, true))
+            using (await CursorWait.NewAsync(PluginHandler.MainForm, true))
             {
                 Character objOpenCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FilePath)
                                              ?? await Program.LoadCharacterAsync(objCache.FilePath);
@@ -1331,7 +1331,7 @@ namespace ChummerHub.Client.Backend
                                 {
                                     Program.ShowMessageBox(msg);
                                 }
-                                using (CursorWait.New(PluginHandler.MainForm, true))
+                                using (await CursorWait.NewAsync(PluginHandler.MainForm, true))
                                 {
                                     await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
                                 }

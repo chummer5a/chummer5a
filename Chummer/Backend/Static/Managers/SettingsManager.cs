@@ -55,9 +55,9 @@ namespace Chummer
             s_ObjSettingsFolderWatcher.Renamed += ObjSettingsFolderWatcherOnChanged;
         }
 
-        private static void ObjSettingsFolderWatcherOnChanged(object sender, FileSystemEventArgs e)
+        private static async void ObjSettingsFolderWatcherOnChanged(object sender, FileSystemEventArgs e)
         {
-            using (CursorWait.New())
+            using (await CursorWait.NewAsync())
             {
                 switch (e.ChangeType)
                 {
@@ -83,9 +83,7 @@ namespace Chummer
                 if (_intDicLoadedCharacterSettingsLoadedStatus < 0) // Makes sure if we end up calling this from multiple threads, only one does loading at a time
                     LoadCharacterSettings();
                 while (_intDicLoadedCharacterSettingsLoadedStatus <= 1)
-                {
                     Utils.SafeSleep();
-                }
                 return s_DicLoadedCharacterSettings;
             }
         }
@@ -98,9 +96,7 @@ namespace Chummer
                 if (_intDicLoadedCharacterSettingsLoadedStatus < 0) // Makes sure if we end up calling this from multiple threads, only one does loading at a time
                     LoadCharacterSettings();
                 while (_intDicLoadedCharacterSettingsLoadedStatus <= 1)
-                {
                     Utils.SafeSleep();
-                }
                 return s_DicLoadedCharacterSettings;
             }
         }
@@ -116,39 +112,52 @@ namespace Chummer
                     if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                     {
                         CharacterSettings objNewCharacterSettings = new CharacterSettings();
-                        if (!s_DicLoadedCharacterSettings.TryAdd(GlobalSettings.DefaultCharacterSetting, objNewCharacterSettings))
+                        if (!s_DicLoadedCharacterSettings.TryAdd(GlobalSettings.DefaultCharacterSetting,
+                                                                 objNewCharacterSettings))
                             objNewCharacterSettings.Dispose();
                         return;
                     }
 
-                    IEnumerable<XPathNavigator> xmlSettingsIterator = XmlManager.LoadXPath("settings.xml")
-                        .SelectAndCacheExpression("/chummer/settings/setting").Cast<XPathNavigator>();
-                    Parallel.ForEach(xmlSettingsIterator, xmlBuiltInSetting =>
+                    Utils.RunWithoutThreadLock(async () =>
                     {
-                        CharacterSettings objNewCharacterSettings = new CharacterSettings();
-                        if (!objNewCharacterSettings.Load(xmlBuiltInSetting)
-                            || (objNewCharacterSettings.BuildMethodIsLifeModule && !GlobalSettings.LifeModuleEnabled)
-                            || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey, objNewCharacterSettings))
-                            objNewCharacterSettings.Dispose();
+                        IEnumerable<XPathNavigator> xmlSettingsIterator
+                            = (await (await XmlManager.LoadXPathAsync("settings.xml"))
+                                .SelectAndCacheExpressionAsync("/chummer/settings/setting")).Cast<XPathNavigator>();
+                        Parallel.ForEach(xmlSettingsIterator, xmlBuiltInSetting =>
+                        {
+                            CharacterSettings objNewCharacterSettings = new CharacterSettings();
+                            if (!objNewCharacterSettings.Load(xmlBuiltInSetting)
+                                || (objNewCharacterSettings.BuildMethodIsLifeModule
+                                    && !GlobalSettings.LifeModuleEnabled)
+                                || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
+                                                                        objNewCharacterSettings))
+                                objNewCharacterSettings.Dispose();
+                        });
                     });
                 }
                 finally
                 {
                     Interlocked.Increment(ref _intDicLoadedCharacterSettingsLoadedStatus);
                 }
-                string strSettingsPath = Path.Combine(Utils.GetStartupPath, "settings");
-                if (Directory.Exists(strSettingsPath))
+
+                Utils.RunWithoutThreadLock(() =>
                 {
-                    Parallel.ForEach(Directory.EnumerateFiles(strSettingsPath, "*.xml"), strSettingsFilePath =>
+                    string strSettingsPath = Path.Combine(Utils.GetStartupPath, "settings");
+                    if (Directory.Exists(strSettingsPath))
                     {
-                        string strSettingName = Path.GetFileName(strSettingsFilePath);
-                        CharacterSettings objNewCharacterSettings = new CharacterSettings();
-                        if (!objNewCharacterSettings.Load(strSettingName, false)
-                            || (objNewCharacterSettings.BuildMethodIsLifeModule && !GlobalSettings.LifeModuleEnabled)
-                            || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey, objNewCharacterSettings))
-                            objNewCharacterSettings.Dispose();
-                    });
-                }
+                        Parallel.ForEach(Directory.EnumerateFiles(strSettingsPath, "*.xml"), strSettingsFilePath =>
+                        {
+                            string strSettingName = Path.GetFileName(strSettingsFilePath);
+                            CharacterSettings objNewCharacterSettings = new CharacterSettings();
+                            if (!objNewCharacterSettings.Load(strSettingName, false)
+                                || (objNewCharacterSettings.BuildMethodIsLifeModule
+                                    && !GlobalSettings.LifeModuleEnabled)
+                                || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
+                                                                        objNewCharacterSettings))
+                                objNewCharacterSettings.Dispose();
+                        });
+                    }
+                });
             }
             finally
             {

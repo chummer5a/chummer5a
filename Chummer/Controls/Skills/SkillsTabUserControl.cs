@@ -81,7 +81,7 @@ namespace Chummer.UI.Skills
         {
             if (_objCharacter != null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
                 await RealLoad();
         }
 

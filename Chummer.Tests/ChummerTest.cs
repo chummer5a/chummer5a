@@ -308,7 +308,7 @@ namespace Chummer.Tests
                                     {
                                         frmCharacterForm.Dispose();
                                     }
-                                    catch (ApplicationException e)
+                                    catch (InvalidOperationException e)
                                     {
                                         string strErrorMessage = "Encountered (non-fatal) exception while disposing of character form." + Environment.NewLine
                                             + e.Message;

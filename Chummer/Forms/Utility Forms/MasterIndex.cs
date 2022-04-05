@@ -150,7 +150,7 @@ namespace Chummer
 
         private async void MasterIndex_Load(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 try
                 {
@@ -192,7 +192,7 @@ namespace Chummer
             if (e.PropertyName == nameof(CharacterSettings.Books)
                 || e.PropertyName == nameof(CharacterSettings.EnabledCustomDataDirectoryPaths))
             {
-                using (CursorWait.New(this))
+                using (await CursorWait.NewAsync(this))
                 {
                     try
                     {
@@ -210,7 +210,7 @@ namespace Chummer
         {
             if (_blnSkipRefresh)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 try
                 {
@@ -494,7 +494,7 @@ namespace Chummer
         {
             if (_blnSkipRefresh)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 bool blnCustomList = !(await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, _objGenericToken) == 0
                                        && string.IsNullOrEmpty(
@@ -552,7 +552,7 @@ namespace Chummer
         {
             if (_blnSkipRefresh)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 try
                 {
@@ -650,7 +650,7 @@ namespace Chummer
 
         private async void cmdEditCharacterSetting_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 using (ThreadSafeForm<EditCharacterSettings> frmOptions = await ThreadSafeForm<EditCharacterSettings>.GetAsync(
                            () => new EditCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings), _objGenericToken))
@@ -662,7 +662,7 @@ namespace Chummer
         public async ValueTask ForceRepopulateCharacterSettings(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout(), token);
                 try

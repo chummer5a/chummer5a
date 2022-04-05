@@ -60,7 +60,7 @@ namespace Chummer
 
         private async void cmdRoll_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 int intResult = 0;
                 for (int i = 0; i < Dice; ++i)

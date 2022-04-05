@@ -18,6 +18,8 @@
  */
 
 using System;
+using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer.UI.Table
@@ -33,9 +35,9 @@ namespace Chummer.UI.Table
             Layout += (sender, evt) => DoLayout();
         }
 
-        private void OnLoad(object sender, EventArgs eventArgs)
+        private async void OnLoad(object sender, EventArgs eventArgs)
         {
-            Update(Index, Selected);
+            await UpdateAsync(Index, Selected);
         }
 
         protected virtual void DoLayout()
@@ -51,6 +53,19 @@ namespace Chummer.UI.Table
             else
             {
                 this.DoThreadSafe(x => x.BackColor = (intIndex & 1) == 0 ? ColorManager.ControlLightest : ColorManager.Control);
+            }
+        }
+
+        protected virtual async ValueTask UpdateAsync(int intIndex, bool blnSelected)
+        {
+            if (blnSelected)
+            {
+                await ColorManager.HighlightAsync.ContinueWith(y => this.DoThreadSafeAsync(x => x.BackColor = y.Result)).Unwrap();
+            }
+            else
+            {
+                Color objColor = (intIndex & 1) == 0 ? await ColorManager.ControlLightestAsync : await ColorManager.ControlAsync;
+                await this.DoThreadSafeAsync(x => x.BackColor = objColor);
             }
         }
 

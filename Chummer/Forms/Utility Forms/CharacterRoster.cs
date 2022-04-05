@@ -226,7 +226,7 @@ namespace Chummer
 
         private async void CharacterRoster_Load(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 try
                 {
@@ -271,7 +271,7 @@ namespace Chummer
 
         private async void CharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 if (_blnIsClosing)
                     return;
@@ -534,6 +534,7 @@ namespace Chummer
 
             string strErrorPrefix = await LanguageManager.GetStringAsync("String_Error")
                                     + await LanguageManager.GetStringAsync("String_Colon") + Environment.NewLine;
+            Color objWindowTextColor = await ColorManager.WindowTextAsync;
             await treCharacterList.DoThreadSafeAsync(x =>
             {
                 foreach (TreeNode objCharacterNode in x.Nodes.Cast<TreeNode>().GetAllDescendants(y => y.Nodes.Cast<TreeNode>()))
@@ -552,7 +553,7 @@ namespace Chummer
                         strTooltip += strErrorPrefix + objCache.ErrorText;
                     }
                     else
-                        objCharacterNode.ForeColor = ColorManager.WindowText;
+                        objCharacterNode.ForeColor = objWindowTextColor;
                     objCharacterNode.ToolTipText = strTooltip;
                 }
             }, token);
@@ -1077,7 +1078,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (await this.DoThreadSafeFuncAsync(x => x.IsNullOrDisposed(), token)) // Safety check for external calls
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 await tlpRight.DoThreadSafeAsync(x => x.SuspendLayout(), token);
                 try
@@ -1204,7 +1205,10 @@ namespace Chummer
                             }, token);
                         }
                         else
-                            await txtCharacterBio.DoThreadSafeAsync(x => x.ForeColor = ColorManager.WindowText, token);
+                            await ColorManager.WindowTextAsync
+                                              .ContinueWith(
+                                                  y => txtCharacterBio.DoThreadSafeAsync(
+                                                      x => x.ForeColor = y.Result, token), token).Unwrap();
                     }
                     else
                     {
@@ -1267,9 +1271,9 @@ namespace Chummer
             }
         }
 
-        private void treCharacterList_DoubleClick(object sender, EventArgs e)
+        private async void treCharacterList_DoubleClick(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = treCharacterList.SelectedNode;
+            TreeNode objSelectedNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode);
             if (objSelectedNode == null || objSelectedNode.Level <= 0)
                 return;
             switch (objSelectedNode.Tag)
@@ -1278,7 +1282,7 @@ namespace Chummer
                     return;
 
                 case CharacterCache objCache:
-                    using (CursorWait.New(this))
+                    using (await CursorWait.NewAsync(this))
                     {
                         objCache.OnMyDoubleClick(sender, e);
                     }
@@ -1464,7 +1468,7 @@ namespace Chummer
 
                 if (t?.Tag is CharacterCache objCache)
                 {
-                    using (CursorWait.New(this))
+                    using (await CursorWait.NewAsync(this))
                     {
                         Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName);
                         if (objCharacter == null)
@@ -1493,7 +1497,7 @@ namespace Chummer
                 TreeNode t = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken);
                 if (!(t?.Tag is CharacterCache objCache))
                     return;
-                using (CursorWait.New(this))
+                using (await CursorWait.NewAsync(this))
                 {
                     Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName);
                     if (objCharacter == null)
@@ -1535,7 +1539,7 @@ namespace Chummer
                 TreeNode t = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken);
                 if (!(t?.Tag is CharacterCache objCache))
                     return;
-                using (CursorWait.New(this))
+                using (await CursorWait.NewAsync(this))
                 {
                     Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName);
                     if (objCharacter == null)
@@ -1646,7 +1650,7 @@ namespace Chummer
                     = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile);
                 if (objOpenCharacter != null)
                 {
-                    using (CursorWait.New(this))
+                    using (await CursorWait.NewAsync(this))
                         (await Program.MainForm.OpenCharacterForms.FirstOrDefaultAsync(
                             x => x.CharacterObject == objOpenCharacter))?.Close();
                 }

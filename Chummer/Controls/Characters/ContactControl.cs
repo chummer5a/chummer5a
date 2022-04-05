@@ -301,7 +301,7 @@ namespace Chummer
                 Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(_objContact.LinkedCharacter)
                     ? _objContact.LinkedCharacter
                     : null;
-                using (CursorWait.New(ParentForm))
+                using (await CursorWait.NewAsync(ParentForm))
                 {
                     if (objOpenCharacter == null)
                     {

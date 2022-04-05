@@ -86,7 +86,7 @@ namespace Chummer
 
         private async void cmdEditCharacterOption_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 object objOldSelected = await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue);
                 using (ThreadSafeForm<EditCharacterSettings> frmOptions
@@ -136,7 +136,7 @@ namespace Chummer
 
         private async void SelectBuildMethod_Load(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -199,7 +199,7 @@ namespace Chummer
 
         private async void cboGamePlay_SelectedIndexChanged(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try

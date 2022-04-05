@@ -282,7 +282,7 @@ namespace Chummer
         protected async Task AutoSaveCharacter(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (CursorWait.New(this, true))
+            using (await CursorWait.NewAsync(this, true))
             {
                 try
                 {
@@ -341,7 +341,7 @@ namespace Chummer
             TreeNode objSelectedNode = await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken);
             if (objSelectedNode == null || objSelectedNode.Level == 0)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strGuid = (objSelectedNode.Tag as IHasInternalId)?.InternalId ?? string.Empty;
                 if (string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())
@@ -383,7 +383,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!(treNode?.Tag is IHasNotes objNotes))
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             using (ThreadSafeForm<EditNotes> frmItemNotes =
                    await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor), token))
             {
@@ -415,7 +415,7 @@ namespace Chummer
         {
             if (pnlAttributes == null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -645,7 +645,7 @@ namespace Chummer
             TreeNode objManipulationNode = null;
             TreeNode objRitualsNode = null;
             TreeNode objEnchantmentsNode = null;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -972,7 +972,7 @@ namespace Chummer
             if (treAIPrograms == null)
                 return;
             TreeNode objParentNode = null;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -1113,7 +1113,7 @@ namespace Chummer
             if (treComplexForms == null)
                 return;
             TreeNode objParentNode = null;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -1301,7 +1301,7 @@ namespace Chummer
         {
             if (treMetamagic == null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -1549,7 +1549,7 @@ namespace Chummer
         {
             if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
@@ -1640,7 +1640,7 @@ namespace Chummer
             if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
@@ -1728,7 +1728,7 @@ namespace Chummer
 
         protected async ValueTask RefreshPowerCollectionListChanged(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, ListChangedEventArgs e = null)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 switch (e?.ListChangedType)
                 {
@@ -1779,13 +1779,13 @@ namespace Chummer
             await SetDirty(true);
         }
 
-        protected void RefreshPowerCollectionBeforeRemove(TreeView treMetamagic, RemovingOldEventArgs removingOldEventArgs)
+        protected async void RefreshPowerCollectionBeforeRemove(TreeView treMetamagic, RemovingOldEventArgs removingOldEventArgs)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 if (removingOldEventArgs?.OldObject is Power objPower)
                 {
-                    objPower.Enhancements.RemoveTaggedCollectionChanged(treMetamagic);
+                    await objPower.Enhancements.RemoveTaggedCollectionChangedAsync(treMetamagic);
                 }
             }
         }
@@ -1794,7 +1794,7 @@ namespace Chummer
         {
             if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
@@ -1919,7 +1919,7 @@ namespace Chummer
                 return;
             TreeNode objPowersNode = null;
             TreeNode objWeaknessesNode = null;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 if (notifyCollectionChangedEventArgs == null || notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
@@ -2095,7 +2095,7 @@ namespace Chummer
             TreeNode objNegativeQualityRoot = null;
             TreeNode objLifeModuleRoot = null;
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -2204,7 +2204,7 @@ namespace Chummer
                                         }
                                         else
                                         {
-                                            await treQualities.DoThreadSafeAsync(RefreshQualityNames, GenericToken);
+                                            await RefreshQualityNames(treQualities, GenericToken);
                                         }
                                     }
                                 }
@@ -2231,7 +2231,7 @@ namespace Chummer
                     }
 
                     if (blnDoNameRefresh)
-                        await treQualities.DoThreadSafeAsync(RefreshQualityNames, GenericToken);
+                        await RefreshQualityNames(treQualities, GenericToken);
                 }
             }
 
@@ -2366,22 +2366,27 @@ namespace Chummer
         /// Refreshes all the names of qualities in the nodes
         /// </summary>
         /// <param name="treQualities">TreeView to insert the qualities into.</param>
-        protected void RefreshQualityNames(TreeView treQualities)
+        /// <param name="token">Cancellation token to use.</param>
+        protected async ValueTask RefreshQualityNames(TreeView treQualities, CancellationToken token = default)
         {
-            if (treQualities == null || treQualities.GetNodeCount(false) <= 0)
+            token.ThrowIfCancellationRequested();
+            if (treQualities == null || await treQualities.DoThreadSafeFuncAsync(x => x.GetNodeCount(false), token) <= 0)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
-                TreeNode objSelectedNode = treQualities.SelectedNode;
-                foreach (TreeNode objQualityTypeNode in treQualities.Nodes)
+                await treQualities.DoThreadSafeAsync(x =>
                 {
-                    foreach (TreeNode objQualityNode in objQualityTypeNode.Nodes)
+                    TreeNode objSelectedNode = x.SelectedNode;
+                    foreach (TreeNode objQualityTypeNode in x.Nodes)
                     {
-                        objQualityNode.Text = ((Quality)objQualityNode.Tag).CurrentDisplayName;
+                        foreach (TreeNode objQualityNode in objQualityTypeNode.Nodes)
+                        {
+                            objQualityNode.Text = ((Quality) objQualityNode.Tag).CurrentDisplayName;
+                        }
                     }
-                }
 
-                treQualities.SortCustomAlphabetically(objSelectedNode?.Tag);
+                    x.SortCustomAlphabetically(objSelectedNode?.Tag);
+                }, token);
             }
         }
 
@@ -2391,11 +2396,11 @@ namespace Chummer
         /// Method for removing old <addqualities /> nodes from existing characters.
         /// </summary>
         /// <param name="objNodeList">XmlNode to load. Expected to be addqualities/addquality</param>
-        protected void RemoveAddedQualities(XPathNodeIterator objNodeList)
+        protected async ValueTask RemoveAddedQualities(XPathNodeIterator objNodeList)
         {
             if (objNodeList == null || objNodeList.Count <= 0)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 foreach (XPathNavigator objNode in objNodeList)
                 {
@@ -2403,8 +2408,8 @@ namespace Chummer
                     if (objQuality != null)
                     {
                         objQuality.DeleteQuality();
-                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower,
-                                                              objQuality.InternalId);
+                        await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.CritterPower,
+                                                                         objQuality.InternalId);
                     }
                 }
             }
@@ -2417,7 +2422,7 @@ namespace Chummer
             if (treArmor == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strSelectedId = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -2433,7 +2438,7 @@ namespace Chummer
             if (treGear == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strSelectedId = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -2449,7 +2454,7 @@ namespace Chummer
             if (treVehicles == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strSelectedId = (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -2465,7 +2470,7 @@ namespace Chummer
             if (treVehicles == null || objVehicle == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strSelectedId = (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -2481,7 +2486,7 @@ namespace Chummer
             if (treWeapons == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strSelectedId = (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -2497,7 +2502,7 @@ namespace Chummer
             if (treImprovements == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strSelectedId =
                     (await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
@@ -2662,7 +2667,7 @@ namespace Chummer
             NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, string strSelectedId, string strNodeName,
             bool rootSibling = true)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
@@ -2834,7 +2839,7 @@ namespace Chummer
         {
             if (treWeapons == null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strSelectedId = (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -3014,7 +3019,7 @@ namespace Chummer
         {
             if (treArmor == null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strSelectedId = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -3311,7 +3316,7 @@ namespace Chummer
             TreeNode nodArmor = await treArmor.DoThreadSafeFuncAsync(x => x.FindNode(objArmor.InternalId), GenericToken);
             if (nodArmor == null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
@@ -3450,7 +3455,7 @@ namespace Chummer
         {
             if (treGear == null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strSelectedId = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -3611,7 +3616,7 @@ namespace Chummer
         {
             if (treGear == null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strSelectedId = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -3734,7 +3739,7 @@ namespace Chummer
             TreeNode objHoleNode = null;
             TreeNode objAntiHoleNode = null;
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strSelectedId = (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -3987,7 +3992,7 @@ namespace Chummer
         {
             if (treVehicles == null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strSelectedId = (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -4668,7 +4673,7 @@ namespace Chummer
         {
             if (treFoci == null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strSelectedId = (await treFoci.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -5091,7 +5096,7 @@ namespace Chummer
         {
             if (treMartialArts == null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strSelectedId = (await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -5282,7 +5287,7 @@ namespace Chummer
             TreeNode nodMartialArt = await treMartialArts.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objMartialArt), GenericToken);
             if (nodMartialArt == null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
@@ -5383,7 +5388,7 @@ namespace Chummer
         {
             if (treImprovements == null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strSelectedId =
                     (await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag as IHasInternalId, GenericToken))?.InternalId ?? string.Empty;
@@ -5751,7 +5756,7 @@ namespace Chummer
         {
             if (treLifestyles == null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strSelectedId = (await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
                 TreeNode objParentNode = null;
@@ -5901,7 +5906,7 @@ namespace Chummer
         {
             if (lstCalendar == null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 if (listChangedEventArgs == null || listChangedEventArgs.ListChangedType == ListChangedType.Reset)
                 {
@@ -6042,7 +6047,7 @@ namespace Chummer
         {
             if (panContacts == null && panEnemies == null && panPets == null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -6420,7 +6425,7 @@ namespace Chummer
             if (pnlSustainedSpells == null && pnlSustainedComplexForms == null && pnlSustainedCritterPowers == null)
                 return;
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 Panel DetermineRefreshingPanel(SustainedObject objSustained, Panel flpSustainedSpellsParam,
                                                Panel flpSustainedComplexFormsParam, Panel flpSustainedCritterPowersParam)
@@ -6781,7 +6786,7 @@ namespace Chummer
 
             if (lstNodes == null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 List<ICanSort> lstSorted = treOwningTree != null
                     ? await treOwningTree.DoThreadSafeFuncAsync(
@@ -7306,7 +7311,7 @@ namespace Chummer
 
         protected async ValueTask AddContactsFromFile()
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 XPathDocument xmlDoc;
                 // Displays an OpenFileDialog so the user can select the XML to read.
@@ -7358,7 +7363,7 @@ namespace Chummer
         {
             if (panSpirits == null && panSprites == null)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -7708,7 +7713,7 @@ namespace Chummer
         protected async ValueTask<bool> AddMugshot(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 using (OpenFileDialog dlgOpenFileDialog = new OpenFileDialog())
                 {
@@ -8196,7 +8201,7 @@ namespace Chummer
         /// </summary>
         public virtual async ValueTask<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false, CancellationToken token = default)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 // If the Character does not have a file name, trigger the Save As menu item instead.
                 if (string.IsNullOrEmpty(CharacterObject.FileName))
@@ -8242,7 +8247,7 @@ namespace Chummer
         /// </summary>
         public virtual async ValueTask<bool> SaveCharacterAs(bool blnDoCreated = false, CancellationToken token = default)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 // If the Created is checked, make sure the user wants to actually save this character.
                 if (blnDoCreated && !await ConfirmSaveCreatedCharacter(token))
@@ -8303,7 +8308,7 @@ namespace Chummer
         public async ValueTask DoPrint(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 // If a reference to the Viewer window does not yet exist for this character, open a new Viewer window and set the reference to it.
                 // If a Viewer window already exists for this character, use it instead.
@@ -8363,7 +8368,7 @@ namespace Chummer
         public async ValueTask PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: token);
                 bool blnAddAgain;

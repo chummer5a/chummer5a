@@ -56,7 +56,7 @@ namespace Chummer
             {
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
-                using (CursorWait.New(this))
+                using (await CursorWait.NewAsync(this))
                 {
                     string strSelectedFile = openFileDialog.FileName;
                     TreeNode objNode = await CacheCharacters(strSelectedFile);
@@ -586,7 +586,7 @@ namespace Chummer
             string strCharacterId = objCache.CharacterId;
             if (string.IsNullOrEmpty(strFile) || string.IsNullOrEmpty(strCharacterId))
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 bool blnLoaded = false;
                 Character objCharacter = new Character();

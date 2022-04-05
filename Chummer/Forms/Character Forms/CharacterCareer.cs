@@ -190,7 +190,7 @@ namespace Chummer
         {
             try
             {
-                using (CursorWait.New(this))
+                using (await CursorWait.NewAsync(this))
                 {
                     using (CustomActivity op_load_frm_career = await Timekeeper.StartSyncronAsync(
                                "load_frm_career", null, CustomActivity.OperationType.RequestOperation,
@@ -1550,7 +1550,7 @@ namespace Chummer
 
         private async void CharacterCareer_FormClosing(object sender, FormClosingEventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 IsLoading = true;
                 try
@@ -1763,10 +1763,11 @@ namespace Chummer
                         break;
 
                     case nameof(Character.Encumbrance):
+                        Color objControlTextColor = await ColorManager.ControlTextAsync;
                         await StatusStrip.DoThreadSafeAsync(() => tslCarriedWeight.ForeColor
                                                                 = CharacterObject.Encumbrance > 0
                                                                     ? ColorManager.ErrorColor
-                                                                    : ColorManager.ControlText, GenericToken);
+                                                                    : objControlTextColor, GenericToken);
                         break;
 
                     case nameof(Character.NuyenBP):
@@ -2513,7 +2514,7 @@ namespace Chummer
                     {
                         if (IsLoading)
                             break;
-                        using (CursorWait.New(this))
+                        using (await CursorWait.NewAsync(this))
                         {
                             await this.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken);
                             try
@@ -2799,7 +2800,7 @@ namespace Chummer
                     {
                         if (!CharacterObjectSettings.BookEnabled("HT"))
                         {
-                            using (CursorWait.New(this))
+                            using (await CursorWait.NewAsync(this))
                             {
                                 await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
                                 await treLifestyles.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
@@ -2810,7 +2811,7 @@ namespace Chummer
                     }
                     case nameof(CharacterSettings.EnableEnemyTracking):
                     {
-                        using (CursorWait.New(this))
+                        using (await CursorWait.NewAsync(this))
                         {
                             await this.DoThreadSafeAsync(x =>
                                       {
@@ -3004,7 +3005,7 @@ namespace Chummer
                 return;
             }
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 Character[] lstClones = new Character[intClones];
                 using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(CharacterObject.Alias, Character.NumLoadingSections * intClones))
@@ -3048,7 +3049,7 @@ namespace Chummer
         private async ValueTask DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 IAsyncDisposable objLocker
                     = await CharacterObject.LockObject.EnterWriteLockAsync(token);
@@ -3799,7 +3800,7 @@ namespace Chummer
             }
 
             string strOpenFile = string.Empty;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 Character objMerge = new Character {FileName = CharacterObject.FileName};
                 try
@@ -3991,7 +3992,7 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strOpenFile))
             {
-                using (CursorWait.New(this))
+                using (await CursorWait.NewAsync(this))
                 {
                     Character objOpenCharacter;
                     using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strOpenFile, Character.NumLoadingSections))
@@ -4049,7 +4050,7 @@ namespace Chummer
                 return;
 
             string strOpenFile = string.Empty;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 // Load the Spirit's save file into a new Merge character.
                 Character objMerge = new Character {FileName = CharacterObject.FileName};
@@ -4200,7 +4201,7 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strOpenFile))
             {
-                using (CursorWait.New(this))
+                using (await CursorWait.NewAsync(this))
                 {
                     Character objOpenCharacter;
                     using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strOpenFile, Character.NumLoadingSections))
@@ -6300,7 +6301,7 @@ namespace Chummer
             }
 
             // Fix for legacy characters with old addqualities improvements.
-            RemoveAddedQualities(objXmlDeleteQuality.Select("addqualities/addquality"));
+            await RemoveAddedQualities(objXmlDeleteQuality.Select("addqualities/addquality"));
 
             // Perform removal
             objSelectedQuality.DeleteQuality(blnCompleteDelete);
@@ -8136,7 +8137,7 @@ namespace Chummer
             }
 
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 bool blnAddAgain;
                 do
@@ -10078,7 +10079,7 @@ namespace Chummer
                 return;
             }
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 bool blnAddAgain;
                 do
@@ -10201,7 +10202,7 @@ namespace Chummer
                 return;
             }
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 bool blnAddAgain;
                 do
@@ -10342,7 +10343,7 @@ namespace Chummer
             }
 
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 bool blnAddAgain;
                 do
@@ -10460,7 +10461,7 @@ namespace Chummer
             }
 
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 bool blnAddAgain;
                 do
@@ -10563,7 +10564,7 @@ namespace Chummer
                 return;
             }
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 bool blnAddAgain;
                 do
@@ -10694,7 +10695,7 @@ namespace Chummer
                 }
             }
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 bool blnAddAgain;
                 do
@@ -10845,7 +10846,7 @@ namespace Chummer
                 }
             }
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 bool blnAddAgain;
                 do
@@ -10951,7 +10952,7 @@ namespace Chummer
             // Open the Gear XML file and locate the selected piece.
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 bool blnAddAgain;
                 do
@@ -14335,9 +14336,9 @@ namespace Chummer
                     return;
 
                 // Character is not dirty and their save file was updated outside of Chummer5 while it is open, so reload them
-                using (CursorWait.New(this, true))
+                using (await CursorWait.NewAsync(this, true))
                 {
-                    using (CursorWait.New(this))
+                    using (await CursorWait.NewAsync(this))
                     using (LoadingBar frmLoadingBar
                            = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName),
                                                                          Character.NumLoadingSections))
@@ -14400,7 +14401,7 @@ namespace Chummer
                 {
                     tskAutosave = AutoSaveCharacter(token);
                 }
-                using (CursorWait.New(this, true))
+                using (await CursorWait.NewAsync(this, true))
                 {
                     // TODO: DataBind these wherever possible
 
@@ -16522,7 +16523,7 @@ namespace Chummer
             // Open the Gear XML file and locate the selected Gear.
             XPathNavigator xmlParent = blnNullParent ? null : await objSelectedGear.GetNodeXPathAsync();
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strCategories = string.Empty;
 
@@ -16778,7 +16779,7 @@ namespace Chummer
             // Open the Gear XML file and locate the selected Gear.
             object objParent = objSelectedGear ?? objSelectedMod ?? (object)objSelectedArmor;
 
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strCategories = string.Empty;
 
@@ -18292,7 +18293,7 @@ namespace Chummer
 
         private async ValueTask RepopulateKarmaExpenseList()
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 await lstKarma.DoThreadSafeAsync(x =>
                 {
@@ -18386,7 +18387,7 @@ namespace Chummer
 
         private async ValueTask RepopulateNuyenExpenseList()
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 await lstNuyen.DoThreadSafeAsync(x =>
                 {
@@ -19793,12 +19794,12 @@ namespace Chummer
             }
         }
 
-        private void cboAttributeCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboAttributeCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 CharacterObject.AttributeSection.AttributeCategory
-                    = AttributeSection.ConvertAttributeCategory(cboAttributeCategory.SelectedValue.ToString());
+                    = AttributeSection.ConvertAttributeCategory(await cboAttributeCategory.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()));
             }
         }
 
@@ -20108,7 +20109,7 @@ namespace Chummer
 
         private async void mnuSpecialChangeOptions_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             using (ThreadSafeForm<SelectBuildMethod> frmPickBP = await ThreadSafeForm<SelectBuildMethod>.GetAsync(() => new SelectBuildMethod(CharacterObject, true)))
             {
                 await frmPickBP.ShowDialogSafeAsync(this);

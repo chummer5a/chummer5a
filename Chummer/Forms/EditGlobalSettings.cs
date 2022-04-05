@@ -118,7 +118,7 @@ namespace Chummer
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 if (_blnDirty)
                 {
@@ -167,7 +167,7 @@ namespace Chummer
 
                 if (!_blnLoading)
                 {
-                    using (CursorWait.New(this))
+                    using (await CursorWait.NewAsync(this))
                     {
                         _blnLoading = true;
                         await TranslateForm();
@@ -185,19 +185,19 @@ namespace Chummer
 
         private async void cboSheetLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
                 await PopulateXsltList();
         }
 
         private async void cmdVerify_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
                 await LanguageManager.VerifyStrings(_strSelectedLanguage);
         }
 
         private async void cmdVerifyData_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strSelectedLanguage = _strSelectedLanguage;
                 // Build a list of Sourcebooks that will be passed to the Verify method.
@@ -282,7 +282,7 @@ namespace Chummer
 
         private async void cmdPDFTest_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
                 await CommonFunctions.OpenPdf(await lstGlobalSourcebookInfos.DoThreadSafeFuncAsync(x => x.SelectedValue) + " 3", null,
                                               await cboPDFParameters.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()) ?? string.Empty,
                                               await txtPDFAppPath.DoThreadSafeFuncAsync(x => x.Text));
@@ -391,27 +391,27 @@ namespace Chummer
             OptionsChanged(sender, e);
         }
 
-        private void cboColorMode_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboColorMode_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
-                if (Enum.TryParse(cboColorMode.SelectedValue.ToString(), true, out ColorMode eNewColorMode) && _eSelectedColorModeSetting != eNewColorMode)
+                if (Enum.TryParse(await cboColorMode.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()), true, out ColorMode eNewColorMode) && _eSelectedColorModeSetting != eNewColorMode)
                 {
                     _eSelectedColorModeSetting = eNewColorMode;
                     switch (eNewColorMode)
                     {
                         case ColorMode.Automatic:
-                            this.UpdateLightDarkMode(!ColorManager.DoesRegistrySayDarkMode());
+                            await this.UpdateLightDarkModeAsync(!ColorManager.DoesRegistrySayDarkMode());
                             break;
 
                         case ColorMode.Light:
-                            this.UpdateLightDarkMode(true);
+                            await this.UpdateLightDarkModeAsync(true);
                             break;
 
                         case ColorMode.Dark:
-                            this.UpdateLightDarkMode(false);
+                            await this.UpdateLightDarkModeAsync(false);
                             break;
                     }
                 }
@@ -703,25 +703,26 @@ namespace Chummer
         }
 #endif
 
-        private void clbPlugins_VisibleChanged(object sender, EventArgs e)
+        private async void clbPlugins_VisibleChanged(object sender, EventArgs e)
         {
-            clbPlugins.Items.Clear();
+            await clbPlugins.DoThreadSafeAsync(x => x.Items.Clear());
             if (Program.PluginLoader.MyPlugins.Count == 0)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
-                foreach (IPlugin plugin in Program.PluginLoader.MyPlugins)
+                foreach (IPlugin objPlugin in Program.PluginLoader.MyPlugins)
                 {
                     try
                     {
-                        plugin.CustomInitialize(Program.MainForm);
-                        if (GlobalSettings.PluginsEnabledDic.TryGetValue(plugin.ToString(), out bool check))
+                        await Program.MainForm.DoThreadSafeAsync(x => objPlugin.CustomInitialize(x));
+                        (bool blnSuccess, bool blnChecked) = await GlobalSettings.PluginsEnabledDic.TryGetValueAsync(objPlugin.ToString());
+                        if (blnSuccess)
                         {
-                            clbPlugins.Items.Add(plugin, check);
+                            await clbPlugins.DoThreadSafeAsync(x => x.Items.Add(objPlugin, blnChecked));
                         }
                         else
                         {
-                            clbPlugins.Items.Add(plugin);
+                            await clbPlugins.DoThreadSafeAsync(x => x.Items.Add(objPlugin));
                         }
                     }
                     catch (ApplicationException ae)
@@ -730,10 +731,13 @@ namespace Chummer
                     }
                 }
 
-                if (clbPlugins.Items.Count > 0)
+                await clbPlugins.DoThreadSafeAsync(x =>
                 {
-                    clbPlugins.SelectedIndex = 0;
-                }
+                    if (x.Items.Count > 0)
+                    {
+                        x.SelectedIndex = 0;
+                    }
+                });
             }
         }
 
@@ -747,14 +751,13 @@ namespace Chummer
             }
         }
 
-        private void clbPlugins_ItemCheck(object sender, ItemCheckEventArgs e)
+        private async void clbPlugins_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
-                object plugin = clbPlugins.Items[e.Index];
-                if (GlobalSettings.PluginsEnabledDic.ContainsKey(plugin.ToString()))
-                    GlobalSettings.PluginsEnabledDic.Remove(plugin.ToString());
-                GlobalSettings.PluginsEnabledDic.Add(plugin.ToString(), e.NewValue == CheckState.Checked);
+                string strPlugin = (await clbPlugins.DoThreadSafeFuncAsync(x => x.Items[e.Index]))?.ToString();
+                bool blnNewValue = e.NewValue == CheckState.Checked;
+                await GlobalSettings.PluginsEnabledDic.AddOrUpdateAsync(strPlugin, blnNewValue, (x, y) => blnNewValue);
                 OptionsChanged(sender, e);
             }
         }
@@ -873,7 +876,7 @@ namespace Chummer
             if (!await txtPDFLocation.DoThreadSafeFuncAsync(x => x.Enabled, token))
                 return;
             // Prompt the user to select a save file to associate with this Contact.
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strNewFileName;
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
@@ -921,7 +924,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             // Prompt the user to select a save file to associate with this Contact.
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
                        {
@@ -1153,7 +1156,7 @@ namespace Chummer
                 }
             }
             GlobalSettings.Language = _strSelectedLanguage;
-            GlobalSettings.ColorModeSetting = _eSelectedColorModeSetting;
+            await GlobalSettings.SetColorModeSettingAsync(_eSelectedColorModeSetting);
             GlobalSettings.DpiScalingMethodSetting = await cboDpiScalingMethod.DoThreadSafeFuncAsync(x => x.SelectedIndex >= 0
                 ? (DpiScalingMethod) Enum.Parse(typeof(DpiScalingMethod), x.SelectedValue.ToString())
                 : GlobalSettings.DefaultDpiScalingMethod, token);
@@ -1210,9 +1213,17 @@ namespace Chummer
             foreach (CustomDataDirectoryInfo objInfo in _setCustomDataDirectoryInfos)
                 GlobalSettings.CustomDataDirectoryInfos.Add(objInfo);
             await XmlManager.RebuildDataDirectoryInfoAsync(GlobalSettings.CustomDataDirectoryInfos);
-            GlobalSettings.SourcebookInfos.Clear();
-            foreach (SourcebookInfo objInfo in _dicSourcebookInfos.Values)
-                GlobalSettings.SourcebookInfos.Add(objInfo.Code, objInfo);
+            IAsyncDisposable objLocker = await GlobalSettings.SourcebookInfos.LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                await GlobalSettings.SourcebookInfos.ClearAsync();
+                foreach (SourcebookInfo objInfo in _dicSourcebookInfos.Values)
+                    await GlobalSettings.SourcebookInfos.AddAsync(objInfo.Code, objInfo);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
 
         /// <summary>
@@ -1767,7 +1778,7 @@ namespace Chummer
         private async void bScanForPDFs_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 Task<XPathNavigator> tskLoadBooks
                     = XmlManager.LoadXPathAsync("books.xml", strLanguage: _strSelectedLanguage);

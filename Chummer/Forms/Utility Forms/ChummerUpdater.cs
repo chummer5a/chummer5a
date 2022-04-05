@@ -660,7 +660,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempLatestVersionZipPath))
             {
-                using (CursorWait.New(this))
+                using (await CursorWait.NewAsync(this))
                 {
                     await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = false, token);
                     await cmdRestart.DoThreadSafeAsync(x => x.Enabled = false, token);
@@ -730,7 +730,7 @@ namespace Chummer
                 return;
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempLatestVersionZipPath))
             {
-                using (CursorWait.New(this))
+                using (await CursorWait.NewAsync(this))
                 {
                     await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = false, token);
                     await cmdRestart.DoThreadSafeAsync(x => x.Enabled = false, token);

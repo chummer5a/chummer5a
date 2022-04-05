@@ -109,7 +109,7 @@ namespace Chummer
 
         private async void SelectMetatypePriority_Load(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -360,7 +360,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -383,7 +383,7 @@ namespace Chummer
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 await MetatypeSelected();
             }
@@ -391,7 +391,7 @@ namespace Chummer
 
         private async void cboTalents_SelectedIndexChanged(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -638,7 +638,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -667,7 +667,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -689,7 +689,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -721,7 +721,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -750,7 +750,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -777,7 +777,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -804,7 +804,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -827,10 +827,15 @@ namespace Chummer
             }
         }
 
-        private void chkPossessionBased_CheckedChanged(object sender, EventArgs e)
+        private async void chkPossessionBased_CheckedChanged(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
-                cboPossessionMethod.Enabled = chkPossessionBased.Checked;
+            using (await CursorWait.NewAsync(this))
+            {
+                await chkPossessionBased.DoThreadSafeFuncAsync(x => x.Checked)
+                                        .ContinueWith(
+                                            y => cboPossessionMethod.DoThreadSafeAsync(x => x.Enabled = y.Result))
+                                        .Unwrap();
+            }
         }
 
         #endregion Control Events

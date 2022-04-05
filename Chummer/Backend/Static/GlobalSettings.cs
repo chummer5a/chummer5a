@@ -25,6 +25,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -230,13 +231,15 @@ namespace Chummer
         public static ThreadSafeRandom RandomGenerator { get; } = new ThreadSafeRandom(new XoRoShiRo128starstar().GetRandomCompatible());
 
         // Plugins information
-        public static Dictionary<string, bool> PluginsEnabledDic { get; } = new Dictionary<string, bool>();
+        private static readonly LockingDictionary<string, bool> s_dicPluginsEnabled = new LockingDictionary<string, bool>();
+        public static LockingDictionary<string, bool> PluginsEnabledDic => s_dicPluginsEnabled;
 
         // PDF information.
         private static string _strPdfAppPath = string.Empty;
 
         private static string _strPdfParameters = string.Empty;
-        private static Dictionary<string, SourcebookInfo> _dicSourcebookInfos;
+        private static LockingDictionary<string, SourcebookInfo> s_DicSourcebookInfos;
+        private static int s_intSourcebookInfosLoadingStatus = -1;
         private static bool _blnUseLogging;
         private static UseAILogging _enumUseLoggingApplicationInsights;
         private static int _intResetLogging;
@@ -575,10 +578,21 @@ namespace Chummer
 
             try
             {
-                string jsonstring = string.Empty;
-                LoadStringFromRegistry(ref jsonstring, "plugins");
-                if (!string.IsNullOrEmpty(jsonstring))
-                    PluginsEnabledDic = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, bool>>(jsonstring);
+                string strPluginsJson = string.Empty;
+                LoadStringFromRegistry(ref strPluginsJson, "plugins");
+                if (!string.IsNullOrEmpty(strPluginsJson))
+                {
+                    LockingDictionary<string, bool> dicTemp
+                        = Newtonsoft.Json.JsonConvert.DeserializeObject<LockingDictionary<string, bool>>(strPluginsJson);
+                    if (dicTemp != null)
+                    {
+                        LockingDictionary<string, bool> dicOld = s_dicPluginsEnabled;
+                        if (Interlocked.CompareExchange(ref s_dicPluginsEnabled, dicTemp, dicOld) == dicOld)
+                        {
+                            dicOld?.Dispose();
+                        }
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -851,11 +865,14 @@ namespace Chummer
                 {
                     if (objSourceRegistry != null)
                     {
-                        foreach (SourcebookInfo objSource in SourcebookInfos.Values)
-                            objSourceRegistry.SetValue(objSource.Code,
-                                                       objSource.Path + '|'
-                                                                      + objSource.Offset.ToString(
-                                                                          InvariantCultureInfo));
+                        using (await EnterReadLock.EnterAsync(SourcebookInfos))
+                        {
+                            foreach (SourcebookInfo objSource in SourcebookInfos.Values)
+                                objSourceRegistry.SetValue(objSource.Code,
+                                                           objSource.Path + '|'
+                                                                          + objSource.Offset.ToString(
+                                                                              InvariantCultureInfo));
+                        }
                     }
                 }
 
@@ -1116,31 +1133,28 @@ namespace Chummer
         /// <summary>
         /// Whether the program should be forced to use Light/Dark mode or to obey default color schemes automatically
         /// </summary>
-        public static ColorMode ColorModeSetting
+        public static ColorMode ColorModeSetting => _eColorMode;
+
+        public static Task SetColorModeSettingAsync(ColorMode eNewValue)
         {
-            get => _eColorMode;
-            set
+            if (_eColorMode == eNewValue)
+                return Task.CompletedTask;
+            _eColorMode = eNewValue;
+            switch (eNewValue)
             {
-                if (_eColorMode == value)
-                    return;
-                _eColorMode = value;
-                switch (value)
-                {
-                    case ColorMode.Automatic:
-                        ColorManager.AutoApplyLightDarkMode();
-                        break;
+                case ColorMode.Automatic:
+                    return ColorManager.AutoApplyLightDarkModeAsync();
 
-                    case ColorMode.Light:
-                        ColorManager.DisableAutoTimer();
-                        ColorManager.IsLightMode = true;
-                        break;
+                case ColorMode.Light:
+                    ColorManager.DisableAutoTimer();
+                    return ColorManager.SetIsLightModeAsync(true);
 
-                    case ColorMode.Dark:
-                        ColorManager.DisableAutoTimer();
-                        ColorManager.IsLightMode = false;
-                        break;
-                }
+                case ColorMode.Dark:
+                    ColorManager.DisableAutoTimer();
+                    return ColorManager.SetIsLightModeAsync(false);
             }
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -1357,18 +1371,35 @@ namespace Chummer
         /// <summary>
         /// List of SourcebookInfo.
         /// </summary>
-        public static Dictionary<string, SourcebookInfo> SourcebookInfos
+        public static LockingDictionary<string, SourcebookInfo> SourcebookInfos
         {
             get
             {
-                // We need to generate _dicSourcebookInfos outside of the constructor to avoid initialization cycles
-                if (_dicSourcebookInfos == null)
+                // We need to generate s_DicSourcebookInfos outside of the constructor to avoid initialization cycles
+                if (s_intSourcebookInfosLoadingStatus < 0)
+                    LoadSourcebookInfos();
+                while (s_intSourcebookInfosLoadingStatus <= 0)
+                    Utils.SafeSleep();
+                return s_DicSourcebookInfos;
+            }
+        }
+
+        private static void LoadSourcebookInfos()
+        {
+            if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 0, -1) >= 0)
+                return;
+            try
+            {
+                if (s_DicSourcebookInfos == null)
+                    s_DicSourcebookInfos = new LockingDictionary<string, SourcebookInfo>();
+                else
+                    s_DicSourcebookInfos.Clear();
+                Utils.RunWithoutThreadLock(async () => // Retrieve the SourcebookInfo objects.
                 {
-                    _dicSourcebookInfos = new Dictionary<string, SourcebookInfo>();
-                    // Retrieve the SourcebookInfo objects.
-                    foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml").SelectAndCacheExpression("/chummer/books/book"))
+                    foreach (XPathNavigator xmlBook in await (await XmlManager.LoadXPathAsync("books.xml"))
+                                 .SelectAndCacheExpressionAsync("/chummer/books/book"))
                     {
-                        string strCode = xmlBook.SelectSingleNodeAndCacheExpression("code")?.Value;
+                        string strCode = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("code"))?.Value;
                         if (string.IsNullOrEmpty(strCode))
                             continue;
                         SourcebookInfo objSource = new SourcebookInfo
@@ -1379,7 +1410,8 @@ namespace Chummer
                         try
                         {
                             string strTemp = string.Empty;
-                            if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook") && !string.IsNullOrEmpty(strTemp))
+                            if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
+                                && !string.IsNullOrEmpty(strTemp))
                             {
                                 string[] strParts = strTemp.Split('|');
                                 objSource.Path = strParts[0];
@@ -1406,10 +1438,13 @@ namespace Chummer
                             //swallow this
                         }
 
-                        _dicSourcebookInfos.Add(strCode, objSource);
+                        await s_DicSourcebookInfos.AddAsync(strCode, objSource);
                     }
-                }
-                return _dicSourcebookInfos;
+                });
+            }
+            finally
+            {
+                Interlocked.Increment(ref s_intSourcebookInfosLoadingStatus);
             }
         }
 

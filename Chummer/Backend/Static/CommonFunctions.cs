@@ -1415,7 +1415,7 @@ namespace Chummer
                 objLoopControl = await objLoopControl.DoThreadSafeFuncAsync(x => x.Parent);
             }
             
-            using (CursorWait.New(await objControl.DoThreadSafeFuncAsync(x => x.FindForm()) ?? objControl))
+            using (await CursorWait.NewAsync(await objControl.DoThreadSafeFuncAsync(x => x.FindForm()) ?? objControl))
             {
                 await OpenPdf(await objControl.DoThreadSafeFuncAsync(x => x.Text), objCharacter, string.Empty, string.Empty, true);
             }
@@ -1443,7 +1443,7 @@ namespace Chummer
                 if (!blnOpenOptions || Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NoPDFProgramSet"),
                     await LanguageManager.GetStringAsync("MessageTitle_NoPDFProgramSet"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
-                using (CursorWait.New(Program.MainForm))
+                using (await CursorWait.NewAsync(Program.MainForm))
                 {
                     using (ThreadSafeForm<EditGlobalSettings> frmOptions = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings()))
                     {
@@ -1493,11 +1493,9 @@ namespace Chummer
             string strBook = await LanguageBookCodeFromAltCodeAsync(astrSourceParts[0], string.Empty, objCharacter);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            SourcebookInfo objBookInfo = GlobalSettings.SourcebookInfos.ContainsKey(strBook)
-                ? GlobalSettings.SourcebookInfos[strBook]
-                : null;
+            (bool blnSuccess, SourcebookInfo objBookInfo) = await GlobalSettings.SourcebookInfos.TryGetValueAsync(strBook);
             // If the sourcebook was not found, we can't open anything.
-            if (objBookInfo == null)
+            if (!blnSuccess || objBookInfo == null)
                 return;
             Uri uriPath = null;
             try
@@ -1518,7 +1516,7 @@ namespace Chummer
                 if (Program.ShowMessageBox(string.Format(await LanguageManager.GetStringAsync("Message_NoLinkedPDF"), await LanguageBookLongAsync(strBook)),
                         await LanguageManager.GetStringAsync("MessageTitle_NoLinkedPDF"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
-                using (CursorWait.New(Program.MainForm))
+                using (await CursorWait.NewAsync(Program.MainForm))
                 {
                     using (ThreadSafeForm<EditGlobalSettings> frmOptions = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings()))
                     {
@@ -1610,11 +1608,9 @@ namespace Chummer
                 : await LanguageBookCodeFromAltCodeAsync(strTemp[0], string.Empty, objCharacter);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            SourcebookInfo objBookInfo = GlobalSettings.SourcebookInfos.ContainsKey(strBook)
-                ? GlobalSettings.SourcebookInfos[strBook]
-                : null;
+            (bool blnSuccess, SourcebookInfo objBookInfo) = await GlobalSettings.SourcebookInfos.TryGetValueAsync(strBook);
             // If the sourcebook was not found, we can't open anything.
-            if (objBookInfo == null)
+            if (!blnSuccess || objBookInfo == null)
                 return string.Empty;
 
             Uri uriPath;

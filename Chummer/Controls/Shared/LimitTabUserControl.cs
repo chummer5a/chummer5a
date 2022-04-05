@@ -53,15 +53,15 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private void LimitTabUserControl_Load(object sender, EventArgs e)
+        private async void LimitTabUserControl_Load(object sender, EventArgs e)
         {
             if (_objCharacter != null)
                 return;
-            using (CursorWait.New(this))
-                RealLoad();
+            using (await CursorWait.NewAsync(this))
+                await RealLoad();
         }
 
-        public void RealLoad()
+        public Task RealLoad()
         {
             if (ParentForm is CharacterShared frmParent)
                 _objCharacter = frmParent.CharacterObject;
@@ -73,7 +73,7 @@ namespace Chummer.UI.Shared
             }
 
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
-                return;
+                return Task.CompletedTask;
 
             lblPhysical.DoOneWayDataBinding("Text", _objCharacter, nameof(Character.LimitPhysical));
             lblPhysical.DoOneWayDataBinding("ToolTipText", _objCharacter, nameof(Character.LimitPhysicalToolTip));
@@ -85,7 +85,7 @@ namespace Chummer.UI.Shared
             lblAstral.DoOneWayDataBinding("ToolTipText", _objCharacter, nameof(Character.LimitAstralToolTip));
 
             _objCharacter.LimitModifiers.CollectionChanged += LimitModifierCollectionChanged;
-            RefreshLimitModifiers();
+            return RefreshLimitModifiers();
         }
 
         #region Click Events
@@ -204,25 +204,31 @@ namespace Chummer.UI.Shared
             MakeDirty?.Invoke(this, EventArgs.Empty);
         }
 
-        private void RefreshLimitModifiers(NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        private async Task RefreshLimitModifiers(NotifyCollectionChangedEventArgs e = null)
         {
-            string strSelectedId = (treLimit.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+            string strSelectedId = (await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) as IHasInternalId)?.InternalId ?? string.Empty;
 
             TreeNode[] aobjLimitNodes = new TreeNode[(int)LimitType.NumLimitTypes];
 
-            if (notifyCollectionChangedEventArgs == null)
+            if (e == null)
             {
-                treLimit.Nodes.Clear();
+                await treLimit.DoThreadSafeAsync(x => x.Nodes.Clear());
 
                 // Add Limit Modifiers.
                 foreach (LimitModifier objLimitModifier in _objCharacter.LimitModifiers)
                 {
                     int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
-                    TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
-                    if (!objParentNode.Nodes.ContainsKey(objLimitModifier.CurrentDisplayName))
+                    TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit);
+                    await treLimit.DoThreadSafeAsync(() =>
                     {
-                        objParentNode.Nodes.Add(objLimitModifier.CreateTreeNode(objLimitModifier.CanDelete ? cmsLimitModifier : cmsLimitModifierNotesOnly));
-                    }
+                        if (!objParentNode.Nodes.ContainsKey(objLimitModifier.CurrentDisplayName))
+                        {
+                            objParentNode.Nodes.Add(objLimitModifier.CreateTreeNode(
+                                                        objLimitModifier.CanDelete
+                                                            ? cmsLimitModifier
+                                                            : cmsLimitModifierNotesOnly));
+                        }
+                    });
                 }
 
                 // Add Limit Modifiers from Improvements
@@ -247,92 +253,111 @@ namespace Chummer.UI.Shared
                             intTargetLimit = (int)LimitType.Social;
                             break;
                     }
+
                     if (intTargetLimit != -1)
                     {
-                        TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
-                        string strName = objImprovement.UniqueName + LanguageManager.GetString("String_Colon") + LanguageManager.GetString("String_Space");
+                        TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit);
+                        string strName = objImprovement.UniqueName
+                                         + await LanguageManager.GetStringAsync("String_Colon")
+                                         + await LanguageManager.GetStringAsync("String_Space");
                         if (objImprovement.Value > 0)
                             strName += '+';
                         strName += objImprovement.Value.ToString(GlobalSettings.CultureInfo);
                         if (!string.IsNullOrEmpty(objImprovement.Condition))
-                            strName += ',' + LanguageManager.GetString("String_Space") + objImprovement.Condition;
-                        if (!objParentNode.Nodes.ContainsKey(strName))
+                            strName += ',' + await LanguageManager.GetStringAsync("String_Space")
+                                           + objImprovement.Condition;
+                        await treLimit.DoThreadSafeAsync(() =>
                         {
-                            TreeNode objNode = new TreeNode
+                            if (!objParentNode.Nodes.ContainsKey(strName))
                             {
-                                Name = strName,
-                                Text = strName,
-                                Tag = objImprovement.SourceName,
-                                ContextMenuStrip = cmsLimitModifierNotesOnly,
-                                ForeColor = objImprovement.PreferredColor,
-                                ToolTipText = objImprovement.Notes.WordWrap()
-                            };
-                            if (string.IsNullOrEmpty(objImprovement.ImprovedName))
-                            {
-                                switch (objImprovement.ImproveType)
+                                TreeNode objNode = new TreeNode
                                 {
-                                    case Improvement.ImprovementType.SocialLimit:
-                                        objImprovement.ImprovedName = "Social";
-                                        break;
+                                    Name = strName,
+                                    Text = strName,
+                                    Tag = objImprovement.SourceName,
+                                    ContextMenuStrip = cmsLimitModifierNotesOnly,
+                                    ForeColor = objImprovement.PreferredColor,
+                                    ToolTipText = objImprovement.Notes.WordWrap()
+                                };
+                                if (string.IsNullOrEmpty(objImprovement.ImprovedName))
+                                {
+                                    switch (objImprovement.ImproveType)
+                                    {
+                                        case Improvement.ImprovementType.SocialLimit:
+                                            objImprovement.ImprovedName = "Social";
+                                            break;
 
-                                    case Improvement.ImprovementType.MentalLimit:
-                                        objImprovement.ImprovedName = "Mental";
-                                        break;
+                                        case Improvement.ImprovementType.MentalLimit:
+                                            objImprovement.ImprovedName = "Mental";
+                                            break;
 
-                                    default:
-                                        objImprovement.ImprovedName = "Physical";
-                                        break;
+                                        default:
+                                            objImprovement.ImprovedName = "Physical";
+                                            break;
+                                    }
                                 }
-                            }
 
-                            objParentNode.Nodes.Add(objNode);
-                        }
+                                objParentNode.Nodes.Add(objNode);
+                            }
+                        });
                     }
                 }
 
-                treLimit.SortCustomAlphabetically(strSelectedId);
+                await treLimit.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId));
             }
             else
             {
-                aobjLimitNodes[0] = treLimit.FindNode("Node_Physical", false);
-                aobjLimitNodes[1] = treLimit.FindNode("Node_Mental", false);
-                aobjLimitNodes[2] = treLimit.FindNode("Node_Social", false);
-                aobjLimitNodes[3] = treLimit.FindNode("Node_Astral", false);
+                await treLimit.DoThreadSafeAsync(x =>
+                {
+                    aobjLimitNodes[0] = x.FindNode("Node_Physical", false);
+                    aobjLimitNodes[1] = x.FindNode("Node_Mental", false);
+                    aobjLimitNodes[2] = x.FindNode("Node_Social", false);
+                    aobjLimitNodes[3] = x.FindNode("Node_Astral", false);
+                });
 
-                switch (notifyCollectionChangedEventArgs.Action)
+                switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
+                    {
+                        foreach (LimitModifier objLimitModifier in e.NewItems)
                         {
-                            foreach (LimitModifier objLimitModifier in notifyCollectionChangedEventArgs.NewItems)
+                            int intTargetLimit = (int) Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
+                            TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit);
+                            await treLimit.DoThreadSafeAsync(x =>
                             {
-                                int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
-                                TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
                                 TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
                                 if (!lstParentNodeChildren.ContainsKey(objLimitModifier.CurrentDisplayName))
                                 {
-                                    TreeNode objNode = objLimitModifier.CreateTreeNode(objLimitModifier.CanDelete ? cmsLimitModifier : cmsLimitModifierNotesOnly);
+                                    TreeNode objNode = objLimitModifier.CreateTreeNode(
+                                        objLimitModifier.CanDelete ? cmsLimitModifier : cmsLimitModifierNotesOnly);
                                     int intNodesCount = lstParentNodeChildren.Count;
                                     int intTargetIndex = 0;
                                     for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                                     {
-                                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                                        if (CompareTreeNodes.CompareText(
+                                                lstParentNodeChildren[intTargetIndex], objNode) >= 0)
                                         {
                                             break;
                                         }
                                     }
+
                                     lstParentNodeChildren.Insert(intTargetIndex, objNode);
                                     objParentNode.Expand();
-                                    treLimit.SelectedNode = objNode;
+                                    x.SelectedNode = objNode;
                                 }
-                            }
+                            });
                         }
+
                         break;
+                    }
 
                     case NotifyCollectionChangedAction.Remove:
+                    {
+                        await treLimit.DoThreadSafeAsync(x =>
                         {
-                            foreach (LimitModifier objLimitModifier in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (LimitModifier objLimitModifier in e.OldItems)
                             {
-                                TreeNode objNode = treLimit.FindNodeByTag(objLimitModifier);
+                                TreeNode objNode = x.FindNodeByTag(objLimitModifier);
                                 if (objNode != null)
                                 {
                                     TreeNode objParent = objNode.Parent;
@@ -341,60 +366,74 @@ namespace Chummer.UI.Shared
                                         objParent.Remove();
                                 }
                             }
-                        }
+                        });
                         break;
+                    }
 
                     case NotifyCollectionChangedAction.Replace:
+                    {
+                        List<TreeNode> lstOldParentNodes = new List<TreeNode>(e.OldItems.Count);
+                        await treLimit.DoThreadSafeAsync(x =>
                         {
-                            List<TreeNode> lstOldParentNodes = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
-                            foreach (LimitModifier objLimitModifier in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (LimitModifier objLimitModifier in e.OldItems)
                             {
-                                TreeNode objNode = treLimit.FindNodeByTag(objLimitModifier);
+                                TreeNode objNode = x.FindNodeByTag(objLimitModifier);
                                 if (objNode != null)
                                 {
                                     lstOldParentNodes.Add(objNode.Parent);
                                     objNode.Remove();
                                 }
                             }
-                            foreach (LimitModifier objLimitModifier in notifyCollectionChangedEventArgs.NewItems)
+                        });
+                        foreach (LimitModifier objLimitModifier in e.NewItems)
+                        {
+                            int intTargetLimit = (int) Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
+                            TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit);
+                            await treLimit.DoThreadSafeAsync(x =>
                             {
-                                int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
-                                TreeNode objParentNode = GetLimitModifierParentNode(intTargetLimit);
                                 TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
                                 if (!lstParentNodeChildren.ContainsKey(objLimitModifier.CurrentDisplayName))
                                 {
-                                    TreeNode objNode = objLimitModifier.CreateTreeNode(objLimitModifier.CanDelete ? cmsLimitModifier : cmsLimitModifierNotesOnly);
+                                    TreeNode objNode = objLimitModifier.CreateTreeNode(
+                                        objLimitModifier.CanDelete ? cmsLimitModifier : cmsLimitModifierNotesOnly);
                                     int intNodesCount = lstParentNodeChildren.Count;
                                     int intTargetIndex = 0;
                                     for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                                     {
-                                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                                        if (CompareTreeNodes.CompareText(
+                                                lstParentNodeChildren[intTargetIndex], objNode) >= 0)
                                         {
                                             break;
                                         }
                                     }
+
                                     lstParentNodeChildren.Insert(intTargetIndex, objNode);
                                     objParentNode.Expand();
-                                    treLimit.SelectedNode = objNode;
+                                    x.SelectedNode = objNode;
                                 }
-                            }
+                            });
+                        }
+
+                        await treLimit.DoThreadSafeAsync(() =>
+                        {
                             foreach (TreeNode objOldParentNode in lstOldParentNodes)
                             {
                                 if (objOldParentNode.Level == 0 && objOldParentNode.Nodes.Count == 0)
                                     objOldParentNode.Remove();
                             }
-                        }
+                        });
                         break;
+                    }
 
                     case NotifyCollectionChangedAction.Reset:
-                        {
-                            RefreshLimitModifiers();
-                        }
+                    {
+                        await RefreshLimitModifiers();
                         break;
+                    }
                 }
             }
 
-            TreeNode GetLimitModifierParentNode(int intTargetLimit)
+            async ValueTask<TreeNode> GetLimitModifierParentNode(int intTargetLimit)
             {
                 TreeNode objParentNode = aobjLimitNodes[intTargetLimit];
                 if (objParentNode == null)
@@ -405,41 +444,42 @@ namespace Chummer.UI.Shared
                             objParentNode = new TreeNode
                             {
                                 Tag = "Node_Physical",
-                                Text = LanguageManager.GetString("Node_Physical")
+                                Text = await LanguageManager.GetStringAsync("Node_Physical")
                             };
-                            treLimit.Nodes.Insert(0, objParentNode);
+                            await treLimit.DoThreadSafeAsync(x => x.Nodes.Insert(0, objParentNode));
                             break;
 
                         case 1:
                             objParentNode = new TreeNode
                             {
                                 Tag = "Node_Mental",
-                                Text = LanguageManager.GetString("Node_Mental")
+                                Text = await LanguageManager.GetStringAsync("Node_Mental")
                             };
-                            treLimit.Nodes.Insert(aobjLimitNodes[0] == null ? 0 : 1, objParentNode);
+                            await treLimit.DoThreadSafeAsync(x => x.Nodes.Insert(aobjLimitNodes[0] == null ? 0 : 1, objParentNode));
                             break;
 
                         case 2:
                             objParentNode = new TreeNode
                             {
                                 Tag = "Node_Social",
-                                Text = LanguageManager.GetString("Node_Social")
+                                Text = await LanguageManager.GetStringAsync("Node_Social")
                             };
-                            treLimit.Nodes.Insert((aobjLimitNodes[0] == null ? 0 : 1) + (aobjLimitNodes[1] == null ? 0 : 1), objParentNode);
+                            await treLimit.DoThreadSafeAsync(x => x.Nodes.Insert((aobjLimitNodes[0] == null ? 0 : 1) + (aobjLimitNodes[1] == null ? 0 : 1), objParentNode));
                             break;
 
                         case 3:
                             objParentNode = new TreeNode
                             {
                                 Tag = "Node_Astral",
-                                Text = LanguageManager.GetString("Node_Astral")
+                                Text = await LanguageManager.GetStringAsync("Node_Astral")
                             };
-                            treLimit.Nodes.Add(objParentNode);
+                            await treLimit.DoThreadSafeAsync(x => x.Nodes.Add(objParentNode));
                             break;
                     }
 
                     aobjLimitNodes[intTargetLimit] = objParentNode;
-                    objParentNode?.Expand();
+                    if (objParentNode != null)
+                        await treLimit.DoThreadSafeAsync(() => objParentNode.Expand());
                 }
                 return objParentNode;
             }
@@ -485,9 +525,9 @@ namespace Chummer.UI.Shared
             MakeDirtyWithCharacterUpdate?.Invoke(this, EventArgs.Empty);
         }
 
-        private void LimitModifierCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private async void LimitModifierCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshLimitModifiers(notifyCollectionChangedEventArgs);
+            await RefreshLimitModifiers(e);
         }
 
         #endregion Methods

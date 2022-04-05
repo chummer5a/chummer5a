@@ -121,7 +121,7 @@ namespace Chummer
                 Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(_objContact.LinkedCharacter)
                     ? _objContact.LinkedCharacter
                     : null;
-                using (CursorWait.New(ParentForm))
+                using (await CursorWait.NewAsync(ParentForm))
                 {
                     if (objOpenCharacter == null)
                     {
@@ -175,7 +175,7 @@ namespace Chummer
 
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
-                using (CursorWait.New(ParentForm))
+                using (await CursorWait.NewAsync(ParentForm))
                 {
                     _objContact.FileName = openFileDialog.FileName;
                     string strText = await LanguageManager.GetStringAsync("Tip_Contact_OpenFile");

@@ -21,12 +21,13 @@ using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using NLog;
 
 namespace Chummer
 {
-    public sealed class CursorWait : IDisposable
+    public sealed class CursorWait : IDisposable, IAsyncDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private static int _intApplicationWaitCursors;
@@ -34,7 +35,7 @@ namespace Chummer
         private readonly bool _blnAppStartingCursor;
         private bool _blnDisposed;
         private readonly Control _objControl;
-        private readonly Form _frmControlTopParent;
+        private Form _frmControlTopParent;
         private readonly Stopwatch _objTimer = new Stopwatch();
         private readonly Guid _guidInstance = Guid.NewGuid();
 
@@ -48,6 +49,29 @@ namespace Chummer
                     Application.UseWaitCursor = true;
                 }
                 return objReturn;
+            }
+            Form frmControl = objReturn._objControl as Form;
+            if (frmControl?.DoThreadSafeFunc(x => x.IsMdiChild) != false)
+            {
+                if (frmControl != null)
+                {
+                    objReturn._frmControlTopParent = frmControl.DoThreadSafeFunc(x => x.MdiParent);
+                }
+                else if (objReturn._objControl is UserControl objUserControl)
+                {
+                    objReturn._frmControlTopParent = objUserControl.DoThreadSafeFunc(x => x.ParentForm);
+                }
+                else if (objReturn._objControl != null)
+                {
+                    for (Control objLoop = objReturn._objControl.DoThreadSafeFunc(x => x.Parent); objLoop != null; objLoop = objLoop.DoThreadSafeFunc(x => x.Parent))
+                    {
+                        if (objLoop is Form objLoopForm)
+                        {
+                            objReturn._frmControlTopParent = objLoopForm;
+                            break;
+                        }
+                    }
+                }
             }
             objReturn._objTimer.Start();
             Log.Trace("CursorWait for Control \"" + objControl + "\" started with Guid \"" + objReturn._guidInstance + "\".");
@@ -68,33 +92,62 @@ namespace Chummer
             return objReturn;
         }
 
-        private CursorWait(Control objControl = null, bool blnAppStarting = false)
+        public static async Task<CursorWait> NewAsync(Control objControl = null, bool blnAppStarting = false)
         {
-            _objControl = objControl;
-            Form frmControl = _objControl as Form;
-            if (frmControl?.DoThreadSafeFunc(x => x.IsMdiChild) != false)
+            CursorWait objReturn = new CursorWait(objControl, blnAppStarting);
+            if (objReturn._objControl.IsNullOrDisposed())
+            {
+                if (Interlocked.Increment(ref _intApplicationWaitCursors) == 1)
+                {
+                    Application.UseWaitCursor = true;
+                }
+                return objReturn;
+            }
+            Form frmControl = objReturn._objControl as Form;
+            if (frmControl == null || await frmControl.DoThreadSafeFuncAsync(x => x.IsMdiChild))
             {
                 if (frmControl != null)
                 {
-                    _frmControlTopParent = frmControl.DoThreadSafeFunc(x => x.MdiParent);
+                    objReturn._frmControlTopParent = await frmControl.DoThreadSafeFuncAsync(x => x.MdiParent);
                 }
-                else if (_objControl is UserControl objUserControl)
+                else if (objReturn._objControl is UserControl objUserControl)
                 {
-                    _frmControlTopParent = objUserControl.DoThreadSafeFunc(x => x.ParentForm);
+                    objReturn._frmControlTopParent = await objUserControl.DoThreadSafeFuncAsync(x => x.ParentForm);
                 }
-                else
+                else if (objReturn._objControl != null)
                 {
-                    for (Control objLoop = _objControl?.DoThreadSafeFunc(x => x.Parent); objLoop != null; objLoop = objLoop.DoThreadSafeFunc(x => x.Parent))
+                    for (Control objLoop = await objReturn._objControl.DoThreadSafeFuncAsync(x => x.Parent); objLoop != null; objLoop = await objLoop.DoThreadSafeFuncAsync(x => x.Parent))
                     {
                         if (objLoop is Form objLoopForm)
                         {
-                            _frmControlTopParent = objLoopForm;
+                            objReturn._frmControlTopParent = objLoopForm;
                             break;
                         }
                     }
                 }
             }
+            objReturn._objTimer.Start();
+            Log.Trace("CursorWait for Control \"" + objControl + "\" started with Guid \"" + objReturn._guidInstance + "\".");
 
+            if (objReturn._objControl != null)
+            {
+                if (objReturn._blnAppStartingCursor)
+                {
+                    int intNewValue = s_DicCursorControls.AddOrUpdate(objReturn._objControl, 1, (x, y) => Interlocked.Increment(ref y));
+                    await objReturn.SetControlCursorAsync(intNewValue < short.MaxValue ? Cursors.AppStarting : Cursors.WaitCursor);
+                }
+                else
+                {
+                    s_DicCursorControls.AddOrUpdate(objReturn._objControl, short.MaxValue, (x, y) => Interlocked.Add(ref y, short.MaxValue));
+                    await objReturn.SetControlCursorAsync(Cursors.WaitCursor);
+                }
+            }
+            return objReturn;
+        }
+
+        private CursorWait(Control objControl = null, bool blnAppStarting = false)
+        {
+            _objControl = objControl;
             _blnAppStartingCursor = blnAppStarting;
         }
 
@@ -109,6 +162,22 @@ namespace Chummer
             {
                 _objControl.DoThreadSafe(x => x.ResetCursor());
                 _frmControlTopParent?.DoThreadSafe(x => x.ResetCursor());
+            }
+        }
+
+        private async Task SetControlCursorAsync(Cursor objCursor)
+        {
+            if (objCursor != null)
+            {
+                await _objControl.DoThreadSafeAsync(x => x.Cursor = objCursor);
+                if (_frmControlTopParent != null)
+                    await _frmControlTopParent.DoThreadSafeAsync(x => x.Cursor = objCursor);
+            }
+            else
+            {
+                await _objControl.DoThreadSafeAsync(x => x.ResetCursor());
+                if (_frmControlTopParent != null)
+                    await _frmControlTopParent.DoThreadSafeAsync(x => x.ResetCursor());
             }
         }
 
@@ -148,6 +217,46 @@ namespace Chummer
                 }
                 else
                     SetControlCursor(null);
+            }
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            if (_blnDisposed)
+                return;
+            _blnDisposed = true;
+            if (_objControl == null)
+            {
+                if (Interlocked.Decrement(ref _intApplicationWaitCursors) == 0)
+                {
+                    Application.UseWaitCursor = false;
+                }
+                return;
+            }
+            Log.Trace("CursorWait for Control \"" + _objControl + "\" disposing with Guid \"" + _guidInstance + "\" after " + _objTimer.ElapsedMilliseconds + "ms.");
+            _objTimer.Stop();
+            if (_blnAppStartingCursor)
+            {
+                if (s_DicCursorControls.TryRemove(_objControl, out int intCurrentValue))
+                {
+                    int intDecrementedValue = Interlocked.Decrement(ref intCurrentValue);
+                    if (intDecrementedValue > 0)
+                        s_DicCursorControls.AddOrUpdate(_objControl, intDecrementedValue, (x, y) => y + intDecrementedValue);
+                    else
+                        await SetControlCursorAsync(null);
+                }
+            }
+            else if (s_DicCursorControls.TryRemove(_objControl, out int intCurrentValue))
+            {
+                int intDecrementedValue = Interlocked.Add(ref intCurrentValue, -short.MaxValue);
+                if (intDecrementedValue > 0)
+                {
+                    s_DicCursorControls.AddOrUpdate(_objControl, intDecrementedValue, (x, y) => y + intDecrementedValue);
+                    await SetControlCursorAsync(intDecrementedValue < short.MaxValue ? Cursors.AppStarting : Cursors.WaitCursor);
+                }
+                else
+                    await SetControlCursorAsync(null);
             }
         }
     }

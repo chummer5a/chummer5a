@@ -458,7 +458,7 @@ namespace Chummer.Plugins
             {
                 try
                 {
-                    using (CursorWait.New(MainForm, true))
+                    using (await CursorWait.NewAsync(MainForm, true))
                     {
                         using (CharacterExtended ce = await GetMyCeAsync(input))
                         {
@@ -647,7 +647,7 @@ namespace Chummer.Plugins
             ResultGroupGetSearchGroups res = null;
             try
             {
-                using (CursorWait.New(MainForm, true))
+                using (await CursorWait.NewAsync(MainForm, true))
                 {
                     SinnersClient client = StaticUtils.GetClient();
                     res = await client.GetPublicGroupAsync("Archetypes", string.Empty);
@@ -770,7 +770,7 @@ namespace Chummer.Plugins
         {
             try
             {
-                using (CursorWait.New(frmCharRoster, true))
+                using (await CursorWait.NewAsync(frmCharRoster, true))
                 {
                     IEnumerable<TreeNode> res = null;
                     if (Settings.Default.UserModeRegistered)
@@ -931,7 +931,7 @@ namespace Chummer.Plugins
         {
             try
             {
-                using (CursorWait.New(MainForm.CharacterRoster, true))
+                using (await CursorWait.NewAsync(MainForm.CharacterRoster, true))
                 {
                     SINSearchGroupResult MySINSearchGroupResult = await ucSINnerGroupSearch.SearchForGroups(null);
                     SINnerSearchGroup item = MySINSearchGroupResult.SinGroups.FirstOrDefault(x => x.Groupname?.Contains("My Data") == true);
@@ -1334,7 +1334,7 @@ namespace Chummer.Plugins
                         return;
                 }
             }
-            using (CursorWait.New(MainForm))
+            using (await CursorWait.NewAsync(MainForm))
             {
                 if (!await Program.SwitchToOpenCharacter(objCharacter))
                     await Program.OpenCharacter(objCharacter, false);

@@ -83,9 +83,9 @@ namespace Chummer
             }
         }
 
-        private static void TmrDarkModeCheckerTimerOnTick(object sender, EventArgs e)
+        private static async void TmrDarkModeCheckerTimerOnTick(object sender, EventArgs e)
         {
-            AutoApplyLightDarkMode();
+            await AutoApplyLightDarkModeAsync();
         }
 
         public static void AutoApplyLightDarkMode()
@@ -93,6 +93,15 @@ namespace Chummer
             if (GlobalSettings.ColorModeSetting == ColorMode.Automatic)
             {
                 IsLightMode = !DoesRegistrySayDarkMode();
+                s_TmrDarkModeCheckerTimer.Enabled = true;
+            }
+        }
+
+        public static async Task AutoApplyLightDarkModeAsync()
+        {
+            if (GlobalSettings.ColorModeSetting == ColorMode.Automatic)
+            {
+                await SetIsLightModeAsync(!DoesRegistrySayDarkMode());
                 s_TmrDarkModeCheckerTimer.Enabled = true;
             }
         }
@@ -115,16 +124,35 @@ namespace Chummer
         public static bool IsLightMode
         {
             get => _blnIsLightMode;
-            set
+            private set
             {
                 if (_blnIsLightMode == value)
                     return;
                 _blnIsLightMode = value;
-                Program.MainForm?.DoThreadSafe(x =>
+                if (Program.MainForm == null)
+                    return;
+                using (CursorWait.New(Program.MainForm))
+                    Program.MainForm.UpdateLightDarkMode();
+            }
+        }
+
+        public static Task SetIsLightModeAsync(bool blnNewValue)
+        {
+            if (_blnIsLightMode == blnNewValue)
+                return Task.CompletedTask;
+            _blnIsLightMode = blnNewValue;
+            return Program.MainForm == null ? Task.CompletedTask : Inner();
+            async Task Inner()
+            {
+                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm);
+                try
                 {
-                    using (CursorWait.New(x))
-                        x.UpdateLightDarkMode();
-                });
+                    await Program.MainForm.UpdateLightDarkModeAsync();
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
             }
         }
 
@@ -404,15 +432,108 @@ namespace Chummer
         private static Color DieHitForeDark => GenerateDarkModeColor(DieHitForeLight);
         public static Color DieHitBackground => IsLightMode ? DieHitBackgroundLight : DieHitBackgroundDark;
         private static Color DieHitBackgroundLight { get; } = Color.LightGreen;
-
         private static Color DieHitBackgroundDark => GenerateDarkModeColor(DieHitBackgroundLight);
         public static Color DieGlitchHitFore => IsLightMode ? DieGlitchHitForeLight : DieGlitchHitForeDark;
         private static Color DieGlitchHitForeLight => ControlTextLight;
         private static Color DieGlitchHitForeDark => GenerateDarkModeColor(DieHitForeLight);
         public static Color DieGlitchHitBackground => IsLightMode ? DieGlitchHitBackgroundLight : DieGlitchHitBackgroundDark;
         private static Color DieGlitchHitBackgroundLight { get; } = Color.DarkGreen;
-
         private static Color DieGlitchHitBackgroundDark => GenerateDarkModeColor(DieHitBackgroundLight);
+
+        public static Task<Color> WindowTextAsync => IsLightMode ? WindowTextLightAsync : WindowTextDarkAsync;
+        private static Task<Color> WindowTextLightAsync => Task.FromResult(WindowTextLight);
+        private static Task<Color> WindowTextDarkAsync => GenerateDarkModeColorAsync(WindowTextLight);
+
+        public static Task<Color> WindowAsync => IsLightMode ? WindowLightAsync : WindowDarkAsync;
+        private static Task<Color> WindowLightAsync => Task.FromResult(WindowLight);
+        private static Task<Color> WindowDarkAsync => GenerateDarkModeColorAsync(WindowLight);
+
+        public static Task<Color> InfoTextAsync => IsLightMode ? InfoTextLightAsync : InfoTextDarkAsync;
+        private static Task<Color> InfoTextLightAsync => Task.FromResult(InfoTextLight);
+        private static Task<Color> InfoTextDarkAsync => GenerateDarkModeColorAsync(InfoTextLight);
+
+        public static Task<Color> InfoAsync => IsLightMode ? InfoLightAsync : InfoDarkAsync;
+        private static Task<Color> InfoLightAsync => Task.FromResult(InfoLight);
+        private static Task<Color> InfoDarkAsync => GenerateDarkModeColorAsync(InfoLight);
+
+        public static Task<Color> GrayTextAsync => IsLightMode ? GrayTextLightAsync : GrayTextDarkAsync;
+        private static Task<Color> GrayTextLightAsync => Task.FromResult(GrayTextLight);
+        private static Task<Color> GrayTextDarkAsync => GenerateDarkModeColorAsync(GrayTextLight);
+
+        public static Task<Color> HighlightTextAsync => IsLightMode ? HighlightTextLightAsync : HighlightTextDarkAsync;
+        private static Task<Color> HighlightTextLightAsync => Task.FromResult(HighlightTextLight);
+        private static Task<Color> HighlightTextDarkAsync => GenerateDarkModeColorAsync(HighlightTextLight);
+
+        public static Task<Color> HighlightAsync => IsLightMode ? HighlightLightAsync : HighlightDarkAsync;
+        private static Task<Color> HighlightLightAsync => Task.FromResult(HighlightLight);
+        private static Task<Color> HighlightDarkAsync => GenerateDarkModeColorAsync(HighlightLight);
+
+        public static Task<Color> ControlTextAsync => IsLightMode ? ControlTextLightAsync : ControlTextDarkAsync;
+        private static Task<Color> ControlTextLightAsync => Task.FromResult(ControlTextLight);
+        private static Task<Color> ControlTextDarkAsync => GenerateDarkModeColorAsync(ControlTextLight);
+
+        public static Task<Color> ControlDarkestAsync => IsLightMode ? ControlDarkestLightAsync : ControlDarkestDarkAsync;
+        private static Task<Color> ControlDarkestLightAsync => Task.FromResult(ControlDarkestLight);
+        private static Task<Color> ControlDarkestDarkAsync => GenerateDarkModeColorAsync(ControlDarkestLight);
+
+        public static Task<Color> ControlDarkerAsync => IsLightMode ? ControlDarkerLightAsync : ControlDarkerDarkAsync;
+        private static Task<Color> ControlDarkerLightAsync => Task.FromResult(ControlDarkerLight);
+        private static Task<Color> ControlDarkerDarkAsync => GenerateDarkModeColorAsync(ControlDarkerLight);
+
+        public static Task<Color> ControlAsync => IsLightMode ? ControlLightAsync : ControlDarkAsync;
+        private static Task<Color> ControlLightAsync => Task.FromResult(ControlLight);
+        private static Task<Color> ControlDarkAsync => GenerateDarkModeColorAsync(ControlLight);
+
+        public static Task<Color> ControlLighterAsync => IsLightMode ? ControlLighterLightAsync : ControlLighterDarkAsync;
+        private static Task<Color> ControlLighterLightAsync => Task.FromResult(ControlLighterLight);
+        private static Task<Color> ControlLighterDarkAsync => GenerateDarkModeColorAsync(ControlLight);
+
+        public static Task<Color> ControlLightestAsync => IsLightMode ? ControlLightestLightAsync : ControlLightestDarkAsync;
+        private static Task<Color> ControlLightestLightAsync => Task.FromResult(ControlLightestLight);
+        private static Task<Color> ControlLightestDarkAsync => GenerateDarkModeColorAsync(ControlLightestLight);
+
+        public static Task<Color> ButtonFaceAsync => IsLightMode ? ButtonFaceLightAsync : ButtonFaceDarkAsync;
+        private static Task<Color> ButtonFaceLightAsync => Task.FromResult(ButtonFaceLight);
+        private static Task<Color> ButtonFaceDarkAsync => GenerateDarkModeColorAsync(ButtonFaceLight);
+
+        public static Task<Color> ButtonShadowAsync => IsLightMode ? ButtonShadowLightAsync : ButtonShadowDarkAsync;
+        private static Task<Color> ButtonShadowLightAsync => Task.FromResult(ButtonShadowLight);
+        private static Task<Color> ButtonShadowDarkAsync => GenerateDarkModeColorAsync(ButtonShadowLight);
+
+        public static Task<Color> AppWorkspaceAsync => IsLightMode ? AppWorkspaceLightAsync : AppWorkspaceDarkAsync;
+        private static Task<Color> AppWorkspaceLightAsync => Task.FromResult(AppWorkspaceLight);
+        private static Task<Color> AppWorkspaceDarkAsync => GenerateDarkModeColorAsync(AppWorkspaceLight);
+
+        public static Task<Color> SplitterColorAsync => IsLightMode ? SplitterColorLightAsync : SplitterColorDarkAsync;
+        private static Task<Color> SplitterColorLightAsync => Task.FromResult(SplitterColorLight);
+        private static Task<Color> SplitterColorDarkAsync => GenerateDarkModeColorAsync(SplitterColorLight);
+
+        public static Task<Color> HasNotesColorAsync => IsLightMode ? HasNotesColorLightAsync : HasNotesColorDarkAsync;
+        private static Task<Color> HasNotesColorLightAsync => Task.FromResult(HasNotesColorLight);
+        private static Task<Color> HasNotesColorDarkAsync => GenerateDarkModeColorAsync(HasNotesColorLight);
+
+        public static Task<Color> GrayHasNotesColorAsync => IsLightMode ? GrayHasNotesColorLightAsync : GrayHasNotesColorDarkAsync;
+        private static Task<Color> GrayHasNotesColorLightAsync => Task.FromResult(GrayHasNotesColorLight);
+        private static Task<Color> GrayHasNotesColorDarkAsync => GenerateDarkModeColorAsync(GrayHasNotesColorLight);
+
+        public static Task<Color> DieGlitchForeAsync => IsLightMode ? DieGlitchForeLightAsync : DieGlitchForeDarkAsync;
+        private static Task<Color> DieGlitchForeLightAsync => Task.FromResult(DieGlitchForeLight);
+        private static Task<Color> DieGlitchForeDarkAsync => GenerateDarkModeColorAsync(DieGlitchForeLight);
+        public static Task<Color> DieGlitchBackgroundAsync => IsLightMode ? DieGlitchBackgroundLightAsync : DieGlitchBackgroundDarkAsync;
+        private static Task<Color> DieGlitchBackgroundLightAsync => Task.FromResult(DieGlitchBackgroundLight);
+        private static Task<Color> DieGlitchBackgroundDarkAsync => GenerateDarkModeColorAsync(DieGlitchBackgroundLight);
+        public static Task<Color> DieHitForeAsync => IsLightMode ? DieHitForeLightAsync : DieHitForeDarkAsync;
+        private static Task<Color> DieHitForeLightAsync => Task.FromResult(DieHitForeLight);
+        private static Task<Color> DieHitForeDarkAsync => GenerateDarkModeColorAsync(DieHitForeLight);
+        public static Task<Color> DieHitBackgroundAsync => IsLightMode ? DieHitBackgroundLightAsync : DieHitBackgroundDarkAsync;
+        private static Task<Color> DieHitBackgroundLightAsync => Task.FromResult(DieHitBackgroundLight);
+        private static Task<Color> DieHitBackgroundDarkAsync => GenerateDarkModeColorAsync(DieHitBackgroundLight);
+        public static Task<Color> DieGlitchHitForeAsync => IsLightMode ? DieGlitchHitForeLightAsync : DieGlitchHitForeDarkAsync;
+        private static Task<Color> DieGlitchHitForeLightAsync => Task.FromResult(DieGlitchHitForeLight);
+        private static Task<Color> DieGlitchHitForeDarkAsync => GenerateDarkModeColorAsync(DieHitForeLight);
+        public static Task<Color> DieGlitchHitBackgroundAsync => IsLightMode ? DieGlitchHitBackgroundLightAsync : DieGlitchHitBackgroundDarkAsync;
+        private static Task<Color> DieGlitchHitBackgroundLightAsync => Task.FromResult(DieGlitchHitBackgroundLight);
+        private static Task<Color> DieGlitchHitBackgroundDarkAsync => GenerateDarkModeColorAsync(DieHitBackgroundLight);
 
         public static void UpdateLightDarkMode(this Control objControl)
         {
@@ -432,6 +553,16 @@ namespace Chummer
         public static void UpdateLightDarkMode(this ToolStripItem tssItem, bool blnLightMode)
         {
             ApplyColorsRecursively(tssItem, blnLightMode);
+        }
+
+        public static Task UpdateLightDarkModeAsync(this Control objControl)
+        {
+            return ApplyColorsRecursivelyAsync(objControl, IsLightMode);
+        }
+
+        public static Task UpdateLightDarkModeAsync(this Control objControl, bool blnLightMode)
+        {
+            return ApplyColorsRecursivelyAsync(objControl, blnLightMode);
         }
 
         #region Color Inversion Methods
@@ -680,7 +811,7 @@ namespace Chummer
                             if (blnLightMode) // Disabled case for Light mode already handled by the switch above
                                 x.ForeColor = ControlTextLight;
                             else
-                                x.ForeColor = chkControlColored.Enabled ? ControlTextDark : GrayText;
+                                x.ForeColor = x.Enabled ? ControlTextDark : GrayText;
                         });
                         break;
                     }
@@ -794,6 +925,234 @@ namespace Chummer
 
             foreach (TreeNode nodNodeChild in nodNode.Nodes)
                 ApplyColorsRecursively(nodNodeChild, blnLightMode);
+        }
+
+        private static async Task ApplyColorsRecursivelyAsync(Control objControl, bool blnLightMode)
+        {
+            Task ApplyButtonStyle()
+            {
+                // Buttons look weird if colored based on anything other than the default color scheme in dark mode
+                return objControl.DoThreadSafeAsync(x => x.ForeColor = SystemColors.ControlText);
+            }
+            switch (objControl)
+            {
+                case DataGridView objDataGridView:
+                    await objDataGridView.DoThreadSafeAsync(x =>
+                    {
+                        x.BackgroundColor = blnLightMode ? AppWorkspaceLight : AppWorkspaceDark;
+                        x.GridColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                        x.DefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                        x.DefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;
+                        x.ColumnHeadersDefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                        x.ColumnHeadersDefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;
+                        x.AlternatingRowsDefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                        x.AlternatingRowsDefaultCellStyle.BackColor
+                            = blnLightMode ? ControlLighterLight : ControlLighterDark;
+                        x.RowTemplate.DefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                        x.RowTemplate.DefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;
+                        foreach (DataGridViewTextBoxColumn objColumn in x.Columns)
+                        {
+                            objColumn.DefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                            objColumn.DefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;
+                        }
+                    });
+                    break;
+
+                case SplitContainer objSplitControl:
+                    await objSplitControl.DoThreadSafeAsync(x =>
+                    {
+                        x.ForeColor = blnLightMode
+                            ? SplitterColorLight
+                            : SplitterColorDark;
+                        x.BackColor = blnLightMode ? SplitterColorLight : SplitterColorDark;
+                    });
+                    await ApplyColorsRecursivelyAsync(await objSplitControl.DoThreadSafeFuncAsync(x => x.Panel1), blnLightMode);
+                    await ApplyColorsRecursivelyAsync(await objSplitControl.DoThreadSafeFuncAsync(x => x.Panel2), blnLightMode);
+                    break;
+
+                case TreeView treControl:
+                    await treControl.DoThreadSafeAsync(x =>
+                    {
+                        x.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
+                        x.BackColor = blnLightMode ? WindowLight : WindowDark;
+                        x.LineColor = blnLightMode ? WindowTextLight : WindowTextDark;
+                        foreach (TreeNode objNode in x.Nodes)
+                            ApplyColorsRecursively(objNode, blnLightMode);
+                    });
+                    break;
+
+                case TextBox txtControl:
+                    await txtControl.DoThreadSafeAsync(x =>
+                    {
+                        if (x.ForeColor == ErrorColor)
+                            x.ForeColor = ErrorColor;
+                        else if (blnLightMode)
+                            x.ForeColor = WindowTextLight;
+                        else
+                            x.ForeColor = WindowTextDark;
+                        if (x.ReadOnly)
+                            x.BackColor = blnLightMode ? ControlLight : ControlDark;
+                        else
+                            x.BackColor = blnLightMode ? WindowLight : WindowDark;
+                    });
+                    break;
+
+                case ListView objListView:
+                    await objListView.DoThreadSafeAsync(x =>
+                    {
+                        x.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
+                        x.BackColor = blnLightMode ? WindowLight : WindowDark;
+                        foreach (DiceRollerListViewItem objItem in x.Items)
+                        {
+                            if (objItem.IsHit)
+                            {
+                                if (objItem.IsGlitch)
+                                {
+                                    objItem.ForeColor = blnLightMode ? DieGlitchHitForeLight : DieGlitchHitForeDark;
+                                    objItem.BackColor = blnLightMode
+                                        ? DieGlitchHitBackgroundLight
+                                        : DieGlitchHitBackgroundDark;
+                                }
+                                else
+                                {
+                                    objItem.ForeColor = blnLightMode ? DieHitForeLight : DieHitForeDark;
+                                    objItem.BackColor = blnLightMode ? DieHitBackgroundLight : DieHitBackgroundDark;
+                                }
+                            }
+                            else if (objItem.IsGlitch)
+                            {
+                                objItem.ForeColor = blnLightMode ? DieGlitchForeLight : DieGlitchForeDark;
+                                objItem.BackColor = blnLightMode ? DieGlitchBackgroundLight : DieGlitchBackgroundDark;
+                            }
+                            else
+                            {
+                                objItem.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
+                                objItem.BackColor = blnLightMode ? WindowLight : WindowDark;
+                            }
+                        }
+                    });
+                    break;
+
+                case ListBox _:
+                case ComboBox _:
+                case TableCell _:
+                    await objControl.DoThreadSafeAsync(x =>
+                    {
+                        x.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
+                        x.BackColor = blnLightMode ? WindowLight : WindowDark;
+                    });
+                    break;
+
+                case GroupBox _:
+                    await objControl.DoThreadSafeAsync(x =>
+                    {
+                        x.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                        x.BackColor = blnLightMode ? ControlLight : ControlDark;
+                    });
+                    break;
+
+                case ContactControl _:
+                case PetControl _:
+                case SkillControl _:
+                case KnowledgeSkillControl _:
+                    // These controls have colors that are always data-bound
+                    break;
+
+                case RichTextBox _:
+                    // Rtf TextBox is special because we don't want any color changes, otherwise it will mess up the saved Rtf text
+                    return;
+
+                case CheckBox chkControl:
+                    if (await chkControl.DoThreadSafeFuncAsync(x => x.Appearance == Appearance.Button) || chkControl is DpiFriendlyCheckBoxDisguisedAsButton)
+                    {
+                        await ApplyButtonStyle();
+                        break;
+                    }
+
+                    if (chkControl is ColorableCheckBox chkControlColored)
+                    {
+                        await chkControlColored.DoThreadSafeAsync(x =>
+                        {
+                            x.DefaultColorScheme = blnLightMode;
+                            if (blnLightMode) // Disabled case for Light mode already handled by the switch above
+                                x.ForeColor = ControlTextLight;
+                            else
+                                x.ForeColor = x.Enabled ? ControlTextDark : GrayText;
+                        });
+                        break;
+                    }
+                    goto default;
+
+                case Button cmdControl:
+                    if (await cmdControl.DoThreadSafeFuncAsync(x => x.FlatStyle) == FlatStyle.Flat)
+                        goto default;
+                    await ApplyButtonStyle();
+                    break;
+
+                case HeaderCell _:
+                    // Header cells should use inverted colors
+                    await objControl.DoThreadSafeAsync(x =>
+                    {
+                        x.ForeColor = blnLightMode ? ControlLightestLight : ControlLightestDark;
+                        x.BackColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                    });
+                    return;
+
+                case TableLayoutPanel tlpControl:
+                    await tlpControl.DoThreadSafeAsync(x =>
+                    {
+                        if (x.BorderStyle != BorderStyle.None)
+                            x.BorderStyle = blnLightMode ? BorderStyle.FixedSingle : BorderStyle.Fixed3D;
+                    });
+                    goto default;
+                case Form frmControl:
+                    await frmControl.DoThreadSafeAsync(x =>
+                    {
+                        if (x.MainMenuStrip != null)
+                            foreach (ToolStripMenuItem tssItem in x.MainMenuStrip.Items)
+                                ApplyColorsRecursively(tssItem, blnLightMode);
+                    });
+                    goto default;
+                case TabControl objTabControl:
+                    foreach (TabPage tabPage in await objTabControl.DoThreadSafeFuncAsync(x => x.TabPages))
+                        await ApplyColorsRecursivelyAsync(tabPage, blnLightMode);
+                    goto default;
+                case ToolStrip tssStrip:
+                    await tssStrip.DoThreadSafeAsync(x =>
+                    {
+                        foreach (ToolStripItem tssItem in x.Items)
+                            ApplyColorsRecursively(tssItem, blnLightMode);
+                    });
+                    goto default;
+                default:
+                    await objControl.DoThreadSafeAsync(x =>
+                    {
+                        if (x.ForeColor == (blnLightMode ? ControlDark : ControlLight))
+                            x.ForeColor = blnLightMode ? ControlLight : ControlDark;
+                        else if (x.ForeColor == (blnLightMode ? ControlDarkerDark : ControlDarkerLight))
+                            x.ForeColor = blnLightMode ? ControlDarkerLight : ControlDarkerDark;
+                        else if (x.ForeColor == (blnLightMode ? ControlDarkestDark : ControlDarkestLight))
+                            x.ForeColor = blnLightMode ? ControlDarkestLight : ControlDarkestDark;
+                        else
+                            x.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+                        // These controls never have backgrounds set explicitly, so shouldn't have their backgrounds overwritten
+                        if (!(x is Label || x is CheckBox || x is PictureBox || x is Button
+                              || (x is Panel && !(x is SplitterPanel || x is TabPage))))
+                        {
+                            if (x.BackColor == (blnLightMode ? ControlLighterDark : ControlLighterLight))
+                                x.BackColor = blnLightMode ? ControlLighterLight : ControlLighterDark;
+                            else if (x.BackColor == (blnLightMode ? ControlLightestDark : ControlLightestLight))
+                                x.BackColor = blnLightMode ? ControlLightestLight : ControlLightestDark;
+                            else
+                                x.BackColor = blnLightMode ? ControlLight : ControlDark;
+                        }
+                    });
+
+                    break;
+            }
+
+            foreach (Control objChild in await objControl.DoThreadSafeFuncAsync(x => x.Controls))
+                await ApplyColorsRecursivelyAsync(objChild, blnLightMode);
         }
 
         #endregion Color Inversion Methods

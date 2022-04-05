@@ -97,7 +97,7 @@ namespace Chummer
         //in case of a commandline argument not asking for the mainform to be shown.
         private async void ChummerMainForm_Load(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 using (CustomActivity opFrmChummerMain = await Timekeeper.StartSyncronAsync(
                            "frmChummerMain_Load", null, CustomActivity.OperationType.DependencyOperation,
@@ -696,14 +696,14 @@ namespace Chummer
 
         private async void mnuGlobalSettings_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             using (ThreadSafeForm<EditGlobalSettings> frmOptions = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings()))
                 await frmOptions.ShowDialogSafeAsync(this);
         }
 
         private async void mnuCharacterSettings_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             using (ThreadSafeForm<EditCharacterSettings> frmCharacterOptions =
                    await ThreadSafeForm<EditCharacterSettings>.GetAsync(() =>
                        new EditCharacterSettings((tabForms.SelectedTab?.Tag as CharacterShared)?.CharacterObject
@@ -789,7 +789,7 @@ namespace Chummer
 
         private async void mnuNewCritter_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 Character objCharacter = new Character();
                 try
@@ -829,7 +829,7 @@ namespace Chummer
             string strFileName = await mnuProcessFile.DoThreadSafeFuncAsync(() => ((ToolStripMenuItem)sender).Tag) as string;
             if (string.IsNullOrEmpty(strFileName))
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 Character objCharacter;
                 using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strFileName, Character.NumLoadingSections))
@@ -956,7 +956,7 @@ namespace Chummer
         /// <returns></returns>
         public async Task<bool> SwitchToOpenCharacter(Character objCharacter)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 if (objCharacter == null)
                     return false;
@@ -1072,7 +1072,7 @@ namespace Chummer
 
         private async void ChummerMainForm_DragDrop(object sender, DragEventArgs e)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 // Open each file that has been dropped into the window.
                 string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
@@ -1224,7 +1224,7 @@ namespace Chummer
             Character objCharacter = new Character();
             try
             {
-                using (CursorWait.New(this))
+                using (await CursorWait.NewAsync(this))
                 {
                     // Show the BP selection window.
                     using (ThreadSafeForm<SelectBuildMethod> frmBP = await ThreadSafeForm<SelectBuildMethod>.GetAsync(() => new SelectBuildMethod(objCharacter)))
@@ -1254,7 +1254,7 @@ namespace Chummer
                     Program.OpenCharacters.Add(objCharacter);
                 }
 
-                using (CursorWait.New(this))
+                using (await CursorWait.NewAsync(this))
                 {
                     await this.DoThreadSafeAsync(() =>
                     {
@@ -1284,7 +1284,7 @@ namespace Chummer
         {
             if (Utils.IsUnitTest)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 List<string> lstFilesToOpen;
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
@@ -1352,7 +1352,7 @@ namespace Chummer
         /// <param name="blnIncludeInMru">Added the opened characters to the Most Recently Used list.</param>
         public async Task OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = true)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 if (lstCharacters == null)
                     return;
@@ -1418,7 +1418,7 @@ namespace Chummer
         {
             if (Utils.IsUnitTest)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strFile;
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
@@ -1460,7 +1460,7 @@ namespace Chummer
         /// </summary>
         public async Task OpenCharacterForPrinting(Character objCharacter)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 // Character is already open in an existing form, so switch to it and make it open up its print viewer
                 if (await SwitchToOpenCharacter(objCharacter))
@@ -1484,7 +1484,7 @@ namespace Chummer
         {
             if (Utils.IsUnitTest)
                 return;
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 string strFile;
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
@@ -1526,7 +1526,7 @@ namespace Chummer
         /// </summary>
         public async Task OpenCharacterForExport(Character objCharacter)
         {
-            using (CursorWait.New(this))
+            using (await CursorWait.NewAsync(this))
             {
                 // Character is already open in an existing form, so switch to it and make it open up its exporter
                 if (await SwitchToOpenCharacter(objCharacter))
