@@ -719,7 +719,7 @@ namespace Chummer
                         funcToRun(value);
                     MainFormOnAssignActions.Clear();
                     foreach (Func<ChummerMainForm, Task> funcAsyncToRun in MainFormOnAssignAsyncActions)
-                        Task.Run(() => funcAsyncToRun(value));
+                        Utils.RunWithoutThreadLock(() => funcAsyncToRun(value));
                     MainFormOnAssignAsyncActions.Clear();
                 }
             }
