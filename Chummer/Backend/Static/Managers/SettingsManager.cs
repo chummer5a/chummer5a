@@ -31,10 +31,24 @@ namespace Chummer
     {
         private static int _intDicLoadedCharacterSettingsLoadedStatus = -1;
         private static readonly LockingDictionary<string, CharacterSettings> s_DicLoadedCharacterSettings = new LockingDictionary<string, CharacterSettings>();
-        private static readonly FileSystemWatcher s_ObjSettingsFolderWatcher = new FileSystemWatcher(Path.Combine(Utils.GetStartupPath, "settings"), "*.xml");
+        private static readonly FileSystemWatcher s_ObjSettingsFolderWatcher;
 
         static SettingsManager()
         {
+            string strSettingsPath = Path.Combine(Utils.GetStartupPath, "settings");
+            if (!Directory.Exists(strSettingsPath))
+            {
+                try
+                {
+                    Directory.CreateDirectory(strSettingsPath);
+                }
+                catch (Exception)
+                {
+                    return;
+                }
+            }
+
+            s_ObjSettingsFolderWatcher = new FileSystemWatcher(strSettingsPath, "*.xml");
             s_ObjSettingsFolderWatcher.Created += ObjSettingsFolderWatcherOnChanged;
             s_ObjSettingsFolderWatcher.Deleted += ObjSettingsFolderWatcherOnChanged;
             s_ObjSettingsFolderWatcher.Changed += ObjSettingsFolderWatcherOnChanged;
