@@ -67,24 +67,24 @@ namespace Chummer
 
 #region Control Events
 
-        public ChummerMainForm(bool isUnitTest = false)
+        public ChummerMainForm(bool blnIsUnitTest = false, bool blnIsUnitTestForUI = false)
         {
-            Utils.IsUnitTest = isUnitTest;
-
+            Utils.IsUnitTest = blnIsUnitTest;
+            Utils.IsUnitTestForUI = blnIsUnitTestForUI;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _strCurrentVersion = Utils.CurrentChummerVersion.ToString(3);
 
             //lets write that in separate lines to see where the exception is thrown
-            if (!GlobalSettings.HideMasterIndex || isUnitTest)
+            if (!GlobalSettings.HideMasterIndex || blnIsUnitTest)
             {
                 MasterIndex = new MasterIndex
                 {
                     MdiParent = this
                 };
             }
-            if (!GlobalSettings.HideCharacterRoster || isUnitTest)
+            if (!GlobalSettings.HideCharacterRoster || blnIsUnitTest)
             {
                 CharacterRoster = new CharacterRoster
                 {
@@ -431,7 +431,7 @@ namespace Chummer
                         await this.DoThreadSafeAsync(x => x.WindowState = FormWindowState.Maximized);
                 }
 
-                if (Utils.IsUnitTest)
+                if (Utils.IsUnitTestForUI)
                 {
                     if (CharacterRoster != null)
                     {

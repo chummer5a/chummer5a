@@ -1187,9 +1187,9 @@ namespace Chummer
             }
         }
 
-        private void PowersBeforeRemove(object sender, RemovingOldEventArgs e)
+        private async void PowersBeforeRemove(object sender, RemovingOldEventArgs e)
         {
-            RefreshPowerCollectionBeforeRemove(treMetamagic, e);
+            await RefreshPowerCollectionBeforeRemove(treMetamagic, e);
         }
 
         private async void PowersListChanged(object sender, ListChangedEventArgs e)
@@ -3049,7 +3049,7 @@ namespace Chummer
         private async ValueTask DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this))
+            using (await CursorWait.NewAsync(this, token: token))
             {
                 IAsyncDisposable objLocker
                     = await CharacterObject.LockObject.EnterWriteLockAsync(token);
@@ -4505,7 +4505,14 @@ namespace Chummer
 
         private async void tsAddFromFile_Click(object sender, EventArgs e)
         {
-            await AddContactsFromFile();
+            try
+            {
+                await AddContactsFromFile(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdAddCyberware_Click(object sender, EventArgs e)
@@ -8391,6 +8398,11 @@ namespace Chummer
 
         private async void cmsVehicleAmmoSingleShot_Click(object sender, EventArgs e)
         {
+            await DoVehicleAmmoSingleShot();
+        }
+
+        private async ValueTask DoVehicleAmmoSingleShot()
+        {
             // Locate the selected Vehicle Weapon.
             if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Weapon objWeapon))
                 return;
@@ -8408,6 +8420,11 @@ namespace Chummer
         }
 
         private async void cmsVehicleAmmoShortBurst_Click(object sender, EventArgs e)
+        {
+            await DoVehicleAmmoShortBurst();
+        }
+
+        private async ValueTask DoVehicleAmmoShortBurst()
         {
             // Locate the selected Vehicle Weapon.
             if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Weapon objWeapon))
@@ -8436,6 +8453,11 @@ namespace Chummer
         }
 
         private async void cmsVehicleAmmoLongBurst_Click(object sender, EventArgs e)
+        {
+            await DoVehicleAmmoLongBurst();
+        }
+
+        private async ValueTask DoVehicleAmmoLongBurst()
         {
             // Locate the selected Vehicle Weapon.
             if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Weapon objWeapon))
@@ -12444,18 +12466,15 @@ namespace Chummer
             treVehicles.ClearNodeBackground(objNode);
         }
 
-        private void cmdFireVehicleWeapon_Click(object sender, EventArgs e)
+        private async void cmdFireVehicleWeapon_Click(object sender, EventArgs e)
         {
             // "Click" the first menu item available.
-            if (cmsVehicleAmmoSingleShot.Enabled)
-                cmsVehicleAmmoSingleShot_Click(sender, e);
+            if (await cmdVehicleAmmoExpense.DoThreadSafeFuncAsync(() => cmsVehicleAmmoSingleShot.Enabled))
+                await DoVehicleAmmoSingleShot();
+            else if (await cmdVehicleAmmoExpense.DoThreadSafeFuncAsync(() => cmsVehicleAmmoShortBurst.Enabled))
+                await DoVehicleAmmoShortBurst();
             else
-            {
-                if (cmsVehicleAmmoShortBurst.Enabled)
-                    cmsVehicleAmmoShortBurst_Click(sender, e);
-                else
-                    cmsVehicleAmmoLongBurst_Click(sender, e);
-            }
+                await DoVehicleAmmoLongBurst();
         }
 
         private async void cmdReloadVehicleWeapon_Click(object sender, EventArgs e)
@@ -14401,7 +14420,7 @@ namespace Chummer
                 {
                     tskAutosave = AutoSaveCharacter(token);
                 }
-                using (await CursorWait.NewAsync(this, true))
+                using (await CursorWait.NewAsync(this, true, token))
                 {
                     // TODO: DataBind these wherever possible
 

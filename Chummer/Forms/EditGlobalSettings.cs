@@ -876,7 +876,7 @@ namespace Chummer
             if (!await txtPDFLocation.DoThreadSafeFuncAsync(x => x.Enabled, token))
                 return;
             // Prompt the user to select a save file to associate with this Contact.
-            using (await CursorWait.NewAsync(this))
+            using (await CursorWait.NewAsync(this, token: token))
             {
                 string strNewFileName;
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
@@ -924,7 +924,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             // Prompt the user to select a save file to associate with this Contact.
-            using (await CursorWait.NewAsync(this))
+            using (await CursorWait.NewAsync(this, token: token))
             {
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
                        {

@@ -42,6 +42,7 @@ namespace Chummer.Tests
         public static void Initialize(TestContext context)
         {
             Utils.IsUnitTest = true;
+            Utils.IsUnitTestForUI = false;
         }
     }
 
@@ -105,7 +106,7 @@ namespace Chummer.Tests
             // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
             try
             {
-                frmTestForm = new ChummerMainForm(true)
+                frmTestForm = new ChummerMainForm(true, true)
                 {
 #if DEBUG
                     WindowState = FormWindowState.Minimized,
@@ -256,7 +257,7 @@ namespace Chummer.Tests
             // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
             try
             {
-                frmTestForm = frmOldMainForm.DoThreadSafeFunc(() => new ChummerMainForm(true)
+                frmTestForm = frmOldMainForm.DoThreadSafeFunc(() => new ChummerMainForm(true, true)
                 {
 #if DEBUG
                     WindowState = FormWindowState.Minimized,
@@ -342,13 +343,12 @@ namespace Chummer.Tests
                         }
                     }
                 }
-                frmTestForm.DoThreadSafe(x => x.Close());
             }
             finally
             {
                 try
                 {
-                    frmTestForm?.DoThreadSafe(x => x.Dispose());
+                    frmTestForm?.DoThreadSafe(x => x.Close());
                 }
                 catch (Exception e)
                 {

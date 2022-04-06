@@ -2530,7 +2530,7 @@ namespace Chummer
         private async ValueTask DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this))
+            using (await CursorWait.NewAsync(this, token: token))
             {
                 IAsyncDisposable objLocker
                     = await CharacterObject.LockObject.EnterWriteLockAsync(token);
@@ -3713,7 +3713,14 @@ namespace Chummer
 
         private async void tsAddFromFile_Click(object sender, EventArgs e)
         {
-            await AddContactsFromFile();
+            try
+            {
+                await AddContactsFromFile(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cmdAddCyberware_Click(object sender, EventArgs e)
@@ -10788,7 +10795,7 @@ namespace Chummer
                 {
                     tskAutosave = AutoSaveCharacter(token);
                 }
-                using (await CursorWait.NewAsync(this, true))
+                using (await CursorWait.NewAsync(this, true, token))
                 {
                     // TODO: DataBind these wherever possible
 
@@ -12654,7 +12661,7 @@ namespace Chummer
         /// </summary>
         public override async Task<bool> SaveCharacterAsCreated(CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(this))
+            using (await CursorWait.NewAsync(this, token: token))
             {
                 // If the character was built with Karma, record their staring Karma amount (if any).
                 if (CharacterObject.Karma > 0)
@@ -14902,7 +14909,7 @@ namespace Chummer
                                                           out StringBuilder sbdMessage))
             {
                 sbdMessage.Append(await LanguageManager.GetStringAsync("Message_InvalidBeginning"));
-                using (await CursorWait.NewAsync(this))
+                using (await CursorWait.NewAsync(this, token: token))
                 {
                     // Check if the character has more than 1 Martial Art, not counting qualities. TODO: Make the OTP check an optional rule. Make the Martial Arts limit an optional rule.
                     int intMartialArts = CharacterObject.MartialArts.Count(objArt => !objArt.IsQuality);
@@ -15726,7 +15733,7 @@ namespace Chummer
 
                     strNewName = Path.Combine(Utils.GetStartupPath, "saves", "backup", strNewName);
 
-                    using (await CursorWait.NewAsync(this))
+                    using (await CursorWait.NewAsync(this, token: token))
                     {
                         using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
                         {
@@ -17352,9 +17359,9 @@ namespace Chummer
             }
         }
 
-        private void PowersBeforeRemove(object sender, RemovingOldEventArgs e)
+        private async void PowersBeforeRemove(object sender, RemovingOldEventArgs e)
         {
-            RefreshPowerCollectionBeforeRemove(treMetamagic, e);
+            await RefreshPowerCollectionBeforeRemove(treMetamagic, e);
         }
 
         private async void PowersListChanged(object sender, ListChangedEventArgs e)

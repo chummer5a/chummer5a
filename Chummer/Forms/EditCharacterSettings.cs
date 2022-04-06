@@ -1112,7 +1112,7 @@ namespace Chummer
         private async ValueTask PopulateOptions(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this))
+            using (await CursorWait.NewAsync(this, token: token))
             {
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
                 if (blnDoResumeLayout)
@@ -1143,7 +1143,7 @@ namespace Chummer
         private async ValueTask PopulatePriorityTableList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this))
+            using (await CursorWait.NewAsync(this, token: token))
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstPriorityTables))
@@ -1190,7 +1190,7 @@ namespace Chummer
         private async ValueTask PopulateLimbCountList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this))
+            using (await CursorWait.NewAsync(this, token: token))
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstLimbCount))
@@ -1237,7 +1237,7 @@ namespace Chummer
         private async ValueTask PopulateAllowedGrades(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this))
+            using (await CursorWait.NewAsync(this, token: token))
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstGrades))
@@ -1537,7 +1537,7 @@ namespace Chummer
         private async ValueTask PopulateSettingsList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this))
+            using (await CursorWait.NewAsync(this, token: token))
             {
                 string strSelect = string.Empty;
                 if (!_blnLoading)

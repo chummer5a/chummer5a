@@ -329,66 +329,66 @@ namespace Chummer
 
         private async void cmdSaveAsPdf_Click(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
+            try
             {
-                // Check to see if we have any "Print to PDF" printers, as they will be a lot more reliable than wkhtmltopdf
-                string strPdfPrinter = string.Empty;
-                foreach (string strPrinter in PrinterSettings.InstalledPrinters)
+                using (await CursorWait.NewAsync(this, token: _objGenericToken))
                 {
-                    if (strPrinter == "Microsoft Print to PDF" || strPrinter == "Foxit Reader PDF Printer" ||
-                        strPrinter == "Adobe PDF")
+                    // Check to see if we have any "Print to PDF" printers, as they will be a lot more reliable than wkhtmltopdf
+                    string strPdfPrinter = string.Empty;
+                    foreach (string strPrinter in PrinterSettings.InstalledPrinters)
                     {
-                        strPdfPrinter = strPrinter;
-                        break;
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(strPdfPrinter))
-                {
-                    DialogResult ePdfPrinterDialogResult = Program.ShowMessageBox(this,
-                        string.Format(GlobalSettings.CultureInfo,
-                                      await LanguageManager.GetStringAsync("Message_Viewer_FoundPDFPrinter"),
-                                      strPdfPrinter),
-                        await LanguageManager.GetStringAsync("MessageTitle_Viewer_FoundPDFPrinter"),
-                        MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
-                    switch (ePdfPrinterDialogResult)
-                    {
-                        case DialogResult.Cancel:
-                        case DialogResult.Yes when await DoPdfPrinterShortcut(strPdfPrinter):
-                            return;
-
-                        case DialogResult.Yes:
-                            Program.ShowMessageBox(this,
-                                                   await LanguageManager.GetStringAsync(
-                                                       "Message_Viewer_PDFPrinterError"));
+                        if (strPrinter == "Microsoft Print to PDF" || strPrinter == "Foxit Reader PDF Printer" ||
+                            strPrinter == "Adobe PDF")
+                        {
+                            strPdfPrinter = strPrinter;
                             break;
+                        }
                     }
-                }
 
-                // Save the generated output as PDF.
-                SaveFileDialog1.Filter = await LanguageManager.GetStringAsync("DialogFilter_Pdf") + '|' +
-                                         await LanguageManager.GetStringAsync("DialogFilter_All");
-                SaveFileDialog1.Title = await LanguageManager.GetStringAsync("Button_Viewer_SaveAsPdf");
-                SaveFileDialog1.ShowDialog();
-                string strSaveFile = SaveFileDialog1.FileName;
+                    if (!string.IsNullOrEmpty(strPdfPrinter))
+                    {
+                        DialogResult ePdfPrinterDialogResult = Program.ShowMessageBox(this,
+                            string.Format(GlobalSettings.CultureInfo,
+                                          await LanguageManager.GetStringAsync("Message_Viewer_FoundPDFPrinter"),
+                                          strPdfPrinter),
+                            await LanguageManager.GetStringAsync("MessageTitle_Viewer_FoundPDFPrinter"),
+                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+                        switch (ePdfPrinterDialogResult)
+                        {
+                            case DialogResult.Cancel:
+                            case DialogResult.Yes when await DoPdfPrinterShortcut(strPdfPrinter):
+                                return;
 
-                if (string.IsNullOrEmpty(strSaveFile))
-                    return;
+                            case DialogResult.Yes:
+                                Program.ShowMessageBox(this,
+                                                       await LanguageManager.GetStringAsync(
+                                                           "Message_Viewer_PDFPrinterError"));
+                                break;
+                        }
+                    }
 
-                if (!strSaveFile.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
-                    strSaveFile += ".pdf";
+                    // Save the generated output as PDF.
+                    SaveFileDialog1.Filter = await LanguageManager.GetStringAsync("DialogFilter_Pdf") + '|' +
+                                             await LanguageManager.GetStringAsync("DialogFilter_All");
+                    SaveFileDialog1.Title = await LanguageManager.GetStringAsync("Button_Viewer_SaveAsPdf");
+                    SaveFileDialog1.ShowDialog();
+                    string strSaveFile = SaveFileDialog1.FileName;
 
-                if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)) || !Utils.CanWriteToPath(strSaveFile))
-                {
-                    Program.ShowMessageBox(this,
-                                           string.Format(GlobalSettings.CultureInfo,
-                                                         await LanguageManager.GetStringAsync(
-                                                             "Message_File_Cannot_Be_Accessed"), strSaveFile));
-                    return;
-                }
+                    if (string.IsNullOrEmpty(strSaveFile))
+                        return;
 
-                try
-                {
+                    if (!strSaveFile.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                        strSaveFile += ".pdf";
+
+                    if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)) || !Utils.CanWriteToPath(strSaveFile))
+                    {
+                        Program.ShowMessageBox(this,
+                                               string.Format(GlobalSettings.CultureInfo,
+                                                             await LanguageManager.GetStringAsync(
+                                                                 "Message_File_Cannot_Be_Accessed"), strSaveFile));
+                        return;
+                    }
+
                     if (!await Utils.SafeDeleteFileAsync(strSaveFile, true, token: _objGenericToken))
                     {
                         Program.ShowMessageBox(this,
@@ -397,56 +397,56 @@ namespace Chummer
                                                                  "Message_File_Cannot_Be_Accessed"), strSaveFile));
                         return;
                     }
-                }
-                catch (OperationCanceledException)
-                {
-                    return;
-                }
 
-                // No PDF printer found, let's use wkhtmltopdf
+                    // No PDF printer found, let's use wkhtmltopdf
 
-                try
-                {
-                    PdfDocument objPdfDocument = new PdfDocument
+                    try
                     {
-                        Html = webViewer.DocumentText,
-                        ExtraParams = new Dictionary<string, string>(8)
+                        PdfDocument objPdfDocument = new PdfDocument
                         {
-                            {"encoding", "UTF-8"},
-                            {"dpi", "300"},
-                            {"margin-top", "13"},
-                            {"margin-bottom", "19"},
-                            {"margin-left", "13"},
-                            {"margin-right", "13"},
-                            {"image-quality", "100"},
-                            {"print-media-type", string.Empty}
-                        }
-                    };
-                    PdfConvertEnvironment objPdfConvertEnvironment = new PdfConvertEnvironment
-                        {WkHtmlToPdfPath = Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe")};
-                    PdfOutput objPdfOutput = new PdfOutput {OutputFilePath = strSaveFile};
-                    await PdfConvert.ConvertHtmlToPdfAsync(objPdfDocument, objPdfConvertEnvironment, objPdfOutput);
-
-                    if (!string.IsNullOrWhiteSpace(GlobalSettings.PdfAppPath))
-                    {
-                        Uri uriPath = new Uri(strSaveFile);
-                        string strParams = GlobalSettings.PdfParameters
-                                                         .Replace("{page}", "1")
-                                                         .Replace("{localpath}", uriPath.LocalPath)
-                                                         .Replace("{absolutepath}", uriPath.AbsolutePath);
-                        ProcessStartInfo objPdfProgramProcess = new ProcessStartInfo
-                        {
-                            FileName = GlobalSettings.PdfAppPath,
-                            Arguments = strParams,
-                            WindowStyle = ProcessWindowStyle.Hidden
+                            Html = webViewer.DocumentText,
+                            ExtraParams = new Dictionary<string, string>(8)
+                            {
+                                {"encoding", "UTF-8"},
+                                {"dpi", "300"},
+                                {"margin-top", "13"},
+                                {"margin-bottom", "19"},
+                                {"margin-left", "13"},
+                                {"margin-right", "13"},
+                                {"image-quality", "100"},
+                                {"print-media-type", string.Empty}
+                            }
                         };
-                        objPdfProgramProcess.Start();
+                        PdfConvertEnvironment objPdfConvertEnvironment = new PdfConvertEnvironment
+                            {WkHtmlToPdfPath = Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe")};
+                        PdfOutput objPdfOutput = new PdfOutput {OutputFilePath = strSaveFile};
+                        await PdfConvert.ConvertHtmlToPdfAsync(objPdfDocument, objPdfConvertEnvironment, objPdfOutput);
+
+                        if (!string.IsNullOrWhiteSpace(GlobalSettings.PdfAppPath))
+                        {
+                            Uri uriPath = new Uri(strSaveFile);
+                            string strParams = GlobalSettings.PdfParameters
+                                                             .Replace("{page}", "1")
+                                                             .Replace("{localpath}", uriPath.LocalPath)
+                                                             .Replace("{absolutepath}", uriPath.AbsolutePath);
+                            ProcessStartInfo objPdfProgramProcess = new ProcessStartInfo
+                            {
+                                FileName = GlobalSettings.PdfAppPath,
+                                Arguments = strParams,
+                                WindowStyle = ProcessWindowStyle.Hidden
+                            };
+                            objPdfProgramProcess.Start();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Program.ShowMessageBox(this, ex.ToString());
                     }
                 }
-                catch (Exception ex)
-                {
-                    Program.ShowMessageBox(this, ex.ToString());
-                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -698,7 +698,7 @@ namespace Chummer
         private async Task RefreshCharacterXml(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this, true))
+            using (await CursorWait.NewAsync(this, true, token))
             {
                 await Task.WhenAll(this.DoThreadSafeAsync(() =>
                                    {
@@ -728,7 +728,7 @@ namespace Chummer
         private async Task AsyncGenerateOutput(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this))
+            using (await CursorWait.NewAsync(this, token: token))
             {
                 await Task.WhenAll(this.DoThreadSafeAsync(() =>
                                    {

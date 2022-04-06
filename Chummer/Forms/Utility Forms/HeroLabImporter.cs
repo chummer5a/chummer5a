@@ -586,7 +586,7 @@ namespace Chummer
             string strCharacterId = objCache.CharacterId;
             if (string.IsNullOrEmpty(strFile) || string.IsNullOrEmpty(strCharacterId))
                 return;
-            using (await CursorWait.NewAsync(this))
+            using (await CursorWait.NewAsync(this, token: token))
             {
                 bool blnLoaded = false;
                 Character objCharacter = new Character();

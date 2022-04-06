@@ -149,16 +149,23 @@ namespace Chummer
             if (string.IsNullOrEmpty(_strXslt))
                 return;
 
-            using (await CursorWait.NewAsync(this))
+            try
             {
-                if (_strXslt == "JSON")
+                using (await CursorWait.NewAsync(this, token: _objGenericToken))
                 {
-                    await ExportJson(token: _objGenericToken);
+                    if (_strXslt == "JSON")
+                    {
+                        await ExportJson(token: _objGenericToken);
+                    }
+                    else
+                    {
+                        await ExportNormal(token: _objGenericToken);
+                    }
                 }
-                else
-                {
-                    await ExportNormal(token: _objGenericToken);
-                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -226,7 +233,7 @@ namespace Chummer
                     _strXslt = await cboXSLT.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
                     if (!string.IsNullOrEmpty(_strXslt))
                     {
-                        using (await CursorWait.NewAsync(this))
+                        using (await CursorWait.NewAsync(this, token: token))
                         {
                             token.ThrowIfCancellationRequested();
                             string strText = await LanguageManager.GetStringAsync("String_Generating_Data");
@@ -313,7 +320,7 @@ namespace Chummer
         private async Task GenerateCharacterXml(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this))
+            using (await CursorWait.NewAsync(this, token: token))
             {
                 string strText = await LanguageManager.GetStringAsync("String_Generating_Data");
                 await Task.WhenAll(cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token),
@@ -383,7 +390,7 @@ namespace Chummer
         private async Task GenerateXml(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this))
+            using (await CursorWait.NewAsync(this, token: token))
             {
                 await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token);
                 try
@@ -473,7 +480,7 @@ namespace Chummer
         private async Task GenerateJson(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this))
+            using (await CursorWait.NewAsync(this, token: token))
             {
                 await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token);
                 try

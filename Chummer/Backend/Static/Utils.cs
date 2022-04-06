@@ -105,6 +105,26 @@ namespace Chummer
                 if (_blnIsUnitTest == value)
                     return;
                 _blnIsUnitTest = value;
+                if (!value)
+                    IsUnitTestForUI = false;
+            }
+        }
+
+        private static bool _blnIsUnitTestForUI;
+
+        /// <summary>
+        /// This property is set in the Constructor of frmChummerMain (and NO where else!)
+        /// </summary>
+        public static bool IsUnitTestForUI
+        {
+            get => _blnIsUnitTestForUI;
+            set
+            {
+                if (_blnIsUnitTestForUI == value)
+                    return;
+                _blnIsUnitTestForUI = value;
+                if (value)
+                    _blnIsUnitTest = true;
                 _intIsOkToRunDoEvents = DefaultIsOkToRunDoEvents ? 1 : 0;
             }
         }
@@ -958,7 +978,7 @@ namespace Chummer
         /// <summary>
         /// Don't run events during unit tests, but still run in the background so that we can catch any issues caused by our setup.
         /// </summary>
-        private static bool DefaultIsOkToRunDoEvents => !IsUnitTest && EverDoEvents;
+        private static bool DefaultIsOkToRunDoEvents => (!IsUnitTest || IsUnitTestForUI) && EverDoEvents;
 
         /// <summary>
         /// This member makes sure we aren't swamping the program with massive amounts of Application.DoEvents() calls

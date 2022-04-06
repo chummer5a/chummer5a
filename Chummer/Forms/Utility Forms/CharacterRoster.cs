@@ -226,14 +226,15 @@ namespace Chummer
 
         private async void CharacterRoster_Load(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
+            try
             {
-                try
+                using (await CursorWait.NewAsync(this, token: _objGenericToken))
                 {
                     try
                     {
                         CharacterCache objSelectedCache
-                            = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, _objGenericToken)
+                            = await treCharacterList.DoThreadSafeFuncAsync(
+                                    x => x.SelectedNode?.Tag, _objGenericToken)
                                 as CharacterCache;
                         await UpdateCharacter(objSelectedCache, _objGenericToken);
                     }
@@ -260,10 +261,14 @@ namespace Chummer
                         //swallow this
                     }
                 }
-                finally
-                {
-                    IsFinishedLoading = true;
-                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+            finally
+            {
+                IsFinishedLoading = true;
             }
         }
 
@@ -271,70 +276,79 @@ namespace Chummer
 
         private async void CharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
+            try
             {
-                if (_blnIsClosing)
-                    return;
-                _blnIsClosing = true; // Needed to prevent crashes on disposal
-                if (_objMostRecentlyUsedsRefreshCancellationTokenSource?.IsCancellationRequested == false)
+                using (await CursorWait.NewAsync(this, token: _objGenericToken))
                 {
-                    _objMostRecentlyUsedsRefreshCancellationTokenSource.Cancel(false);
-                    _objMostRecentlyUsedsRefreshCancellationTokenSource.Dispose();
-                    _objMostRecentlyUsedsRefreshCancellationTokenSource = null;
-                }
-                if (_objWatchFolderRefreshCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    _objWatchFolderRefreshCancellationTokenSource.Cancel(false);
-                    _objWatchFolderRefreshCancellationTokenSource.Dispose();
-                    _objWatchFolderRefreshCancellationTokenSource = null;
-                }
-
-                await SetMyEventHandlers(true);
-
-                await DisposeTagNodes(await treCharacterList.DoThreadSafeFuncAsync(x => x.Nodes, _objGenericToken));
-
-                async ValueTask DisposeTagNodes(TreeNodeCollection lstNodes)
-                {
-                    foreach (TreeNode nodNode in lstNodes)
+                    if (_blnIsClosing)
+                        return;
+                    _blnIsClosing = true; // Needed to prevent crashes on disposal
+                    if (_objMostRecentlyUsedsRefreshCancellationTokenSource?.IsCancellationRequested == false)
                     {
-                        if (nodNode.Tag is CharacterCache objCache)
-                        {
-                            nodNode.Tag = null;
-                            if (!objCache.IsDisposed)
-                            {
-                                await _dicSavedCharacterCaches.RemoveAsync(objCache.FilePath);
-                                await objCache.DisposeAsync();
-                            }
-                        }
-
-                        await DisposeTagNodes(nodNode.Nodes);
+                        _objMostRecentlyUsedsRefreshCancellationTokenSource.Cancel(false);
+                        _objMostRecentlyUsedsRefreshCancellationTokenSource.Dispose();
+                        _objMostRecentlyUsedsRefreshCancellationTokenSource = null;
                     }
-                }
 
-                await _dicSavedCharacterCaches.ForEachAsync(async kvpCache =>
-                                                                await kvpCache.Value.DisposeAsync()
-                                                                              .ConfigureAwait(false))
-                                              ;
-                await _dicSavedCharacterCaches.DisposeAsync();
+                    if (_objWatchFolderRefreshCancellationTokenSource?.IsCancellationRequested == false)
+                    {
+                        _objWatchFolderRefreshCancellationTokenSource.Cancel(false);
+                        _objWatchFolderRefreshCancellationTokenSource.Dispose();
+                        _objWatchFolderRefreshCancellationTokenSource = null;
+                    }
 
-                try
-                {
-                    await _tskMostRecentlyUsedsRefresh;
-                }
-                catch (OperationCanceledException)
-                {
-                    //swallow this
-                }
-                try
-                {
-                    await _tskWatchFolderRefresh;
-                }
-                catch (OperationCanceledException)
-                {
-                    //swallow this
-                }
+                    await SetMyEventHandlers(true);
 
-                _objGenericFormClosingCancellationTokenSource.Cancel(false);
+                    await DisposeTagNodes(await treCharacterList.DoThreadSafeFuncAsync(x => x.Nodes, _objGenericToken));
+
+                    async ValueTask DisposeTagNodes(TreeNodeCollection lstNodes)
+                    {
+                        foreach (TreeNode nodNode in lstNodes)
+                        {
+                            if (nodNode.Tag is CharacterCache objCache)
+                            {
+                                nodNode.Tag = null;
+                                if (!objCache.IsDisposed)
+                                {
+                                    await _dicSavedCharacterCaches.RemoveAsync(objCache.FilePath);
+                                    await objCache.DisposeAsync();
+                                }
+                            }
+
+                            await DisposeTagNodes(nodNode.Nodes);
+                        }
+                    }
+
+                    await _dicSavedCharacterCaches.ForEachAsync(async kvpCache =>
+                                                                    await kvpCache.Value.DisposeAsync()
+                                                                        .ConfigureAwait(false))
+                        ;
+                    await _dicSavedCharacterCaches.DisposeAsync();
+
+                    try
+                    {
+                        await _tskMostRecentlyUsedsRefresh;
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
+
+                    try
+                    {
+                        await _tskWatchFolderRefresh;
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
+
+                    _objGenericFormClosingCancellationTokenSource.Cancel(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -1078,7 +1092,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (await this.DoThreadSafeFuncAsync(x => x.IsNullOrDisposed(), token)) // Safety check for external calls
                 return;
-            using (await CursorWait.NewAsync(this))
+            using (await CursorWait.NewAsync(this, token: token))
             {
                 await tlpRight.DoThreadSafeAsync(x => x.SuspendLayout(), token);
                 try
@@ -1273,21 +1287,28 @@ namespace Chummer
 
         private async void treCharacterList_DoubleClick(object sender, EventArgs e)
         {
-            TreeNode objSelectedNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode);
-            if (objSelectedNode == null || objSelectedNode.Level <= 0)
-                return;
-            switch (objSelectedNode.Tag)
+            try
             {
-                case null:
+                TreeNode objSelectedNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken);
+                if (objSelectedNode == null || objSelectedNode.Level <= 0)
                     return;
+                switch (objSelectedNode.Tag)
+                {
+                    case null:
+                        return;
 
-                case CharacterCache objCache:
-                    using (await CursorWait.NewAsync(this))
-                    {
-                        objCache.OnMyDoubleClick(sender, e);
-                    }
+                    case CharacterCache objCache:
+                        using (await CursorWait.NewAsync(this, token: _objGenericToken))
+                        {
+                            objCache.OnMyDoubleClick(sender, e);
+                        }
 
-                    break;
+                        break;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -1468,7 +1489,7 @@ namespace Chummer
 
                 if (t?.Tag is CharacterCache objCache)
                 {
-                    using (await CursorWait.NewAsync(this))
+                    using (await CursorWait.NewAsync(this, token: _objGenericToken))
                     {
                         Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName);
                         if (objCharacter == null)
@@ -1497,7 +1518,7 @@ namespace Chummer
                 TreeNode t = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken);
                 if (!(t?.Tag is CharacterCache objCache))
                     return;
-                using (await CursorWait.NewAsync(this))
+                using (await CursorWait.NewAsync(this, token: _objGenericToken))
                 {
                     Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName);
                     if (objCharacter == null)
@@ -1539,7 +1560,7 @@ namespace Chummer
                 TreeNode t = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken);
                 if (!(t?.Tag is CharacterCache objCache))
                     return;
-                using (await CursorWait.NewAsync(this))
+                using (await CursorWait.NewAsync(this, token: _objGenericToken))
                 {
                     Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName);
                     if (objCharacter == null)
@@ -1650,7 +1671,7 @@ namespace Chummer
                     = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile);
                 if (objOpenCharacter != null)
                 {
-                    using (await CursorWait.NewAsync(this))
+                    using (await CursorWait.NewAsync(this, token: _objGenericToken))
                         (await Program.MainForm.OpenCharacterForms.FirstOrDefaultAsync(
                             x => x.CharacterObject == objOpenCharacter))?.Close();
                 }

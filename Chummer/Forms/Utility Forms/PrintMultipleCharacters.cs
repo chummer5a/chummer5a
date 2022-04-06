@@ -132,7 +132,7 @@ namespace Chummer
         private async Task DoPrint(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this, true))
+            using (await CursorWait.NewAsync(this, true, token))
             {
                 try
                 {
