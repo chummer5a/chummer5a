@@ -1090,7 +1090,7 @@ namespace Chummer
 
         public static LoadingBar TopMostLoadingBar => s_lstLoadingBars.Count > 0 ? s_lstLoadingBars[0] : null;
 
-        private static readonly ThreadSafeList<LoadingBar> s_lstLoadingBars = new ThreadSafeList<LoadingBar>();
+        private static readonly ThreadSafeList<LoadingBar> s_lstLoadingBars = new ThreadSafeList<LoadingBar>(3);
 
         /// <summary>
         /// Syntactic sugar for creating and displaying a LoadingBar screen with specific text and progress bar size.

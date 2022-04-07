@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class ThreadSafeList<T> : IList<T>, IReadOnlyList<T>, IList, IProducerConsumerCollection<T>, IHasLockObject, IAsyncReadOnlyCollection<T>
+    public sealed class ThreadSafeList<T> : IList<T>, IReadOnlyList<T>, IList, IProducerConsumerCollection<T>, IHasLockObject, IAsyncReadOnlyCollection<T>
     {
         private readonly List<T> _lstData;
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
@@ -1002,34 +1002,16 @@ namespace Chummer
                 return _lstData.TrueForAll(await match);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                LockObject.Dispose();
-            }
-        }
-
         /// <inheritdoc />
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            LockObject.Dispose();
         }
-
-        protected virtual async ValueTask DisposeAsync(bool disposing)
-        {
-            if (disposing)
-            {
-                await LockObject.DisposeAsync();
-            }
-        }
-
+        
         /// <inheritdoc />
-        public async ValueTask DisposeAsync()
+        public ValueTask DisposeAsync()
         {
-            await DisposeAsync(true);
-            GC.SuppressFinalize(this);
+            return LockObject.DisposeAsync();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

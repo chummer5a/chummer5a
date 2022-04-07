@@ -34,7 +34,7 @@ namespace Chummer
 {
     public partial class HeroLabImporter : Form
     {
-        private readonly ThreadSafeList<HeroLabCharacterCache> _lstCharacterCache = new ThreadSafeList<HeroLabCharacterCache>(1);
+        private readonly ThreadSafeList<HeroLabCharacterCache> _lstCharacterCache = new ThreadSafeList<HeroLabCharacterCache>(2);
         private readonly LockingDictionary<string, Bitmap> _dicImages = new LockingDictionary<string, Bitmap>();
 
         public HeroLabImporter()

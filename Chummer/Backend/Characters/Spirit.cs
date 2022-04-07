@@ -65,7 +65,7 @@ namespace Chummer
         private Color _colNotes = ColorManager.HasNotesColor;
         private Character _objLinkedCharacter;
 
-        private readonly ThreadSafeList<Image> _lstMugshots = new ThreadSafeList<Image>(1);
+        private readonly ThreadSafeList<Image> _lstMugshots = new ThreadSafeList<Image>(3);
         private int _intMainMugshotIndex = -1;
 
         #region Helper Methods

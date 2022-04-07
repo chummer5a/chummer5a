@@ -97,7 +97,7 @@ namespace Chummer
 
         // General character info.
         private string _strName = string.Empty;
-        private readonly ThreadSafeList<Image> _lstMugshots = new ThreadSafeList<Image>(1);
+        private readonly ThreadSafeList<Image> _lstMugshots = new ThreadSafeList<Image>(3);
         private int _intMainMugshotIndex = -1;
         private string _strGender = string.Empty;
         private string _strAge = string.Empty;
