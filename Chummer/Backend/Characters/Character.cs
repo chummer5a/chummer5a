@@ -9080,6 +9080,7 @@ namespace Chummer
                         objItem.Dispose();
                     _lstVehicleLocations.Dispose();
                     _lstImprovementGroups.Dispose();
+                    _lstPrioritySkills.Dispose();
                     _objSkillsSection.Dispose();
                     _objAttributeSection.Dispose();
                     _quePostLoadMethods.Dispose();
@@ -9183,6 +9184,7 @@ namespace Chummer
                         objItem.Dispose();
                     await _lstVehicleLocations.DisposeAsync();
                     await _lstImprovementGroups.DisposeAsync();
+                    await _lstPrioritySkills.DisposeAsync();
                     await _objSkillsSection.DisposeAsync();
                     await _objAttributeSection.DisposeAsync();
                     await _quePostLoadMethods.DisposeAsync();
