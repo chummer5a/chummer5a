@@ -120,7 +120,7 @@ namespace Chummer.Tests
                     (!frmTestForm
                         .IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                 {
-                    Utils.SafeSleep(true);
+                    Utils.SafeSleep();
                 }
 
                 frmTestForm.Close();
@@ -269,7 +269,7 @@ namespace Chummer.Tests
                 frmTestForm.DoThreadSafe(x => x.Show()); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
                 while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                 {
-                    Utils.SafeSleep(true);
+                    Utils.SafeSleep();
                 }
                 foreach (FileInfo objFileInfo in TestFiles)
                 {
@@ -285,6 +285,7 @@ namespace Chummer.Tests
                         {
                             try
                             {
+                                bool blnFormClosed = false;
                                 // ReSharper disable once AccessToDisposedClosure
                                 CharacterShared frmCharacterForm = Program.MainForm.DoThreadSafeFunc(() => objCharacter.Created
                                     // ReSharper disable once AccessToDisposedClosure
@@ -295,6 +296,7 @@ namespace Chummer.Tests
                                 {
                                     frmCharacterForm.DoThreadSafe(x =>
                                     {
+                                        x.FormClosed += (sender, args) => blnFormClosed = true;
                                         x.MdiParent = frmTestForm;
                                         x.ShowInTaskbar = false;
 #if DEBUG
@@ -306,14 +308,18 @@ namespace Chummer.Tests
                                         (!frmCharacterForm
                                             .IsFinishedInitializing) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                                     {
-                                        Utils.SafeSleep(true);
+                                        Utils.SafeSleep();
                                     }
                                 }
                                 finally
                                 {
                                     try
                                     {
-                                        frmCharacterForm.DoThreadSafe(x => x.Dispose());
+                                        frmCharacterForm.DoThreadSafe(x => x.Close());
+                                        while (!blnFormClosed) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                                        {
+                                            Utils.SafeSleep();
+                                        }
                                     }
                                     catch (ApplicationException e)
                                     {

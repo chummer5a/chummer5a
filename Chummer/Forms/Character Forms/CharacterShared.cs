@@ -7972,12 +7972,19 @@ namespace Chummer
             }
         }
 
-        public Task SetDirty(bool blnValue)
+        public async Task SetDirty(bool blnValue)
         {
             if (_blnIsDirty == blnValue)
-                return Task.CompletedTask;
+                return;
             _blnIsDirty = blnValue;
-            return UpdateWindowTitleAsync(true, GenericToken);
+            try
+            {
+                await UpdateWindowTitleAsync(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         /// <summary>
@@ -8064,8 +8071,15 @@ namespace Chummer
         {
             if (IsLoading)
                 return;
-            if (!await _objUpdateCharacterInfoSemaphoreSlim.WaitAsync(0, GenericToken))
+            try
+            {
+                if (!await _objUpdateCharacterInfoSemaphoreSlim.WaitAsync(0, GenericToken))
+                    return;
+            }
+            catch (OperationCanceledException)
+            {
                 return;
+            }
             try
             {
                 CancellationTokenSource objTemp = _objUpdateCharacterInfoCancellationTokenSource;
