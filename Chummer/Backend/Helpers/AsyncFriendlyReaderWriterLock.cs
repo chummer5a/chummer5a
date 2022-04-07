@@ -20,6 +20,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.ObjectPool;
 
 namespace Chummer
 {
@@ -38,7 +39,7 @@ namespace Chummer
         // Needed because the pools are not necessarily initialized in static classes
         private readonly bool _blnSemaphoresFromPool;
         // Because readers are always recursive and it's fine that way, we only need to deploy complicated stuff on the writer side
-        private readonly SemaphoreSlim _objReaderSemaphore;
+        private SemaphoreSlim _objReaderSemaphore;
         // In order to properly allow async lock to be recursive but still make them work properly as locks, we need to set up something
         // that is a bit like a singly-linked list. Each lock creates a disposable SafeWriterSemaphoreRelease, and only disposing it frees the lock.
         private readonly AsyncLocal<SemaphoreSlim> _objCurrentWriterSemaphore = new AsyncLocal<SemaphoreSlim>();
@@ -49,11 +50,12 @@ namespace Chummer
 
         public AsyncFriendlyReaderWriterLock()
         {
-            if (Utils.SemaphorePool != null)
+            ObjectPool<SemaphoreSlim> objSemaphorePool = Utils.SemaphorePool;
+            if (objSemaphorePool != null)
             {
                 _blnSemaphoresFromPool = true;
-                _objReaderSemaphore = Utils.SemaphorePool.Get();
-                _objTopLevelWriterSemaphore = Utils.SemaphorePool.Get();
+                _objReaderSemaphore = objSemaphorePool.Get();
+                _objTopLevelWriterSemaphore = objSemaphorePool.Get();
             }
             else
             {
@@ -343,18 +345,24 @@ namespace Chummer
                     _objTopLevelWriterSemaphore.Wait();
                     _objReaderSemaphore.Wait();
                 }
-                _objReaderSemaphore.Release();
-                if (_blnSemaphoresFromPool)
-                    Utils.SemaphorePool.Return(_objReaderSemaphore);
-                else
-                    _objReaderSemaphore.Dispose();
-                SemaphoreSlim objTemp = _objTopLevelWriterSemaphore;
-                _objTopLevelWriterSemaphore = null;
-                objTemp.Release();
-                if (_blnSemaphoresFromPool)
-                    Utils.SemaphorePool.Return(objTemp);
-                else
-                    objTemp.Dispose();
+                SemaphoreSlim objTemp = _objReaderSemaphore;
+                if (Interlocked.Exchange(ref _objReaderSemaphore, null) != null)
+                {
+                    objTemp.Release();
+                    if (_blnSemaphoresFromPool)
+                        Utils.SemaphorePool.Return(objTemp);
+                    else
+                        objTemp.Dispose();
+                }
+                objTemp = _objTopLevelWriterSemaphore;
+                if (Interlocked.Exchange(ref _objTopLevelWriterSemaphore, null) != null)
+                {
+                    objTemp.Release();
+                    if (_blnSemaphoresFromPool)
+                        Utils.SemaphorePool.Return(objTemp);
+                    else
+                        objTemp.Dispose();
+                }
                 _blnIsDisposed = true;
             }
             finally
@@ -366,7 +374,7 @@ namespace Chummer
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            if (_blnIsDisposed)
+            if (_blnIsDisposed || _blnIsDisposing)
                 return;
 
             _blnIsDisposing = true;
@@ -376,18 +384,24 @@ namespace Chummer
                 // before completing the dispose.
                 await _objTopLevelWriterSemaphore.WaitAsync().ConfigureAwait(false);
                 await _objReaderSemaphore.WaitAsync().ConfigureAwait(false);
-                _objReaderSemaphore.Release();
-                if (_blnSemaphoresFromPool)
-                    Utils.SemaphorePool.Return(_objReaderSemaphore);
-                else
-                    _objReaderSemaphore.Dispose();
-                SemaphoreSlim objTemp = _objTopLevelWriterSemaphore;
-                _objTopLevelWriterSemaphore = null;
-                objTemp.Release();
-                if (_blnSemaphoresFromPool)
-                    Utils.SemaphorePool.Return(objTemp);
-                else
-                    objTemp.Dispose();
+                SemaphoreSlim objTemp = _objReaderSemaphore;
+                if (Interlocked.Exchange(ref _objReaderSemaphore, null) != null)
+                {
+                    objTemp.Release();
+                    if (_blnSemaphoresFromPool)
+                        Utils.SemaphorePool.Return(objTemp);
+                    else
+                        objTemp.Dispose();
+                }
+                objTemp = _objTopLevelWriterSemaphore;
+                if (Interlocked.Exchange(ref _objTopLevelWriterSemaphore, null) != null)
+                {
+                    objTemp.Release();
+                    if (_blnSemaphoresFromPool)
+                        Utils.SemaphorePool.Return(objTemp);
+                    else
+                        objTemp.Dispose();
+                }
                 _blnIsDisposed = true;
             }
             finally
