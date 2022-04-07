@@ -832,7 +832,7 @@ namespace Chummer
                                                                       nameof(Character.PhysicalCM));
                                     lblCMPhysicalLabel.DoOneWayDataBinding("Text", CharacterObject,
                                                                            nameof(Character.PhysicalCMLabelText));
-                                    lblCMStun.Visible = true; // Needed to make sure data bindings go through
+                                    await lblCMStun.DoThreadSafeAsync(x => x.Visible = true); // Needed to make sure data bindings go through
                                     lblCMStun.DoOneWayDataBinding("ToolTipText", CharacterObject,
                                                                   nameof(Character.StunCMToolTip));
                                     lblCMStun.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.StunCM));

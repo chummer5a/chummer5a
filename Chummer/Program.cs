@@ -424,6 +424,7 @@ namespace Chummer
                     if (blnRestoreDefaultLanguage)
                         GlobalSettings.Language = GlobalSettings.DefaultLanguage;
 
+                    OpenCharacters.BeforeClearCollectionChanged += OpenCharactersOnBeforeClearCollectionChanged;
                     OpenCharacters.CollectionChanged += OpenCharactersOnCollectionChanged;
 
                     MainForm = new ChummerMainForm();
@@ -536,6 +537,8 @@ namespace Chummer
                         Application.Run(MainForm);
                     }
 
+                    OpenCharacters.Clear();
+                    OpenCharacters.BeforeClearCollectionChanged -= OpenCharactersOnBeforeClearCollectionChanged;
                     OpenCharacters.CollectionChanged -= OpenCharactersOnCollectionChanged;
 
                     PluginLoader?.Dispose();
@@ -858,13 +861,21 @@ namespace Chummer
         /// </summary>
         public static ThreadSafeObservableCollection<Character> OpenCharacters { get; } = new ThreadSafeObservableCollection<Character>();
 
-        private static void OpenCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private static void OpenCharactersOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            switch (notifyCollectionChangedEventArgs.Action)
+            foreach (Character objCharacter in e.OldItems)
+            {
+                objCharacter.Dispose();
+            }
+        }
+
+        private static void OpenCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Remove:
                 {
-                    foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
+                    foreach (Character objCharacter in e.OldItems)
                     {
                         objCharacter.Dispose();
                     }
@@ -872,9 +883,9 @@ namespace Chummer
                 }
                 case NotifyCollectionChangedAction.Replace:
                 {
-                    foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
+                    foreach (Character objCharacter in e.OldItems)
                     {
-                        if (!notifyCollectionChangedEventArgs.NewItems.Contains(objCharacter))
+                        if (!e.NewItems.Contains(objCharacter))
                             objCharacter.Dispose();
                     }
                     break;
