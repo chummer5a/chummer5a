@@ -236,7 +236,7 @@ namespace Chummer
                     // ReSharper disable once MethodHasAsyncOverload
                     if (s_DicLanguageDataLockers.TryAdd(strKey, objLockerObject))
                         break;
-                    objLockerObject.Dispose();
+                    Utils.SemaphorePool.Return(objLockerObject);
                     Utils.SafeSleep(token);
                 }
             }
@@ -249,7 +249,7 @@ namespace Chummer
                     objLockerObject = Utils.SemaphorePool.Get();
                     if (await s_DicLanguageDataLockers.TryAddAsync(strKey, objLockerObject))
                         break;
-                    objLockerObject.Dispose();
+                    Utils.SemaphorePool.Return(objLockerObject);
                     await Utils.SafeSleepAsync(token);
                     (blnSuccess, objLockerObject) = await s_DicLanguageDataLockers.TryGetValueAsync(strKey);
                 }

@@ -40,9 +40,11 @@ namespace Chummer
         {
             if (_blnIsDisposed)
                 return Task.FromException<IAsyncDisposable>(new ObjectDisposedException(nameof(AsyncLock)));
-            DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentSemaphore.Value ?? _objTopLevelSemaphore;
             DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
+            DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentSemaphore.Value;
             _objCurrentSemaphore.Value = objNextSemaphore;
+            if (objCurrentSemaphore == null)
+                objCurrentSemaphore = _objTopLevelSemaphore;
             SafeSemaphoreRelease objRelease = new SafeSemaphoreRelease(objCurrentSemaphore, objNextSemaphore, this);
             return TakeLockCoreAsync(objCurrentSemaphore, objRelease);
         }
@@ -57,16 +59,12 @@ namespace Chummer
         {
             if (_blnIsDisposed)
                 throw new ObjectDisposedException(nameof(AsyncLock));
-            DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentSemaphore.Value ?? _objTopLevelSemaphore;
             DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
+            DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentSemaphore.Value;
             _objCurrentSemaphore.Value = objNextSemaphore;
-            if (Utils.EverDoEvents)
-            {
-                while (!objCurrentSemaphore.Wait(Utils.DefaultSleepDuration))
-                    Utils.DoEventsSafe();
-            }
-            else
-                objCurrentSemaphore.Wait();
+            if (objCurrentSemaphore == null)
+                objCurrentSemaphore = _objTopLevelSemaphore;
+            objCurrentSemaphore.SafeWait();
             return new SafeSemaphoreRelease(objCurrentSemaphore, objNextSemaphore, this);
         }
 
@@ -93,13 +91,7 @@ namespace Chummer
             _blnIsDisposed = true;
             // Ensure the lock isn't held. If it is, wait for it to be released
             // before completing the dispose.
-            if (Utils.EverDoEvents)
-            {
-                while (!_objTopLevelSemaphore.Wait(Utils.DefaultSleepDuration))
-                    Utils.DoEventsSafe();
-            }
-            else
-                _objTopLevelSemaphore.Wait();
+            _objTopLevelSemaphore.SafeWait();
             _objTopLevelSemaphore.Release();
             _objTopLevelSemaphore.Dispose();
         }
@@ -179,13 +171,7 @@ namespace Chummer
 
                 _objAsyncLock._objCurrentSemaphore.Value
                     = _objCurrentSemaphore == _objAsyncLock._objTopLevelSemaphore ? null : _objCurrentSemaphore;
-                if (Utils.EverDoEvents)
-                {
-                    while (!_objNextSemaphore.Wait(Utils.DefaultSleepDuration))
-                        Utils.DoEventsSafe();
-                }
-                else
-                    _objNextSemaphore.Wait();
+                _objNextSemaphore.SafeWait();
                 _objCurrentSemaphore.Release();
                 _objNextSemaphore.Release();
                 Utils.SemaphorePool.Return(_objNextSemaphore);

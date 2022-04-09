@@ -242,6 +242,86 @@ namespace Chummer
                 Wait(token);
         }
 
+        /// <summary>
+        /// Version of SemaphoreSlim::Wait() that also processes application events if this is called on the UI thread
+        /// </summary>
+        public bool SafeWait(TimeSpan timeout, bool blnForceDoEvents = false)
+        {
+            if (Utils.EverDoEvents)
+            {
+                for (int i = timeout.Milliseconds; i >= 0; i -= Utils.DefaultSleepDuration)
+                {
+                    if (Wait(Math.Min(Utils.DefaultSleepDuration, i)))
+                        return true;
+                    Utils.DoEventsSafe(blnForceDoEvents);
+                }
+
+                return false;
+            }
+
+            return Wait(timeout);
+        }
+
+        /// <summary>
+        /// Version of SemaphoreSlim::Wait() that also processes application events if this is called on the UI thread
+        /// </summary>
+        public bool SafeWait(TimeSpan timeout, CancellationToken token, bool blnForceDoEvents = false)
+        {
+            if (Utils.EverDoEvents)
+            {
+                for (int i = timeout.Milliseconds; i >= 0; i -= Utils.DefaultSleepDuration)
+                {
+                    if (Wait(Math.Min(Utils.DefaultSleepDuration, i), token))
+                        return true;
+                    Utils.DoEventsSafe(blnForceDoEvents);
+                }
+
+                return false;
+            }
+
+            return Wait(timeout, token);
+        }
+
+        /// <summary>
+        /// Version of SemaphoreSlim::Wait() that also processes application events if this is called on the UI thread
+        /// </summary>
+        public bool SafeWait(int millisecondsTimeout, bool blnForceDoEvents = false)
+        {
+            if (Utils.EverDoEvents)
+            {
+                for (int i = millisecondsTimeout; i >= 0; i -= Utils.DefaultSleepDuration)
+                {
+                    if (Wait(Math.Min(Utils.DefaultSleepDuration, i)))
+                        return true;
+                    Utils.DoEventsSafe(blnForceDoEvents);
+                }
+
+                return false;
+            }
+
+            return Wait(millisecondsTimeout);
+        }
+
+        /// <summary>
+        /// Version of SemaphoreSlim::Wait() that also processes application events if this is called on the UI thread
+        /// </summary>
+        public bool SafeWait(int millisecondsTimeout, CancellationToken token, bool blnForceDoEvents = false)
+        {
+            if (Utils.EverDoEvents)
+            {
+                for (int i = millisecondsTimeout; i >= 0; i -= Utils.DefaultSleepDuration)
+                {
+                    if (Wait(Math.Min(Utils.DefaultSleepDuration, i), token))
+                        return true;
+                    Utils.DoEventsSafe(blnForceDoEvents);
+                }
+
+                return false;
+            }
+
+            return Wait(millisecondsTimeout, token);
+        }
+
         /// <inheritdoc cref="SemaphoreSlim.Release()"/>
         public void Release()
         {

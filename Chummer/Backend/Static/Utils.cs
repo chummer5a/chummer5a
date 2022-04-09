@@ -1517,7 +1517,7 @@ namespace Chummer
             {
                 try
                 {
-                    obj.Wait();
+                    obj.SafeWait();
                     obj.Release();
                 }
                 catch (ObjectDisposedException)
