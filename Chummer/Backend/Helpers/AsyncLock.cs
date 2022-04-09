@@ -30,40 +30,24 @@ namespace Chummer
     /// </summary>
     public sealed class AsyncLock : IDisposable, IAsyncDisposable
     {
-        // Needed because the pools are not necessarily initialized in static classes
-        private readonly bool _blnTopLevelSemaphoreFromPool;
         // In order to properly allow async lock to be recursive but still make them work properly as locks, we need to set up something
         // that is a bit like a singly-linked list. Each lock creates a disposable SafeSemaphoreRelease, and only disposing it frees the lock.
-        private readonly AsyncLocal<SemaphoreSlim> _objCurrentSemaphore = new AsyncLocal<SemaphoreSlim>();
-        private readonly SemaphoreSlim _objTopLevelSemaphore;
+        private readonly AsyncLocal<DebuggableSemaphoreSlim> _objCurrentSemaphore = new AsyncLocal<DebuggableSemaphoreSlim>();
+        private readonly DebuggableSemaphoreSlim _objTopLevelSemaphore = new DebuggableSemaphoreSlim();
         private bool _blnIsDisposed;
-
-        public AsyncLock()
-        {
-            if (Utils.SemaphorePool != null)
-            {
-                _objTopLevelSemaphore = Utils.SemaphorePool.Get();
-                _blnTopLevelSemaphoreFromPool = true;
-            }
-            else
-            {
-                _objTopLevelSemaphore = new SemaphoreSlim(1, 1);
-                _blnTopLevelSemaphoreFromPool = false;
-            }
-        }
-
+        
         public Task<IAsyncDisposable> TakeLockAsync()
         {
             if (_blnIsDisposed)
                 return Task.FromException<IAsyncDisposable>(new ObjectDisposedException(nameof(AsyncLock)));
-            SemaphoreSlim objCurrentSemaphore = _objCurrentSemaphore.Value ?? _objTopLevelSemaphore;
-            SemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
+            DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentSemaphore.Value ?? _objTopLevelSemaphore;
+            DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
             _objCurrentSemaphore.Value = objNextSemaphore;
             SafeSemaphoreRelease objRelease = new SafeSemaphoreRelease(objCurrentSemaphore, objNextSemaphore, this);
             return TakeLockCoreAsync(objCurrentSemaphore, objRelease);
         }
 
-        private static async Task<IAsyncDisposable> TakeLockCoreAsync(SemaphoreSlim objCurrentSemaphore, SafeSemaphoreRelease objRelease)
+        private static async Task<IAsyncDisposable> TakeLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, SafeSemaphoreRelease objRelease)
         {
             await objCurrentSemaphore.WaitAsync();
             return objRelease;
@@ -73,8 +57,8 @@ namespace Chummer
         {
             if (_blnIsDisposed)
                 throw new ObjectDisposedException(nameof(AsyncLock));
-            SemaphoreSlim objCurrentSemaphore = _objCurrentSemaphore.Value ?? _objTopLevelSemaphore;
-            SemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
+            DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentSemaphore.Value ?? _objTopLevelSemaphore;
+            DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
             _objCurrentSemaphore.Value = objNextSemaphore;
             if (Utils.EverDoEvents)
             {
@@ -117,10 +101,7 @@ namespace Chummer
             else
                 _objTopLevelSemaphore.Wait();
             _objTopLevelSemaphore.Release();
-            if (_blnTopLevelSemaphoreFromPool)
-                Utils.SemaphorePool.Return(_objTopLevelSemaphore);
-            else
-                _objTopLevelSemaphore.Dispose();
+            _objTopLevelSemaphore.Dispose();
         }
 
         public async ValueTask DisposeAsync()
@@ -133,19 +114,16 @@ namespace Chummer
             // before completing the dispose.
             await _objTopLevelSemaphore.WaitAsync();
             _objTopLevelSemaphore.Release();
-            if (_blnTopLevelSemaphoreFromPool)
-                Utils.SemaphorePool.Return(_objTopLevelSemaphore);
-            else
-                _objTopLevelSemaphore.Dispose();
+            _objTopLevelSemaphore.Dispose();
         }
 
         private readonly struct SafeSemaphoreRelease : IAsyncDisposable, IDisposable
         {
-            private readonly SemaphoreSlim _objCurrentSemaphore;
-            private readonly SemaphoreSlim _objNextSemaphore;
+            private readonly DebuggableSemaphoreSlim _objCurrentSemaphore;
+            private readonly DebuggableSemaphoreSlim _objNextSemaphore;
             private readonly AsyncLock _objAsyncLock;
 
-            public SafeSemaphoreRelease(SemaphoreSlim objCurrentSemaphore, SemaphoreSlim objNextSemaphore, AsyncLock objAsyncLock)
+            public SafeSemaphoreRelease(DebuggableSemaphoreSlim objCurrentSemaphore, DebuggableSemaphoreSlim objNextSemaphore, AsyncLock objAsyncLock)
             {
                 _objCurrentSemaphore = objCurrentSemaphore;
                 _objNextSemaphore = objNextSemaphore;

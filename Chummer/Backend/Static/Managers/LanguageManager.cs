@@ -35,7 +35,7 @@ namespace Chummer
 {
     public static class LanguageManager
     {
-        private static readonly LockingDictionary<string, SemaphoreSlim> s_DicLanguageDataLockers = new LockingDictionary<string, SemaphoreSlim>();
+        private static readonly LockingDictionary<string, DebuggableSemaphoreSlim> s_DicLanguageDataLockers = new LockingDictionary<string, DebuggableSemaphoreSlim>();
         private static readonly LockingDictionary<string, LanguageData> s_DicLanguageData = new LockingDictionary<string, LanguageData>();
         private static readonly LockingDictionary<string, string> s_DicEnglishStrings = new LockingDictionary<string, string>();
         public static IAsyncReadOnlyDictionary<string, LanguageData> LoadedLanguageData => s_DicLanguageData;
@@ -226,7 +226,7 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return true;
             string strKey = strLanguage.ToUpperInvariant();
-            SemaphoreSlim objLockerObject;
+            DebuggableSemaphoreSlim objLockerObject;
             if (blnSync)
             {
                 // ReSharper disable once MethodHasAsyncOverload

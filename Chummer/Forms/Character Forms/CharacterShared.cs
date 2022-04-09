@@ -64,7 +64,6 @@ namespace Chummer
         protected CharacterShared(Character objCharacter)
         {
             GenericToken = GenericCancellationTokenSource.Token;
-            _objUpdateCharacterInfoSemaphoreSlim = Utils.SemaphorePool.Get();
             _objCharacter = objCharacter;
             _objCharacter.PropertyChanged += CharacterPropertyChanged;
             string name = "Show_Form_" + GetType();
@@ -8108,7 +8107,7 @@ namespace Chummer
 
         private Task _tskUpdateCharacterInfo = Task.CompletedTask;
 
-        private readonly SemaphoreSlim _objUpdateCharacterInfoSemaphoreSlim;
+        private readonly DebuggableSemaphoreSlim _objUpdateCharacterInfoSemaphoreSlim = Utils.SemaphorePool.Get();
 
         private CancellationTokenSource _objUpdateCharacterInfoCancellationTokenSource;
 

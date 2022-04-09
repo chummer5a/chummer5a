@@ -1501,25 +1501,30 @@ namespace Chummer
         /// Memory Pool for SemaphoreSlim with one allowed semaphore that is used for async-friendly thread safety stuff. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
         /// </summary>
         [CLSCompliant(false)]
-        public static ObjectPool<SemaphoreSlim> SemaphorePool { get; }
+        public static ObjectPool<DebuggableSemaphoreSlim> SemaphorePool { get; }
             = s_ObjObjectPoolProvider.Create(new SemaphoreSlimPooledObjectPolicy());
 
-        private sealed class SemaphoreSlimPooledObjectPolicy : PooledObjectPolicy<SemaphoreSlim>
+        private sealed class SemaphoreSlimPooledObjectPolicy : PooledObjectPolicy<DebuggableSemaphoreSlim>
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public override SemaphoreSlim Create()
+            public override DebuggableSemaphoreSlim Create()
             {
-                return new SemaphoreSlim(1, 1);
+                return new DebuggableSemaphoreSlim();
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public override bool Return(SemaphoreSlim obj)
+            public override bool Return(DebuggableSemaphoreSlim obj)
             {
-                if (obj.CurrentCount != 1)
+                try
                 {
-                    throw new InvalidOperationException("Shouldn't be returning semaphore with a count != 1");
+                    obj.Wait();
+                    obj.Release();
                 }
-
+                catch (ObjectDisposedException)
+                {
+                    BreakIfDebug();
+                    return false;
+                }
                 return true;
             }
         }

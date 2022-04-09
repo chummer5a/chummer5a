@@ -49,8 +49,8 @@ namespace Chummer
         private string _strPrintLanguage = GlobalSettings.Language;
         private CancellationTokenSource _objRefresherCancellationTokenSource;
         private CancellationTokenSource _objOutputGeneratorCancellationTokenSource;
-        private SemaphoreSlim _objRefresherSemaphoreSlim;
-        private SemaphoreSlim _objOutputGeneratorSemaphoreSlim;
+        private readonly DebuggableSemaphoreSlim _objRefresherSemaphoreSlim = Utils.SemaphorePool.Get();
+        private readonly DebuggableSemaphoreSlim _objOutputGeneratorSemaphoreSlim = Utils.SemaphorePool.Get();
         private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objGenericToken;
         private Task _tskRefresher;
@@ -61,8 +61,6 @@ namespace Chummer
 
         public CharacterSheetViewer()
         {
-            _objRefresherSemaphoreSlim = Utils.SemaphorePool.Get();
-            _objOutputGeneratorSemaphoreSlim = Utils.SemaphorePool.Get();
             _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
             if (_strSelectedSheet.StartsWith("Shadowrun 4", StringComparison.Ordinal))
             {
@@ -238,23 +236,20 @@ namespace Chummer
                 CancellationTokenSource objTempTokenSource = _objRefresherCancellationTokenSource;
                 if (Interlocked.CompareExchange(ref _objRefresherCancellationTokenSource, null, objTempTokenSource) != null)
                 {
-                    SemaphoreSlim objTemp = _objRefresherSemaphoreSlim;
-                    if (Interlocked.CompareExchange(ref _objRefresherSemaphoreSlim, null, objTemp) != null)
+                    // ReSharper disable once MethodSupportsCancellation
+                    await _objRefresherSemaphoreSlim.WaitAsync();
+                    try
                     {
-                        await objTemp.WaitAsync(_objGenericToken);
-                        try
+                        if (objTempTokenSource?.IsCancellationRequested == false)
                         {
-                            if (objTempTokenSource?.IsCancellationRequested == false)
-                            {
-                                objTempTokenSource.Cancel(false);
-                                objTempTokenSource.Dispose();
-                            }
+                            objTempTokenSource.Cancel(false);
+                            objTempTokenSource.Dispose();
                         }
-                        finally
-                        {
-                            objTemp.Release();
-                            Utils.SemaphorePool.Return(objTemp);
-                        }
+                    }
+                    finally
+                    {
+                        _objRefresherSemaphoreSlim.Release();
+                        Utils.SemaphorePool.Return(_objRefresherSemaphoreSlim);
                     }
                 }
             }
@@ -268,23 +263,20 @@ namespace Chummer
                 CancellationTokenSource objTempTokenSource = _objOutputGeneratorCancellationTokenSource;
                 if (Interlocked.CompareExchange(ref _objOutputGeneratorCancellationTokenSource, null, objTempTokenSource) != null)
                 {
-                    SemaphoreSlim objTemp = _objOutputGeneratorSemaphoreSlim;
-                    if (Interlocked.CompareExchange(ref _objOutputGeneratorSemaphoreSlim, null, objTemp) != null)
+                    // ReSharper disable once MethodSupportsCancellation
+                    await _objOutputGeneratorSemaphoreSlim.WaitAsync();
+                    try
                     {
-                        await objTemp.WaitAsync(_objGenericToken);
-                        try
+                        if (objTempTokenSource?.IsCancellationRequested == false)
                         {
-                            if (objTempTokenSource?.IsCancellationRequested == false)
-                            {
-                                objTempTokenSource.Cancel(false);
-                                objTempTokenSource.Dispose();
-                            }
+                            objTempTokenSource.Cancel(false);
+                            objTempTokenSource.Dispose();
                         }
-                        finally
-                        {
-                            objTemp.Release();
-                            Utils.SemaphorePool.Return(objTemp);
-                        }
+                    }
+                    finally
+                    {
+                        _objOutputGeneratorSemaphoreSlim.Release();
+                        Utils.SemaphorePool.Return(_objOutputGeneratorSemaphoreSlim);
                     }
                 }
             }

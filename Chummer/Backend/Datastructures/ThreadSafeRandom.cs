@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chummer
@@ -29,7 +28,7 @@ namespace Chummer
     public class ThreadSafeRandom : Random, IDisposable
     {
         private readonly Random _objRandom;
-        private readonly SemaphoreSlim _objLock = Utils.SemaphorePool.Get();
+        private readonly DebuggableSemaphoreSlim _objLock = Utils.SemaphorePool.Get();
 
         public ThreadSafeRandom()
         {
