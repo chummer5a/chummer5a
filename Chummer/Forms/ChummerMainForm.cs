@@ -814,7 +814,7 @@ namespace Chummer
                             return;
                     }
 
-                    Program.OpenCharacters.Add(objCharacter);
+                    await Program.OpenCharacters.AddAsync(objCharacter);
                     await OpenCharacter(objCharacter, false);
                 }
                 finally
@@ -1251,7 +1251,7 @@ namespace Chummer
                         }
                     }
 
-                    Program.OpenCharacters.Add(objCharacter);
+                    await Program.OpenCharacters.AddAsync(objCharacter);
                 }
 
                 using (await CursorWait.NewAsync(this))
@@ -1449,7 +1449,7 @@ namespace Chummer
                 {
                     if (await Program.OpenCharacters.AllAsync(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
                         && await OpenCharacterForms.AllAsync(x => x.CharacterObject != objCharacter))
-                        Program.OpenCharacters.Remove(objCharacter);
+                        await Program.OpenCharacters.RemoveAsync(objCharacter);
                     await objCharacter.DisposeAsync();
                 }
             }
@@ -1515,7 +1515,7 @@ namespace Chummer
                 {
                     if (await Program.OpenCharacters.AllAsync(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
                         && await OpenCharacterForms.AllAsync(x => x.CharacterObject != objCharacter))
-                        Program.OpenCharacters.Remove(objCharacter);
+                        await Program.OpenCharacters.RemoveAsync(objCharacter);
                     await objCharacter.DisposeAsync();
                 }
             }

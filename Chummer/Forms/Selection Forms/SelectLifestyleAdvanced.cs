@@ -569,7 +569,7 @@ namespace Chummer
                     }
                     objQuality.Free = frmSelectLifestyleQuality.MyForm.FreeCost;
 
-                    _objLifestyle.LifestyleQualities.Add(objQuality);
+                    await _objLifestyle.LifestyleQualities.AddAsync(objQuality);
                 }
             }
             while (blnAddAgain);

@@ -17,8 +17,9 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -34,53 +35,81 @@ namespace Chummer
         public ThreadSafeObservableCollectionWithMaxSize(List<T> list, int intMaxSize) : base(list)
         {
             _intMaxSize = intMaxSize;
-            _blnSkipCollectionChanged = true;
             while (Count > _intMaxSize)
                 RemoveAt(Count - 1);
-            _blnSkipCollectionChanged = false;
         }
 
         public ThreadSafeObservableCollectionWithMaxSize(IEnumerable<T> collection, int intMaxSize) : base(collection)
         {
             _intMaxSize = intMaxSize;
-            _blnSkipCollectionChanged = true;
             while (Count > _intMaxSize)
                 RemoveAt(Count - 1);
-            _blnSkipCollectionChanged = false;
         }
 
-        private bool _blnSkipCollectionChanged;
-
-        /// <inheritdoc />
-        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        /// <inheritdoc cref="List{T}.Insert" />
+        public override void Insert(int index, T item)
         {
-            using (EnterReadLock.Enter(LockObject))
-            {
-                if (_blnSkipCollectionChanged)
-                    return;
-                if (e.Action == NotifyCollectionChangedAction.Reset)
-                {
-                    _blnSkipCollectionChanged = true;
-                    // Remove all entries greater than the allowed size
-                    while (Count > _intMaxSize)
-                        RemoveItem(Count - 1);
-                    _blnSkipCollectionChanged = false;
-                }
-            }
-            base.OnCollectionChanged(e);
-        }
-
-        /// <inheritdoc />
-        protected override void InsertItem(int index, T item)
-        {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 if (index >= _intMaxSize)
                     return;
                 while (Count >= _intMaxSize)
-                    RemoveItem(Count - 1);
+                    RemoveAt(Count - 1);
+                base.Insert(index, item);
             }
-            base.InsertItem(index, item);
+        }
+
+        /// <inheritdoc cref="List{T}.Insert" />
+        public override async ValueTask InsertAsync(int index, T item)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                if (index >= _intMaxSize)
+                    return;
+                int intCount = await CountAsync;
+                while (intCount >= _intMaxSize)
+                {
+                    await RemoveAtAsync(intCount - 1);
+                    intCount = await CountAsync;
+                }
+                await base.InsertAsync(index, item);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public override int Add(object value)
+        {
+            using (EnterReadLock.Enter(LockObject))
+            {
+                if (Count >= _intMaxSize)
+                    return -1;
+                return base.Add(value);
+            }
+        }
+
+        /// <inheritdoc />
+        public override void Add(T item)
+        {
+            using (EnterReadLock.Enter(LockObject))
+            {
+                if (Count >= _intMaxSize)
+                    return;
+                base.Add(item);
+            }
+        }
+
+        public override async ValueTask AddAsync(T item)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+            {
+                if (await CountAsync >= _intMaxSize)
+                    return;
+                await base.AddAsync(item);
+            }
         }
 
         /// <inheritdoc />
@@ -90,7 +119,7 @@ namespace Chummer
             {
                 if (Count >= _intMaxSize)
                     return false;
-                Add(item);
+                base.Add(item);
                 return true;
             }
         }

@@ -373,7 +373,7 @@ namespace Chummer
                 if (await _objMount.Mods.ContainsAsync(objMod))
                     continue;
                 lstNewVehicleMods.Add(objMod);
-                _objMount.Mods.Add(objMod);
+                await _objMount.Mods.AddAsync(objMod);
             }
 
             if (_objCharacter.Created)
@@ -386,7 +386,7 @@ namespace Chummer
                     if (_objMount.Parent == null)
                     {
                         blnRemoveMountAfterCheck = true;
-                        _objVehicle.WeaponMounts.Add(_objMount);
+                        await _objVehicle.WeaponMounts.AddAsync(_objMount);
                     }
 
                     decimal decCost = _objVehicle.TotalCost - _decOldBaseCost;
@@ -410,7 +410,7 @@ namespace Chummer
                                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                         if (blnRemoveMountAfterCheck)
                         {
-                            _objVehicle.WeaponMounts.Remove(_objMount);
+                            await _objVehicle.WeaponMounts.RemoveAsync(_objMount);
                             _objMount = null;
                         }
                         else
@@ -429,7 +429,7 @@ namespace Chummer
                     if (_objMount.Parent == null)
                     {
                         blnRemoveMountAfterCheck = true;
-                        _objVehicle.WeaponMounts.Add(_objMount);
+                        await _objVehicle.WeaponMounts.AddAsync(_objMount);
                     }
                     bool blnOverCapacity;
                     if (_objCharacter.Settings.BookEnabled("R5"))
@@ -449,7 +449,7 @@ namespace Chummer
                                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                         if (blnRemoveMountAfterCheck)
                         {
-                            _objVehicle.WeaponMounts.Remove(_objMount);
+                            await _objVehicle.WeaponMounts.RemoveAsync(_objMount);
                             _objMount = null;
                         }
                         else
@@ -463,7 +463,7 @@ namespace Chummer
 
                 if (blnRemoveMountAfterCheck)
                 {
-                    _objVehicle.WeaponMounts.Remove(_objMount);
+                    await _objVehicle.WeaponMounts.RemoveAsync(_objMount);
                 }
             }
 
@@ -827,7 +827,8 @@ namespace Chummer
                     objMod.Create(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, _objVehicle, frmPickVehicleMod.MyForm.Markup);
                     if (frmPickVehicleMod.MyForm.FreeCost)
                         objMod.Cost = "0";
-                    _objMount?.Mods.Add(objMod);
+                    if (_objMount != null)
+                        await _objMount.Mods.AddAsync(objMod);
                     _lstMods.Add(objMod);
                     intSlots += objMod.CalculatedSlots;
 

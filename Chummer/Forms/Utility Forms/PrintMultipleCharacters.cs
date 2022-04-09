@@ -218,7 +218,7 @@ namespace Chummer
                         await Program.OpenCharacters.AnyAsync(x => x.LinkedCharacters.Contains(objCharacter)))
                         continue;
                     blnAnyChanges = true;
-                    Program.OpenCharacters.Remove(objCharacter);
+                    await Program.OpenCharacters.RemoveAsync(objCharacter);
                     await objCharacter.DisposeAsync();
                     token.ThrowIfCancellationRequested();
                 }

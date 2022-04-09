@@ -3160,13 +3160,19 @@ namespace Chummer
                 foreach (Improvement objImprovement in objImprovementList)
                 {
                     // Remove the Improvement.
-                    objCharacter.Improvements.Remove(objImprovement);
                     if (blnSync)
+                    {
+                        // ReSharper disable once MethodHasAsyncOverload
+                        objCharacter.Improvements.Remove(objImprovement);
                         // ReSharper disable once MethodHasAsyncOverload
                         ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName);
+                    }
                     else
+                    {
+                        await objCharacter.Improvements.RemoveAsync(objImprovement);
                         await ClearCachedValueAsync(objCharacter, objImprovement.ImproveType,
                                                     objImprovement.ImprovedName);
+                    }
                 }
 
                 // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
@@ -3356,7 +3362,13 @@ namespace Chummer
                             Contact objNewContact
                                 = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == strImprovedName);
                             if (objNewContact != null)
-                                objCharacter.Contacts.Remove(objNewContact);
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objCharacter.Contacts.Remove(objNewContact);
+                                else
+                                    await objCharacter.Contacts.RemoveAsync(objNewContact);
+                            }
                             break;
 
                         case Improvement.ImprovementType.Art:
@@ -3367,7 +3379,11 @@ namespace Chummer
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? RemoveImprovements(objCharacter, objArt.SourceType, objArt.InternalId)
                                     : await RemoveImprovementsAsync(objCharacter, objArt.SourceType, objArt.InternalId);
-                                objCharacter.Arts.Remove(objArt);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objCharacter.Arts.Remove(objArt);
+                                else
+                                    await objCharacter.Arts.RemoveAsync(objArt);
                             }
 
                             break;
@@ -3392,7 +3408,11 @@ namespace Chummer
                                                                         ? Improvement.ImprovementSource.Metamagic
                                                                         : Improvement.ImprovementSource.Echo,
                                                                     objMetamagic.InternalId);
-                                objCharacter.Metamagics.Remove(objMetamagic);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objCharacter.Metamagics.Remove(objMetamagic);
+                                else
+                                    await objCharacter.Metamagics.RemoveAsync(objMetamagic);
                             }
 
                             break;
@@ -3403,7 +3423,11 @@ namespace Chummer
                                     x => x.InternalId == strImprovedName);
                             if (limitMod != null)
                             {
-                                objCharacter.LimitModifiers.Remove(limitMod);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objCharacter.LimitModifiers.Remove(limitMod);
+                                else
+                                    await objCharacter.LimitModifiers.RemoveAsync(limitMod);
                             }
 
                             break;
@@ -3418,7 +3442,11 @@ namespace Chummer
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower, objCritterPower.InternalId)
                                     : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.CritterPower, objCritterPower.InternalId);
-                                objCharacter.CritterPowers.Remove(objCritterPower);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objCharacter.CritterPowers.Remove(objCritterPower);
+                                else
+                                    await objCharacter.CritterPowers.RemoveAsync(objCritterPower);
                             }
 
                             break;
@@ -3434,7 +3462,11 @@ namespace Chummer
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.MentorSpirit, objMentor.InternalId)
                                     : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.MentorSpirit, objMentor.InternalId);
-                                objCharacter.MentorSpirits.Remove(objMentor);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objCharacter.MentorSpirits.Remove(objMentor);
+                                else
+                                    await objCharacter.MentorSpirits.RemoveAsync(objMentor);
                             }
 
                             break;
@@ -3474,7 +3506,11 @@ namespace Chummer
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell, objSpell.InternalId)
                                     : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.Spell, objSpell.InternalId);
-                                objCharacter.Spells.Remove(objSpell);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objCharacter.Spells.Remove(objSpell);
+                                else
+                                    await objCharacter.Spells.RemoveAsync(objSpell);
                             }
 
                             break;
@@ -3489,7 +3525,11 @@ namespace Chummer
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId)
                                     : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId);
-                                objCharacter.ComplexForms.Remove(objComplexForm);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objCharacter.ComplexForms.Remove(objComplexForm);
+                                else
+                                    await objCharacter.ComplexForms.RemoveAsync(objComplexForm);
                             }
 
                             break;
@@ -3551,7 +3591,11 @@ namespace Chummer
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.AIProgram, objProgram.InternalId)
                                     : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.AIProgram, objProgram.InternalId);
-                                objCharacter.AIPrograms.Remove(objProgram);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objCharacter.AIPrograms.Remove(objProgram);
+                                else
+                                    await objCharacter.AIPrograms.RemoveAsync(objProgram);
                             }
 
                             break;
@@ -3786,7 +3830,7 @@ namespace Chummer
                     // This is initially set to false make sure no property changers are triggered by the setters in the section above
                     objImprovement.SetupComplete = true;
                     // Add the Improvement to the list.
-                    objCharacter.Improvements.Add(objImprovement);
+                    await objCharacter.Improvements.AddAsync(objImprovement);
                     await ClearCachedValueAsync(objCharacter, objImprovementType, strImprovedName);
 
                     // Add the Improvement to the Transaction List.

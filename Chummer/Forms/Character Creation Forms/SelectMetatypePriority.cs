@@ -1113,7 +1113,7 @@ namespace Chummer
                                     if (objExistingQuality != null)
                                         lstOldPriorityQualities.Remove(objExistingQuality);
                                     else
-                                        _objCharacter.Qualities.Add(objQuality);
+                                        await _objCharacter.Qualities.AddAsync(objQuality);
                                 }
 
                                 foreach (Quality objQuality in lstOldPriorityQualities)
@@ -1205,7 +1205,7 @@ namespace Chummer
                                                                              .ToList());
                     // Add any created Weapons to the character.
                     foreach (Weapon objWeapon in lstWeapons)
-                        _objCharacter.Weapons.Add(objWeapon);
+                        await _objCharacter.Weapons.AddAsync(objWeapon);
                 }
 
                 // Set Special Attributes

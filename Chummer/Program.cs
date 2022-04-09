@@ -1000,7 +1000,11 @@ namespace Chummer
                     }
                 }
 
-                OpenCharacters.Add(objCharacter);
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    OpenCharacters.Add(objCharacter);
+                else
+                    await OpenCharacters.AddAsync(objCharacter);
                 //Timekeeper.Start("load_file");
                 bool blnLoaded = blnSync
                     // ReSharper disable once MethodHasAsyncOverload
@@ -1009,7 +1013,11 @@ namespace Chummer
                 //Timekeeper.Finish("load_file");
                 if (!blnLoaded)
                 {
-                    OpenCharacters.Remove(objCharacter);
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        OpenCharacters.Remove(objCharacter);
+                    else
+                        await OpenCharacters.RemoveAsync(objCharacter);
                     return null;
                 }
 

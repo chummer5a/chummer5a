@@ -361,14 +361,14 @@ namespace Chummer
                         return;
 
                     //Remove the old LimitModifier to ensure we don't double up.
-                    CharacterObject.LimitModifiers.Remove(objLimitModifier);
+                    await CharacterObject.LimitModifiers.RemoveAsync(objLimitModifier);
                     // Create the new limit modifier.
                     LimitModifier objNewLimitModifier = new LimitModifier(CharacterObject, strGuid);
                     objNewLimitModifier.Create(frmPickLimitModifier.MyForm.SelectedName, frmPickLimitModifier.MyForm.SelectedBonus,
                                                frmPickLimitModifier.MyForm.SelectedLimitType,
                                                frmPickLimitModifier.MyForm.SelectedCondition, true);
 
-                    CharacterObject.LimitModifiers.Add(objNewLimitModifier);
+                    await CharacterObject.LimitModifiers.AddAsync(objNewLimitModifier);
                 }
             }
         }
@@ -7216,10 +7216,8 @@ namespace Chummer
             {
                 EntityType = ContactType.Contact
             };
-            CharacterObject.Contacts.Add(objContact);
-
+            await CharacterObject.Contacts.AddAsync(objContact);
             await RequestCharacterUpdate();
-
             await SetDirty(true);
         }
 
@@ -7230,10 +7228,8 @@ namespace Chummer
                 if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteContact")))
                     return;
 
-                CharacterObject.Contacts.Remove(objSender.ContactObject);
-
+                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject);
                 await RequestCharacterUpdate();
-
                 await SetDirty(true);
             }
         }
@@ -7249,10 +7245,8 @@ namespace Chummer
                 EntityType = ContactType.Pet
             };
 
-            CharacterObject.Contacts.Add(objContact);
-
+            await CharacterObject.Contacts.AddAsync(objContact);
             await RequestCharacterUpdate();
-
             await SetDirty(true);
         }
 
@@ -7263,10 +7257,8 @@ namespace Chummer
                 if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteContact")))
                     return;
 
-                CharacterObject.Contacts.Remove(objSender.ContactObject);
-
+                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject);
                 await RequestCharacterUpdate();
-
                 await SetDirty(true);
             }
         }
@@ -7283,10 +7275,8 @@ namespace Chummer
                 EntityType = ContactType.Enemy
             };
 
-            CharacterObject.Contacts.Add(objContact);
-
+            await CharacterObject.Contacts.AddAsync(objContact);
             await RequestCharacterUpdate();
-
             await SetDirty(true);
         }
 
@@ -7297,10 +7287,8 @@ namespace Chummer
                 if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteEnemy")))
                     return;
 
-                CharacterObject.Contacts.Remove(objSender.ContactObject);
-
+                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject);
                 await RequestCharacterUpdate();
-
                 await SetDirty(true);
             }
         }
@@ -7352,7 +7340,7 @@ namespace Chummer
                 {
                     Contact objContact = new Contact(CharacterObject);
                     objContact.Load(xmlContact);
-                    CharacterObject.Contacts.Add(objContact);
+                    await CharacterObject.Contacts.AddAsync(objContact);
                 }
             }
         }
@@ -7652,10 +7640,8 @@ namespace Chummer
                 EntityType = SpiritType.Spirit,
                 Force = CharacterObject.MaxSpiritForce
             };
-            CharacterObject.Spirits.Add(objSpirit);
-
+            await CharacterObject.Spirits.AddAsync(objSpirit);
             await RequestCharacterUpdate();
-
             await SetDirty(true);
         }
 
@@ -7682,10 +7668,8 @@ namespace Chummer
                 EntityType = SpiritType.Sprite,
                 Force = CharacterObject.MaxSpriteLevel
             };
-            CharacterObject.Spirits.Add(objSprite);
-
+            await CharacterObject.Spirits.AddAsync(objSprite);
             await RequestCharacterUpdate();
-
             await SetDirty(true);
         }
 
@@ -7698,10 +7682,8 @@ namespace Chummer
             if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite")))
                 return;
             objSpirit.Fettered = false; // Fettered spirits consume MAG.
-            CharacterObject.Spirits.Remove(objSpirit);
-
+            await CharacterObject.Spirits.RemoveAsync(objSpirit);
             await RequestCharacterUpdate();
-
             await SetDirty(true);
         }
 
@@ -8248,8 +8230,9 @@ namespace Chummer
                         if (_objCharacterFileWatcher != null)
                             _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
                     }
-                    GlobalSettings.MostRecentlyUsedCharacters.Insert(0, CharacterObject.FileName);
-                    IsDirty = false;
+
+                    await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, CharacterObject.FileName);
+                    await SetDirty(false);
                 }
 
                 return true;
@@ -8486,15 +8469,17 @@ namespace Chummer
                         else
                         {
                             // Add the Gear to the Vehicle.
-                            objLocation?.Children.Add(objGear);
-                            objSelectedVehicle.GearChildren.Add(objGear);
+                            if (objLocation != null)
+                                await objLocation.Children.AddAsync(objGear);
+                            await objSelectedVehicle.GearChildren.AddAsync(objGear);
                             objGear.Parent = objSelectedVehicle;
 
                             foreach (Weapon objWeapon in lstWeapons)
                             {
-                                objLocation?.Children.Add(objGear);
+                                if (objLocation != null)
+                                    await objLocation.Children.AddAsync(objGear);
                                 objWeapon.ParentVehicle = objSelectedVehicle;
-                                objSelectedVehicle.Weapons.Add(objWeapon);
+                                await objSelectedVehicle.Weapons.AddAsync(objWeapon);
                             }
                         }
                     }

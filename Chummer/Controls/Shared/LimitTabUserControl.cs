@@ -107,7 +107,7 @@ namespace Chummer.UI.Shared
                 if (objLimitModifier.InternalId.IsEmptyGuid())
                     return;
 
-                _objCharacter.LimitModifiers.Add(objLimitModifier);
+                await _objCharacter.LimitModifiers.AddAsync(objLimitModifier);
             }
 
             MakeDirtyWithCharacterUpdate?.Invoke(this, EventArgs.Empty);
@@ -512,14 +512,14 @@ namespace Chummer.UI.Shared
                     return;
 
                 //Remove the old LimitModifier to ensure we don't double up.
-                _objCharacter.LimitModifiers.Remove(objLimitModifier);
+                await _objCharacter.LimitModifiers.RemoveAsync(objLimitModifier);
                 // Create the new limit modifier.
                 objLimitModifier = new LimitModifier(_objCharacter, strGuid);
                 objLimitModifier.Create(frmPickLimitModifier.MyForm.SelectedName,
                     frmPickLimitModifier.MyForm.SelectedBonus, frmPickLimitModifier.MyForm.SelectedLimitType,
                     frmPickLimitModifier.MyForm.SelectedCondition, true);
 
-                _objCharacter.LimitModifiers.Add(objLimitModifier);
+                await _objCharacter.LimitModifiers.AddAsync(objLimitModifier);
             }
 
             MakeDirtyWithCharacterUpdate?.Invoke(this, EventArgs.Empty);

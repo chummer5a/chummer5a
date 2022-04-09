@@ -4112,7 +4112,13 @@ namespace Chummer
                 }
 
                 if (addToMRU)
-                    GlobalSettings.MostRecentlyUsedCharacters.Insert(0, FileName);
+                {
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        GlobalSettings.MostRecentlyUsedCharacters.Insert(0, FileName);
+                    else
+                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, FileName);
+                }
 
                 if (blnSync)
                 {
@@ -5344,7 +5350,11 @@ namespace Chummer
                                 {
                                     MentorSpirit objMentor = new MentorSpirit(this, objXmlMentor);
                                     objMentor.Load(objXmlMentor);
-                                    _lstMentorSpirits.Add(objMentor);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstMentorSpirits.Add(objMentor);
+                                    else
+                                        await _lstMentorSpirits.AddAsync(objMentor);
                                 }
 
                                 //using finish("load_char_mentorspirit");
@@ -5468,7 +5478,11 @@ namespace Chummer
                                         objImprovement.Load(objXmlImprovement);
                                         // This is initially set to false make sure no property changers are triggered
                                         objImprovement.SetupComplete = true;
-                                        _lstImprovements.Add(objImprovement);
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            _lstImprovements.Add(objImprovement);
+                                        else
+                                            await _lstImprovements.AddAsync(objImprovement);
 
                                         if (objImprovement.ImproveType ==
                                             Improvement.ImprovementType.SkillsoftAccess &&
@@ -5494,7 +5508,13 @@ namespace Chummer
                                         {
                                             // Cyberadept in these versions was an echo. It is no longer an echo, and so needs a more complicated reapplication
                                             if (Settings.SpecialKarmaCostBasedOnShownValue)
-                                                _lstImprovements.Remove(objImprovement);
+                                            {
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    _lstImprovements.Remove(objImprovement);
+                                                else
+                                                    await _lstImprovements.RemoveAsync(objImprovement);
+                                            }
                                             else
                                                 lstCyberadeptSweepGrades.Add(objImprovement);
                                         }
@@ -5540,7 +5560,11 @@ namespace Chummer
                                 {
                                     Contact objContact = new Contact(this);
                                     objContact.Load(xmlContact);
-                                    _lstContacts.Add(objContact);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstContacts.Add(objContact);
+                                    else
+                                        await _lstContacts.AddAsync(objContact);
                                 }
 
                                 //Timekeeper.Finish("load_char_contacts");
@@ -5583,7 +5607,11 @@ namespace Chummer
                                             // Corrects an issue arising from older versions of CorrectedUnleveledQuality()
                                             if (_lstQualities.Any(x => x.InternalId == objQuality.InternalId))
                                                 objQuality.SetGUID(Guid.NewGuid());
-                                            _lstQualities.Add(objQuality);
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                _lstQualities.Add(objQuality);
+                                            else
+                                                await _lstQualities.AddAsync(objQuality);
                                             if ((blnSync
                                                     // ReSharper disable once MethodHasAsyncOverload
                                                     ? objQuality.GetNodeXPath()
@@ -6266,7 +6294,11 @@ namespace Chummer
                                 {
                                     Armor objArmor = new Armor(this);
                                     objArmor.Load(objXmlArmor);
-                                    _lstArmor.Add(objArmor);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstArmor.Add(objArmor);
+                                    else
+                                        await _lstArmor.AddAsync(objArmor);
                                 }
 
                                 //Timekeeper.Finish("load_char_armor");
@@ -6294,7 +6326,11 @@ namespace Chummer
                                 {
                                     Weapon objWeapon = new Weapon(this);
                                     objWeapon.Load(objXmlWeapon);
-                                    _lstWeapons.Add(objWeapon);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstWeapons.Add(objWeapon);
+                                    else
+                                        await _lstWeapons.AddAsync(objWeapon);
                                 }
 
                                 //Timekeeper.Finish("load_char_weapons");
@@ -6322,7 +6358,11 @@ namespace Chummer
                                 {
                                     Drug objDrug = new Drug(this);
                                     objDrug.Load(objXmlDrug);
-                                    _lstDrugs.Add(objDrug);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstDrugs.Add(objDrug);
+                                    else
+                                        await _lstDrugs.AddAsync(objDrug);
                                 }
 
                                 //Timekeeper.Finish("load_char_drugs");
@@ -6353,7 +6393,11 @@ namespace Chummer
                                 {
                                     Cyberware objCyberware = new Cyberware(this);
                                     objCyberware.Load(objXmlCyberware);
-                                    _lstCyberware.Add(objCyberware);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstCyberware.Add(objCyberware);
+                                    else
+                                        await _lstCyberware.AddAsync(objCyberware);
                                     // Legacy shim #1
                                     if (objCyberware.Name == "Myostatin Inhibitor" &&
                                         LastSavedVersion <= new Version(5, 195, 1) &&
@@ -6650,7 +6694,11 @@ namespace Chummer
                                 {
                                     Spell objSpell = new Spell(this);
                                     objSpell.Load(objXmlSpell);
-                                    _lstSpells.Add(objSpell);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstSpells.Add(objSpell);
+                                    else
+                                        await _lstSpells.AddAsync(objSpell);
                                 }
                                 //Timekeeper.Finish("load_char_spells");
                             }
@@ -6754,7 +6802,11 @@ namespace Chummer
                                 {
                                     Spirit objSpirit = new Spirit(this);
                                     objSpirit.Load(xmlSpirit);
-                                    _lstSpirits.Add(objSpirit);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstSpirits.Add(objSpirit);
+                                    else
+                                        await _lstSpirits.AddAsync(objSpirit);
                                 }
 
                                 if (!_lstSpirits.Any(s => s.Fettered) && Improvements.Any(imp =>
@@ -6795,7 +6847,11 @@ namespace Chummer
                                 {
                                     ComplexForm objComplexForm = new ComplexForm(this);
                                     objComplexForm.Load(objXmlComplexForm);
-                                    _lstComplexForms.Add(objComplexForm);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstComplexForms.Add(objComplexForm);
+                                    else
+                                        await _lstComplexForms.AddAsync(objComplexForm);
                                 }
 
                                 //Timekeeper.Finish("load_char_complex");
@@ -6823,7 +6879,11 @@ namespace Chummer
                                 {
                                     AIProgram objProgram = new AIProgram(this);
                                     objProgram.Load(objXmlProgram);
-                                    _lstAIPrograms.Add(objProgram);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstAIPrograms.Add(objProgram);
+                                    else
+                                        await _lstAIPrograms.AddAsync(objProgram);
                                 }
 
                                 //Timekeeper.Finish("load_char_aiprogram");
@@ -6851,7 +6911,11 @@ namespace Chummer
                                 {
                                     MartialArt objMartialArt = new MartialArt(this);
                                     objMartialArt.Load(objXmlArt);
-                                    _lstMartialArts.Add(objMartialArt);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstMartialArts.Add(objMartialArt);
+                                    else
+                                        await _lstMartialArts.AddAsync(objMartialArt);
                                 }
 
                                 //Timekeeper.Finish("load_char_marts");
@@ -6879,7 +6943,11 @@ namespace Chummer
                                 {
                                     LimitModifier obLimitModifier = new LimitModifier(this);
                                     obLimitModifier.Load(objXmlLimit);
-                                    _lstLimitModifiers.Add(obLimitModifier);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstLimitModifiers.Add(obLimitModifier);
+                                    else
+                                        await _lstLimitModifiers.AddAsync(obLimitModifier);
                                 }
 
                                 //Timekeeper.Finish("load_char_mod");
@@ -6907,7 +6975,11 @@ namespace Chummer
                                 {
                                     Lifestyle objLifestyle = new Lifestyle(this);
                                     objLifestyle.Load(objXmlLifestyle);
-                                    _lstLifestyles.Add(objLifestyle);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstLifestyles.Add(objLifestyle);
+                                    else
+                                        await _lstLifestyles.AddAsync(objLifestyle);
                                 }
 
                                 //Timekeeper.Finish("load_char_lifestyle");
@@ -6935,7 +7007,11 @@ namespace Chummer
                                 {
                                     Gear objGear = new Gear(this);
                                     objGear.Load(objXmlGear);
-                                    _lstGear.Add(objGear);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstGear.Add(objGear);
+                                    else
+                                        await _lstGear.AddAsync(objGear);
                                 }
 
                                 // If the character has a technomancer quality but no Living Persona commlink, its improvements get re-applied immediately
@@ -7087,7 +7163,11 @@ namespace Chummer
                                 {
                                     Vehicle objVehicle = new Vehicle(this);
                                     objVehicle.Load(objXmlVehicle);
-                                    _lstVehicles.Add(objVehicle);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstVehicles.Add(objVehicle);
+                                    else
+                                        await _lstVehicles.AddAsync(objVehicle);
                                 }
 
                                 //Timekeeper.Finish("load_char_car");
@@ -7115,7 +7195,11 @@ namespace Chummer
                                 {
                                     Metamagic objMetamagic = new Metamagic(this);
                                     objMetamagic.Load(objXmlMetamagic);
-                                    _lstMetamagics.Add(objMetamagic);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstMetamagics.Add(objMetamagic);
+                                    else
+                                        await _lstMetamagics.AddAsync(objMetamagic);
                                 }
 
                                 //Timekeeper.Finish("load_char_mmagic");
@@ -7143,7 +7227,11 @@ namespace Chummer
                                 {
                                     Art objArt = new Art(this);
                                     objArt.Load(objXmlArt);
-                                    _lstArts.Add(objArt);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstArts.Add(objArt);
+                                    else
+                                        await _lstArts.AddAsync(objArt);
                                 }
 
                                 //Timekeeper.Finish("load_char_arts");
@@ -7171,7 +7259,11 @@ namespace Chummer
                                 {
                                     Enhancement objEnhancement = new Enhancement(this);
                                     objEnhancement.Load(objXmlEnhancement);
-                                    _lstEnhancements.Add(objEnhancement);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstEnhancements.Add(objEnhancement);
+                                    else
+                                        await _lstEnhancements.AddAsync(objEnhancement);
                                 }
 
                                 //Timekeeper.Finish("load_char_ench");
@@ -7199,7 +7291,11 @@ namespace Chummer
                                 {
                                     CritterPower objPower = new CritterPower(this);
                                     objPower.Load(objXmlPower);
-                                    _lstCritterPowers.Add(objPower);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstCritterPowers.Add(objPower);
+                                    else
+                                        await _lstCritterPowers.AddAsync(objPower);
                                 }
 
                                 //Timekeeper.Finish("load_char_cpow");
@@ -7259,7 +7355,11 @@ namespace Chummer
                                 {
                                     InitiationGrade objGrade = new InitiationGrade(this);
                                     objGrade.Load(objXmlGrade);
-                                    _lstInitiationGrades.Add(objGrade);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstInitiationGrades.Add(objGrade);
+                                    else
+                                        await _lstInitiationGrades.AddAsync(objGrade);
                                 }
 
                                 //Timekeeper.Finish("load_char_init");
@@ -7332,7 +7432,13 @@ namespace Chummer
                                     objSustained.Load(objXmlSustained);
                                     if (objSustained.InternalId !=
                                         Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo))
-                                        _lstSustainedObjects.Add(objSustained);
+                                    {
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            _lstSustainedObjects.Add(objSustained);
+                                        else
+                                            await _lstSustainedObjects.AddAsync(objSustained);
+                                    }
                                 }
                             }
 
@@ -7355,9 +7461,20 @@ namespace Chummer
                                 // Improvement Groups.
                                 XmlNodeList objXmlGroupList =
                                     objXmlCharacter.SelectNodes("improvementgroups/improvementgroup");
-                                foreach (XmlNode objXmlGroup in objXmlGroupList)
+                                if (blnSync)
                                 {
-                                    _lstImprovementGroups.Add(objXmlGroup.InnerText);
+                                    foreach (XmlNode objXmlGroup in objXmlGroupList)
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstImprovementGroups.Add(objXmlGroup.InnerText);
+                                    }
+                                }
+                                else
+                                {
+                                    foreach (XmlNode objXmlGroup in objXmlGroupList)
+                                    {
+                                        await _lstImprovementGroups.AddAsync(objXmlGroup.InnerText);
+                                    }
                                 }
 
                                 //Timekeeper.Finish("load_char_igroup");
@@ -7433,7 +7550,11 @@ namespace Chummer
                                         Weapon objWeapon = new Weapon(this);
                                         objWeapon.Create(objXmlWeapon, _lstWeapons);
                                         objWeapon.IncludedInWeapon = true; // Unarmed attack can never be removed
-                                        _lstWeapons.Add(objWeapon);
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            _lstWeapons.Add(objWeapon);
+                                        else
+                                            await _lstWeapons.AddAsync(objWeapon);
                                     }
                                 }
 
@@ -7473,9 +7594,21 @@ namespace Chummer
 
                                             objQuality.Create(objXmlDwarfQuality, QualitySource.Metatype,
                                                               lstWeapons);
-                                            foreach (Weapon objWeapon in lstWeapons)
-                                                Weapons.Add(objWeapon);
-                                            Qualities.Add(objQuality);
+                                            
+                                            if (blnSync)
+                                            {
+                                                foreach (Weapon objWeapon in lstWeapons)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    Weapons.Add(objWeapon);
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                Qualities.Add(objQuality);
+                                            }
+                                            else
+                                            {
+                                                foreach (Weapon objWeapon in lstWeapons)
+                                                    await Weapons.AddAsync(objWeapon);
+                                                await Qualities.AddAsync(objQuality);
+                                            }
                                         }
                                     }
                                 }
@@ -7516,8 +7649,11 @@ namespace Chummer
                                                 Improvement.ImprovementSource.CyberadeptDaemon;
                                             objCyberadeptImprovement.SourceName = objBestGradeMatch.InternalId;
                                         }
-                                        else
+                                        else if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             _lstImprovements.Remove(objCyberadeptImprovement);
+                                        else
+                                            await _lstImprovements.RemoveAsync(objCyberadeptImprovement);
                                     }
                                 }
 
@@ -27512,7 +27648,11 @@ namespace Chummer
                                                 objQuality.Notes =
                                                     xmlQualityToImport.SelectSingleNode("description")?.Value ??
                                                     string.Empty;
-                                                _lstQualities.Add(objQuality);
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    _lstQualities.Add(objQuality);
+                                                else
+                                                    await _lstQualities.AddAsync(objQuality);
                                             }
                                         }
                                     }
@@ -27615,7 +27755,11 @@ namespace Chummer
                                                 objQuality.Notes =
                                                     xmlQualityToImport.SelectSingleNode("description")?.Value ??
                                                     string.Empty;
-                                                _lstQualities.Add(objQuality);
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    _lstQualities.Add(objQuality);
+                                                else
+                                                    await _lstQualities.AddAsync(objQuality);
                                             }
                                         }
                                     }
@@ -27823,7 +27967,11 @@ namespace Chummer
                                         objContact.Notes = sbdNotes.ToString();
                                     }
 
-                                    _lstContacts.Add(objContact);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstContacts.Add(objContact);
+                                    else
+                                        await _lstContacts.AddAsync(objContact);
                                 }
 
                                 //Timekeeper.Finish("load_char_contacts");
@@ -27890,7 +28038,11 @@ namespace Chummer
                                                             lstWeapons);
                                             objArmor.Notes = xmlArmorToImport.SelectSingleNode("description")
                                                                              ?.Value;
-                                            _lstArmor.Add(objArmor);
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                _lstArmor.Add(objArmor);
+                                            else
+                                                await _lstArmor.AddAsync(objArmor);
 
                                             foreach (string strName in HeroLabPluginNodeNames)
                                             {
@@ -27917,7 +28069,11 @@ namespace Chummer
                                                             objArmorMod.Notes = xmlArmorModToImport
                                                                 .SelectSingleNode("description")?.Value;
                                                             objArmorMod.Parent = objArmor;
-                                                            objArmor.ArmorMods.Add(objArmorMod);
+                                                            if (blnSync)
+                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                objArmor.ArmorMods.Add(objArmorMod);
+                                                            else
+                                                                await objArmor.ArmorMods.AddAsync(objArmorMod);
 
                                                             foreach (string strPluginNodeName in
                                                                      HeroLabPluginNodeNames)
@@ -27931,7 +28087,13 @@ namespace Chummer
                                                                     if (objPlugin.ImportHeroLabGear(xmlPluginToAdd,
                                                                             xmlArmorModData,
                                                                             lstWeapons))
-                                                                        objArmorMod.GearChildren.Add(objPlugin);
+                                                                    {
+                                                                        if (blnSync)
+                                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                                            objArmorMod.GearChildren.Add(objPlugin);
+                                                                        else
+                                                                            await objArmorMod.GearChildren.AddAsync(objPlugin);
+                                                                    }
                                                                     else
                                                                         objPlugin.Dispose();
                                                                 }
@@ -27974,7 +28136,13 @@ namespace Chummer
                                                             if (objPlugin.ImportHeroLabGear(xmlArmorModToImport,
                                                                     xmlArmorData,
                                                                     lstWeapons))
-                                                                objArmor.GearChildren.Add(objPlugin);
+                                                            {
+                                                                if (blnSync)
+                                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                                    objArmor.GearChildren.Add(objPlugin);
+                                                                else
+                                                                    await objArmor.GearChildren.AddAsync(objPlugin);
+                                                            }
                                                             else
                                                                 objPlugin.Dispose();
                                                         }
@@ -28013,7 +28181,13 @@ namespace Chummer
                                                                                 ? objArmorMod.GetNode()
                                                                                 : await objArmorMod.GetNodeAsync(),
                                                                             lstWeapons))
-                                                                        objArmorMod.GearChildren.Add(objPlugin);
+                                                                    {
+                                                                        if (blnSync)
+                                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                                            objArmorMod.GearChildren.Add(objPlugin);
+                                                                        else
+                                                                            await objArmorMod.GearChildren.AddAsync(objPlugin);
+                                                                    }
                                                                     else
                                                                         objPlugin.Dispose();
                                                                 }
@@ -28089,7 +28263,13 @@ namespace Chummer
                                 {
                                     Weapon objWeapon = new Weapon(this);
                                     if (objWeapon.ImportHeroLabWeapon(xmlWeaponToImport, lstWeapons))
-                                        _lstWeapons.Add(objWeapon);
+                                    {
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            _lstWeapons.Add(objWeapon);
+                                        else
+                                            await _lstWeapons.AddAsync(objWeapon);
+                                    }
                                     else
                                         objWeapon.Dispose();
                                 }
@@ -28126,7 +28306,13 @@ namespace Chummer
                                     Cyberware objCyberware = new Cyberware(this);
                                     if (objCyberware.ImportHeroLabCyberware(xmlCyberwareToImport, null, lstWeapons,
                                                                             lstVehicles))
-                                        _lstCyberware.Add(objCyberware);
+                                    {
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            _lstCyberware.Add(objCyberware);
+                                        else
+                                            await _lstCyberware.AddAsync(objCyberware);
+                                    }
                                     else
                                         objCyberware.Dispose();
                                 }
@@ -28157,7 +28343,13 @@ namespace Chummer
                                     Cyberware objCyberware = new Cyberware(this);
                                     if (objCyberware.ImportHeroLabCyberware(xmlCyberwareToImport, null, lstWeapons,
                                                                             lstVehicles))
-                                        _lstCyberware.Add(objCyberware);
+                                    {
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            _lstCyberware.Add(objCyberware);
+                                        else
+                                            await _lstCyberware.AddAsync(objCyberware);
+                                    }
                                     else
                                         objCyberware.Dispose();
                                 }
@@ -28461,7 +28653,11 @@ namespace Chummer
                                             Spell objSpell = new Spell(this);
                                             objSpell.Create(xmlSpellData, strForcedValue, blnIsLimited);
                                             objSpell.Notes = xmlHeroLabSpell.SelectSingleNode("description")?.Value;
-                                            _lstSpells.Add(objSpell);
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                _lstSpells.Add(objSpell);
+                                            else
+                                                await _lstSpells.AddAsync(objSpell);
                                         }
                                     }
                                 }
@@ -28676,7 +28872,11 @@ namespace Chummer
                                         {
                                             ComplexForm objComplexForm = new ComplexForm(this);
                                             objComplexForm.Create(xmlComplexFormData, strForcedValue);
-                                            _lstComplexForms.Add(objComplexForm);
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                _lstComplexForms.Add(objComplexForm);
+                                            else
+                                                await _lstComplexForms.AddAsync(objComplexForm);
                                         }
                                     }
                                 }
@@ -28756,10 +28956,18 @@ namespace Chummer
                                                                   xmlHeroLabFakeLicenseNode.SelectSingleNode("@for")
                                                                       ?.Value);
                                             objFakeLicense.Parent = objFakeSIN;
-                                            objFakeSIN.Children.Add(objFakeLicense);
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                objFakeSIN.Children.Add(objFakeLicense);
+                                            else
+                                                await objFakeSIN.Children.AddAsync(objFakeLicense);
                                         }
 
-                                        _lstGear.Add(objFakeSIN);
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            _lstGear.Add(objFakeSIN);
+                                        else
+                                            await _lstGear.AddAsync(objFakeSIN);
                                     }
 
                                     XPathNavigator xmlHeroLabLifestyleNode =
@@ -28789,7 +28997,11 @@ namespace Chummer
                                                 objLifestyle.Increments = intMonths;
                                             }
 
-                                            _lstLifestyles.Add(objLifestyle);
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                _lstLifestyles.Add(objLifestyle);
+                                            else
+                                                await _lstLifestyles.AddAsync(objLifestyle);
                                         }
                                     }
                                 }
@@ -28808,7 +29020,13 @@ namespace Chummer
                                 {
                                     Gear objGear = new Gear(this);
                                     if (objGear.ImportHeroLabGear(xmlGearToImport, null, lstWeapons))
-                                        _lstGear.Add(objGear);
+                                    {
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            _lstGear.Add(objGear);
+                                        else
+                                            await _lstGear.AddAsync(objGear);
+                                    }
                                 }
 
                                 foreach (XPathNavigator xmlPluginToAdd in xmlStatBlockBaseNode.Select(
@@ -28842,7 +29060,11 @@ namespace Chummer
                             {
                                 foreach (Vehicle objVehicle in lstVehicles)
                                 {
-                                    _lstVehicles.Add(objVehicle);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstVehicles.Add(objVehicle);
+                                    else
+                                        await _lstVehicles.AddAsync(objVehicle);
                                 }
 
                                 /* TODO: Process HeroLab Vehicles entries, which are present in HTML and TXT statblocks but not in XML
@@ -28978,7 +29200,11 @@ namespace Chummer
                                         Weapon objWeapon = new Weapon(this);
                                         objWeapon.Create(objXmlWeapon, _lstWeapons);
                                         objWeapon.IncludedInWeapon = true; // Unarmed attack can never be removed
-                                        _lstWeapons.Add(objWeapon);
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            _lstWeapons.Add(objWeapon);
+                                        else
+                                            await _lstWeapons.AddAsync(objWeapon);
                                     }
                                 }
 
@@ -29616,7 +29842,7 @@ namespace Chummer
                     {
                         Lifestyle objLifestyle = new Lifestyle(this);
                         objLifestyle.Create(objXmlLifestyle);
-                        Lifestyles.Add(objLifestyle);
+                        await Lifestyles.AddAsync(objLifestyle);
                     }
                 }
 
@@ -29637,7 +29863,7 @@ namespace Chummer
                     {
                         CritterPower objCritterPower = new CritterPower(this);
                         objCritterPower.Create(objXmlPowerNode);
-                        CritterPowers.Add(objCritterPower);
+                        await CritterPowers.AddAsync(objCritterPower);
                     }
                 }
 
@@ -29652,7 +29878,7 @@ namespace Chummer
                     {
                         CritterPower objCritterPower = new CritterPower(this);
                         objCritterPower.Create(objXmlPowerNode, 0, "Normal Weapons");
-                        CritterPowers.Add(objCritterPower);
+                        await CritterPowers.AddAsync(objCritterPower);
                     }
                 }
 

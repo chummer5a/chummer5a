@@ -1538,7 +1538,7 @@ namespace Chummer
                                     x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
                                 && await Program.MainForm.OpenCharacterForms.AllAsync(
                                     x => x.CharacterObject != objCharacter))
-                                Program.OpenCharacters.Remove(objCharacter);
+                                await Program.OpenCharacters.RemoveAsync(objCharacter);
                             await objCharacter.DisposeAsync();
                         }
                     }
@@ -1580,7 +1580,7 @@ namespace Chummer
                                     x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
                                 && await Program.MainForm.OpenCharacterForms.AllAsync(
                                     x => x.CharacterObject != objCharacter))
-                                Program.OpenCharacters.Remove(objCharacter);
+                                await Program.OpenCharacters.RemoveAsync(objCharacter);
                             await objCharacter.DisposeAsync();
                         }
                     }

@@ -145,7 +145,7 @@ namespace Chummer
             {
                 DrugComponent objDrugComponent = objNodeData.DrugComponent;
                 objDrugComponent.Level = objNodeData.Level;
-                _objDrug.Components.Add(objDrugComponent);
+                await _objDrug.Components.AddAsync(objDrugComponent);
             }
         }
 

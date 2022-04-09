@@ -347,8 +347,8 @@ namespace Chummer.Backend.Attributes
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                AttributeList.Clear();
-                SpecialAttributeList.Clear();
+                await AttributeList.ClearAsync();
+                await SpecialAttributeList.ClearAsync();
                 foreach (BindingSource objSource in _dicBindings.Values)
                     objSource.Dispose();
                 await _dicBindings.DisposeAsync();

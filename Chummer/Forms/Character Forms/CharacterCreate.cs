@@ -1202,7 +1202,7 @@ namespace Chummer
 
                     if (Program.MainForm.ActiveMdiChild == this)
                         ToolStripManager.RevertMerge("toolStrip");
-                    Program.MainForm.OpenCharacterForms.Remove(this);
+                    await Program.MainForm.OpenCharacterForms.RemoveAsync(this);
 
                     // Unsubscribe from events.
                     GlobalSettings.ClipboardChanged -= RefreshPasteStatus;
@@ -1304,7 +1304,7 @@ namespace Chummer
                     if (!_blnIsReopenQueued
                         && await Program.OpenCharacters.AllAsync(
                             x => x == CharacterObject || !x.LinkedCharacters.Contains(CharacterObject)))
-                        Program.OpenCharacters.Remove(CharacterObject);
+                        await Program.OpenCharacters.RemoveAsync(CharacterObject);
                 }
                 finally
                 {
@@ -1481,7 +1481,7 @@ namespace Chummer
 
                             if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.MAG))
                             {
-                                CharacterObject.AttributeSection.Attributes.Add(CharacterObject.MAG);
+                                await CharacterObject.AttributeSection.Attributes.AddAsync(CharacterObject.MAG);
                             }
 
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
@@ -1490,7 +1490,7 @@ namespace Chummer
                                     CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
                                 if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                 {
-                                    CharacterObject.AttributeSection.Attributes.Add(objMAGAdept);
+                                    await CharacterObject.AttributeSection.Attributes.AddAsync(objMAGAdept);
                                 }
                             }
                         }
@@ -1501,8 +1501,8 @@ namespace Chummer
 
                             if (CharacterObject.AttributeSection.Attributes != null)
                             {
-                                CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.MAG);
-                                CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.MAGAdept);
+                                await CharacterObject.AttributeSection.Attributes.RemoveAsync(CharacterObject.MAG);
+                                await CharacterObject.AttributeSection.Attributes.RemoveAsync(CharacterObject.MAGAdept);
                             }
                         }
 
@@ -1599,7 +1599,7 @@ namespace Chummer
                             if (CharacterObject.AttributeSection.Attributes != null && !await CharacterObject.AttributeSection.Attributes.ContainsAsync(
                                     CharacterObject.RES))
                             {
-                                CharacterObject.AttributeSection.Attributes.Add(CharacterObject.RES);
+                                await CharacterObject.AttributeSection.Attributes.AddAsync(CharacterObject.RES);
                             }
                         }
                         else
@@ -1608,7 +1608,7 @@ namespace Chummer
                                 await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabInitiation), GenericToken);
                             if (CharacterObject.AttributeSection.Attributes != null)
                             {
-                                CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.RES);
+                                await CharacterObject.AttributeSection.Attributes.RemoveAsync(CharacterObject.RES);
                             }
                         }
 
@@ -1622,12 +1622,12 @@ namespace Chummer
                         {
                             if (!(await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.DEP)))
                             {
-                                CharacterObject.AttributeSection.Attributes.Add(CharacterObject.DEP);
+                                await CharacterObject.AttributeSection.Attributes.AddAsync(CharacterObject.DEP);
                             }
                         }
                         else if (await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.DEP))
                         {
-                            CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.DEP);
+                            await CharacterObject.AttributeSection.Attributes.RemoveAsync(CharacterObject.DEP);
                         }
                     }
                         break;
@@ -1690,7 +1690,7 @@ namespace Chummer
                                     CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
                                 if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                 {
-                                    CharacterObject.AttributeSection.Attributes.Add(objMAGAdept);
+                                    await CharacterObject.AttributeSection.Attributes.AddAsync(objMAGAdept);
                                 }
                             }
                         }
@@ -1705,7 +1705,7 @@ namespace Chummer
                                     CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
                                 if (await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                 {
-                                    CharacterObject.AttributeSection.Attributes.Remove(objMAGAdept);
+                                    await CharacterObject.AttributeSection.Attributes.RemoveAsync(objMAGAdept);
                                 }
                             }
                         }
@@ -1735,7 +1735,7 @@ namespace Chummer
                                     CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
                                 if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                 {
-                                    CharacterObject.AttributeSection.Attributes.Add(objMAGAdept);
+                                    await CharacterObject.AttributeSection.Attributes.AddAsync(objMAGAdept);
                                 }
                             }
 
@@ -1758,7 +1758,7 @@ namespace Chummer
                                         CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
                                     if (await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                     {
-                                        CharacterObject.AttributeSection.Attributes.Remove(objMAGAdept);
+                                        await CharacterObject.AttributeSection.Attributes.RemoveAsync(objMAGAdept);
                                     }
                                 }
                             }
@@ -1845,8 +1845,9 @@ namespace Chummer
                                 {
                                     if (objCyberware.CanRemoveThroughImprovements)
                                     {
-                                        objCyberware.Parent?.Children.Remove(objCyberware);
-                                        CharacterObject.Cyberware.Add(objCyberware);
+                                        if (objCyberware.Parent != null)
+                                            await objCyberware.Parent.Children.RemoveAsync(objCyberware);
+                                        await CharacterObject.Cyberware.AddAsync(objCyberware);
                                         objCyberware.ChangeModularEquip(false);
                                     }
 
@@ -1889,8 +1890,9 @@ namespace Chummer
                                     if (objCyberware.CanRemoveThroughImprovements)
                                     {
                                         objCyberware.ChangeModularEquip(false);
-                                        objCyberware.Parent?.Children.Remove(objCyberware);
-                                        CharacterObject.Cyberware.Add(objCyberware);
+                                        if (objCyberware.Parent != null)
+                                            await objCyberware.Parent.Children.RemoveAsync(objCyberware);
+                                        await CharacterObject.Cyberware.AddAsync(objCyberware);
                                     }
 
                                     continue;
@@ -1931,8 +1933,9 @@ namespace Chummer
                                 {
                                     if (objCyberware.CanRemoveThroughImprovements)
                                     {
-                                        objCyberware.Parent?.Children.Remove(objCyberware);
-                                        CharacterObject.Cyberware.Add(objCyberware);
+                                        if (objCyberware.Parent != null)
+                                            await objCyberware.Parent.Children.RemoveAsync(objCyberware);
+                                        await CharacterObject.Cyberware.AddAsync(objCyberware);
                                         objCyberware.ChangeModularEquip(false);
                                     }
 
@@ -3570,7 +3573,7 @@ namespace Chummer
             if (objPower.InternalId.IsEmptyGuid())
                 return;
 
-            CharacterObject.CritterPowers.Add(objPower);
+            await CharacterObject.CritterPowers.AddAsync(objPower);
 
             CharacterObject.MetatypeCategory = "Free Sprite";
         }
@@ -3669,7 +3672,7 @@ namespace Chummer
                             objSpell.BarehandedAdept = true;
                         }
 
-                        CharacterObject.Spells.Add(objSpell);
+                        await CharacterObject.Spells.AddAsync(objSpell);
                     }
                 } while (blnAddAgain);
             }
@@ -3784,7 +3787,7 @@ namespace Chummer
                     if (objComplexForm.InternalId.IsEmptyGuid())
                         continue;
 
-                    CharacterObject.ComplexForms.Add(objComplexForm);
+                    await CharacterObject.ComplexForms.AddAsync(objComplexForm);
                 } while (blnAddAgain);
             }
         }
@@ -3844,7 +3847,7 @@ namespace Chummer
                     if (objProgram.InternalId.IsEmptyGuid())
                         continue;
 
-                    CharacterObject.AIPrograms.Add(objProgram);
+                    await CharacterObject.AIPrograms.AddAsync(objProgram);
                 } while (blnAddAgain);
             }
         }
@@ -3908,12 +3911,13 @@ namespace Chummer
                     }
 
                     //objWeapon.Location = objLocation;
-                    objLocation?.Children.Add(objWeapon);
-                    CharacterObject.Weapons.Add(objWeapon);
+                    if (objLocation != null)
+                        await objLocation.Children.AddAsync(objWeapon);
+                    await CharacterObject.Weapons.AddAsync(objWeapon);
 
                     foreach (Weapon objExtraWeapon in lstWeapons)
                     {
-                        CharacterObject.Weapons.Add(objExtraWeapon);
+                        await CharacterObject.Weapons.AddAsync(objExtraWeapon);
                     }
 
                     return frmPickWeapon.MyForm.AddAgain;
@@ -3949,7 +3953,7 @@ namespace Chummer
                         objLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
                     }
 
-                    CharacterObject.Lifestyles.Add(objLifestyle);
+                    await CharacterObject.Lifestyles.AddAsync(objLifestyle);
                 } while (blnAddAgain);
             }
         }
@@ -4014,9 +4018,10 @@ namespace Chummer
                 }
 
                 //objVehicle.Location = objLocation;
-                objLocation?.Children.Add(objVehicle);
+                if (objLocation != null)
+                    await objLocation.Children.AddAsync(objVehicle);
 
-                CharacterObject.Vehicles.Add(objVehicle);
+                await CharacterObject.Vehicles.AddAsync(objVehicle);
 
                 return frmPickVehicle.MyForm.AddAgain;
             }
@@ -4091,7 +4096,7 @@ namespace Chummer
                             objRetrofit.Create(objXmlNode, 0, objMod.Parent);
                             objRetrofit.Cost = decCost.ToString(GlobalSettings.InvariantCultureInfo);
                             objRetrofit.IncludedInVehicle = true;
-                            objMod.Parent.Mods.Add(objRetrofit);
+                            await objMod.Parent.Mods.AddAsync(objRetrofit);
                         }
 
                         objMod.DeleteVehicleMod();
@@ -4311,7 +4316,7 @@ namespace Chummer
                         if (objPower.InternalId.IsEmptyGuid())
                             continue;
 
-                        CharacterObject.CritterPowers.Add(objPower);
+                        await CharacterObject.CritterPowers.AddAsync(objPower);
                     }
                 } while (blnAddAgain);
             }
@@ -4390,11 +4395,11 @@ namespace Chummer
                     //Is there any reason not to add it?
                     if (true)
                     {
-                        CharacterObject.Qualities.Add(objLifeModule);
+                        await CharacterObject.Qualities.AddAsync(objLifeModule);
 
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            CharacterObject.Weapons.Add(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon);
                         }
                     }
 
@@ -4523,12 +4528,12 @@ namespace Chummer
 
                             if (blnAddItem)
                             {
-                                CharacterObject.Qualities.Add(objQuality);
+                                await CharacterObject.Qualities.AddAsync(objQuality);
 
                                 // Add any created Weapons to the character.
                                 foreach (Weapon objWeapon in lstWeapons)
                                 {
-                                    CharacterObject.Weapons.Add(objWeapon);
+                                    await CharacterObject.Weapons.AddAsync(objWeapon);
                                 }
                             }
                             else
@@ -4659,7 +4664,7 @@ namespace Chummer
                     // The replacement Quality does not count towards the BP limit of the new type, nor should it be printed.
                     objReplaceQuality.AllowPrint = false;
                     objReplaceQuality.ContributeToLimit = false;
-                    CharacterObject.Qualities.Add(objReplaceQuality);
+                    await CharacterObject.Qualities.AddAsync(objReplaceQuality);
                     // The replacement Quality no longer adds its weapons to the character
                 }
                 else
@@ -4689,7 +4694,7 @@ namespace Chummer
                                     ? QualitySource.MetatypeRemovable
                                     : QualitySource.Metatype;
                                 objQuality.Create(objXmlQuality, objSource, CharacterObject.Weapons, strForceValue);
-                                CharacterObject.Qualities.Add(objQuality);
+                                await CharacterObject.Qualities.AddAsync(objQuality);
                             }
                         }
                     }
@@ -4760,7 +4765,7 @@ namespace Chummer
                 if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.MyForm.SelectedValue))
                     return;
                 Location objLocation = new Location(CharacterObject, CharacterObject.GearLocations, frmPickText.MyForm.SelectedValue);
-                CharacterObject.GearLocations.Add(objLocation);
+                await CharacterObject.GearLocations.AddAsync(objLocation);
             }
         }
 
@@ -4776,7 +4781,7 @@ namespace Chummer
                 if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.MyForm.SelectedValue))
                     return;
                 Location objLocation = new Location(CharacterObject, CharacterObject.WeaponLocations, frmPickText.MyForm.SelectedValue);
-                CharacterObject.WeaponLocations.Add(objLocation);
+                await CharacterObject.WeaponLocations.AddAsync(objLocation);
             }
         }
 
@@ -4863,7 +4868,7 @@ namespace Chummer
             foreach (Gear objGear in lstStack)
             {
                 decCost += objGear.TotalCost;
-                CharacterObject.Gear.Remove(objGear);
+                await CharacterObject.Gear.RemoveAsync(objGear);
             }
 
             Gear objStackItem = new Gear(CharacterObject)
@@ -4878,7 +4883,7 @@ namespace Chummer
                 Avail = "0"
             };
 
-            CharacterObject.Gear.Add(objStackItem);
+            await CharacterObject.Gear.AddAsync(objStackItem);
 
             objStack.GearId = objStackItem.InternalId;
         }
@@ -4921,12 +4926,13 @@ namespace Chummer
                 }
 
                 //objArmor.Location = objLocation;
-                objLocation?.Children.Add(objArmor);
-                CharacterObject.Armor.Add(objArmor);
+                if (objLocation != null)
+                    await objLocation.Children.AddAsync(objArmor);
+                await CharacterObject.Armor.AddAsync(objArmor);
 
                 foreach (Weapon objWeapon in lstWeapons)
                 {
-                    CharacterObject.Weapons.Add(objWeapon);
+                    await CharacterObject.Weapons.AddAsync(objWeapon);
                 }
 
                 return frmPickArmor.MyForm.AddAgain;
@@ -4945,7 +4951,7 @@ namespace Chummer
                 if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel || string.IsNullOrEmpty(frmPickText.MyForm.SelectedValue))
                     return;
                 Location objLocation = new Location(CharacterObject, CharacterObject.ArmorLocations, frmPickText.MyForm.SelectedValue);
-                CharacterObject.ArmorLocations.Add(objLocation);
+                await CharacterObject.ArmorLocations.AddAsync(objLocation);
             }
         }
 
@@ -5147,7 +5153,7 @@ namespace Chummer
                             objAccessory.Cost = "0";
                         }
 
-                        objWeapon.WeaponAccessories.Add(objAccessory);
+                        await objWeapon.WeaponAccessories.AddAsync(objAccessory);
                     }
                 } while (blnAddAgain);
             }
@@ -5227,12 +5233,12 @@ namespace Chummer
                             objMod.Cost = "0";
                         }
 
-                        objArmor.ArmorMods.Add(objMod);
+                        await objArmor.ArmorMods.AddAsync(objMod);
 
                         // Add any Weapons created by the Mod.
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            CharacterObject.Weapons.Add(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon);
                         }
                     }
                 } while (blnAddAgain);
@@ -5266,7 +5272,7 @@ namespace Chummer
             {
                 if (await frmPickVehicleMod.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                     return;
-                objVehicle.WeaponMounts.Add(frmPickVehicleMod.MyForm.WeaponMount);
+                await objVehicle.WeaponMounts.AddAsync(frmPickVehicleMod.MyForm.WeaponMount);
             }
         }
 
@@ -5400,7 +5406,7 @@ namespace Chummer
                             objMod.Markup = decCost;
                         }
 
-                        objVehicle.Mods.Add(objMod);
+                        await objVehicle.Mods.AddAsync(objMod);
                     }
                 } while (blnAddAgain);
             }
@@ -5480,16 +5486,16 @@ namespace Chummer
                         }
 
                         if (objMod != null)
-                            objMod.Weapons.Add(objWeapon);
+                            await objMod.Weapons.AddAsync(objWeapon);
                         else
-                            objWeaponMount.Weapons.Add(objWeapon);
+                            await objWeaponMount.Weapons.AddAsync(objWeapon);
 
                         foreach (Weapon objLoopWeapon in lstWeapons)
                         {
                             if (objMod == null)
-                                objWeaponMount.Weapons.Add(objLoopWeapon);
+                                await objWeaponMount.Weapons.AddAsync(objLoopWeapon);
                             else
-                                objMod.Weapons.Add(objLoopWeapon);
+                                await objMod.Weapons.AddAsync(objLoopWeapon);
                         }
 
                         blnAddAgain = frmPickWeapon.MyForm.AddAgain && (objMod != null || !objWeaponMount.IsWeaponsFull);
@@ -5564,7 +5570,7 @@ namespace Chummer
                             objAccessory.Cost = "0";
                         }
 
-                        objWeapon.WeaponAccessories.Add(objAccessory);
+                        await objWeapon.WeaponAccessories.AddAsync(objAccessory);
                     }
                 } while (blnAddAgain);
             }
@@ -5616,13 +5622,13 @@ namespace Chummer
                 }
 
                 objWeapon.Parent = objSelectedWeapon;
-                objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
+                await objSelectedWeapon.UnderbarrelWeapons.AddAsync(objWeapon);
                 if (!objSelectedWeapon.AllowAccessory)
                     objWeapon.AllowAccessory = false;
 
                 foreach (Weapon objLoopWeapon in lstWeapons)
                 {
-                    objSelectedWeapon.UnderbarrelWeapons.Add(objLoopWeapon);
+                    await objSelectedWeapon.UnderbarrelWeapons.AddAsync(objLoopWeapon);
                     if (!objSelectedWeapon.AllowAccessory)
                         objLoopWeapon.AllowAccessory = false;
                 }
@@ -5679,7 +5685,7 @@ namespace Chummer
                     if (objTechnique.InternalId.IsEmptyGuid())
                         return;
 
-                    objMartialArt.Techniques.Add(objTechnique);
+                    await objMartialArt.Techniques.AddAsync(objTechnique);
                 } while (blnAddAgain);
             }
         }
@@ -5800,7 +5806,7 @@ namespace Chummer
                         IsRefreshing = false;
                     }
 
-                    objSensor.Children.Add(objGear);
+                    await objSensor.Children.AddAsync(objGear);
 
                     if (lstWeapons.Count > 0)
                     {
@@ -5810,7 +5816,7 @@ namespace Chummer
                         {
                             foreach (Weapon objWeapon in lstWeapons)
                             {
-                                objVehicle.Weapons.Add(objWeapon);
+                                await objVehicle.Weapons.AddAsync(objWeapon);
                             }
                         }
                     }
@@ -5871,7 +5877,7 @@ namespace Chummer
 
                     objLifestyle.StyleType = LifestyleType.Advanced;
 
-                    CharacterObject.Lifestyles.Add(objLifestyle);
+                    await CharacterObject.Lifestyles.AddAsync(objLifestyle);
                 } while (blnAddAgain);
             }
         }
@@ -6001,7 +6007,7 @@ namespace Chummer
                     objWeapon.Cost = "0";
                 }
 
-                objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
+                await objSelectedWeapon.UnderbarrelWeapons.AddAsync(objWeapon);
             }
         }
 
@@ -6630,7 +6636,7 @@ namespace Chummer
                     return;
 
                 Spell objSpell = frmSpell.MyForm.SelectedSpell;
-                CharacterObject.Spells.Add(objSpell);
+                await CharacterObject.Spells.AddAsync(objSpell);
             }
         }
 
@@ -6757,10 +6763,10 @@ namespace Chummer
                         // Create any Weapons that came with this Gear.
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            CharacterObject.Weapons.Add(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon);
                         }
 
-                        objCyberware.GearChildren.Add(objNewGear);
+                        await objCyberware.GearChildren.AddAsync(objNewGear);
                     }
                 } while (blnAddAgain);
             }
@@ -6842,10 +6848,10 @@ namespace Chummer
                         // Create any Weapons that came with this Gear.
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            CharacterObject.Weapons.Add(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon);
                         }
 
-                        objCyberware.GearChildren.Add(objNewGear);
+                        await objCyberware.GearChildren.AddAsync(objNewGear);
                     }
                 } while (blnAddAgain);
             }
@@ -6931,11 +6937,11 @@ namespace Chummer
                             objGear.Cost = "0";
                         }
 
-                        objSensor.Children.Add(objGear);
+                        await objSensor.Children.AddAsync(objGear);
 
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            CharacterObject.Weapons.Add(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon);
                         }
                     }
                 } while (blnAddAgain);
@@ -7019,11 +7025,11 @@ namespace Chummer
                             objGear.Cost = "0";
                         }
 
-                        objSensor.Children.Add(objGear);
+                        await objSensor.Children.AddAsync(objGear);
 
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            CharacterObject.Weapons.Add(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon);
                         }
                     }
                 } while (blnAddAgain);
@@ -7096,12 +7102,12 @@ namespace Chummer
                             objGear.Cost = "0";
                         }
 
-                        objAccessory.GearChildren.Add(objGear);
+                        await objAccessory.GearChildren.AddAsync(objGear);
 
                         // Create any Weapons that came with this Gear.
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            CharacterObject.Weapons.Add(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon);
                         }
                     }
                 } while (blnAddAgain);
@@ -7181,12 +7187,12 @@ namespace Chummer
                             objGear.Cost = "0";
                         }
 
-                        objSensor.Children.Add(objGear);
+                        await objSensor.Children.AddAsync(objGear);
 
                         // Create any Weapons that came with this Gear.
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            CharacterObject.Weapons.Add(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon);
                         }
                     }
                 } while (blnAddAgain);
@@ -7225,7 +7231,7 @@ namespace Chummer
                     return;
 
                 Weapon objWeapon = frmCreateNaturalWeapon.MyForm.SelectedWeapon;
-                CharacterObject.Weapons.Add(objWeapon);
+                await CharacterObject.Weapons.AddAsync(objWeapon);
             }
         }
 
@@ -7298,7 +7304,7 @@ namespace Chummer
                             objGear.Cost = "0";
                         }
 
-                        objSensor.Children.Add(objGear);
+                        await objSensor.Children.AddAsync(objGear);
 
                         // Create any Weapons that came with this Gear.
                         if (lstWeapons.Count > 0)
@@ -7307,7 +7313,7 @@ namespace Chummer
                                                                      out WeaponAccessory _, out Cyberware _);
                             foreach (Weapon objWeapon in lstWeapons)
                             {
-                                objVehicle.Weapons.Add(objWeapon);
+                                await objVehicle.Weapons.AddAsync(objWeapon);
                             }
                         }
                     }
@@ -7380,12 +7386,12 @@ namespace Chummer
                             objNewGear.Cost = "0";
                         }
 
-                        objAccessory.GearChildren.Add(objNewGear);
+                        await objAccessory.GearChildren.AddAsync(objNewGear);
 
                         // Create any Weapons that came with this Gear.
                         foreach (Weapon objLoopWeapon in lstWeapons)
                         {
-                            objAccessory.Parent.Children.Add(objLoopWeapon);
+                            await objAccessory.Parent.Children.AddAsync(objLoopWeapon);
                         }
                     }
                 } while (blnAddAgain);
@@ -7566,13 +7572,13 @@ namespace Chummer
                 {
                     //to avoid an System.InvalidOperationException: Cannot change ObservableCollection during a CollectionChanged event.
                     _blnSkipQualityLevelChanged = true;
-                    CharacterObject.Qualities.Add(objQuality);
+                    await CharacterObject.Qualities.AddAsync(objQuality);
                     _blnSkipQualityLevelChanged = false;
 
                     // Add any created Weapons to the character.
                     foreach (Weapon objWeapon in lstWeapons)
                     {
-                        CharacterObject.Weapons.Add(objWeapon);
+                        await CharacterObject.Weapons.AddAsync(objWeapon);
                     }
                 }
                 else
@@ -12703,7 +12709,7 @@ namespace Chummer
 
                     foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
                     {
-                        CharacterObject.AttributeSection.AttributeList.Add(objAttributeToAdd);
+                        await CharacterObject.AttributeSection.AttributeList.AddAsync(objAttributeToAdd);
                     }
                 }
 
@@ -12729,12 +12735,12 @@ namespace Chummer
                     {
                         if (!await CharacterObject.SaveAsync(token: token))
                         {
-                            CharacterObject.ExpenseEntries.Clear();
+                            await CharacterObject.ExpenseEntries.ClearAsync();
                             if (lstAttributesToAdd != null)
                             {
                                 foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
                                 {
-                                    CharacterObject.AttributeSection.AttributeList.Remove(objAttributeToAdd);
+                                    await CharacterObject.AttributeSection.AttributeList.RemoveAsync(objAttributeToAdd);
                                 }
                             }
 
@@ -13123,9 +13129,9 @@ namespace Chummer
                         objCyberware.Cost = "0";
 
                     if (objSelectedCyberware != null)
-                        objSelectedCyberware.Children.Add(objCyberware);
+                        await objSelectedCyberware.Children.AddAsync(objCyberware);
                     else
-                        CharacterObject.Cyberware.Add(objCyberware);
+                        await CharacterObject.Cyberware.AddAsync(objCyberware);
 
                     CharacterObject.Weapons.AddRange(lstWeapons);
                     CharacterObject.Vehicles.AddRange(lstVehicles);
@@ -13230,7 +13236,7 @@ namespace Chummer
                     // Create any Weapons that came with this Gear.
                     foreach (Weapon objWeapon in lstWeapons)
                     {
-                        CharacterObject.Weapons.Add(objWeapon);
+                        await CharacterObject.Weapons.AddAsync(objWeapon);
                     }
 
                     ICollection<Gear> destinationGear =
@@ -13259,7 +13265,8 @@ namespace Chummer
 
                     if (!blnMatchFound)
                     {
-                        objLocation?.Children.Add(objGear);
+                        if (objLocation != null)
+                            await objLocation.Children.AddAsync(objGear);
                         destinationGear.Add(objGear);
                     }
                     else
@@ -13370,7 +13377,7 @@ namespace Chummer
                     // Create any Weapons that came with this Gear.
                     foreach (Weapon objWeapon in lstWeapons)
                     {
-                        CharacterObject.Weapons.Add(objWeapon);
+                        await CharacterObject.Weapons.AddAsync(objWeapon);
                     }
 
                     bool blnMatchFound = false;
@@ -13393,15 +13400,15 @@ namespace Chummer
                     {
                         if (!string.IsNullOrEmpty(objSelectedGear?.Name))
                         {
-                            objSelectedGear.Children.Add(objGear);
+                            await objSelectedGear.Children.AddAsync(objGear);
                         }
                         else if (!string.IsNullOrEmpty(objSelectedMod?.Name))
                         {
-                            objSelectedMod.GearChildren.Add(objGear);
+                            await objSelectedMod.GearChildren.AddAsync(objGear);
                         }
                         else
                         {
-                            objSelectedArmor.GearChildren.Add(objGear);
+                            await objSelectedArmor.GearChildren.AddAsync(objGear);
                         }
                     }
 
@@ -15758,7 +15765,7 @@ namespace Chummer
 
                         objLifestyle.Create(objXmlLifestyle);
 
-                        CharacterObject.Lifestyles.Add(objLifestyle);
+                        await CharacterObject.Lifestyles.AddAsync(objLifestyle);
                     }
 
                     decimal decStartingNuyen;
@@ -15904,12 +15911,12 @@ namespace Chummer
 
                             objQuality.Create(objXmlQualityNode, QualitySource.Selected, lstWeapons, strForceValue);
 
-                            CharacterObject.Qualities.Add(objQuality);
+                            await CharacterObject.Qualities.AddAsync(objQuality);
 
                             // Add any created Weapons to the character.
                             foreach (Weapon objWeapon in lstWeapons)
                             {
-                                CharacterObject.Weapons.Add(objWeapon);
+                                await CharacterObject.Weapons.AddAsync(objWeapon);
                             }
                         }
                     }
@@ -15938,7 +15945,7 @@ namespace Chummer
 
                         MartialArt objMartialArt = new MartialArt(CharacterObject);
                         objMartialArt.Create(objXmlArt);
-                        CharacterObject.MartialArts.Add(objMartialArt);
+                        await CharacterObject.MartialArts.AddAsync(objMartialArt);
                     }
                 }
             }
@@ -15963,7 +15970,7 @@ namespace Chummer
                             if (objXmlArtNode == null)
                                 continue;
                             objArt.Create(objXmlArtNode);
-                            CharacterObject.MartialArts.Add(objArt);
+                            await CharacterObject.MartialArts.AddAsync(objArt);
 
                             // Check for Techniques.
                             using (XmlNodeList xmlTechniquesList = objXmlArt.SelectNodes("techniques/technique"))
@@ -15977,7 +15984,7 @@ namespace Chummer
                                             "/chummer/techniques/technique[(" + CharacterObjectSettings.BookXPath() +
                                             ") and name = " + xmlTechnique["name"]?.InnerText.CleanXPath() + ']');
                                         objTechnique.Create(xmlTechniqueNode);
-                                        objArt.Techniques.Add(objTechnique);
+                                        await objArt.Techniques.AddAsync(objTechnique);
                                     }
                                 }
                             }
@@ -16022,7 +16029,7 @@ namespace Chummer
                                 ComplexForm objComplexForm = new ComplexForm(CharacterObject);
                                 objComplexForm.Create(objXmlComplexFormNode);
 
-                                CharacterObject.ComplexForms.Add(objComplexForm);
+                                await CharacterObject.ComplexForms.AddAsync(objComplexForm);
                             }
                         }
                     }
@@ -16048,7 +16055,7 @@ namespace Chummer
                                 AIProgram objProgram = new AIProgram(CharacterObject);
                                 objProgram.Create(objXmlProgramNode);
 
-                                CharacterObject.AIPrograms.Add(objProgram);
+                                await CharacterObject.AIPrograms.AddAsync(objProgram);
                             }
                         }
                     }
@@ -16081,7 +16088,7 @@ namespace Chummer
                             Spell objSpell = new Spell(CharacterObject);
                             string strForceValue = objXmlSpell.Attributes?["select"]?.InnerText ?? string.Empty;
                             objSpell.Create(objXmlSpellNode, strForceValue);
-                            CharacterObject.Spells.Add(objSpell);
+                            await CharacterObject.Spells.AddAsync(objSpell);
                         }
                     }
                 }
@@ -16107,7 +16114,7 @@ namespace Chummer
                                 ServicesOwed = Convert.ToInt32(objXmlSpirit["services"].InnerText,
                                     GlobalSettings.InvariantCultureInfo)
                             };
-                            CharacterObject.Spirits.Add(objSpirit);
+                            await CharacterObject.Spirits.AddAsync(objSpirit);
                         }
                     }
                 }
@@ -16137,11 +16144,11 @@ namespace Chummer
                     {
                         LifestyleQuality lq = new LifestyleQuality(CharacterObject);
                         lq.Create(objXmlQuality, objLifestyle, CharacterObject, QualitySource.Selected);
-                        objLifestyle.LifestyleQualities.Add(lq);
+                        await objLifestyle.LifestyleQualities.AddAsync(lq);
                     }
 
                     // Add the Lifestyle to the character and Lifestyle Tree.
-                    CharacterObject.Lifestyles.Add(objLifestyle);
+                    await CharacterObject.Lifestyles.AddAsync(objLifestyle);
                 }
             }
 
@@ -16171,7 +16178,7 @@ namespace Chummer
                     List<Weapon> lstWeapons = new List<Weapon>(1);
 
                     objArmor.Create(objXmlArmorNode, Convert.ToInt32(objXmlArmor["rating"]?.InnerText, GlobalSettings.InvariantCultureInfo), lstWeapons, false, blnCreateChildren);
-                    CharacterObject.Armor.Add(objArmor);
+                    await CharacterObject.Armor.AddAsync(objArmor);
 
                     // Look for Armor Mods.
                     foreach (XmlNode objXmlMod in objXmlArmor.SelectNodes("mods/mod"))
@@ -16188,13 +16195,13 @@ namespace Chummer
                             foreach (XmlNode objXmlGear in objXmlArmor.SelectNodes("gears/gear"))
                                 AddPACKSGear(objXmlGearDocument, objXmlGear, objMod, blnCreateChildren);
 
-                            objArmor.ArmorMods.Add(objMod);
+                            await objArmor.ArmorMods.AddAsync(objMod);
                         }
                     }
 
                     foreach (Weapon objWeapon in lstWeapons)
                     {
-                        CharacterObject.Weapons.Add(objWeapon);
+                        await CharacterObject.Weapons.AddAsync(objWeapon);
                     }
 
                     foreach (XmlNode objXmlGear in objXmlArmor.SelectNodes("gears/gear"))
@@ -16228,7 +16235,7 @@ namespace Chummer
                         Weapon objWeapon = new Weapon(CharacterObject);
                         List<Weapon> lstWeapons = new List<Weapon>(1);
                         objWeapon.Create(objXmlWeaponNode, lstWeapons, blnCreateChildren);
-                        CharacterObject.Weapons.Add(objWeapon);
+                        await CharacterObject.Weapons.AddAsync(objWeapon);
 
                         // Look for Weapon Accessories.
                         foreach (XmlNode objXmlAccessory in objXmlWeapon.SelectNodes("accessories/accessory"))
@@ -16242,7 +16249,7 @@ namespace Chummer
                             objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0, false, blnCreateChildren);
                             objMod.Parent = objWeapon;
 
-                            objWeapon.WeaponAccessories.Add(objMod);
+                            await objWeapon.WeaponAccessories.AddAsync(objMod);
 
                             foreach (XmlNode objXmlGear in objXmlAccessory.SelectNodes("gears/gear"))
                                 AddPACKSGear(objXmlGearDocument, objXmlGear, objMod, blnCreateChildren);
@@ -16258,7 +16265,7 @@ namespace Chummer
                                 List<Weapon> lstLoopWeapons = new List<Weapon>(1);
                                 Weapon objUnderbarrelWeapon = new Weapon(CharacterObject);
                                 objUnderbarrelWeapon.Create(objXmlUnderbarrelNode, lstLoopWeapons, blnCreateChildren);
-                                objWeapon.UnderbarrelWeapons.Add(objUnderbarrelWeapon);
+                                await objWeapon.UnderbarrelWeapons.AddAsync(objUnderbarrelWeapon);
                                 if (!objWeapon.AllowAccessory)
                                     objUnderbarrelWeapon.AllowAccessory = false;
 
@@ -16266,7 +16273,7 @@ namespace Chummer
                                 {
                                     if (!objWeapon.AllowAccessory)
                                         objLoopWeapon.AllowAccessory = false;
-                                    objWeapon.UnderbarrelWeapons.Add(objLoopWeapon);
+                                    await objWeapon.UnderbarrelWeapons.AddAsync(objLoopWeapon);
                                 }
 
                                 foreach (XmlNode objXmlAccessory in xmlUnderbarrelNode.SelectNodes("accessories/accessory"))
@@ -16281,7 +16288,7 @@ namespace Chummer
                                     objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0, false, blnCreateChildren);
                                     objMod.Parent = objWeapon;
 
-                                    objUnderbarrelWeapon.WeaponAccessories.Add(objMod);
+                                    await objUnderbarrelWeapon.WeaponAccessories.AddAsync(objMod);
 
                                     foreach (XmlNode objXmlGear in objXmlAccessory.SelectNodes("gears/gear"))
                                         AddPACKSGear(objXmlGearDocument, objXmlGear, objMod, blnCreateChildren);
@@ -16291,7 +16298,7 @@ namespace Chummer
 
                         foreach (Weapon objLoopWeapon in lstWeapons)
                         {
-                            CharacterObject.Weapons.Add(objLoopWeapon);
+                            await CharacterObject.Weapons.AddAsync(objLoopWeapon);
                         }
                     }
 
@@ -16400,7 +16407,7 @@ namespace Chummer
                         continue;
                     Vehicle objVehicle = new Vehicle(CharacterObject);
                     objVehicle.Create(objXmlVehicleNode, blnCreateChildren: blnCreateChildren);
-                    CharacterObject.Vehicles.Add(objVehicle);
+                    await CharacterObject.Vehicles.AddAsync(objVehicle);
 
                     // Grab the default Sensor that comes with the Vehicle.
                     foreach (Gear objSensorGear in objVehicle.GearChildren)
@@ -16424,7 +16431,7 @@ namespace Chummer
                         objXmlMod.TryGetInt32FieldQuickly("markup", ref intMarkup);
                         VehicleMod objMod = new VehicleMod(CharacterObject);
                         objMod.Create(objXmlModNode, intRating, objVehicle, intMarkup);
-                        objVehicle.Mods.Add(objMod);
+                        await objVehicle.Mods.AddAsync(objMod);
 
                         foreach (XmlNode objXmlCyberware in objXmlMod.SelectNodes("cyberwares/cyberware"))
                             AddPACKSCyberware(objXmlCyberwareDocument, objXmlBiowareDocument, objXmlGearDocument, objXmlCyberware, objMod, blnCreateChildren);
@@ -16437,7 +16444,7 @@ namespace Chummer
                         // If this is a Sensor, it will replace the Vehicle's base sensor, so remove it.
                         if (objGear?.Category == "Sensors" && objGear.Cost == "0" && objGear.Rating == 0)
                         {
-                            objVehicle.GearChildren.Remove(objDefaultSensor);
+                            await objVehicle.GearChildren.RemoveAsync(objDefaultSensor);
                         }
                     }
 
@@ -16462,9 +16469,9 @@ namespace Chummer
                             {
                                 if (objMod.Name.Contains("Weapon Mount") || !string.IsNullOrEmpty(objMod.WeaponMountCategories) && objMod.WeaponMountCategories.Contains(objWeapon.Category))
                                 {
-                                    objMod.Weapons.Add(objWeapon);
+                                    await objMod.Weapons.AddAsync(objWeapon);
                                     foreach (Weapon objSubWeapon in lstSubWeapons)
-                                        objMod.Weapons.Add(objSubWeapon);
+                                        await objMod.Weapons.AddAsync(objSubWeapon);
                                     break;
                                 }
                             }
@@ -16482,7 +16489,7 @@ namespace Chummer
                                 objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0, false, blnCreateChildren);
                                 objMod.Parent = objWeapon;
 
-                                objWeapon.WeaponAccessories.Add(objMod);
+                                await objWeapon.WeaponAccessories.AddAsync(objMod);
                             }
 
                             // Look for an Underbarrel Weapon.
@@ -16496,7 +16503,7 @@ namespace Chummer
                                     List<Weapon> lstLoopWeapons = new List<Weapon>(1);
                                     Weapon objUnderbarrelWeapon = new Weapon(CharacterObject);
                                     objUnderbarrelWeapon.Create(objXmlUnderbarrelNode, lstLoopWeapons, blnCreateChildren);
-                                    objWeapon.UnderbarrelWeapons.Add(objUnderbarrelWeapon);
+                                    await objWeapon.UnderbarrelWeapons.AddAsync(objUnderbarrelWeapon);
                                     if (!objWeapon.AllowAccessory)
                                         objUnderbarrelWeapon.AllowAccessory = false;
 
@@ -16504,7 +16511,7 @@ namespace Chummer
                                     {
                                         if (!objWeapon.AllowAccessory)
                                             objLoopWeapon.AllowAccessory = false;
-                                        objWeapon.UnderbarrelWeapons.Add(objLoopWeapon);
+                                        await objWeapon.UnderbarrelWeapons.AddAsync(objLoopWeapon);
                                     }
 
                                     foreach (XmlNode objXmlAccessory in xmlUnderbarrelNode.SelectNodes("accessories/accessory"))
@@ -16519,7 +16526,7 @@ namespace Chummer
                                         objMod.Create(objXmlAccessoryNode, new Tuple<string, string>(strMount, strExtraMount), 0, false, blnCreateChildren);
                                         objMod.Parent = objWeapon;
 
-                                        objUnderbarrelWeapon.WeaponAccessories.Add(objMod);
+                                        await objUnderbarrelWeapon.WeaponAccessories.AddAsync(objMod);
 
                                         foreach (XmlNode objXmlGear in objXmlAccessory.SelectNodes("gears/gear"))
                                             AddPACKSGear(objXmlGearDocument, objXmlGear, objMod, blnCreateChildren);
@@ -16879,7 +16886,7 @@ namespace Chummer
                             int intRating = Convert.ToInt32(xmlItem["rating"]?.InnerText, GlobalSettings.InvariantCultureInfo);
 
                             Cyberware objCyberware = CreateSuiteCyberware(xmlItem, objXmlCyberware, objGrade, intRating, objSource);
-                            CharacterObject.Cyberware.Add(objCyberware);
+                            await CharacterObject.Cyberware.AddAsync(objCyberware);
                         }
                     }
                 }
@@ -17091,7 +17098,7 @@ namespace Chummer
                 if (objNewMetamagic.InternalId.IsEmptyGuid())
                     return;
 
-                CharacterObject.Metamagics.Add(objNewMetamagic);
+                await CharacterObject.Metamagics.AddAsync(objNewMetamagic);
             }
         }
 
@@ -17117,7 +17124,7 @@ namespace Chummer
                 if (objArt.InternalId.IsEmptyGuid())
                     return;
 
-                CharacterObject.Arts.Add(objArt);
+                await CharacterObject.Arts.AddAsync(objArt);
             }
         }
 
@@ -17146,7 +17153,7 @@ namespace Chummer
                     return;
                 }
 
-                CharacterObject.Spells.Add(objNewSpell);
+                await CharacterObject.Spells.AddAsync(objNewSpell);
             }
         }
 
@@ -17175,7 +17182,7 @@ namespace Chummer
                     return;
                 }
 
-                CharacterObject.Spells.Add(objNewSpell);
+                await CharacterObject.Spells.AddAsync(objNewSpell);
             }
         }
 
@@ -17221,7 +17228,7 @@ namespace Chummer
                 {
                     if (objPower.Name == strPower)
                     {
-                        objPower.Enhancements.Add(objEnhancement);
+                        await objPower.Enhancements.AddAsync(objEnhancement);
                         blnPowerFound = true;
                         break;
                     }
@@ -17230,7 +17237,7 @@ namespace Chummer
                 if (!blnPowerFound)
                 {
                     // Add it to the character instead
-                    CharacterObject.Enhancements.Add(objEnhancement);
+                    await CharacterObject.Enhancements.AddAsync(objEnhancement);
                 }
             }
         }
@@ -17742,9 +17749,9 @@ namespace Chummer
             {
                 if (objOldParent != null)
                 {
-                    objOldParent.Children.Remove(objModularCyberware);
+                    await objOldParent.Children.RemoveAsync(objModularCyberware);
 
-                    CharacterObject.Cyberware.Add(objModularCyberware);
+                    await CharacterObject.Cyberware.AddAsync(objModularCyberware);
                 }
             }
             else
@@ -17753,11 +17760,11 @@ namespace Chummer
                 if (objNewParent != null)
                 {
                     if (objOldParent != null)
-                        objOldParent.Children.Remove(objModularCyberware);
+                        await objOldParent.Children.RemoveAsync(objModularCyberware);
                     else
-                        CharacterObject.Cyberware.Remove(objModularCyberware);
+                        await CharacterObject.Cyberware.RemoveAsync(objModularCyberware);
 
-                    objNewParent.Children.Add(objModularCyberware);
+                    await objNewParent.Children.AddAsync(objModularCyberware);
 
                     objModularCyberware.ChangeModularEquip(true);
                 }
@@ -17770,22 +17777,22 @@ namespace Chummer
                     if (objNewVehicleModParent != null || objNewParent != null)
                     {
                         if (objOldParent != null)
-                            objOldParent.Children.Remove(objModularCyberware);
+                            await objOldParent.Children.RemoveAsync(objModularCyberware);
                         else
-                            CharacterObject.Cyberware.Remove(objModularCyberware);
+                            await CharacterObject.Cyberware.RemoveAsync(objModularCyberware);
 
                         if (objNewParent != null)
-                            objNewParent.Children.Add(objModularCyberware);
+                            await objNewParent.Children.AddAsync(objModularCyberware);
                         else
-                            objNewVehicleModParent.Cyberware.Add(objModularCyberware);
+                            await objNewVehicleModParent.Cyberware.AddAsync(objModularCyberware);
                     }
                     else
                     {
                         if (objOldParent != null)
                         {
-                            objOldParent.Children.Remove(objModularCyberware);
+                            await objOldParent.Children.RemoveAsync(objModularCyberware);
 
-                            CharacterObject.Cyberware.Add(objModularCyberware);
+                            await CharacterObject.Cyberware.AddAsync(objModularCyberware);
                         }
                     }
                 }
@@ -17840,11 +17847,11 @@ namespace Chummer
             if (strSelectedParentID == "None")
             {
                 if (objOldParent != null)
-                    objOldParent.Children.Remove(objModularCyberware);
+                    await objOldParent.Children.RemoveAsync(objModularCyberware);
                 else
-                    objOldParentVehicleMod.Cyberware.Remove(objModularCyberware);
+                    await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware);
 
-                CharacterObject.Cyberware.Add(objModularCyberware);
+                await CharacterObject.Cyberware.AddAsync(objModularCyberware);
             }
             else
             {
@@ -17852,11 +17859,11 @@ namespace Chummer
                 if (objNewParent != null)
                 {
                     if (objOldParent != null)
-                        objOldParent.Children.Remove(objModularCyberware);
+                        await objOldParent.Children.RemoveAsync(objModularCyberware);
                     else
-                        objOldParentVehicleMod.Cyberware.Remove(objModularCyberware);
+                        await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware);
 
-                    objNewParent.Children.Add(objModularCyberware);
+                    await objNewParent.Children.AddAsync(objModularCyberware);
 
                     objModularCyberware.ChangeModularEquip(true);
                 }
@@ -17869,23 +17876,23 @@ namespace Chummer
                     if (objNewVehicleModParent != null || objNewParent != null)
                     {
                         if (objOldParent != null)
-                            objOldParent.Children.Remove(objModularCyberware);
+                            await objOldParent.Children.RemoveAsync(objModularCyberware);
                         else
-                            objOldParentVehicleMod.Cyberware.Remove(objModularCyberware);
+                            await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware);
 
                         if (objNewParent != null)
-                            objNewParent.Children.Add(objModularCyberware);
+                            await objNewParent.Children.AddAsync(objModularCyberware);
                         else
-                            objNewVehicleModParent.Cyberware.Add(objModularCyberware);
+                            await objNewVehicleModParent.Cyberware.AddAsync(objModularCyberware);
                     }
                     else
                     {
                         if (objOldParent != null)
-                            objOldParent.Children.Remove(objModularCyberware);
+                            await objOldParent.Children.RemoveAsync(objModularCyberware);
                         else
-                            objOldParentVehicleMod.Cyberware.Remove(objModularCyberware);
+                            await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware);
 
-                        CharacterObject.Cyberware.Add(objModularCyberware);
+                        await CharacterObject.Cyberware.AddAsync(objModularCyberware);
                     }
                 }
             }
@@ -17965,7 +17972,7 @@ namespace Chummer
                     return;
 
                 Drug objCustomDrug = form.MyForm.CustomDrug;
-                CharacterObject.Drugs.Add(objCustomDrug);
+                await CharacterObject.Drugs.AddAsync(objCustomDrug);
             }
         }
 

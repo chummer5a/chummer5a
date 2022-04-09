@@ -1590,7 +1590,7 @@ namespace Chummer
 
                     if (Program.MainForm.ActiveMdiChild == this)
                         ToolStripManager.RevertMerge("toolStrip");
-                    Program.MainForm.OpenCharacterForms.Remove(this);
+                    await Program.MainForm.OpenCharacterForms.RemoveAsync(this);
 
                     // Unsubscribe from events.
                     CharacterObject.AttributeSection.Attributes.CollectionChanged -= AttributeCollectionChanged;
@@ -1707,7 +1707,7 @@ namespace Chummer
                     // Trash the global variables and dispose of the Form.
                     if (await Program.OpenCharacters.AllAsync(
                             x => x == CharacterObject || !x.LinkedCharacters.Contains(CharacterObject)))
-                        Program.OpenCharacters.Remove(CharacterObject);
+                        await Program.OpenCharacters.RemoveAsync(CharacterObject);
                 }
                 finally
                 {
@@ -1908,7 +1908,7 @@ namespace Chummer
 
                             if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.MAG))
                             {
-                                CharacterObject.AttributeSection.Attributes.Add(CharacterObject.MAG);
+                                await CharacterObject.AttributeSection.Attributes.AddAsync(CharacterObject.MAG);
                             }
 
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
@@ -1917,7 +1917,7 @@ namespace Chummer
                                     CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
                                 if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                 {
-                                    CharacterObject.AttributeSection.Attributes.Add(objMAGAdept);
+                                    await CharacterObject.AttributeSection.Attributes.AddAsync(objMAGAdept);
                                 }
                             }
                         }
@@ -1928,8 +1928,8 @@ namespace Chummer
 
                             if (CharacterObject.AttributeSection.Attributes != null)
                             {
-                                CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.MAG);
-                                CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.MAGAdept);
+                                await CharacterObject.AttributeSection.Attributes.RemoveAsync(CharacterObject.MAG);
+                                await CharacterObject.AttributeSection.Attributes.RemoveAsync(CharacterObject.MAGAdept);
                             }
                         }
 
@@ -2025,7 +2025,7 @@ namespace Chummer
                             if (CharacterObject.AttributeSection.Attributes != null && !await CharacterObject.AttributeSection.Attributes.ContainsAsync(
                                     CharacterObject.RES))
                             {
-                                CharacterObject.AttributeSection.Attributes.Add(CharacterObject.RES);
+                                await CharacterObject.AttributeSection.Attributes.AddAsync(CharacterObject.RES);
                             }
                         }
                         else
@@ -2034,7 +2034,7 @@ namespace Chummer
                                 await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabInitiation), GenericToken);
                             if (CharacterObject.AttributeSection.Attributes != null)
                             {
-                                CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.RES);
+                                await CharacterObject.AttributeSection.Attributes.RemoveAsync(CharacterObject.RES);
                             }
                         }
                         await RequestCharacterUpdate();
@@ -2050,12 +2050,12 @@ namespace Chummer
                                 if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(
                                         CharacterObject.DEP))
                                 {
-                                    CharacterObject.AttributeSection.Attributes.Add(CharacterObject.DEP);
+                                    await CharacterObject.AttributeSection.Attributes.AddAsync(CharacterObject.DEP);
                                 }
                             }
                             else
                             {
-                                CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.DEP);
+                                await CharacterObject.AttributeSection.Attributes.RemoveAsync(CharacterObject.DEP);
                             }
                         }
                     }
@@ -2118,7 +2118,7 @@ namespace Chummer
                                     CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
                                 if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                 {
-                                    CharacterObject.AttributeSection.Attributes.Add(objMAGAdept);
+                                    await CharacterObject.AttributeSection.Attributes.AddAsync(objMAGAdept);
                                 }
                             }
                         }
@@ -2132,7 +2132,7 @@ namespace Chummer
                                     CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
                                 if (await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                 {
-                                    CharacterObject.AttributeSection.Attributes.Remove(objMAGAdept);
+                                    await CharacterObject.AttributeSection.Attributes.RemoveAsync(objMAGAdept);
                                 }
                             }
                         }
@@ -2159,7 +2159,7 @@ namespace Chummer
                                     CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
                                 if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                 {
-                                    CharacterObject.AttributeSection.Attributes.Add(objMAGAdept);
+                                    await CharacterObject.AttributeSection.Attributes.AddAsync(objMAGAdept);
                                 }
                             }
 
@@ -2181,7 +2181,7 @@ namespace Chummer
                                         CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
                                     if (await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                     {
-                                        CharacterObject.AttributeSection.Attributes.Remove(objMAGAdept);
+                                        await CharacterObject.AttributeSection.Attributes.RemoveAsync(objMAGAdept);
                                     }
                                 }
                             }
@@ -2275,8 +2275,9 @@ namespace Chummer
                                 {
                                     if (!objCyberware.CanRemoveThroughImprovements)
                                         continue;
-                                    objCyberware.Parent?.Children.Remove(objCyberware);
-                                    CharacterObject.Cyberware.Add(objCyberware);
+                                    if (objCyberware.Parent != null)
+                                        await objCyberware.Parent.Children.RemoveAsync(objCyberware);
+                                    await CharacterObject.Cyberware.AddAsync(objCyberware);
                                     objCyberware.ChangeModularEquip(false);
                                 }
                                 else if (objCyberware.CanRemoveThroughImprovements)
@@ -2324,8 +2325,9 @@ namespace Chummer
                                 {
                                     if (!objCyberware.CanRemoveThroughImprovements)
                                         continue;
-                                    objCyberware.Parent?.Children.Remove(objCyberware);
-                                    CharacterObject.Cyberware.Add(objCyberware);
+                                    if (objCyberware.Parent != null)
+                                        await objCyberware.Parent.Children.RemoveAsync(objCyberware);
+                                    await CharacterObject.Cyberware.AddAsync(objCyberware);
                                     objCyberware.ChangeModularEquip(false);
                                 }
                                 else if (objCyberware.CanRemoveThroughImprovements)
@@ -2377,8 +2379,9 @@ namespace Chummer
                                 {
                                     if (!objCyberware.CanRemoveThroughImprovements)
                                         continue;
-                                    objCyberware.Parent?.Children.Remove(objCyberware);
-                                    CharacterObject.Cyberware.Add(objCyberware);
+                                    if (objCyberware.Parent != null)
+                                        await objCyberware.Parent.Children.RemoveAsync(objCyberware);
+                                    await CharacterObject.Cyberware.AddAsync(objCyberware);
                                     objCyberware.ChangeModularEquip(false);
                                 }
                                 else if (objCyberware.CanRemoveThroughImprovements)
@@ -3874,7 +3877,7 @@ namespace Chummer
 
                                 CritterPower objCritterPower = new CritterPower(objMerge);
                                 objCritterPower.Create(objPower, 0, "Normal Weapons");
-                                objMerge.CritterPowers.Add(objCritterPower);
+                                await objMerge.CritterPowers.AddAsync(objCritterPower);
                             }
 
                             //TOD: Implement Possession attribute bonuses.
@@ -3894,13 +3897,13 @@ namespace Chummer
                                 await LanguageManager.GetStringAsync("String_SelectPACKSKit_Lifestyles"));
                             // Copy any Lifestyles the Vessel has.
                             foreach (Lifestyle objLifestyle in objVessel.Lifestyles)
-                                objMerge.Lifestyles.Add(objLifestyle);
+                                await objMerge.Lifestyles.AddAsync(objLifestyle);
 
                             await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Armor"));
                             // Copy any Armor the Vessel has.
                             foreach (Armor objArmor in objVessel.Armor)
                             {
-                                objMerge.Armor.Add(objArmor);
+                                await objMerge.Armor.AddAsync(objArmor);
                                 CopyArmorImprovements(objVessel, objMerge, objArmor);
                             }
 
@@ -3908,7 +3911,7 @@ namespace Chummer
                             // Copy any Gear the Vessel has.
                             foreach (Gear objGear in objVessel.Gear)
                             {
-                                objMerge.Gear.Add(objGear);
+                                await objMerge.Gear.AddAsync(objGear);
                                 CopyGearImprovements(objVessel, objMerge, objGear);
                             }
 
@@ -3916,19 +3919,19 @@ namespace Chummer
                             // Copy any Cyberware/Bioware the Vessel has.
                             foreach (Cyberware objCyberware in objVessel.Cyberware)
                             {
-                                objMerge.Cyberware.Add(objCyberware);
+                                await objMerge.Cyberware.AddAsync(objCyberware);
                                 CopyCyberwareImprovements(objVessel, objMerge, objCyberware);
                             }
 
                             await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Weapons"));
                             // Copy any Weapons the Vessel has.
                             foreach (Weapon objWeapon in objVessel.Weapons)
-                                objMerge.Weapons.Add(objWeapon);
+                                await objMerge.Weapons.AddAsync(objWeapon);
 
                             await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Vehicles"));
                             // Copy and Vehicles the Vessel has.
                             foreach (Vehicle objVehicle in objVessel.Vehicles)
-                                objMerge.Vehicles.Add(objVehicle);
+                                await objMerge.Vehicles.AddAsync(objVehicle);
 
                             await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("String_Settings"));
                             // Copy the character info.
@@ -4130,7 +4133,7 @@ namespace Chummer
 
                                         objPower.Create(objXmlCritterPower, intRating, strSelect);
 
-                                        objMerge.CritterPowers.Add(objPower);
+                                        await objMerge.CritterPowers.AddAsync(objPower);
                                     }
                                 }
                             }
@@ -4146,7 +4149,7 @@ namespace Chummer
 
                             CritterPower objCritterPower = new CritterPower(objMerge);
                             objCritterPower.Create(objPower, 0, "Normal Weapons");
-                            objMerge.CritterPowers.Add(objCritterPower);
+                            await objMerge.CritterPowers.AddAsync(objCritterPower);
                         }
 
                         // Add any Improvements the Vessel grants.
@@ -4261,7 +4264,7 @@ namespace Chummer
             if (objPower.InternalId.IsEmptyGuid())
                 return;
 
-            CharacterObject.CritterPowers.Add(objPower);
+            await CharacterObject.CritterPowers.AddAsync(objPower);
 
             CharacterObject.MetatypeCategory = "Free Sprite";
         }
@@ -4449,7 +4452,7 @@ namespace Chummer
                         objSpell.BarehandedAdept = true;
                     }
 
-                    CharacterObject.Spells.Add(objSpell);
+                    await CharacterObject.Spells.AddAsync(objSpell);
                     if (!objSpell.FreeBonus)
                     {
                         // Create the Expense Log Entry.
@@ -4577,7 +4580,7 @@ namespace Chummer
                 if (objComplexForm.InternalId.IsEmptyGuid())
                     continue;
 
-                CharacterObject.ComplexForms.Add(objComplexForm);
+                await CharacterObject.ComplexForms.AddAsync(objComplexForm);
 
                 if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend"), objComplexForm.CurrentDisplayNameShort, intComplexFormKarmaCost.ToString(GlobalSettings.CultureInfo))))
                 {
@@ -4699,10 +4702,10 @@ namespace Chummer
 
                 foreach (Weapon objExtraWeapon in lstWeapons)
                 {
-                    CharacterObject.Weapons.Add(objExtraWeapon);
+                    await CharacterObject.Weapons.AddAsync(objExtraWeapon);
                 }
 
-                CharacterObject.Weapons.Add(objWeapon);
+                await CharacterObject.Weapons.AddAsync(objWeapon);
 
                 return frmPickWeapon.MyForm.AddAgain;
             }
@@ -4749,7 +4752,7 @@ namespace Chummer
                     blnAddAgain = frmPickLifestyle.MyForm.AddAgain;
                     Lifestyle objLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
                     objLifestyle.Increments = 0;
-                    CharacterObject.Lifestyles.Add(objLifestyle);
+                    await CharacterObject.Lifestyles.AddAsync(objLifestyle);
                 }
             }
             while (blnAddAgain);
@@ -4842,8 +4845,9 @@ namespace Chummer
                 objVehicle.DiscountCost = frmPickVehicle.MyForm.BlackMarketDiscount;
 
                 //objVehicle.Location = objLocation;
-                objLocation?.Children.Add(objVehicle);
-                CharacterObject.Vehicles.Add(objVehicle);
+                if (objLocation != null)
+                    await objLocation.Children.AddAsync(objVehicle);
+                await CharacterObject.Vehicles.AddAsync(objVehicle);
 
                 return frmPickVehicle.MyForm.AddAgain;
             }
@@ -4907,7 +4911,7 @@ namespace Chummer
                             objRetrofit.Create(objXmlNode, 0, objMod.Parent);
                             objRetrofit.Cost = decCost.ToString(GlobalSettings.InvariantCultureInfo);
                             objRetrofit.IncludedInVehicle = true;
-                            objMod.Parent.Mods.Add(objRetrofit);
+                            await objMod.Parent.Mods.AddAsync(objRetrofit);
 
                             // Create an Expense Log Entry for removing the Obsolete Mod.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
@@ -5459,7 +5463,7 @@ namespace Chummer
                     objExpense.Undo = objUndo;
 
                     CharacterObject.Karma -= objPower.Karma;
-                    CharacterObject.CritterPowers.Add(objPower);
+                    await CharacterObject.CritterPowers.AddAsync(objPower);
                 }
             }
             while (blnAddAgain);
@@ -5584,7 +5588,7 @@ namespace Chummer
                 objSelectedGear.Quantity -= objGear.Quantity;
                 objSelectedNode.Text = objSelectedGear.CurrentDisplayName;
 
-                CharacterObject.Gear.Add(objGear);
+                await CharacterObject.Gear.AddAsync(objGear);
             }
         }
 
@@ -5743,7 +5747,7 @@ namespace Chummer
                 objGear.Location = null;
 
                 objGear.Parent = objVehicle;
-                objVehicle.GearChildren.Add(objGear);
+                await objVehicle.GearChildren.AddAsync(objGear);
             }
             else
             {
@@ -5785,15 +5789,15 @@ namespace Chummer
                         // Move the Weapons from the Vehicle Mod (or Vehicle) to the character.
                         Weapon objParent = objWeapon.Parent;
                         if (objParent != null)
-                            objParent.Children.Remove(objWeapon);
+                            await objParent.Children.RemoveAsync(objWeapon);
                         else if (objMount != null)
-                            objMount.Weapons.Remove(objWeapon);
+                            await objMount.Weapons.RemoveAsync(objWeapon);
                         else if (objMod != null)
-                            objMod.Weapons.Remove(objWeapon);
+                            await objMod.Weapons.RemoveAsync(objWeapon);
                         else
-                            objVehicle.Weapons.Remove(objWeapon);
+                            await objVehicle.Weapons.RemoveAsync(objWeapon);
 
-                        CharacterObject.Weapons.Add(objWeapon);
+                        await CharacterObject.Weapons.AddAsync(objWeapon);
 
                         objWeapon.ParentVehicle = null;
                         break;
@@ -5852,7 +5856,7 @@ namespace Chummer
 
                             objGear.Quantity = decMove;
 
-                            CharacterObject.Gear.Add(objGear);
+                            await CharacterObject.Gear.AddAsync(objGear);
 
                             objGear.AddGearImprovements();
                         }
@@ -6098,12 +6102,12 @@ namespace Chummer
                         objExpense.Undo = objUndo;
                     }
 
-                    CharacterObject.Qualities.Add(objQuality);
+                    await CharacterObject.Qualities.AddAsync(objQuality);
 
                     // Add any created Weapons to the character.
                     foreach (Weapon objWeapon in lstWeapons)
                     {
-                        CharacterObject.Weapons.Add(objWeapon);
+                        await CharacterObject.Weapons.AddAsync(objWeapon);
                     }
                 }
             }
@@ -6301,7 +6305,7 @@ namespace Chummer
                         await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId);
 
                         // Remove the Critter Power from the character.
-                        CharacterObject.CritterPowers.Remove(objPower);
+                        await CharacterObject.CritterPowers.RemoveAsync(objPower);
                         break;
                     }
                 }
@@ -6477,12 +6481,12 @@ namespace Chummer
                     }
 
                     // Add the Quality to the appropriate parent node.
-                    CharacterObject.Qualities.Add(objQuality);
+                    await CharacterObject.Qualities.AddAsync(objQuality);
 
                     // Add any created Weapons to the character.
                     foreach (Weapon objWeapon in lstWeapons)
                     {
-                        CharacterObject.Weapons.Add(objWeapon);
+                        await CharacterObject.Weapons.AddAsync(objWeapon);
                     }
                 }
                 // Removing a level
@@ -6514,7 +6518,7 @@ namespace Chummer
                     return;
 
                 Location objLocation = new Location(CharacterObject, CharacterObject.GearLocations, frmPickText.MyForm.SelectedValue);
-                CharacterObject.GearLocations.Add(objLocation);
+                await CharacterObject.GearLocations.AddAsync(objLocation);
             }
         }
 
@@ -6531,7 +6535,7 @@ namespace Chummer
                     return;
 
                 Location objLocation = new Location(CharacterObject, CharacterObject.WeaponLocations, frmPickText.MyForm.SelectedValue);
-                CharacterObject.WeaponLocations.Add(objLocation);
+                await CharacterObject.WeaponLocations.AddAsync(objLocation);
             }
         }
 
@@ -6756,7 +6760,7 @@ namespace Chummer
             foreach (Gear objGear in lstStack)
             {
                 decCost += objGear.TotalCost;
-                CharacterObject.Gear.Remove(objGear);
+                await CharacterObject.Gear.RemoveAsync(objGear);
             }
 
             Gear objStackItem = new Gear(CharacterObject)
@@ -6769,7 +6773,7 @@ namespace Chummer
                 Avail = "0"
             };
 
-            CharacterObject.Gear.Add(objStackItem);
+            await CharacterObject.Gear.AddAsync(objStackItem);
 
             objStack.GearId = objStackItem.InternalId;
         }
@@ -6859,7 +6863,7 @@ namespace Chummer
                         }
                     }
                     // Remove the Group from the character, then remove the selected node.
-                    CharacterObject.ImprovementGroups.Remove(strSelectedId);
+                    await CharacterObject.ImprovementGroups.RemoveAsync(strSelectedId);
                     break;
             }
         }
@@ -6878,7 +6882,7 @@ namespace Chummer
                     return;
 
                 Location objLocation = new Location(CharacterObject, CharacterObject.ArmorLocations, frmPickText.MyForm.SelectedValue);
-                CharacterObject.ArmorLocations.Add(objLocation);
+                await CharacterObject.ArmorLocations.AddAsync(objLocation);
             }
         }
 
@@ -7204,7 +7208,7 @@ namespace Chummer
                     // Check the item's Cost and make sure the character can afford it.
                     decimal decOriginalCost = objWeapon.TotalCost;
 
-                    objWeapon.WeaponAccessories.Add(objAccessory);
+                    await objWeapon.WeaponAccessories.AddAsync(objAccessory);
 
                     if (!frmPickWeaponAccessory.MyForm.FreeCost)
                     {
@@ -7230,7 +7234,7 @@ namespace Chummer
 
                         if (decCost > CharacterObject.Nuyen)
                         {
-                            objWeapon.WeaponAccessories.Remove(objAccessory);
+                            await objWeapon.WeaponAccessories.RemoveAsync(objAccessory);
                             Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             continue;
                         }
@@ -7316,12 +7320,13 @@ namespace Chummer
                 }
 
                 // objArmor.Location = objLocation;
-                objLocation?.Children.Add(objArmor);
-                CharacterObject.Armor.Add(objArmor);
+                if (objLocation != null)
+                    await objLocation.Children.AddAsync(objArmor);
+                await CharacterObject.Armor.AddAsync(objArmor);
 
                 foreach (Weapon objWeapon in lstWeapons)
                 {
-                    CharacterObject.Weapons.Add(objWeapon);
+                    await CharacterObject.Weapons.AddAsync(objWeapon);
                 }
 
                 return frmPickArmor.MyForm.AddAgain;
@@ -7406,13 +7411,13 @@ namespace Chummer
 
                     // Check the item's Cost and make sure the character can afford it.
                     decimal decOriginalCost = objArmor.TotalCost;
-                    objArmor.ArmorMods.Add(objMod);
+                    await objArmor.ArmorMods.AddAsync(objMod);
 
                     // Do not allow the user to add a new piece of Armor if its Capacity has been reached.
                     if (CharacterObjectSettings.EnforceCapacity && objArmor.CapacityRemaining < 0)
                     {
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CapacityReached"), await LanguageManager.GetStringAsync("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        objArmor.ArmorMods.Remove(objMod);
+                        await objArmor.ArmorMods.RemoveAsync(objMod);
                         continue;
                     }
 
@@ -7440,7 +7445,7 @@ namespace Chummer
 
                         if (decCost > CharacterObject.Nuyen)
                         {
-                            objArmor.ArmorMods.Remove(objMod);
+                            await objArmor.ArmorMods.RemoveAsync(objMod);
                             Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             // Remove the Improvements created by the Armor Mod.
                             await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
@@ -7462,7 +7467,7 @@ namespace Chummer
                     // Add any Weapons created by the Mod.
                     foreach (Weapon objWeapon in lstWeapons)
                     {
-                        CharacterObject.Weapons.Add(objWeapon);
+                        await CharacterObject.Weapons.AddAsync(objWeapon);
                     }
                 }
             }
@@ -7588,7 +7593,7 @@ namespace Chummer
                     // Check the item's Cost and make sure the character can afford it.
                     decimal decOriginalCost = objVehicle.TotalCost;
 
-                    objVehicle.Mods.Add(objMod);
+                    await objVehicle.Mods.AddAsync(objMod);
 
                     // Do not allow the user to add a new Vehicle Mod if the Vehicle's Capacity has been reached.
                     if (CharacterObjectSettings.EnforceCapacity)
@@ -7607,7 +7612,7 @@ namespace Chummer
                         if (blnOverCapacity)
                         {
                             Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CapacityReached"), await LanguageManager.GetStringAsync("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            objVehicle.Mods.Remove(objMod);
+                            await objVehicle.Mods.RemoveAsync(objMod);
                             continue;
                         }
                     }
@@ -7631,7 +7636,7 @@ namespace Chummer
 
                         if (decCost > CharacterObject.Nuyen)
                         {
-                            objVehicle.Mods.Remove(objMod);
+                            await objVehicle.Mods.RemoveAsync(objMod);
                             Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
                                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
                                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -7774,16 +7779,16 @@ namespace Chummer
                 }
 
                 if (objMod != null)
-                    objMod.Weapons.Add(objWeapon);
+                    await objMod.Weapons.AddAsync(objWeapon);
                 else
-                    objWeaponMount.Weapons.Add(objWeapon);
+                    await objWeaponMount.Weapons.AddAsync(objWeapon);
 
                 foreach (Weapon objLoopWeapon in lstWeapons)
                 {
                     if (objMod != null)
-                        objMod.Weapons.Add(objLoopWeapon);
+                        await objMod.Weapons.AddAsync(objLoopWeapon);
                     else
-                        objWeaponMount.Weapons.Add(objLoopWeapon);
+                        await objWeaponMount.Weapons.AddAsync(objLoopWeapon);
                 }
 
                 return frmPickWeapon.MyForm.AddAgain && (objMod != null || !objWeaponMount.IsWeaponsFull);
@@ -7809,7 +7814,7 @@ namespace Chummer
 
             // Calculate cost based on total vehicle cost change to make sure we capture everything
             decimal decCost = -objVehicle.TotalCost;
-            objVehicle.WeaponMounts.Add(objNewWeaponMount);
+            await objVehicle.WeaponMounts.AddAsync(objNewWeaponMount);
             decCost += objVehicle.TotalCost;
 
             // Multiply the cost if applicable.
@@ -7885,7 +7890,7 @@ namespace Chummer
 
                     // Check the item's Cost and make sure the character can afford it.
                     decimal intOriginalCost = objWeapon.TotalCost;
-                    objWeapon.WeaponAccessories.Add(objAccessory);
+                    await objWeapon.WeaponAccessories.AddAsync(objAccessory);
 
                     if (!frmPickWeaponAccessory.MyForm.FreeCost)
                     {
@@ -7911,7 +7916,7 @@ namespace Chummer
 
                         if (decCost > CharacterObject.Nuyen)
                         {
-                            objWeapon.WeaponAccessories.Remove(objAccessory);
+                            await objWeapon.WeaponAccessories.RemoveAsync(objAccessory);
                             Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             continue;
                         }
@@ -8002,13 +8007,13 @@ namespace Chummer
                     objExpense.Undo = objUndo;
                 }
 
-                objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
+                await objSelectedWeapon.UnderbarrelWeapons.AddAsync(objWeapon);
 
                 foreach (Weapon objLoopWeapon in lstWeapons)
                 {
                     if (!objSelectedWeapon.AllowAccessory)
                         objLoopWeapon.AllowAccessory = false;
-                    objSelectedWeapon.UnderbarrelWeapons.Add(objLoopWeapon);
+                    await objSelectedWeapon.UnderbarrelWeapons.AddAsync(objLoopWeapon);
                 }
 
                 return frmPickWeapon.MyForm.AddAgain;
@@ -8068,7 +8073,7 @@ namespace Chummer
                         blnAddAgain = frmPickMartialArtTechnique.MyForm.AddAgain;
 
                         int karmaCost = objMartialArt.Techniques.Count > 0 ? CharacterObjectSettings.KarmaTechnique : 0;
-                        objMartialArt.Techniques.Add(objTechnique);
+                        await objMartialArt.Techniques.AddAsync(objTechnique);
 
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
@@ -8223,7 +8228,7 @@ namespace Chummer
                             objExpense.Undo = objUndo;
                         }
 
-                        objSensor.Children.Add(objGear);
+                        await objSensor.Children.AddAsync(objGear);
 
                         if (lstWeapons.Count > 0)
                         {
@@ -8231,7 +8236,7 @@ namespace Chummer
                                                                      out WeaponAccessory _, out Cyberware _);
                             foreach (Weapon objWeapon in lstWeapons)
                             {
-                                objVehicle.Weapons.Add(objWeapon);
+                                await objVehicle.Weapons.AddAsync(objWeapon);
                             }
                         }
                     }
@@ -8664,7 +8669,7 @@ namespace Chummer
                     Lifestyle objNewLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
                     objNewLifestyle.StyleType = LifestyleType.Advanced;
 
-                    CharacterObject.Lifestyles.Add(objNewLifestyle);
+                    await CharacterObject.Lifestyles.AddAsync(objNewLifestyle);
                 }
             }
             while (blnAddAgain);
@@ -9081,12 +9086,12 @@ namespace Chummer
                                                     ?? objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = " + strUndoId.CleanXPath() + ']');
                         objAddQuality.Create(objXmlQualityNode, QualitySource.Selected, lstWeapons, objExpense.Undo.Extra);
 
-                        CharacterObject.Qualities.Add(objAddQuality);
+                        await CharacterObject.Qualities.AddAsync(objAddQuality);
 
                         // Add any created Weapons to the character.
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            CharacterObject.Weapons.Add(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon);
                         }
                         break;
                     }
@@ -9111,7 +9116,7 @@ namespace Chummer
             }
             // Refund the Karma amount and remove the Expense Entry.
             CharacterObject.Karma -= objExpense.Amount.ToInt32();
-            CharacterObject.ExpenseEntries.Remove(objExpense);
+            await CharacterObject.ExpenseEntries.RemoveAsync(objExpense);
 
             await cboTradition.DoThreadSafeAsync(x =>
             {
@@ -9424,7 +9429,7 @@ namespace Chummer
 
             // Refund the Nuyen amount and remove the Expense Entry.
             CharacterObject.Nuyen -= objExpense.Amount;
-            CharacterObject.ExpenseEntries.Remove(objExpense);
+            await CharacterObject.ExpenseEntries.RemoveAsync(objExpense);
         }
 
         private async void tsAddArmorGear_Click(object sender, EventArgs e)
@@ -10004,7 +10009,7 @@ namespace Chummer
                     return;
                 }
 
-                CharacterObject.Spells.Add(objSpell);
+                await CharacterObject.Spells.AddAsync(objSpell);
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
@@ -10199,10 +10204,10 @@ namespace Chummer
                         // Create any Weapons that came with this Gear.
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            CharacterObject.Weapons.Add(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon);
                         }
 
-                        objCyberware.GearChildren.Add(objGear);
+                        await objCyberware.GearChildren.AddAsync(objGear);
                     }
                 } while (blnAddAgain);
             }
@@ -10321,10 +10326,10 @@ namespace Chummer
                         // Create any Weapons that came with this Gear.
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            CharacterObject.Weapons.Add(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon);
                         }
 
-                        objCyberware.GearChildren.Add(objGear);
+                        await objCyberware.GearChildren.AddAsync(objGear);
                     }
                 } while (blnAddAgain);
             }
@@ -10448,11 +10453,11 @@ namespace Chummer
                             objExpense.Undo = objUndo;
                         }
 
-                        objSensor.Children.Add(objGear);
+                        await objSensor.Children.AddAsync(objGear);
 
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            CharacterObject.Weapons.Add(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon);
                         }
                     }
                 } while (blnAddAgain);
@@ -10564,11 +10569,11 @@ namespace Chummer
                             objExpense.Undo = objUndo;
                         }
 
-                        objSensor.Children.Add(objGear);
+                        await objSensor.Children.AddAsync(objGear);
 
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            CharacterObject.Weapons.Add(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon);
                         }
                     }
                 } while (blnAddAgain);
@@ -10681,10 +10686,10 @@ namespace Chummer
                         // Create any Weapons that came with this Gear.
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            CharacterObject.Weapons.Add(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon);
                         }
 
-                        objAccessory.GearChildren.Add(objGear);
+                        await objAccessory.GearChildren.AddAsync(objGear);
                     }
                 } while (blnAddAgain);
             }
@@ -10797,11 +10802,11 @@ namespace Chummer
                             objExpense.Undo = objUndo;
                         }
 
-                        objSensor.Children.Add(objGear);
+                        await objSensor.Children.AddAsync(objGear);
 
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            CharacterObject.Weapons.Add(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon);
                         }
                     }
                 } while (blnAddAgain);
@@ -10838,7 +10843,7 @@ namespace Chummer
                     return;
 
                 Weapon objWeapon = frmCreateNaturalWeapon.MyForm.SelectedWeapon;
-                CharacterObject.Weapons.Add(objWeapon);
+                await CharacterObject.Weapons.AddAsync(objWeapon);
             }
         }
 
@@ -10947,13 +10952,13 @@ namespace Chummer
                             objExpense.Undo = objUndo;
                         }
 
-                        objSensor.Children.Add(objGear);
+                        await objSensor.Children.AddAsync(objGear);
                         CharacterObject.Vehicles.FindVehicleGear(objGear.InternalId, out Vehicle objVehicle, out _,
                                                                  out _);
                         foreach (Weapon objWeapon in lstWeapons)
                         {
                             objWeapon.ParentVehicle = objVehicle;
-                            objVehicle.Weapons.Add(objWeapon);
+                            await objVehicle.Weapons.AddAsync(objWeapon);
                         }
                     }
                 } while (blnAddAgain);
@@ -11063,12 +11068,12 @@ namespace Chummer
                             objExpense.Undo = objUndo;
                         }
 
-                        objAccessory.GearChildren.Add(objGear);
+                        await objAccessory.GearChildren.AddAsync(objGear);
 
                         foreach (Weapon objWeapon in lstWeapons)
                         {
                             objWeapon.Parent = objAccessory.Parent;
-                            objAccessory.Parent.Children.Add(objWeapon);
+                            await objAccessory.Parent.Children.AddAsync(objWeapon);
                         }
                     }
                 } while (blnAddAgain);
@@ -11777,7 +11782,7 @@ namespace Chummer
 
             objWeapon.Location = null;
             // Remove the Weapon from the character and add it to the Vehicle Mod.
-            CharacterObject.Weapons.Remove(objWeapon);
+            await CharacterObject.Weapons.RemoveAsync(objWeapon);
 
             // Remove any Improvements from the Character.
             foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
@@ -11800,12 +11805,12 @@ namespace Chummer
             if (objWeaponMount != null)
             {
                 objWeapon.ParentMount = objWeaponMount;
-                objWeaponMount.Weapons.Add(objWeapon);
+                await objWeaponMount.Weapons.AddAsync(objWeapon);
             }
             else
             {
                 objWeapon.ParentVehicleMod = objMod;
-                objMod.Weapons.Add(objWeapon);
+                await objMod.Weapons.AddAsync(objWeapon);
             }
         }
 
@@ -13620,7 +13625,7 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strLocation))
                     return;
 
-                CharacterObject.ImprovementGroups.Add(strLocation);
+                await CharacterObject.ImprovementGroups.AddAsync(strLocation);
             }
 
             await SetDirty(true);
@@ -16758,17 +16763,18 @@ namespace Chummer
                         // Create any Weapons that came with this Gear.
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            CharacterObject.Weapons.Add(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon);
                         }
 
-                        objLocation?.Children.Add(objGear);
+                        if (objLocation != null)
+                            await objLocation.Children.AddAsync(objGear);
                         if (!blnNullParent)
                         {
-                            objSelectedGear.Children.Add(objGear);
+                            await objSelectedGear.Children.AddAsync(objGear);
                         }
                         else
                         {
-                            CharacterObject.Gear.Add(objGear);
+                            await CharacterObject.Gear.AddAsync(objGear);
                         }
                     }
 
@@ -16947,7 +16953,7 @@ namespace Chummer
                     // Add the Gear.
                     else if (!string.IsNullOrEmpty(objSelectedGear?.Name))
                     {
-                        objSelectedGear.Children.Add(objGear);
+                        await objSelectedGear.Children.AddAsync(objGear);
                         if (CharacterObjectSettings.EnforceCapacity && objSelectedGear.CapacityRemaining < 0)
                         {
                             objGear.DeleteGear();
@@ -16960,7 +16966,7 @@ namespace Chummer
                     }
                     else if (!string.IsNullOrEmpty(objSelectedMod?.Name))
                     {
-                        objSelectedMod.GearChildren.Add(objGear);
+                        await objSelectedMod.GearChildren.AddAsync(objGear);
                         if (CharacterObjectSettings.EnforceCapacity && objSelectedMod.GearCapacityRemaining < 0)
                         {
                             objGear.DeleteGear();
@@ -16973,7 +16979,7 @@ namespace Chummer
                     }
                     else
                     {
-                        objSelectedArmor.GearChildren.Add(objGear);
+                        await objSelectedArmor.GearChildren.AddAsync(objGear);
                         if (CharacterObjectSettings.EnforceCapacity && objSelectedArmor.CapacityRemaining < 0)
                         {
                             objGear.DeleteGear();
@@ -17022,7 +17028,7 @@ namespace Chummer
                     // Create any Weapons that came with this Gear.
                     foreach (Weapon objWeapon in lstWeapons)
                     {
-                        CharacterObject.Weapons.Add(objWeapon);
+                        await CharacterObject.Weapons.AddAsync(objWeapon);
                     }
 
                     return frmPickGear.MyForm.AddAgain;
@@ -18928,7 +18934,7 @@ namespace Chummer
                             int intRating = Convert.ToInt32(xmlItem["rating"]?.InnerText, GlobalSettings.InvariantCultureInfo);
 
                             Cyberware objCyberware = CreateSuiteCyberware(xmlItem, objXmlCyberware, objGrade, intRating, objSource);
-                            CharacterObject.Cyberware.Add(objCyberware);
+                            await CharacterObject.Cyberware.AddAsync(objCyberware);
                         }
                     }
                 }
@@ -19068,7 +19074,7 @@ namespace Chummer
                 if (objNewMetamagic.InternalId.IsEmptyGuid())
                     return;
 
-                CharacterObject.Metamagics.Add(objNewMetamagic);
+                await CharacterObject.Metamagics.AddAsync(objNewMetamagic);
 
                 if (blnPayWithKarma)
                 {
@@ -19121,7 +19127,7 @@ namespace Chummer
                 if (objArt.InternalId.IsEmptyGuid())
                     return;
 
-                CharacterObject.Arts.Add(objArt);
+                await CharacterObject.Arts.AddAsync(objArt);
 
                 /*
                 if (blnPayWithKarma)
@@ -19207,7 +19213,7 @@ namespace Chummer
                 return;
             }
 
-            CharacterObject.Spells.Add(objNewSpell);
+            await CharacterObject.Spells.AddAsync(objNewSpell);
 
             if (blnPayWithKarma)
             {
@@ -19278,7 +19284,7 @@ namespace Chummer
                 return;
             }
 
-            CharacterObject.Spells.Add(objNewSpell);
+            await CharacterObject.Spells.AddAsync(objNewSpell);
 
             if (blnPayWithKarma)
             {
@@ -19356,7 +19362,7 @@ namespace Chummer
             {
                 if (objPower.Name == strPower)
                 {
-                    objPower.Enhancements.Add(objEnhancement);
+                    await objPower.Enhancements.AddAsync(objEnhancement);
                     blnPowerFound = true;
                     break;
                 }
@@ -19365,7 +19371,7 @@ namespace Chummer
             if (!blnPowerFound)
             {
                 // Add it to the character instead
-                CharacterObject.Enhancements.Add(objEnhancement);
+                await CharacterObject.Enhancements.AddAsync(objEnhancement);
             }
 
             string strType = await LanguageManager.GetStringAsync("String_Enhancement");
@@ -19497,7 +19503,7 @@ namespace Chummer
                         , (boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost).ToString(GlobalSettings.CultureInfo))))
                         continue;
 
-                    CharacterObject.AIPrograms.Add(objProgram);
+                    await CharacterObject.AIPrograms.AddAsync(objProgram);
 
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
@@ -19670,9 +19676,9 @@ namespace Chummer
             {
                 if (objOldParent != null)
                 {
-                    objOldParent.Children.Remove(objModularCyberware);
+                    await objOldParent.Children.RemoveAsync(objModularCyberware);
 
-                    CharacterObject.Cyberware.Add(objModularCyberware);
+                    await CharacterObject.Cyberware.AddAsync(objModularCyberware);
                 }
             }
             else
@@ -19681,11 +19687,11 @@ namespace Chummer
                 if (objNewParent != null)
                 {
                     if (objOldParent != null)
-                        objOldParent.Children.Remove(objModularCyberware);
+                        await objOldParent.Children.RemoveAsync(objModularCyberware);
                     else
-                        CharacterObject.Cyberware.Remove(objModularCyberware);
+                        await CharacterObject.Cyberware.RemoveAsync(objModularCyberware);
 
-                    objNewParent.Children.Add(objModularCyberware);
+                    await objNewParent.Children.AddAsync(objModularCyberware);
 
                     objModularCyberware.ChangeModularEquip(true);
                 }
@@ -19697,20 +19703,20 @@ namespace Chummer
                     if (objNewVehicleModParent != null || objNewParent != null)
                     {
                         if (objOldParent != null)
-                            objOldParent.Children.Remove(objModularCyberware);
+                            await objOldParent.Children.RemoveAsync(objModularCyberware);
                         else
-                            CharacterObject.Cyberware.Remove(objModularCyberware);
+                            await CharacterObject.Cyberware.RemoveAsync(objModularCyberware);
 
                         if (objNewParent != null)
-                            objNewParent.Children.Add(objModularCyberware);
+                            await objNewParent.Children.AddAsync(objModularCyberware);
                         else
-                            objNewVehicleModParent.Cyberware.Add(objModularCyberware);
+                            await objNewVehicleModParent.Cyberware.AddAsync(objModularCyberware);
                     }
                     else if (objOldParent != null)
                     {
-                        objOldParent.Children.Remove(objModularCyberware);
+                        await objOldParent.Children.RemoveAsync(objModularCyberware);
 
-                        CharacterObject.Cyberware.Add(objModularCyberware);
+                        await CharacterObject.Cyberware.AddAsync(objModularCyberware);
                     }
                 }
             }
@@ -19763,11 +19769,11 @@ namespace Chummer
             if (strSelectedParentID == "None")
             {
                 if (objOldParent != null)
-                    objOldParent.Children.Remove(objModularCyberware);
+                    await objOldParent.Children.RemoveAsync(objModularCyberware);
                 else
-                    objOldParentVehicleMod.Cyberware.Remove(objModularCyberware);
+                    await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware);
 
-                CharacterObject.Cyberware.Add(objModularCyberware);
+                await CharacterObject.Cyberware.AddAsync(objModularCyberware);
             }
             else
             {
@@ -19775,11 +19781,11 @@ namespace Chummer
                 if (objNewParent != null)
                 {
                     if (objOldParent != null)
-                        objOldParent.Children.Remove(objModularCyberware);
+                        await objOldParent.Children.RemoveAsync(objModularCyberware);
                     else
-                        objOldParentVehicleMod.Cyberware.Remove(objModularCyberware);
+                        await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware);
 
-                    objNewParent.Children.Add(objModularCyberware);
+                    await objNewParent.Children.AddAsync(objModularCyberware);
 
                     objModularCyberware.ChangeModularEquip(true);
                 }
@@ -19791,23 +19797,23 @@ namespace Chummer
                     if (objNewVehicleModParent != null || objNewParent != null)
                     {
                         if (objOldParent != null)
-                            objOldParent.Children.Remove(objModularCyberware);
+                            await objOldParent.Children.RemoveAsync(objModularCyberware);
                         else
-                            objOldParentVehicleMod.Cyberware.Remove(objModularCyberware);
+                            await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware);
 
                         if (objNewParent != null)
-                            objNewParent.Children.Add(objModularCyberware);
+                            await objNewParent.Children.AddAsync(objModularCyberware);
                         else
-                            objNewVehicleModParent.Cyberware.Add(objModularCyberware);
+                            await objNewVehicleModParent.Cyberware.AddAsync(objModularCyberware);
                     }
                     else
                     {
                         if (objOldParent != null)
-                            objOldParent.Children.Remove(objModularCyberware);
+                            await objOldParent.Children.RemoveAsync(objModularCyberware);
                         else
-                            objOldParentVehicleMod.Cyberware.Remove(objModularCyberware);
+                            await objOldParentVehicleMod.Cyberware.RemoveAsync(objModularCyberware);
 
-                        CharacterObject.Cyberware.Add(objModularCyberware);
+                        await CharacterObject.Cyberware.AddAsync(objModularCyberware);
                     }
                 }
             }
@@ -19912,7 +19918,7 @@ namespace Chummer
 
                 Drug objCustomDrug = form.MyForm.CustomDrug;
                 objCustomDrug.Quantity = 0;
-                CharacterObject.Drugs.Add(objCustomDrug);
+                await CharacterObject.Drugs.AddAsync(objCustomDrug);
                 objCustomDrug.GenerateImprovement();
             }
         }

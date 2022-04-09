@@ -379,7 +379,7 @@ namespace Chummer
                 XmlNode objXmlLifestyleQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strLoopId.CleanXPath() + ']');
                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                 objQuality.Create(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
-                _objLifestyle.LifestyleQualities.Add(objQuality);
+                await _objLifestyle.LifestyleQualities.AddAsync(objQuality);
             }
 
             foreach (LifestyleQuality objLifestyleQuality in _objLifestyle.LifestyleQualities.Where(x =>
