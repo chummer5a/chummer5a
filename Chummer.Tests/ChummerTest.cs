@@ -23,7 +23,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -57,15 +59,7 @@ namespace Chummer.Tests
             TestPath = Path.Combine(strPath, "TestRun-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalSettings.InvariantCultureInfo));
             TestPathInfo = Directory.CreateDirectory(TestPath);
             TestFiles = objPathInfo.GetFiles("*.chum5"); //Getting Text files
-            CharacterList = new Lazy<List<Character>>(() =>
-            {
-                List<Character> lstReturn = new List<Character>(TestFiles.Length);
-                foreach (FileInfo objFileInfo in TestFiles)
-                {
-                    lstReturn.Add(LoadCharacter(objFileInfo));
-                }
-                return lstReturn;
-            });
+            _lstCharacters = new List<Character>(TestFiles.Length);
         }
 
         private string TestPath { get; }
@@ -73,7 +67,22 @@ namespace Chummer.Tests
 
         private FileInfo[] TestFiles { get; }
 
-        private Lazy<List<Character>> CharacterList { get; }
+        private readonly List<Character> _lstCharacters;
+
+        private IEnumerable<Character> GetTestCharacters()
+        {
+            foreach (FileInfo objFileInfo in TestFiles)
+            {
+                Debug.WriteLine("Loading " + objFileInfo.Name);
+                Character objLoopCharacter = _lstCharacters.FirstOrDefault(x => x.FileName == objFileInfo.FullName);
+                if (objLoopCharacter == null)
+                {
+                    objLoopCharacter = LoadCharacter(objFileInfo);
+                    _lstCharacters.Add(objLoopCharacter);
+                }
+                yield return objLoopCharacter;
+            }
+        }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
@@ -146,12 +155,66 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public void Test02_LoadThenSave()
+        public void Test02_LoadContent()
         {
-            Debug.WriteLine("Unit test initialized for: Test02_LoadThenSave()");
-            foreach (Character objCharacter in CharacterList.Value)
+            Debug.WriteLine("Unit test initialized for: Test02_LoadContent()");
+            try
             {
-                string strDestination = Path.Combine(TestPathInfo.FullName, Path.GetFileName(objCharacter.FileName));
+                bool blnTemp = Utils.IsUnitTestForUI;
+                try
+                {
+                    Utils.IsUnitTestForUI = true;
+                    // Attempt to cache all XML files that are used the most.
+                    using (LoadingBar frmLoadingBar = Program.CreateAndShowProgressBar(Application.ProductName, Utils.BasicDataFileNames.Count))
+                    {
+                        Task[] tskCachingTasks = new Task[Utils.BasicDataFileNames.Count];
+                        for (int i = 0; i < tskCachingTasks.Length; ++i)
+                        {
+                            string strLoopFile = Utils.BasicDataFileNames[i];
+                            // ReSharper disable once AccessToDisposedClosure
+                            tskCachingTasks[i] = Task.Run(() => CacheCommonFile(strLoopFile, frmLoadingBar));
+                        }
+
+                        async Task CacheCommonFile(string strFile, LoadingBar frmLoadingBarInner)
+                        {
+                            // Load default language data first for performance reasons
+                            if (!GlobalSettings.Language.Equals(
+                                    GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                            {
+                                await XmlManager.LoadXPathAsync(strFile, null, GlobalSettings.DefaultLanguage);
+                            }
+                            await XmlManager.LoadXPathAsync(strFile);
+                            await frmLoadingBarInner.PerformStepAsync(
+                                Application.ProductName,
+                                LoadingBar.ProgressBarTextPatterns.Initializing);
+                        }
+
+                        Utils.RunWithoutThreadLock(() => Task.WhenAll(tskCachingTasks));
+                    }
+                }
+                finally
+                {
+                    Utils.IsUnitTestForUI = blnTemp;
+                }
+
+                _lstCharacters.Capacity = GetTestCharacters().ToList().Count; // Dummy command used purely to initialize CharacterList
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail(ex.Message);
+            }
+        }
+
+        // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
+        [TestMethod]
+        public void Test03_LoadThenSave()
+        {
+            Debug.WriteLine("Unit test initialized for: Test03_LoadThenSave()");
+            foreach (Character objCharacter in GetTestCharacters())
+            {
+                string strFileName = Path.GetFileName(objCharacter.FileName) ?? LanguageManager.GetString("String_Unknown");
+                Debug.WriteLine("Checking " + strFileName);
+                string strDestination = Path.Combine(TestPathInfo.FullName, strFileName);
                 SaveCharacter(objCharacter, strDestination);
                 using (LoadCharacter(new FileInfo(strDestination)))
                 {
@@ -162,16 +225,18 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public void Test03_LoadThenSaveIsDeterministic()
+        public void Test04_LoadThenSaveIsDeterministic()
         {
-            Debug.WriteLine("Unit test initialized for: Test03_LoadThenSaveIsDeterministic()");
-            foreach (Character objCharacterControl in CharacterList.Value)
+            Debug.WriteLine("Unit test initialized for: Test04_LoadThenSaveIsDeterministic()");
+            foreach (Character objCharacterControl in GetTestCharacters())
             {
+                string strFileName = Path.GetFileName(objCharacterControl.FileName) ?? LanguageManager.GetString("String_Unknown");
+                Debug.WriteLine("Checking " + strFileName);
                 // First Load-Save cycle
-                string strDestinationControl = Path.Combine(TestPathInfo.FullName, "(Control) " + Path.GetFileName(objCharacterControl.FileName));
+                string strDestinationControl = Path.Combine(TestPathInfo.FullName, "(Control) " + strFileName);
                 SaveCharacter(objCharacterControl, strDestinationControl);
                 // Second Load-Save cycle
-                string strDestinationTest = Path.Combine(TestPathInfo.FullName, "(Test) " + Path.GetFileName(objCharacterControl.FileName));
+                string strDestinationTest = Path.Combine(TestPathInfo.FullName, "(Test) " + strFileName);
                 using (Character objCharacterTest = LoadCharacter(new FileInfo(strDestinationControl)))
                 {
                     SaveCharacter(objCharacterTest, strDestinationTest);
@@ -218,9 +283,9 @@ namespace Chummer.Tests
         }
 
         [TestMethod]
-        public void Test04_LoadThenPrint()
+        public void Test05_LoadThenPrint()
         {
-            Debug.WriteLine("Unit test initialized for: Test04_LoadThenPrint()");
+            Debug.WriteLine("Unit test initialized for: Test05_LoadThenPrint()");
             List<string> lstExportLanguages = new List<string>();
             foreach (string strFilePath in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "lang"), "*.xml"))
             {
@@ -239,8 +304,10 @@ namespace Chummer.Tests
                 LanguageManager.LoadLanguage(strExportLanguage);
             }
             Debug.WriteLine("Finished pre-loading language files");
-            foreach (Character objCharacter in CharacterList.Value)
+            foreach (Character objCharacter in GetTestCharacters())
             {
+                string strFileName = Path.GetFileName(objCharacter.FileName) ?? LanguageManager.GetString("String_Unknown");
+                Debug.WriteLine("Checking " + strFileName);
                 foreach (string strExportLanguage in lstExportLanguages)
                 {
                     DoAndSaveExport(objCharacter, strExportLanguage);
@@ -250,10 +317,9 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public void Test05_LoadCharacterForms()
+        public void Test06_LoadCharacterForms()
         {
-            Debug.WriteLine("Unit test initialized for: Test05_LoadCharacterForms()");
-            Debug.WriteLine("Characters successfully loaded");
+            Debug.WriteLine("Unit test initialized for: Test06_LoadCharacterForms()");
             ChummerMainForm frmOldMainForm = Program.MainForm;
             ChummerMainForm frmTestForm = null;
             // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
@@ -276,8 +342,11 @@ namespace Chummer.Tests
                 {
                     Utils.SafeSleep();
                 }
-                foreach (Character objCharacter in CharacterList.Value)
+                Debug.WriteLine("Main form loaded");
+                foreach (Character objCharacter in GetTestCharacters())
                 {
+                    string strFileName = Path.GetFileName(objCharacter.FileName) ?? LanguageManager.GetString("String_Unknown");
+                    Debug.WriteLine("Checking " + strFileName);
                     string strDummyFileName = Path.Combine(TestPathInfo.FullName,
                                                            "(UnitTest05Dummy) "
                                                            + Path.GetFileNameWithoutExtension(objCharacter.FileName)
@@ -351,7 +420,7 @@ namespace Chummer.Tests
                         catch (Exception e)
                         {
                             string strErrorMessage
-                                = "Exception while loading form for " + Path.GetFileName(objCharacter.FileName) + ":";
+                                = "Exception while loading form for " + strFileName + ":";
                             strErrorMessage += Environment.NewLine + e;
                             Debug.WriteLine(strErrorMessage);
                             Console.WriteLine(strErrorMessage);
