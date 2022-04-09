@@ -17,6 +17,10 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+// Use this define to control whether or not stacktraces should be saved every time a semaphore is successfully acquired.
+#if DEBUG
+#define SEMAPHOREDEBUG
+#endif
 
 using System;
 using System.Threading;
@@ -31,11 +35,6 @@ namespace Chummer
     {
         private readonly bool _blnDisposeSemaphore;
         private readonly SemaphoreSlim _objSemaphoreSlim;
-
-        // Use this define to control whether or not stacktraces should be saved every time a semaphore is successfully acquired.
-#if DEBUG
-#define SEMAPHOREDEBUG
-#endif
 
 #if SEMAPHOREDEBUG
         // ReSharper disable once UnusedAutoPropertyAccessor.Local
