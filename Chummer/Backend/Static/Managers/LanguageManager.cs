@@ -233,9 +233,19 @@ namespace Chummer
                 while (!s_DicLanguageDataLockers.TryGetValue(strKey, out objLockerObject))
                 {
                     objLockerObject = Utils.SemaphorePool.Get();
+                    bool blnSuccess = false;
                     // ReSharper disable once MethodHasAsyncOverload
-                    if (s_DicLanguageDataLockers.TryAdd(strKey, objLockerObject))
-                        break;
+                    try
+                    {
+                        blnSuccess = s_DicLanguageDataLockers.TryAdd(strKey, objLockerObject);
+                        if (blnSuccess)
+                            break;
+                    }
+                    finally
+                    {
+                        if (!blnSuccess)
+                            Utils.SemaphorePool.Return(objLockerObject);
+                    }
                     Utils.SemaphorePool.Return(objLockerObject);
                     Utils.SafeSleep(token);
                 }
@@ -247,9 +257,17 @@ namespace Chummer
                 while (!blnSuccess)
                 {
                     objLockerObject = Utils.SemaphorePool.Get();
-                    if (await s_DicLanguageDataLockers.TryAddAsync(strKey, objLockerObject))
-                        break;
-                    Utils.SemaphorePool.Return(objLockerObject);
+                    try
+                    {
+                        blnSuccess = await s_DicLanguageDataLockers.TryAddAsync(strKey, objLockerObject);
+                        if (blnSuccess)
+                            break;
+                    }
+                    finally
+                    {
+                        if (!blnSuccess)
+                            Utils.SemaphorePool.Return(objLockerObject);
+                    }
                     await Utils.SafeSleepAsync(token);
                     (blnSuccess, objLockerObject) = await s_DicLanguageDataLockers.TryGetValueAsync(strKey);
                 }

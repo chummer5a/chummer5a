@@ -344,7 +344,12 @@ namespace Chummer
         public void Dispose()
         {
             if (_blnDisposeSemaphore)
+            {
                 _objSemaphoreSlim.Dispose();
+#if SEMAPHOREDEBUG
+                LastHolderStackTrace = Environment.StackTrace;
+#endif
+            }
         }
 
         /// <inheritdoc cref="SemaphoreSlim.CurrentCount"/>
