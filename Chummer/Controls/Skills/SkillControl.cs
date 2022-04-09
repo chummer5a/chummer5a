@@ -32,7 +32,7 @@ using Chummer.Properties;
 
 namespace Chummer.UI.Skills
 {
-    [DebuggerDisplay("{_objSkill.Name} {Visible} {btnAddSpec.Visible}")]
+    [DebuggerDisplay("{_objSkill.Name}")]
     public sealed partial class SkillControl : UserControl
     {
         private readonly bool _blnLoading = true;

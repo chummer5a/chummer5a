@@ -78,6 +78,7 @@ namespace Chummer.Backend.Skills
             if (objNewAttribute != null)
                 objNewAttribute.PropertyChanged += OnLinkedAttributeChanged;
             AttributeObject = objNewAttribute;
+            this.OnMultiplePropertyChanged(nameof(AttributeModifiers), nameof(Enabled));
         }
 
         private string _strName = string.Empty; //English name of this skill
@@ -555,10 +556,7 @@ namespace Chummer.Backend.Skills
                     {
                         if (e.NewItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
                         {
-                            AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
                             RecacheAttribute();
-                            AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
-                            AttributeActiveOnPropertyChanged(this, null);
                         }
                         break;
                     }
@@ -566,10 +564,7 @@ namespace Chummer.Backend.Skills
                     {
                         if (e.OldItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
                         {
-                            AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
                             RecacheAttribute();
-                            AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
-                            AttributeActiveOnPropertyChanged(this, null);
                         }
                         break;
                     }
@@ -578,19 +573,13 @@ namespace Chummer.Backend.Skills
                     if (e.OldItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == Attribute)
                         || e.NewItems.OfType<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
                     {
-                        AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
                         RecacheAttribute();
-                        AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
-                        AttributeActiveOnPropertyChanged(this, null);
                     }
                     break;
                 }
                 case NotifyCollectionChangedAction.Reset:
                     {
-                        AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
                         RecacheAttribute();
-                        AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
-                        AttributeActiveOnPropertyChanged(this, null);
                         break;
                     }
             }
@@ -600,15 +589,7 @@ namespace Chummer.Backend.Skills
         {
             if (e.PropertyName != nameof(AttributeSection.AttributeCategory))
                 return;
-            AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
             RecacheAttribute();
-            AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
-            AttributeActiveOnPropertyChanged(this, null);
-        }
-
-        private void AttributeActiveOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            OnPropertyChanged(nameof(Rating));
         }
 
         public void UnbindSkill()
