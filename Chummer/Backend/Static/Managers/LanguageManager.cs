@@ -246,7 +246,6 @@ namespace Chummer
                         if (!blnSuccess)
                             Utils.SemaphorePool.Return(objLockerObject);
                     }
-                    Utils.SemaphorePool.Return(objLockerObject);
                     Utils.SafeSleep(token);
                 }
             }

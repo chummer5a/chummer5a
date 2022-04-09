@@ -49,8 +49,8 @@ namespace Chummer
         private string _strPrintLanguage = GlobalSettings.Language;
         private CancellationTokenSource _objRefresherCancellationTokenSource;
         private CancellationTokenSource _objOutputGeneratorCancellationTokenSource;
-        private readonly DebuggableSemaphoreSlim _objRefresherSemaphoreSlim = Utils.SemaphorePool.Get();
-        private readonly DebuggableSemaphoreSlim _objOutputGeneratorSemaphoreSlim = Utils.SemaphorePool.Get();
+        private readonly DebuggableSemaphoreSlim _objRefresherSemaphoreSlim = new DebuggableSemaphoreSlim();
+        private readonly DebuggableSemaphoreSlim _objOutputGeneratorSemaphoreSlim = new DebuggableSemaphoreSlim();
         private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objGenericToken;
         private Task _tskRefresher;
@@ -249,7 +249,7 @@ namespace Chummer
                     finally
                     {
                         _objRefresherSemaphoreSlim.Release();
-                        Utils.SemaphorePool.Return(_objRefresherSemaphoreSlim);
+                        _objRefresherSemaphoreSlim.Dispose();
                     }
                 }
             }
@@ -276,7 +276,7 @@ namespace Chummer
                     finally
                     {
                         _objOutputGeneratorSemaphoreSlim.Release();
-                        Utils.SemaphorePool.Return(_objOutputGeneratorSemaphoreSlim);
+                        _objOutputGeneratorSemaphoreSlim.Dispose();
                     }
                 }
             }

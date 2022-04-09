@@ -1464,7 +1464,10 @@ namespace Chummer
             return s_strTempPath;
         }
 
-        private static readonly DefaultObjectPoolProvider s_ObjObjectPoolProvider = new DefaultObjectPoolProvider();
+        private static readonly DefaultObjectPoolProvider s_ObjObjectPoolProvider = new DefaultObjectPoolProvider()
+        {
+            MaximumRetained = Math.Max(Environment.ProcessorCount, 8) * 2
+        };
 
         /// <summary>
         /// Memory Pool for empty StringBuilder objects. A bit slower up-front than a simple allocation, but reduces memory allocations, which saves on CPU used for Garbage Collection.
@@ -1499,21 +1502,24 @@ namespace Chummer
 
         /// <summary>
         /// Memory Pool for SemaphoreSlim with one allowed semaphore that is used for async-friendly thread safety stuff. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
+        /// WARNING! This will end up being a DisposableObjectPool, which can have weird behaviors (e.g. disposal-then-reuse) if used in SemaphoreSlim members in classes that stick around! Avoid using this if possible for those cases.
         /// </summary>
         [CLSCompliant(false)]
         public static ObjectPool<DebuggableSemaphoreSlim> SemaphorePool { get; }
             = s_ObjObjectPoolProvider.Create(new SemaphoreSlimPooledObjectPolicy());
 
-        private sealed class SemaphoreSlimPooledObjectPolicy : PooledObjectPolicy<DebuggableSemaphoreSlim>
+        private sealed class SemaphoreSlimPooledObjectPolicy : IPooledObjectPolicy<DebuggableSemaphoreSlim>
         {
+            /// <inheritdoc />
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public override DebuggableSemaphoreSlim Create()
+            public DebuggableSemaphoreSlim Create()
             {
                 return new DebuggableSemaphoreSlim();
             }
 
+            /// <inheritdoc />
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public override bool Return(DebuggableSemaphoreSlim obj)
+            public bool Return(DebuggableSemaphoreSlim obj)
             {
                 try
                 {

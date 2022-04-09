@@ -17,9 +17,9 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-// Use this define to control whether or not stacktraces should be saved every time a semaphore is successfully acquired.
+// Uncomment this define to control whether or not stacktraces should be saved every time a semaphore is successfully acquired or disposed.
 #if DEBUG
-#define SEMAPHOREDEBUG
+//#define SEMAPHOREDEBUG
 #endif
 
 using System;
@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 namespace Chummer
 {
     /// <summary>
-    /// Version of SemaphoreSlim(1, 1) with a surrounding wrapper that can help with debugging by saving the current stacktrace every time the sole lock is acquired
+    /// Version of SemaphoreSlim(1, 1) with a surrounding wrapper that can help with debugging by saving the current stacktrace every time the sole lock is acquired or the semaphore is disposed
     /// </summary>
     public sealed class DebuggableSemaphoreSlim : IDisposable
     {

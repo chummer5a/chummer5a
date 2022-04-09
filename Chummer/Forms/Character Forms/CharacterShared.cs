@@ -8107,7 +8107,7 @@ namespace Chummer
 
         private Task _tskUpdateCharacterInfo = Task.CompletedTask;
 
-        private readonly DebuggableSemaphoreSlim _objUpdateCharacterInfoSemaphoreSlim = Utils.SemaphorePool.Get();
+        private readonly DebuggableSemaphoreSlim _objUpdateCharacterInfoSemaphoreSlim = new DebuggableSemaphoreSlim();
 
         private CancellationTokenSource _objUpdateCharacterInfoCancellationTokenSource;
 
@@ -8354,7 +8354,7 @@ namespace Chummer
                         objTemp.Dispose();
                     }
                 }
-                Utils.SemaphorePool.Return(_objUpdateCharacterInfoSemaphoreSlim);
+                _objUpdateCharacterInfoSemaphoreSlim.Dispose();
             }
             base.Dispose(disposing);
         }
