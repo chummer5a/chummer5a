@@ -518,14 +518,14 @@ namespace Chummer
 
         private readonly struct SafeWriterSemaphoreRelease : IAsyncDisposable, IDisposable
         {
-            private readonly DebuggableSemaphoreSlim _objCurrentWriterSemaphore;
-            private readonly DebuggableSemaphoreSlim _objNextWriterSemaphore;
+            private readonly DebuggableSemaphoreSlim _objCurrentSemaphore;
+            private readonly DebuggableSemaphoreSlim _objNextSemaphore;
             private readonly AsyncFriendlyReaderWriterLock _objReaderWriterLock;
 
-            public SafeWriterSemaphoreRelease(DebuggableSemaphoreSlim objCurrentWriterSemaphore, DebuggableSemaphoreSlim objNextWriterSemaphore, AsyncFriendlyReaderWriterLock objReaderWriterLock)
+            public SafeWriterSemaphoreRelease(DebuggableSemaphoreSlim objCurrentSemaphore, DebuggableSemaphoreSlim objNextSemaphore, AsyncFriendlyReaderWriterLock objReaderWriterLock)
             {
-                _objCurrentWriterSemaphore = objCurrentWriterSemaphore;
-                _objNextWriterSemaphore = objNextWriterSemaphore;
+                _objCurrentSemaphore = objCurrentSemaphore;
+                _objNextSemaphore = objNextSemaphore;
                 _objReaderWriterLock = objReaderWriterLock;
             }
 
@@ -543,18 +543,18 @@ namespace Chummer
                     _objReaderWriterLock._objAsyncLocalWriterReaderWriterLockSlim.EnterUpgradeableReadLock();
                 try
                 {
-                    if (_objNextWriterSemaphore != _objReaderWriterLock._objCurrentWriterSemaphore.Value)
+                    if (_objNextSemaphore != _objReaderWriterLock._objCurrentWriterSemaphore.Value)
                     {
-                        if (_objReaderWriterLock._objCurrentWriterSemaphore.Value == _objCurrentWriterSemaphore)
-                            return Task.FromException(new InvalidOperationException("_objNextWriterSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset."));
+                        if (_objReaderWriterLock._objCurrentWriterSemaphore.Value == _objCurrentSemaphore)
+                            return Task.FromException(new InvalidOperationException("_objNextSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset."));
                         if (_objReaderWriterLock._objCurrentWriterSemaphore.Value == null)
-                            return Task.FromException(new InvalidOperationException("_objNextWriterSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
+                            return Task.FromException(new InvalidOperationException("_objNextSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
                                                           + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
                                                           + "the lock inside a function and then leaving the function before exiting the lock can produce this situation."));
-                        return Task.FromException(new InvalidOperationException("_objNextWriterSemaphore was expected to be the current semaphore"));
+                        return Task.FromException(new InvalidOperationException("_objNextSemaphore was expected to be the current semaphore"));
                     }
 
-                    // Update _objReaderWriterLock._objCurrentWriterSemaphore in the calling ExecutionContext
+                    // Update _objReaderWriterLock._objCurrentSemaphore in the calling ExecutionContext
                     // and defer any awaits to DoReleaseCoreAsync(). If this isn't done, the
                     // update will happen in a copy of the ExecutionContext and the caller
                     // won't see the changes.
@@ -567,11 +567,11 @@ namespace Chummer
                         _objReaderWriterLock._objAsyncLocalWriterReaderWriterLockSlim.EnterWriteLock();
                     try
                     {
-                        _objReaderWriterLock._objCurrentWriterSemaphore.Value = _objCurrentWriterSemaphore
+                        _objReaderWriterLock._objCurrentWriterSemaphore.Value = _objCurrentSemaphore
                             == _objReaderWriterLock
                                 ._objTopLevelWriterSemaphore
                                 ? null
-                                : _objCurrentWriterSemaphore;
+                                : _objCurrentSemaphore;
                     }
                     finally
                     {
@@ -586,26 +586,26 @@ namespace Chummer
                 return DoReleaseCoreAsync(blnReleaseLock);
             }
 
-            private async Task DoReleaseCoreAsync(bool blnReleaseLock = true)
+            private async Task DoReleaseCoreAsync(bool blnReleaseLock)
             {
                 try
                 {
                     if (blnReleaseLock)
                     {
-                        await _objNextWriterSemaphore.WaitAsync().ConfigureAwait(false);
+                        await _objNextSemaphore.WaitAsync().ConfigureAwait(false);
                         try
                         {
-                            _objCurrentWriterSemaphore.Release();
+                            _objCurrentSemaphore.Release();
                         }
                         finally
                         {
-                            _objNextWriterSemaphore.Release();
+                            _objNextSemaphore.Release();
                         }
                     }
                 }
                 finally
                 {
-                    Utils.SemaphorePool.Return(_objNextWriterSemaphore);
+                    Utils.SemaphorePool.Return(_objNextSemaphore);
                 }
             }
 
@@ -623,17 +623,17 @@ namespace Chummer
                     _objReaderWriterLock._objAsyncLocalWriterReaderWriterLockSlim.EnterUpgradeableReadLock();
                 try
                 {
-                    if (_objNextWriterSemaphore != _objReaderWriterLock._objCurrentWriterSemaphore.Value)
+                    if (_objNextSemaphore != _objReaderWriterLock._objCurrentWriterSemaphore.Value)
                     {
-                        if (_objReaderWriterLock._objCurrentWriterSemaphore.Value == _objCurrentWriterSemaphore)
+                        if (_objReaderWriterLock._objCurrentWriterSemaphore.Value == _objCurrentSemaphore)
                             throw new InvalidOperationException(
-                                "_objNextWriterSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset.");
+                                "_objNextSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset.");
                         if (_objReaderWriterLock._objCurrentWriterSemaphore.Value == null)
                             throw new InvalidOperationException(
-                                "_objNextWriterSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
+                                "_objNextSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
                                 + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
                                 + "the lock inside a function and then leaving the function before exiting the lock can produce this situation.");
-                        throw new InvalidOperationException("_objNextWriterSemaphore was expected to be the current semaphore");
+                        throw new InvalidOperationException("_objNextSemaphore was expected to be the current semaphore");
                     }
 
                     if (Utils.EverDoEvents)
@@ -646,9 +646,9 @@ namespace Chummer
                     try
                     {
                         _objReaderWriterLock._objCurrentWriterSemaphore.Value
-                            = _objCurrentWriterSemaphore == _objReaderWriterLock._objTopLevelWriterSemaphore
+                            = _objCurrentSemaphore == _objReaderWriterLock._objTopLevelWriterSemaphore
                                 ? null
-                                : _objCurrentWriterSemaphore;
+                                : _objCurrentSemaphore;
                     }
                     finally
                     {
@@ -664,20 +664,20 @@ namespace Chummer
                 {
                     if (blnReleaseLock)
                     {
-                        _objNextWriterSemaphore.SafeWait();
+                        _objNextSemaphore.SafeWait();
                         try
                         {
-                            _objCurrentWriterSemaphore.Release();
+                            _objCurrentSemaphore.Release();
                         }
                         finally
                         {
-                            _objNextWriterSemaphore.Release();
+                            _objNextSemaphore.Release();
                         }
                     }
                 }
                 finally
                 {
-                    Utils.SemaphorePool.Return(_objNextWriterSemaphore);
+                    Utils.SemaphorePool.Return(_objNextSemaphore);
                 }
             }
 
