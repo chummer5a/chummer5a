@@ -18,6 +18,7 @@
  */
 
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chummer
@@ -25,5 +26,7 @@ namespace Chummer
     public interface IAsyncReadOnlyCollection<T> : IAsyncEnumerable<T>, IReadOnlyCollection<T>
     {
         ValueTask<int> CountAsync { get; }
+
+        ValueTask<int> GetCountAsync(CancellationToken token = default);
     }
 }

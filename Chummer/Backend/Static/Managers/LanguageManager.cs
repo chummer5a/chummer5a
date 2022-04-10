@@ -167,7 +167,7 @@ namespace Chummer
                 }
                 else
                 {
-                    (bool blnSuccess, LanguageData objLanguageData) = await LoadedLanguageData.TryGetValueAsync(strKey);
+                    (bool blnSuccess, LanguageData objLanguageData) = await LoadedLanguageData.TryGetValueAsync(strKey, token);
                     if (blnSuccess)
                         eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
                 }
@@ -237,6 +237,7 @@ namespace Chummer
                     // ReSharper disable once MethodHasAsyncOverload
                     try
                     {
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         blnSuccess = s_DicLanguageDataLockers.TryAdd(strKey, objLockerObject);
                         if (blnSuccess)
                             break;
@@ -252,13 +253,13 @@ namespace Chummer
             else
             {
                 bool blnSuccess;
-                (blnSuccess, objLockerObject) = await s_DicLanguageDataLockers.TryGetValueAsync(strKey);
+                (blnSuccess, objLockerObject) = await s_DicLanguageDataLockers.TryGetValueAsync(strKey, token);
                 while (!blnSuccess)
                 {
                     objLockerObject = Utils.SemaphorePool.Get();
                     try
                     {
-                        blnSuccess = await s_DicLanguageDataLockers.TryAddAsync(strKey, objLockerObject);
+                        blnSuccess = await s_DicLanguageDataLockers.TryAddAsync(strKey, objLockerObject, token);
                         if (blnSuccess)
                             break;
                     }
@@ -268,7 +269,7 @@ namespace Chummer
                             Utils.SemaphorePool.Return(objLockerObject);
                     }
                     await Utils.SafeSleepAsync(token);
-                    (blnSuccess, objLockerObject) = await s_DicLanguageDataLockers.TryGetValueAsync(strKey);
+                    (blnSuccess, objLockerObject) = await s_DicLanguageDataLockers.TryGetValueAsync(strKey, token);
                 }
             }
 
@@ -283,6 +284,7 @@ namespace Chummer
                 if (blnSync)
                 {
                     // ReSharper disable MethodHasAsyncOverload
+                    // ReSharper disable MethodHasAsyncOverloadWithCancellation
                     if (!s_DicLanguageData.TryGetValue(strKey, out objNewLanguage) || objNewLanguage == null)
                     {
                         if (s_DicLanguageData.ContainsKey(strKey))
@@ -290,18 +292,19 @@ namespace Chummer
                         objNewLanguage = new LanguageData(strLanguage);
                         s_DicLanguageData.Add(strKey, objNewLanguage);
                     }
+                    // ReSharper restore MethodHasAsyncOverloadWithCancellation
                     // ReSharper restore MethodHasAsyncOverload
                 }
                 else
                 {
                     bool blnSuccess;
-                    (blnSuccess, objNewLanguage) = await s_DicLanguageData.TryGetValueAsync(strKey);
+                    (blnSuccess, objNewLanguage) = await s_DicLanguageData.TryGetValueAsync(strKey, token);
                     if (!blnSuccess || objNewLanguage == null)
                     {
-                        if (await s_DicLanguageData.ContainsKeyAsync(strKey))
-                            await s_DicLanguageData.RemoveAsync(strKey);
+                        if (await s_DicLanguageData.ContainsKeyAsync(strKey, token))
+                            await s_DicLanguageData.RemoveAsync(strKey, token);
                         objNewLanguage = await Task.Run(() => new LanguageData(strLanguage), token);
-                        await s_DicLanguageData.AddAsync(strKey, objNewLanguage);
+                        await s_DicLanguageData.AddAsync(strKey, objNewLanguage, token);
                     }
                 }
             }
@@ -822,7 +825,7 @@ namespace Chummer
                 }
                 else
                 {
-                    (bool blnSuccess, LanguageData objLanguageData) = await LoadedLanguageData.TryGetValueAsync(strKey);
+                    (bool blnSuccess, LanguageData objLanguageData) = await LoadedLanguageData.TryGetValueAsync(strKey, token);
                     if (blnSuccess)
                     {
                         return objLanguageData.DataDocument;

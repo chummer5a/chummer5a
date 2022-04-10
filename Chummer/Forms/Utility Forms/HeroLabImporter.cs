@@ -613,7 +613,7 @@ namespace Chummer
                         {
                             (bool blnSuccess, CharacterSettings objDefaultCharacterSettings)
                                 = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
-                                    GlobalSettings.DefaultCharacterSetting);
+                                    GlobalSettings.DefaultCharacterSetting, token);
                             if (blnSuccess && objCache.BuildMethod.UsesPriorityTables()
                                 == objDefaultCharacterSettings.BuildMethod.UsesPriorityTables())
                             {

@@ -444,7 +444,7 @@ namespace Chummer
                     else
                     {
                         bool blnLoadSuccess;
-                        (blnLoadSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey).ConfigureAwait(false);
+                        (blnLoadSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token).ConfigureAwait(false);
                         blnDoLoad = !blnLoadSuccess;
                     }
                 }
@@ -468,7 +468,7 @@ namespace Chummer
                         if (xmlDocumentOfReturn != null)
                         {
                             (blnLoadSuccess, xmlReferenceOfReturn)
-                                = await s_DicXmlDocuments.TryGetValueAsync(objDataKey).ConfigureAwait(false);
+                                = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token).ConfigureAwait(false);
                         }
                         else
                         {
@@ -606,6 +606,7 @@ namespace Chummer
                         for (; intEmergencyRelease <= Utils.SleepEmergencyReleaseMaxTicks; ++intEmergencyRelease)
                         {
                             // The file was not found in the reference list, so it must be loaded.
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             if (s_DicXmlDocuments.TryAdd(objDataKey, xmlReferenceOfReturn))
                             {
                                 blnLoadFile = true;
@@ -635,7 +636,7 @@ namespace Chummer
                 else
                 {
                     bool blnSuccess;
-                    (blnSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey).ConfigureAwait(false);
+                    (blnSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token).ConfigureAwait(false);
                     if (!blnSuccess)
                     {
                         int intEmergencyRelease = 0;
@@ -644,7 +645,7 @@ namespace Chummer
                         for (; intEmergencyRelease <= Utils.SleepEmergencyReleaseMaxTicks; ++intEmergencyRelease)
                         {
                             // The file was not found in the reference list, so it must be loaded.
-                            if (await s_DicXmlDocuments.TryAddAsync(objDataKey, xmlReferenceOfReturn).ConfigureAwait(false))
+                            if (await s_DicXmlDocuments.TryAddAsync(objDataKey, xmlReferenceOfReturn, token).ConfigureAwait(false))
                             {
                                 blnLoadFile = true;
                                 break;
@@ -653,7 +654,7 @@ namespace Chummer
                             await xmlReferenceOfReturn.DisposeAsync().ConfigureAwait(false);
 
                             // It somehow got added in the meantime, so let's fetch it again
-                            (blnSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey);
+                            (blnSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token);
                             if (blnSuccess)
                                 break;
                             // We're iterating the loop because we failed to get the reference, so we need to re-allocate our reference because it was in an out-argument above

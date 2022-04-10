@@ -10867,21 +10867,21 @@ namespace Chummer
             if (decStolenNuyenAllowance != 0)
             {
                 Task<decimal>[] atskCosts = {
-                    CharacterObject.Cyberware.SumParallelAsync(x => !x.Stolen, x => x.TotalCost),
-                    CharacterObject.Armor.SumParallelAsync(x => !x.Stolen, x => x.TotalCost),
-                    CharacterObject.Weapons.SumParallelAsync(x => !x.Stolen, x => x.TotalCost),
-                    CharacterObject.Gear.SumParallelAsync(x => !x.Stolen, x => x.TotalCost),
-                    CharacterObject.Vehicles.SumParallelAsync(x => !x.Stolen, x => x.TotalCost),
-                    CharacterObject.Drugs.SumParallelAsync(x => !x.Stolen, x => x.TotalCost),
-                    CharacterObject.Lifestyles.SumParallelAsync(x => x.TotalCost)
+                    CharacterObject.Cyberware.SumParallelAsync(x => !x.Stolen, x => x.TotalCost, token),
+                    CharacterObject.Armor.SumParallelAsync(x => !x.Stolen, x => x.TotalCost, token),
+                    CharacterObject.Weapons.SumParallelAsync(x => !x.Stolen, x => x.TotalCost, token),
+                    CharacterObject.Gear.SumParallelAsync(x => !x.Stolen, x => x.TotalCost, token),
+                    CharacterObject.Vehicles.SumParallelAsync(x => !x.Stolen, x => x.TotalCost, token),
+                    CharacterObject.Drugs.SumParallelAsync(x => !x.Stolen, x => x.TotalCost, token),
+                    CharacterObject.Lifestyles.SumParallelAsync(x => x.TotalCost, token)
                 };
                 Task<decimal>[] atskStolenTasksCosts = {
-                    CharacterObject.Cyberware.SumParallelAsync(x => x.Stolen, x => x.TotalCost),
-                    CharacterObject.Armor.SumParallelAsync(x => x.Stolen, x => x.TotalCost),
-                    CharacterObject.Weapons.SumParallelAsync(x => x.Stolen, x => x.TotalCost),
-                    CharacterObject.Gear.SumParallelAsync(x => x.Stolen, x => x.TotalCost),
-                    CharacterObject.Vehicles.SumParallelAsync(x => x.Stolen, x => x.TotalCost),
-                    CharacterObject.Drugs.SumParallelAsync(x => x.Stolen, x => x.TotalCost)
+                    CharacterObject.Cyberware.SumParallelAsync(x => x.Stolen, x => x.TotalCost, token),
+                    CharacterObject.Armor.SumParallelAsync(x => x.Stolen, x => x.TotalCost, token),
+                    CharacterObject.Weapons.SumParallelAsync(x => x.Stolen, x => x.TotalCost, token),
+                    CharacterObject.Gear.SumParallelAsync(x => x.Stolen, x => x.TotalCost, token),
+                    CharacterObject.Vehicles.SumParallelAsync(x => x.Stolen, x => x.TotalCost, token),
+                    CharacterObject.Drugs.SumParallelAsync(x => x.Stolen, x => x.TotalCost, token)
                 };
                 token.ThrowIfCancellationRequested();
                 await Task.WhenAll(Task.WhenAll(atskCosts), Task.WhenAll(atskStolenTasksCosts));
@@ -10894,13 +10894,13 @@ namespace Chummer
             else
             {
                 Task<decimal>[] atskCosts = {
-                    CharacterObject.Cyberware.SumParallelAsync(x => x.TotalCost),
-                    CharacterObject.Armor.SumParallelAsync(x => x.TotalCost),
-                    CharacterObject.Weapons.SumParallelAsync(x => x.TotalCost),
-                    CharacterObject.Gear.SumParallelAsync(x => x.TotalCost),
-                    CharacterObject.Vehicles.SumParallelAsync(x => x.TotalCost),
-                    CharacterObject.Drugs.SumParallelAsync(x => x.TotalCost),
-                    CharacterObject.Lifestyles.SumParallelAsync(x => x.TotalCost)
+                    CharacterObject.Cyberware.SumParallelAsync(x => x.TotalCost, token),
+                    CharacterObject.Armor.SumParallelAsync(x => x.TotalCost, token),
+                    CharacterObject.Weapons.SumParallelAsync(x => x.TotalCost, token),
+                    CharacterObject.Gear.SumParallelAsync(x => x.TotalCost, token),
+                    CharacterObject.Vehicles.SumParallelAsync(x => x.TotalCost, token),
+                    CharacterObject.Drugs.SumParallelAsync(x => x.TotalCost, token),
+                    CharacterObject.Lifestyles.SumParallelAsync(x => x.TotalCost, token)
                 };
                 token.ThrowIfCancellationRequested();
                 await Task.WhenAll(atskCosts);
@@ -10911,7 +10911,7 @@ namespace Chummer
 
             token.ThrowIfCancellationRequested();
             // Initiation Grade cost.
-            decDeductions += 10000 * await CharacterObject.InitiationGrades.CountAsync(x => x.Schooling);
+            decDeductions += 10000 * await CharacterObject.InitiationGrades.CountAsync(x => x.Schooling, token);
             token.ThrowIfCancellationRequested();
 
             CharacterObject.StolenNuyen = decStolenNuyenAllowance - decStolenDeductions;
@@ -14993,13 +14993,13 @@ namespace Chummer
                     // Check if the character has gone over the Build Point total.
                     if (!blnUseArgBuildPoints)
                         intBuildPoints = await CalculateBP(false, token);
-                    int intStagedPurchaseQualityPoints = CharacterObject.Qualities
-                                                                        .Where(objQuality =>
-                                                                                   objQuality.StagedPurchase
-                                                                                   && objQuality.Type
-                                                                                   == QualityType.Positive
-                                                                                   && objQuality.ContributeToBP)
-                                                                        .Sum(x => x.BP);
+                    int intStagedPurchaseQualityPoints = await CharacterObject.Qualities
+                                                                              .SumAsync(objQuality =>
+                                                                                      objQuality.StagedPurchase
+                                                                                      && objQuality.Type
+                                                                                      == QualityType.Positive
+                                                                                      && objQuality.ContributeToBP,
+                                                                                  x => x.BP, token);
                     if (intBuildPoints + intStagedPurchaseQualityPoints < 0 && !_blnFreestyle)
                     {
                         blnValid = false;
@@ -15049,12 +15049,12 @@ namespace Chummer
 
                     // Check if the character has more attributes at their metatype max than allowed
                     if (CharacterObject.Settings.MaxNumberMaxAttributesCreate
-                        < CharacterObject.AttributeSection.AttributeList.Count)
+                        < await CharacterObject.AttributeSection.AttributeList.GetCountAsync(token))
                     {
                         int intCountAttributesAtMax
                             = await CharacterObject.AttributeSection.AttributeList.CountAsync(
                                 async x => x.MetatypeCategory == CharacterAttrib.AttributeCategory.Standard
-                                           && await x.AtMetatypeMaximumAsync);
+                                           && await x.AtMetatypeMaximumAsync, token);
                         if (intCountAttributesAtMax > CharacterObject.Settings.MaxNumberMaxAttributesCreate)
                         {
                             blnValid = false;

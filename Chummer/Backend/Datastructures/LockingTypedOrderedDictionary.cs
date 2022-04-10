@@ -100,9 +100,9 @@ namespace Chummer
             return objReturn;
         }
 
-        public async ValueTask<IEnumerator<KeyValuePair<TKey, TValue>>> GetEnumeratorAsync()
+        public async ValueTask<IEnumerator<KeyValuePair<TKey, TValue>>> GetEnumeratorAsync(CancellationToken token = default)
         {
-            LockingEnumerator<KeyValuePair<TKey, TValue>> objReturn = await LockingEnumerator<KeyValuePair<TKey, TValue>>.GetAsync(this);
+            LockingEnumerator<KeyValuePair<TKey, TValue>> objReturn = await LockingEnumerator<KeyValuePair<TKey, TValue>>.GetAsync(this, token);
             objReturn.SetEnumerator(new LockingTypedOrderedDictionaryEnumerator(this));
             return objReturn;
         }
@@ -210,30 +210,30 @@ namespace Chummer
             }
         }
         
-        public Task AddAsync(KeyValuePair<TKey, TValue> item)
+        public Task AddAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
-            return AddAsync(item.Key, item.Value);
+            return AddAsync(item.Key, item.Value, token);
         }
 
         /// <inheritdoc cref="Dictionary{TKey, TValue}.Add" />
-        public Task AddAsync(Tuple<TKey, TValue> item)
+        public Task AddAsync(Tuple<TKey, TValue> item, CancellationToken token = default)
         {
             (TKey objKey, TValue objValue) = item;
-            return AddAsync(objKey, objValue);
+            return AddAsync(objKey, objValue, token);
         }
         
-        public Task AddAsync(object key, object value)
+        public Task AddAsync(object key, object value, CancellationToken token = default)
         {
             if (!(key is TKey objKey))
                 throw new ArgumentException(nameof(objKey));
             if (!(value is TValue objValue))
                 throw new ArgumentException(nameof(objValue));
-            return AddAsync(objKey, objValue);
+            return AddAsync(objKey, objValue, token);
         }
         
-        public async Task AddAsync(TKey key, TValue value)
+        public async Task AddAsync(TKey key, TValue value, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
                 _dicUnorderedData.Add(key, value);
@@ -296,10 +296,10 @@ namespace Chummer
             return true;
         }
 
-        public async ValueTask<bool> TryAddAsync(TKey key, TValue value)
+        public async ValueTask<bool> TryAddAsync(TKey key, TValue value, CancellationToken token = default)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either added the item we want to add or failed to do so
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 if (_dicUnorderedData.ContainsKey(key))
@@ -320,9 +320,9 @@ namespace Chummer
             return TryAdd(item.Key, item.Value);
         }
 
-        public ValueTask<bool> TryAddAsync(KeyValuePair<TKey, TValue> item)
+        public ValueTask<bool> TryAddAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
-            return TryAddAsync(item.Key, item.Value);
+            return TryAddAsync(item.Key, item.Value, token);
         }
 
         /// <inheritdoc />
@@ -1045,23 +1045,23 @@ namespace Chummer
         /// <inheritdoc />
         public ValueTask<int> CountAsync => GetCountAsync();
 
-        private async ValueTask<int> GetCountAsync()
+        public async ValueTask<int> GetCountAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _dicUnorderedData.Count;
         }
 
         /// <inheritdoc />
-        public async ValueTask<bool> ContainsKeyAsync(TKey key)
+        public async ValueTask<bool> ContainsKeyAsync(TKey key, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _dicUnorderedData.ContainsKey(key);
         }
 
         /// <inheritdoc />
-        public async ValueTask<Tuple<bool, TValue>> TryGetValueAsync(TKey key)
+        public async ValueTask<Tuple<bool, TValue>> TryGetValueAsync(TKey key, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 bool blnSuccess = _dicUnorderedData.TryGetValue(key, out TValue value);
                 return new Tuple<bool, TValue>(blnSuccess, value);

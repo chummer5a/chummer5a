@@ -1300,15 +1300,17 @@ namespace Chummer
         /// Surrounds a plaintext string with basic RTF formatting so that it can be processed as an RTF string
         /// </summary>
         /// <param name="strInput">String to process</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Version of <paramref name="strInput"/> surrounded with RTF formatting codes</returns>
-        public static string PlainTextToRtf(this string strInput)
+        public static string PlainTextToRtf(this string strInput, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
-            if (strInput.IsRtf())
+            if (strInput.IsRtf(token))
                 return strInput;
             strInput = strInput.NormalizeWhiteSpace();
-            s_RtbRtfManipulatorLock.Wait();
+            s_RtbRtfManipulatorLock.SafeWait(token);
             try
             {
                 if (!s_RtbRtfManipulator.IsHandleCreated)
@@ -1329,17 +1331,19 @@ namespace Chummer
         /// Surrounds a plaintext string with basic RTF formatting so that it can be processed as an RTF string
         /// </summary>
         /// <param name="strInput">String to process</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Version of <paramref name="strInput"/> surrounded with RTF formatting codes</returns>
-        public static Task<string> PlainTextToRtfAsync(this string strInput)
+        public static Task<string> PlainTextToRtfAsync(this string strInput, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             return string.IsNullOrEmpty(strInput) ? Task.FromResult(string.Empty) : InnerDo();
 
             async Task<string> InnerDo()
             {
-                if (await strInput.IsRtfAsync())
+                if (await strInput.IsRtfAsync(token))
                     return strInput;
                 strInput = strInput.NormalizeWhiteSpace();
-                await s_RtbRtfManipulatorLock.WaitAsync();
+                await s_RtbRtfManipulatorLock.WaitAsync(token);
                 try
                 {
                     if (!s_RtbRtfManipulator.IsHandleCreated)
@@ -1348,7 +1352,7 @@ namespace Chummer
                     {
                         x.Text = strInput;
                         return x.Rtf;
-                    });
+                    }, token);
                 }
                 finally
                 {
@@ -1361,16 +1365,18 @@ namespace Chummer
         /// Strips RTF formatting from a string
         /// </summary>
         /// <param name="strInput">String to process</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Version of <paramref name="strInput"/> without RTF formatting codes</returns>
-        public static string RtfToPlainText(this string strInput)
+        public static string RtfToPlainText(this string strInput, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
             string strInputTrimmed = strInput.TrimStart();
             if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
                 || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
             {
-                s_RtbRtfManipulatorLock.Wait();
+                s_RtbRtfManipulatorLock.SafeWait(token);
                 try
                 {
                     if (!s_RtbRtfManipulator.IsHandleCreated)
@@ -1398,9 +1404,11 @@ namespace Chummer
         /// Strips RTF formatting from a string
         /// </summary>
         /// <param name="strInput">String to process</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Version of <paramref name="strInput"/> without RTF formatting codes</returns>
-        public static Task<string> RtfToPlainTextAsync(this string strInput)
+        public static Task<string> RtfToPlainTextAsync(this string strInput, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             return string.IsNullOrEmpty(strInput) ? Task.FromResult(string.Empty) : InnerDo();
 
             async Task<string> InnerDo()
@@ -1409,21 +1417,21 @@ namespace Chummer
                 if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
                     || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
                 {
-                    await s_RtbRtfManipulatorLock.WaitAsync();
+                    await s_RtbRtfManipulatorLock.WaitAsync(token);
                     try
                     {
                         if (!s_RtbRtfManipulator.IsHandleCreated)
                             s_RtbRtfManipulator.CreateControl();
                         try
                         {
-                            await s_RtbRtfManipulator.DoThreadSafeAsync(x => x.Rtf = strInput);
+                            await s_RtbRtfManipulator.DoThreadSafeAsync(x => x.Rtf = strInput, token);
                         }
                         catch (ArgumentException)
                         {
                             return strInput.NormalizeWhiteSpace();
                         }
 
-                        return (await s_RtbRtfManipulator.DoThreadSafeFuncAsync(x => x.Text)).NormalizeWhiteSpace();
+                        return (await s_RtbRtfManipulator.DoThreadSafeFuncAsync(x => x.Text, token)).NormalizeWhiteSpace();
                     }
                     finally
                     {
@@ -1435,19 +1443,21 @@ namespace Chummer
             }
         }
 
-        public static string RtfToHtml(this string strInput)
+        public static string RtfToHtml(this string strInput, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
-            return strInput.IsRtf() ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
+            return strInput.IsRtf(token) ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
         }
 
-        public static Task<string> RtfToHtmlAsync(this string strInput)
+        public static Task<string> RtfToHtmlAsync(this string strInput, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             return string.IsNullOrEmpty(strInput) ? Task.FromResult(string.Empty) : InnerDo();
             async Task<string> InnerDo()
             {
-                return await strInput.IsRtfAsync() ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
+                return await strInput.IsRtfAsync(token) ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
             }
         }
 
@@ -1455,16 +1465,18 @@ namespace Chummer
         /// Whether or not a string is an RTF document
         /// </summary>
         /// <param name="strInput">The string to check.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>True if <paramref name="strInput"/> is an RTF document, False otherwise.</returns>
-        public static bool IsRtf(this string strInput)
+        public static bool IsRtf(this string strInput, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!string.IsNullOrEmpty(strInput))
             {
                 string strInputTrimmed = strInput.TrimStart();
                 if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
                     || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
                 {
-                    s_RtbRtfManipulatorLock.Wait();
+                    s_RtbRtfManipulatorLock.SafeWait(token);
                     try
                     {
                         if (!s_RtbRtfManipulator.IsHandleCreated)
@@ -1493,23 +1505,25 @@ namespace Chummer
         /// Whether or not a string is an RTF document
         /// </summary>
         /// <param name="strInput">The string to check.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>True if <paramref name="strInput"/> is an RTF document, False otherwise.</returns>
-        public static async ValueTask<bool> IsRtfAsync(this string strInput)
+        public static async ValueTask<bool> IsRtfAsync(this string strInput, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!string.IsNullOrEmpty(strInput))
             {
                 string strInputTrimmed = strInput.TrimStart();
                 if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
                     || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
                 {
-                    await s_RtbRtfManipulatorLock.WaitAsync();
+                    await s_RtbRtfManipulatorLock.WaitAsync(token);
                     try
                     {
                         if (!s_RtbRtfManipulator.IsHandleCreated)
                             s_RtbRtfManipulator.CreateControl();
                         try
                         {
-                            await s_RtbRtfManipulator.DoThreadSafeAsync(x => x.Rtf = strInput);
+                            await s_RtbRtfManipulator.DoThreadSafeAsync(x => x.Rtf = strInput, token);
                         }
                         catch (ArgumentException)
                         {
@@ -1561,7 +1575,7 @@ namespace Chummer
         private static readonly Regex s_RgxInvalidUnicodeCharsExpression = new Regex(@"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-        private static readonly SemaphoreSlim s_RtbRtfManipulatorLock = new SemaphoreSlim(1, 1);
+        private static readonly DebuggableSemaphoreSlim s_RtbRtfManipulatorLock = new DebuggableSemaphoreSlim();
         private static readonly RichTextBox s_RtbRtfManipulator = new RichTextBox();
     }
 }

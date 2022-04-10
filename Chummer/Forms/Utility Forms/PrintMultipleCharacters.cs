@@ -214,8 +214,8 @@ namespace Chummer
                 foreach (Character objCharacter in _aobjCharacters)
                 {
                     if (!await Program.OpenCharacters.ContainsAsync(objCharacter) ||
-                        await Program.MainForm.OpenCharacterForms.AnyAsync(x => x.CharacterObject == objCharacter) ||
-                        await Program.OpenCharacters.AnyAsync(x => x.LinkedCharacters.Contains(objCharacter)))
+                        await Program.MainForm.OpenCharacterForms.AnyAsync(x => x.CharacterObject == objCharacter, token) ||
+                        await Program.OpenCharacters.AnyAsync(x => x.LinkedCharacters.Contains(objCharacter), token))
                         continue;
                     blnAnyChanges = true;
                     await Program.OpenCharacters.RemoveAsync(objCharacter);

@@ -144,7 +144,7 @@ namespace Chummer
 
                     CancellationToken objTokenToUse = objTemp.Token;
                     (bool blnSuccess, CharacterCache objCacheToRemove)
-                        = await _dicSavedCharacterCaches.TryRemoveAsync(e.FullPath);
+                        = await _dicSavedCharacterCaches.TryRemoveAsync(e.FullPath, objTokenToUse);
                     if (blnSuccess)
                     {
                         await treCharacterList.DoThreadSafeAsync(x =>
@@ -310,7 +310,7 @@ namespace Chummer
                                 nodNode.Tag = null;
                                 if (!objCache.IsDisposed)
                                 {
-                                    await _dicSavedCharacterCaches.RemoveAsync(objCache.FilePath);
+                                    await _dicSavedCharacterCaches.RemoveAsync(objCache.FilePath, _objGenericToken);
                                     await objCache.DisposeAsync();
                                 }
                             }
@@ -321,7 +321,7 @@ namespace Chummer
 
                     await _dicSavedCharacterCaches.ForEachAsync(async kvpCache =>
                                                                     await kvpCache.Value.DisposeAsync()
-                                                                        .ConfigureAwait(false))
+                                                                        .ConfigureAwait(false), _objGenericToken)
                         ;
                     await _dicSavedCharacterCaches.DisposeAsync();
 
@@ -601,7 +601,7 @@ namespace Chummer
                 // Make sure we're not loading a character that was already loaded by the MRU list.
                 if (!lstFavorites.Contains(strFile) && !lstRecents.Contains(strFile))
                     lstRecents.Add(strFile);
-            });
+            }, token);
             foreach (string strFavorite in lstFavorites)
                 lstRecents.Remove(strFavorite);
             if (!blnRefreshFavorites)
@@ -1010,7 +1010,7 @@ namespace Chummer
                 if (await treCharacterList.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objCache), token) != null)
                     continue;
                 token.ThrowIfCancellationRequested();
-                await _dicSavedCharacterCaches.RemoveAsync(objCache.FilePath);
+                await _dicSavedCharacterCaches.RemoveAsync(objCache.FilePath, token);
                 if (!objCache.IsDisposed)
                     await objCache.DisposeAsync();
             }
@@ -1033,17 +1033,17 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         if (blnForceRecache)
                         {
-                            await _dicSavedCharacterCaches.TryRemoveAsync(strFile);
+                            await _dicSavedCharacterCaches.TryRemoveAsync(strFile, token);
                         }
                         else
                         {
                             bool blnSuccess;
-                            (blnSuccess, objCache) = await _dicSavedCharacterCaches.TryGetValueAsync(strFile);
+                            (blnSuccess, objCache) = await _dicSavedCharacterCaches.TryGetValueAsync(strFile, token);
                             if (blnSuccess)
                                 break;
                         }
                         objCache = await CharacterCache.CreateFromFileAsync(strFile);
-                        if (await _dicSavedCharacterCaches.TryAddAsync(strFile, objCache))
+                        if (await _dicSavedCharacterCaches.TryAddAsync(strFile, objCache, token))
                             break;
                         await objCache.DisposeAsync();
                     }
@@ -1101,23 +1101,23 @@ namespace Chummer
                     if (objCache != null)
                     {
                         string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
-                        await objCache.Description.RtfToPlainTextAsync()
+                        await objCache.Description.RtfToPlainTextAsync(token)
                                       .ContinueWith(
                                           y => txtCharacterBio.DoThreadSafeAsync(x => x.Text = y.Result, token), token)
                                       .Unwrap();
-                        await objCache.Background.RtfToPlainTextAsync()
+                        await objCache.Background.RtfToPlainTextAsync(token)
                                       .ContinueWith(
                                           y => txtCharacterBackground.DoThreadSafeAsync(x => x.Text = y.Result, token), token)
                                       .Unwrap();
-                        await objCache.CharacterNotes.RtfToPlainTextAsync()
+                        await objCache.CharacterNotes.RtfToPlainTextAsync(token)
                                       .ContinueWith(
                                           y => txtCharacterNotes.DoThreadSafeAsync(x => x.Text = y.Result, token), token)
                                       .Unwrap();
-                        await objCache.GameNotes.RtfToPlainTextAsync()
+                        await objCache.GameNotes.RtfToPlainTextAsync(token)
                                       .ContinueWith(
                                           y => txtGameNotes.DoThreadSafeAsync(x => x.Text = y.Result, token), token)
                                       .Unwrap();
-                        await objCache.Concept.RtfToPlainTextAsync()
+                        await objCache.Concept.RtfToPlainTextAsync(token)
                                       .ContinueWith(
                                           y => txtCharacterConcept.DoThreadSafeAsync(x => x.Text = y.Result, token), token)
                                       .Unwrap();
@@ -1491,7 +1491,7 @@ namespace Chummer
                 {
                     using (await CursorWait.NewAsync(this, token: _objGenericToken))
                     {
-                        Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName);
+                        Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName, _objGenericToken);
                         if (objCharacter == null)
                         {
                             using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(objCache.FilePath, Character.NumLoadingSections))
@@ -1520,7 +1520,7 @@ namespace Chummer
                     return;
                 using (await CursorWait.NewAsync(this, token: _objGenericToken))
                 {
-                    Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName);
+                    Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName, _objGenericToken);
                     if (objCharacter == null)
                     {
                         using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(objCache.FilePath, Character.NumLoadingSections))
@@ -1535,9 +1535,9 @@ namespace Chummer
                         if (objCharacter != null)
                         {
                             if (await Program.OpenCharacters.AllAsync(
-                                    x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
+                                    x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), _objGenericToken)
                                 && await Program.MainForm.OpenCharacterForms.AllAsync(
-                                    x => x.CharacterObject != objCharacter))
+                                    x => x.CharacterObject != objCharacter, _objGenericToken))
                                 await Program.OpenCharacters.RemoveAsync(objCharacter);
                             await objCharacter.DisposeAsync();
                         }
@@ -1562,7 +1562,7 @@ namespace Chummer
                     return;
                 using (await CursorWait.NewAsync(this, token: _objGenericToken))
                 {
-                    Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName);
+                    Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName, _objGenericToken);
                     if (objCharacter == null)
                     {
                         using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(objCache.FilePath, Character.NumLoadingSections))
@@ -1577,9 +1577,9 @@ namespace Chummer
                         if (objCharacter != null)
                         {
                             if (await Program.OpenCharacters.AllAsync(
-                                    x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
+                                    x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), _objGenericToken)
                                 && await Program.MainForm.OpenCharacterForms.AllAsync(
-                                    x => x.CharacterObject != objCharacter))
+                                    x => x.CharacterObject != objCharacter, _objGenericToken))
                                 await Program.OpenCharacters.RemoveAsync(objCharacter);
                             await objCharacter.DisposeAsync();
                         }
@@ -1668,12 +1668,12 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strFile))
                     return;
                 Character objOpenCharacter
-                    = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile);
+                    = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile, _objGenericToken);
                 if (objOpenCharacter != null)
                 {
                     using (await CursorWait.NewAsync(this, token: _objGenericToken))
                         (await Program.MainForm.OpenCharacterForms.FirstOrDefaultAsync(
-                            x => x.CharacterObject == objOpenCharacter))?.Close();
+                            x => x.CharacterObject == objOpenCharacter, _objGenericToken))?.Close();
                 }
             }
             catch (OperationCanceledException)

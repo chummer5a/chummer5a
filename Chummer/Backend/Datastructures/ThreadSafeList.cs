@@ -22,6 +22,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chummer
@@ -102,9 +103,9 @@ namespace Chummer
 
         public ValueTask<int> CountAsync => GetCountAsync();
 
-        private async ValueTask<int> GetCountAsync()
+        public async ValueTask<int> GetCountAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _lstData.Count;
         }
 
@@ -584,9 +585,9 @@ namespace Chummer
             return objReturn;
         }
 
-        public async ValueTask<IEnumerator<T>> GetEnumeratorAsync()
+        public async ValueTask<IEnumerator<T>> GetEnumeratorAsync(CancellationToken token = default)
         {
-            LockingEnumerator<T> objReturn = await LockingEnumerator<T>.GetAsync(this);
+            LockingEnumerator<T> objReturn = await LockingEnumerator<T>.GetAsync(this, token);
             objReturn.SetEnumerator(_lstData.GetEnumerator());
             return objReturn;
         }

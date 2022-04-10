@@ -119,7 +119,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strOldSettingKey))
                 {
                     (blnSuccess, objSettings)
-                        = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(strOldSettingKey);
+                        = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(strOldSettingKey, token);
                     if (blnSuccess)
                         await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings, token);
                 }
@@ -129,13 +129,13 @@ namespace Chummer
                 if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) != -1)
                     return;
                 (blnSuccess, objSettings)
-                    = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(GlobalSettings.DefaultMasterIndexSetting);
+                    = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(GlobalSettings.DefaultMasterIndexSetting, token);
                 if (blnSuccess)
                     await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings, token);
                 else
                 {
                     (blnSuccess, objSettings)
-                        = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(GlobalSettings.DefaultMasterIndexSettingDefaultValue);
+                        = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(GlobalSettings.DefaultMasterIndexSettingDefaultValue, token);
                     if (blnSuccess)
                         await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings, token);
                 }
@@ -220,19 +220,19 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strSelectedSetting))
                     {
                         (blnSuccess, objSettings)
-                            = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(strSelectedSetting);
+                            = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(strSelectedSetting, _objGenericToken);
                     }
 
                     if (!blnSuccess)
                     {
                         (blnSuccess, objSettings)
                             = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
-                                GlobalSettings.DefaultMasterIndexSetting);
+                                GlobalSettings.DefaultMasterIndexSetting, _objGenericToken);
                         if (!blnSuccess)
                         {
                             (blnSuccess, objSettings)
                                 = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
-                                    GlobalSettings.DefaultMasterIndexSettingDefaultValue);
+                                    GlobalSettings.DefaultMasterIndexSettingDefaultValue, _objGenericToken);
                             if (!blnSuccess)
                                 objSettings = SettingsManager.LoadedCharacterSettings.Values.First();
                         }
@@ -264,7 +264,7 @@ namespace Chummer
                 try
                 {
                     IsFinishedLoading = false;
-                    await _dicCachedNotes.ClearAsync();
+                    await _dicCachedNotes.ClearAsync(token);
                     foreach (MasterIndexEntry objExistingEntry in _lstItems.Select(x => x.Value))
                         objExistingEntry.Dispose();
                     _lstItems.Clear();
@@ -350,7 +350,7 @@ namespace Chummer
                                         strTranslatedNameOnPage);
                                     lstItemsForLoading.Add(new ListItem(objEntry, strDisplayName));
                                     if (!string.IsNullOrEmpty(strNotes))
-                                        await _dicCachedNotes.TryAddAsync(objEntry, Task.FromResult(strNotes));
+                                        await _dicCachedNotes.TryAddAsync(objEntry, Task.FromResult(strNotes), token);
                                 }
 
                                 if (blnLoopFileNameHasItems)
@@ -577,7 +577,7 @@ namespace Chummer
                                 }, _objGenericToken),
                             lblSource.SetToolTipAsync(objEntry.DisplaySource.LanguageBookTooltip,
                                                       _objGenericToken));
-                        (bool blnSuccess, Task<string> tskNotes) = await _dicCachedNotes.TryGetValueAsync(objEntry);
+                        (bool blnSuccess, Task<string> tskNotes) = await _dicCachedNotes.TryGetValueAsync(objEntry, _objGenericToken);
                         if (!blnSuccess)
                         {
                             if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -605,7 +605,7 @@ namespace Chummer
                                                             objEntry.EnglishNameOnPage), _objGenericToken);
                             }
 
-                            await _dicCachedNotes.TryAddAsync(objEntry, tskNotes);
+                            await _dicCachedNotes.TryAddAsync(objEntry, tskNotes, _objGenericToken);
                         }
 
                         string strNotes = await tskNotes;

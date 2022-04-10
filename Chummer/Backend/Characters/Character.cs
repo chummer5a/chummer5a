@@ -4666,7 +4666,7 @@ namespace Chummer
                                     else
                                         (blnSuccess, objSettings)
                                             = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
-                                                GlobalSettings.DefaultCharacterSettingDefaultValue);
+                                                GlobalSettings.DefaultCharacterSettingDefaultValue, token);
                                     eSavedBuildMethod = blnSuccess
                                         ? objSettings.BuildMethod
                                         : CharacterBuildMethod.Priority;
@@ -4679,7 +4679,7 @@ namespace Chummer
                                 else
                                     (blnSuccess, objDefaultSettings)
                                         = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
-                                            GlobalSettings.DefaultCharacterSetting);
+                                            GlobalSettings.DefaultCharacterSetting, token);
                                 if (!blnSuccess)
                                 {
                                     if (blnSync)
@@ -4688,7 +4688,7 @@ namespace Chummer
                                     else
                                         (blnSuccess, objDefaultSettings)
                                             = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
-                                                GlobalSettings.DefaultCharacterSettingDefaultValue);
+                                                GlobalSettings.DefaultCharacterSettingDefaultValue, token);
                                     if (!blnSuccess)
                                     {
                                         objDefaultSettings = SettingsManager.LoadedCharacterSettings.Values.First();
@@ -4821,7 +4821,7 @@ namespace Chummer
                                     else
                                         (blnSuccess, objProspectiveSettings)
                                             = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
-                                                _strSettingsKey);
+                                                _strSettingsKey, token);
 
                                     if (!blnSuccess)
                                     {
@@ -4875,7 +4875,7 @@ namespace Chummer
                                         else
                                             (blnSuccess, objProspectiveSettings)
                                                 = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
-                                                    strReplacementSettingsKey);
+                                                    strReplacementSettingsKey, token);
 
                                         if (!blnSuccess)
                                         {
@@ -4887,7 +4887,7 @@ namespace Chummer
                                             else
                                                 (blnSuccess, objProspectiveSettings)
                                                     = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
-                                                        strReplacementSettingsKey);
+                                                        strReplacementSettingsKey, token);
                                             if (!blnSuccess)
                                             {
                                                 objProspectiveSettings
@@ -4965,7 +4965,7 @@ namespace Chummer
                                         else
                                             (blnSuccess, objProspectiveSettings)
                                                 = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
-                                                    strReplacementSettingsKey);
+                                                    strReplacementSettingsKey, token);
 
                                         if (!blnSuccess)
                                         {
@@ -4977,7 +4977,7 @@ namespace Chummer
                                             else
                                                 (blnSuccess, objProspectiveSettings)
                                                     = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
-                                                        strReplacementSettingsKey);
+                                                        strReplacementSettingsKey, token);
                                             if (!blnSuccess)
                                             {
                                                 objProspectiveSettings
@@ -7925,11 +7925,12 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write to.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public Task PrintToXmlTextWriter(XmlWriter objWriter, CultureInfo objCulture = null,
-                                               string strLanguageToPrint = "")
+                                         string strLanguageToPrint = "", CancellationToken token = default)
         {
             return objWriter != null
-                ? PrintToXmlTextWriterCore(objWriter, objCulture, strLanguageToPrint)
+                ? PrintToXmlTextWriterCore(objWriter, objCulture, strLanguageToPrint, token)
                 : Task.FromException(new ArgumentNullException(nameof(objWriter)));
         }
 
@@ -7940,13 +7941,15 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write to.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        private async Task PrintToXmlTextWriterCore(XmlWriter objWriter, CultureInfo objCulture = null, string strLanguageToPrint = "")
+        /// <param name="token">Cancellation token to listen to.</param>
+        private async Task PrintToXmlTextWriterCore(XmlWriter objWriter, CultureInfo objCulture = null, string strLanguageToPrint = "", CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objCulture == null)
                 objCulture = GlobalSettings.CultureInfo;
             if (string.IsNullOrEmpty(strLanguageToPrint))
                 strLanguageToPrint = GlobalSettings.Language;
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 // <character>
                 XmlElementWriteHelper objCharacterElement = await objWriter.StartElementAsync("character");
@@ -8089,19 +8092,19 @@ namespace Chummer
                                                                 await ReverseTranslateExtraAsync(Hair),
                                                                 strLanguageToPrint));
                     // <description />
-                    await objWriter.WriteElementStringAsync("description", await Description.RtfToHtmlAsync());
+                    await objWriter.WriteElementStringAsync("description", await Description.RtfToHtmlAsync(token));
                     // <background />
-                    await objWriter.WriteElementStringAsync("background", await Background.RtfToHtmlAsync());
+                    await objWriter.WriteElementStringAsync("background", await Background.RtfToHtmlAsync(token));
                     // <concept />
-                    await objWriter.WriteElementStringAsync("concept", await Concept.RtfToHtmlAsync());
+                    await objWriter.WriteElementStringAsync("concept", await Concept.RtfToHtmlAsync(token));
                     // <notes />
-                    await objWriter.WriteElementStringAsync("notes", await Notes.RtfToHtmlAsync());
+                    await objWriter.WriteElementStringAsync("notes", await Notes.RtfToHtmlAsync(token));
                     // <alias />
                     await objWriter.WriteElementStringAsync("alias", Alias);
                     // <playername />
                     await objWriter.WriteElementStringAsync("playername", PlayerName);
                     // <gamenotes />
-                    await objWriter.WriteElementStringAsync("gamenotes", await GameNotes.RtfToHtmlAsync());
+                    await objWriter.WriteElementStringAsync("gamenotes", await GameNotes.RtfToHtmlAsync(token));
 
                     // <limitphysical />
                     await objWriter.WriteElementStringAsync("limitphysical", LimitPhysical.ToString(objCulture));

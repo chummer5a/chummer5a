@@ -911,7 +911,7 @@ namespace Chummer
                 }
                 if (objSpell.Grade > 0)
                 {
-                    InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objSpell.Grade);
+                    InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objSpell.Grade, GenericToken);
                     if (objGrade != null && treMetamagic != null)
                     {
                         await treMetamagic.DoThreadSafeAsync(x =>
@@ -1241,7 +1241,7 @@ namespace Chummer
                 }
                 if (objComplexForm.Grade > 0)
                 {
-                    InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objComplexForm.Grade);
+                    InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objComplexForm.Grade, GenericToken);
                     if (objGrade != null && treMetamagic != null)
                     {
                         await treMetamagic.DoThreadSafeAsync(x =>
@@ -1600,7 +1600,7 @@ namespace Chummer
 
             async ValueTask AddToTree(Art objArt, bool blnSingleAdd = true)
             {
-                InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objArt.Grade);
+                InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objArt.Grade, GenericToken);
 
                 if (objGrade != null)
                 {
@@ -1691,7 +1691,7 @@ namespace Chummer
 
             async ValueTask AddToTree(Enhancement objEnhancement, bool blnSingleAdd = true)
             {
-                InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objEnhancement.Grade);
+                InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objEnhancement.Grade, GenericToken);
 
                 if (objGrade != null)
                 {
@@ -1871,7 +1871,7 @@ namespace Chummer
                 }
                 else
                 {
-                    InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objMetamagic.Grade);
+                    InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objMetamagic.Grade, GenericToken);
 
                     if (objGrade != null)
                     {

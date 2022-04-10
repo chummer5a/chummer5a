@@ -90,9 +90,9 @@ namespace Chummer
             return objReturn;
         }
         
-        public async ValueTask<IEnumerator<KeyValuePair<TKey, TValue>>> GetEnumeratorAsync()
+        public async ValueTask<IEnumerator<KeyValuePair<TKey, TValue>>> GetEnumeratorAsync(CancellationToken token = default)
         {
-            LockingEnumerator<KeyValuePair<TKey, TValue>> objReturn = await LockingEnumerator<KeyValuePair<TKey, TValue>>.GetAsync(this);
+            LockingEnumerator<KeyValuePair<TKey, TValue>> objReturn = await LockingEnumerator<KeyValuePair<TKey, TValue>>.GetAsync(this, token);
             objReturn.SetEnumerator(_dicData.GetEnumerator());
             return objReturn;
         }
@@ -104,9 +104,9 @@ namespace Chummer
                 _dicData.Add(item.Key, item.Value);
         }
 
-        public async ValueTask AddAsync(KeyValuePair<TKey, TValue> item)
+        public async ValueTask AddAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 _dicData.Add(item.Key, item.Value);
@@ -129,9 +129,9 @@ namespace Chummer
             Add((TKey)key, (TValue)value);
         }
 
-        public ValueTask AddAsync(object key, object value)
+        public ValueTask AddAsync(object key, object value, CancellationToken token = default)
         {
-            return AddAsync((TKey)key, (TValue)value);
+            return AddAsync((TKey)key, (TValue)value, token);
         }
 
         /// <inheritdoc cref="IDictionary{TKey, TValue}.Clear" />
@@ -142,9 +142,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="IDictionary{TKey, TValue}.Clear" />
-        public async ValueTask ClearAsync()
+        public async ValueTask ClearAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 _dicData.Clear();
@@ -162,9 +162,9 @@ namespace Chummer
                 return _dicData.Contains(item);
         }
 
-        public async ValueTask<bool> ContainsAsync(KeyValuePair<TKey, TValue> item)
+        public async ValueTask<bool> ContainsAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _dicData.Contains(item);
         }
 
@@ -195,9 +195,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="ICollection.CopyTo" />
-        public async ValueTask CopyToAsync(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+        public async ValueTask CopyToAsync(KeyValuePair<TKey, TValue>[] array, int arrayIndex, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 foreach (KeyValuePair<TKey, TValue> kvpItem in _dicData)
                 {
@@ -208,9 +208,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="ICollection.CopyTo" />
-        public async ValueTask CopyToAsync(Array array, int index)
+        public async ValueTask CopyToAsync(Array array, int index, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 foreach (KeyValuePair<TKey, TValue> kvpItem in _dicData)
                 {
@@ -275,10 +275,10 @@ namespace Chummer
             Remove((TKey)key);
         }
         
-        public async ValueTask<bool> RemoveAsync(KeyValuePair<TKey, TValue> item)
+        public async ValueTask<bool> RemoveAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 return _dicData.TryGetValue(item.Key, out TValue objValue) && objValue.Equals(item.Value)
@@ -290,9 +290,9 @@ namespace Chummer
             }
         }
         
-        public async ValueTask<bool> RemoveAsync(TKey key)
+        public async ValueTask<bool> RemoveAsync(TKey key, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 return _dicData.Remove(key);
@@ -303,9 +303,9 @@ namespace Chummer
             }
         }
         
-        public ValueTask<bool> RemoveAsync(object key)
+        public ValueTask<bool> RemoveAsync(object key, CancellationToken token = default)
         {
-            return RemoveAsync((TKey)key);
+            return RemoveAsync((TKey)key, token);
         }
 
         public bool TryRemove(TKey key, out TValue value)
@@ -315,10 +315,10 @@ namespace Chummer
                 return _dicData.TryGetValue(key, out value) && _dicData.Remove(key);
         }
 
-        public async ValueTask<Tuple<bool, TValue>> TryRemoveAsync(TKey key)
+        public async ValueTask<Tuple<bool, TValue>> TryRemoveAsync(TKey key, CancellationToken token = default)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 bool blnSuccess = _dicData.TryGetValue(key, out TValue value) && _dicData.Remove(key);
@@ -371,9 +371,9 @@ namespace Chummer
 
         public ValueTask<int> CountAsync => GetCountAsync();
 
-        private async ValueTask<int> GetCountAsync()
+        public async ValueTask<int> GetCountAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _dicData.Count;
         }
 
@@ -397,9 +397,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="IDictionary{TKey, TValue}.ContainsKey" />
-        public async ValueTask<bool> ContainsKeyAsync(TKey key)
+        public async ValueTask<bool> ContainsKeyAsync(TKey key, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _dicData.ContainsKey(key);
         }
 
@@ -410,9 +410,9 @@ namespace Chummer
                 _dicData.Add(key, value);
         }
 
-        public async ValueTask AddAsync(TKey key, TValue value)
+        public async ValueTask AddAsync(TKey key, TValue value, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 _dicData.Add(key, value);
@@ -435,10 +435,10 @@ namespace Chummer
             return true;
         }
 
-        public async ValueTask<bool> TryAddAsync(TKey key, TValue value)
+        public async ValueTask<bool> TryAddAsync(TKey key, TValue value, CancellationToken token = default)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either added the item we want to add or failed to do so
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 if (_dicData.ContainsKey(key))
@@ -458,9 +458,9 @@ namespace Chummer
             return TryAdd(item.Key, item.Value);
         }
 
-        public ValueTask<bool> TryAddAsync(KeyValuePair<TKey, TValue> item)
+        public ValueTask<bool> TryAddAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
-            return TryAddAsync(item.Key, item.Value);
+            return TryAddAsync(item.Key, item.Value, token);
         }
 
         /// <summary>
@@ -522,17 +522,18 @@ namespace Chummer
         /// <param name="key">The key to be added or whose value should be updated</param>
         /// <param name="addValueFactory">The function used to generate a value for an absent key</param>
         /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
         public async ValueTask<TValue> AddOrUpdateAsync(TKey key, Func<TKey, TValue> addValueFactory,
-                                  Func<TKey, TValue, TValue> updateValueFactory)
+                                                        Func<TKey, TValue, TValue> updateValueFactory, CancellationToken token = default)
         {
             TValue objReturn;
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         _dicData[key] = objReturn;
@@ -545,7 +546,7 @@ namespace Chummer
                 else
                 {
                     objReturn = addValueFactory(key);
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         _dicData.Add(key, objReturn);
@@ -565,16 +566,17 @@ namespace Chummer
         /// <param name="key">The key to be added or whose value should be updated</param>
         /// <param name="addValue">The value to be added for an absent key</param>
         /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be addValue (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
-        public async ValueTask<TValue> AddOrUpdateAsync(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory)
+        public async ValueTask<TValue> AddOrUpdateAsync(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 IAsyncDisposable objLocker;
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     TValue objNewValue = updateValueFactory(key, objExistingValue);
-                    objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                    objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         _dicData[key] = objNewValue;
@@ -585,7 +587,7 @@ namespace Chummer
                     }
                     return objNewValue;
                 }
-                objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     _dicData.Add(key, addValue);
@@ -606,9 +608,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="IDictionary{TKey, TValue}.TryGetValue" />
-        public async ValueTask<Tuple<bool, TValue>> TryGetValueAsync(TKey key)
+        public async ValueTask<Tuple<bool, TValue>> TryGetValueAsync(TKey key, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 bool blnSuccess = _dicData.TryGetValue(key, out TValue value);
                 return new Tuple<bool, TValue>(blnSuccess, value);

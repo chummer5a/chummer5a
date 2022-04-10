@@ -19,14 +19,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chummer
 {
     public interface IAsyncReadOnlyDictionary<TKey, TValue> : IReadOnlyDictionary<TKey, TValue>, IAsyncReadOnlyCollection<KeyValuePair<TKey, TValue>>
     {
-        ValueTask<bool> ContainsKeyAsync(TKey key);
+        ValueTask<bool> ContainsKeyAsync(TKey key, CancellationToken token = default);
 
-        ValueTask<Tuple<bool, TValue>> TryGetValueAsync(TKey key);
+        ValueTask<Tuple<bool, TValue>> TryGetValueAsync(TKey key, CancellationToken token = default);
     }
 }

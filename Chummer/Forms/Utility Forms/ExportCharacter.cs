@@ -240,7 +240,7 @@ namespace Chummer
                             await txtText.DoThreadSafeAsync(x => x.Text = strText, token);
                             (bool blnSuccess, Tuple<string, string> strBoxText)
                                 = await _dicCache.TryGetValueAsync(
-                                    new Tuple<string, string>(_strExportLanguage, _strXslt));
+                                    new Tuple<string, string>(_strExportLanguage, _strXslt), token);
                             token.ThrowIfCancellationRequested();
                             if (blnSuccess)
                             {
@@ -373,7 +373,7 @@ namespace Chummer
                 return;
             
             (bool blnSuccess, Tuple<string, string> strBoxText)
-                = await _dicCache.TryGetValueAsync(new Tuple<string, string>(_strExportLanguage, _strXslt));
+                = await _dicCache.TryGetValueAsync(new Tuple<string, string>(_strExportLanguage, _strXslt), token);
             File.WriteAllText(strSaveFile, // Change this to a proper path.
                               blnSuccess
                                   ? strBoxText.Item1
@@ -543,7 +543,7 @@ namespace Chummer
                 return;
 
             (bool blnSuccess, Tuple<string, string> strBoxText)
-                = await _dicCache.TryGetValueAsync(new Tuple<string, string>(_strExportLanguage, _strXslt));
+                = await _dicCache.TryGetValueAsync(new Tuple<string, string>(_strExportLanguage, _strXslt), token);
             File.WriteAllText(strSaveFile, // Change this to a proper path.
                               blnSuccess
                                   ? strBoxText.Item1
