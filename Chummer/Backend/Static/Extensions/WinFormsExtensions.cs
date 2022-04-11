@@ -129,8 +129,15 @@ namespace Chummer
                     {
                         void MyControlCopyOnDisposed(object sender, EventArgs e)
                         {
-                            // ReSharper disable once AccessToDisposedClosure
-                            objInnerTokenSource.Cancel(false);
+                            try
+                            {
+                                // ReSharper disable once AccessToDisposedClosure
+                                objInnerTokenSource.Cancel(false);
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                //swallow this
+                            }
                         }
 
                         CancellationToken objInnerToken = objInnerTokenSource.Token;
@@ -166,8 +173,15 @@ namespace Chummer
                     {
                         void MyControlCopyOnDisposed(object sender, EventArgs e)
                         {
-                            // ReSharper disable once AccessToDisposedClosure
-                            objInnerTokenSource.Cancel(false);
+                            try
+                            {
+                                // ReSharper disable once AccessToDisposedClosure
+                                objInnerTokenSource.Cancel(false);
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                //swallow this
+                            }
                         }
 
                         CancellationToken objInnerToken = objInnerTokenSource.Token;
@@ -590,8 +604,15 @@ namespace Chummer
                         {
                             void MyControlCopyOnDisposed(object sender, EventArgs e)
                             {
-                                // ReSharper disable once AccessToDisposedClosure
-                                objInnerTokenSource.Cancel(false);
+                                try
+                                {
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    objInnerTokenSource.Cancel(false);
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    //swallow this
+                                }
                             }
 
                             CancellationToken objInnerToken = objInnerTokenSource.Token;
@@ -680,8 +701,15 @@ namespace Chummer
                         {
                             void MyControlCopyOnDisposed(object sender, EventArgs e)
                             {
-                                // ReSharper disable once AccessToDisposedClosure
-                                objInnerTokenSource.Cancel(false);
+                                try
+                                {
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    objInnerTokenSource.Cancel(false);
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    //swallow this
+                                }
                             }
 
                             CancellationToken objInnerToken = objInnerTokenSource.Token;
@@ -772,8 +800,15 @@ namespace Chummer
                         {
                             void MyControlCopyOnDisposed(object sender, EventArgs e)
                             {
-                                // ReSharper disable once AccessToDisposedClosure
-                                objInnerTokenSource.Cancel(false);
+                                try
+                                {
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    objInnerTokenSource.Cancel(false);
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    //swallow this
+                                }
                             }
 
                             CancellationToken objInnerToken = objInnerTokenSource.Token;
@@ -864,8 +899,15 @@ namespace Chummer
                         {
                             void MyControlCopyOnDisposed(object sender, EventArgs e)
                             {
-                                // ReSharper disable once AccessToDisposedClosure
-                                objInnerTokenSource.Cancel(false);
+                                try
+                                {
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    objInnerTokenSource.Cancel(false);
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    //swallow this
+                                }
                             }
 
                             CancellationToken objInnerToken = objInnerTokenSource.Token;
@@ -1214,8 +1256,15 @@ namespace Chummer
                         {
                             void MyControlCopyOnDisposed(object sender, EventArgs e)
                             {
-                                // ReSharper disable once AccessToDisposedClosure
-                                objInnerTokenSource.Cancel(false);
+                                try
+                                {
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    objInnerTokenSource.Cancel(false);
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    //swallow this
+                                }
                             }
 
                             CancellationToken objInnerToken = objInnerTokenSource.Token;
@@ -1311,8 +1360,15 @@ namespace Chummer
                         {
                             void MyControlCopyOnDisposed(object sender, EventArgs e)
                             {
-                                // ReSharper disable once AccessToDisposedClosure
-                                objInnerTokenSource.Cancel(false);
+                                try
+                                {
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    objInnerTokenSource.Cancel(false);
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    //swallow this
+                                }
                             }
 
                             CancellationToken objInnerToken = objInnerTokenSource.Token;
@@ -1410,8 +1466,15 @@ namespace Chummer
                         {
                             void MyControlCopyOnDisposed(object sender, EventArgs e)
                             {
-                                // ReSharper disable once AccessToDisposedClosure
-                                objInnerTokenSource.Cancel(false);
+                                try
+                                {
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    objInnerTokenSource.Cancel(false);
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    //swallow this
+                                }
                             }
 
                             CancellationToken objInnerToken = objInnerTokenSource.Token;
@@ -1509,8 +1572,15 @@ namespace Chummer
                         {
                             void MyControlCopyOnDisposed(object sender, EventArgs e)
                             {
-                                // ReSharper disable once AccessToDisposedClosure
-                                objInnerTokenSource.Cancel(false);
+                                try
+                                {
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    objInnerTokenSource.Cancel(false);
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    //swallow this
+                                }
                             }
 
                             CancellationToken objInnerToken = objInnerTokenSource.Token;
