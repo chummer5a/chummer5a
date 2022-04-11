@@ -130,6 +130,11 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Maximum amount of tasks to run in parallel, useful to use with batching to avoid overloading the task scheduler.
+        /// </summary>
+        public static int MaxParallelBatchSize { get; } = Environment.ProcessorCount * 2;
+
+        /// <summary>
         /// Returns the actual path of the Chummer-Directory regardless of running as Unit test or not.
         /// </summary>
         public static string GetStartupPath => IsUnitTest ? AppDomain.CurrentDomain.SetupInformation.ApplicationBase : Application.StartupPath;
@@ -1057,22 +1062,42 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T[] RunWithoutThreadLock<T>(params Func<T>[] afuncToRun)
         {
-            T[] aobjReturn = new T[afuncToRun.Length];
+            int intLength = afuncToRun.Length;
+            T[] aobjReturn = new T[intLength];
             if (!EverDoEvents)
             {
-                Parallel.For(0, afuncToRun.Length, i => aobjReturn[i] = afuncToRun[i].Invoke());
+                Parallel.For(0, intLength, i => aobjReturn[i] = afuncToRun[i].Invoke());
                 return aobjReturn;
             }
-            Task<T>[] aobjTasks = new Task<T>[afuncToRun.Length];
-            for (int i = 0; i < afuncToRun.Length; ++i)
-                aobjTasks[i] = Task.Run(afuncToRun[i]);
-            Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks));
-            while (!objTask.IsCompleted)
-                SafeSleep();
-            if (objTask.Exception != null)
-                throw objTask.Exception;
-            for (int i = 0; i < afuncToRun.Length; ++i)
-                aobjReturn[i] = aobjTasks[i].Result;
+            Task<T>[] aobjTasks = new Task<T>[MaxParallelBatchSize];
+            int intCounter = 0;
+            int intOffset = 0;
+            for (int i = 0; i < intLength; ++i)
+            {
+                aobjTasks[intCounter++] = Task.Run(afuncToRun[i]);
+                if (intCounter != MaxParallelBatchSize)
+                    continue;
+                Task<T[]> tskLoop = Task.Run(() => Task.WhenAll(aobjTasks));
+                while (!tskLoop.IsCompleted)
+                    SafeSleep();
+                if (tskLoop.Exception != null)
+                    throw tskLoop.Exception;
+                for (int j = 0; j < MaxParallelBatchSize; ++j)
+                    aobjReturn[i] = aobjTasks[j].Result;
+                intOffset += MaxParallelBatchSize;
+                intCounter = 0;
+            }
+            int intFinalBatchSize = intLength % MaxParallelBatchSize;
+            if (intFinalBatchSize != 0)
+            {
+                Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks));
+                while (!objTask.IsCompleted)
+                    SafeSleep();
+                if (objTask.Exception != null)
+                    throw objTask.Exception;
+                for (int j = 0; j < intFinalBatchSize; ++j)
+                    aobjReturn[intOffset + j] = aobjTasks[j].Result;
+            }
             return aobjReturn;
         }
 
@@ -1152,10 +1177,11 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T[] RunWithoutThreadLock<T>(params Func<Task<T>>[] afuncToRun)
         {
-            T[] aobjReturn = new T[afuncToRun.Length];
+            int intLength = afuncToRun.Length;
+            T[] aobjReturn = new T[intLength];
             if (!EverDoEvents)
             {
-                Parallel.For(0, afuncToRun.Length, i =>
+                Parallel.For(0, intLength, i =>
                 {
                     Task<T> objSyncTask = afuncToRun[i].Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
@@ -1166,16 +1192,35 @@ namespace Chummer
                 });
                 return aobjReturn;
             }
-            Task<T>[] aobjTasks = new Task<T>[afuncToRun.Length];
-            for (int i = 0; i < afuncToRun.Length; ++i)
-                aobjTasks[i] = Task.Run(afuncToRun[i]);
-            Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks));
-            while (!objTask.IsCompleted)
-                SafeSleep();
-            if (objTask.Exception != null)
-                throw objTask.Exception;
-            for (int i = 0; i < afuncToRun.Length; ++i)
-                aobjReturn[i] = aobjTasks[i].Result;
+            Task<T>[] aobjTasks = new Task<T>[MaxParallelBatchSize];
+            int intCounter = 0;
+            int intOffset = 0;
+            for (int i = 0; i < intLength; ++i)
+            {
+                aobjTasks[intCounter++] = Task.Run(afuncToRun[i]);
+                if (intCounter != MaxParallelBatchSize)
+                    continue;
+                Task<T[]> tskLoop = Task.Run(() => Task.WhenAll(aobjTasks));
+                while (!tskLoop.IsCompleted)
+                    SafeSleep();
+                if (tskLoop.Exception != null)
+                    throw tskLoop.Exception;
+                for (int j = 0; j < MaxParallelBatchSize; ++j)
+                    aobjReturn[i] = aobjTasks[j].Result;
+                intOffset += MaxParallelBatchSize;
+                intCounter = 0;
+            }
+            int intFinalBatchSize = intLength % MaxParallelBatchSize;
+            if (intFinalBatchSize != 0)
+            {
+                Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks));
+                while (!objTask.IsCompleted)
+                    SafeSleep();
+                if (objTask.Exception != null)
+                    throw objTask.Exception;
+                for (int j = 0; j < intFinalBatchSize; ++j)
+                    aobjReturn[intOffset + j] = aobjTasks[j].Result;
+            }
             return aobjReturn;
         }
 
@@ -1263,10 +1308,22 @@ namespace Chummer
                 });
                 return;
             }
-            Task[] aobjTasks = new Task[afuncToRun.Length];
-            for (int i = 0; i < afuncToRun.Length; ++i)
-                aobjTasks[i] = Task.Run(afuncToRun[i]);
-            Task objTask = Task.Run(() => Task.WhenAll(aobjTasks));
+            List<Task> lstTasks = new List<Task>(MaxParallelBatchSize);
+            int intCounter = 0;
+            foreach (Func<Task> funcToRun in afuncToRun)
+            {
+                lstTasks.Add(Task.Run(funcToRun));
+                if (++intCounter != MaxParallelBatchSize)
+                    continue;
+                Task tskLoop = Task.Run(() => Task.WhenAll(lstTasks));
+                while (!tskLoop.IsCompleted)
+                    SafeSleep();
+                if (tskLoop.Exception != null)
+                    throw tskLoop.Exception;
+                lstTasks.Clear();
+                intCounter = 0;
+            }
+            Task objTask = Task.Run(() => Task.WhenAll(lstTasks));
             while (!objTask.IsCompleted)
                 SafeSleep();
             if (objTask.Exception != null)
@@ -1466,7 +1523,7 @@ namespace Chummer
 
         private static readonly DefaultObjectPoolProvider s_ObjObjectPoolProvider = new DefaultObjectPoolProvider()
         {
-            MaximumRetained = Math.Max(Environment.ProcessorCount, 8) * 2
+            MaximumRetained = Math.Max(MaxParallelBatchSize, 16)
         };
 
         /// <summary>

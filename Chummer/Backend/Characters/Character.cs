@@ -4170,47 +4170,87 @@ namespace Chummer
                     }
                     else
                     {
-                        List<Task<bool>> lstDoOnSaveCompletedAsync =
-                            new List<Task<bool>>(Math.Max(DoOnSaveCompleted.Count, DoOnSaveCompletedAsync.Count));
+                        List<Task<bool>> lstDoOnSaveCompletedAsync = new List<Task<bool>>(Utils.MaxParallelBatchSize);
                         int i = 0;
-                        while (lstDoOnSaveCompletedAsync.Count != DoOnSaveCompleted.Count)
+                        int j = 0;
+                        while (i != DoOnSaveCompleted.Count || j != DoOnSaveCompletedAsync.Count)
                         {
-                            // ReSharper disable once ForCanBeConvertedToForeach
-                            for (; i < DoOnSaveCompleted.Count; ++i)
+                            lstDoOnSaveCompletedAsync.Clear();
+                            while
+                                (i != DoOnSaveCompleted
+                                    .Count) // Set up this way because functions can potentially add more to DoOnSaveCompleted
                             {
-                                Func<Character, bool> funcLoopToRun = DoOnSaveCompleted[i];
-                                if (funcLoopToRun != null)
-                                    lstDoOnSaveCompletedAsync.Add(Task.Run(() => funcLoopToRun.Invoke(this), token));
+                                int intCounter = 0;
+                                // ReSharper disable once ForCanBeConvertedToForeach
+                                for (; i < DoOnSaveCompleted.Count; ++i)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    Func<Character, bool> funcLoopToRun = DoOnSaveCompleted[i];
+                                    if (funcLoopToRun != null)
+                                    {
+                                        lstDoOnSaveCompletedAsync.Add(
+                                            Task.Run(() => funcLoopToRun.Invoke(this), token));
+                                        if (++intCounter != Utils.MaxParallelBatchSize)
+                                            continue;
+                                        token.ThrowIfCancellationRequested();
+                                        await Task.WhenAll(lstDoOnSaveCompletedAsync);
+                                        token.ThrowIfCancellationRequested();
+                                        foreach (Task<bool> tskLoop in lstDoOnSaveCompletedAsync)
+                                        {
+                                            if (!await tskLoop)
+                                                blnErrorFree = false;
+                                        }
+                                        lstDoOnSaveCompletedAsync.Clear();
+                                        intCounter = 0;
+                                    }
+                                }
+
+                                token.ThrowIfCancellationRequested();
+                                await Task.WhenAll(lstDoOnSaveCompletedAsync);
+                                token.ThrowIfCancellationRequested();
+                                foreach (Task<bool> tskLoop in lstDoOnSaveCompletedAsync)
+                                {
+                                    if (!await tskLoop)
+                                        blnErrorFree = false;
+                                }
                             }
 
-                            await Task.WhenAll(lstDoOnSaveCompletedAsync);
-                        }
-
-                        foreach (Task<bool> tskLoop in lstDoOnSaveCompletedAsync)
-                        {
-                            if (!await tskLoop)
-                                blnErrorFree = false;
-                        }
-
-                        lstDoOnSaveCompletedAsync.Clear();
-                        i = 0;
-                        while (lstDoOnSaveCompletedAsync.Count != DoOnSaveCompletedAsync.Count)
-                        {
-                            // ReSharper disable once ForCanBeConvertedToForeach
-                            for (; i < DoOnSaveCompletedAsync.Count; ++i)
+                            lstDoOnSaveCompletedAsync.Clear();
+                            while (j != DoOnSaveCompletedAsync.Count)
                             {
-                                Func<Character, Task<bool>> funcLoopToRun = DoOnSaveCompletedAsync[i];
-                                if (funcLoopToRun != null)
-                                    lstDoOnSaveCompletedAsync.Add(Task.Run(() => funcLoopToRun.Invoke(this), token));
+                                int intCounter = 0;
+                                // ReSharper disable once ForCanBeConvertedToForeach
+                                for (; j < DoOnSaveCompletedAsync.Count; ++j)
+                                {
+                                    Func<Character, Task<bool>> funcLoopToRun = DoOnSaveCompletedAsync[j];
+                                    if (funcLoopToRun != null)
+                                    {
+                                        lstDoOnSaveCompletedAsync.Add(
+                                            Task.Run(() => funcLoopToRun.Invoke(this), token));
+                                        if (++intCounter != Utils.MaxParallelBatchSize)
+                                            continue;
+                                        token.ThrowIfCancellationRequested();
+                                        await Task.WhenAll(lstDoOnSaveCompletedAsync);
+                                        token.ThrowIfCancellationRequested();
+                                        foreach (Task<bool> tskLoop in lstDoOnSaveCompletedAsync)
+                                        {
+                                            if (!await tskLoop)
+                                                blnErrorFree = false;
+                                        }
+                                        lstDoOnSaveCompletedAsync.Clear();
+                                        intCounter = 0;
+                                    }
+                                }
+
+                                token.ThrowIfCancellationRequested();
+                                await Task.WhenAll(lstDoOnSaveCompletedAsync);
+                                token.ThrowIfCancellationRequested();
+                                foreach (Task<bool> tskLoop in lstDoOnSaveCompletedAsync)
+                                {
+                                    if (!await tskLoop)
+                                        blnErrorFree = false;
+                                }
                             }
-
-                            await Task.WhenAll(lstDoOnSaveCompletedAsync);
-                        }
-
-                        foreach (Task<bool> tskLoop in lstDoOnSaveCompletedAsync)
-                        {
-                            if (!await tskLoop)
-                                blnErrorFree = false;
                         }
                     }
                 }

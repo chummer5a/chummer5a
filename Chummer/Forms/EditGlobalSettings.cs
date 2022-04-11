@@ -1840,12 +1840,12 @@ namespace Chummer
                 dicResults = new LockingDictionary<string, SourcebookInfo>();
             try
             {
-                List<Task<SourcebookInfo>> lstLoadingTasks = new List<Task<SourcebookInfo>>(10);
+                List<Task<SourcebookInfo>> lstLoadingTasks = new List<Task<SourcebookInfo>>(Utils.MaxParallelBatchSize);
                 int intCounter = 0;
                 foreach (string strFile in lstFiles)
                 {
                     lstLoadingTasks.Add(GetSourcebookInfo(strFile));
-                    if (++intCounter != 10) // Load files 10 at a time so that we don't overload things
+                    if (++intCounter != Utils.MaxParallelBatchSize)
                         continue;
                     await Task.WhenAll(lstLoadingTasks);
                     foreach (Task<SourcebookInfo> tskLoop in lstLoadingTasks)

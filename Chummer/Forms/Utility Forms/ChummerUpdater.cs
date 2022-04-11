@@ -863,13 +863,24 @@ namespace Chummer
             }
             if (blnDoRestart)
             {
-                Dictionary<string, Task<bool>> dicTasks = new Dictionary<string, Task<bool>>(lstFilesToDelete.Count);
+                List<string> lstBlocked = new List<string>(lstFilesToDelete.Count);
+                Dictionary<string, Task<bool>> dicTasks = new Dictionary<string, Task<bool>>(Utils.MaxParallelBatchSize);
+                int intCounter = 0;
                 foreach (string strFileToDelete in lstFilesToDelete)
                 {
                     dicTasks.Add(strFileToDelete, Utils.SafeDeleteFileAsync(strFileToDelete, token: token));
+                    if (++intCounter != Utils.MaxParallelBatchSize)
+                        continue;
+                    await Task.WhenAll(dicTasks.Values);
+                    foreach (KeyValuePair<string, Task<bool>> kvpTaskPair in dicTasks)
+                    {
+                        if (!await kvpTaskPair.Value)
+                            lstBlocked.Add(kvpTaskPair.Key);
+                    }
+                    dicTasks.Clear();
+                    intCounter = 0;
                 }
                 await Task.WhenAll(dicTasks.Values);
-                List<string> lstBlocked = new List<string>(lstFilesToDelete.Count);
                 foreach (KeyValuePair<string, Task<bool>> kvpTaskPair in dicTasks)
                 {
                     if (!await kvpTaskPair.Value)

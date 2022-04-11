@@ -406,19 +406,36 @@ namespace Chummer
         public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
         {
             List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<int>>(await objTemp.CountAsync)
-                : new List<Task<int>>();
+                ? new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<int>>(Utils.MaxParallelBatchSize);
+            int intReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<int> tskLoop in lstTasks)
+                            intReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            int intReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<int> tskLoop in lstTasks)
                 intReturn += await tskLoop;
             return intReturn;
@@ -427,19 +444,36 @@ namespace Chummer
         public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
         {
             List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<int>>(await objTemp.CountAsync)
-                : new List<Task<int>>();
+                ? new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<int>>(Utils.MaxParallelBatchSize);
+            int intReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<int> tskLoop in lstTasks)
+                            intReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            int intReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<int> tskLoop in lstTasks)
                 intReturn += await tskLoop;
             return intReturn;
@@ -458,19 +492,36 @@ namespace Chummer
         public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
             List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<long>>(await objTemp.CountAsync)
-                : new List<Task<long>>();
+                ? new List<Task<long>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<long>>(Utils.MaxParallelBatchSize);
+            long lngReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<long> tskLoop in lstTasks)
+                            lngReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            long lngReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<long> tskLoop in lstTasks)
                 lngReturn += await tskLoop;
             return lngReturn;
@@ -479,19 +530,36 @@ namespace Chummer
         public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
         {
             List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<long>>(await objTemp.CountAsync)
-                : new List<Task<long>>();
+                ? new List<Task<long>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<long>>(Utils.MaxParallelBatchSize);
+            long lngReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<long> tskLoop in lstTasks)
+                            lngReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            long lngReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<long> tskLoop in lstTasks)
                 lngReturn += await tskLoop;
             return lngReturn;
@@ -511,19 +579,36 @@ namespace Chummer
         public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
         {
             List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<float>>(await objTemp.CountAsync)
-                : new List<Task<float>>();
+                ? new List<Task<float>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<float>>(Utils.MaxParallelBatchSize);
+            float fltReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<float> tskLoop in lstTasks)
+                            fltReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            float fltReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<float> tskLoop in lstTasks)
                 fltReturn += await tskLoop;
             return fltReturn;
@@ -532,19 +617,36 @@ namespace Chummer
         public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
         {
             List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<float>>(await objTemp.CountAsync)
-                : new List<Task<float>>();
+                ? new List<Task<float>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<float>>(Utils.MaxParallelBatchSize);
+            float fltReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<float> tskLoop in lstTasks)
+                            fltReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            float fltReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<float> tskLoop in lstTasks)
                 fltReturn += await tskLoop;
             return fltReturn;
@@ -563,19 +665,36 @@ namespace Chummer
         public static async Task<double> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
         {
             List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<double>>(await objTemp.CountAsync)
-                : new List<Task<double>>();
+                ? new List<Task<double>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<double>>(Utils.MaxParallelBatchSize);
+            double dblReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<double> tskLoop in lstTasks)
+                            dblReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            double dblReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<double> tskLoop in lstTasks)
                 dblReturn += await tskLoop;
             return dblReturn;
@@ -584,19 +703,36 @@ namespace Chummer
         public static async Task<double> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
         {
             List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<double>>(await objTemp.CountAsync)
-                : new List<Task<double>>();
+                ? new List<Task<double>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<double>>(Utils.MaxParallelBatchSize);
+            double dblReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<double> tskLoop in lstTasks)
+                            dblReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            double dblReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<double> tskLoop in lstTasks)
                 dblReturn += await tskLoop;
             return dblReturn;
@@ -615,19 +751,36 @@ namespace Chummer
         public static async Task<decimal> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
         {
             List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<decimal>>(await objTemp.CountAsync)
-                : new List<Task<decimal>>();
+                ? new List<Task<decimal>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<decimal>>(Utils.MaxParallelBatchSize);
+            decimal decReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<decimal> tskLoop in lstTasks)
+                            decReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            decimal decReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<decimal> tskLoop in lstTasks)
                 decReturn += await tskLoop;
             return decReturn;
@@ -636,19 +789,36 @@ namespace Chummer
         public static async Task<decimal> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
         {
             List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<decimal>>(await objTemp.CountAsync)
-                : new List<Task<decimal>>();
+                ? new List<Task<decimal>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<decimal>>(Utils.MaxParallelBatchSize);
+            decimal decReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<decimal> tskLoop in lstTasks)
+                            decReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            decimal decReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<decimal> tskLoop in lstTasks)
                 decReturn += await tskLoop;
             return decReturn;
@@ -867,19 +1037,36 @@ namespace Chummer
         public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
         {
             List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<int>>(await objTemp.CountAsync)
-                : new List<Task<int>>();
+                ? new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<int>>(Utils.MaxParallelBatchSize);
+            int intReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<int> tskLoop in lstTasks)
+                            intReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            int intReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<int> tskLoop in lstTasks)
                 intReturn += await tskLoop;
             return intReturn;
@@ -888,19 +1075,36 @@ namespace Chummer
         public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
         {
             List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<int>>(await objTemp.CountAsync)
-                : new List<Task<int>>();
+                ? new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<int>>(Utils.MaxParallelBatchSize);
+            int intReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<int> tskLoop in lstTasks)
+                            intReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            int intReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<int> tskLoop in lstTasks)
                 intReturn += await tskLoop;
             return intReturn;
@@ -919,19 +1123,36 @@ namespace Chummer
         public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
             List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<long>>(await objTemp.CountAsync)
-                : new List<Task<long>>();
+                ? new List<Task<long>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<long>>(Utils.MaxParallelBatchSize);
+            long lngReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<long> tskLoop in lstTasks)
+                            lngReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            long lngReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<long> tskLoop in lstTasks)
                 lngReturn += await tskLoop;
             return lngReturn;
@@ -940,19 +1161,36 @@ namespace Chummer
         public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
         {
             List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<long>>(await objTemp.CountAsync)
-                : new List<Task<long>>();
+                ? new List<Task<long>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<long>>(Utils.MaxParallelBatchSize);
+            long lngReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<long> tskLoop in lstTasks)
+                            lngReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            long lngReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<long> tskLoop in lstTasks)
                 lngReturn += await tskLoop;
             return lngReturn;
@@ -972,19 +1210,36 @@ namespace Chummer
         public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
         {
             List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<float>>(await objTemp.CountAsync)
-                : new List<Task<float>>();
+                ? new List<Task<float>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<float>>(Utils.MaxParallelBatchSize);
+            float fltReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<float> tskLoop in lstTasks)
+                            fltReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            float fltReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<float> tskLoop in lstTasks)
                 fltReturn += await tskLoop;
             return fltReturn;
@@ -993,19 +1248,36 @@ namespace Chummer
         public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
         {
             List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<float>>(await objTemp.CountAsync)
-                : new List<Task<float>>();
+                ? new List<Task<float>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<float>>(Utils.MaxParallelBatchSize);
+            float fltReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<float> tskLoop in lstTasks)
+                            fltReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            float fltReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<float> tskLoop in lstTasks)
                 fltReturn += await tskLoop;
             return fltReturn;
@@ -1024,19 +1296,36 @@ namespace Chummer
         public static async Task<double> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
         {
             List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<double>>(await objTemp.CountAsync)
-                : new List<Task<double>>();
+                ? new List<Task<double>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<double>>(Utils.MaxParallelBatchSize);
+            double dblReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<double> tskLoop in lstTasks)
+                            dblReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            double dblReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<double> tskLoop in lstTasks)
                 dblReturn += await tskLoop;
             return dblReturn;
@@ -1045,19 +1334,36 @@ namespace Chummer
         public static async Task<double> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
         {
             List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<double>>(await objTemp.CountAsync)
-                : new List<Task<double>>();
+                ? new List<Task<double>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<double>>(Utils.MaxParallelBatchSize);
+            double dblReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<double> tskLoop in lstTasks)
+                            dblReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            double dblReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<double> tskLoop in lstTasks)
                 dblReturn += await tskLoop;
             return dblReturn;
@@ -1076,19 +1382,36 @@ namespace Chummer
         public static async Task<decimal> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
         {
             List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<decimal>>(await objTemp.CountAsync)
-                : new List<Task<decimal>>();
+                ? new List<Task<decimal>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<decimal>>(Utils.MaxParallelBatchSize);
+            decimal decReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<decimal> tskLoop in lstTasks)
+                            decReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            decimal decReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<decimal> tskLoop in lstTasks)
                 decReturn += await tskLoop;
             return decReturn;
@@ -1097,19 +1420,36 @@ namespace Chummer
         public static async Task<decimal> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
         {
             List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<decimal>>(await objTemp.CountAsync)
-                : new List<Task<decimal>>();
+                ? new List<Task<decimal>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<decimal>>(Utils.MaxParallelBatchSize);
+            decimal decReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<decimal> tskLoop in lstTasks)
+                            decReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            decimal decReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<decimal> tskLoop in lstTasks)
                 decReturn += await tskLoop;
             return decReturn;
@@ -1328,19 +1668,36 @@ namespace Chummer
         public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
         {
             List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<int>>(await objTemp.CountAsync)
-                : new List<Task<int>>();
+                ? new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<int>>(Utils.MaxParallelBatchSize);
+            int intReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<int> tskLoop in lstTasks)
+                            intReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            int intReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<int> tskLoop in lstTasks)
                 intReturn += await tskLoop;
             return intReturn;
@@ -1349,19 +1706,36 @@ namespace Chummer
         public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
         {
             List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<int>>(await objTemp.CountAsync)
-                : new List<Task<int>>();
+                ? new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<int>>(Utils.MaxParallelBatchSize);
+            int intReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<int> tskLoop in lstTasks)
+                            intReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            int intReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<int> tskLoop in lstTasks)
                 intReturn += await tskLoop;
             return intReturn;
@@ -1380,19 +1754,36 @@ namespace Chummer
         public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
             List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<long>>(await objTemp.CountAsync)
-                : new List<Task<long>>();
+                ? new List<Task<long>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<long>>(Utils.MaxParallelBatchSize);
+            long lngReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<long> tskLoop in lstTasks)
+                            lngReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            long lngReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<long> tskLoop in lstTasks)
                 lngReturn += await tskLoop;
             return lngReturn;
@@ -1401,19 +1792,36 @@ namespace Chummer
         public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
         {
             List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<long>>(await objTemp.CountAsync)
-                : new List<Task<long>>();
+                ? new List<Task<long>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<long>>(Utils.MaxParallelBatchSize);
+            long lngReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<long> tskLoop in lstTasks)
+                            lngReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            long lngReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<long> tskLoop in lstTasks)
                 lngReturn += await tskLoop;
             return lngReturn;
@@ -1433,19 +1841,36 @@ namespace Chummer
         public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
         {
             List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<float>>(await objTemp.CountAsync)
-                : new List<Task<float>>();
+                ? new List<Task<float>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<float>>(Utils.MaxParallelBatchSize);
+            float fltReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<float> tskLoop in lstTasks)
+                            fltReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            float fltReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<float> tskLoop in lstTasks)
                 fltReturn += await tskLoop;
             return fltReturn;
@@ -1454,19 +1879,36 @@ namespace Chummer
         public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
         {
             List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<float>>(await objTemp.CountAsync)
-                : new List<Task<float>>();
+                ? new List<Task<float>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<float>>(Utils.MaxParallelBatchSize);
+            float fltReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<float> tskLoop in lstTasks)
+                            fltReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            float fltReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<float> tskLoop in lstTasks)
                 fltReturn += await tskLoop;
             return fltReturn;
@@ -1485,19 +1927,36 @@ namespace Chummer
         public static async Task<double> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
         {
             List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<double>>(await objTemp.CountAsync)
-                : new List<Task<double>>();
+                ? new List<Task<double>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<double>>(Utils.MaxParallelBatchSize);
+            double dblReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<double> tskLoop in lstTasks)
+                            dblReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            double dblReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<double> tskLoop in lstTasks)
                 dblReturn += await tskLoop;
             return dblReturn;
@@ -1506,19 +1965,36 @@ namespace Chummer
         public static async Task<double> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
         {
             List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<double>>(await objTemp.CountAsync)
-                : new List<Task<double>>();
+                ? new List<Task<double>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<double>>(Utils.MaxParallelBatchSize);
+            double dblReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<double> tskLoop in lstTasks)
+                            dblReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            double dblReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<double> tskLoop in lstTasks)
                 dblReturn += await tskLoop;
             return dblReturn;
@@ -1537,19 +2013,36 @@ namespace Chummer
         public static async Task<decimal> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
         {
             List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<decimal>>(await objTemp.CountAsync)
-                : new List<Task<decimal>>();
+                ? new List<Task<decimal>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<decimal>>(Utils.MaxParallelBatchSize);
+            decimal decReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<decimal> tskLoop in lstTasks)
+                            decReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            decimal decReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<decimal> tskLoop in lstTasks)
                 decReturn += await tskLoop;
             return decReturn;
@@ -1558,19 +2051,36 @@ namespace Chummer
         public static async Task<decimal> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
         {
             List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task<decimal>>(await objTemp.CountAsync)
-                : new List<Task<decimal>>();
+                ? new List<Task<decimal>>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task<decimal>>(Utils.MaxParallelBatchSize);
+            decimal decReturn = 0;
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0, token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        foreach (Task<decimal> tskLoop in lstTasks)
+                            decReturn += await tskLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
-            decimal decReturn = 0;
+            token.ThrowIfCancellationRequested();
             foreach (Task<decimal> tskLoop in lstTasks)
                 decReturn += await tskLoop;
             return decReturn;
@@ -1885,34 +2395,62 @@ namespace Chummer
         public static async Task ForEachParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default)
         {
             List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task>(await objTemp.CountAsync)
-                : new List<Task>();
+                ? new List<Task>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task>(Utils.MaxParallelBatchSize);
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => objFuncToRun.Invoke(objCurrent), token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => objFuncToRun.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
         }
 
         public static async Task ForEachParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task> objFuncToRun, CancellationToken token = default)
         {
             List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                ? new List<Task>(await objTemp.CountAsync)
-                : new List<Task>();
+                ? new List<Task>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(token)))
+                : new List<Task>(Utils.MaxParallelBatchSize);
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => objFuncToRun.Invoke(objCurrent), token));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => objFuncToRun.Invoke(objCurrent), token));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await Task.WhenAll(lstTasks);
+                        token.ThrowIfCancellationRequested();
+                        lstTasks.Clear();
+                    }
                 }
             }
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstTasks);
         }
 
@@ -1929,24 +2467,47 @@ namespace Chummer
         public static async Task ForEachParallelWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             using (CancellationTokenSource objSource = new CancellationTokenSource())
+                // ReSharper disable once AccessToDisposedClosure
+            using (token.Register(() => objSource.Cancel(false)))
             {
-                List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                    ? new List<Task>(await objTemp.CountAsync)
-                    : new List<Task>();
                 CancellationToken objToken = objSource.Token;
-                using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
+                List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                    ? new List<Task>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(objToken)))
+                    : new List<Task>(Utils.MaxParallelBatchSize);
+                using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(objToken))
                 {
-                    while (objEnumerator.MoveNext())
+                    bool blnMoveNext = objEnumerator.MoveNext();
+                    while (blnMoveNext)
                     {
-                        token.ThrowIfCancellationRequested();
-                        T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent), objToken).ContinueWith(
-                                         async x =>
-                                         {
-                                             if (await x)
-                                                 // ReSharper disable once AccessToDisposedClosure
-                                                 objSource.Cancel(false);
-                                         }, objToken).Unwrap());
+                        for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            T objCurrent = objEnumerator.Current;
+                            lstTasks.Add(Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent), objToken).ContinueWith(
+                                             async x =>
+                                             {
+                                                 if (await x)
+                                                     // ReSharper disable once AccessToDisposedClosure
+                                                     objSource.Cancel(false);
+                                             }, objToken).Unwrap());
+                            blnMoveNext = objEnumerator.MoveNext();
+                        }
+
+                        if (blnMoveNext)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            try
+                            {
+                                await Task.WhenAll(lstTasks);
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                return;
+                            }
+                            token.ThrowIfCancellationRequested();
+                            lstTasks.Clear();
+                        }
                     }
                 }
 
@@ -1956,7 +2517,7 @@ namespace Chummer
                 }
                 catch (OperationCanceledException)
                 {
-                    // Swallow this
+                    token.ThrowIfCancellationRequested();
                 }
             }
         }
@@ -1964,25 +2525,47 @@ namespace Chummer
         public static async Task ForEachParallelWithBreak<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             using (CancellationTokenSource objSource = new CancellationTokenSource())
+                // ReSharper disable once AccessToDisposedClosure
+            using (token.Register(() => objSource.Cancel(false)))
             {
-                List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
-                    ? new List<Task>(await objTemp.CountAsync)
-                    : new List<Task>();
                 CancellationToken objToken = objSource.Token;
-                using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token))
+                List<Task> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                    ? new List<Task>(Math.Min(Utils.MaxParallelBatchSize, await objTemp.GetCountAsync(objToken)))
+                    : new List<Task>(Utils.MaxParallelBatchSize);
+                using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(objToken))
                 {
-                    while (objEnumerator.MoveNext())
+                    bool blnMoveNext = objEnumerator.MoveNext();
+                    while (blnMoveNext)
                     {
-                        token.ThrowIfCancellationRequested();
-                        T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent),
-                                              objToken).ContinueWith(
-                                         async x =>
-                                         {
-                                             if (await x)
-                                                 // ReSharper disable once AccessToDisposedClosure
-                                                 objSource.Cancel(false);
-                                         }, objToken).Unwrap());
+                        for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            T objCurrent = objEnumerator.Current;
+                            lstTasks.Add(Task.Run(() => objFuncToRunWithPossibleTerminate.Invoke(objCurrent), objToken).ContinueWith(
+                                             async x =>
+                                             {
+                                                 if (await x)
+                                                     // ReSharper disable once AccessToDisposedClosure
+                                                     objSource.Cancel(false);
+                                             }, objToken).Unwrap());
+                            blnMoveNext = objEnumerator.MoveNext();
+                        }
+
+                        if (blnMoveNext)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            try
+                            {
+                                await Task.WhenAll(lstTasks);
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                return;
+                            }
+                            token.ThrowIfCancellationRequested();
+                            lstTasks.Clear();
+                        }
                     }
                 }
 
@@ -1992,7 +2575,7 @@ namespace Chummer
                 }
                 catch (OperationCanceledException)
                 {
-                    // Swallow this
+                    token.ThrowIfCancellationRequested();
                 }
             }
         }

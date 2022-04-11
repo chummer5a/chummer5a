@@ -807,9 +807,26 @@ namespace Chummer
                 return;
 
             Dictionary<TreeNode, string> dicWatchNodes = new Dictionary<TreeNode, string>(dicWatch.Count);
-            List<Task<TreeNode>> lstCachingTasks = new List<Task<TreeNode>>(dicWatch.Count);
+            List<Task<TreeNode>> lstCachingTasks = new List<Task<TreeNode>>(Utils.MaxParallelBatchSize);
+            int intCounter = 0;
             foreach (string strKey in dicWatch.Keys)
+            {
                 lstCachingTasks.Add(Task.Run(() => CacheCharacter(strKey, token: token), token));
+                if (++intCounter != Utils.MaxParallelBatchSize)
+                    continue;
+                token.ThrowIfCancellationRequested();
+                await Task.WhenAll(lstCachingTasks);
+                token.ThrowIfCancellationRequested();
+                foreach (Task<TreeNode> tskCachingTask in lstCachingTasks)
+                {
+                    TreeNode objNode = await tskCachingTask;
+                    if (objNode.Tag is CharacterCache objCache)
+                        dicWatchNodes.Add(objNode, dicWatch[objCache.FilePath]);
+                    token.ThrowIfCancellationRequested();
+                }
+                lstCachingTasks.Clear();
+                intCounter = 0;
+            }
             token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstCachingTasks);
             token.ThrowIfCancellationRequested();
