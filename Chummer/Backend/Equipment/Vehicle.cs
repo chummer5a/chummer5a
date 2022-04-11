@@ -133,7 +133,7 @@ namespace Chummer.Backend.Equipment
         private void MatrixAttributeChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action != NotifyCollectionChangedAction.Move)
-                this.RefreshMatrixAttributeArray();
+                this.RefreshMatrixAttributeArray(_objCharacter);
         }
 
         /// Create a Vehicle from an XmlNode.

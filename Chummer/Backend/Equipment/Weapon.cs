@@ -276,7 +276,7 @@ namespace Chummer.Backend.Equipment
                     break;
             }
 
-            this.RefreshMatrixAttributeArray();
+            this.RefreshMatrixAttributeArray(_objCharacter);
             if (blnDoEncumbranceRefresh)
                 _objCharacter?.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
         }
@@ -7013,7 +7013,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
-            this.RefreshMatrixAttributeArray();
+            this.RefreshMatrixAttributeArray(_objCharacter);
         }
 
         #endregion Hero Lab Importing

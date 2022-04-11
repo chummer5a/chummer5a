@@ -126,13 +126,13 @@ namespace Chummer.Backend.Equipment
                 case NotifyCollectionChangedAction.Add:
                     foreach (Gear objNewItem in e.NewItems)
                         objNewItem.Parent = this;
-                    this.RefreshMatrixAttributeArray();
+                    this.RefreshMatrixAttributeArray(_objCharacter);
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Gear objOldItem in e.OldItems)
                         objOldItem.Parent = null;
-                    this.RefreshMatrixAttributeArray();
+                    this.RefreshMatrixAttributeArray(_objCharacter);
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
@@ -140,11 +140,11 @@ namespace Chummer.Backend.Equipment
                         objOldItem.Parent = null;
                     foreach (Gear objNewItem in e.NewItems)
                         objNewItem.Parent = this;
-                    this.RefreshMatrixAttributeArray();
+                    this.RefreshMatrixAttributeArray(_objCharacter);
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
-                    this.RefreshMatrixAttributeArray();
+                    this.RefreshMatrixAttributeArray(_objCharacter);
                     break;
             }
         }
@@ -685,7 +685,7 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(strChildForcePage))
                 objChild.Page = strChildForcePage;
             Children.Add(objChild);
-            this.RefreshMatrixAttributeArray();
+            this.RefreshMatrixAttributeArray(_objCharacter);
 
             // Change the Capacity of the child if necessary.
             if (xmlChildNode["capacity"] != null)
@@ -4312,7 +4312,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            this.RefreshMatrixAttributeArray();
+            this.RefreshMatrixAttributeArray(_objCharacter);
         }
 
         #endregion Hero Lab Importing Methods

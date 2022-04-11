@@ -259,7 +259,7 @@ namespace Chummer.Backend.Equipment
                     case NotifyCollectionChangedAction.Reset:
                         break;
                 }
-                this.RefreshMatrixAttributeArray();
+                this.RefreshMatrixAttributeArray(_objCharacter);
                 return;
             }
 
@@ -311,7 +311,7 @@ namespace Chummer.Backend.Equipment
                                 blnDoEssenceImprovementsRefresh = true;
                         }
 
-                        this.RefreshMatrixAttributeArray();
+                        this.RefreshMatrixAttributeArray(_objCharacter);
                         blnDoRedlinerRefresh = true;
                         break;
 
@@ -351,7 +351,7 @@ namespace Chummer.Backend.Equipment
                                 blnDoEssenceImprovementsRefresh = true;
                         }
 
-                        this.RefreshMatrixAttributeArray();
+                        this.RefreshMatrixAttributeArray(_objCharacter);
                         blnDoRedlinerRefresh = true;
                         break;
 
@@ -432,7 +432,7 @@ namespace Chummer.Backend.Equipment
                                 blnDoEssenceImprovementsRefresh = true;
                         }
 
-                        this.RefreshMatrixAttributeArray();
+                        this.RefreshMatrixAttributeArray(_objCharacter);
                         blnDoRedlinerRefresh = true;
                         break;
 
@@ -449,7 +449,7 @@ namespace Chummer.Backend.Equipment
                             setAttributesToRefresh.AddRange(CyberlimbAttributeAbbrevs);
                         }
 
-                        this.RefreshMatrixAttributeArray();
+                        this.RefreshMatrixAttributeArray(_objCharacter);
                         blnDoRedlinerRefresh = true;
                         break;
                 }
@@ -572,7 +572,7 @@ namespace Chummer.Backend.Equipment
                         objNewItem.ChangeEquippedStatus(IsModularCurrentlyEquipped);
                     }
 
-                    this.RefreshMatrixAttributeArray();
+                    this.RefreshMatrixAttributeArray(_objCharacter);
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
@@ -587,7 +587,7 @@ namespace Chummer.Backend.Equipment
                         objNewItem.ChangeEquippedStatus(IsModularCurrentlyEquipped);
                     }
 
-                    this.RefreshMatrixAttributeArray();
+                    this.RefreshMatrixAttributeArray(_objCharacter);
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
@@ -597,11 +597,11 @@ namespace Chummer.Backend.Equipment
                         objOldItem.Parent = null;
                     }
 
-                    this.RefreshMatrixAttributeArray();
+                    this.RefreshMatrixAttributeArray(_objCharacter);
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
-                    this.RefreshMatrixAttributeArray();
+                    this.RefreshMatrixAttributeArray(_objCharacter);
                     break;
             }
         }
@@ -5784,7 +5784,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            this.RefreshMatrixAttributeArray();
+            this.RefreshMatrixAttributeArray(_objCharacter);
         }
 
         #endregion Hero Lab Importing

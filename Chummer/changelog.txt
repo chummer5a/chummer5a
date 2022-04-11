@@ -25,6 +25,7 @@ Application Changes:
 - Vehicles that come with gear that adds weapons (e.g. grenades) no longer add those weapons to the vehicle's list of weapons twice.
 - Fixed various issues where adding a new item inside of another item would often prevent nuyen costs from recalculating.
 - Items that have a mixture of stolen and non-stolen components now have their deductable costs and Stolen Gear limit contributions calculated properly.
+- Modifying the Data Processing of a character's active commlink or home node now immediately causes the character's appropriate Matrix Initiative values to update. Fixes #4764.
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.

@@ -497,6 +497,7 @@ namespace Chummer
 
             int intCurrentIndex = cboChangedAttribute.DoThreadSafeFunc(x => x.SelectedIndex);
             bool blnRefreshCharacter = false;
+            bool blnDPChanged = cboChangedAttribute == cboDataProcessing;
             // Find the combo with the same value as this one and change it to the missing value.
             if (cboChangedAttribute != cboAttack && cboAttack.DoThreadSafeFunc(x => x.SelectedIndex) == intCurrentIndex)
             {
@@ -510,11 +511,12 @@ namespace Chummer
                 objThis.Sleaze = strTemp;
                 blnRefreshCharacter = true;
             }
-            else if (cboChangedAttribute != cboDataProcessing && cboDataProcessing.DoThreadSafeFunc(x => x.SelectedIndex) == intCurrentIndex)
+            else if (!blnDPChanged && cboDataProcessing.DoThreadSafeFunc(x => x.SelectedIndex) == intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.DataProcessing);
                 objThis.DataProcessing = strTemp;
                 blnRefreshCharacter = true;
+                blnDPChanged = true;
             }
             else if (cboChangedAttribute != cboFirewall && cboFirewall.DoThreadSafeFunc(x => x.SelectedIndex) == intCurrentIndex)
             {
@@ -526,9 +528,29 @@ namespace Chummer
             if (blnRefreshCharacter)
             {
                 objThis.RefreshMatrixAttributeComboBoxes(cboAttack, cboSleaze, cboDataProcessing, cboFirewall);
+                if (objThis.IsActiveCommlink(objCharacter) || objThis.IsHomeNode(objCharacter))
+                {
+                    if (blnDPChanged)
+                    {
+                        if (objThis.IsActiveCommlink(objCharacter))
+                        {
+                            if (objThis.IsHomeNode(objCharacter))
+                                objCharacter.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
+                                                                       nameof(Character.MatrixInitiativeColdValue),
+                                                                       nameof(Character.MatrixInitiativeHotValue));
+                            else
+                                objCharacter.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
+                                                                       nameof(Character.MatrixInitiativeHotValue));
+                        }
+                        else
+                            objCharacter.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
+                    }
+
+                    return true;
+                }
             }
 
-            return blnRefreshCharacter && (objThis.IsActiveCommlink(objCharacter) || objThis.IsHomeNode(objCharacter));
+            return false;
         }
 
         public static async Task<bool> ProcessMatrixAttributeComboBoxChangeAsync(this IHasMatrixAttributes objThis, Character objCharacter, ElasticComboBox cboChangedAttribute, ElasticComboBox cboAttack, ElasticComboBox cboSleaze, ElasticComboBox cboDataProcessing, ElasticComboBox cboFirewall, CancellationToken token = default)
@@ -577,6 +599,7 @@ namespace Chummer
 
             int intCurrentIndex = await cboChangedAttribute.DoThreadSafeFuncAsync(x => x.SelectedIndex, token);
             bool blnRefreshCharacter = false;
+            bool blnDPChanged = cboChangedAttribute == cboDataProcessing;
             // Find the combo with the same value as this one and change it to the missing value.
             if (cboChangedAttribute != cboAttack && await cboAttack.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) == intCurrentIndex)
             {
@@ -590,11 +613,12 @@ namespace Chummer
                 objThis.Sleaze = strTemp;
                 blnRefreshCharacter = true;
             }
-            else if (cboChangedAttribute != cboDataProcessing && await cboDataProcessing.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) == intCurrentIndex)
+            else if (!blnDPChanged && await cboDataProcessing.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) == intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.DataProcessing);
                 objThis.DataProcessing = strTemp;
                 blnRefreshCharacter = true;
+                blnDPChanged = true;
             }
             else if (cboChangedAttribute != cboFirewall && await cboFirewall.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) == intCurrentIndex)
             {
@@ -606,106 +630,141 @@ namespace Chummer
             if (blnRefreshCharacter)
             {
                 await objThis.RefreshMatrixAttributeComboBoxesAsync(cboAttack, cboSleaze, cboDataProcessing, cboFirewall, token);
+                if (objThis.IsActiveCommlink(objCharacter) || objThis.IsHomeNode(objCharacter))
+                {
+                    if (blnDPChanged)
+                    {
+                        if (objThis.IsActiveCommlink(objCharacter))
+                        {
+                            if (objThis.IsHomeNode(objCharacter))
+                                objCharacter.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
+                                                                       nameof(Character.MatrixInitiativeColdValue),
+                                                                       nameof(Character.MatrixInitiativeHotValue));
+                            else
+                                objCharacter.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
+                                                                       nameof(Character.MatrixInitiativeHotValue));
+                        }
+                        else
+                            objCharacter.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
+                    }
+                    return true;
+                }
             }
 
-            return blnRefreshCharacter && (objThis.IsActiveCommlink(objCharacter) || objThis.IsHomeNode(objCharacter));
+            return false;
         }
 
         /// <summary>
         /// If this item has an attribute array, refresh it.
         /// </summary>
-        /// <param name="objThis"></param>
-        public static void RefreshMatrixAttributeArray(this IHasMatrixAttributes objThis)
+        public static void RefreshMatrixAttributeArray(this IHasMatrixAttributes objThis, Character objCharacter)
         {
             if (objThis == null)
                 return;
-            if (!objThis.CanSwapAttributes)
-                return;
-            int intBaseAttack = objThis.GetBaseMatrixAttribute("Attack");
-            int intBaseSleaze = objThis.GetBaseMatrixAttribute("Sleaze");
-            int intBaseDataProcessing = objThis.GetBaseMatrixAttribute("Data Processing");
-            int intBaseFirewall = objThis.GetBaseMatrixAttribute("Firewall");
-            List<int> lstStatsArray = new List<int>(4)
+            if (objThis.CanSwapAttributes)
             {
-                intBaseAttack,
-                intBaseSleaze,
-                intBaseDataProcessing,
-                intBaseFirewall
-            };
-            lstStatsArray.Sort();
-            lstStatsArray.Reverse();
-
-            string[] strCyberdeckArray = objThis.AttributeArray.Split(',');
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                          out StringBuilder sbdCyberdeckArray0))
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                          out StringBuilder sbdCyberdeckArray1))
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                          out StringBuilder sbdCyberdeckArray2))
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                          out StringBuilder sbdCyberdeckArray3))
-            {
-                sbdCyberdeckArray0.Append(strCyberdeckArray[0]);
-                sbdCyberdeckArray1.Append(strCyberdeckArray[1]);
-                sbdCyberdeckArray2.Append(strCyberdeckArray[2]);
-                sbdCyberdeckArray3.Append(strCyberdeckArray[3]);
-                StringBuilder[] asbdCyberdeckArray =
+                int intBaseAttack = objThis.GetBaseMatrixAttribute("Attack");
+                int intBaseSleaze = objThis.GetBaseMatrixAttribute("Sleaze");
+                int intBaseDataProcessing = objThis.GetBaseMatrixAttribute("Data Processing");
+                int intBaseFirewall = objThis.GetBaseMatrixAttribute("Firewall");
+                List<int> lstStatsArray = new List<int>(4)
                 {
-                    sbdCyberdeckArray0,
-                    sbdCyberdeckArray1,
-                    sbdCyberdeckArray2,
-                    sbdCyberdeckArray3
+                    intBaseAttack,
+                    intBaseSleaze,
+                    intBaseDataProcessing,
+                    intBaseFirewall
                 };
-                foreach (string strLoopArrayText in objThis.ChildrenWithMatrixAttributes.Select(
-                             x => x.ModAttributeArray))
+                lstStatsArray.Sort();
+                lstStatsArray.Reverse();
+
+                string[] strCyberdeckArray = objThis.AttributeArray.Split(',');
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdCyberdeckArray0))
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdCyberdeckArray1))
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdCyberdeckArray2))
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdCyberdeckArray3))
                 {
-                    if (string.IsNullOrEmpty(strLoopArrayText))
-                        continue;
-                    string[] strLoopArray = strLoopArrayText.Split(',');
+                    sbdCyberdeckArray0.Append(strCyberdeckArray[0]);
+                    sbdCyberdeckArray1.Append(strCyberdeckArray[1]);
+                    sbdCyberdeckArray2.Append(strCyberdeckArray[2]);
+                    sbdCyberdeckArray3.Append(strCyberdeckArray[3]);
+                    StringBuilder[] asbdCyberdeckArray =
+                    {
+                        sbdCyberdeckArray0,
+                        sbdCyberdeckArray1,
+                        sbdCyberdeckArray2,
+                        sbdCyberdeckArray3
+                    };
+                    foreach (string strLoopArrayText in objThis.ChildrenWithMatrixAttributes.Select(
+                                 x => x.ModAttributeArray))
+                    {
+                        if (string.IsNullOrEmpty(strLoopArrayText))
+                            continue;
+                        string[] strLoopArray = strLoopArrayText.Split(',');
+                        for (int i = 0; i < 4; ++i)
+                        {
+                            asbdCyberdeckArray[i].Append("+(").Append(strLoopArray[i]).Append(')');
+                        }
+                    }
+
                     for (int i = 0; i < 4; ++i)
                     {
-                        asbdCyberdeckArray[i].Append("+(").Append(strLoopArray[i]).Append(')');
+                        if (intBaseAttack == lstStatsArray[i])
+                        {
+                            objThis.Attack = asbdCyberdeckArray[i].ToString();
+                            lstStatsArray[i] = int.MinValue;
+                            break;
+                        }
                     }
-                }
 
-                for (int i = 0; i < 4; ++i)
-                {
-                    if (intBaseAttack == lstStatsArray[i])
+                    for (int i = 0; i < 4; ++i)
                     {
-                        objThis.Attack = asbdCyberdeckArray[i].ToString();
-                        lstStatsArray[i] = int.MinValue;
-                        break;
+                        if (intBaseSleaze == lstStatsArray[i])
+                        {
+                            objThis.Sleaze = asbdCyberdeckArray[i].ToString();
+                            lstStatsArray[i] = int.MinValue;
+                            break;
+                        }
                     }
-                }
 
-                for (int i = 0; i < 4; ++i)
-                {
-                    if (intBaseSleaze == lstStatsArray[i])
+                    for (int i = 0; i < 4; ++i)
                     {
-                        objThis.Sleaze = asbdCyberdeckArray[i].ToString();
-                        lstStatsArray[i] = int.MinValue;
-                        break;
+                        if (intBaseDataProcessing == lstStatsArray[i])
+                        {
+                            objThis.DataProcessing = asbdCyberdeckArray[i].ToString();
+                            lstStatsArray[i] = int.MinValue;
+                            break;
+                        }
                     }
-                }
 
-                for (int i = 0; i < 4; ++i)
-                {
-                    if (intBaseDataProcessing == lstStatsArray[i])
+                    for (int i = 0; i < 4; ++i)
                     {
-                        objThis.DataProcessing = asbdCyberdeckArray[i].ToString();
-                        lstStatsArray[i] = int.MinValue;
-                        break;
+                        if (intBaseFirewall == lstStatsArray[i])
+                        {
+                            objThis.Firewall = asbdCyberdeckArray[i].ToString();
+                            break;
+                        }
                     }
                 }
+            }
 
-                for (int i = 0; i < 4; ++i)
+            if (objCharacter != null)
+            {
+                if (objThis.IsActiveCommlink(objCharacter))
                 {
-                    if (intBaseFirewall == lstStatsArray[i])
-                    {
-                        objThis.Firewall = asbdCyberdeckArray[i].ToString();
-                        break;
-                    }
+                    if (objThis.IsHomeNode(objCharacter))
+                        objCharacter.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
+                                                               nameof(Character.MatrixInitiativeColdValue),
+                                                               nameof(Character.MatrixInitiativeHotValue));
+                    else
+                        objCharacter.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
+                                                               nameof(Character.MatrixInitiativeHotValue));
                 }
+                else
+                    objCharacter.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
             }
         }
     }

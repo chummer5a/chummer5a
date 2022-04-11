@@ -19404,8 +19404,29 @@ namespace Chummer
                 return;
             if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Gear objCommlink))
                 return;
+            string strOldOverClocked = objCommlink.Overclocked;
             objCommlink.Overclocked = await cboGearOverclocker.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
             await objCommlink.RefreshMatrixAttributeComboBoxesAsync(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
+            if (objCommlink.IsActiveCommlink(CharacterObject) || objCommlink.IsHomeNode(CharacterObject))
+            {
+                if (strOldOverClocked == "Data Processing" || objCommlink.Overclocked == "Data Processing")
+                {
+                    if (objCommlink.IsActiveCommlink(CharacterObject))
+                    {
+                        if (objCommlink.IsHomeNode(CharacterObject))
+                            CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
+                                                                      nameof(Character.MatrixInitiativeColdValue),
+                                                                      nameof(Character.MatrixInitiativeHotValue));
+                        else
+                            CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
+                                                                      nameof(Character.MatrixInitiativeHotValue));
+                    }
+                    else
+                        CharacterObject.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
+                }
+                await RequestCharacterUpdate();
+                await SetDirty(true);
+            }
         }
 
         private async void cboArmorOverclocker_SelectedIndexChanged(object sender, EventArgs e)
@@ -19414,8 +19435,29 @@ namespace Chummer
                 return;
             if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasMatrixAttributes objCommlink))
                 return;
+            string strOldOverClocked = objCommlink.Overclocked;
             objCommlink.Overclocked = await cboArmorOverclocker.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
             await objCommlink.RefreshMatrixAttributeComboBoxesAsync(cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing, cboArmorFirewall);
+            if (objCommlink.IsActiveCommlink(CharacterObject) || objCommlink.IsHomeNode(CharacterObject))
+            {
+                if (strOldOverClocked == "Data Processing" || objCommlink.Overclocked == "Data Processing")
+                {
+                    if (objCommlink.IsActiveCommlink(CharacterObject))
+                    {
+                        if (objCommlink.IsHomeNode(CharacterObject))
+                            CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
+                                                                      nameof(Character.MatrixInitiativeColdValue),
+                                                                      nameof(Character.MatrixInitiativeHotValue));
+                        else
+                            CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
+                                                                      nameof(Character.MatrixInitiativeHotValue));
+                    }
+                    else
+                        CharacterObject.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
+                }
+                await RequestCharacterUpdate();
+                await SetDirty(true);
+            }
         }
 
         private async void cboWeaponOverclocker_SelectedIndexChanged(object sender, EventArgs e)
@@ -19424,24 +19466,60 @@ namespace Chummer
                 return;
             if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasMatrixAttributes objCommlink))
                 return;
+            string strOldOverClocked = objCommlink.Overclocked;
             objCommlink.Overclocked = await cboWeaponOverclocker.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
             await objCommlink.RefreshMatrixAttributeComboBoxesAsync(cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall);
+            if (objCommlink.IsActiveCommlink(CharacterObject) || objCommlink.IsHomeNode(CharacterObject))
+            {
+                if (strOldOverClocked == "Data Processing" || objCommlink.Overclocked == "Data Processing")
+                {
+                    if (objCommlink.IsActiveCommlink(CharacterObject))
+                    {
+                        if (objCommlink.IsHomeNode(CharacterObject))
+                            CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
+                                                                      nameof(Character.MatrixInitiativeColdValue),
+                                                                      nameof(Character.MatrixInitiativeHotValue));
+                        else
+                            CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
+                                                                      nameof(Character.MatrixInitiativeHotValue));
+                    }
+                    else
+                        CharacterObject.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
+                }
+                await RequestCharacterUpdate();
+                await SetDirty(true);
+            }
         }
 
         private async void cboCyberwareOverclocker_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsLoading || IsRefreshing || !CharacterObject.Overclocker)
                 return;
-            /* Que?
-            List<Gear> lstGearToSearch = new List<Gear>(CharacterObject.Gear);
-            foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
-            {
-                lstGearToSearch.AddRange(objCyberware.Gear);
-            }*/
             if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasMatrixAttributes objCommlink))
                 return;
+            string strOldOverClocked = objCommlink.Overclocked;
             objCommlink.Overclocked = await cboCyberwareOverclocker.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
             await objCommlink.RefreshMatrixAttributeComboBoxesAsync(cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall);
+            if (objCommlink.IsActiveCommlink(CharacterObject) || objCommlink.IsHomeNode(CharacterObject))
+            {
+                if (strOldOverClocked == "Data Processing" || objCommlink.Overclocked == "Data Processing")
+                {
+                    if (objCommlink.IsActiveCommlink(CharacterObject))
+                    {
+                        if (objCommlink.IsHomeNode(CharacterObject))
+                            CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeValue),
+                                                                      nameof(Character.MatrixInitiativeColdValue),
+                                                                      nameof(Character.MatrixInitiativeHotValue));
+                        else
+                            CharacterObject.OnMultiplePropertyChanged(nameof(Character.MatrixInitiativeColdValue),
+                                                                      nameof(Character.MatrixInitiativeHotValue));
+                    }
+                    else
+                        CharacterObject.OnPropertyChanged(nameof(Character.MatrixInitiativeValue));
+                }
+                await RequestCharacterUpdate();
+                await SetDirty(true);
+            }
         }
 
         private async void cmdAddAIProgram_Click(object sender, EventArgs e)
