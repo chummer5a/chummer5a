@@ -508,13 +508,20 @@ namespace Chummer
                         using (_ = Timekeeper.StartSyncron("cache_load", null, CustomActivity.OperationType.DependencyOperation, Utils.CurrentChummerVersion.ToString(3)))
                         using (LoadingBar frmLoadingBar = CreateAndShowProgressBar(Application.ProductName, Utils.BasicDataFileNames.Count))
                         {
-                            Task[] tskCachingTasks = new Task[Utils.BasicDataFileNames.Count];
-                            for (int i = 0; i < tskCachingTasks.Length; ++i)
+                            List<Task> lstCachingTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                            int intCounter = 0;
+                            foreach (string strLoopFile in Utils.BasicDataFileNames)
                             {
-                                string strLoopFile = Utils.BasicDataFileNames[i];
                                 // ReSharper disable once AccessToDisposedClosure
-                                tskCachingTasks[i] = Task.Run(() => CacheCommonFile(strLoopFile, frmLoadingBar));
+                                lstCachingTasks.Add(Task.Run(() => CacheCommonFile(strLoopFile, frmLoadingBar)));
+                                if (++intCounter != Utils.MaxParallelBatchSize)
+                                    continue;
+                                Utils.RunWithoutThreadLock(() => Task.WhenAll(lstCachingTasks));
+                                lstCachingTasks.Clear();
+                                intCounter = 0;
                             }
+
+                            Utils.RunWithoutThreadLock(() => Task.WhenAll(lstCachingTasks));
 
                             async Task CacheCommonFile(string strFile, LoadingBar frmLoadingBarInner)
                             {
@@ -529,8 +536,6 @@ namespace Chummer
                                     Application.ProductName,
                                     LoadingBar.ProgressBarTextPatterns.Initializing);
                             }
-
-                            Utils.RunWithoutThreadLock(() => Task.WhenAll(tskCachingTasks));
                         }
 
                         MainForm.MyStartupPvt = pvt;

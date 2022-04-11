@@ -567,16 +567,8 @@ namespace Chummer
                     {
                         await Task.WhenAll(
                             lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true, _objGenericToken),
-                            lblSourceClickReminder.DoThreadSafeAsync(
-                                x => x.Visible = true, _objGenericToken),
-                            lblSource.DoThreadSafeAsync(
-                                x =>
-                                {
-                                    x.Visible = true;
-                                    x.Text = objEntry.DisplaySource.ToString();
-                                }, _objGenericToken),
-                            lblSource.SetToolTipAsync(objEntry.DisplaySource.LanguageBookTooltip,
-                                                      _objGenericToken));
+                            lblSourceClickReminder.DoThreadSafeAsync(x => x.Visible = true, _objGenericToken),
+                            objEntry.DisplaySource.SetControlAsync(lblSource, _objGenericToken));
                         (bool blnSuccess, Task<string> tskNotes) = await _dicCachedNotes.TryGetValueAsync(objEntry, _objGenericToken);
                         if (!blnSuccess)
                         {
@@ -619,8 +611,8 @@ namespace Chummer
                     {
                         await Task.WhenAll(
                             lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken),
-                            lblSource.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken),
                             lblSourceClickReminder.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken),
+                            SourceString.Blank.SetControlAsync(lblSource, _objGenericToken),
                             txtNotes.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken));
                     }
                 }

@@ -478,7 +478,7 @@ namespace Chummer
             if (!_blnIsConnected || strLatestVersion == (await LanguageManager.GetStringAsync("String_Error")).Trim())
             {
                 token.ThrowIfCancellationRequested();
-                string strText1 = string.IsNullOrEmpty(_strExceptionString)
+                string strText = string.IsNullOrEmpty(_strExceptionString)
                     ? await LanguageManager.GetStringAsync(
                         "Warning_Update_CouldNotConnect")
                     : string.Format(
@@ -487,9 +487,11 @@ namespace Chummer
                             "Warning_Update_CouldNotConnectException"))
                         .NormalizeWhiteSpace(),
                         _strExceptionString);
-                string strText2 = await LanguageManager.GetStringAsync("Button_Reconnect");
-                await Task.WhenAll(lblUpdaterStatus.DoThreadSafeAsync(x => x.Text = strText1, token),
-                                   cmdUpdate.DoThreadSafeFuncAsync(x => x.Text = strText2, token),
+                await Task.WhenAll(lblUpdaterStatus.DoThreadSafeAsync(x => x.Text = strText, token),
+                                   LanguageManager.GetStringAsync("Button_Reconnect")
+                                                  .ContinueWith(
+                                                      y => cmdUpdate.DoThreadSafeFuncAsync(
+                                                          x => x.Text = y.Result, token), token).Unwrap(),
                                    cmdRestart.DoThreadSafeAsync(x => x.Enabled = false, token),
                                    cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = false, token));
                 return;
@@ -529,10 +531,12 @@ namespace Chummer
             }
             if (_blnPreferNightly)
                 strStatusText += strSpace + await LanguageManager.GetStringAsync("String_Nightly_Changelog_Warning");
-            string strUpdateText = await LanguageManager.GetStringAsync(intResult > 0 ? "Button_Download" : "Button_Redownload");
             token.ThrowIfCancellationRequested();
             await Task.WhenAll(lblUpdaterStatus.DoThreadSafeAsync(x => x.Text = strStatusText, token),
-                               cmdUpdate.DoThreadSafeFuncAsync(x => x.Text = strUpdateText, token));
+                               LanguageManager.GetStringAsync(intResult > 0 ? "Button_Download" : "Button_Redownload")
+                                              .ContinueWith(
+                                                  y => cmdUpdate.DoThreadSafeFuncAsync(x => x.Text = y.Result, token),
+                                                  token).Unwrap());
             token.ThrowIfCancellationRequested();
         }
 

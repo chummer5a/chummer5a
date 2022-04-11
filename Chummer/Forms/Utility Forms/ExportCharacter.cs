@@ -322,9 +322,11 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             using (await CursorWait.NewAsync(this, token: token))
             {
-                string strText = await LanguageManager.GetStringAsync("String_Generating_Data");
                 await Task.WhenAll(cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token),
-                                   txtText.DoThreadSafeAsync(x => x.Text = strText, token));
+                                   LanguageManager.GetStringAsync("String_Generating_Data")
+                                                  .ContinueWith(
+                                                      y => txtText.DoThreadSafeAsync(x => x.Text = y.Result, token),
+                                                      token).Unwrap());
                 token.ThrowIfCancellationRequested();
                 _objCharacterXml = await _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
                                                                          _objCharacterXmlGeneratorCancellationTokenSource

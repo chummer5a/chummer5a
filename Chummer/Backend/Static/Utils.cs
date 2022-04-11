@@ -1139,10 +1139,11 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             Task<T>[] atskToRun = afuncToRun.Invoke();
-            T[] aobjReturn = new T[atskToRun.Length];
+            int intLength = atskToRun.Length;
+            T[] aobjReturn = new T[intLength];
             if (!EverDoEvents)
             {
-                Parallel.For(0, atskToRun.Length, i =>
+                Parallel.For(0, intLength, i =>
                 {
                     Task<T> objSyncTask = atskToRun[i];
                     if (objSyncTask.Status == TaskStatus.Created)
@@ -1153,19 +1154,36 @@ namespace Chummer
                 });
                 return aobjReturn;
             }
-            Task<T>[] aobjTasks = new Task<T>[atskToRun.Length];
-            for (int i = 0; i < atskToRun.Length; ++i)
+            Task<T>[] aobjTasks = new Task<T>[MaxParallelBatchSize];
+            int intCounter = 0;
+            int intOffset = 0;
+            for (int i = 0; i < intLength; ++i)
             {
-                int intLocal = i;
-                aobjTasks[i] = Task.Run(() => atskToRun[intLocal], token);
+                int intLocalI = i;
+                aobjTasks[intCounter++] = Task.Run(() => atskToRun[intLocalI], token);
+                if (intCounter != MaxParallelBatchSize)
+                    continue;
+                Task<T[]> tskLoop = Task.Run(() => Task.WhenAll(aobjTasks), token);
+                while (!tskLoop.IsCompleted)
+                    SafeSleep(token);
+                if (tskLoop.Exception != null)
+                    throw tskLoop.Exception;
+                for (int j = 0; j < MaxParallelBatchSize; ++j)
+                    aobjReturn[i] = aobjTasks[j].Result;
+                intOffset += MaxParallelBatchSize;
+                intCounter = 0;
             }
-            Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks), token);
-            while (!objTask.IsCompleted)
-                SafeSleep(token);
-            if (objTask.Exception != null)
-                throw objTask.Exception;
-            for (int i = 0; i < atskToRun.Length; ++i)
-                aobjReturn[i] = aobjTasks[i].Result;
+            int intFinalBatchSize = intLength % MaxParallelBatchSize;
+            if (intFinalBatchSize != 0)
+            {
+                Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks), token);
+                while (!objTask.IsCompleted)
+                    SafeSleep(token);
+                if (objTask.Exception != null)
+                    throw objTask.Exception;
+                for (int j = 0; j < intFinalBatchSize; ++j)
+                    aobjReturn[intOffset + j] = aobjTasks[j].Result;
+            }
             return aobjReturn;
         }
 
@@ -1275,17 +1293,26 @@ namespace Chummer
                 return;
             }
             atskToRun = afuncToRun.Invoke();
-            Task[] aobjTasks = new Task[atskToRun.Length];
-            for (int i = 0; i < atskToRun.Length; ++i)
+            List<Task> lstTasks = new List<Task>(MaxParallelBatchSize);
+            int intCounter = 0;
+            foreach (Task tskLoop in atskToRun)
             {
-                int intLocal = i;
-                aobjTasks[i] = Task.Run(() => atskToRun[intLocal], token);
+                lstTasks.Add(Task.Run(() => tskLoop, token));
+                if (++intCounter != MaxParallelBatchSize)
+                    continue;
+                Task tskBatchLoop = Task.Run(() => Task.WhenAll(lstTasks), token);
+                while (!tskBatchLoop.IsCompleted)
+                    SafeSleep(token);
+                if (tskBatchLoop.Exception != null)
+                    throw tskBatchLoop.Exception;
+                lstTasks.Clear();
+                intCounter = 0;
             }
-            Task objTask = Task.Run(() => Task.WhenAll(aobjTasks), token);
-            while (!objTask.IsCompleted)
+            Task tskBatchFinal = Task.Run(() => Task.WhenAll(lstTasks), token);
+            while (!tskBatchFinal.IsCompleted)
                 SafeSleep(token);
-            if (objTask.Exception != null)
-                throw objTask.Exception;
+            if (tskBatchFinal.Exception != null)
+                throw tskBatchFinal.Exception;
         }
 
         /// <summary>
