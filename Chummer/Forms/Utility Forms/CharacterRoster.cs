@@ -1821,22 +1821,7 @@ namespace Chummer
                         using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(objCache.FilePath, Character.NumLoadingSections))
                             objCharacter = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar, token: _objGenericToken);
                     }
-                    try
-                    {
-                        await Program.OpenCharacterForExport(objCharacter);
-                    }
-                    finally
-                    {
-                        if (objCharacter != null)
-                        {
-                            if (await Program.OpenCharacters.AllAsync(
-                                    x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), _objGenericToken)
-                                && Program.MainForm.OpenFormsWithCharacters.All(
-                                    x => !x.CharacterObjects.Contains(objCharacter)))
-                                await Program.OpenCharacters.RemoveAsync(objCharacter);
-                            await objCharacter.DisposeAsync();
-                        }
-                    }
+                    await Program.OpenCharacterForExport(objCharacter, _objGenericToken);
                 }
             }
             catch (OperationCanceledException)

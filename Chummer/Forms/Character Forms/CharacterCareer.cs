@@ -189,7 +189,7 @@ namespace Chummer
         {
             try
             {
-                using (await CursorWait.NewAsync(this))
+                using (await CursorWait.NewAsync(this, token: GenericToken))
                 {
                     using (CustomActivity op_load_frm_career = await Timekeeper.StartSyncronAsync(
                                "load_frm_career", null, CustomActivity.OperationType.RequestOperation,
@@ -336,7 +336,7 @@ namespace Chummer
                                     await RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
                                     await CharacterObject.CritterPowers
                                                          .AnyAsync(x => x.Name == "Inhabitation"
-                                                                        || x.Name == "Possession")
+                                                                        || x.Name == "Possession", GenericToken)
                                                          .ContinueWith(
                                                              y => mnuCreateMenu.DoThreadSafeAsync(
                                                                  () => mnuSpecialPossess.Visible = y.Result,
@@ -741,7 +741,7 @@ namespace Chummer
                                                                               .GetStringAsync("Enum_" + mode)));
                                         }
 
-                                        await cboVehicleWeaponFiringMode.PopulateWithListItemsAsync(lstFireModes);
+                                        await cboVehicleWeaponFiringMode.PopulateWithListItemsAsync(lstFireModes, GenericToken);
                                     }
                                 }
 
@@ -831,7 +831,7 @@ namespace Chummer
                                                                       nameof(Character.PhysicalCM));
                                     lblCMPhysicalLabel.DoOneWayDataBinding("Text", CharacterObject,
                                                                            nameof(Character.PhysicalCMLabelText));
-                                    await lblCMStun.DoThreadSafeAsync(x => x.Visible = true); // Needed to make sure data bindings go through
+                                    await lblCMStun.DoThreadSafeAsync(x => x.Visible = true, GenericToken); // Needed to make sure data bindings go through
                                     lblCMStun.DoOneWayDataBinding("ToolTipText", CharacterObject,
                                                                   nameof(Character.StunCMToolTip));
                                     lblCMStun.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.StunCM));
@@ -1293,7 +1293,7 @@ namespace Chummer
             {
                 await RefreshCritterPowers(treCritterPowers, cmsCritterPowers, e);
                 bool blnVisible
-                    = await CharacterObject.CritterPowers.AnyAsync(x => x.Name == "Inhabitation" || x.Name == "Possession");
+                    = await CharacterObject.CritterPowers.AnyAsync(x => x.Name == "Inhabitation" || x.Name == "Possession", GenericToken);
                 await mnuCreateMenu.DoThreadSafeAsync(() => mnuSpecialPossess.Visible = blnVisible, GenericToken);
             }
             catch (OperationCanceledException)
@@ -2424,7 +2424,7 @@ namespace Chummer
                     }
                     case nameof(Character.FirstMentorSpiritDisplayName):
                     {
-                        MentorSpirit objMentor = await CharacterObject.MentorSpirits.FirstOrDefaultAsync();
+                        MentorSpirit objMentor = await CharacterObject.MentorSpirits.FirstOrDefaultAsync(GenericToken);
                         if (objMentor != null)
                         {
                             await objMentor.SetSourceDetailAsync(lblMentorSpiritSource, GenericToken);
@@ -2510,7 +2510,7 @@ namespace Chummer
                     {
                         if (IsLoading)
                             break;
-                        using (await CursorWait.NewAsync(this))
+                        using (await CursorWait.NewAsync(this, token: GenericToken))
                         {
                             await this.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken);
                             try
@@ -2796,7 +2796,7 @@ namespace Chummer
                     {
                         if (!CharacterObjectSettings.BookEnabled("HT"))
                         {
-                            using (await CursorWait.NewAsync(this))
+                            using (await CursorWait.NewAsync(this, token: GenericToken))
                             {
                                 await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
                                 await treLifestyles.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
@@ -2807,7 +2807,7 @@ namespace Chummer
                     }
                     case nameof(CharacterSettings.EnableEnemyTracking):
                     {
-                        using (await CursorWait.NewAsync(this))
+                        using (await CursorWait.NewAsync(this, token: GenericToken))
                         {
                             await this.DoThreadSafeAsync(x =>
                                       {
@@ -3896,12 +3896,12 @@ namespace Chummer
                             */
 
                                 await frmLoadingBar.PerformStepAsync(
-                                    await LanguageManager.GetStringAsync("String_SelectPACKSKit_Lifestyles"));
+                                    await LanguageManager.GetStringAsync("String_SelectPACKSKit_Lifestyles"), token: GenericToken);
                                 // Copy any Lifestyles the Vessel has.
                                 foreach (Lifestyle objLifestyle in objVessel.Lifestyles)
                                     await objMerge.Lifestyles.AddAsync(objLifestyle);
 
-                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Armor"));
+                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Armor"), token: GenericToken);
                                 // Copy any Armor the Vessel has.
                                 foreach (Armor objArmor in objVessel.Armor)
                                 {
@@ -3909,7 +3909,7 @@ namespace Chummer
                                     CopyArmorImprovements(objVessel, objMerge, objArmor);
                                 }
 
-                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Gear"));
+                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Gear"), token: GenericToken);
                                 // Copy any Gear the Vessel has.
                                 foreach (Gear objGear in objVessel.Gear)
                                 {
@@ -3917,7 +3917,7 @@ namespace Chummer
                                     CopyGearImprovements(objVessel, objMerge, objGear);
                                 }
 
-                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Cyberware"));
+                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Cyberware"), token: GenericToken);
                                 // Copy any Cyberware/Bioware the Vessel has.
                                 foreach (Cyberware objCyberware in objVessel.Cyberware)
                                 {
@@ -3925,17 +3925,17 @@ namespace Chummer
                                     CopyCyberwareImprovements(objVessel, objMerge, objCyberware);
                                 }
 
-                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Weapons"));
+                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Weapons"), token: GenericToken);
                                 // Copy any Weapons the Vessel has.
                                 foreach (Weapon objWeapon in objVessel.Weapons)
                                     await objMerge.Weapons.AddAsync(objWeapon);
 
-                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Vehicles"));
+                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Vehicles"), token: GenericToken);
                                 // Copy and Vehicles the Vessel has.
                                 foreach (Vehicle objVehicle in objVessel.Vehicles)
                                     await objMerge.Vehicles.AddAsync(objVehicle);
 
-                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("String_Settings"));
+                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("String_Settings"), token: GenericToken);
                                 // Copy the character info.
                                 objMerge.Gender = objVessel.Gender;
                                 objMerge.Age = objVessel.Age;
@@ -3978,7 +3978,7 @@ namespace Chummer
                             using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
                             {
                                 await frmLoadingBar.PerformStepAsync(objMerge.CharacterName,
-                                                                     LoadingBar.ProgressBarTextPatterns.Saving);
+                                                                     LoadingBar.ProgressBarTextPatterns.Saving, token: GenericToken);
                                 objMerge.FileName = saveFileDialog.FileName;
                                 if (await objMerge.SaveAsync(token: GenericToken))
                                 {
@@ -4294,7 +4294,14 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshSelectedMartialArt();
+            try
+            {
+                await RefreshSelectedMartialArt(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async Task RefreshSelectedMartialArt(CancellationToken token = default)

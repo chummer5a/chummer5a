@@ -29,6 +29,8 @@ namespace Chummer
     public partial class PrintMultipleCharacters : Form
     {
         private CancellationTokenSource _objPrinterCancellationTokenSource;
+        private readonly CancellationTokenSource _objGenericCancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationToken _objGenericToken;
         private Task _tskPrinter;
         private Character[] _aobjCharacters;
         private CharacterSheetViewer _frmPrintView;
@@ -37,6 +39,7 @@ namespace Chummer
 
         public PrintMultipleCharacters()
         {
+            _objGenericToken = _objGenericCancellationTokenSource.Token;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -50,12 +53,13 @@ namespace Chummer
 
         private async void PrintMultipleCharacters_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_objPrinterCancellationTokenSource?.IsCancellationRequested == false)
+            CancellationTokenSource objTemp = Interlocked.Exchange(ref _objPrinterCancellationTokenSource, null);
+            if (objTemp?.IsCancellationRequested == false)
             {
-                _objPrinterCancellationTokenSource.Cancel(false);
-                _objPrinterCancellationTokenSource.Dispose();
-                _objPrinterCancellationTokenSource = null;
+                objTemp.Cancel(false);
+                objTemp.Dispose();
             }
+            _objGenericCancellationTokenSource.Cancel(false);
             await CleanUpOldCharacters();
         }
 
@@ -64,69 +68,123 @@ namespace Chummer
             // Add the selected Files to the list of characters to print.
             if (dlgOpenFile.ShowDialog(this) == DialogResult.OK)
             {
-                await CancelPrint();
-                foreach (string strFileName in dlgOpenFile.FileNames)
+                CancellationTokenSource objNewSource = new CancellationTokenSource();
+                CancellationTokenSource objTemp = Interlocked.Exchange(ref _objPrinterCancellationTokenSource, objNewSource);
+                if (objTemp?.IsCancellationRequested == false)
                 {
-                    TreeNode objNode = new TreeNode
+                    objTemp.Cancel(false);
+                    objTemp.Dispose();
+                }
+                try
+                {
+                    if (_tskPrinter?.IsCompleted == false)
+                        await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
+                                           prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken));
+                    else
+                        await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
+                                           prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken));
+                    foreach (string strFileName in dlgOpenFile.FileNames)
                     {
-                        Text = Path.GetFileName(strFileName) ?? await LanguageManager.GetStringAsync("String_Unknown"),
-                        Tag = strFileName
-                    };
-                    await treCharacters.DoThreadSafeAsync(x => x.Nodes.Add(objNode));
+                        TreeNode objNode = new TreeNode
+                        {
+                            Text = Path.GetFileName(strFileName) ?? await LanguageManager.GetStringAsync("String_Unknown"),
+                            Tag = strFileName
+                        };
+                        await treCharacters.DoThreadSafeAsync(x => x.Nodes.Add(objNode), _objGenericToken);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                    objNewSource.Dispose();
+                    return;
                 }
 
                 if (_frmPrintView != null)
-                    await StartPrint();
+                {
+                    CancellationToken objToken = objNewSource.Token;
+                    _tskPrinter = Task.Run(() => DoPrint(objToken), objToken);
+                }
+                else
+                {
+                    Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                    objNewSource.Dispose();
+                }
             }
         }
 
         private async void cmdDelete_Click(object sender, EventArgs e)
         {
-            if (await treCharacters.DoThreadSafeFuncAsync(x => x.SelectedNode) != null)
+            try
             {
-                await CancelPrint();
-                await treCharacters.DoThreadSafeAsync(x => x.SelectedNode.Remove());
-                if (_frmPrintView != null)
-                    await StartPrint();
+                if (await treCharacters.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken) != null)
+                {
+                    CancellationTokenSource objNewSource = new CancellationTokenSource();
+                    CancellationTokenSource objTemp = Interlocked.Exchange(ref _objPrinterCancellationTokenSource, objNewSource);
+                    if (objTemp?.IsCancellationRequested == false)
+                    {
+                        objTemp.Cancel(false);
+                        objTemp.Dispose();
+                    }
+                    try
+                    {
+                        if (_tskPrinter?.IsCompleted == false)
+                            await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
+                                               prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken));
+                        else
+                            await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
+                                               prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken));
+                        await treCharacters.DoThreadSafeAsync(x => x.SelectedNode.Remove(), _objGenericToken);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                        objNewSource.Dispose();
+                        return;
+                    }
+                    if (_frmPrintView != null)
+                    {
+                        CancellationToken objToken = objNewSource.Token;
+                        _tskPrinter = Task.Run(() => DoPrint(objToken), objToken);
+                    }
+                    else
+                    {
+                        Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                        objNewSource.Dispose();
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
         private async void cmdPrint_Click(object sender, EventArgs e)
         {
-            await StartPrint();
-        }
-
-        private async ValueTask CancelPrint(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            if (_objPrinterCancellationTokenSource?.IsCancellationRequested == false)
+            CancellationTokenSource objNewSource = new CancellationTokenSource();
+            CancellationTokenSource objTemp = Interlocked.Exchange(ref _objPrinterCancellationTokenSource, objNewSource);
+            if (objTemp?.IsCancellationRequested == false)
             {
-                _objPrinterCancellationTokenSource.Cancel(false);
-                _objPrinterCancellationTokenSource.Dispose();
-                _objPrinterCancellationTokenSource = null;
+                objTemp.Cancel(false);
+                objTemp.Dispose();
             }
-            token.ThrowIfCancellationRequested();
             try
             {
                 if (_tskPrinter?.IsCompleted == false)
-                    await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, token),
-                                       prgProgress.DoThreadSafeAsync(x => x.Value = 0, token));
+                    await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
+                                       prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken));
                 else
-                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, token),
-                                       prgProgress.DoThreadSafeAsync(x => x.Value = 0, token));
+                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
+                                       prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken));
             }
             catch (OperationCanceledException)
             {
-                // Swallow this
+                Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                objNewSource.Dispose();
+                return;
             }
-        }
-
-        private async ValueTask StartPrint(CancellationToken token = default)
-        {
-            await CancelPrint(token);
-            token.ThrowIfCancellationRequested();
-            _objPrinterCancellationTokenSource = new CancellationTokenSource();
-            CancellationToken objToken = _objPrinterCancellationTokenSource.Token;
+            CancellationToken objToken = objNewSource.Token;
             _tskPrinter = Task.Run(() => DoPrint(objToken), objToken);
         }
 
@@ -220,7 +278,6 @@ namespace Chummer
                         continue;
                     blnAnyChanges = true;
                     await Program.OpenCharacters.RemoveAsync(objCharacter);
-                    await objCharacter.DisposeAsync();
                     token.ThrowIfCancellationRequested();
                 }
             }

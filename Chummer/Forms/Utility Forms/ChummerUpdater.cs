@@ -275,7 +275,7 @@ namespace Chummer
             while (_clientChangelogDownloader.IsBusy)
             {
                 token.ThrowIfCancellationRequested();
-                await Utils.SafeSleepAsync();
+                await Utils.SafeSleepAsync(token);
             }
             _blnIsConnected = false;
             token.ThrowIfCancellationRequested();

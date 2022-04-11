@@ -2474,7 +2474,7 @@ namespace Chummer
         {
             try
             {
-                using (await CursorWait.NewAsync(this))
+                using (await CursorWait.NewAsync(this, token: GenericToken))
                 using (ThreadSafeForm<SelectBuildMethod> frmPickBP = await ThreadSafeForm<SelectBuildMethod>.GetAsync(() => new SelectBuildMethod(CharacterObject, true), GenericToken))
                 {
                     await frmPickBP.ShowDialogSafeAsync(this, GenericToken);
