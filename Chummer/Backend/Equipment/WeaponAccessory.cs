@@ -1272,22 +1272,20 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        /// <summary>
-        /// Total cost of the Weapon Accessory.
-        /// </summary>
-        public decimal StolenTotalCost
+        public decimal StolenTotalCost => CalculatedStolenTotalCost(true);
+
+        public decimal NonStolenTotalCost => CalculatedStolenTotalCost(false);
+
+        public decimal CalculatedStolenTotalCost(bool blnStolen)
         {
-            get
-            {
-                decimal decReturn = 0;
-                if (Stolen)
-                    decReturn = OwnCost;
+            decimal decReturn = 0;
+            if (Stolen == blnStolen)
+                decReturn = OwnCost;
 
-                // Add in the cost of any Gear the Weapon Accessory has attached to it.
-                decReturn += GearChildren.Sum(g => g.StolenTotalCost);
+            // Add in the cost of any Gear the Weapon Accessory has attached to it.
+            decReturn += GearChildren.Sum(g => g.CalculatedStolenTotalCost(blnStolen));
 
-                return decReturn;
-            }
+            return decReturn;
         }
 
         /// <summary>

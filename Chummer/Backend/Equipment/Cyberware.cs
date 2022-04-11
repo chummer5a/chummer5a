@@ -4421,15 +4421,19 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
-        public decimal StolenTotalCost => CalculatedStolenTotalCost(Rating, Grade);
+        public decimal StolenTotalCost => CalculatedStolenTotalCost(true);
 
-        /// <summary>
-        /// Identical to TotalCost, including the modifiers from Suite improvements.
-        /// </summary>
-        public decimal CalculatedStolenTotalCost(int intRating, Grade objGrade)
+        public decimal NonStolenTotalCost => CalculatedStolenTotalCost(false);
+
+        public decimal CalculatedStolenTotalCost(bool blnStolen)
         {
-            decimal decCost = CalculatedOwnCostPreMultipliers(intRating, objGrade);
-            decimal decReturn = decCost;
+            return CalculatedStolenTotalCost(Rating, Grade, blnStolen);
+        }
+
+        public decimal CalculatedStolenTotalCost(int intRating, Grade objGrade, bool blnStolen)
+        {
+            Lazy<decimal> decCost = new Lazy<decimal>(() => CalculatedOwnCostPreMultipliers(intRating, objGrade));
+            decimal decReturn = Stolen == blnStolen ? decCost.Value : 0;
 
             // Factor in the Cost multiplier of the selected CyberwareGrade.
             decReturn *= objGrade.Cost;
@@ -4440,26 +4444,29 @@ namespace Chummer.Backend.Equipment
             // Add in the cost of all child components.
             foreach (Cyberware objChild in Children)
             {
-                if (!objChild.Stolen || objChild.Capacity == "[*]")
+                if (objChild.Capacity == "[*]")
                     continue;
                 // If the child cost starts with "*", multiply the item's base cost.
                 if (objChild.Cost.StartsWith('*'))
                 {
-                    decimal decPluginCost =
-                        decCost * (Convert.ToDecimal(objChild.Cost.TrimStart('*'),
-                            GlobalSettings.InvariantCultureInfo) - 1);
+                    if (objChild.Stolen == blnStolen)
+                    {
+                        decimal decPluginCost =
+                            decCost.Value * (Convert.ToDecimal(objChild.Cost.TrimStart('*'),
+                                                               GlobalSettings.InvariantCultureInfo) - 1);
 
-                    if (objChild.DiscountCost)
-                        decPluginCost *= 0.9m;
+                        if (objChild.DiscountCost)
+                            decPluginCost *= 0.9m;
 
-                    decReturn += decPluginCost;
+                        decReturn += decPluginCost;
+                    }
                 }
                 else
-                    decReturn += objChild.CalculatedTotalCostWithoutModifiers(objChild.Rating, objGrade) * ChildCostMultiplier;
+                    decReturn += objChild.CalculatedStolenTotalCost(objChild.Rating, objGrade, blnStolen) * ChildCostMultiplier;
             }
 
             // Add in the cost of all Gear plugins.
-            decReturn += GearChildren.Sum(g => g.Stolen, objGear => objGear.StolenTotalCost);
+            decReturn += GearChildren.Sum(objGear => objGear.CalculatedStolenTotalCost(blnStolen));
 
             if (_blnSuite)
                 decReturn *= 0.9m;

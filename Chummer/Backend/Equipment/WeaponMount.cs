@@ -971,7 +971,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 decimal cost = 0;
-                if (!IncludedInVehicle && !Stolen)
+                if (!IncludedInVehicle)
                 {
                     cost += OwnCost;
                 }
@@ -981,25 +981,24 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        /// <summary>
-        /// Total cost of the WeaponMount.
-        /// </summary>
-        public decimal StolenTotalCost
+        public decimal StolenTotalCost => CalculatedStolenTotalCost(true);
+
+        public decimal NonStolenTotalCost => CalculatedStolenTotalCost(false);
+
+        public decimal CalculatedStolenTotalCost(bool blnStolen)
         {
-            get
+            decimal d = 0;
+
+            if (Stolen == blnStolen)
             {
-                decimal d = 0;
-
-                if (!IncludedInVehicle && Stolen)
-                {
+                if (!IncludedInVehicle)
                     d += OwnCost;
-                }
-
-                d += Weapons.Sum(w => w.StolenTotalCost) + WeaponMountOptions.Sum(w => w.StolenTotalCost) +
-                     Mods.Sum(m => m.StolenTotalCost);
-
-                return d;
+                d += WeaponMountOptions.Sum(w => w.TotalCost);
             }
+
+            d += Weapons.Sum(w => w.CalculatedStolenTotalCost(blnStolen)) + Mods.Sum(m => m.CalculatedStolenTotalCost(blnStolen));
+
+            return d;
         }
 
         /// <summary>
@@ -1701,8 +1700,6 @@ namespace Chummer.Backend.Equipment
             get => _strName;
             set => _strName = value;
         }
-
-        public int StolenTotalCost { get; set; }
 
         /// <summary>
         /// Does the option come with the parent object?

@@ -1826,17 +1826,18 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public decimal StolenTotalCost
+        public decimal StolenTotalCost => CalculatedStolenTotalCost(true);
+
+        public decimal NonStolenTotalCost => CalculatedStolenTotalCost(false);
+
+        public decimal CalculatedStolenTotalCost(bool blnStolen)
         {
-            get
-            {
-                decimal d = 0;
-                if (Stolen)
-                    d += OwnCost;
-                d += Weapons.Sum(objWeapon => objWeapon.StolenTotalCost);
-                d += Cyberware.Sum(objCyberware => objCyberware.StolenTotalCost);
-                return d;
-            }
+            decimal d = 0;
+            if (Stolen == blnStolen)
+                d += OwnCost;
+            d += Weapons.Sum(objWeapon => objWeapon.CalculatedStolenTotalCost(blnStolen));
+            d += Cyberware.Sum(objCyberware => objCyberware.CalculatedStolenTotalCost(blnStolen));
+            return d;
         }
 
         #endregion UI Methods

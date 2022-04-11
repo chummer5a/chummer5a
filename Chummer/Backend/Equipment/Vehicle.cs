@@ -1955,35 +1955,34 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        /// <summary>
-        /// Total cost of the Vehicle including all after-market Modification.
-        /// </summary>
-        public decimal StolenTotalCost
+        public decimal StolenTotalCost => CalculatedStolenCost(true);
+
+        public decimal NonStolenTotalCost => CalculatedStolenCost(false);
+
+        public decimal CalculatedStolenCost(bool blnStolen)
         {
-            get
+            decimal decCost = 0;
+            if (Stolen == blnStolen)
+                decCost += OwnCost;
+
+            foreach (VehicleMod objMod in Mods)
             {
-                decimal decCost = 0;
-                if (Stolen) decCost += OwnCost;
-
-                foreach (VehicleMod objMod in Mods)
+                // Do not include the price of Mods that are part of the base configureation.
+                if (!objMod.IncludedInVehicle)
                 {
-                    // Do not include the price of Mods that are part of the base configureation.
-                    if (!objMod.IncludedInVehicle)
-                    {
-                        decCost += objMod.StolenTotalCost;
-                    }
-                    else
-                    {
-                        // If the Mod is a part of the base config, check the items attached to it since their cost still counts.
-                        decCost += objMod.Weapons.Sum(x => x.Stolen, objWeapon => objWeapon.StolenTotalCost);
-                        decCost += objMod.Cyberware.Sum(x => x.Stolen, objCyberware => objCyberware.StolenTotalCost);
-                    }
+                    decCost += objMod.CalculatedStolenTotalCost(blnStolen);
                 }
-                decCost += WeaponMounts.Sum(x => x.Stolen, wm => wm.StolenTotalCost);
-                decCost += GearChildren.Sum(x => x.Stolen, objGear => objGear.StolenTotalCost);
-
-                return decCost;
+                else
+                {
+                    // If the Mod is a part of the base config, check the items attached to it since their cost still counts.
+                    decCost += objMod.Weapons.Sum(objWeapon => objWeapon.CalculatedStolenTotalCost(blnStolen));
+                    decCost += objMod.Cyberware.Sum(objCyberware => objCyberware.CalculatedStolenTotalCost(blnStolen));
+                }
             }
+            decCost += WeaponMounts.Sum(wm => wm.CalculatedStolenTotalCost(blnStolen));
+            decCost += GearChildren.Sum(objGear => objGear.CalculatedStolenTotalCost(blnStolen));
+
+            return decCost;
         }
 
         /// <summary>

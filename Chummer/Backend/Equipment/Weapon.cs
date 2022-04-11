@@ -7055,22 +7055,23 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public decimal StolenTotalCost
+        public decimal StolenTotalCost => CalculatedStolenTotalCost(true);
+
+        public decimal NonStolenTotalCost => CalculatedStolenTotalCost(false);
+
+        public decimal CalculatedStolenTotalCost(bool blnStolen)
         {
-            get
-            {
-                decimal decReturn = 0;
-                if (Stolen)
-                    decReturn += OwnCost;
+            decimal decReturn = 0;
+            if (Stolen == blnStolen)
+                decReturn += OwnCost;
 
-                // Run through the Accessories and add in their cost. If the cost is "Weapon Cost", the Weapon's base cost is added in again.
-                decReturn += WeaponAccessories.Sum(objAccessory => objAccessory.StolenTotalCost);
+            // Run through the Accessories and add in their cost. If the cost is "Weapon Cost", the Weapon's base cost is added in again.
+            decReturn += WeaponAccessories.Sum(objAccessory => objAccessory.CalculatedStolenTotalCost(blnStolen));
 
-                // Include the cost of any Underbarrel Weapon.
-                decReturn += Children.Sum(objUnderbarrel => objUnderbarrel.StolenTotalCost);
+            // Include the cost of any Underbarrel Weapon.
+            decReturn += Children.Sum(objUnderbarrel => objUnderbarrel.CalculatedStolenTotalCost(blnStolen));
 
-                return decReturn;
-            }
+            return decReturn;
         }
 
         public int GetBaseMatrixAttribute(string strAttributeName)

@@ -24,6 +24,7 @@ Application Changes:
 - Certain spells, powers, complex forms, et al. that need a specific text to be selected now work properly. Fixes #4724.
 - Vehicles that come with gear that adds weapons (e.g. grenades) no longer add those weapons to the vehicle's list of weapons twice.
 - Fixed various issues where adding a new item inside of another item would often prevent nuyen costs from recalculating.
+- Items that have a mixture of stolen and non-stolen components now have their deductable costs and Stolen Gear limit contributions calculated properly.
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.

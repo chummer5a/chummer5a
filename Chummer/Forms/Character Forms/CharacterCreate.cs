@@ -10866,52 +10866,35 @@ namespace Chummer
             //If the character has the Stolen Gear quality or something similar, we need to handle the nuyen a little differently.
             if (decStolenNuyenAllowance != 0)
             {
-                Task<decimal>[] atskCosts = {
-                    CharacterObject.Cyberware.SumParallelAsync(x => !x.Stolen, x => x.TotalCost, token),
-                    CharacterObject.Armor.SumParallelAsync(x => !x.Stolen, x => x.TotalCost, token),
-                    CharacterObject.Weapons.SumParallelAsync(x => !x.Stolen, x => x.TotalCost, token),
-                    CharacterObject.Gear.SumParallelAsync(x => !x.Stolen, x => x.TotalCost, token),
-                    CharacterObject.Vehicles.SumParallelAsync(x => !x.Stolen, x => x.TotalCost, token),
-                    CharacterObject.Drugs.SumParallelAsync(x => !x.Stolen, x => x.TotalCost, token),
-                    CharacterObject.Lifestyles.SumParallelAsync(x => x.TotalCost, token)
-                };
-                Task<decimal>[] atskStolenTasksCosts = {
-                    CharacterObject.Cyberware.SumParallelAsync(x => x.Stolen, x => x.TotalCost, token),
-                    CharacterObject.Armor.SumParallelAsync(x => x.Stolen, x => x.TotalCost, token),
-                    CharacterObject.Weapons.SumParallelAsync(x => x.Stolen, x => x.TotalCost, token),
-                    CharacterObject.Gear.SumParallelAsync(x => x.Stolen, x => x.TotalCost, token),
-                    CharacterObject.Vehicles.SumParallelAsync(x => x.Stolen, x => x.TotalCost, token),
-                    CharacterObject.Drugs.SumParallelAsync(x => x.Stolen, x => x.TotalCost, token)
-                };
-                token.ThrowIfCancellationRequested();
-                await Task.WhenAll(Task.WhenAll(atskCosts), Task.WhenAll(atskStolenTasksCosts));
-                token.ThrowIfCancellationRequested();
-                foreach (Task<decimal> tskLoop in atskCosts)
-                    decDeductions += await tskLoop;
-                foreach (Task<decimal> tskLoop in atskStolenTasksCosts)
-                    decStolenDeductions += await tskLoop;
+                decDeductions
+                    += await CharacterObject.Cyberware.SumParallelAsync(x => x.NonStolenTotalCost, token)
+                       + await CharacterObject.Armor.SumParallelAsync(x => x.NonStolenTotalCost, token)
+                       + await CharacterObject.Weapons.SumParallelAsync(x => x.NonStolenTotalCost, token)
+                       + await CharacterObject.Gear.SumParallelAsync(x => x.NonStolenTotalCost, token)
+                       + await CharacterObject.Vehicles.SumParallelAsync(x => x.NonStolenTotalCost, token)
+                       + await CharacterObject.Drugs.SumParallelAsync(x => x.NonStolenTotalCost, token);
+                decStolenDeductions
+                    += await CharacterObject.Cyberware.SumParallelAsync(x => x.StolenTotalCost, token)
+                       + await CharacterObject.Armor.SumParallelAsync(x => x.StolenTotalCost, token)
+                       + await CharacterObject.Weapons.SumParallelAsync(x => x.StolenTotalCost, token)
+                       + await CharacterObject.Gear.SumParallelAsync(x => x.StolenTotalCost, token)
+                       + await CharacterObject.Vehicles.SumParallelAsync(x => x.StolenTotalCost, token)
+                       + await CharacterObject.Drugs.SumParallelAsync(x => x.StolenTotalCost, token);
             }
             else
             {
-                Task<decimal>[] atskCosts = {
-                    CharacterObject.Cyberware.SumParallelAsync(x => x.TotalCost, token),
-                    CharacterObject.Armor.SumParallelAsync(x => x.TotalCost, token),
-                    CharacterObject.Weapons.SumParallelAsync(x => x.TotalCost, token),
-                    CharacterObject.Gear.SumParallelAsync(x => x.TotalCost, token),
-                    CharacterObject.Vehicles.SumParallelAsync(x => x.TotalCost, token),
-                    CharacterObject.Drugs.SumParallelAsync(x => x.TotalCost, token),
-                    CharacterObject.Lifestyles.SumParallelAsync(x => x.TotalCost, token)
-                };
-                token.ThrowIfCancellationRequested();
-                await Task.WhenAll(atskCosts);
-                token.ThrowIfCancellationRequested();
-                foreach (Task<decimal> tskLoop in atskCosts)
-                    decDeductions += await tskLoop;
+                decDeductions += await CharacterObject.Cyberware.SumParallelAsync(x => x.TotalCost, token)
+                                 + await CharacterObject.Armor.SumParallelAsync(x => x.TotalCost, token)
+                                 + await CharacterObject.Weapons.SumParallelAsync(x => x.TotalCost, token)
+                                 + await CharacterObject.Gear.SumParallelAsync(x => x.TotalCost, token)
+                                 + await CharacterObject.Vehicles.SumParallelAsync(x => x.TotalCost, token)
+                                 + await CharacterObject.Drugs.SumParallelAsync(x => x.TotalCost, token);
             }
 
             token.ThrowIfCancellationRequested();
             // Initiation Grade cost.
-            decDeductions += 10000 * await CharacterObject.InitiationGrades.CountAsync(x => x.Schooling, token);
+            decDeductions += await CharacterObject.Lifestyles.SumParallelAsync(x => x.TotalCost, token)
+                             + 10000 * await CharacterObject.InitiationGrades.CountAsync(x => x.Schooling, token);
             token.ThrowIfCancellationRequested();
 
             CharacterObject.StolenNuyen = decStolenNuyenAllowance - decStolenDeductions;

@@ -487,11 +487,10 @@ namespace Chummer.Backend.Equipment
         /// Total cost of the Drug.
         /// </summary>
         public decimal TotalCost => Cost * Quantity;
-
-        /// <summary>
-        /// Total cost of the Drug.
-        /// </summary>
+        
         public decimal StolenTotalCost => Stolen ? TotalCost : 0;
+
+        public decimal NonStolenTotalCost => Stolen ? 0 : TotalCost;
 
         /// <summary>
         /// Total amount of the Drug held by the character.
