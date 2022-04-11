@@ -1111,7 +1111,10 @@ namespace Chummer
                                         x => x.SourceIDString == objQuality.SourceIDString
                                              && x.Extra == objQuality.Extra && x.Type == objQuality.Type);
                                     if (objExistingQuality != null)
+                                    {
                                         lstOldPriorityQualities.Remove(objExistingQuality);
+                                        objQuality.DeleteQuality();
+                                    }
                                     else
                                         await _objCharacter.Qualities.AddAsync(objQuality);
                                 }
