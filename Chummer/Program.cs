@@ -844,6 +844,9 @@ namespace Chummer
                        x => ReferenceEquals(x.CharacterObject, objCharacter)) as Form
                    ?? MainForm.OpenCharacterSheetViewers.FirstOrDefault(x => x.CharacterObjects.Contains(objCharacter))
                        as Form
+                   ?? MainForm.OpenCharacterExportForms.FirstOrDefault(
+                           x => ReferenceEquals(x.CharacterObject, objCharacter))
+                       as Form
                    ?? MainForm;
         }
 
@@ -863,6 +866,9 @@ namespace Chummer
                            x => ReferenceEquals(x.CharacterObject, objCharacter)) as Form
                        ?? await MainForm.OpenCharacterSheetViewers.FirstOrDefaultAsync(
                            x => x.CharacterObjects.Contains(objCharacter)) as Form
+                       ?? await MainForm.OpenCharacterExportForms.FirstOrDefaultAsync(
+                               x => ReferenceEquals(x.CharacterObject, objCharacter))
+                           as Form
                        ?? MainForm;
             }
         }
@@ -1116,14 +1122,14 @@ namespace Chummer
         /// <summary>
         /// Open a character for exporting without necessarily opening them up fully for editing.
         /// </summary>
-        public static Task OpenCharacterForExport(Character objCharacter)
+        public static Task OpenCharacterForExport(Character objCharacter, CancellationToken token = default)
         {
             if (objCharacter == null || MainForm == null)
                 return Task.CompletedTask;
             if (MainForm != null)
-                return MainForm.OpenCharacterForExport(objCharacter);
+                return MainForm.OpenCharacterForExport(objCharacter, token);
             return Task.Run(() => MainFormOnAssignAsyncActions.Add(
-                                x => x.OpenCharacterForExport(objCharacter)));
+                                x => x.OpenCharacterForExport(objCharacter, token)), token);
         }
 
         public static LoadingBar TopMostLoadingBar => s_lstLoadingBars.Count > 0 ? s_lstLoadingBars[0] : null;

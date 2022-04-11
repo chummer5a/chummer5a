@@ -216,6 +216,7 @@ namespace Chummer
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Export Character";
+            this.Tag = "Title_ExportCharacter";
             this.UseWaitCursor = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ExportCharacter_FormClosing);
             this.Load += new System.EventHandler(this.ExportCharacter_Load);

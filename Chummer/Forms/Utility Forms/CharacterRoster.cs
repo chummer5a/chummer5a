@@ -66,8 +66,12 @@ namespace Chummer
         {
             if (!deleteThem)
             {
+                Program.MainForm.OpenCharacterEditorForms.BeforeClearCollectionChanged += OpenCharacterEditorFormsOnBeforeClearCollectionChanged;
                 Program.MainForm.OpenCharacterEditorForms.CollectionChanged += OpenCharacterEditorFormsOnCollectionChanged;
+                Program.MainForm.OpenCharacterSheetViewers.BeforeClearCollectionChanged += OpenCharacterSheetViewersOnBeforeClearCollectionChanged;
                 Program.MainForm.OpenCharacterSheetViewers.CollectionChanged += OpenCharacterSheetViewersOnCollectionChanged;
+                Program.MainForm.OpenCharacterExportForms.BeforeClearCollectionChanged += OpenCharacterExportFormsOnBeforeClearCollectionChanged;
+                Program.MainForm.OpenCharacterExportForms.CollectionChanged += OpenCharacterExportFormsOnCollectionChanged;
                 GlobalSettings.MruChanged += RefreshMruLists;
                 await treCharacterList.DoThreadSafeAsync(x =>
                 {
@@ -88,8 +92,12 @@ namespace Chummer
             }
             else
             {
+                Program.MainForm.OpenCharacterEditorForms.BeforeClearCollectionChanged -= OpenCharacterEditorFormsOnBeforeClearCollectionChanged;
                 Program.MainForm.OpenCharacterEditorForms.CollectionChanged -= OpenCharacterEditorFormsOnCollectionChanged;
+                Program.MainForm.OpenCharacterSheetViewers.BeforeClearCollectionChanged -= OpenCharacterSheetViewersOnBeforeClearCollectionChanged;
                 Program.MainForm.OpenCharacterSheetViewers.CollectionChanged -= OpenCharacterSheetViewersOnCollectionChanged;
+                Program.MainForm.OpenCharacterExportForms.BeforeClearCollectionChanged -= OpenCharacterExportFormsOnBeforeClearCollectionChanged;
+                Program.MainForm.OpenCharacterExportForms.CollectionChanged -= OpenCharacterExportFormsOnCollectionChanged;
                 GlobalSettings.MruChanged -= RefreshMruLists;
                 await treCharacterList.DoThreadSafeAsync(x =>
                 {
@@ -526,6 +534,125 @@ namespace Chummer
             }
         }
 
+        private async void OpenCharacterExportFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (this.IsNullOrDisposed())
+                return;
+            if (!IsFinishedLoading)
+                return;
+            try
+            {
+                bool blnRefreshMru = false;
+                // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
+                foreach (ExportCharacter objForm in e.OldItems)
+                {
+                    if (await GlobalSettings.FavoriteCharacters.ContainsAsync(objForm.CharacterObject.FileName))
+                        continue;
+                    if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
+                            objForm.CharacterObject.FileName))
+                        continue;
+                    blnRefreshMru = true;
+                    break;
+                }
+
+                if (blnRefreshMru)
+                    await RefreshMruLists("mru", _objGenericToken);
+                else
+                    await RefreshNodeTexts(_objGenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                // Swallow this
+            }
+        }
+
+        private async void OpenCharacterExportFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (this.IsNullOrDisposed())
+                return;
+            if (!IsFinishedLoading)
+                return;
+            try
+            {
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        await RefreshNodeTexts(_objGenericToken);
+                        break;
+
+                    case NotifyCollectionChangedAction.Move:
+                    case NotifyCollectionChangedAction.Replace:
+                    case NotifyCollectionChangedAction.Remove:
+                        {
+                            bool blnRefreshMru = false;
+                            // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
+                            foreach (ExportCharacter objForm in e.OldItems)
+                            {
+                                if (await GlobalSettings.FavoriteCharacters.ContainsAsync(objForm.CharacterObject.FileName))
+                                    continue;
+                                if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
+                                        objForm.CharacterObject.FileName))
+                                    continue;
+                                blnRefreshMru = true;
+                                break;
+                            }
+
+                            if (blnRefreshMru)
+                                await RefreshMruLists("mru", _objGenericToken);
+                            else
+                                await RefreshNodeTexts(_objGenericToken);
+                        }
+                        break;
+
+                    case NotifyCollectionChangedAction.Reset:
+                        await RefreshMruLists(string.Empty, _objGenericToken);
+                        break;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Swallow this
+            }
+        }
+
+        private async void OpenCharacterSheetViewersOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (this.IsNullOrDisposed())
+                return;
+            if (!IsFinishedLoading)
+                return;
+            try
+            {
+                bool blnRefreshMru = false;
+                using (new FetchSafelyFromPool<HashSet<string>>(
+                           Utils.StringHashSetPool, out HashSet<string> setCharacters))
+                {
+                    // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
+                    foreach (CharacterSheetViewer objForm in e.OldItems)
+                    {
+                        setCharacters.Clear();
+                        setCharacters.AddRange(objForm.CharacterObjects.Select(x => x.FileName));
+                        setCharacters.ExceptWith(GlobalSettings.FavoriteCharacters);
+                        setCharacters.ExceptWith(GlobalSettings.MostRecentlyUsedCharacters);
+                        if (setCharacters.Count > 0)
+                        {
+                            blnRefreshMru = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (blnRefreshMru)
+                    await RefreshMruLists("mru", _objGenericToken);
+                else
+                    await RefreshNodeTexts(_objGenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                // Swallow this
+            }
+        }
+
         private async void OpenCharacterSheetViewersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (this.IsNullOrDisposed())
@@ -574,6 +701,38 @@ namespace Chummer
                         await RefreshMruLists(string.Empty, _objGenericToken);
                         break;
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                // Swallow this
+            }
+        }
+
+        private async void OpenCharacterEditorFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (this.IsNullOrDisposed())
+                return;
+            if (!IsFinishedLoading)
+                return;
+            try
+            {
+                bool blnRefreshMru = false;
+                // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
+                foreach (CharacterShared objForm in e.OldItems)
+                {
+                    if (await GlobalSettings.FavoriteCharacters.ContainsAsync(objForm.CharacterObject.FileName))
+                        continue;
+                    if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
+                            objForm.CharacterObject.FileName))
+                        continue;
+                    blnRefreshMru = true;
+                    break;
+                }
+
+                if (blnRefreshMru)
+                    await RefreshMruLists("mru", _objGenericToken);
+                else
+                    await RefreshNodeTexts(_objGenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -687,23 +846,13 @@ namespace Chummer
             bool blnAddRecentNode = false;
             List<string> lstRecents = (await GlobalSettings.MostRecentlyUsedCharacters.ToArrayAsync()).ToList();
             // Add any characters that are open to the displayed list so we can have more than 10 characters listed
-            await Program.MainForm.OpenCharacterEditorForms.ForEachAsync(objCharacterForm =>
+            foreach (string strFile in Program.MainForm.OpenFormsWithCharacters.SelectMany(
+                         x => x.CharacterObjects).Select(x => x.FileName))
             {
-                string strFile = objCharacterForm.CharacterObject.FileName;
                 // Make sure we're not loading a character that was already loaded by the MRU list.
                 if (!lstFavorites.Contains(strFile) && !lstRecents.Contains(strFile))
                     lstRecents.Add(strFile);
-            }, token);
-            await Program.MainForm.OpenCharacterSheetViewers.ForEachAsync(objCharacterForm =>
-            {
-                foreach (Character objCharacter in objCharacterForm.CharacterObjects)
-                {
-                    string strFile = objCharacter.FileName;
-                    // Make sure we're not loading a character that was already loaded by the MRU list.
-                    if (!lstFavorites.Contains(strFile) && !lstRecents.Contains(strFile))
-                        lstRecents.Add(strFile);
-                }
-            }, token);
+            }
             foreach (string strFavorite in lstFavorites)
                 lstRecents.Remove(strFavorite);
             if (!blnRefreshFavorites)

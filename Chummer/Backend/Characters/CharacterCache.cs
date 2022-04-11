@@ -885,6 +885,9 @@ namespace Chummer
                 if (Program.MainForm?.OpenCharacterSheetViewers.Any(
                         x => x.CharacterObjects.Any(y => !y.IsDisposed && y.FileName == FilePath)) == true)
                     strMarker += '^';
+                if (Program.MainForm?.OpenCharacterSheetViewers.Any(
+                        x => x.CharacterObjects.Any(y => !y.IsDisposed && y.FileName == FilePath)) == true)
+                    strMarker += '\'';
                 if (!string.IsNullOrEmpty(strMarker))
                     strReturn = strMarker + strSpace + strReturn;
             }

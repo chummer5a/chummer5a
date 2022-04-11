@@ -52,6 +52,8 @@ namespace Chummer
             = new ThreadSafeObservableCollection<CharacterShared>();
         private readonly ThreadSafeObservableCollection<CharacterSheetViewer> _lstOpenCharacterSheetViewers
             = new ThreadSafeObservableCollection<CharacterSheetViewer>();
+        private readonly ThreadSafeObservableCollection<ExportCharacter> _lstOpenCharacterExportForms
+            = new ThreadSafeObservableCollection<ExportCharacter>();
         private readonly string _strCurrentVersion;
         private Chummy _mascotChummy;
 
@@ -83,6 +85,8 @@ namespace Chummer
             _lstOpenCharacterEditorForms.CollectionChanged += OpenCharacterEditorFormsOnCollectionChanged;
             _lstOpenCharacterSheetViewers.BeforeClearCollectionChanged += OpenCharacterSheetViewersOnBeforeClearCollectionChanged;
             _lstOpenCharacterSheetViewers.CollectionChanged += OpenCharacterSheetViewersOnCollectionChanged;
+            _lstOpenCharacterExportForms.BeforeClearCollectionChanged += OpenCharacterExportFormsOnBeforeClearCollectionChanged;
+            _lstOpenCharacterExportForms.CollectionChanged += OpenCharacterExportFormsOnCollectionChanged;
 
             //lets write that in separate lines to see where the exception is thrown
             if (!GlobalSettings.HideMasterIndex || blnIsUnitTest)
@@ -100,6 +104,91 @@ namespace Chummer
                     MdiParent = this
                 };
                 CharacterRoster.FormClosed += (sender, args) => CharacterRoster = null;
+            }
+        }
+
+        private async void OpenCharacterExportFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            foreach (ExportCharacter objOldForm in e.OldItems)
+            {
+                foreach (Character objCharacter in objOldForm.CharacterObjects)
+                {
+                    if (objCharacter == null)
+                        continue;
+                    if (await Program.OpenCharacters.ContainsAsync(objCharacter))
+                    {
+                        if (await Program.OpenCharacters.AllAsync(
+                                x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
+                            && Program.MainForm.OpenFormsWithCharacters.All(
+                                x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
+                            await Program.OpenCharacters.RemoveAsync(objCharacter);
+                    }
+                    else
+                        await objCharacter.DisposeAsync();
+                }
+            }
+        }
+
+        private async void OpenCharacterExportFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (ExportCharacter objNewForm in e.NewItems)
+                    {
+                        async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args) => await Program.MainForm.OpenCharacterExportForms.RemoveAsync(objNewForm);
+                        objNewForm.FormClosed += OnNewFormOnFormClosed;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (ExportCharacter objOldForm in e.OldItems)
+                    {
+                        foreach (Character objCharacter in objOldForm.CharacterObjects)
+                        {
+                            if (objCharacter == null)
+                                continue;
+                            if (await Program.OpenCharacters.ContainsAsync(objCharacter))
+                            {
+                                if (await Program.OpenCharacters.AllAsync(
+                                        x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
+                                    && Program.MainForm.OpenFormsWithCharacters.All(
+                                        x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
+                                    await Program.OpenCharacters.RemoveAsync(objCharacter);
+                            }
+                            else
+                                await objCharacter.DisposeAsync();
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (ExportCharacter objOldForm in e.OldItems)
+                    {
+                        if (e.NewItems.Contains(objOldForm))
+                            continue;
+                        foreach (Character objCharacter in objOldForm.CharacterObjects)
+                        {
+                            if (objCharacter == null)
+                                continue;
+                            if (await Program.OpenCharacters.ContainsAsync(objCharacter))
+                            {
+                                if (await Program.OpenCharacters.AllAsync(
+                                        x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
+                                    && Program.MainForm.OpenFormsWithCharacters.All(
+                                        x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
+                                    await Program.OpenCharacters.RemoveAsync(objCharacter);
+                            }
+                            else
+                                await objCharacter.DisposeAsync();
+                        }
+                    }
+                    foreach (ExportCharacter objNewForm in e.NewItems)
+                    {
+                        if (e.OldItems.Contains(objNewForm))
+                            continue;
+                        async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args) => await Program.MainForm.OpenCharacterExportForms.RemoveAsync(objNewForm);
+                        objNewForm.FormClosed += OnNewFormOnFormClosed;
+                    }
+                    break;
             }
         }
 
@@ -132,8 +221,8 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Add:
                     foreach (CharacterSheetViewer objNewForm in e.NewItems)
                     {
-                        objNewForm.FormClosed += async (o, args) =>
-                            await Program.MainForm.OpenCharacterSheetViewers.RemoveAsync(objNewForm);
+                        async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args) => await Program.MainForm.OpenCharacterSheetViewers.RemoveAsync(objNewForm);
+                        objNewForm.FormClosed += OnNewFormOnFormClosed;
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
@@ -181,8 +270,8 @@ namespace Chummer
                     {
                         if (e.OldItems.Contains(objNewForm))
                             continue;
-                        objNewForm.FormClosed += async (o, args) =>
-                            await Program.MainForm.OpenCharacterSheetViewers.RemoveAsync(objNewForm);
+                        async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args) => await Program.MainForm.OpenCharacterSheetViewers.RemoveAsync(objNewForm);
+                        objNewForm.FormClosed += OnNewFormOnFormClosed;
                     }
                     break;
             }
@@ -215,8 +304,8 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Add:
                     foreach (CharacterShared objNewForm in e.NewItems)
                     {
-                        objNewForm.FormClosed += async (o, args) =>
-                            await Program.MainForm.OpenCharacterEditorForms.RemoveAsync(objNewForm);
+                        async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args) => await Program.MainForm.OpenCharacterEditorForms.RemoveAsync(objNewForm);
+                        objNewForm.FormClosed += OnNewFormOnFormClosed;
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
@@ -260,8 +349,8 @@ namespace Chummer
                     {
                         if (e.OldItems.Contains(objNewForm))
                             continue;
-                        objNewForm.FormClosed += async (o, args) =>
-                            await Program.MainForm.OpenCharacterEditorForms.RemoveAsync(objNewForm);
+                        async void OnNewFormOnFormClosed(object o, FormClosedEventArgs args) => await Program.MainForm.OpenCharacterEditorForms.RemoveAsync(objNewForm);
+                        objNewForm.FormClosed += OnNewFormOnFormClosed;
                     }
                     break;
             }
@@ -1153,6 +1242,20 @@ namespace Chummer
 
                             break;
                         }
+                        case ExportCharacter frmExportCharacter:
+                        {
+                            string strExport = await LanguageManager.GetStringAsync("String_Export");
+                            await objTabPage.DoThreadSafeAsync(
+                                x => x.Text = string.Format(
+                                    strExport,
+                                    frmExportCharacter.CharacterObject.Name.Trim()));
+                            if (GlobalSettings.AllowEasterEggs && _mascotChummy != null)
+                            {
+                                _mascotChummy.CharacterObject = null;
+                            }
+
+                            break;
+                        }
                         default:
                         {
                             string strTagText = await LanguageManager.GetStringAsync(await objMdiChild.DoThreadSafeFuncAsync(x => x.Tag?.ToString()), GlobalSettings.Language, false);
@@ -1300,6 +1403,35 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Switch to an open character exporter if one is available.
+        /// </summary>
+        public async Task<bool> SwitchToOpenExportCharacter(Character objCharacter, CancellationToken token = default)
+        {
+            using (await CursorWait.NewAsync(this, token: token))
+            {
+                if (objCharacter == null)
+                    return false;
+                ExportCharacter objCharacterForm = await OpenCharacterExportForms.FirstOrDefaultAsync(x => ReferenceEquals(x.CharacterObject, objCharacter), token);
+                if (objCharacterForm == null)
+                    return false;
+                await objCharacterForm.DoThreadSafeAsync(x =>
+                {
+                    foreach (TabPage objTabPage in tabForms.TabPages)
+                    {
+                        if (objTabPage.Tag != x)
+                            continue;
+                        tabForms.SelectTab(objTabPage);
+                        if (_mascotChummy != null)
+                            _mascotChummy.CharacterObject = objCharacter;
+                        return;
+                    }
+                    x.BringToFront();
+                }, token);
+                return true;
+            }
+        }
+
         public async void UpdateCharacterTabTitle(object sender, PropertyChangedEventArgs e)
         {
             // Change the TabPage's text to match the character's name (or "Unnamed Character" if they are currently unnamed).
@@ -1313,22 +1445,26 @@ namespace Chummer
         {
             string strSpace = await LanguageManager.GetStringAsync("String_Space");
             string strSheet = await LanguageManager.GetStringAsync("String_Sheet");
+            string strExport = await LanguageManager.GetStringAsync("String_Export");
             await tabForms.DoThreadSafeAsync(x =>
             {
                 foreach (TabPage objTabPage in x.TabPages)
                 {
                     switch (objTabPage.Tag)
                     {
-                        case CharacterShared objCharacterForm when objCharacterForm.CharacterObject == objCharacter:
+                        case CharacterShared frmCharacter when frmCharacter.CharacterObject == objCharacter:
                             objTabPage.Text = strCharacterName;
                             break;
-                        case CharacterSheetViewer objCharacterSheetViewer when objCharacterSheetViewer.CharacterObjects.Contains(objCharacter):
+                        case CharacterSheetViewer frmCharacterSheetViewer when frmCharacterSheetViewer.CharacterObjects.Contains(objCharacter):
                             objTabPage.Text
                                 = string.Format(
                                     strSheet,
                                     string.Join(',' + strSpace,
-                                                objCharacterSheetViewer.CharacterObjects.Select(
+                                                frmCharacterSheetViewer.CharacterObjects.Select(
                                                     y => y.CharacterName.Trim())));
+                            break;
+                        case CharacterShared frmExport when frmExport.CharacterObject == objCharacter:
+                            objTabPage.Text = string.Format(strExport, strCharacterName);
                             break;
                     }
                 }
@@ -1790,7 +1926,7 @@ namespace Chummer
                     {
                         MdiParent = x
                     }, token);
-                    await frmViewer.SetCharacters(default, objCharacter);
+                    await frmViewer.SetCharacters(token, objCharacter);
                     await frmViewer.DoThreadSafeAsync(x => x.Show(), token);
                 }
             }
@@ -1823,17 +1959,7 @@ namespace Chummer
                     using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strFile, Character.NumLoadingSections))
                         objCharacter = await Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar);
                 }
-                try
-                {
-                    await OpenCharacterForExport(objCharacter);
-                }
-                finally
-                {
-                    if (await Program.OpenCharacters.AllAsync(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
-                        && await OpenCharacterEditorForms.AllAsync(x => x.CharacterObject != objCharacter))
-                        await Program.OpenCharacters.RemoveAsync(objCharacter);
-                    await objCharacter.DisposeAsync();
-                }
+                await OpenCharacterForExport(objCharacter);
             }
         }
 
@@ -1845,17 +1971,13 @@ namespace Chummer
             using (await CursorWait.NewAsync(this, token: token))
             {
                 // Character is already open in an existing form, so switch to it and make it open up its exporter
-                if (await SwitchToOpenCharacter(objCharacter, token))
+                if (!await SwitchToOpenExportCharacter(objCharacter, token))
                 {
-                    CharacterShared objOpenForm = await OpenCharacterEditorForms.FirstOrDefaultAsync(x => x.CharacterObject == objCharacter, token: token);
-                    if (objOpenForm != null)
-                        await objOpenForm.DoExport(token);
-                }
-                else
-                {
-                    using (ThreadSafeForm<ExportCharacter> frmExportCharacter =
-                           await ThreadSafeForm<ExportCharacter>.GetAsync(() => new ExportCharacter(objCharacter), token))
-                        await frmExportCharacter.ShowDialogSafeAsync(this, token);
+                    ExportCharacter frmViewer = await this.DoThreadSafeFuncAsync(x => new ExportCharacter(objCharacter)
+                    {
+                        MdiParent = x
+                    }, token);
+                    await frmViewer.DoThreadSafeAsync(x => x.Show(), token);
                 }
             }
         }
@@ -2304,6 +2426,9 @@ namespace Chummer
         public ThreadSafeObservableCollection<CharacterSheetViewer> OpenCharacterSheetViewers =>
             _lstOpenCharacterSheetViewers;
 
+        public ThreadSafeObservableCollection<ExportCharacter> OpenCharacterExportForms =>
+            _lstOpenCharacterExportForms;
+
         public IEnumerable<IHasCharacterObjects> OpenFormsWithCharacters
         {
             get
@@ -2311,6 +2436,8 @@ namespace Chummer
                 foreach (CharacterShared frmLoop in _lstOpenCharacterEditorForms)
                     yield return frmLoop;
                 foreach (CharacterSheetViewer frmLoop in _lstOpenCharacterSheetViewers)
+                    yield return frmLoop;
+                foreach (ExportCharacter frmLoop in _lstOpenCharacterExportForms)
                     yield return frmLoop;
             }
         }

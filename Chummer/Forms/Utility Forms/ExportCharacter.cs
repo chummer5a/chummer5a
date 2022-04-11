@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -34,7 +35,7 @@ using Formatting = Newtonsoft.Json.Formatting;
 
 namespace Chummer
 {
-    public partial class ExportCharacter : Form
+    public partial class ExportCharacter : Form, IHasCharacterObjects
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private readonly Character _objCharacter;
@@ -52,12 +53,17 @@ namespace Chummer
         private CultureInfo _objExportCulture;
         private bool _blnLoading = true;
 
+        public Character CharacterObject => _objCharacter;
+
+        public IEnumerable<Character> CharacterObjects => _objCharacter.Yield();
+
         #region Control Events
 
         public ExportCharacter(Character objCharacter)
         {
             _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
             _objCharacter = objCharacter;
+            Program.MainForm.OpenCharacterExportForms.Add(this);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -65,6 +71,8 @@ namespace Chummer
 
         private async void ExportCharacter_Load(object sender, EventArgs e)
         {
+            _objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;
+            _objCharacter.SettingsPropertyChanged += ObjCharacterOnSettingsPropertyChanged;
             await LanguageManager.PopulateSheetLanguageListAsync(cboLanguage, GlobalSettings.DefaultCharacterSheet, _objCharacter.Yield(), _objExportCulture);
             using (new FetchSafelyFromPool<List<ListItem>>(
                        Utils.ListItemListPool, out List<ListItem> lstExportMethods))
@@ -93,12 +101,37 @@ namespace Chummer
             }
 
             _blnLoading = false;
-            string strText = await LanguageManager.GetStringAsync("String_Space") + _objCharacter?.Name;
             try
             {
                 await Task.WhenAll(
-                    this.DoThreadSafeAsync(x => x.Text += strText, _objGenericToken),
+                    UpdateWindowTitleAsync(_objGenericToken),
                     DoLanguageUpdate(_objGenericToken));
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void ObjCharacterOnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            try
+            {
+                if (e.PropertyName == nameof(CharacterSettings.Name))
+                    await UpdateWindowTitleAsync(_objGenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void ObjCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            try
+            {
+                if (e.PropertyName == nameof(Character.CharacterName) || e.PropertyName == nameof(Character.Created))
+                    await UpdateWindowTitleAsync(_objGenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -108,18 +141,22 @@ namespace Chummer
 
         private async void ExportCharacter_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_objXmlGeneratorCancellationTokenSource?.IsCancellationRequested == false)
+            CancellationTokenSource objTemp = Interlocked.Exchange(ref _objXmlGeneratorCancellationTokenSource, null);
+            if (objTemp?.IsCancellationRequested == false)
             {
-                _objXmlGeneratorCancellationTokenSource.Cancel(false);
-                _objXmlGeneratorCancellationTokenSource.Dispose();
-                _objXmlGeneratorCancellationTokenSource = null;
+                objTemp.Cancel(false);
+                objTemp.Dispose();
             }
-            if (_objCharacterXmlGeneratorCancellationTokenSource?.IsCancellationRequested == false)
+            objTemp = Interlocked.Exchange(ref _objCharacterXmlGeneratorCancellationTokenSource, null);
+            if (objTemp?.IsCancellationRequested == false)
             {
-                _objCharacterXmlGeneratorCancellationTokenSource.Cancel(false);
-                _objCharacterXmlGeneratorCancellationTokenSource.Dispose();
-                _objCharacterXmlGeneratorCancellationTokenSource = null;
+                objTemp.Cancel(false);
+                objTemp.Dispose();
             }
+
+            _objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
+            _objCharacter.SettingsPropertyChanged -= ObjCharacterOnSettingsPropertyChanged;
+
             try
             {
                 await _tskXmlGenerator;
@@ -248,13 +285,27 @@ namespace Chummer
                             }
                             else
                             {
-                                if (_objXmlGeneratorCancellationTokenSource?.IsCancellationRequested == false)
+                                CancellationTokenSource objNewSource = new CancellationTokenSource();
+                                CancellationTokenSource objTemp
+                                    = Interlocked.Exchange(ref _objXmlGeneratorCancellationTokenSource, objNewSource);
+                                if (objTemp?.IsCancellationRequested == false)
                                 {
-                                    _objXmlGeneratorCancellationTokenSource.Cancel(false);
-                                    _objXmlGeneratorCancellationTokenSource.Dispose();
+                                    objTemp.Cancel(false);
+                                    objTemp.Dispose();
                                 }
-                                token.ThrowIfCancellationRequested();
-                                _objXmlGeneratorCancellationTokenSource = new CancellationTokenSource();
+
+                                try
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                }
+                                catch (OperationCanceledException)
+                                {
+                                    Interlocked.CompareExchange(ref _objXmlGeneratorCancellationTokenSource, null,
+                                                                objNewSource);
+                                    objNewSource.Dispose();
+                                    throw;
+                                }
+
                                 try
                                 {
                                     if (_tskXmlGenerator?.IsCompleted == false)
@@ -265,9 +316,10 @@ namespace Chummer
                                     // Swallow this
                                 }
 
+                                CancellationToken objToken = objNewSource.Token;
                                 _tskXmlGenerator = _strXslt == "JSON"
-                                    ? Task.Run(() => GenerateJson(_objCharacterXmlGeneratorCancellationTokenSource.Token), _objXmlGeneratorCancellationTokenSource.Token)
-                                    : Task.Run(() => GenerateXml(_objCharacterXmlGeneratorCancellationTokenSource.Token), _objXmlGeneratorCancellationTokenSource.Token);
+                                    ? Task.Run(() => GenerateJson(objToken), objToken)
+                                    : Task.Run(() => GenerateXml(objToken), objToken);
                             }
                         }
                     }
@@ -275,13 +327,27 @@ namespace Chummer
                 else
                 {
                     token.ThrowIfCancellationRequested();
-                    if (_objCharacterXmlGeneratorCancellationTokenSource?.IsCancellationRequested == false)
+                    CancellationTokenSource objNewSource = new CancellationTokenSource();
+                    CancellationTokenSource objTemp
+                        = Interlocked.Exchange(ref _objXmlGeneratorCancellationTokenSource, objNewSource);
+                    if (objTemp?.IsCancellationRequested == false)
                     {
-                        _objCharacterXmlGeneratorCancellationTokenSource.Cancel(false);
-                        _objCharacterXmlGeneratorCancellationTokenSource.Dispose();
+                        objTemp.Cancel(false);
+                        objTemp.Dispose();
                     }
-                    token.ThrowIfCancellationRequested();
-                    _objCharacterXmlGeneratorCancellationTokenSource = new CancellationTokenSource();
+
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        Interlocked.CompareExchange(ref _objXmlGeneratorCancellationTokenSource, null,
+                                                    objNewSource);
+                        objNewSource.Dispose();
+                        throw;
+                    }
+
                     try
                     {
                         if (_tskCharacterXmlGenerator?.IsCompleted == false)
@@ -292,8 +358,8 @@ namespace Chummer
                         // Swallow this
                     }
 
-                    _tskCharacterXmlGenerator
-                        = Task.Run(() => GenerateCharacterXml(_objCharacterXmlGeneratorCancellationTokenSource.Token), _objCharacterXmlGeneratorCancellationTokenSource.Token);
+                    CancellationToken objToken = objNewSource.Token;
+                    _tskCharacterXmlGenerator = Task.Run(() => GenerateCharacterXml(objToken), objToken);
                 }
             }
         }
@@ -328,13 +394,28 @@ namespace Chummer
                                                       y => txtText.DoThreadSafeAsync(x => x.Text = y.Result, token),
                                                       token).Unwrap());
                 token.ThrowIfCancellationRequested();
-                _objCharacterXml = await _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
-                                                                         _objCharacterXmlGeneratorCancellationTokenSource
-                                                                             .Token);
+                using (token.Register(() => _objCharacterXmlGeneratorCancellationTokenSource.Cancel(false)))
+                    _objCharacterXml = await _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
+                                                                             _objCharacterXmlGeneratorCancellationTokenSource
+                                                                                 .Token);
                 token.ThrowIfCancellationRequested();
                 if (_objCharacterXml != null)
                     await DoXsltUpdate(token);
             }
+        }
+
+        /// <summary>
+        /// Update the Window title to show the Character's name and unsaved changes status.
+        /// </summary>
+        protected async Task UpdateWindowTitleAsync(CancellationToken token = default)
+        {
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
+            string strTitle = await LanguageManager.GetStringAsync("Title_ExportCharacter") + ':' + strSpace
+                              + CharacterObject.CharacterName + strSpace + '-' + strSpace
+                              + await LanguageManager.GetStringAsync(
+                                  CharacterObject.Created ? "Title_CareerMode" : "Title_CreateNewCharacter") + strSpace
+                              + '(' + CharacterObject.Settings.Name + ')';
+            await this.DoThreadSafeAsync(x => x.Text = strTitle, token);
         }
 
         #region XML

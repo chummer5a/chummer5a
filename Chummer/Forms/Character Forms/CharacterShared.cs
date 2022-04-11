@@ -8307,10 +8307,9 @@ namespace Chummer
             return Program.OpenCharacterForPrinting(CharacterObject, token);
         }
 
-        public async ValueTask DoExport(CancellationToken token = default)
+        public Task DoExport(CancellationToken token = default)
         {
-            using (ThreadSafeForm<ExportCharacter> frmExportCharacter = await ThreadSafeForm<ExportCharacter>.GetAsync(() => new ExportCharacter(CharacterObject), token))
-                await frmExportCharacter.ShowDialogSafeAsync(this, token);
+            return Program.OpenCharacterForPrinting(CharacterObject, token);
         }
 
         /// <summary>

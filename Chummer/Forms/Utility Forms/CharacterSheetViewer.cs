@@ -271,6 +271,12 @@ namespace Chummer
                 objTempTokenSource.Dispose();
             }
 
+            foreach (Character objCharacter in _lstCharacters)
+            {
+                objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
+                objCharacter.SettingsPropertyChanged -= ObjCharacterOnSettingsPropertyChanged;
+            }
+
             // Remove the mugshots directory when the form closes.
             try
             {
@@ -986,8 +992,15 @@ namespace Chummer
 
         private async void ObjCharacterOnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(CharacterSettings.Name))
-                await UpdateWindowTitleAsync(_objGenericToken);
+            try
+            {
+                if (e.PropertyName == nameof(CharacterSettings.Name))
+                    await UpdateWindowTitleAsync(_objGenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void ObjCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e)

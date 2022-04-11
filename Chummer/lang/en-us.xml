@@ -9479,6 +9479,10 @@
       <key>String_Export_JSON</key>
       <text>Export JSON</text>
     </string>
+    <string>
+      <key>String_Export</key>
+      <text>Export {0}</text>
+    </string>
     <!-- End Region-->
     <!-- Region Create Spell Window -->
     <string>
