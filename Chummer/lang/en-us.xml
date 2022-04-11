@@ -9385,6 +9385,10 @@
       <key>Message_Viewer_PDFPrinterError</key>
       <text>An error was encountered while attempting to open up the printing dialog for "{0}". Chummer5a will now proceed with its built-in PDF file saving system.</text>
     </string>
+    <string>
+      <key>String_Sheet</key>
+      <text>Sheet - {0}</text>
+    </string>
     <!-- End Region-->
     <!-- Region Create Improvement Window -->
     <string>

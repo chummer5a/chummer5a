@@ -74,7 +74,6 @@ namespace Chummer
             lmtControl.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirty += MakeDirty;
 
-            Program.MainForm.OpenCharacterForms.Add(this);
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
@@ -1590,7 +1589,6 @@ namespace Chummer
 
                     if (Program.MainForm.ActiveMdiChild == this)
                         ToolStripManager.RevertMerge("toolStrip");
-                    await Program.MainForm.OpenCharacterForms.RemoveAsync(this);
 
                     // Unsubscribe from events.
                     CharacterObject.AttributeSection.Attributes.CollectionChanged -= AttributeCollectionChanged;
@@ -1703,11 +1701,6 @@ namespace Chummer
                     {
                         // Swallow this
                     }
-
-                    // Trash the global variables and dispose of the Form.
-                    if (await Program.OpenCharacters.AllAsync(
-                            x => x == CharacterObject || !x.LinkedCharacters.Contains(CharacterObject)))
-                        await Program.OpenCharacters.RemoveAsync(CharacterObject);
                 }
                 finally
                 {
@@ -2988,47 +2981,54 @@ namespace Chummer
 
         private async void mnuSpecialCloningMachine_Click(object sender, EventArgs e)
         {
-            int intClones;
             string strDescription = await LanguageManager.GetStringAsync("String_CloningMachineNumber");
-            using (ThreadSafeForm<SelectNumber> frmPickNumber = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber(0)
-                   {
-                       Description = strDescription,
-                       Minimum = 1
-                   }))
+            try
             {
-                if (await frmPickNumber.ShowDialogSafeAsync(this) == DialogResult.Cancel)
-                    return;
-
-                intClones = frmPickNumber.MyForm.SelectedValue.ToInt32();
-            }
-
-            if (intClones <= 0)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CloningMachineNumberRequired"), await LanguageManager.GetStringAsync("MessageTitle_CloningMachineNumberRequired"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            using (await CursorWait.NewAsync(this))
-            {
-                Character[] lstClones = new Character[intClones];
-                using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(CharacterObject.Alias, Character.NumLoadingSections * intClones))
+                int intClones;
+                using (ThreadSafeForm<SelectNumber> frmPickNumber = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber(0)
+                       {
+                           Description = strDescription,
+                           Minimum = 1
+                       }, GenericToken))
                 {
-                    string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                    Task<Character>[] tskLoadingTasks = new Task<Character>[intClones];
-                    for (int i = 0; i < intClones; ++i)
-                    {
-                        string strNewName = CharacterObject.Alias + strSpace + i.ToString(GlobalSettings.CultureInfo);
-                        tskLoadingTasks[i]
-                            // ReSharper disable once AccessToDisposedClosure
-                            = Task.Run(() => Program.LoadCharacterAsync(CharacterObject.FileName, strNewName, true, frmLoadingBar: frmLoadingBar));
-                    }
+                    if (await frmPickNumber.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        return;
 
-                    // Await structure prevents UI thread lock-ups if the LoadCharacter() function shows any messages
-                    await Task.WhenAll(tskLoadingTasks);
-                    for (int i = 0; i < intClones; ++i)
-                        lstClones[i] = await tskLoadingTasks[i];
+                    intClones = frmPickNumber.MyForm.SelectedValue.ToInt32();
                 }
-                await Program.OpenCharacterList(lstClones, false);
+
+                if (intClones <= 0)
+                {
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CloningMachineNumberRequired"), await LanguageManager.GetStringAsync("MessageTitle_CloningMachineNumberRequired"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                using (await CursorWait.NewAsync(this, token: GenericToken))
+                {
+                    Character[] lstClones = new Character[intClones];
+                    using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(CharacterObject.Alias, Character.NumLoadingSections * intClones))
+                    {
+                        string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                        Task<Character>[] tskLoadingTasks = new Task<Character>[intClones];
+                        for (int i = 0; i < intClones; ++i)
+                        {
+                            string strNewName = CharacterObject.Alias + strSpace + i.ToString(GlobalSettings.CultureInfo);
+                            tskLoadingTasks[i]
+                                // ReSharper disable once AccessToDisposedClosure
+                                = Task.Run(() => Program.LoadCharacterAsync(CharacterObject.FileName, strNewName, true, frmLoadingBar: frmLoadingBar));
+                        }
+
+                        // Await structure prevents UI thread lock-ups if the LoadCharacter() function shows any messages
+                        await Task.WhenAll(tskLoadingTasks);
+                        for (int i = 0; i < intClones; ++i)
+                            lstClones[i] = await tskLoadingTasks[i];
+                    }
+                    await Program.OpenCharacterList(lstClones, false, GenericToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -3802,86 +3802,88 @@ namespace Chummer
                 strFileName = openFileDialog.FileName;
             }
 
-            string strOpenFile = string.Empty;
-            using (await CursorWait.NewAsync(this))
+            try
             {
-                Character objMerge = new Character {FileName = CharacterObject.FileName};
-                try
+                string strOpenFile = string.Empty;
+                using (await CursorWait.NewAsync(this, token: GenericToken))
                 {
-                    Character objVessel = new Character {FileName = strFileName};
+                    Character objMerge = new Character {FileName = CharacterObject.FileName};
                     try
                     {
-                        using (LoadingBar frmLoadingBar
-                               = await Program.CreateAndShowProgressBarAsync(
-                                   Path.GetFileName(objVessel.FileName), Character.NumLoadingSections * 2 + 7))
+                        Character objVessel = new Character {FileName = strFileName};
+                        try
                         {
-                            bool blnSuccess = await objVessel.LoadAsync(frmLoadingBar);
-                            if (!blnSuccess)
+                            using (LoadingBar frmLoadingBar
+                                   = await Program.CreateAndShowProgressBarAsync(
+                                       Path.GetFileName(objVessel.FileName), Character.NumLoadingSections * 2 + 7))
                             {
-                                Program.ShowMessageBox(this,
-                                                       await LanguageManager.GetStringAsync(
-                                                           "Message_Load_Error_Warning"),
-                                                       await LanguageManager.GetStringAsync("String_Error"),
-                                                       MessageBoxButtons.OK,
-                                                       MessageBoxIcon.Error);
-                                return;
-                            }
-
-                            // Make sure the Vessel is in Career Mode.
-                            if (!objVessel.Created)
-                            {
-                                Program.ShowMessageBox(this,
-                                                       await LanguageManager.GetStringAsync(
-                                                           "Message_VesselInCareerMode"),
-                                                       await LanguageManager.GetStringAsync("MessageTitle_Possession"),
-                                                       MessageBoxButtons.OK,
-                                                       MessageBoxIcon.Error);
-                                return;
-                            }
-
-                            // Load the Spirit's save file into a new Merge character.
-                            frmLoadingBar.CharacterFile = objMerge.FileName;
-                            blnSuccess = await objMerge.LoadAsync(frmLoadingBar);
-                            if (!blnSuccess)
-                            {
-                                Program.ShowMessageBox(this,
-                                                       await LanguageManager.GetStringAsync(
-                                                           "Message_Load_Error_Warning"),
-                                                       await LanguageManager.GetStringAsync("String_Error"),
-                                                       MessageBoxButtons.OK,
-                                                       MessageBoxIcon.Error);
-                                return;
-                            }
-
-                            objMerge.Possessed = true;
-                            objMerge.Alias = objVessel.CharacterName
-                                             + await LanguageManager.GetStringAsync("String_Space") + '('
-                                             + await LanguageManager.GetStringAsync("String_Possessed") + ')';
-
-                            // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
-                            bool blnHasImmunity = false;
-                            foreach (CritterPower objCritterPower in objMerge.CritterPowers)
-                            {
-                                if (objCritterPower.Name == "Immunity" && objCritterPower.Extra == "Normal Weapons")
+                                bool blnSuccess = await objVessel.LoadAsync(frmLoadingBar, token: GenericToken);
+                                if (!blnSuccess)
                                 {
-                                    blnHasImmunity = true;
-                                    break;
+                                    Program.ShowMessageBox(this,
+                                                           await LanguageManager.GetStringAsync(
+                                                               "Message_Load_Error_Warning"),
+                                                           await LanguageManager.GetStringAsync("String_Error"),
+                                                           MessageBoxButtons.OK,
+                                                           MessageBoxIcon.Error);
+                                    return;
                                 }
-                            }
 
-                            if (!blnHasImmunity)
-                            {
-                                XmlDocument objPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml");
-                                XmlNode objPower
-                                    = objPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
+                                // Make sure the Vessel is in Career Mode.
+                                if (!objVessel.Created)
+                                {
+                                    Program.ShowMessageBox(this,
+                                                           await LanguageManager.GetStringAsync(
+                                                               "Message_VesselInCareerMode"),
+                                                           await LanguageManager.GetStringAsync("MessageTitle_Possession"),
+                                                           MessageBoxButtons.OK,
+                                                           MessageBoxIcon.Error);
+                                    return;
+                                }
 
-                                CritterPower objCritterPower = new CritterPower(objMerge);
-                                objCritterPower.Create(objPower, 0, "Normal Weapons");
-                                await objMerge.CritterPowers.AddAsync(objCritterPower);
-                            }
+                                // Load the Spirit's save file into a new Merge character.
+                                frmLoadingBar.CharacterFile = objMerge.FileName;
+                                blnSuccess = await objMerge.LoadAsync(frmLoadingBar, token: GenericToken);
+                                if (!blnSuccess)
+                                {
+                                    Program.ShowMessageBox(this,
+                                                           await LanguageManager.GetStringAsync(
+                                                               "Message_Load_Error_Warning"),
+                                                           await LanguageManager.GetStringAsync("String_Error"),
+                                                           MessageBoxButtons.OK,
+                                                           MessageBoxIcon.Error);
+                                    return;
+                                }
 
-                            //TOD: Implement Possession attribute bonuses.
-                            /*
+                                objMerge.Possessed = true;
+                                objMerge.Alias = objVessel.CharacterName
+                                                 + await LanguageManager.GetStringAsync("String_Space") + '('
+                                                 + await LanguageManager.GetStringAsync("String_Possessed") + ')';
+
+                                // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
+                                bool blnHasImmunity = false;
+                                foreach (CritterPower objCritterPower in objMerge.CritterPowers)
+                                {
+                                    if (objCritterPower.Name == "Immunity" && objCritterPower.Extra == "Normal Weapons")
+                                    {
+                                        blnHasImmunity = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!blnHasImmunity)
+                                {
+                                    XmlDocument objPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml", token: GenericToken);
+                                    XmlNode objPower
+                                        = objPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
+
+                                    CritterPower objCritterPower = new CritterPower(objMerge);
+                                    objCritterPower.Create(objPower, 0, "Normal Weapons");
+                                    await objMerge.CritterPowers.AddAsync(objCritterPower);
+                                }
+
+                                //TOD: Implement Possession attribute bonuses.
+                                /*
                             // Add the Vessel's Physical Attributes to the Spirit's Force.
                             objMerge.BOD.MetatypeMaximum = objVessel.BOD.Value + objMerge.MAG.TotalValue;
                             objMerge.BOD.Value = objVessel.BOD.Value + objMerge.MAG.TotalValue;
@@ -3893,115 +3895,120 @@ namespace Chummer
                             objMerge.STR.Value = objVessel.STR.Value + objMerge.MAG.TotalValue;
                             */
 
-                            await frmLoadingBar.PerformStepAsync(
-                                await LanguageManager.GetStringAsync("String_SelectPACKSKit_Lifestyles"));
-                            // Copy any Lifestyles the Vessel has.
-                            foreach (Lifestyle objLifestyle in objVessel.Lifestyles)
-                                await objMerge.Lifestyles.AddAsync(objLifestyle);
+                                await frmLoadingBar.PerformStepAsync(
+                                    await LanguageManager.GetStringAsync("String_SelectPACKSKit_Lifestyles"));
+                                // Copy any Lifestyles the Vessel has.
+                                foreach (Lifestyle objLifestyle in objVessel.Lifestyles)
+                                    await objMerge.Lifestyles.AddAsync(objLifestyle);
 
-                            await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Armor"));
-                            // Copy any Armor the Vessel has.
-                            foreach (Armor objArmor in objVessel.Armor)
-                            {
-                                await objMerge.Armor.AddAsync(objArmor);
-                                CopyArmorImprovements(objVessel, objMerge, objArmor);
+                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Armor"));
+                                // Copy any Armor the Vessel has.
+                                foreach (Armor objArmor in objVessel.Armor)
+                                {
+                                    await objMerge.Armor.AddAsync(objArmor);
+                                    CopyArmorImprovements(objVessel, objMerge, objArmor);
+                                }
+
+                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Gear"));
+                                // Copy any Gear the Vessel has.
+                                foreach (Gear objGear in objVessel.Gear)
+                                {
+                                    await objMerge.Gear.AddAsync(objGear);
+                                    CopyGearImprovements(objVessel, objMerge, objGear);
+                                }
+
+                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Cyberware"));
+                                // Copy any Cyberware/Bioware the Vessel has.
+                                foreach (Cyberware objCyberware in objVessel.Cyberware)
+                                {
+                                    await objMerge.Cyberware.AddAsync(objCyberware);
+                                    CopyCyberwareImprovements(objVessel, objMerge, objCyberware);
+                                }
+
+                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Weapons"));
+                                // Copy any Weapons the Vessel has.
+                                foreach (Weapon objWeapon in objVessel.Weapons)
+                                    await objMerge.Weapons.AddAsync(objWeapon);
+
+                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Vehicles"));
+                                // Copy and Vehicles the Vessel has.
+                                foreach (Vehicle objVehicle in objVessel.Vehicles)
+                                    await objMerge.Vehicles.AddAsync(objVehicle);
+
+                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("String_Settings"));
+                                // Copy the character info.
+                                objMerge.Gender = objVessel.Gender;
+                                objMerge.Age = objVessel.Age;
+                                objMerge.Eyes = objVessel.Eyes;
+                                objMerge.Hair = objVessel.Hair;
+                                objMerge.Height = objVessel.Height;
+                                objMerge.Weight = objVessel.Weight;
+                                objMerge.Skin = objVessel.Skin;
+                                objMerge.Name = objVessel.Name;
+                                objMerge.StreetCred = objVessel.StreetCred;
+                                objMerge.BurntStreetCred = objVessel.BurntStreetCred;
+                                objMerge.Notoriety = objVessel.Notoriety;
+                                objMerge.PublicAwareness = objVessel.PublicAwareness;
+                                foreach (Image objMugshot in objVessel.Mugshots)
+                                    await objMerge.Mugshots.AddAsync(objMugshot);
                             }
+                        }
+                        finally
+                        {
+                            await objVessel.DisposeAsync();
+                        }
 
-                            await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Gear"));
-                            // Copy any Gear the Vessel has.
-                            foreach (Gear objGear in objVessel.Gear)
+                        string strShowFileName = Path.GetFileName(objMerge.FileName);
+                        if (string.IsNullOrEmpty(strShowFileName))
+                            strShowFileName = objMerge.CharacterName;
+                        strShowFileName = strShowFileName.TrimEndOnce(".chum5")
+                                          + await LanguageManager.GetStringAsync("String_Space") + '('
+                                          + await LanguageManager.GetStringAsync("String_Possessed") + ')';
+
+                        // Now that everything is done, save the merged character and open them.
+                        using (SaveFileDialog saveFileDialog = new SaveFileDialog
+                               {
+                                   Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
+                                       + await LanguageManager.GetStringAsync("DialogFilter_All"),
+                                   FileName = strShowFileName
+                               })
+                        {
+                            if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
+                                return;
+                            using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
                             {
-                                await objMerge.Gear.AddAsync(objGear);
-                                CopyGearImprovements(objVessel, objMerge, objGear);
+                                await frmLoadingBar.PerformStepAsync(objMerge.CharacterName,
+                                                                     LoadingBar.ProgressBarTextPatterns.Saving);
+                                objMerge.FileName = saveFileDialog.FileName;
+                                if (await objMerge.SaveAsync(token: GenericToken))
+                                {
+                                    // Get the name of the file and destroy the references to the Vessel and the merged character.
+                                    strOpenFile = objMerge.FileName;
+                                }
                             }
-
-                            await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Cyberware"));
-                            // Copy any Cyberware/Bioware the Vessel has.
-                            foreach (Cyberware objCyberware in objVessel.Cyberware)
-                            {
-                                await objMerge.Cyberware.AddAsync(objCyberware);
-                                CopyCyberwareImprovements(objVessel, objMerge, objCyberware);
-                            }
-
-                            await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Weapons"));
-                            // Copy any Weapons the Vessel has.
-                            foreach (Weapon objWeapon in objVessel.Weapons)
-                                await objMerge.Weapons.AddAsync(objWeapon);
-
-                            await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Vehicles"));
-                            // Copy and Vehicles the Vessel has.
-                            foreach (Vehicle objVehicle in objVessel.Vehicles)
-                                await objMerge.Vehicles.AddAsync(objVehicle);
-
-                            await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("String_Settings"));
-                            // Copy the character info.
-                            objMerge.Gender = objVessel.Gender;
-                            objMerge.Age = objVessel.Age;
-                            objMerge.Eyes = objVessel.Eyes;
-                            objMerge.Hair = objVessel.Hair;
-                            objMerge.Height = objVessel.Height;
-                            objMerge.Weight = objVessel.Weight;
-                            objMerge.Skin = objVessel.Skin;
-                            objMerge.Name = objVessel.Name;
-                            objMerge.StreetCred = objVessel.StreetCred;
-                            objMerge.BurntStreetCred = objVessel.BurntStreetCred;
-                            objMerge.Notoriety = objVessel.Notoriety;
-                            objMerge.PublicAwareness = objVessel.PublicAwareness;
-                            foreach (Image objMugshot in objVessel.Mugshots)
-                                await objMerge.Mugshots.AddAsync(objMugshot);
                         }
                     }
                     finally
                     {
-                        await objVessel.DisposeAsync();
-                    }
-
-                    string strShowFileName = Path.GetFileName(objMerge.FileName);
-                    if (string.IsNullOrEmpty(strShowFileName))
-                        strShowFileName = objMerge.CharacterName;
-                    strShowFileName = strShowFileName.TrimEndOnce(".chum5")
-                                      + await LanguageManager.GetStringAsync("String_Space") + '('
-                                      + await LanguageManager.GetStringAsync("String_Possessed") + ')';
-
-                    // Now that everything is done, save the merged character and open them.
-                    using (SaveFileDialog saveFileDialog = new SaveFileDialog
-                           {
-                               Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
-                                   + await LanguageManager.GetStringAsync("DialogFilter_All"),
-                               FileName = strShowFileName
-                           })
-                    {
-                        if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
-                            return;
-                        using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
-                        {
-                            await frmLoadingBar.PerformStepAsync(objMerge.CharacterName,
-                                                                LoadingBar.ProgressBarTextPatterns.Saving);
-                            objMerge.FileName = saveFileDialog.FileName;
-                            if (await objMerge.SaveAsync())
-                            {
-                                // Get the name of the file and destroy the references to the Vessel and the merged character.
-                                strOpenFile = objMerge.FileName;
-                            }
-                        }
+                        await objMerge
+                            .DisposeAsync(); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
                     }
                 }
-                finally
+
+                if (!string.IsNullOrEmpty(strOpenFile))
                 {
-                    await objMerge
-                        .DisposeAsync(); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
+                    using (await CursorWait.NewAsync(this, token: GenericToken))
+                    {
+                        Character objOpenCharacter;
+                        using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strOpenFile, Character.NumLoadingSections))
+                            objOpenCharacter = await Program.LoadCharacterAsync(strOpenFile, frmLoadingBar: frmLoadingBar, token: GenericToken);
+                        await Program.OpenCharacter(objOpenCharacter, token: GenericToken);
+                    }
                 }
             }
-
-            if (!string.IsNullOrEmpty(strOpenFile))
+            catch (OperationCanceledException)
             {
-                using (await CursorWait.NewAsync(this))
-                {
-                    Character objOpenCharacter;
-                    using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strOpenFile, Character.NumLoadingSections))
-                        objOpenCharacter = await Program.LoadCharacterAsync(strOpenFile, frmLoadingBar: frmLoadingBar);
-                    await Program.OpenCharacter(objOpenCharacter);
-                }
+                //swallow this
             }
         }
 
@@ -4209,7 +4216,7 @@ namespace Chummer
                     Character objOpenCharacter;
                     using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strOpenFile, Character.NumLoadingSections))
                         objOpenCharacter = await Program.LoadCharacterAsync(strOpenFile, frmLoadingBar: frmLoadingBar);
-                    await Program.OpenCharacter(objOpenCharacter);
+                    await Program.OpenCharacter(objOpenCharacter, token: GenericToken);
                 }
             }
         }

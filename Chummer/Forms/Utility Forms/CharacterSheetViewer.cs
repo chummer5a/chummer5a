@@ -38,10 +38,10 @@ using NLog;
 
 namespace Chummer
 {
-    public partial class CharacterSheetViewer : Form
+    public partial class CharacterSheetViewer : Form, IHasCharacterObjects
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
-        private readonly ThreadSafeList<Character> _lstCharacters = new ThreadSafeList<Character>(1);
+        private readonly ThreadSafeList<Character> _lstCharacters = new ThreadSafeList<Character>();
         private XmlDocument _objCharacterXml = new XmlDocument { XmlResolver = null };
         private string _strSelectedSheet = GlobalSettings.DefaultCharacterSheet;
         private bool _blnLoading;
@@ -49,18 +49,19 @@ namespace Chummer
         private string _strPrintLanguage = GlobalSettings.Language;
         private CancellationTokenSource _objRefresherCancellationTokenSource;
         private CancellationTokenSource _objOutputGeneratorCancellationTokenSource;
-        private readonly DebuggableSemaphoreSlim _objRefresherSemaphoreSlim = new DebuggableSemaphoreSlim();
-        private readonly DebuggableSemaphoreSlim _objOutputGeneratorSemaphoreSlim = new DebuggableSemaphoreSlim();
         private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objGenericToken;
         private Task _tskRefresher;
         private Task _tskOutputGenerator;
         private readonly string _strTempSheetFilePath = Path.Combine(Utils.GetTempPath(), Path.GetRandomFileName() + ".htm");
 
+        public IEnumerable<Character> CharacterObjects => _lstCharacters;
+
         #region Control Events
 
         public CharacterSheetViewer()
         {
+            Program.MainForm.OpenCharacterSheetViewers.Add(this);
             _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
             if (_strSelectedSheet.StartsWith("Shadowrun 4", StringComparison.Ordinal))
             {
@@ -155,6 +156,31 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Update the Window title to show the Character's name and unsaved changes status.
+        /// </summary>
+        private async Task UpdateWindowTitleAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_lstCharacters.Count == 0)
+            {
+                await LanguageManager.GetStringAsync("Title_CharacterViewer")
+                                     .ContinueWith(y => this.DoThreadSafeAsync(x => x.Text = y.Result, token), token)
+                                     .Unwrap();
+                return;
+            }
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
+            string strCreate = await LanguageManager.GetStringAsync("Title_CreateNewCharacter");
+            string strCareer = await LanguageManager.GetStringAsync("Title_CareerMode");
+            StringBuilder sbdTitle = new StringBuilder(await LanguageManager.GetStringAsync("Title_CharacterViewer") + ':' + strSpace);
+            sbdTitle.AppendJoin(',' + strSpace,
+                                _lstCharacters.Select(x => x.CharacterName + strSpace + '-' + strSpace
+                                                           + (x.Created ? strCareer : strCreate) + strSpace + '('
+                                                           + x.Settings.Name + ')'));
+            string strTitle = sbdTitle.ToString();
+            await this.DoThreadSafeAsync(x => x.Text = strTitle, token);
+        }
+
         private async void cboXSLT_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Re-generate the output when a new sheet is selected.
@@ -231,58 +257,18 @@ namespace Chummer
 
         private async void CharacterSheetViewer_FormClosing(object sender, FormClosingEventArgs e)
         {
-            try
+            CancellationTokenSource objTempTokenSource = Interlocked.Exchange(ref _objRefresherCancellationTokenSource, null);
+            if (objTempTokenSource?.IsCancellationRequested == false)
             {
-                CancellationTokenSource objTempTokenSource = _objRefresherCancellationTokenSource;
-                if (Interlocked.CompareExchange(ref _objRefresherCancellationTokenSource, null, objTempTokenSource) != null)
-                {
-                    // ReSharper disable once MethodSupportsCancellation
-                    await _objRefresherSemaphoreSlim.WaitAsync();
-                    try
-                    {
-                        if (objTempTokenSource?.IsCancellationRequested == false)
-                        {
-                            objTempTokenSource.Cancel(false);
-                            objTempTokenSource.Dispose();
-                        }
-                    }
-                    finally
-                    {
-                        _objRefresherSemaphoreSlim.Release();
-                        _objRefresherSemaphoreSlim.Dispose();
-                    }
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
+                objTempTokenSource.Cancel(false);
+                objTempTokenSource.Dispose();
             }
 
-            try
+            objTempTokenSource = Interlocked.Exchange(ref _objOutputGeneratorCancellationTokenSource, null);
+            if (objTempTokenSource?.IsCancellationRequested == false)
             {
-                CancellationTokenSource objTempTokenSource = _objOutputGeneratorCancellationTokenSource;
-                if (Interlocked.CompareExchange(ref _objOutputGeneratorCancellationTokenSource, null, objTempTokenSource) != null)
-                {
-                    // ReSharper disable once MethodSupportsCancellation
-                    await _objOutputGeneratorSemaphoreSlim.WaitAsync();
-                    try
-                    {
-                        if (objTempTokenSource?.IsCancellationRequested == false)
-                        {
-                            objTempTokenSource.Cancel(false);
-                            objTempTokenSource.Dispose();
-                        }
-                    }
-                    finally
-                    {
-                        _objOutputGeneratorSemaphoreSlim.Release();
-                        _objOutputGeneratorSemaphoreSlim.Dispose();
-                    }
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
+                objTempTokenSource.Cancel(false);
+                objTempTokenSource.Dispose();
             }
 
             // Remove the mugshots directory when the form closes.
@@ -294,11 +280,6 @@ namespace Chummer
             {
                 //swallow this
             }
-
-            // Clear the reference to the character's Print window.
-            foreach (CharacterShared objCharacterShared in Program.MainForm.OpenCharacterForms)
-                if (objCharacterShared.PrintWindow == this)
-                    objCharacterShared.PrintWindow = null;
 
             try
             {
@@ -568,59 +549,31 @@ namespace Chummer
         private async ValueTask RefreshCharacters(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CancellationTokenSource objTempTokenSource = _objOutputGeneratorCancellationTokenSource;
-            if (Interlocked.CompareExchange(ref _objOutputGeneratorCancellationTokenSource, null, objTempTokenSource) != null)
+            CancellationTokenSource objTempTokenSource = Interlocked.Exchange(ref _objOutputGeneratorCancellationTokenSource, null);
+            if (objTempTokenSource?.IsCancellationRequested == false)
             {
-                try
-                {
-                    await _objOutputGeneratorSemaphoreSlim.WaitAsync(token);
-                    try
-                    {
-                        if (objTempTokenSource?.IsCancellationRequested == false)
-                        {
-                            objTempTokenSource.Cancel(false);
-                            objTempTokenSource.Dispose();
-                            objTempTokenSource = null;
-                        }
-                    }
-                    finally
-                    {
-                        _objOutputGeneratorSemaphoreSlim.Release();
-                    }
-                }
-                catch (OperationCanceledException)
-                {
-                    objTempTokenSource?.Dispose();
-                }
+                objTempTokenSource.Cancel(false);
+                objTempTokenSource.Dispose();
+            }
+            token.ThrowIfCancellationRequested();
+
+            CancellationTokenSource objNewSource = new CancellationTokenSource();
+            objTempTokenSource = Interlocked.Exchange(ref _objRefresherCancellationTokenSource, objNewSource);
+            if (objTempTokenSource?.IsCancellationRequested == false)
+            {
+                objTempTokenSource.Cancel(false);
+                objTempTokenSource.Dispose();
             }
 
-            token.ThrowIfCancellationRequested();
-            objTempTokenSource = _objRefresherCancellationTokenSource;
-            if (Interlocked.CompareExchange(ref _objRefresherCancellationTokenSource, null, objTempTokenSource) != null)
+            try
             {
-                try
-                {
-                    await _objRefresherSemaphoreSlim.WaitAsync(token);
-                    try
-                    {
-                        if (objTempTokenSource?.IsCancellationRequested == false)
-                        {
-                            objTempTokenSource.Cancel(false);
-                            objTempTokenSource.Dispose();
-                            objTempTokenSource = null;
-                        }
-                        token.ThrowIfCancellationRequested();
-                        _objRefresherCancellationTokenSource = new CancellationTokenSource();
-                    }
-                    finally
-                    {
-                        _objRefresherSemaphoreSlim.Release();
-                    }
-                }
-                catch (OperationCanceledException)
-                {
-                    objTempTokenSource?.Dispose();
-                }
+                token.ThrowIfCancellationRequested();
+            }
+            catch (OperationCanceledException)
+            {
+                Interlocked.CompareExchange(ref _objRefresherCancellationTokenSource, null, objNewSource);
+                objNewSource.Dispose();
+                throw;
             }
 
             try
@@ -633,8 +586,8 @@ namespace Chummer
                 // Swallow this
             }
 
-            _tskRefresher = Task.Run(() => RefreshCharacterXml(_objRefresherCancellationTokenSource.Token),
-                                     _objRefresherCancellationTokenSource.Token);
+            CancellationToken objToken = objNewSource.Token;
+            _tskRefresher = Task.Run(() => RefreshCharacterXml(objToken), objToken);
         }
 
         /// <summary>
@@ -643,33 +596,25 @@ namespace Chummer
         private async ValueTask RefreshSheet(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CancellationTokenSource objTempTokenSource = _objOutputGeneratorCancellationTokenSource;
-            if (Interlocked.CompareExchange(ref _objOutputGeneratorCancellationTokenSource, null, objTempTokenSource) != null)
+            CancellationTokenSource objNewSource = new CancellationTokenSource();
+            CancellationTokenSource objTempTokenSource = Interlocked.Exchange(ref _objOutputGeneratorCancellationTokenSource, objNewSource);
+            if (objTempTokenSource?.IsCancellationRequested == false)
             {
-                try
-                {
-                    await _objOutputGeneratorSemaphoreSlim.WaitAsync(token);
-                    try
-                    {
-                        if (objTempTokenSource?.IsCancellationRequested == false)
-                        {
-                            objTempTokenSource.Cancel(false);
-                            objTempTokenSource.Dispose();
-                            objTempTokenSource = null;
-                        }
-                        token.ThrowIfCancellationRequested();
-                        _objOutputGeneratorCancellationTokenSource = new CancellationTokenSource();
-                    }
-                    finally
-                    {
-                        _objOutputGeneratorSemaphoreSlim.Release();
-                    }
-                }
-                catch (OperationCanceledException)
-                {
-                    objTempTokenSource?.Dispose();
-                }
+                objTempTokenSource.Cancel(false);
+                objTempTokenSource.Dispose();
             }
+
+            try
+            {
+                token.ThrowIfCancellationRequested();
+            }
+            catch (OperationCanceledException)
+            {
+                Interlocked.CompareExchange(ref _objOutputGeneratorCancellationTokenSource, null, objNewSource);
+                objNewSource.Dispose();
+                throw;
+            }
+
             try
             {
                 if (_tskOutputGenerator?.IsCompleted == false)
@@ -680,8 +625,8 @@ namespace Chummer
                 // Swallow this
             }
 
-            _tskOutputGenerator = Task.Run(() => AsyncGenerateOutput(_objOutputGeneratorCancellationTokenSource.Token),
-                                           _objOutputGeneratorCancellationTokenSource.Token);
+            CancellationToken objToken = objNewSource.Token;
+            _tskOutputGenerator = Task.Run(() => AsyncGenerateOutput(objToken), objToken);
         }
 
         /// <summary>
@@ -1005,6 +950,7 @@ namespace Chummer
                 foreach (Character objCharacter in _lstCharacters)
                 {
                     objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
+                    objCharacter.SettingsPropertyChanged -= ObjCharacterOnSettingsPropertyChanged;
                 }
                 await _lstCharacters.ClearAsync();
                 if (lstCharacters != null)
@@ -1012,12 +958,16 @@ namespace Chummer
                 foreach (Character objCharacter in _lstCharacters)
                 {
                     objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;
+                    objCharacter.SettingsPropertyChanged += ObjCharacterOnSettingsPropertyChanged;
                 }
             }
             finally
             {
                 await objLocker.DisposeAsync();
             }
+
+            await UpdateWindowTitleAsync(token);
+
             token.ThrowIfCancellationRequested();
             bool blnOldLoading = _blnLoading;
             try
@@ -1034,10 +984,18 @@ namespace Chummer
             }
         }
 
+        private async void ObjCharacterOnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(CharacterSettings.Name))
+                await UpdateWindowTitleAsync(_objGenericToken);
+        }
+
         private async void ObjCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             try
             {
+                if (e.PropertyName == nameof(Character.CharacterName) || e.PropertyName == nameof(Character.Created))
+                    await UpdateWindowTitleAsync(_objGenericToken);
                 await RefreshCharacters(_objGenericToken);
             }
             catch (OperationCanceledException)

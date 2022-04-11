@@ -875,8 +875,20 @@ namespace Chummer
                 strReturn += strSpace + '(' + strBuildMethod + strSpace + '-' + strSpace
                              + LanguageManager.GetString(Created ? "Title_CareerMode" : "Title_CreateMode") + ')';
             }
-            if (blnAddMarkerIfOpen && Program.MainForm?.OpenCharacterForms.Any(x => !x.CharacterObject.IsDisposed && x.CharacterObject.FileName == FilePath) == true)
-                strReturn = '*' + strSpace + strReturn;
+
+            if (blnAddMarkerIfOpen)
+            {
+                string strMarker = string.Empty;
+                if (Program.MainForm?.OpenCharacterEditorForms.Any(
+                        x => !x.CharacterObject.IsDisposed && x.CharacterObject.FileName == FilePath) == true)
+                    strMarker += '*';
+                if (Program.MainForm?.OpenCharacterSheetViewers.Any(
+                        x => x.CharacterObjects.Any(y => !y.IsDisposed && y.FileName == FilePath)) == true)
+                    strMarker += '^';
+                if (!string.IsNullOrEmpty(strMarker))
+                    strReturn = strMarker + strSpace + strReturn;
+            }
+
             return strReturn;
         }
 

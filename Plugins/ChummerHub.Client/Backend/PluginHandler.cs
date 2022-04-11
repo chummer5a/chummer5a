@@ -65,7 +65,7 @@ namespace Chummer.Plugins
             {
                 string strTag = objNode.Tag?.ToString();
                 objNode.ContextMenuStrip = MainForm.CharacterRoster.CreateContextMenuStrip(strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                                                                                           && MainForm.OpenCharacterForms.Any(x => x.CharacterObject?.FileName == strTag));
+                                                                                           && MainForm.OpenCharacterEditorForms.Any(x => x.CharacterObject?.FileName == strTag));
             }
 
             ContextMenuStrip cmsRoster = objNode.ContextMenuStrip ?? new ContextMenuStrip();
@@ -472,7 +472,7 @@ namespace Chummer.Plugins
                         }
 
                         TabPage tabPage = null;
-                        CharacterShared found = MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == input);
+                        CharacterShared found = MainForm.OpenCharacterEditorForms.FirstOrDefault(x => x.CharacterObject == input);
                         switch (found)
                         {
                             case CharacterCreate frm when frm.TabCharacterTabs.TabPages.ContainsKey("SINners"):
@@ -526,8 +526,8 @@ namespace Chummer.Plugins
         private static async Task<CharacterExtended> GetMyCeCoreAsync(bool blnSync, Character input)
         {
             CharacterShared found = null;
-            if (MainForm?.OpenCharacterForms != null)
-                foreach (CharacterShared a in (MainForm?.OpenCharacterForms))
+            if (MainForm?.OpenCharacterEditorForms != null)
+                foreach (CharacterShared a in (MainForm?.OpenCharacterEditorForms))
                 {
                     if (a?.CharacterObject != input)
                         continue;
@@ -1329,7 +1329,7 @@ namespace Chummer.Plugins
                 using (LoadingBar frmLoadingForm = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(fileToLoad), Character.NumLoadingSections))
                 {
                     if (await objCharacter.LoadAsync(frmLoadingForm, Settings.Default.IgnoreWarningsOnOpening))
-                        Program.OpenCharacters.Add(objCharacter);
+                        await Program.OpenCharacters.AddAsync(objCharacter);
                     else
                         return;
                 }

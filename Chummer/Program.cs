@@ -840,8 +840,11 @@ namespace Chummer
                 return null;
             if (objCharacter == null)
                 return MainForm;
-            return MainForm.OpenCharacterForms.FirstOrDefault(
-                x => ReferenceEquals(x.CharacterObject, objCharacter)) as Form ?? MainForm;
+            return MainForm.OpenCharacterEditorForms.FirstOrDefault(
+                       x => ReferenceEquals(x.CharacterObject, objCharacter)) as Form
+                   ?? MainForm.OpenCharacterSheetViewers.FirstOrDefault(x => x.CharacterObjects.Contains(objCharacter))
+                       as Form
+                   ?? MainForm;
         }
 
         /// <summary>
@@ -856,8 +859,11 @@ namespace Chummer
             return objCharacter == null ? Task.FromResult<Form>(MainForm) : InnerMethod();
             async Task<Form> InnerMethod()
             {
-                return await MainForm.OpenCharacterForms.FirstOrDefaultAsync(
-                    x => ReferenceEquals(x.CharacterObject, objCharacter)) as Form ?? MainForm;
+                return await MainForm.OpenCharacterEditorForms.FirstOrDefaultAsync(
+                           x => ReferenceEquals(x.CharacterObject, objCharacter)) as Form
+                       ?? await MainForm.OpenCharacterSheetViewers.FirstOrDefaultAsync(
+                           x => x.CharacterObjects.Contains(objCharacter)) as Form
+                       ?? MainForm;
             }
         }
 
@@ -906,9 +912,10 @@ namespace Chummer
         /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
         /// <param name="blnShowErrors">Show error messages if the character failed to load.</param>
         /// <param name="frmLoadingBar">If not null, show and use this loading bar for the character.</param>
-        public static Character LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, LoadingBar frmLoadingBar = null)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Character LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, LoadingBar frmLoadingBar = null, CancellationToken token = default)
         {
-            return LoadCharacterCoreAsync(true, strFileName, strNewName, blnClearFileName, blnShowErrors, frmLoadingBar).GetAwaiter().GetResult();
+            return LoadCharacterCoreAsync(true, strFileName, strNewName, blnClearFileName, blnShowErrors, frmLoadingBar, token).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -919,9 +926,10 @@ namespace Chummer
         /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
         /// <param name="blnShowErrors">Show error messages if the character failed to load.</param>
         /// <param name="frmLoadingBar">If not null, show and use this loading bar for the character.</param>
-        public static Task<Character> LoadCharacterAsync(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, LoadingBar frmLoadingBar = null)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task<Character> LoadCharacterAsync(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, LoadingBar frmLoadingBar = null, CancellationToken token = default)
         {
-            return LoadCharacterCoreAsync(false, strFileName, strNewName, blnClearFileName, blnShowErrors, frmLoadingBar);
+            return LoadCharacterCoreAsync(false, strFileName, strNewName, blnClearFileName, blnShowErrors, frmLoadingBar, token);
         }
 
         /// <summary>
@@ -935,7 +943,8 @@ namespace Chummer
         /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
         /// <param name="blnShowErrors">Show error messages if the character failed to load.</param>
         /// <param name="frmLoadingBar">If not null, show and use this loading bar for the character.</param>
-        private static async Task<Character> LoadCharacterCoreAsync(bool blnSync, string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, LoadingBar frmLoadingBar = null)
+        /// <param name="token">Cancellation token to listen to.</param>
+        private static async Task<Character> LoadCharacterCoreAsync(bool blnSync, string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, LoadingBar frmLoadingBar = null, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strFileName))
                 return null;
@@ -947,7 +956,9 @@ namespace Chummer
                 string strAutosavesPath = Utils.GetAutosavesFolderPath;
                 if (string.IsNullOrEmpty(strNewName) && !blnClearFileName)
                 {
-                    objCharacter = await OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFileName);
+                    objCharacter = blnSync
+                        ? OpenCharacters.FirstOrDefault(x => x.FileName == strFileName)
+                        : await OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFileName, token);
                     if (objCharacter != null)
                         return objCharacter;
                 }
@@ -1013,8 +1024,8 @@ namespace Chummer
                 //Timekeeper.Start("load_file");
                 bool blnLoaded = blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? objCharacter.Load(frmLoadingBar, blnShowErrors)
-                    : await objCharacter.LoadAsync(frmLoadingBar, blnShowErrors);
+                    ? objCharacter.Load(frmLoadingBar, blnShowErrors, token)
+                    : await objCharacter.LoadAsync(frmLoadingBar, blnShowErrors, token);
                 //Timekeeper.Finish("load_file");
                 if (!blnLoaded)
                 {
@@ -1056,19 +1067,21 @@ namespace Chummer
             return objCharacter;
         }
 
-        public static Task<bool> SwitchToOpenCharacter(Character objCharacter)
+        public static Task<bool> SwitchToOpenCharacter(Character objCharacter, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objCharacter == null || MainForm == null)
                 return Task.FromResult(false);
-            return MainForm.SwitchToOpenCharacter(objCharacter);
+            return MainForm.SwitchToOpenCharacter(objCharacter, token);
         }
 
         /// <summary>
         /// Opens the correct window for a single character in the main form, queues the command to open on the main form if it is not assigned (thread-safe).
         /// </summary>
-        public static Task OpenCharacter(Character objCharacter, bool blnIncludeInMru = true)
+        public static Task OpenCharacter(Character objCharacter, bool blnIncludeInMru = true, CancellationToken token = default)
         {
-            return objCharacter == null ? Task.CompletedTask : OpenCharacterList(objCharacter.Yield(), blnIncludeInMru);
+            token.ThrowIfCancellationRequested();
+            return objCharacter == null ? Task.CompletedTask : OpenCharacterList(objCharacter.Yield(), blnIncludeInMru, token);
         }
 
         /// <summary>
@@ -1076,27 +1089,28 @@ namespace Chummer
         /// </summary>
         /// <param name="lstCharacters">Characters for which windows should be opened.</param>
         /// <param name="blnIncludeInMru">Added the opened characters to the Most Recently Used list.</param>
-        public static Task OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = true)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = true, CancellationToken token = default)
         {
             if (lstCharacters == null)
                 return Task.CompletedTask;
             if (MainForm != null)
-                return MainForm.OpenCharacterList(lstCharacters, blnIncludeInMru);
+                return MainForm.OpenCharacterList(lstCharacters, blnIncludeInMru, token);
             return Task.Run(() => MainFormOnAssignAsyncActions.Add(
-                                x => x.OpenCharacterList(lstCharacters, blnIncludeInMru)));
+                                x => x.OpenCharacterList(lstCharacters, blnIncludeInMru, token)), token);
         }
 
         /// <summary>
         /// Open a character's print form up without necessarily opening them up fully for editing.
         /// </summary>
-        public static Task OpenCharacterForPrinting(Character objCharacter)
+        public static Task OpenCharacterForPrinting(Character objCharacter, CancellationToken token = default)
         {
             if (objCharacter == null || MainForm == null)
                 return Task.CompletedTask;
             if (MainForm != null)
-                return MainForm.OpenCharacterForPrinting(objCharacter);
+                return MainForm.OpenCharacterForPrinting(objCharacter, token);
             return Task.Run(() => MainFormOnAssignAsyncActions.Add(
-                                x => x.OpenCharacterForPrinting(objCharacter)));
+                                x => x.OpenCharacterForPrinting(objCharacter, token)), token);
         }
 
         /// <summary>

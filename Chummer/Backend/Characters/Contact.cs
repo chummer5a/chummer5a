@@ -1247,8 +1247,8 @@ namespace Chummer
                     objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
                     if (Program.OpenCharacters.Contains(objOldLinkedCharacter))
                     {
-                        if (Program.OpenCharacters.All(x => !x.LinkedCharacters.Contains(objOldLinkedCharacter))
-                            && Program.MainForm.OpenCharacterForms.All(x => x.CharacterObject != objOldLinkedCharacter))
+                        if (Program.OpenCharacters.All(x => x == _objLinkedCharacter || !x.LinkedCharacters.Contains(objOldLinkedCharacter))
+                            && Program.MainForm.OpenFormsWithCharacters.All(x => !x.CharacterObjects.Contains(objOldLinkedCharacter)))
                             Program.OpenCharacters.Remove(objOldLinkedCharacter);
                     }
                     else
@@ -1559,9 +1559,8 @@ namespace Chummer
             if (_lstCachedContactArchetypes != null)
                 Utils.ListItemListPool.Return(_lstCachedContactArchetypes);
             if (_objLinkedCharacter != null && !Utils.IsUnitTest
-                                            && Program.OpenCharacters.Contains(_objLinkedCharacter)
-                                            && Program.OpenCharacters.All(x => !x.LinkedCharacters.Contains(_objLinkedCharacter))
-                                            && Program.MainForm.OpenCharacterForms.All(x => x.CharacterObject != _objLinkedCharacter))
+                                            && Program.OpenCharacters.All(x => x == _objLinkedCharacter || !x.LinkedCharacters.Contains(_objLinkedCharacter))
+                                            && Program.MainForm.OpenFormsWithCharacters.All(x => !x.CharacterObjects.Contains(_objLinkedCharacter)))
                 Program.OpenCharacters.Remove(_objLinkedCharacter);
             foreach (Image imgMugshot in _lstMugshots)
                 imgMugshot.Dispose();

@@ -49,7 +49,7 @@ namespace Chummer
         
         private bool _blnReapplyImprovements;
         private bool _blnFreestyle;
-        private bool _blnIsReopenQueued;
+        public bool IsReopenQueued { get; private set; }
         private int _intDragLevel;
         private StoryBuilder _objStoryBuilder;
 
@@ -72,8 +72,6 @@ namespace Chummer
             tabPeople.MouseWheel += ShiftTabsOnMouseScroll;
             tabInfo.MouseWheel += ShiftTabsOnMouseScroll;
             tabCharacterTabs.MouseWheel += ShiftTabsOnMouseScroll;
-
-            Program.MainForm.OpenCharacterForms.Add(this);
 
             // Add EventHandlers for the various events MAG, RES, Qualities, etc.
             CharacterObject.PropertyChanged += OnCharacterPropertyChanged;
@@ -1202,7 +1200,6 @@ namespace Chummer
 
                     if (Program.MainForm.ActiveMdiChild == this)
                         ToolStripManager.RevertMerge("toolStrip");
-                    await Program.MainForm.OpenCharacterForms.RemoveAsync(this);
 
                     // Unsubscribe from events.
                     GlobalSettings.ClipboardChanged -= RefreshPasteStatus;
@@ -1299,12 +1296,6 @@ namespace Chummer
                     {
                         // Swallow this
                     }
-
-                    // Trash the global variables and dispose of the Form.
-                    if (!_blnIsReopenQueued
-                        && await Program.OpenCharacters.AllAsync(
-                            x => x == CharacterObject || !x.LinkedCharacters.Contains(CharacterObject)))
-                        await Program.OpenCharacters.RemoveAsync(CharacterObject);
                 }
                 finally
                 {
@@ -12739,7 +12730,7 @@ namespace Chummer
                     IsDirty = false;
                 }
 
-                _blnIsReopenQueued = true;
+                IsReopenQueued = true;
                 await this.DoThreadSafeAsync(x =>
                 {
                     x.FormClosed += ReopenCharacter;

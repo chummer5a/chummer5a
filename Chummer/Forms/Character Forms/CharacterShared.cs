@@ -45,7 +45,7 @@ namespace Chummer
     /// Contains functionality shared between frmCreate and frmCareer
     /// </summary>
     [DesignerCategory("")]
-    public class CharacterShared : Form
+    public class CharacterShared : Form, IHasCharacterObjects
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private static TelemetryClient TelemetryClient { get; } = new TelemetryClient();
@@ -54,7 +54,6 @@ namespace Chummer
         private int _intRefreshingCount;
         private int _intLoadingCount = 1;
         private int _intUpdatingCount;
-        private CharacterSheetViewer _frmPrintView;
         private FileSystemWatcher _objCharacterFileWatcher;
 
         protected CancellationTokenSource GenericCancellationTokenSource { get; } = new CancellationTokenSource();
@@ -63,6 +62,7 @@ namespace Chummer
 
         protected CharacterShared(Character objCharacter)
         {
+            Program.MainForm.OpenCharacterEditorForms.Add(this);
             GenericToken = GenericCancellationTokenSource.Token;
             _objCharacter = objCharacter;
             _objCharacter.PropertyChanged += CharacterPropertyChanged;
@@ -114,23 +114,20 @@ namespace Chummer
                 }
                 case nameof(Character.FileName):
                 {
-                    FileSystemWatcher objTemp = _objCharacterFileWatcher;
-                    if (Interlocked.CompareExchange(ref _objCharacterFileWatcher, null, objTemp) != null)
-                    {
-                        objTemp.Dispose();
-                    }
+                    FileSystemWatcher objNewWatcher = null;
                     if (GlobalSettings.LiveUpdateCleanCharacterFiles)
                     {
                         string strFileName = Path.GetFileName(CharacterObject.FileName);
                         if (!string.IsNullOrEmpty(strFileName))
                         {
-                            _objCharacterFileWatcher = new FileSystemWatcher(
+                            objNewWatcher = new FileSystemWatcher(
                                 Path.GetDirectoryName(CharacterObject.FileName)
                                 ?? Path.GetPathRoot(CharacterObject.FileName), strFileName);
-                            _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
+                            objNewWatcher.Changed += LiveUpdateFromCharacterFile;
                         }
                     }
-                    
+                    Interlocked.Exchange(ref _objCharacterFileWatcher, objNewWatcher)?.Dispose();
+
                     break;
                 }
             }
@@ -8063,8 +8060,9 @@ namespace Chummer
             }
             try
             {
-                CancellationTokenSource objTemp = _objUpdateCharacterInfoCancellationTokenSource;
-                if (Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objTemp) != null && !objTemp.IsCancellationRequested)
+                CancellationTokenSource objNewSource = new CancellationTokenSource();
+                CancellationTokenSource objTemp = Interlocked.Exchange(ref _objUpdateCharacterInfoCancellationTokenSource, objNewSource);
+                if (objTemp?.IsCancellationRequested == true)
                 {
                     try
                     {
@@ -8082,6 +8080,17 @@ namespace Chummer
 
                 try
                 {
+                    GenericToken.ThrowIfCancellationRequested();
+                }
+                catch (OperationCanceledException)
+                {
+                    Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objNewSource);
+                    objNewSource.Dispose();
+                    return;
+                }
+
+                try
+                {
                     if (_tskUpdateCharacterInfo?.IsCompleted == false)
                         await _tskUpdateCharacterInfo;
                 }
@@ -8089,9 +8098,8 @@ namespace Chummer
                 {
                     //swallow this
                 }
-
-                _objUpdateCharacterInfoCancellationTokenSource = new CancellationTokenSource();
-                CancellationToken objToken = _objUpdateCharacterInfoCancellationTokenSource.Token;
+                
+                CancellationToken objToken = objNewSource.Token;
                 _tskUpdateCharacterInfo = Task.Run(() => DoUpdateCharacterInfo(objToken), objToken);
             }
             finally
@@ -8133,6 +8141,8 @@ namespace Chummer
         }
 
         public Character CharacterObject => _objCharacter;
+
+        public IEnumerable<Character> CharacterObjects => _objCharacter.Yield();
 
         private CharacterSettings _objCachedSettings;
 
@@ -8292,33 +8302,9 @@ namespace Chummer
         /// </summary>
         public virtual Task<bool> ConfirmSaveCreatedCharacter(CancellationToken token = default) { return Task.FromResult(true); }
 
-        /// <summary>
-        /// The frmViewer window being used by the character.
-        /// </summary>
-        public CharacterSheetViewer PrintWindow
+        public Task DoPrint(CancellationToken token = default)
         {
-            get => _frmPrintView;
-            set => _frmPrintView = value;
-        }
-
-        public async ValueTask DoPrint(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this, token: token))
-            {
-                // If a reference to the Viewer window does not yet exist for this character, open a new Viewer window and set the reference to it.
-                // If a Viewer window already exists for this character, use it instead.
-                if (_frmPrintView == null)
-                {
-                    await this.DoThreadSafeAsync(() => _frmPrintView = new CharacterSheetViewer(), token);
-                    await _frmPrintView.SetCharacters(token, CharacterObject);
-                    await _frmPrintView.DoThreadSafeAsync(x => x.Show(), token);
-                }
-                else
-                {
-                    await _frmPrintView.DoThreadSafeAsync(x => x.Activate(), token);
-                }
-            }
+            return Program.OpenCharacterForPrinting(CharacterObject, token);
         }
 
         public async ValueTask DoExport(CancellationToken token = default)
@@ -8336,10 +8322,9 @@ namespace Chummer
             if (disposing)
             {
                 _objCharacter.PropertyChanged -= CharacterPropertyChanged;
-                _frmPrintView?.Dispose();
-                _objCharacterFileWatcher?.Dispose();
-                CancellationTokenSource objTemp = _objUpdateCharacterInfoCancellationTokenSource;
-                if (Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objTemp) != null)
+                Interlocked.Exchange(ref _objCharacterFileWatcher, null)?.Dispose();
+                CancellationTokenSource objTemp = Interlocked.Exchange(ref _objUpdateCharacterInfoCancellationTokenSource, null);
+                if (objTemp != null)
                 {
                     try
                     {

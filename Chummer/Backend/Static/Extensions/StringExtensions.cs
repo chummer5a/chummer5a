@@ -1314,7 +1314,13 @@ namespace Chummer
             try
             {
                 if (!s_RtbRtfManipulator.IsHandleCreated)
-                    s_RtbRtfManipulator.CreateControl();
+                {
+                    if (Program.MainForm != null)
+                        Program.MainForm.DoThreadSafe(() => s_RtbRtfManipulator.CreateControl());
+                    else
+                        Utils.RunWithoutThreadLock(
+                            () => Utils.StartStaTask(() => s_RtbRtfManipulator.CreateControl(), token), token);
+                }
                 return s_RtbRtfManipulator.DoThreadSafeFunc(x =>
                 {
                     x.Text = strInput;
@@ -1347,7 +1353,13 @@ namespace Chummer
                 try
                 {
                     if (!s_RtbRtfManipulator.IsHandleCreated)
-                        s_RtbRtfManipulator.CreateControl();
+                    {
+                        if (Program.MainForm != null)
+                            await Program.MainForm.DoThreadSafeAsync(
+                                () => s_RtbRtfManipulator.CreateControl(), token);
+                        else
+                            await Utils.StartStaTask(() => s_RtbRtfManipulator.CreateControl(), token);
+                    }
                     return await s_RtbRtfManipulator.DoThreadSafeFuncAsync(x =>
                     {
                         x.Text = strInput;
@@ -1373,6 +1385,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
             string strInputTrimmed = strInput.TrimStart();
+            string strReturn;
             if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
                 || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
             {
@@ -1380,24 +1393,35 @@ namespace Chummer
                 try
                 {
                     if (!s_RtbRtfManipulator.IsHandleCreated)
-                        s_RtbRtfManipulator.CreateControl();
+                    {
+                        if (Program.MainForm != null)
+                            Program.MainForm.DoThreadSafe(() => s_RtbRtfManipulator.CreateControl());
+                        else
+                            Utils.RunWithoutThreadLock(
+                                () => Utils.StartStaTask(() => s_RtbRtfManipulator.CreateControl(), token), token);
+                    }
                     try
                     {
-                        s_RtbRtfManipulator.DoThreadSafe(x => x.Rtf = strInput);
+                        strReturn = s_RtbRtfManipulator.DoThreadSafeFunc(x =>
+                        {
+                            x.Rtf = strInput;
+                            return x.Text;
+                        });
                     }
                     catch (ArgumentException)
                     {
-                        return strInput.NormalizeWhiteSpace();
+                        strReturn = strInput;
                     }
-
-                    return s_RtbRtfManipulator.DoThreadSafeFunc(x => x.Text).NormalizeWhiteSpace();
                 }
                 finally
                 {
                     s_RtbRtfManipulatorLock.Release();
                 }
             }
-            return strInput.NormalizeWhiteSpace();
+            else
+                strReturn = strInput;
+
+            return strReturn.NormalizeWhiteSpace();
         }
 
         /// <summary>
@@ -1414,6 +1438,7 @@ namespace Chummer
             async Task<string> InnerDo()
             {
                 string strInputTrimmed = strInput.TrimStart();
+                string strReturn;
                 if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
                     || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
                 {
@@ -1421,25 +1446,36 @@ namespace Chummer
                     try
                     {
                         if (!s_RtbRtfManipulator.IsHandleCreated)
-                            s_RtbRtfManipulator.CreateControl();
+                        {
+                            if (Program.MainForm != null)
+                                await Program.MainForm.DoThreadSafeAsync(
+                                    () => s_RtbRtfManipulator.CreateControl(), token);
+                            else
+                                await Utils.StartStaTask(() => s_RtbRtfManipulator.CreateControl(), token);
+                        }
+
                         try
                         {
-                            await s_RtbRtfManipulator.DoThreadSafeAsync(x => x.Rtf = strInput, token);
+                            strReturn = await s_RtbRtfManipulator.DoThreadSafeFuncAsync(x =>
+                            {
+                                x.Rtf = strInput;
+                                return x.Text;
+                            }, token);
                         }
                         catch (ArgumentException)
                         {
-                            return strInput.NormalizeWhiteSpace();
+                            strReturn = strInput;
                         }
-
-                        return (await s_RtbRtfManipulator.DoThreadSafeFuncAsync(x => x.Text, token)).NormalizeWhiteSpace();
                     }
                     finally
                     {
                         s_RtbRtfManipulatorLock.Release();
                     }
                 }
+                else
+                    strReturn = strInput;
 
-                return strInput.NormalizeWhiteSpace();
+                return strReturn.NormalizeWhiteSpace();
             }
         }
 
@@ -1480,7 +1516,13 @@ namespace Chummer
                     try
                     {
                         if (!s_RtbRtfManipulator.IsHandleCreated)
-                            s_RtbRtfManipulator.CreateControl();
+                        {
+                            if (Program.MainForm != null)
+                                Program.MainForm.DoThreadSafe(() => s_RtbRtfManipulator.CreateControl());
+                            else
+                                Utils.RunWithoutThreadLock(
+                                    () => Utils.StartStaTask(() => s_RtbRtfManipulator.CreateControl(), token), token);
+                        }
                         try
                         {
                             s_RtbRtfManipulator.DoThreadSafe(x => x.Rtf = strInput);
@@ -1520,7 +1562,12 @@ namespace Chummer
                     try
                     {
                         if (!s_RtbRtfManipulator.IsHandleCreated)
-                            s_RtbRtfManipulator.CreateControl();
+                        {
+                            if (Program.MainForm != null)
+                                await Program.MainForm.DoThreadSafeAsync(() => s_RtbRtfManipulator.CreateControl(), token);
+                            else
+                                await Utils.StartStaTask(() => s_RtbRtfManipulator.CreateControl(), token);
+                        }
                         try
                         {
                             await s_RtbRtfManipulator.DoThreadSafeAsync(x => x.Rtf = strInput, token);

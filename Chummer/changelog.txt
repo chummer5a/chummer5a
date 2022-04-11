@@ -28,6 +28,7 @@ Application Changes:
 - Modifying the Data Processing of a character's active commlink or home node now immediately causes the character's appropriate Matrix Initiative values to update. Fixes #4764.
 - Loading ammo into a weapon no longer causes the gear entry for that ammo to have its quantity deducted immediately. Instead, quantities will get deducted as the weapon is fired. This also fixes various other issues arising from this strange handling of ammo gear entries. Fixes #4760.
 - Added the ability to (re-)open the Master Index and/or Character Roster forms through the Tools menu.
+- Character sheet viewers are now treated the same way as "normal" character windows, meaning they open in tabs now instead of a dialog and can be kept open in the background while editing sheets.
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.
@@ -46,6 +47,7 @@ Changed/New Strings:
 - String_Export_JSON
 - Menu_Main_MasterIndex
 - Menu_Main_CharacterRoster
+- String_Sheet
 
 Removed Strings:
 - Message_UnderLanguageLimit

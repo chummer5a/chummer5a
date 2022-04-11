@@ -655,9 +655,9 @@ namespace Chummer
             }
             // Need to do this here in case file names are changed while closing forms (because a character who previously did not have a filename was saved when prompted)
             // Cannot use foreach because saving a character as created removes the current form and adds a new one
-            for (int i = 0; i < Program.MainForm.OpenCharacterForms.Count; ++i)
+            for (int i = 0; i < Program.MainForm.OpenCharacterEditorForms.Count; ++i)
             {
-                CharacterShared objOpenCharacterForm = Program.MainForm.OpenCharacterForms[i];
+                CharacterShared objOpenCharacterForm = Program.MainForm.OpenCharacterEditorForms[i];
                 if (objOpenCharacterForm.IsDirty)
                 {
                     string strCharacterName = objOpenCharacterForm.CharacterObject.CharacterName;
@@ -671,8 +671,8 @@ namespace Chummer
                                 if (!blnResult)
                                     return;
                                 // We saved a character as created, which closed the current form and added a new one
-                                // This works regardless of dispose, because dispose would just set the objOpenCharacterForm pointer to null, so OpenCharacterForms would never contain it
-                                if (!await Program.MainForm.OpenCharacterForms.ContainsAsync(objOpenCharacterForm))
+                                // This works regardless of dispose, because dispose would just set the objOpenCharacterForm pointer to null, so OpenCharacterEditorForms would never contain it
+                                if (!await Program.MainForm.OpenCharacterEditorForms.ContainsAsync(objOpenCharacterForm))
                                     --i;
                                 break;
                             }
@@ -687,7 +687,7 @@ namespace Chummer
             string strArguments;
             using (new FetchSafelyFromPool<StringBuilder>(StringBuilderPool, out StringBuilder sbdArguments))
             {
-                foreach (CharacterShared objOpenCharacterForm in Program.MainForm.OpenCharacterForms)
+                foreach (CharacterShared objOpenCharacterForm in Program.MainForm.OpenCharacterEditorForms)
                 {
                     sbdArguments.Append('\"').Append(objOpenCharacterForm.CharacterObject.FileName).Append("\" ");
                 }
@@ -714,8 +714,6 @@ namespace Chummer
         /// <summary>
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
-        /// <param name="func"></param>
-        /// <returns></returns>
         public static Task StartStaTask(Action func)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
@@ -723,7 +721,8 @@ namespace Chummer
             {
                 try
                 {
-                    tcs.SetResult(DummyFunction());
+                    tcs.TrySetResult(DummyFunction());
+
                     // This is needed because SetResult always needs a return type
                     bool DummyFunction()
                     {
@@ -733,7 +732,7 @@ namespace Chummer
                 }
                 catch (Exception e)
                 {
-                    tcs.SetException(e);
+                    tcs.TrySetException(e);
                 }
             });
             thread.SetApartmentState(ApartmentState.STA);
@@ -754,11 +753,11 @@ namespace Chummer
             {
                 try
                 {
-                    tcs.SetResult(func());
+                    tcs.TrySetResult(func());
                 }
                 catch (Exception e)
                 {
-                    tcs.SetException(e);
+                    tcs.TrySetException(e);
                 }
             });
             thread.SetApartmentState(ApartmentState.STA);
@@ -779,7 +778,7 @@ namespace Chummer
             {
                 try
                 {
-                    tcs.SetResult(await DummyFunction());
+                    tcs.TrySetResult(await DummyFunction());
                     // This is needed because SetResult always needs a return type
                     async ValueTask<bool> DummyFunction()
                     {
@@ -789,7 +788,7 @@ namespace Chummer
                 }
                 catch (Exception e)
                 {
-                    tcs.SetException(e);
+                    tcs.TrySetException(e);
                 }
             }
             thread.SetApartmentState(ApartmentState.STA);
@@ -811,11 +810,134 @@ namespace Chummer
             {
                 try
                 {
-                    tcs.SetResult(await func);
+                    tcs.TrySetResult(await func);
                 }
                 catch (Exception e)
                 {
-                    tcs.SetException(e);
+                    tcs.TrySetException(e);
+                }
+            }
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
+        /// </summary>
+        public static Task StartStaTask(Action func, CancellationToken token)
+        {
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            Thread thread = new Thread(() =>
+            {
+                try
+                {
+                    tcs.TrySetResult(DummyFunction());
+
+                    // This is needed because SetResult always needs a return type
+                    bool DummyFunction()
+                    {
+                        func.Invoke();
+                        return true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    tcs.TrySetException(e);
+                }
+                finally
+                {
+                    objRegistration.Dispose();
+                }
+            });
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
+        /// </summary>
+        public static Task<T> StartStaTask<T>(Func<T> func, CancellationToken token)
+        {
+            TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
+            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            Thread thread = new Thread(() =>
+            {
+                try
+                {
+                    tcs.TrySetResult(func());
+                }
+                catch (Exception e)
+                {
+                    tcs.TrySetException(e);
+                }
+                finally
+                {
+                    objRegistration.Dispose();
+                }
+            });
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
+        /// </summary>
+        public static Task StartStaTask(Task func, CancellationToken token)
+        {
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            Thread thread = new Thread(RunFunction);
+            async void RunFunction()
+            {
+                try
+                {
+                    tcs.TrySetResult(await DummyFunction());
+                    // This is needed because SetResult always needs a return type
+                    async ValueTask<bool> DummyFunction()
+                    {
+                        await func;
+                        return true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    tcs.TrySetException(e);
+                }
+                finally
+                {
+                    objRegistration.Dispose();
+                }
+            }
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
+        /// </summary>
+        public static Task<T> StartStaTask<T>(Task<T> func, CancellationToken token)
+        {
+            TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
+            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            Thread thread = new Thread(RunFunction);
+            async void RunFunction()
+            {
+                try
+                {
+                    tcs.TrySetResult(await func);
+                }
+                catch (Exception e)
+                {
+                    tcs.TrySetException(e);
+                }
+                finally
+                {
+                    objRegistration.Dispose();
                 }
             }
             thread.SetApartmentState(ApartmentState.STA);

@@ -338,16 +338,19 @@ namespace Chummer
         {
             if (objParent == null)
                 return;
-            
-            try
+
+            objParent.DoThreadSafe(x =>
             {
-                objParent.DoThreadSafe(x => x.RightToLeft = eIntoRightToLeft);
-            }
-            catch (NotSupportedException)
-            {
-                if (objParent.GetType() != typeof(WebBrowser))
-                    Utils.BreakIfDebug();
-            }
+                try
+                {
+                    x.RightToLeft = eIntoRightToLeft;
+                }
+                catch (NotSupportedException)
+                {
+                    if (x.GetType() != typeof(WebBrowser))
+                        Utils.BreakIfDebug();
+                }
+            });
 
             if (objParent is Form frmForm)
             {
@@ -372,15 +375,18 @@ namespace Chummer
             // Translatable items are identified by having a value in their Tag attribute. The contents of Tag is the string to lookup in the language list.
             foreach (Control objChild in objParent.DoThreadSafeFunc(x => x.Controls))
             {
-                try
+                objChild.DoThreadSafe(x =>
                 {
-                    objChild.DoThreadSafe(x => x.RightToLeft = eIntoRightToLeft);
-                }
-                catch (NotSupportedException)
-                {
-                    if (objChild.GetType() == typeof(WebBrowser)) continue;
-                    Utils.BreakIfDebug();
-                }
+                    try
+                    {
+                        x.RightToLeft = eIntoRightToLeft;
+                    }
+                    catch (NotSupportedException)
+                    {
+                        if (x.GetType() != typeof(WebBrowser))
+                            Utils.BreakIfDebug();
+                    }
+                });
 
                 switch (objChild)
                 {

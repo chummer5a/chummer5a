@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer;
@@ -1168,19 +1169,19 @@ namespace ChummerHub.Client.Backend
         }
 
 
-        private static async ValueTask SwitchToCharacter(Character objOpenCharacter)
+        private static async ValueTask SwitchToCharacter(Character objOpenCharacter, CancellationToken token = default)
         {
-            if (!await Program.SwitchToOpenCharacter(objOpenCharacter))
-                await Program.OpenCharacter(objOpenCharacter);
+            if (!await Program.SwitchToOpenCharacter(objOpenCharacter, token))
+                await Program.OpenCharacter(objOpenCharacter, token: token);
         }
 
-        private static async ValueTask SwitchToCharacter(CharacterCache objCache)
+        private static async ValueTask SwitchToCharacter(CharacterCache objCache, CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(PluginHandler.MainForm, true))
+            using (await CursorWait.NewAsync(PluginHandler.MainForm, true, token))
             {
                 Character objOpenCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FilePath)
                                              ?? await Program.LoadCharacterAsync(objCache.FilePath);
-                await SwitchToCharacter(objOpenCharacter);
+                await SwitchToCharacter(objOpenCharacter, token);
             }
         }
 

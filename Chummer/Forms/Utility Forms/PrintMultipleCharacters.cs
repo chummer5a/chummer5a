@@ -19,6 +19,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -161,7 +162,7 @@ namespace Chummer
 
                         Character objReturn;
                         using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strLoopFile, Character.NumLoadingSections))
-                            objReturn = await Program.LoadCharacterAsync(strLoopFile, string.Empty, false, false, frmLoadingBar);
+                            objReturn = await Program.LoadCharacterAsync(strLoopFile, string.Empty, false, false, frmLoadingBar, innerToken);
                         bool blnLoadSuccessful = objReturn != null;
                         innerToken.ThrowIfCancellationRequested();
 
@@ -213,9 +214,9 @@ namespace Chummer
                 blnAnyChanges = false;
                 foreach (Character objCharacter in _aobjCharacters)
                 {
-                    if (!await Program.OpenCharacters.ContainsAsync(objCharacter) ||
-                        await Program.MainForm.OpenCharacterForms.AnyAsync(x => x.CharacterObject == objCharacter, token) ||
-                        await Program.OpenCharacters.AnyAsync(x => x.LinkedCharacters.Contains(objCharacter), token))
+                    if (!await Program.OpenCharacters.ContainsAsync(objCharacter)
+                        || await Program.OpenCharacters.AnyAsync(x => x.LinkedCharacters.Contains(objCharacter), token)
+                        || Program.MainForm.OpenFormsWithCharacters.Any(x => x.CharacterObjects.Contains(objCharacter)))
                         continue;
                     blnAnyChanges = true;
                     await Program.OpenCharacters.RemoveAsync(objCharacter);

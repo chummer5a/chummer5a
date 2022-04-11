@@ -66,7 +66,8 @@ namespace Chummer
         {
             if (!deleteThem)
             {
-                Program.MainForm.OpenCharacterForms.CollectionChanged += OpenCharacterFormsOnCollectionChanged;
+                Program.MainForm.OpenCharacterEditorForms.CollectionChanged += OpenCharacterEditorFormsOnCollectionChanged;
+                Program.MainForm.OpenCharacterSheetViewers.CollectionChanged += OpenCharacterSheetViewersOnCollectionChanged;
                 GlobalSettings.MruChanged += RefreshMruLists;
                 await treCharacterList.DoThreadSafeAsync(x =>
                 {
@@ -87,7 +88,8 @@ namespace Chummer
             }
             else
             {
-                Program.MainForm.OpenCharacterForms.CollectionChanged -= OpenCharacterFormsOnCollectionChanged;
+                Program.MainForm.OpenCharacterEditorForms.CollectionChanged -= OpenCharacterEditorFormsOnCollectionChanged;
+                Program.MainForm.OpenCharacterSheetViewers.CollectionChanged -= OpenCharacterSheetViewersOnCollectionChanged;
                 GlobalSettings.MruChanged -= RefreshMruLists;
                 await treCharacterList.DoThreadSafeAsync(x =>
                 {
@@ -134,12 +136,12 @@ namespace Chummer
                 {
                     // Use the watcher folder refresher's cancellation token so that the task gets canceled if we go for a full refresh
                     CancellationTokenSource objTemp = new CancellationTokenSource();
-                    CancellationTokenSource objTemp2 = objTemp;
-                    if (Interlocked.CompareExchange(ref _objWatchFolderRefreshCancellationTokenSource, objTemp, null)
-                        != null)
+                    CancellationTokenSource objCurrent
+                        = Interlocked.CompareExchange(ref _objWatchFolderRefreshCancellationTokenSource, objTemp, null);
+                    if (objCurrent != null)
                     {
-                        objTemp = _objWatchFolderRefreshCancellationTokenSource;
-                        objTemp2.Dispose();
+                        objTemp.Dispose();
+                        objTemp = objCurrent;
                     }
 
                     CancellationToken objTokenToUse = objTemp.Token;
@@ -178,12 +180,12 @@ namespace Chummer
                 {
                     // Use the watcher folder refresher's cancellation token so that the task gets canceled if we go for a full refresh
                     CancellationTokenSource objTemp = new CancellationTokenSource();
-                    CancellationTokenSource objTemp2 = objTemp;
-                    if (Interlocked.CompareExchange(ref _objWatchFolderRefreshCancellationTokenSource, objTemp, null)
-                        != null)
+                    CancellationTokenSource objCurrentSource
+                        = Interlocked.CompareExchange(ref _objWatchFolderRefreshCancellationTokenSource, objTemp, null);
+                    if (objCurrentSource != null)
                     {
-                        objTemp = _objWatchFolderRefreshCancellationTokenSource;
-                        objTemp2.Dispose();
+                        objTemp.Dispose();
+                        objTemp = objCurrentSource;
                     }
 
                     CancellationToken objTokenToUse = objTemp.Token;
@@ -244,12 +246,30 @@ namespace Chummer
                     }
 
                     await SetMyEventHandlers();
-                    _objMostRecentlyUsedsRefreshCancellationTokenSource = new CancellationTokenSource();
-                    _tskMostRecentlyUsedsRefresh
-                        = LoadMruCharacters(true, _objMostRecentlyUsedsRefreshCancellationTokenSource.Token);
-                    _objWatchFolderRefreshCancellationTokenSource = new CancellationTokenSource();
-                    _tskWatchFolderRefresh
-                        = LoadWatchFolderCharacters(_objMostRecentlyUsedsRefreshCancellationTokenSource.Token);
+                    CancellationTokenSource objTemp = new CancellationTokenSource();
+                    CancellationTokenSource objCurrent = Interlocked.CompareExchange(
+                        ref _objMostRecentlyUsedsRefreshCancellationTokenSource,
+                        objTemp, null);
+                    if (objCurrent != null)
+                    {
+                        objTemp.Dispose();
+                        objTemp = objCurrent;
+                    }
+
+                    _tskMostRecentlyUsedsRefresh = LoadMruCharacters(true, objTemp.Token);
+
+                    objTemp = new CancellationTokenSource();
+                    objCurrent = Interlocked.CompareExchange(
+                        ref _objWatchFolderRefreshCancellationTokenSource,
+                        objTemp, null);
+                    if (objCurrent != null)
+                    {
+                        objTemp.Dispose();
+                        objTemp = objCurrent;
+                    }
+
+                    _tskWatchFolderRefresh = LoadWatchFolderCharacters(objTemp.Token);
+
                     try
                     {
                         await Task.WhenAll(_tskMostRecentlyUsedsRefresh, _tskWatchFolderRefresh,
@@ -283,18 +303,20 @@ namespace Chummer
                     if (_blnIsClosing)
                         return;
                     _blnIsClosing = true; // Needed to prevent crashes on disposal
-                    if (_objMostRecentlyUsedsRefreshCancellationTokenSource?.IsCancellationRequested == false)
+                    CancellationTokenSource objTemp
+                        = Interlocked.Exchange(ref _objMostRecentlyUsedsRefreshCancellationTokenSource, null);
+                    if (objTemp?.IsCancellationRequested == false)
                     {
-                        _objMostRecentlyUsedsRefreshCancellationTokenSource.Cancel(false);
-                        _objMostRecentlyUsedsRefreshCancellationTokenSource.Dispose();
-                        _objMostRecentlyUsedsRefreshCancellationTokenSource = null;
+                        objTemp.Cancel(false);
+                        objTemp.Dispose();
                     }
 
-                    if (_objWatchFolderRefreshCancellationTokenSource?.IsCancellationRequested == false)
+                    objTemp
+                        = Interlocked.Exchange(ref _objWatchFolderRefreshCancellationTokenSource, null);
+                    if (objTemp?.IsCancellationRequested == false)
                     {
-                        _objWatchFolderRefreshCancellationTokenSource.Cancel(false);
-                        _objWatchFolderRefreshCancellationTokenSource.Dispose();
-                        _objWatchFolderRefreshCancellationTokenSource = null;
+                        objTemp.Cancel(false);
+                        objTemp.Dispose();
                     }
 
                     await SetMyEventHandlers(true);
@@ -354,13 +376,15 @@ namespace Chummer
 
         private async void RefreshWatchList(object sender, EventArgs e)
         {
-            if (_objWatchFolderRefreshCancellationTokenSource?.IsCancellationRequested == false)
+            CancellationTokenSource objNewSource = new CancellationTokenSource();
+            CancellationTokenSource objTemp
+                = Interlocked.Exchange(ref _objWatchFolderRefreshCancellationTokenSource, objNewSource);
+            if (objTemp?.IsCancellationRequested == false)
             {
-                _objWatchFolderRefreshCancellationTokenSource.Cancel(false);
-                _objWatchFolderRefreshCancellationTokenSource.Dispose();
-                _objWatchFolderRefreshCancellationTokenSource = null;
+                objTemp.Cancel(false);
+                objTemp.Dispose();
             }
-            _objWatchFolderRefreshCancellationTokenSource = new CancellationTokenSource();
+
             try
             {
                 if (_tskWatchFolderRefresh?.IsCompleted == false)
@@ -372,7 +396,13 @@ namespace Chummer
             }
 
             if (this.IsNullOrDisposed())
+            {
+                Interlocked.CompareExchange(ref _objWatchFolderRefreshCancellationTokenSource, null, objNewSource);
+                objNewSource.Dispose();
                 return;
+            }
+            
+            CancellationToken innerToken = objNewSource.Token;
 
             try
             {
@@ -380,7 +410,7 @@ namespace Chummer
                 try
                 {
                     _tskWatchFolderRefresh
-                        = LoadWatchFolderCharacters(_objWatchFolderRefreshCancellationTokenSource.Token);
+                        = LoadWatchFolderCharacters(innerToken);
                     try
                     {
                         await _tskWatchFolderRefresh;
@@ -428,14 +458,16 @@ namespace Chummer
                 return;
             if (!IsFinishedLoading)
                 return;
-            if (_objMostRecentlyUsedsRefreshCancellationTokenSource?.IsCancellationRequested == false)
+            CancellationTokenSource objNewSource = new CancellationTokenSource();
+            CancellationTokenSource objTemp
+                = Interlocked.Exchange(ref _objMostRecentlyUsedsRefreshCancellationTokenSource, objNewSource);
+            if (objTemp?.IsCancellationRequested == false)
             {
-                _objMostRecentlyUsedsRefreshCancellationTokenSource.Cancel(false);
-                _objMostRecentlyUsedsRefreshCancellationTokenSource.Dispose();
-                _objMostRecentlyUsedsRefreshCancellationTokenSource = null;
+                objTemp.Cancel(false);
+                objTemp.Dispose();
             }
             token.ThrowIfCancellationRequested();
-            _objMostRecentlyUsedsRefreshCancellationTokenSource = new CancellationTokenSource();
+            
             try
             {
                 if (_tskMostRecentlyUsedsRefresh?.IsCompleted == false)
@@ -447,9 +479,14 @@ namespace Chummer
             }
 
             if (this.IsNullOrDisposed())
+            {
+                Interlocked.CompareExchange(ref _objMostRecentlyUsedsRefreshCancellationTokenSource, null, objNewSource);
+                objNewSource.Dispose();
                 return;
+            }
 
-            CancellationToken innerToken = _objMostRecentlyUsedsRefreshCancellationTokenSource.Token;
+            CancellationToken innerToken = objNewSource.Token;
+
             await this.DoThreadSafeAsync(x => x.SuspendLayout(), token);
             try
             {
@@ -489,7 +526,62 @@ namespace Chummer
             }
         }
 
-        private async void OpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void OpenCharacterSheetViewersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (this.IsNullOrDisposed())
+                return;
+            if (!IsFinishedLoading)
+                return;
+            try
+            {
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        await RefreshNodeTexts(_objGenericToken);
+                        break;
+
+                    case NotifyCollectionChangedAction.Move:
+                    case NotifyCollectionChangedAction.Replace:
+                    case NotifyCollectionChangedAction.Remove:
+                    {
+                        bool blnRefreshMru = false;
+                        using (new FetchSafelyFromPool<HashSet<string>>(
+                                   Utils.StringHashSetPool, out HashSet<string> setCharacters))
+                        {
+                            // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
+                            foreach (CharacterSheetViewer objForm in e.OldItems)
+                            {
+                                setCharacters.Clear();
+                                setCharacters.AddRange(objForm.CharacterObjects.Select(x => x.FileName));
+                                setCharacters.ExceptWith(GlobalSettings.FavoriteCharacters);
+                                setCharacters.ExceptWith(GlobalSettings.MostRecentlyUsedCharacters);
+                                if (setCharacters.Count > 0)
+                                {
+                                    blnRefreshMru = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (blnRefreshMru)
+                            await RefreshMruLists("mru", _objGenericToken);
+                        else
+                            await RefreshNodeTexts(_objGenericToken);
+                    }
+                        break;
+
+                    case NotifyCollectionChangedAction.Reset:
+                        await RefreshMruLists(string.Empty, _objGenericToken);
+                        break;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Swallow this
+            }
+        }
+
+        private async void OpenCharacterEditorFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (this.IsNullOrDisposed())
                 return;
@@ -595,12 +687,22 @@ namespace Chummer
             bool blnAddRecentNode = false;
             List<string> lstRecents = (await GlobalSettings.MostRecentlyUsedCharacters.ToArrayAsync()).ToList();
             // Add any characters that are open to the displayed list so we can have more than 10 characters listed
-            await Program.MainForm.OpenCharacterForms.ForEachAsync(objCharacterForm =>
+            await Program.MainForm.OpenCharacterEditorForms.ForEachAsync(objCharacterForm =>
             {
                 string strFile = objCharacterForm.CharacterObject.FileName;
                 // Make sure we're not loading a character that was already loaded by the MRU list.
                 if (!lstFavorites.Contains(strFile) && !lstRecents.Contains(strFile))
                     lstRecents.Add(strFile);
+            }, token);
+            await Program.MainForm.OpenCharacterSheetViewers.ForEachAsync(objCharacterForm =>
+            {
+                foreach (Character objCharacter in objCharacterForm.CharacterObjects)
+                {
+                    string strFile = objCharacter.FileName;
+                    // Make sure we're not loading a character that was already loaded by the MRU list.
+                    if (!lstFavorites.Contains(strFile) && !lstRecents.Contains(strFile))
+                        lstRecents.Add(strFile);
+                }
             }, token);
             foreach (string strFavorite in lstFavorites)
                 lstRecents.Remove(strFavorite);
@@ -1512,10 +1614,10 @@ namespace Chummer
                         if (objCharacter == null)
                         {
                             using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(objCache.FilePath, Character.NumLoadingSections))
-                                objCharacter = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar);
+                                objCharacter = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar, token: _objGenericToken);
                         }
-                        if (!await Program.SwitchToOpenCharacter(objCharacter))
-                            await Program.OpenCharacter(objCharacter);
+                        if (!await Program.SwitchToOpenCharacter(objCharacter, _objGenericToken))
+                            await Program.OpenCharacter(objCharacter, token: _objGenericToken);
                     }
                 }
             }
@@ -1541,24 +1643,9 @@ namespace Chummer
                     if (objCharacter == null)
                     {
                         using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(objCache.FilePath, Character.NumLoadingSections))
-                            objCharacter = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar);
+                            objCharacter = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar, token: _objGenericToken);
                     }
-                    try
-                    {
-                        await Program.OpenCharacterForPrinting(objCharacter);
-                    }
-                    finally
-                    {
-                        if (objCharacter != null)
-                        {
-                            if (await Program.OpenCharacters.AllAsync(
-                                    x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), _objGenericToken)
-                                && await Program.MainForm.OpenCharacterForms.AllAsync(
-                                    x => x.CharacterObject != objCharacter, _objGenericToken))
-                                await Program.OpenCharacters.RemoveAsync(objCharacter);
-                            await objCharacter.DisposeAsync();
-                        }
-                    }
+                    await Program.OpenCharacterForPrinting(objCharacter, _objGenericToken);
                 }
             }
             catch (OperationCanceledException)
@@ -1583,7 +1670,7 @@ namespace Chummer
                     if (objCharacter == null)
                     {
                         using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(objCache.FilePath, Character.NumLoadingSections))
-                            objCharacter = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar);
+                            objCharacter = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar, token: _objGenericToken);
                     }
                     try
                     {
@@ -1595,8 +1682,8 @@ namespace Chummer
                         {
                             if (await Program.OpenCharacters.AllAsync(
                                     x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), _objGenericToken)
-                                && await Program.MainForm.OpenCharacterForms.AllAsync(
-                                    x => x.CharacterObject != objCharacter, _objGenericToken))
+                                && Program.MainForm.OpenFormsWithCharacters.All(
+                                    x => !x.CharacterObjects.Contains(objCharacter)))
                                 await Program.OpenCharacters.RemoveAsync(objCharacter);
                             await objCharacter.DisposeAsync();
                         }
@@ -1689,8 +1776,15 @@ namespace Chummer
                 if (objOpenCharacter != null)
                 {
                     using (await CursorWait.NewAsync(this, token: _objGenericToken))
-                        (await Program.MainForm.OpenCharacterForms.FirstOrDefaultAsync(
-                            x => x.CharacterObject == objOpenCharacter, _objGenericToken))?.Close();
+                    {
+                        foreach (IHasCharacterObjects objOpenForm in Program.MainForm.OpenFormsWithCharacters)
+                        {
+                            if (objOpenForm.CharacterObjects.Contains(objOpenCharacter) && objOpenForm is Form frmOpenForm)
+                            {
+                                await frmOpenForm.DoThreadSafeAsync(x => x.Close(), _objGenericToken);
+                            }
+                        }
+                    }
                 }
             }
             catch (OperationCanceledException)
@@ -1711,7 +1805,8 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strTag))
                     e.Node.ContextMenuStrip = CreateContextMenuStrip(
                         strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                        && Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject?.FileName == strTag));
+                        && Program.MainForm.OpenFormsWithCharacters.Any(
+                            x => x.CharacterObjects.Any(y => y.FileName == strTag)));
                 else
                     e.Node.ContextMenuStrip = CreateContextMenuStrip(false);
             }

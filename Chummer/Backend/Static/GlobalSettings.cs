@@ -586,11 +586,7 @@ namespace Chummer
                         = Newtonsoft.Json.JsonConvert.DeserializeObject<LockingDictionary<string, bool>>(strPluginsJson);
                     if (dicTemp != null)
                     {
-                        LockingDictionary<string, bool> dicOld = s_dicPluginsEnabled;
-                        if (Interlocked.CompareExchange(ref s_dicPluginsEnabled, dicTemp, dicOld) == dicOld)
-                        {
-                            dicOld?.Dispose();
-                        }
+                        Interlocked.Exchange(ref s_dicPluginsEnabled, dicTemp)?.Dispose();
                     }
                 }
             }

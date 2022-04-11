@@ -7157,7 +7157,7 @@ namespace Chummer.Backend.Equipment
                 if (AmmoGear != null || Ammo != 0) //Don't save empty clips, we are recreating them anyway. Save those kb
                 {
                     await objWriter.WriteStartElementAsync("clip");
-                    await objWriter.WriteElementStringAsync("name", DisplayAmmoName(strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("name", await DisplayAmmoNameAsync(strLanguageToPrint));
                     await objWriter.WriteElementStringAsync("count", Ammo.ToString(objCulture));
                     await objWriter.WriteElementStringAsync("location", AmmoLocation);
                     if (AmmoGear != null)

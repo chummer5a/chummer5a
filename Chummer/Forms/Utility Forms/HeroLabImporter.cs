@@ -649,7 +649,7 @@ namespace Chummer
                         return;
                     blnLoaded = true;
                     //Timekeeper.Finish("load_file");
-                    await Program.OpenCharacter(objCharacter);
+                    await Program.OpenCharacter(objCharacter, token: token);
                 }
                 finally
                 {
