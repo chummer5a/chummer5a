@@ -2055,7 +2055,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             return objParentList.AllAsync(async objLoopChild =>
                 predicate(objLoopChild) &&
-                await funcGetChildrenMethod(objLoopChild).DeepAllAsync(funcGetChildrenMethod, predicate), token);
+                await funcGetChildrenMethod(objLoopChild).DeepAllAsync(funcGetChildrenMethod, predicate, token), token);
         }
 
         /// <summary>
@@ -2066,7 +2066,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             return objParentList.AnyAsync(async objLoopChild =>
                 predicate(objLoopChild) ||
-                await funcGetChildrenMethod(objLoopChild).DeepAnyAsync(funcGetChildrenMethod, predicate), token);
+                await funcGetChildrenMethod(objLoopChild).DeepAnyAsync(funcGetChildrenMethod, predicate, token), token);
         }
 
         /// <summary>
@@ -2123,9 +2123,15 @@ namespace Chummer
                     T objLoopChild = objEnumerator.Current;
                     if (predicate(objLoopChild))
                         return objLoopChild;
-                    T objReturn = await funcGetChildrenMethod(objLoopChild).DeepFirstOrDefaultAsync(funcGetChildrenMethod, predicate, token);
-                    if (objReturn?.Equals(default(T)) == false)
-                        return objReturn;
+                    try
+                    {
+                        return await funcGetChildrenMethod(objLoopChild)
+                            .DeepFirstAsync(funcGetChildrenMethod, predicate, token);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        //swallow this
+                    }
                 }
             }
             throw new InvalidOperationException();
@@ -2160,8 +2166,34 @@ namespace Chummer
         public static async Task<T> DeepLastAsync<T>([ItemNotNull] this IAsyncEnumerable<T> objParentList, Func<T, IAsyncEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            T objReturn = await objParentList.DeepLastOrDefaultAsync(funcGetChildrenMethod, predicate, token);
-            if (objReturn?.Equals(default(T)) == false)
+            if (objParentList == null)
+                throw new InvalidOperationException();
+            bool blnFoundValue = false;
+            T objReturn = default;
+            using (IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token))
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objLoopChild = objEnumerator.Current;
+                    if (predicate(objLoopChild))
+                    {
+                        objReturn = objLoopChild;
+                        blnFoundValue = true;
+                    }
+                    T objTemp;
+                    try
+                    {
+                        objTemp = await funcGetChildrenMethod(objLoopChild).DeepLastAsync(funcGetChildrenMethod, predicate, token);
+                        blnFoundValue = true;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        continue;
+                    }
+                    objReturn = objTemp;
+                }
+            }
+            if (blnFoundValue)
                 return objReturn;
             throw new InvalidOperationException();
         }
@@ -2172,8 +2204,28 @@ namespace Chummer
         public static async Task<T> DeepLastAsync<T>([ItemNotNull] this IAsyncEnumerable<T> objParentList, Func<T, IAsyncEnumerable<T>> funcGetChildrenMethod, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            T objReturn = await objParentList.DeepLastOrDefaultAsync(funcGetChildrenMethod, token);
-            if (objReturn?.Equals(default(T)) == false)
+            if (objParentList == null)
+                throw new InvalidOperationException();
+            bool blnFoundValue = false;
+            T objReturn = default;
+            using (IEnumerator<T> objEnumerator = await objParentList.GetEnumeratorAsync(token))
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    blnFoundValue = true;
+                    objReturn = objEnumerator.Current;
+                }
+                try
+                {
+                    T objTemp = await funcGetChildrenMethod(objReturn).DeepLastAsync(funcGetChildrenMethod, token);
+                    objReturn = objTemp;
+                }
+                catch (InvalidOperationException)
+                {
+                    //swallow this
+                }
+            }
+            if (blnFoundValue)
                 return objReturn;
             throw new InvalidOperationException();
         }
