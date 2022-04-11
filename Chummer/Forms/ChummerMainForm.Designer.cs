@@ -80,6 +80,8 @@ namespace Chummer
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuToolsTranslator = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.mnuHeroLabImporter = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.mnuMasterIndex = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.mnuCharacterRoster = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.windowsMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.newWindowToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.closeAllToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
@@ -673,7 +675,9 @@ namespace Chummer
             this.mnuRestart,
             this.toolStripSeparator6,
             this.mnuToolsTranslator,
-            this.mnuHeroLabImporter});
+            this.mnuHeroLabImporter,
+            this.mnuMasterIndex,
+            this.mnuCharacterRoster});
             this.toolsMenu.Name = "toolsMenu";
             this.toolsMenu.Size = new System.Drawing.Size(46, 20);
             this.toolsMenu.Tag = "Menu_Main_Tools";
@@ -689,7 +693,7 @@ namespace Chummer
             this.mnuToolsDiceRoller.ImageDpi384 = null;
             this.mnuToolsDiceRoller.ImageDpi96 = global::Chummer.Properties.Resources.die;
             this.mnuToolsDiceRoller.Name = "mnuToolsDiceRoller";
-            this.mnuToolsDiceRoller.Size = new System.Drawing.Size(171, 22);
+            this.mnuToolsDiceRoller.Size = new System.Drawing.Size(180, 22);
             this.mnuToolsDiceRoller.Tag = "Menu_Main_DiceRoller";
             this.mnuToolsDiceRoller.Text = "&Dice Roller";
             this.mnuToolsDiceRoller.Click += new System.EventHandler(this.mnuToolsDiceRoller_Click);
@@ -697,7 +701,7 @@ namespace Chummer
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(168, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
             // 
             // mnuGlobalSettings
             // 
@@ -709,7 +713,7 @@ namespace Chummer
             this.mnuGlobalSettings.ImageDpi384 = null;
             this.mnuGlobalSettings.ImageDpi96 = global::Chummer.Properties.Resources.cog_edit;
             this.mnuGlobalSettings.Name = "mnuGlobalSettings";
-            this.mnuGlobalSettings.Size = new System.Drawing.Size(171, 22);
+            this.mnuGlobalSettings.Size = new System.Drawing.Size(180, 22);
             this.mnuGlobalSettings.Tag = "Menu_Main_Options";
             this.mnuGlobalSettings.Text = "&Global Settings";
             this.mnuGlobalSettings.Click += new System.EventHandler(this.mnuGlobalSettings_Click);
@@ -724,7 +728,7 @@ namespace Chummer
             this.mnuCharacterSettings.ImageDpi384 = null;
             this.mnuCharacterSettings.ImageDpi96 = global::Chummer.Properties.Resources.group_gear;
             this.mnuCharacterSettings.Name = "mnuCharacterSettings";
-            this.mnuCharacterSettings.Size = new System.Drawing.Size(171, 22);
+            this.mnuCharacterSettings.Size = new System.Drawing.Size(180, 22);
             this.mnuCharacterSettings.Tag = "Menu_Main_Character_Options";
             this.mnuCharacterSettings.Text = "&Character Settings";
             this.mnuCharacterSettings.Click += new System.EventHandler(this.mnuCharacterSettings_Click);
@@ -739,7 +743,7 @@ namespace Chummer
             this.mnuToolsUpdate.ImageDpi384 = null;
             this.mnuToolsUpdate.ImageDpi96 = global::Chummer.Properties.Resources.database_refresh;
             this.mnuToolsUpdate.Name = "mnuToolsUpdate";
-            this.mnuToolsUpdate.Size = new System.Drawing.Size(171, 22);
+            this.mnuToolsUpdate.Size = new System.Drawing.Size(180, 22);
             this.mnuToolsUpdate.Tag = "Menu_Main_Update";
             this.mnuToolsUpdate.Text = "Check for &Updates";
             this.mnuToolsUpdate.Click += new System.EventHandler(this.mnuToolsUpdate_Click);
@@ -754,7 +758,7 @@ namespace Chummer
             this.mnuRestart.ImageDpi384 = null;
             this.mnuRestart.ImageDpi96 = global::Chummer.Properties.Resources.arrow_redo;
             this.mnuRestart.Name = "mnuRestart";
-            this.mnuRestart.Size = new System.Drawing.Size(171, 22);
+            this.mnuRestart.Size = new System.Drawing.Size(180, 22);
             this.mnuRestart.Tag = "Menu_Main_Restart";
             this.mnuRestart.Text = "&Restart Chummer";
             this.mnuRestart.Click += new System.EventHandler(this.mnuRestart_Click);
@@ -762,7 +766,7 @@ namespace Chummer
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(168, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(177, 6);
             // 
             // mnuToolsTranslator
             // 
@@ -774,7 +778,7 @@ namespace Chummer
             this.mnuToolsTranslator.ImageDpi384 = null;
             this.mnuToolsTranslator.ImageDpi96 = global::Chummer.Properties.Resources.locate;
             this.mnuToolsTranslator.Name = "mnuToolsTranslator";
-            this.mnuToolsTranslator.Size = new System.Drawing.Size(171, 22);
+            this.mnuToolsTranslator.Size = new System.Drawing.Size(180, 22);
             this.mnuToolsTranslator.Tag = "Menu_Main_Translator";
             this.mnuToolsTranslator.Text = "&Translator";
             this.mnuToolsTranslator.Click += new System.EventHandler(this.mnuToolsTranslator_Click);
@@ -789,10 +793,40 @@ namespace Chummer
             this.mnuHeroLabImporter.ImageDpi384 = null;
             this.mnuHeroLabImporter.ImageDpi96 = global::Chummer.Properties.Resources.HeroLab_16;
             this.mnuHeroLabImporter.Name = "mnuHeroLabImporter";
-            this.mnuHeroLabImporter.Size = new System.Drawing.Size(171, 22);
+            this.mnuHeroLabImporter.Size = new System.Drawing.Size(180, 22);
             this.mnuHeroLabImporter.Tag = "Menu_Main_HeroLabImporter";
             this.mnuHeroLabImporter.Text = "&Hero Lab Importer";
             this.mnuHeroLabImporter.Click += new System.EventHandler(this.mnuHeroLabImporter_Click);
+            // 
+            // mnuMasterIndex
+            // 
+            this.mnuMasterIndex.Image = global::Chummer.Properties.Resources.books;
+            this.mnuMasterIndex.ImageDpi120 = null;
+            this.mnuMasterIndex.ImageDpi144 = null;
+            this.mnuMasterIndex.ImageDpi192 = global::Chummer.Properties.Resources.books1;
+            this.mnuMasterIndex.ImageDpi288 = null;
+            this.mnuMasterIndex.ImageDpi384 = null;
+            this.mnuMasterIndex.ImageDpi96 = global::Chummer.Properties.Resources.books;
+            this.mnuMasterIndex.Name = "mnuMasterIndex";
+            this.mnuMasterIndex.Size = new System.Drawing.Size(180, 22);
+            this.mnuMasterIndex.Tag = "Menu_Main_MasterIndex";
+            this.mnuMasterIndex.Text = "&Master Index";
+            this.mnuMasterIndex.Click += new System.EventHandler(this.mnuMasterIndex_Click);
+            // 
+            // mnuCharacterRoster
+            // 
+            this.mnuCharacterRoster.Image = global::Chummer.Properties.Resources.group;
+            this.mnuCharacterRoster.ImageDpi120 = null;
+            this.mnuCharacterRoster.ImageDpi144 = null;
+            this.mnuCharacterRoster.ImageDpi192 = global::Chummer.Properties.Resources.group1;
+            this.mnuCharacterRoster.ImageDpi288 = null;
+            this.mnuCharacterRoster.ImageDpi384 = null;
+            this.mnuCharacterRoster.ImageDpi96 = global::Chummer.Properties.Resources.group;
+            this.mnuCharacterRoster.Name = "mnuCharacterRoster";
+            this.mnuCharacterRoster.Size = new System.Drawing.Size(180, 22);
+            this.mnuCharacterRoster.Tag = "Menu_Main_CharacterRoster";
+            this.mnuCharacterRoster.Text = "Ch&aracter Roster";
+            this.mnuCharacterRoster.Click += new System.EventHandler(this.mnuCharacterRoster_Click);
             // 
             // windowsMenu
             // 
@@ -905,10 +939,10 @@ namespace Chummer
             this.mnuHelpDumpshock.Image = global::Chummer.Properties.Resources.bug;
             this.mnuHelpDumpshock.ImageDpi120 = null;
             this.mnuHelpDumpshock.ImageDpi144 = null;
-            this.mnuHelpDumpshock.ImageDpi192 = null;
+            this.mnuHelpDumpshock.ImageDpi192 = global::Chummer.Properties.Resources.bug1;
             this.mnuHelpDumpshock.ImageDpi288 = null;
             this.mnuHelpDumpshock.ImageDpi384 = null;
-            this.mnuHelpDumpshock.ImageDpi96 = global::Chummer.Properties.Resources.bug1;
+            this.mnuHelpDumpshock.ImageDpi96 = global::Chummer.Properties.Resources.bug;
             this.mnuHelpDumpshock.Name = "mnuHelpDumpshock";
             this.mnuHelpDumpshock.Size = new System.Drawing.Size(217, 22);
             this.mnuHelpDumpshock.Tag = "Menu_Main_IssueTracker";
@@ -1190,6 +1224,8 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsPrint;
         private DpiFriendlyToolStripMenuItem mnuOpenForPrinting;
         private DpiFriendlyToolStripMenuItem mnuOpenForExport;
+        private DpiFriendlyToolStripMenuItem mnuMasterIndex;
+        private DpiFriendlyToolStripMenuItem mnuCharacterRoster;
     }
 }
 

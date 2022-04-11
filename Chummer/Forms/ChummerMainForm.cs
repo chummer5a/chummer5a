@@ -83,6 +83,7 @@ namespace Chummer
                 {
                     MdiParent = this
                 };
+                MasterIndex.FormClosed += (sender, args) => MasterIndex = null;
             }
             if (!GlobalSettings.HideCharacterRoster || blnIsUnitTest)
             {
@@ -90,6 +91,7 @@ namespace Chummer
                 {
                     MdiParent = this
                 };
+                CharacterRoster.FormClosed += (sender, args) => CharacterRoster = null;
             }
         }
 
@@ -489,9 +491,9 @@ namespace Chummer
             }
         }
 
-        public CharacterRoster CharacterRoster { get; }
+        public CharacterRoster CharacterRoster { get; private set; }
 
-        public MasterIndex MasterIndex { get; }
+        public MasterIndex MasterIndex { get; private set; }
 
 #if !DEBUG
         private Uri UpdateLocation { get; } = new Uri(GlobalSettings.PreferNightlyBuilds
@@ -741,6 +743,74 @@ namespace Chummer
             }
         }
 
+        private async void mnuMasterIndex_Click(object sender, EventArgs e)
+        {
+            if (MasterIndex.IsNullOrDisposed())
+            {
+                MasterIndex = await this.DoThreadSafeFuncAsync(() => new MasterIndex());
+                await MasterIndex.DoThreadSafeAsync(x =>
+                {
+                    x.FormClosed += (y, args) => MasterIndex = null;
+                    x.MdiParent = this;
+                    if (CharacterRoster.IsNullOrDisposed())
+                        x.WindowState = FormWindowState.Maximized;
+                    x.Show();
+                    if (!CharacterRoster.IsNullOrDisposed())
+                        x.WindowState = FormWindowState.Maximized;
+                });
+            }
+            else
+            {
+                await MasterIndex.DoThreadSafeAsync(x =>
+                {
+                    foreach (TabPage objTabPage in tabForms.TabPages)
+                    {
+                        if (objTabPage.Tag != x)
+                            continue;
+                        tabForms.SelectTab(objTabPage);
+                        if (_mascotChummy != null)
+                            _mascotChummy.CharacterObject = null;
+                        return;
+                    }
+                    x.BringToFront();
+                });
+            }
+        }
+
+        private async void mnuCharacterRoster_Click(object sender, EventArgs e)
+        {
+            if (CharacterRoster.IsNullOrDisposed())
+            {
+                CharacterRoster = await this.DoThreadSafeFuncAsync(() => new CharacterRoster());
+                await CharacterRoster.DoThreadSafeAsync(x =>
+                {
+                    x.FormClosed += (y, args) => CharacterRoster = null;
+                    x.MdiParent = this;
+                    if (MasterIndex.IsNullOrDisposed())
+                        x.WindowState = FormWindowState.Maximized;
+                    x.Show();
+                    if (!MasterIndex.IsNullOrDisposed())
+                        x.WindowState = FormWindowState.Maximized;
+                });
+            }
+            else
+            {
+                await CharacterRoster.DoThreadSafeAsync(x =>
+                {
+                    foreach (TabPage objTabPage in tabForms.TabPages)
+                    {
+                        if (objTabPage.Tag != x)
+                            continue;
+                        tabForms.SelectTab(objTabPage);
+                        if (_mascotChummy != null)
+                            _mascotChummy.CharacterObject = null;
+                        return;
+                    }
+                    x.BringToFront();
+                });
+            }
+        }
+
         private void ResetChummerUpdater(object sender, EventArgs e)
         {
             _frmUpdate?.Close();
@@ -896,9 +966,37 @@ namespace Chummer
                         string strTagText = await LanguageManager.GetStringAsync(await objMdiChild.DoThreadSafeFuncAsync(x => x.Tag?.ToString()), GlobalSettings.Language, false);
                         if (!string.IsNullOrEmpty(strTagText))
                             await objTabPage.DoThreadSafeAsync(x => x.Text = strTagText);
+                        if (GlobalSettings.AllowEasterEggs && _mascotChummy != null)
+                        {
+                            _mascotChummy.CharacterObject = null;
+                        }
                     }
 
-                    await tabForms.DoThreadSafeAsync(x => x.SelectedTab = objTabPage);
+                    await tabForms.DoThreadSafeAsync(x =>
+                    {
+                        if (objMdiChild == MasterIndex && x.TabPages.IndexOf(objTabPage) != 0)
+                        {
+                            x.TabPages.Remove(objTabPage);
+                            x.TabPages.Insert(0, objTabPage);
+                        }
+                        else if (objMdiChild == CharacterRoster)
+                        {
+                            if (MasterIndex.IsNullOrDisposed())
+                            {
+                                if (x.TabPages.IndexOf(objTabPage) != 0)
+                                {
+                                    x.TabPages.Remove(objTabPage);
+                                    x.TabPages.Insert(0, objTabPage);
+                                }
+                            }
+                            else if (x.TabPages.IndexOf(objTabPage) != 1)
+                            {
+                                x.TabPages.Remove(objTabPage);
+                                x.TabPages.Insert(1, objTabPage);
+                            }
+                        }
+                        x.SelectedTab = objTabPage;
+                    });
 
                     await objMdiChild.DoThreadSafeAsync(x =>
                     {
