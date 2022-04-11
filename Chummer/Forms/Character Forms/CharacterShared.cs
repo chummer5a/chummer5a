@@ -62,10 +62,10 @@ namespace Chummer
 
         protected CharacterShared(Character objCharacter)
         {
-            Program.MainForm.OpenCharacterEditorForms.Add(this);
             GenericToken = GenericCancellationTokenSource.Token;
             _objCharacter = objCharacter;
             _objCharacter.PropertyChanged += CharacterPropertyChanged;
+            Program.MainForm.OpenCharacterEditorForms.Add(this);
             string name = "Show_Form_" + GetType();
             PageViewTelemetry pvt = new PageViewTelemetry(name)
             {
@@ -8142,7 +8142,7 @@ namespace Chummer
 
         public Character CharacterObject => _objCharacter;
 
-        public IEnumerable<Character> CharacterObjects => _objCharacter.Yield();
+        public IEnumerable<Character> CharacterObjects => _objCharacter?.Yield() ?? Enumerable.Empty<Character>();
 
         private CharacterSettings _objCachedSettings;
 
