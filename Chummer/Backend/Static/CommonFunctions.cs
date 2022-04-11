@@ -505,6 +505,69 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Locate a piece of Gear within one of a character's Vehicles.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Gear to find.</param>
+        /// <param name="objVehicle">Vehicle to search.</param>
+        public static Gear FindVehicleGear(this Vehicle objVehicle, string strGuid)
+        {
+            if (objVehicle == null)
+                throw new ArgumentNullException(nameof(objVehicle));
+            return objVehicle.FindVehicleGear(strGuid, out WeaponAccessory _, out Cyberware _);
+        }
+
+        /// <summary>
+        /// Locate a piece of Gear within one of a character's Vehicles.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Gear to find.</param>
+        /// <param name="objVehicle">Vehicle to search.</param>
+        /// <param name="objFoundWeaponAccessory">Weapon Accessory that the Gear was found in.</param>
+        /// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
+        public static Gear FindVehicleGear(this Vehicle objVehicle, string strGuid, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware)
+        {
+            if (objVehicle == null)
+                throw new ArgumentNullException(nameof(objVehicle));
+            if (!string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
+            {
+                Gear objReturn = objVehicle.GearChildren.DeepFindById(strGuid);
+                if (!string.IsNullOrEmpty(objReturn?.Name))
+                {
+                    objFoundWeaponAccessory = null;
+                    objFoundCyberware = null;
+                    return objReturn;
+                }
+
+                // Look for any Gear that might be attached to this Vehicle through Weapon Accessories or Cyberware.
+                foreach (VehicleMod objMod in objVehicle.Mods)
+                {
+                    // Weapon Accessories.
+                    objReturn = objMod.Weapons.FindWeaponGear(strGuid, out WeaponAccessory objAccessory);
+
+                    if (!string.IsNullOrEmpty(objReturn?.Name))
+                    {
+                        objFoundWeaponAccessory = objAccessory;
+                        objFoundCyberware = null;
+                        return objReturn;
+                    }
+
+                    // Cyberware.
+                    objReturn = objMod.Cyberware.FindCyberwareGear(strGuid, out Cyberware objCyberware);
+
+                    if (!string.IsNullOrEmpty(objReturn?.Name))
+                    {
+                        objFoundWeaponAccessory = null;
+                        objFoundCyberware = objCyberware;
+                        return objReturn;
+                    }
+                }
+            }
+            
+            objFoundWeaponAccessory = null;
+            objFoundCyberware = null;
+            return null;
+        }
+
+        /// <summary>
         /// Locate a VehicleMod within the character's Vehicles.
         /// </summary>
         /// <param name="funcPredicate">Predicate to locate the VehicleMod.</param>

@@ -3666,6 +3666,31 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
+                objWeapon.ClearGearFromClips(this);
+            foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+            {
+                foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.Children))
+                    objWeapon.ClearGearFromClips(this);
+
+                foreach (VehicleMod objMod in objVehicle.Mods)
+                {
+                    foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children))
+                        objWeapon.ClearGearFromClips(this);
+                }
+
+                foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                {
+                    foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendants(x => x.Children))
+                        objWeapon.ClearGearFromClips(this);
+                    foreach (VehicleMod objMod in objMount.Mods)
+                    {
+                        foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children))
+                            objWeapon.ClearGearFromClips(this);
+                    }
+                }
+            }
+
             decimal decReturn = 0;
             // Remove any children the Gear may have.
             foreach (Gear objChild in Children)
@@ -3698,6 +3723,13 @@ namespace Chummer.Backend.Equipment
                         foreach (Weapon objDeleteWeapon in objMount.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList())
                         {
                             decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
+                        }
+                        foreach (VehicleMod objMod in objMount.Mods)
+                        {
+                            foreach (Weapon objDeleteWeapon in objMod.Weapons.DeepWhere(x => x.Children, x => x.ParentID == InternalId).ToList())
+                            {
+                                decReturn += objDeleteWeapon.TotalCost + objDeleteWeapon.DeleteWeapon();
+                            }
                         }
                     }
                 }

@@ -15079,7 +15079,7 @@ namespace Chummer
                                     string strAmmoName;
                                     if (objWeapon.RequireAmmo)
                                     {
-                                        Gear objGear = CharacterObject.Gear.DeepFindById(objWeapon.AmmoLoaded);
+                                        Gear objGear = objWeapon.AmmoLoaded;
                                         strAmmoName = objGear?.CurrentDisplayNameShort ??
                                                       await LanguageManager.GetStringAsync(objWeapon.AmmoRemaining > 0
                                                           ? "String_ExternalSource"
@@ -17764,8 +17764,7 @@ namespace Chummer
                                 {
                                     token.ThrowIfCancellationRequested();
                                     objWeapon.ActiveAmmoSlot = i;
-                                    Gear objVehicleGear
-                                        = objWeapon.ParentVehicle.GearChildren.DeepFindById(objWeapon.AmmoLoaded);
+                                    Gear objVehicleGear = objWeapon.AmmoLoaded;
                                     string strAmmoName = objVehicleGear?.CurrentDisplayNameShort
                                                          ?? await LanguageManager.GetStringAsync(
                                                              objWeapon.AmmoRemaining == 0
@@ -17784,7 +17783,7 @@ namespace Chummer
                                     {
                                         foreach (Gear objCurrentAmmo in objWeapon.ParentVehicle.GearChildren)
                                         {
-                                            if (objCurrentAmmo.InternalId != objWeapon.AmmoLoaded)
+                                            if (objCurrentAmmo != objWeapon.AmmoLoaded)
                                                 continue;
                                             foreach (Gear objChild in objCurrentAmmo.Children)
                                             {

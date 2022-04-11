@@ -93,6 +93,12 @@ namespace Chummer
 
                 // Populate the lists.
                 await cboAmmo.PopulateWithListItemsAsync(lstAmmo);
+                await cboAmmo.DoThreadSafeAsync(x =>
+                {
+                    x.SelectedValue = _objWeapon?.AmmoLoaded?.InternalId;
+                    if (x.SelectedIndex == -1)
+                        x.SelectedIndex = 0;
+                });
             }
 
             await cboType.DoThreadSafeAsync(x =>

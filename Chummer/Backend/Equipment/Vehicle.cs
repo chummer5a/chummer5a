@@ -793,6 +793,20 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             string strNodeInnerXml = objNode.InnerXml;
+            
+            // Load gear first so that ammo stuff for weapons get loaded in properly
+            if (strNodeInnerXml.Contains("<gears>"))
+            {
+                XmlNodeList nodChildren = objNode.SelectNodes("gears/gear");
+                foreach (XmlNode nodChild in nodChildren)
+                {
+                    Gear objGear = new Gear(_objCharacter);
+                    objGear.Load(nodChild, blnCopy);
+                    _lstGear.Add(objGear);
+                    objGear.Parent = this;
+                }
+            }
+
             if (strNodeInnerXml.Contains("<mods>"))
             {
                 XmlNodeList nodChildren = objNode.SelectNodes("mods/mod");
@@ -931,18 +945,6 @@ namespace Chummer.Backend.Equipment
                             }
                         }
                     }
-                }
-            }
-
-            if (strNodeInnerXml.Contains("<gears>"))
-            {
-                XmlNodeList nodChildren = objNode.SelectNodes("gears/gear");
-                foreach (XmlNode nodChild in nodChildren)
-                {
-                    Gear objGear = new Gear(_objCharacter);
-                    objGear.Load(nodChild, blnCopy);
-                    _lstGear.Add(objGear);
-                    objGear.Parent = this;
                 }
             }
 

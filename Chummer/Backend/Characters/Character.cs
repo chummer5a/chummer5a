@@ -7724,31 +7724,31 @@ namespace Chummer
 
                             using (_ = blnSync
                                        // ReSharper disable once MethodHasAsyncOverload
-                                       ? Timekeeper.StartSyncron("load_char_flechettefix", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_flechettefix", loadActivity))
+                                       ? Timekeeper.StartSyncron("load_char_clipfix", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_clipfix", loadActivity))
                             {
-                                //Fixes an issue where existing weapons could have been loaded with non-flechette ammunition
-                                if (LastSavedVersion <= new Version(5, 212, 78))
+                                //Fix for older versions where ammo loaded into clips was separate from ammo lying around in the inventory
+                                if (LastSavedVersion <= new Version(5, 222, 61))
                                 {
                                     foreach (Weapon objWeapon in Weapons.GetAllDescendants(x => x.Children))
-                                        objWeapon.DoFlechetteFix();
+                                        objWeapon.DoLegacyClipFix();
                                     foreach (Vehicle objVehicle in Vehicles)
                                     {
                                         foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x =>
                                                      x.Children))
-                                            objWeapon.DoFlechetteFix();
+                                            objWeapon.DoLegacyClipFix();
                                         foreach (WeaponMount objWeaponMount in objVehicle.WeaponMounts)
                                         {
                                             foreach (Weapon objWeapon in objWeaponMount.Weapons.GetAllDescendants(
                                                          x =>
                                                              x.Children))
-                                                objWeapon.DoFlechetteFix();
+                                                objWeapon.DoLegacyClipFix();
 
                                             foreach (VehicleMod objMod in objWeaponMount.Mods)
                                             {
                                                 foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x =>
                                                              x.Children))
-                                                    objWeapon.DoFlechetteFix();
+                                                    objWeapon.DoLegacyClipFix();
                                             }
                                         }
 
@@ -7756,7 +7756,7 @@ namespace Chummer
                                         {
                                             foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x =>
                                                          x.Children))
-                                                objWeapon.DoFlechetteFix();
+                                                objWeapon.DoLegacyClipFix();
                                         }
                                     }
                                 }
