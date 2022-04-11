@@ -7056,10 +7056,11 @@ namespace Chummer
 
         private async void cmdQuickenSpell_Click(object sender, EventArgs e)
         {
-            if (await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level != 1))
+            TreeNode objSelectedNode = await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode);
+            if (objSelectedNode == null || objSelectedNode.Level != 1)
                 return;
 
-            string strSelectedSpell = await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode.Text);
+            string strSelectedSpell = objSelectedNode.Text;
             int intKarmaCost;
             string strDescription = string.Format(GlobalSettings.CultureInfo,
                                                   await LanguageManager.GetStringAsync("String_QuickeningKarma"),
@@ -7507,13 +7508,12 @@ namespace Chummer
 
         private async void tsVehicleAddMod_Click(object sender, EventArgs e)
         {
-            await treVehicles.DoThreadSafeAsync(x =>
+            TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x =>
             {
                 while (x.SelectedNode?.Level > 1)
                     x.SelectedNode = x.SelectedNode.Parent;
+                return x.SelectedNode;
             });
-
-            TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode);
             // Make sure a parent items is selected, then open the Select Vehicle Mod window.
             if (!(objSelectedNode?.Tag is Vehicle objVehicle))
             {
@@ -14493,8 +14493,9 @@ namespace Chummer
             await flpCyberware.DoThreadSafeAsync(x => x.SuspendLayout(), token);
             try
             {
-                object objSelectedNodeTag = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token);
-                if (objSelectedNodeTag == null || await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode.Level == 0, token))
+                TreeNode objSelectedNode = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
+                object objSelectedNodeTag = objSelectedNode?.Tag;
+                if (objSelectedNodeTag == null || objSelectedNode.Level == 0)
                 {
                     await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = false, token);
                     await gpbCyberwareMatrix.DoThreadSafeAsync(x => x.Visible = false, token);

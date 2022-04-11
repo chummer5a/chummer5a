@@ -10902,8 +10902,9 @@ namespace Chummer
             await flpCyberware.DoThreadSafeAsync(x => x.SuspendLayout(), token);
             try
             {
-                object objSelectedNodeTag = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token);
-                if (objSelectedNodeTag == null || await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode.Level == 0, token))
+                TreeNode objSelectedNode = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
+                object objSelectedNodeTag = objSelectedNode?.Tag;
+                if (objSelectedNodeTag == null || objSelectedNode.Level == 0)
                 {
                     await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = false, token);
                     await gpbCyberwareMatrix.DoThreadSafeAsync(x => x.Visible = false, token);
@@ -11120,7 +11121,7 @@ namespace Chummer
                                 await chkCyberwareHomeNode.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         token.ThrowIfCancellationRequested();
-                        await treCyberware.DoThreadSafeAsync(x => x.SelectedNode.Text = objCyberware.CurrentDisplayName, token);
+                        await treCyberware.DoThreadSafeAsync(() => objSelectedNode.Text = objCyberware.CurrentDisplayName, token);
                         break;
                     }
                     case Gear objGear:
@@ -11233,7 +11234,7 @@ namespace Chummer
                         else
                             await chkCyberwareHomeNode.DoThreadSafeAsync(x => x.Visible = false, token);
                         token.ThrowIfCancellationRequested();
-                        await treCyberware.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName, token);
+                        await treCyberware.DoThreadSafeAsync(() => objSelectedNode.Text = objGear.CurrentDisplayName, token);
                         break;
                     }
                 }
@@ -11255,8 +11256,9 @@ namespace Chummer
             await flpWeapons.DoThreadSafeAsync(x => x.SuspendLayout(), token);
             try
             {
-                object objSelectedNodeTag = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token);
-                if (objSelectedNodeTag == null || await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode.Level <= 0, token))
+                TreeNode objSelectedNode = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
+                object objSelectedNodeTag = objSelectedNode?.Tag;
+                if (objSelectedNodeTag == null || objSelectedNode.Level <= 0)
                 {
                     await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = false, token);
                     await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = false, token);
@@ -11921,8 +11923,8 @@ namespace Chummer
             await flpArmor.DoThreadSafeAsync(x => x.SuspendLayout(), token);
             try
             {
-                token.ThrowIfCancellationRequested();
-                object objSelectedNodeTag = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token);
+                TreeNode objSelectedNode = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
+                object objSelectedNodeTag = objSelectedNode?.Tag;
                 if (objSelectedNodeTag == null)
                 {
                     await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false, token);
@@ -12386,9 +12388,9 @@ namespace Chummer
             await flpGear.DoThreadSafeAsync(x => x.SuspendLayout(), token);
             try
             {
-                token.ThrowIfCancellationRequested();
-                object objSelectedNodeTag = await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token);
-                if (objSelectedNodeTag == null || await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode.Level == 0, token))
+                TreeNode objSelectedNode = await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
+                object objSelectedNodeTag = objSelectedNode?.Tag;
+                if (objSelectedNodeTag == null || objSelectedNode.Level == 0)
                 {
                     await gpbGearCommon.DoThreadSafeAsync(x => x.Visible = false, token);
                     await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = false, token);
@@ -12598,7 +12600,7 @@ namespace Chummer
                     else
                         await chkGearHomeNode.DoThreadSafeAsync(x => x.Visible = false, token);
                     token.ThrowIfCancellationRequested();
-                    await treGear.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName, token);
+                    await treGear.DoThreadSafeAsync(() => objSelectedNode.Text = objGear.CurrentDisplayName, token);
                 }
                 else
                 {
@@ -13401,9 +13403,9 @@ namespace Chummer
             await flpLifestyleDetails.DoThreadSafeAsync(x => x.SuspendLayout(), token);
             try
             {
-                object objSelectedNodeTag = await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token);
-                if (objSelectedNodeTag == null || await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode.Level, token) <= 0
-                                               || !(objSelectedNodeTag is Lifestyle objLifestyle))
+                TreeNode objSelectedNode = await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
+                object objSelectedNodeTag = objSelectedNode?.Tag;
+                if (objSelectedNodeTag == null || objSelectedNode.Level <= 0 || !(objSelectedNodeTag is Lifestyle objLifestyle))
                 {
                     await flpLifestyleDetails.DoThreadSafeAsync(x => x.Visible = false, token);
                     await cmdDeleteLifestyle.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove, token);
@@ -13550,8 +13552,9 @@ namespace Chummer
             await flpVehicles.DoThreadSafeAsync(x => x.SuspendLayout(), token);
             try
             {
-                object objSelectedNodeTag = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token);
-                if (objSelectedNodeTag == null || await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level, token) <= 0 || objSelectedNodeTag is Location)
+                TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
+                object objSelectedNodeTag = objSelectedNode?.Tag;
+                if (objSelectedNodeTag == null || objSelectedNode.Level <= 0 || objSelectedNodeTag is Location)
                 {
                     await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = false, token);
                     await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false, token);
@@ -14673,8 +14676,9 @@ namespace Chummer
             await flpDrugs.DoThreadSafeAsync(x => x.SuspendLayout(), token);
             try
             {
-                object objSelectedNodeTag = await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token);
-                if (objSelectedNodeTag is Drug objDrug && await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level != 0, token))
+                TreeNode objSelectedNode = await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
+                object objSelectedNodeTag = objSelectedNode?.Tag;
+                if (objSelectedNodeTag is Drug objDrug && objSelectedNode.Level != 0)
                 {
                     await flpDrugs.DoThreadSafeAsync(x => x.Visible = true, token);
                     await btnDeleteCustomDrug.DoThreadSafeAsync(x => x.Enabled = true, token);
@@ -14729,8 +14733,9 @@ namespace Chummer
             await gpbMagicianSpell.DoThreadSafeAsync(x => x.SuspendLayout(), token);
             try
             {
-                object objSelectedNodeTag = await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token);
-                if (objSelectedNodeTag is Spell objSpell && await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level > 0, token))
+                TreeNode objSelectedNode = await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
+                object objSelectedNodeTag = objSelectedNode?.Tag;
+                if (objSelectedNodeTag is Spell objSpell && objSelectedNode.Level > 0)
                 {
                     await gpbMagicianSpell.DoThreadSafeAsync(x => x.Visible = true, token);
                     await cmdDeleteSpell.DoThreadSafeAsync(x => x.Enabled = objSpell.Grade == 0, token);
@@ -14779,8 +14784,9 @@ namespace Chummer
             await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.SuspendLayout(), token);
             try
             {
-                object objSelectedNodeTag = await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token);
-                if (objSelectedNodeTag is ComplexForm objComplexForm && await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level > 0, token))
+                TreeNode objSelectedNode = await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
+                object objSelectedNodeTag = objSelectedNode?.Tag;
+                if (objSelectedNodeTag is ComplexForm objComplexForm && objSelectedNode.Level > 0)
                 {
                     await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.Visible = true, token);
                     await cmdDeleteComplexForm.DoThreadSafeAsync(x => x.Enabled = objComplexForm.Grade == 0, token);
@@ -16740,29 +16746,37 @@ namespace Chummer
             bool blnPasteEnabled = false;
             bool blnCopyEnabled = false;
 
-            if (await tabCharacterTabs.DoThreadSafeFuncAsync(x => x.SelectedTab, token) == tabStreetGear)
+            TabPage objSelectedCharacterTab = await tabCharacterTabs.DoThreadSafeFuncAsync(x => x.SelectedTab, token);
+            if (objSelectedCharacterTab == tabStreetGear)
             {
+                TabPage objSelectedGearTabPage
+                    = await tabStreetGearTabs.DoThreadSafeFuncAsync(x => x.SelectedTab, token);
                 // Lifestyle Tab.
-                if (await tabStreetGearTabs.DoThreadSafeFuncAsync(x => x.SelectedTab, token) == tabLifestyle)
+                if (objSelectedGearTabPage == tabLifestyle)
                 {
                     blnPasteEnabled = GlobalSettings.ClipboardContentType == ClipboardContentType.Lifestyle;
                     blnCopyEnabled = await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is Lifestyle;
                 }
                 // Armor Tab.
-                else if (await tabStreetGearTabs.DoThreadSafeFuncAsync(x => x.SelectedTab, token) == tabArmor && await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is IHasInternalId strSelectedId)
+                else if (objSelectedGearTabPage == tabArmor)
                 {
-                    blnPasteEnabled = GlobalSettings.ClipboardContentType == ClipboardContentType.Armor ||
-                                      GlobalSettings.ClipboardContentType == ClipboardContentType.Gear && (CharacterObject.Armor.Any(x => x.InternalId == strSelectedId.InternalId) ||
-                                          CharacterObject.Armor.FindArmorMod(strSelectedId.InternalId) != null ||
-                                          CharacterObject.Armor.FindArmorGear(strSelectedId.InternalId) != null);
-                    blnCopyEnabled = CharacterObject.Armor.Any(x => x.InternalId == strSelectedId.InternalId) || CharacterObject.Armor.FindArmorGear(strSelectedId.InternalId) != null;
+                    if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is IHasInternalId
+                        strSelectedId)
+                    {
+                        blnPasteEnabled = GlobalSettings.ClipboardContentType == ClipboardContentType.Armor ||
+                                          GlobalSettings.ClipboardContentType == ClipboardContentType.Gear
+                                          && (CharacterObject.Armor.Any(x => x.InternalId == strSelectedId.InternalId)
+                                              ||
+                                              CharacterObject.Armor.FindArmorMod(strSelectedId.InternalId) != null ||
+                                              CharacterObject.Armor.FindArmorGear(strSelectedId.InternalId) != null);
+                        blnCopyEnabled = CharacterObject.Armor.Any(x => x.InternalId == strSelectedId.InternalId)
+                                         || CharacterObject.Armor.FindArmorGear(strSelectedId.InternalId) != null;
+                    }
                 }
-
                 // Weapons Tab.
-                if (await tabStreetGearTabs.DoThreadSafeFuncAsync(x => x.SelectedTab, token) == tabWeapons)
+                else if (objSelectedGearTabPage == tabWeapons)
                 {
-                    string strSelectedId = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag.ToString(), token);
-                    if (!string.IsNullOrEmpty(strSelectedId))
+                    if (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is IHasInternalId objSelected)
                     {
                         switch (GlobalSettings.ClipboardContentType)
                         {
@@ -16772,49 +16786,60 @@ namespace Chummer
 
                             case ClipboardContentType.Gear:
                             case ClipboardContentType.WeaponAccessory:
-                                blnPasteEnabled =
-                                    await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is ICanPaste objSelected && objSelected.AllowPasteXml;
+                                blnPasteEnabled = objSelected is ICanPaste objCanPaste && objCanPaste.AllowPasteXml;
                                 break;
                         }
 
                         //TODO: ICanCopy interface? If weapon comes from something else == false, etc.
-                        blnCopyEnabled = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag is Weapon || x.SelectedNode?.Tag is Gear, token);
+                        blnCopyEnabled = objSelected is Weapon || objSelected is Gear;
                     }
                 }
                 // Gear Tab.
-                else if (await tabStreetGearTabs.DoThreadSafeFuncAsync(x => x.SelectedTab, token) == tabGear && await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is IHasInternalId)
+                else if (objSelectedGearTabPage == tabGear)
                 {
-                    blnPasteEnabled = GlobalSettings.ClipboardContentType == ClipboardContentType.Gear;
-                    blnCopyEnabled = await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is Gear;
+                    if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is IHasInternalId
+                        objSelected)
+                    {
+                        blnPasteEnabled = GlobalSettings.ClipboardContentType == ClipboardContentType.Gear;
+                        blnCopyEnabled = objSelected is Gear;
+                    }
                 }
             }
             // Cyberware Tab.
-            else if (await tabCharacterTabs.DoThreadSafeFuncAsync(x => x.SelectedTab, token) == tabCyberware)
+            else if (objSelectedCharacterTab == tabCyberware)
             {
-                blnPasteEnabled = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is ICanPaste selected && selected.AllowPasteXml || GlobalSettings.ClipboardContentType == ClipboardContentType.Cyberware;
-                blnCopyEnabled = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag is Gear || x.SelectedNode?.Tag is Cyberware, token);
+                if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is IHasInternalId
+                    objSelected)
+                {
+                    blnPasteEnabled = objSelected is ICanPaste selected && selected.AllowPasteXml
+                                      || GlobalSettings.ClipboardContentType == ClipboardContentType.Cyberware;
+                    blnCopyEnabled = objSelected is Gear || objSelected is Cyberware;
+                }
             }
             // Vehicles Tab.
-            else if (await tabCharacterTabs.DoThreadSafeFuncAsync(x => x.SelectedTab, token) == tabVehicles && treVehicles.SelectedNode?.Tag is IHasInternalId)
+            else if (objSelectedCharacterTab == tabVehicles)
             {
-                switch (GlobalSettings.ClipboardContentType)
+                if (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is IHasInternalId
+                    objSelected)
                 {
-                    case ClipboardContentType.Vehicle:
-                        blnPasteEnabled = true;
-                        break;
+                    switch (GlobalSettings.ClipboardContentType)
+                    {
+                        case ClipboardContentType.Vehicle:
+                            blnPasteEnabled = true;
+                            break;
 
-                    case ClipboardContentType.Gear:
-                    case ClipboardContentType.Weapon:
-                    case ClipboardContentType.WeaponAccessory:
+                        case ClipboardContentType.Gear:
+                        case ClipboardContentType.Weapon:
+                        case ClipboardContentType.WeaponAccessory:
                         {
-                            blnPasteEnabled = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is ICanPaste selected &&
-                                                                               selected.AllowPasteXml;
+                            blnPasteEnabled = objSelected is ICanPaste selected && selected.AllowPasteXml;
                         }
-                        break;
-                }
+                            break;
+                    }
 
-                // In theory any object that's not a generic string node is valid to copy here. Locations might go screwy?
-                blnCopyEnabled = true;
+                    // In theory any object that's not a generic string node is valid to copy here. Locations might go screwy?
+                    blnCopyEnabled = true;
+                }
             }
 
             await mnuCreateMenu.DoThreadSafeAsync(() =>

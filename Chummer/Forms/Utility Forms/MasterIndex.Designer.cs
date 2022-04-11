@@ -153,7 +153,6 @@ namespace Chummer
             this.lblSource.Text = "SR5 000";
             this.lblSource.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblSource.ToolTipText = "";
-            this.lblSource.Visible = false;
             this.lblSource.Click += new System.EventHandler(this.lblSource_Click);
             // 
             // lblSourceClickReminder

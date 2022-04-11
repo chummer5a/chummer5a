@@ -1258,9 +1258,14 @@ namespace Chummer
                         }
                         default:
                         {
-                            string strTagText = await LanguageManager.GetStringAsync(await objMdiChild.DoThreadSafeFuncAsync(x => x.Tag?.ToString()), GlobalSettings.Language, false);
-                            if (!string.IsNullOrEmpty(strTagText))
-                                await objTabPage.DoThreadSafeAsync(x => x.Text = strTagText);
+                            string strKey = await objMdiChild.DoThreadSafeFuncAsync(x => x.Tag?.ToString());
+                            if (!string.IsNullOrEmpty(strKey))
+                            {
+                                string strTagText
+                                    = await LanguageManager.GetStringAsync(strKey, GlobalSettings.Language, false);
+                                if (!string.IsNullOrEmpty(strTagText))
+                                    await objTabPage.DoThreadSafeAsync(x => x.Text = strTagText);
+                            }
                             if (GlobalSettings.AllowEasterEggs && _mascotChummy != null)
                             {
                                 _mascotChummy.CharacterObject = null;
