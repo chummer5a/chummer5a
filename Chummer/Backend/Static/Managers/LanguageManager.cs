@@ -1267,19 +1267,44 @@ namespace Chummer
                         }
                         string strTemp = string.Empty;
                         string strExtraNoQuotes = strReturn.FastEscape('\"');
-                        CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource();
-                        CancellationToken objCancellationToken = objCancellationTokenSource.Token;
-                        if (!string.IsNullOrEmpty(strPreferFile))
+                        using (CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource())
                         {
+                            CancellationToken objCancellationToken = objCancellationTokenSource.Token;
+                            if (!string.IsNullOrEmpty(strPreferFile))
+                            {
+                                if (blnSync)
+                                {
+                                    strTemp = FindString(strPreferFile);
+                                }
+                                else
+                                {
+                                    try
+                                    {
+                                        strTemp = await Task.Run(() => FindString(strPreferFile, objCancellationToken),
+                                                                 objCancellationToken);
+                                    }
+                                    catch (OperationCanceledException)
+                                    {
+                                        //swallow this
+                                    }
+                                }
+
+                                if (!string.IsNullOrEmpty(strTemp))
+                                    strReturn = strTemp;
+                            }
+
+                            if (objCancellationToken.IsCancellationRequested)
+                                break;
+
                             if (blnSync)
                             {
-                                strTemp = FindString(strPreferFile);
+                                strTemp = FindString();
                             }
                             else
                             {
                                 try
                                 {
-                                    strTemp = await Task.Run(() => FindString(strPreferFile, objCancellationToken),
+                                    strTemp = await Task.Run(() => FindString(innerToken: objCancellationToken),
                                                              objCancellationToken);
                                 }
                                 catch (OperationCanceledException)
@@ -1288,65 +1313,19 @@ namespace Chummer
                                 }
                             }
 
-                            if (!string.IsNullOrEmpty(strTemp))
-                                strReturn = strTemp;
-                        }
-
-                        if (objCancellationToken.IsCancellationRequested)
-                            break;
-
-                        if (blnSync)
-                        {
-                            strTemp = FindString();
-                        }
-                        else
-                        {
-                            try
+                            string FindString(string strPreferredFileName = "", CancellationToken innerToken = default)
                             {
-                                strTemp = await Task.Run(() => FindString(innerToken: objCancellationToken), objCancellationToken);
-                            }
-                            catch (OperationCanceledException)
-                            {
-                                //swallow this
-                            }
-                        }
-
-                        string FindString(string strPreferredFileName = "", CancellationToken innerToken = default)
-                        {
-                            string strInnerReturn = string.Empty;
-                            foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
-                                         Func<XPathNavigator, string>>> aobjPaths
-                                     in s_LstAXPathsToSearch)
-                            {
-                                IEnumerable<Tuple<string, string, Func<XPathNavigator, string>,
-                                    Func<XPathNavigator, string>>> lstToSearch
-                                    = !string.IsNullOrEmpty(strPreferredFileName)
-                                        ? aobjPaths.Where(x => x.Item1 == strPreferredFileName)
-                                        : aobjPaths;
-                                Parallel.ForEach(lstToSearch, () => string.Empty, (objXPathPair, objState, x) =>
+                                string strInnerReturn = string.Empty;
+                                foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
+                                             Func<XPathNavigator, string>>> aobjPaths
+                                         in s_LstAXPathsToSearch)
                                 {
-                                    if (objState.ShouldExitCurrentIteration)
-                                        return string.Empty;
-                                    if (innerToken.IsCancellationRequested)
-                                    {
-                                        objState.Stop();
-                                        return string.Empty;
-                                    }
-
-                                    XPathNavigator xmlDocument = XmlManager.LoadXPath(
-                                        objXPathPair.Item1,
-                                        objCharacter?.Settings.EnabledCustomDataDirectoryPaths,
-                                        strIntoLanguage);
-                                    if (objState.ShouldExitCurrentIteration)
-                                        return string.Empty;
-                                    if (innerToken.IsCancellationRequested)
-                                    {
-                                        objState.Stop();
-                                        return string.Empty;
-                                    }
-
-                                    foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
-                                                 objXPathPair.Item2))
+                                    IEnumerable<Tuple<string, string, Func<XPathNavigator, string>,
+                                        Func<XPathNavigator, string>>> lstToSearch
+                                        = !string.IsNullOrEmpty(strPreferredFileName)
+                                            ? aobjPaths.Where(x => x.Item1 == strPreferredFileName)
+                                            : aobjPaths;
+                                    Parallel.ForEach(lstToSearch, () => string.Empty, (objXPathPair, objState, x) =>
                                     {
                                         if (objState.ShouldExitCurrentIteration)
                                             return string.Empty;
@@ -1356,29 +1335,53 @@ namespace Chummer
                                             return string.Empty;
                                         }
 
-                                        if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
-                                            continue;
-                                        string strTranslate = objXPathPair.Item4(objNode);
-                                        if (string.IsNullOrEmpty(strTranslate))
-                                            continue;
-                                        return strTranslate;
-                                    }
+                                        XPathNavigator xmlDocument = XmlManager.LoadXPath(
+                                            objXPathPair.Item1,
+                                            objCharacter?.Settings.EnabledCustomDataDirectoryPaths,
+                                            strIntoLanguage);
+                                        if (objState.ShouldExitCurrentIteration)
+                                            return string.Empty;
+                                        if (innerToken.IsCancellationRequested)
+                                        {
+                                            objState.Stop();
+                                            return string.Empty;
+                                        }
 
-                                    return string.Empty;
-                                }, strFound =>
-                                {
-                                    if (innerToken.IsCancellationRequested)
-                                        return;
-                                    if (string.IsNullOrEmpty(strFound))
-                                        return;
-                                    strInnerReturn = strFound;
-                                    objCancellationTokenSource.Cancel(false);
-                                });
-                                if (!string.IsNullOrEmpty(strInnerReturn))
-                                    return strInnerReturn;
+                                        foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
+                                                     objXPathPair.Item2))
+                                        {
+                                            if (objState.ShouldExitCurrentIteration)
+                                                return string.Empty;
+                                            if (innerToken.IsCancellationRequested)
+                                            {
+                                                objState.Stop();
+                                                return string.Empty;
+                                            }
+
+                                            if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
+                                                continue;
+                                            string strTranslate = objXPathPair.Item4(objNode);
+                                            if (string.IsNullOrEmpty(strTranslate))
+                                                continue;
+                                            return strTranslate;
+                                        }
+
+                                        return string.Empty;
+                                    }, strFound =>
+                                    {
+                                        if (innerToken.IsCancellationRequested)
+                                            return;
+                                        if (string.IsNullOrEmpty(strFound))
+                                            return;
+                                        strInnerReturn = strFound;
+                                        objCancellationTokenSource.Cancel(false);
+                                    });
+                                    if (!string.IsNullOrEmpty(strInnerReturn))
+                                        return strInnerReturn;
+                                }
+
+                                return strInnerReturn;
                             }
-
-                            return strInnerReturn;
                         }
 
                         if (!string.IsNullOrEmpty(strTemp))
@@ -1517,19 +1520,45 @@ namespace Chummer
             }
             string strTemp = string.Empty;
             string strExtraNoQuotes = strReturn.FastEscape('\"');
-            CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource();
-            CancellationToken objCancellationToken = objCancellationTokenSource.Token;
-            if (!string.IsNullOrEmpty(strPreferFile))
+            using (CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource())
             {
+                CancellationToken objCancellationToken = objCancellationTokenSource.Token;
+                if (!string.IsNullOrEmpty(strPreferFile))
+                {
+                    if (blnSync)
+                    {
+                        strTemp = FindString(strPreferFile);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            strTemp = await Task.Run(() => FindString(strPreferFile, objCancellationToken),
+                                                     objCancellationToken);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            //swallow this
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(strTemp))
+                        strReturn = strTemp;
+                }
+
+                if (objCancellationToken.IsCancellationRequested)
+                    return strReturn;
+
                 if (blnSync)
                 {
-                    strTemp = FindString(strPreferFile);
+                    strTemp = FindString();
                 }
                 else
                 {
                     try
                     {
-                        strTemp = await Task.Run(() => FindString(strPreferFile, objCancellationToken), objCancellationToken);
+                        strTemp = await Task.Run(() => FindString(innerToken: objCancellationToken),
+                                                 objCancellationToken);
                     }
                     catch (OperationCanceledException)
                     {
@@ -1537,64 +1566,20 @@ namespace Chummer
                     }
                 }
 
-                if (!string.IsNullOrEmpty(strTemp))
-                    strReturn = strTemp;
-            }
-
-            if (objCancellationToken.IsCancellationRequested)
-                return strReturn;
-
-            if (blnSync)
-            {
-                strTemp = FindString();
-            }
-            else
-            {
-                try
+                string FindString(string strPreferredFileName = "", CancellationToken innerToken = default)
                 {
-                    strTemp = await Task.Run(() => FindString(innerToken: objCancellationToken), objCancellationToken);
-                }
-                catch (OperationCanceledException)
-                {
-                    //swallow this
-                }
-            }
-
-            string FindString(string strPreferredFileName = "", CancellationToken innerToken = default)
-            {
-                string strInnerReturn = string.Empty;
-                foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
-                                 Func<XPathNavigator, string>>>
-                             aobjPaths
-                         in s_LstAXPathsToSearch)
-                {
-                    IEnumerable<Tuple<string, string, Func<XPathNavigator, string>,
-                        Func<XPathNavigator, string>>> lstToSearch
-                        = !string.IsNullOrEmpty(strPreferredFileName)
-                            ? aobjPaths.Where(x => x.Item1 == strPreferredFileName)
-                            : aobjPaths;
-                    Parallel.ForEach(lstToSearch, () => string.Empty, (objXPathPair, objState, x) =>
+                    string strInnerReturn = string.Empty;
+                    foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
+                                     Func<XPathNavigator, string>>>
+                                 aobjPaths
+                             in s_LstAXPathsToSearch)
                     {
-                        if (objState.ShouldExitCurrentIteration)
-                            return string.Empty;
-                        if (innerToken.IsCancellationRequested)
-                        {
-                            objState.Stop();
-                            return string.Empty;
-                        }
-                        XPathNavigator xmlDocument = XmlManager.LoadXPath(objXPathPair.Item1,
-                                                                          objCharacter?.Settings
-                                                                              .EnabledCustomDataDirectoryPaths,
-                                                                          strFromLanguage);
-                        if (objState.ShouldExitCurrentIteration)
-                            return string.Empty;
-                        if (innerToken.IsCancellationRequested)
-                        {
-                            objState.Stop();
-                            return string.Empty;
-                        }
-                        foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
-                                     objXPathPair.Item2))
+                        IEnumerable<Tuple<string, string, Func<XPathNavigator, string>,
+                            Func<XPathNavigator, string>>> lstToSearch
+                            = !string.IsNullOrEmpty(strPreferredFileName)
+                                ? aobjPaths.Where(x => x.Item1 == strPreferredFileName)
+                                : aobjPaths;
+                        Parallel.ForEach(lstToSearch, () => string.Empty, (objXPathPair, objState, x) =>
                         {
                             if (objState.ShouldExitCurrentIteration)
                                 return string.Empty;
@@ -1603,27 +1588,54 @@ namespace Chummer
                                 objState.Stop();
                                 return string.Empty;
                             }
-                            if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
-                                continue;
-                            string strOriginal = objXPathPair.Item3(objNode);
-                            if (string.IsNullOrEmpty(strOriginal))
-                                continue;
-                            return strOriginal;
-                        }
-                        return string.Empty;
-                    }, strFound =>
-                    {
-                        if (innerToken.IsCancellationRequested)
-                            return;
-                        if (string.IsNullOrEmpty(strFound))
-                            return;
-                        strInnerReturn = strFound;
-                        objCancellationTokenSource.Cancel(false);
-                    });
-                    if (!string.IsNullOrEmpty(strInnerReturn))
-                        return strInnerReturn;
+
+                            XPathNavigator xmlDocument = XmlManager.LoadXPath(objXPathPair.Item1,
+                                                                              objCharacter?.Settings
+                                                                                  .EnabledCustomDataDirectoryPaths,
+                                                                              strFromLanguage);
+                            if (objState.ShouldExitCurrentIteration)
+                                return string.Empty;
+                            if (innerToken.IsCancellationRequested)
+                            {
+                                objState.Stop();
+                                return string.Empty;
+                            }
+
+                            foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
+                                         objXPathPair.Item2))
+                            {
+                                if (objState.ShouldExitCurrentIteration)
+                                    return string.Empty;
+                                if (innerToken.IsCancellationRequested)
+                                {
+                                    objState.Stop();
+                                    return string.Empty;
+                                }
+
+                                if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
+                                    continue;
+                                string strOriginal = objXPathPair.Item3(objNode);
+                                if (string.IsNullOrEmpty(strOriginal))
+                                    continue;
+                                return strOriginal;
+                            }
+
+                            return string.Empty;
+                        }, strFound =>
+                        {
+                            if (innerToken.IsCancellationRequested)
+                                return;
+                            if (string.IsNullOrEmpty(strFound))
+                                return;
+                            strInnerReturn = strFound;
+                            objCancellationTokenSource.Cancel(false);
+                        });
+                        if (!string.IsNullOrEmpty(strInnerReturn))
+                            return strInnerReturn;
+                    }
+
+                    return strInnerReturn;
                 }
-                return strInnerReturn;
             }
 
             if (!string.IsNullOrEmpty(strTemp))

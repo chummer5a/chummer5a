@@ -98,11 +98,13 @@ namespace Chummer
                 await this.DoThreadSafeAsync(x => x.Close(), _objGenericToken);
             }
 
-            if (_objChangelogDownloaderCancellationTokenSource?.IsCancellationRequested == false)
+            CancellationTokenSource objNewChangelogSource = new CancellationTokenSource();
+            CancellationTokenSource objTemp
+                = Interlocked.Exchange(ref _objChangelogDownloaderCancellationTokenSource, objNewChangelogSource);
+            if (objTemp?.IsCancellationRequested == false)
             {
-                _objChangelogDownloaderCancellationTokenSource.Cancel(false);
-                _objChangelogDownloaderCancellationTokenSource.Dispose();
-                _objChangelogDownloaderCancellationTokenSource = null;
+                objTemp.Cancel(false);
+                objTemp.Dispose();
             }
             try
             {
@@ -116,8 +118,7 @@ namespace Chummer
             if (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
                 _tskConnectionLoader.IsFaulted)))
             {
-                _objChangelogDownloaderCancellationTokenSource = new CancellationTokenSource();
-                CancellationToken objToken = _objChangelogDownloaderCancellationTokenSource.Token;
+                CancellationToken objToken = objNewChangelogSource.Token;
                 _tskChangelogDownloader = Task.Run(() => DownloadChangelog(objToken), objToken);
                 try
                 {
@@ -128,18 +129,24 @@ namespace Chummer
                     // Swallow this
                 }
             }
+            else
+            {
+                Interlocked.CompareExchange(ref _objChangelogDownloaderCancellationTokenSource, null,
+                                            objNewChangelogSource);
+                objNewChangelogSource.Dispose();
+            }
             if (_blnIsConnected && SilentMode && !_blnSilentModeUpdateWasDenied)
             {
-                if (_objUpdatesDownloaderCancellationTokenSource?.IsCancellationRequested == false)
+                CancellationTokenSource objNewUpdatesSource = new CancellationTokenSource();
+                objTemp = Interlocked.Exchange(ref _objUpdatesDownloaderCancellationTokenSource, objNewUpdatesSource);
+                if (objTemp?.IsCancellationRequested == false)
                 {
-                    _objUpdatesDownloaderCancellationTokenSource.Cancel(false);
-                    _objUpdatesDownloaderCancellationTokenSource.Dispose();
-                    _objUpdatesDownloaderCancellationTokenSource = null;
+                    objTemp.Cancel(false);
+                    objTemp.Dispose();
                 }
-                _objUpdatesDownloaderCancellationTokenSource = new CancellationTokenSource();
                 try
                 {
-                    await DownloadUpdates(_objUpdatesDownloaderCancellationTokenSource.Token);
+                    await DownloadUpdates(objNewUpdatesSource.Token);
                 }
                 catch (OperationCanceledException)
                 {
@@ -162,23 +169,26 @@ namespace Chummer
                 return;
             }
             _blnFormClosing = true;
-            if (_objConnectionLoaderCancellationTokenSource?.IsCancellationRequested == false)
+            CancellationTokenSource objTemp
+                = Interlocked.Exchange(ref _objConnectionLoaderCancellationTokenSource, null);
+            if (objTemp?.IsCancellationRequested == false)
             {
-                _objConnectionLoaderCancellationTokenSource.Cancel(false);
-                _objConnectionLoaderCancellationTokenSource.Dispose();
-                _objConnectionLoaderCancellationTokenSource = null;
+                objTemp.Cancel(false);
+                objTemp.Dispose();
             }
-            if (_objChangelogDownloaderCancellationTokenSource?.IsCancellationRequested == false)
+
+            objTemp = Interlocked.Exchange(ref _objChangelogDownloaderCancellationTokenSource, null);
+            if (objTemp?.IsCancellationRequested == false)
             {
-                _objChangelogDownloaderCancellationTokenSource.Cancel(false);
-                _objChangelogDownloaderCancellationTokenSource.Dispose();
-                _objChangelogDownloaderCancellationTokenSource = null;
+                objTemp.Cancel(false);
+                objTemp.Dispose();
             }
-            if (_objUpdatesDownloaderCancellationTokenSource?.IsCancellationRequested == false)
+
+            objTemp = Interlocked.Exchange(ref _objUpdatesDownloaderCancellationTokenSource, null);
+            if (objTemp?.IsCancellationRequested == false)
             {
-                _objUpdatesDownloaderCancellationTokenSource.Cancel(false);
-                _objUpdatesDownloaderCancellationTokenSource.Dispose();
-                _objUpdatesDownloaderCancellationTokenSource = null;
+                objTemp.Cancel(false);
+                objTemp.Dispose();
             }
             _clientDownloader.CancelAsync();
             _clientChangelogDownloader.CancelAsync();
@@ -204,14 +214,24 @@ namespace Chummer
         private async Task DownloadChangelog(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (_objConnectionLoaderCancellationTokenSource?.IsCancellationRequested == false)
+            CancellationTokenSource objNewSource = new CancellationTokenSource();
+            CancellationTokenSource objTemp
+                = Interlocked.Exchange(ref _objConnectionLoaderCancellationTokenSource, objNewSource);
+            if (objTemp?.IsCancellationRequested == false)
             {
-                _objConnectionLoaderCancellationTokenSource.Cancel(false);
-                _objConnectionLoaderCancellationTokenSource.Dispose();
-                _objConnectionLoaderCancellationTokenSource = null;
+                objTemp.Cancel(false);
+                objTemp.Dispose();
             }
-            token.ThrowIfCancellationRequested();
-            _objConnectionLoaderCancellationTokenSource = new CancellationTokenSource();
+            try
+            {
+                token.ThrowIfCancellationRequested();
+            }
+            catch (OperationCanceledException)
+            {
+                Interlocked.CompareExchange(ref _objConnectionLoaderCancellationTokenSource, null, objNewSource);
+                objNewSource.Dispose();
+                throw;
+            }
             try
             {
                 if (_tskConnectionLoader?.IsCompleted == false)
@@ -221,7 +241,7 @@ namespace Chummer
             {
                 // Swallow this
             }
-            CancellationToken objToken = _objConnectionLoaderCancellationTokenSource.Token;
+            CancellationToken objToken = objNewSource.Token;
             _tskConnectionLoader = Task.Run(async () =>
             {
                 await LoadConnection(objToken);
@@ -435,18 +455,25 @@ namespace Chummer
                 _blnSilentMode = value;
                 if (value)
                 {
-                    if (_objChangelogDownloaderCancellationTokenSource?.IsCancellationRequested == false)
+                    CancellationTokenSource objNewSource = new CancellationTokenSource();
+                    CancellationTokenSource objTemp
+                        = Interlocked.Exchange(ref _objChangelogDownloaderCancellationTokenSource, objNewSource);
+                    if (objTemp?.IsCancellationRequested == false)
                     {
-                        _objChangelogDownloaderCancellationTokenSource.Cancel(false);
-                        _objChangelogDownloaderCancellationTokenSource.Dispose();
-                        _objChangelogDownloaderCancellationTokenSource = null;
+                        objTemp.Cancel(false);
+                        objTemp.Dispose();
                     }
                     if ((_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
                                                                                                _tskConnectionLoader.IsFaulted))) && _tskChangelogDownloader?.IsCompleted != false)
                     {
-                        _objChangelogDownloaderCancellationTokenSource = new CancellationTokenSource();
-                        CancellationToken objToken = _objChangelogDownloaderCancellationTokenSource.Token;
+                        CancellationToken objToken = objNewSource.Token;
                         _tskChangelogDownloader = Task.Run(() => DownloadChangelog(objToken), objToken);
+                    }
+                    else
+                    {
+                        Interlocked.CompareExchange(ref _objChangelogDownloaderCancellationTokenSource, null,
+                                                    objNewSource);
+                        objNewSource.Dispose();
                     }
                 }
             }
@@ -543,11 +570,13 @@ namespace Chummer
         private async void cmdUpdate_Click(object sender, EventArgs e)
         {
             Log.Info("cmdUpdate_Click");
-            if (_objChangelogDownloaderCancellationTokenSource?.IsCancellationRequested == false)
+            CancellationTokenSource objNewChangelogSource = new CancellationTokenSource();
+            CancellationTokenSource objTemp
+                = Interlocked.Exchange(ref _objChangelogDownloaderCancellationTokenSource, objNewChangelogSource);
+            if (objTemp?.IsCancellationRequested == false)
             {
-                _objChangelogDownloaderCancellationTokenSource.Cancel(false);
-                _objChangelogDownloaderCancellationTokenSource.Dispose();
-                _objChangelogDownloaderCancellationTokenSource = null;
+                objTemp.Cancel(false);
+                objTemp.Dispose();
             }
             try
             {
@@ -560,16 +589,19 @@ namespace Chummer
             }
             if (_blnIsConnected)
             {
-                if (_objUpdatesDownloaderCancellationTokenSource?.IsCancellationRequested == false)
+                Interlocked.CompareExchange(ref _objChangelogDownloaderCancellationTokenSource, null,
+                                            objNewChangelogSource);
+                objNewChangelogSource.Dispose();
+                CancellationTokenSource objNewUpdatesSource = new CancellationTokenSource();
+                objTemp = Interlocked.Exchange(ref _objUpdatesDownloaderCancellationTokenSource, objNewUpdatesSource);
+                if (objTemp?.IsCancellationRequested == false)
                 {
-                    _objUpdatesDownloaderCancellationTokenSource.Cancel(false);
-                    _objUpdatesDownloaderCancellationTokenSource.Dispose();
-                    _objUpdatesDownloaderCancellationTokenSource = null;
+                    objTemp.Cancel(false);
+                    objTemp.Dispose();
                 }
-                _objUpdatesDownloaderCancellationTokenSource = new CancellationTokenSource();
                 try
                 {
-                    await DownloadUpdates(_objUpdatesDownloaderCancellationTokenSource.Token);
+                    await DownloadUpdates(objNewUpdatesSource.Token);
                 }
                 catch (OperationCanceledException)
                 {
@@ -580,9 +612,8 @@ namespace Chummer
                                                       && (_tskConnectionLoader.IsCanceled ||
                                                           _tskConnectionLoader.IsFaulted)))
             {
-                cmdUpdate.Enabled = false;
-                _objChangelogDownloaderCancellationTokenSource = new CancellationTokenSource();
-                CancellationToken objToken = _objChangelogDownloaderCancellationTokenSource.Token;
+                CancellationToken objToken = objNewChangelogSource.Token;
+                await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = false, objToken);
                 _tskChangelogDownloader = Task.Run(() => DownloadChangelog(objToken), objToken);
                 try
                 {
@@ -592,6 +623,12 @@ namespace Chummer
                 {
                     // Swallow this
                 }
+            }
+            else
+            {
+                Interlocked.CompareExchange(ref _objChangelogDownloaderCancellationTokenSource, null,
+                                            objNewChangelogSource);
+                objNewChangelogSource.Dispose();
             }
         }
 
