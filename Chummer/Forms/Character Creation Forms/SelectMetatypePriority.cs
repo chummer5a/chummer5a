@@ -599,7 +599,7 @@ namespace Chummer
                         string strSelectedMetatype = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
                         if (!string.IsNullOrEmpty(strSelectedMetatype))
                         {
-                            string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString();
+                            string strSelectedMetavariant = await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
                             XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Heritage\" and value = " + (await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? string.Empty).CleanXPath() + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                             foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
                             {
