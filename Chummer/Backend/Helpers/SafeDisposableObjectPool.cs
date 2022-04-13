@@ -28,7 +28,7 @@ namespace Chummer
     /// to return the same object twice unless you really go out of your way to make that happen.
     /// </summary>
     /// <typeparam name="T">A disposable class to use as the type of object being pooled.</typeparam>
-    public class SafeDisposableObjectPool<T> : IDisposable where T : class, IDisposable
+    public sealed class SafeDisposableObjectPool<T> : IDisposable where T : class, IDisposable
     {
         private T[] _aobjSwappablePool;
         private readonly T[] _aobjStoragePool; // Storage pool used only to make sure everything we create gets disposed and that we only return stuff that is from the pool originally
@@ -69,7 +69,7 @@ namespace Chummer
         /// <summary>
         /// Gets an object from the pool. If possible, try to save this and return it once it is no longer used to make the most use of the pool.
         /// </summary>
-        public virtual T Get()
+        public T Get()
         {
             for (int i = 0; i < _aobjSwappablePool.Length; ++i)
             {

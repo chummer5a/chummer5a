@@ -27,9 +27,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-#if !DEBUG
-using System.Threading;
-#endif
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.ApplicationInsights.DataContracts;
@@ -895,11 +892,18 @@ namespace Chummer
 
         private void StartAutoUpdateChecker()
         {
-            if (_objVersionUpdaterCancellationTokenSource?.IsCancellationRequested == false)
+            CancellationTokenSource objNewSource = new CancellationTokenSource();
+            CancellationTokenSource objTemp = Interlocked.Exchange(ref _objVersionUpdaterCancellationTokenSource, objNewSource);
+            if (objTemp?.IsCancellationRequested == false)
             {
-                _objVersionUpdaterCancellationTokenSource.Cancel(false);
-                _objVersionUpdaterCancellationTokenSource.Dispose();
-                _objVersionUpdaterCancellationTokenSource = null;
+                try
+                {
+                    objTemp.Cancel(false);
+                }
+                finally
+                {
+                    objTemp.Dispose();
+                }
             }
 
             try
@@ -916,8 +920,14 @@ namespace Chummer
             {
                 // Swallow this
             }
-            _objVersionUpdaterCancellationTokenSource = new CancellationTokenSource();
-            CancellationToken token = _objVersionUpdaterCancellationTokenSource.Token;
+            catch (Exception)
+            {
+                Interlocked.CompareExchange(ref _objVersionUpdaterCancellationTokenSource, null, objNewSource);
+                objNewSource.Dispose();
+                throw;
+            }
+
+            CancellationToken token = objNewSource.Token;
             _tskVersionUpdate = Task.Run(async () =>
             {
                 while (true)
@@ -1608,19 +1618,22 @@ namespace Chummer
                 Process.Start(strTranslator);
         }
 
-        private void ChummerMainForm_Closing(object sender, FormClosingEventArgs e)
+        private async void ChummerMainForm_Closing(object sender, FormClosingEventArgs e)
         {
             Program.OpenCharacters.CollectionChanged -= OpenCharactersOnCollectionChanged;
             foreach (Character objCharacter in Program.OpenCharacters)
                 objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
 #if !DEBUG
-            if (_objVersionUpdaterCancellationTokenSource?.IsCancellationRequested == false)
+            CancellationTokenSource objTemp = Interlocked.Exchange(ref _objVersionUpdaterCancellationTokenSource, null);
+            if (objTemp?.IsCancellationRequested == false)
             {
-                _objVersionUpdaterCancellationTokenSource.Cancel(false);
-                _objVersionUpdaterCancellationTokenSource.Dispose();
-                _objVersionUpdaterCancellationTokenSource = null;
+                objTemp.Cancel(false);
+                objTemp.Dispose();
             }
 #endif
+            await Task.WhenAll(_lstOpenCharacterEditorForms.ClearAsync(),
+                               _lstOpenCharacterExportForms.ClearAsync(),
+                               _lstOpenCharacterSheetViewers.ClearAsync());
             Properties.Settings.Default.WindowState = WindowState;
             if (WindowState == FormWindowState.Normal)
             {

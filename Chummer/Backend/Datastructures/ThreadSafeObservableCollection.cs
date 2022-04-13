@@ -190,7 +190,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="EnhancedObservableCollection{T}.Clear" />
-        public async ValueTask ClearAsync()
+        public async Task ClearAsync()
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
@@ -573,9 +573,9 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public async ValueTask DisposeAsync()
+        public ValueTask DisposeAsync()
         {
-            await DisposeAsync(true);
+            return DisposeAsync(true);
             //GC.SuppressFinalize(this);
         }
 
