@@ -333,6 +333,8 @@
     <Compile Include="Backend\Helpers\AsyncLock.cs" />
     <Compile Include="Backend\Helpers\CancellationTokenTaskSource.cs" />
     <Compile Include="Backend\Helpers\DebuggableSemaphoreSlim.cs" />
+    <Compile Include="Backend\Helpers\SafeDisposableObjectPool.cs" />
+    <Compile Include="Backend\Helpers\SafeObjectPool.cs" />
     <Compile Include="Backend\Helpers\ThreadSafeForm.cs" />
     <Compile Include="Backend\Helpers\XmlElementWriteHelper.cs" />
     <Compile Include="Backend\Interfaces\IAsyncEnumerable.cs" />

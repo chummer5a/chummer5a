@@ -78,7 +78,7 @@ namespace Chummer
             }
             catch
             {
-                Utils.SemaphorePool.Return(objNextSemaphore);
+                Utils.SemaphorePool.Return(ref objNextSemaphore);
                 throw;
             }
             try
@@ -157,7 +157,7 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                Utils.SemaphorePool.Return(objNextSemaphore);
+                Utils.SemaphorePool.Return(ref objNextSemaphore);
                 return Task.FromException<IAsyncDisposable>(ex);
             }
             try
@@ -276,7 +276,7 @@ namespace Chummer
             }
             catch
             {
-                Utils.SemaphorePool.Return(objNextSemaphore);
+                Utils.SemaphorePool.Return(ref objNextSemaphore);
                 throw;
             }
             try
@@ -351,7 +351,7 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                Utils.SemaphorePool.Return(objNextSemaphore);
+                Utils.SemaphorePool.Return(ref objNextSemaphore);
                 return Task.FromException(ex);
             }
             try
@@ -516,10 +516,10 @@ namespace Chummer
             }
         }
 
-        private readonly struct SafeWriterSemaphoreRelease : IAsyncDisposable, IDisposable
+        private struct SafeWriterSemaphoreRelease : IAsyncDisposable, IDisposable
         {
             private readonly DebuggableSemaphoreSlim _objCurrentSemaphore;
-            private readonly DebuggableSemaphoreSlim _objNextSemaphore;
+            private DebuggableSemaphoreSlim _objNextSemaphore;
             private readonly AsyncFriendlyReaderWriterLock _objReaderWriterLock;
 
             public SafeWriterSemaphoreRelease(DebuggableSemaphoreSlim objCurrentSemaphore, DebuggableSemaphoreSlim objNextSemaphore, AsyncFriendlyReaderWriterLock objReaderWriterLock)
@@ -605,7 +605,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    Utils.SemaphorePool.Return(_objNextSemaphore);
+                    Utils.SemaphorePool.Return(ref _objNextSemaphore);
                 }
             }
 
@@ -677,7 +677,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    Utils.SemaphorePool.Return(_objNextSemaphore);
+                    Utils.SemaphorePool.Return(ref _objNextSemaphore);
                 }
             }
 

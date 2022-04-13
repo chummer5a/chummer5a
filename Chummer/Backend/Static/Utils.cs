@@ -1711,34 +1711,7 @@ namespace Chummer
         /// WARNING! This will end up being a DisposableObjectPool, which can have weird behaviors (e.g. disposal-then-reuse) if used in SemaphoreSlim members in classes that stick around! Avoid using this if possible for those cases.
         /// </summary>
         [CLSCompliant(false)]
-        public static ObjectPool<DebuggableSemaphoreSlim> SemaphorePool { get; }
-            = s_ObjObjectPoolProvider.Create(new SemaphoreSlimPooledObjectPolicy());
-
-        private sealed class SemaphoreSlimPooledObjectPolicy : IPooledObjectPolicy<DebuggableSemaphoreSlim>
-        {
-            /// <inheritdoc />
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public DebuggableSemaphoreSlim Create()
-            {
-                return new DebuggableSemaphoreSlim();
-            }
-
-            /// <inheritdoc />
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public bool Return(DebuggableSemaphoreSlim obj)
-            {
-                try
-                {
-                    obj.SafeWait();
-                    obj.Release();
-                }
-                catch (ObjectDisposedException)
-                {
-                    BreakIfDebug();
-                    return false;
-                }
-                return true;
-            }
-        }
+        public static SafeDisposableObjectPool<DebuggableSemaphoreSlim> SemaphorePool { get; }
+            = new SafeDisposableObjectPool<DebuggableSemaphoreSlim>(() => new DebuggableSemaphoreSlim());
     }
 }

@@ -109,10 +109,10 @@ namespace Chummer
             _objTopLevelSemaphore.Dispose();
         }
 
-        private readonly struct SafeSemaphoreRelease : IAsyncDisposable, IDisposable
+        private struct SafeSemaphoreRelease : IAsyncDisposable, IDisposable
         {
             private readonly DebuggableSemaphoreSlim _objCurrentSemaphore;
-            private readonly DebuggableSemaphoreSlim _objNextSemaphore;
+            private DebuggableSemaphoreSlim _objNextSemaphore;
             private readonly AsyncLock _objAsyncLock;
 
             public SafeSemaphoreRelease(DebuggableSemaphoreSlim objCurrentSemaphore, DebuggableSemaphoreSlim objNextSemaphore, AsyncLock objAsyncLock)
@@ -151,7 +151,7 @@ namespace Chummer
                 await _objNextSemaphore.WaitAsync();
                 _objCurrentSemaphore.Release();
                 _objNextSemaphore.Release();
-                Utils.SemaphorePool.Return(_objNextSemaphore);
+                Utils.SemaphorePool.Return(ref _objNextSemaphore);
             }
 
             public void Dispose()
@@ -174,7 +174,7 @@ namespace Chummer
                 _objNextSemaphore.SafeWait();
                 _objCurrentSemaphore.Release();
                 _objNextSemaphore.Release();
-                Utils.SemaphorePool.Return(_objNextSemaphore);
+                Utils.SemaphorePool.Return(ref _objNextSemaphore);
             }
         }
     }

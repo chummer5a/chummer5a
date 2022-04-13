@@ -245,7 +245,7 @@ namespace Chummer
                     finally
                     {
                         if (!blnSuccess)
-                            Utils.SemaphorePool.Return(objLockerObject);
+                            Utils.SemaphorePool.Return(ref objLockerObject);
                     }
                     Utils.SafeSleep(token);
                 }
@@ -266,7 +266,7 @@ namespace Chummer
                     finally
                     {
                         if (!blnSuccess)
-                            Utils.SemaphorePool.Return(objLockerObject);
+                            Utils.SemaphorePool.Return(ref objLockerObject);
                     }
                     await Utils.SafeSleepAsync(token);
                     (blnSuccess, objLockerObject) = await s_DicLanguageDataLockers.TryGetValueAsync(strKey, token);

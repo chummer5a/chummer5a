@@ -28,7 +28,7 @@ namespace Chummer
     public class ThreadSafeRandom : Random, IDisposable
     {
         private readonly Random _objRandom;
-        private readonly DebuggableSemaphoreSlim _objLock = Utils.SemaphorePool.Get();
+        private DebuggableSemaphoreSlim _objLock = Utils.SemaphorePool.Get();
 
         public ThreadSafeRandom()
         {
@@ -205,7 +205,7 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
-            Utils.SemaphorePool.Return(_objLock);
+            Utils.SemaphorePool.Return(ref _objLock);
         }
     }
 }
