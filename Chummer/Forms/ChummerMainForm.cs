@@ -109,6 +109,8 @@ namespace Chummer
 
         private async void OpenCharacterExportFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (Utils.IsUnitTest)
+                return;
             foreach (ExportCharacter objOldForm in e.OldItems)
             {
                 foreach (Character objCharacter in objOldForm.CharacterObjects)
@@ -141,6 +143,8 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
+                    if (Utils.IsUnitTest)
+                        return;
                     foreach (ExportCharacter objOldForm in e.OldItems)
                     {
                         foreach (Character objCharacter in objOldForm.CharacterObjects)
@@ -161,26 +165,30 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    foreach (ExportCharacter objOldForm in e.OldItems)
+                    if (!Utils.IsUnitTest)
                     {
-                        if (e.NewItems.Contains(objOldForm))
-                            continue;
-                        foreach (Character objCharacter in objOldForm.CharacterObjects)
+                        foreach (ExportCharacter objOldForm in e.OldItems)
                         {
-                            if (objCharacter == null)
+                            if (e.NewItems.Contains(objOldForm))
                                 continue;
-                            if (await Program.OpenCharacters.ContainsAsync(objCharacter))
+                            foreach (Character objCharacter in objOldForm.CharacterObjects)
                             {
-                                if (await Program.OpenCharacters.AllAsync(
-                                        x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
-                                    && Program.MainForm.OpenFormsWithCharacters.All(
-                                        x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                                    await Program.OpenCharacters.RemoveAsync(objCharacter);
+                                if (objCharacter == null)
+                                    continue;
+                                if (await Program.OpenCharacters.ContainsAsync(objCharacter))
+                                {
+                                    if (await Program.OpenCharacters.AllAsync(
+                                            x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
+                                        && Program.MainForm.OpenFormsWithCharacters.All(
+                                            x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
+                                        await Program.OpenCharacters.RemoveAsync(objCharacter);
+                                }
+                                else
+                                    await objCharacter.DisposeAsync();
                             }
-                            else
-                                await objCharacter.DisposeAsync();
                         }
                     }
+
                     foreach (ExportCharacter objNewForm in e.NewItems)
                     {
                         if (e.OldItems.Contains(objNewForm))
@@ -194,6 +202,8 @@ namespace Chummer
 
         private async void OpenCharacterSheetViewersOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (Utils.IsUnitTest)
+                return;
             foreach (CharacterSheetViewer objOldForm in e.OldItems)
             {
                 foreach (Character objCharacter in objOldForm.CharacterObjects)
@@ -226,6 +236,8 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
+                    if (Utils.IsUnitTest)
+                        return;
                     foreach (CharacterSheetViewer objOldForm in e.OldItems)
                     {
                         foreach (Character objCharacter in objOldForm.CharacterObjects)
@@ -246,26 +258,30 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    foreach (CharacterSheetViewer objOldForm in e.OldItems)
+                    if (!Utils.IsUnitTest)
                     {
-                        if (e.NewItems.Contains(objOldForm))
-                            continue;
-                        foreach (Character objCharacter in objOldForm.CharacterObjects)
+                        foreach (CharacterSheetViewer objOldForm in e.OldItems)
                         {
-                            if (objCharacter == null)
+                            if (e.NewItems.Contains(objOldForm))
                                 continue;
-                            if (await Program.OpenCharacters.ContainsAsync(objCharacter))
+                            foreach (Character objCharacter in objOldForm.CharacterObjects)
                             {
-                                if (await Program.OpenCharacters.AllAsync(
-                                        x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
-                                    && Program.MainForm.OpenFormsWithCharacters.All(
-                                        x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                                    await Program.OpenCharacters.RemoveAsync(objCharacter);
+                                if (objCharacter == null)
+                                    continue;
+                                if (await Program.OpenCharacters.ContainsAsync(objCharacter))
+                                {
+                                    if (await Program.OpenCharacters.AllAsync(
+                                            x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
+                                        && Program.MainForm.OpenFormsWithCharacters.All(
+                                            x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
+                                        await Program.OpenCharacters.RemoveAsync(objCharacter);
+                                }
+                                else
+                                    await objCharacter.DisposeAsync();
                             }
-                            else
-                                await objCharacter.DisposeAsync();
                         }
                     }
+
                     foreach (CharacterSheetViewer objNewForm in e.NewItems)
                     {
                         if (e.OldItems.Contains(objNewForm))
@@ -279,6 +295,8 @@ namespace Chummer
 
         private async void OpenCharacterEditorFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (Utils.IsUnitTest)
+                return;
             foreach (CharacterShared objOldForm in e.OldItems)
             {
                 if (objOldForm is CharacterCreate objOldCreateForm && objOldCreateForm.IsReopenQueued)
@@ -309,6 +327,8 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
+                    if (Utils.IsUnitTest)
+                        return;
                     foreach (CharacterShared objOldForm in e.OldItems)
                     {
                         if (objOldForm is CharacterCreate objOldCreateForm && objOldCreateForm.IsReopenQueued)
@@ -327,24 +347,30 @@ namespace Chummer
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    foreach (CharacterShared objOldForm in e.OldItems)
+                    if (!Utils.IsUnitTest)
                     {
-                        if (e.NewItems.Contains(objOldForm))
-                            continue;
-                        if (objOldForm is CharacterCreate objOldCreateForm && objOldCreateForm.IsReopenQueued)
-                            continue;
-                        Character objCharacter = objOldForm.CharacterObject;
-                        if (objCharacter == null)
-                            continue;
-                        if (await Program.OpenCharacters.ContainsAsync(objCharacter))
+                        foreach (CharacterShared objOldForm in e.OldItems)
                         {
-                            if (await Program.OpenCharacters.AllAsync(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
-                                && Program.MainForm.OpenFormsWithCharacters.All(x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                                await Program.OpenCharacters.RemoveAsync(objCharacter);
+                            if (e.NewItems.Contains(objOldForm))
+                                continue;
+                            if (objOldForm is CharacterCreate objOldCreateForm && objOldCreateForm.IsReopenQueued)
+                                continue;
+                            Character objCharacter = objOldForm.CharacterObject;
+                            if (objCharacter == null)
+                                continue;
+                            if (await Program.OpenCharacters.ContainsAsync(objCharacter))
+                            {
+                                if (await Program.OpenCharacters.AllAsync(
+                                        x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
+                                    && Program.MainForm.OpenFormsWithCharacters.All(
+                                        x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
+                                    await Program.OpenCharacters.RemoveAsync(objCharacter);
+                            }
+                            else
+                                await objCharacter.DisposeAsync();
                         }
-                        else
-                            await objCharacter.DisposeAsync();
                     }
+
                     foreach (CharacterShared objNewForm in e.NewItems)
                     {
                         if (e.OldItems.Contains(objNewForm))

@@ -21,11 +21,8 @@ namespace Chummer
                 RollerWindow?.Dispose();
                 _frmUpdate?.Dispose();
                 _mascotChummy?.Dispose();
-                _lstOpenCharacterEditorForms.Clear();
                 _lstOpenCharacterEditorForms?.Dispose();
-                _lstOpenCharacterSheetViewers.Clear();
                 _lstOpenCharacterSheetViewers?.Dispose();
-                _lstOpenCharacterExportForms.Clear();
                 _lstOpenCharacterExportForms?.Dispose();
             }
             base.Dispose(disposing);
