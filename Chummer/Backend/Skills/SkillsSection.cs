@@ -1820,9 +1820,9 @@ namespace Chummer.Backend.Skills
                 foreach (KnowledgeSkill objSkill in _lstKnowledgeSkills)
                     objSkill.Dispose();
                 await _lstKnowledgeSkills.DisposeAsync();
-                _lstKnowsoftSkills.Clear();
+                await _lstKnowsoftSkills.ClearAsync();
                 await _lstKnowsoftSkills.DisposeAsync();
-                _lstSkillGroups.Clear();
+                await _lstSkillGroups.ClearAsync();
                 await _lstSkillGroups.DisposeAsync();
                 await _dicSkills.DisposeAsync();
                 await _dicSkillBackups.DisposeAsync();

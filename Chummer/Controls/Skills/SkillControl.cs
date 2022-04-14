@@ -568,7 +568,7 @@ namespace Chummer.UI.Skills
                 return;
             if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync(_objSkill.IsExoticSkill ? "Message_DeleteExoticSkill" : "Message_DeleteSkill")))
                 return;
-            _objSkill.CharacterObject.SkillsSection.Skills.Remove(_objSkill);
+            await _objSkill.CharacterObject.SkillsSection.Skills.RemoveAsync(_objSkill);
         }
 
         private async void tsSkillLabelNotes_Click(object sender, EventArgs e)

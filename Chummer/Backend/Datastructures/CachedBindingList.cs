@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Chummer
@@ -25,6 +26,14 @@ namespace Chummer
     public class CachedBindingList<T> : BindingList<T>
     {
         public virtual event EventHandler<RemovingOldEventArgs> BeforeRemove;
+
+        public CachedBindingList()
+        {
+        }
+
+        public CachedBindingList(IList<T> list) : base(list)
+        {
+        }
 
         /// <inheritdoc />
         protected override void RemoveItem(int index)

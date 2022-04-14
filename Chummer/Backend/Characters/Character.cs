@@ -6792,7 +6792,11 @@ namespace Chummer
                                             {
                                                 Power objPower = new Power(this);
                                                 objPower.Load(xmlPower);
-                                                _lstPowers.Add(objPower);
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    _lstPowers.Add(objPower);
+                                                else
+                                                    await _lstPowers.AddAsync(objPower);
                                             }
                                         }
 
@@ -6808,7 +6812,11 @@ namespace Chummer
                                             {
                                                 Power objPower = new Power(this);
                                                 objPower.Load(objNode);
-                                                _lstPowers.Add(objPower);
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    _lstPowers.Add(objPower);
+                                                else
+                                                    await _lstPowers.AddAsync(objPower);
                                             }
                                         }
                                     }
@@ -28795,7 +28803,11 @@ namespace Chummer
                                             Power objPower = new Power(this) {Extra = strForcedValue};
                                             objPower.Create(xmlPowerData, intRating);
                                             objPower.Notes = xmlHeroLabPower.SelectSingleNode("description")?.Value;
-                                            _lstPowers.Add(objPower);
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                _lstPowers.Add(objPower);
+                                            else
+                                                await _lstPowers.AddAsync(objPower);
                                         }
                                     }
                                 }

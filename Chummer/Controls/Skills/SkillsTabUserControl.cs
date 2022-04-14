@@ -794,7 +794,7 @@ namespace Chummer.UI.Skills
             if (_objCharacter.Created && objSkill.UpgradeKarmaCost > _objCharacter.Karma)
             {
                 Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"));
-                _objCharacter.SkillsSection.Skills.Remove(objSkill);
+                await _objCharacter.SkillsSection.Skills.RemoveAsync(objSkill);
                 return;
             }
             objSkill.Upgrade();
@@ -848,11 +848,11 @@ namespace Chummer.UI.Skills
                     }
                 }
 
-                _objCharacter.SkillsSection.KnowledgeSkills.Add(skill);
+                await _objCharacter.SkillsSection.KnowledgeSkills.AddAsync(skill);
             }
             else
             {
-                _objCharacter.SkillsSection.KnowledgeSkills.Add(new KnowledgeSkill(_objCharacter));
+                await _objCharacter.SkillsSection.KnowledgeSkills.AddAsync(new KnowledgeSkill(_objCharacter));
             }
         }
 

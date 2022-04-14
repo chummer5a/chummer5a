@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Chummer;
 using Chummer.Controls.Shared;
 using ChummerDataViewer.Model;
 
@@ -12,9 +12,9 @@ namespace ChummerDataViewer
     public partial class Mainform : Form
     {
         //Main display
-        private readonly BindingList<CrashReport> _crashReports = new BindingList<CrashReport>();
+        private readonly ThreadSafeObservableCollection<CrashReport> _lstCrashReports = new ThreadSafeObservableCollection<CrashReport>();
 
-        private BindingListDisplay<CrashReport> _bldCrashReports;
+        private ObservableCollectionDisplay<CrashReport> _bldCrashReports;
 
         //Status strip
         private delegate void MainThreadDelegate(INotifyThreadStatus sender, StatusChangedEventArgs args);
@@ -66,17 +66,17 @@ namespace ChummerDataViewer
 
             foreach (CrashReport crashReport in PersistentState.Database.GetAllCrashes())
             {
-                _crashReports.Add(crashReport);
+                _lstCrashReports.Add(crashReport);
             }
 
-            _bldCrashReports = new BindingListDisplay<CrashReport>(_crashReports, c => new CrashReportView(c, _downloader))
+            _lstCrashReports.Sort(new CrashReportTimeStampFilter());
+
+            _bldCrashReports = new ObservableCollectionDisplay<CrashReport>(_lstCrashReports, c => new CrashReportView(c, _downloader))
             {
                 Anchor = AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left,
                 Location = new Point(12, 69),
                 Size = new Size(863, 277),
             };
-
-            _bldCrashReports.Sort(new CrashReportTimeStampFilter());
 
             tabReports.Controls.Add(_bldCrashReports);
 
@@ -149,7 +149,8 @@ namespace ChummerDataViewer
             foreach (Guid guid in list)
             {
                 CrashReport item = PersistentState.Database.GetCrash(guid);
-                if (item != null) _crashReports.Add(item);
+                if (item != null)
+                    _lstCrashReports.Add(item);
             }
 
             UpdateDBDependantControls();

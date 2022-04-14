@@ -544,8 +544,8 @@ namespace Chummer.Backend.Skills
             CharacterObject.Settings.PropertyChanged += OnCharacterSettingsPropertyChanged;
             CharacterObject.AttributeSection.PropertyChanged += OnAttributeSectionChanged;
             CharacterObject.AttributeSection.Attributes.CollectionChanged += OnAttributesCollectionChanged;
-            Specializations.ListChanged += SpecializationsOnListChanged;
-            Specializations.BeforeRemove += SpecializationsOnBeforeRemove;
+            Specializations.CollectionChanged += SpecializationsOnCollectionChanged;
+            Specializations.BeforeClearCollectionChanged += SpecializationsOnBeforeClearCollectionChanged;
         }
 
         private void OnAttributesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1556,11 +1556,11 @@ namespace Chummer.Backend.Skills
 
         public string CurrentDisplaySpecialization => DisplaySpecialization(GlobalSettings.Language);
 
-        private readonly ThreadSafeBindingList<SkillSpecialization> _lstSpecializations = new ThreadSafeBindingList<SkillSpecialization>();
+        private readonly ThreadSafeObservableCollection<SkillSpecialization> _lstSpecializations = new ThreadSafeObservableCollection<SkillSpecialization>();
 
         //TODO A unit test here?, I know we don't have them, but this would be improved by some
         //Or just ignore support for multiple specializations even if the rules say it is possible?
-        public ThreadSafeBindingList<SkillSpecialization> Specializations
+        public ThreadSafeObservableCollection<SkillSpecialization> Specializations
         {
             get
             {
@@ -2712,7 +2712,7 @@ namespace Chummer.Backend.Skills
 
         private bool _blnSkipSpecializationRefresh;
 
-        private void SpecializationsOnListChanged(object sender, ListChangedEventArgs listChangedEventArgs)
+        private void SpecializationsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (_blnSkipSpecializationRefresh)
                 return;
@@ -2720,19 +2720,47 @@ namespace Chummer.Backend.Skills
             if (IsExoticSkill)
                 _strDictionaryKey = null;
             _blnSkipSpecializationRefresh = true; // Needed to make sure we don't call this method another time when we set the specialization's Parent
-            if (listChangedEventArgs.ListChangedType == ListChangedType.ItemAdded
-                || listChangedEventArgs.ListChangedType == ListChangedType.ItemChanged)
-                Specializations[listChangedEventArgs.NewIndex].Parent = this;
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (SkillSpecialization objSkillSpecialization in e.NewItems)
+                        objSkillSpecialization.Parent = this;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (SkillSpecialization objSkillSpecialization in e.OldItems)
+                    {
+                        if (objSkillSpecialization.Parent == this)
+                            objSkillSpecialization.Parent = null;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (SkillSpecialization objSkillSpecialization in e.OldItems)
+                    {
+                        if (objSkillSpecialization.Parent == this)
+                            objSkillSpecialization.Parent = null;
+                    }
+                    foreach (SkillSpecialization objSkillSpecialization in e.NewItems)
+                        objSkillSpecialization.Parent = this;
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    foreach (SkillSpecialization objSkillSpecialization in Specializations)
+                        objSkillSpecialization.Parent = this;
+                    break;
+            }
             _blnSkipSpecializationRefresh = false;
             OnPropertyChanged(nameof(Specializations));
         }
 
-        private void SpecializationsOnBeforeRemove(object sender, RemovingOldEventArgs e)
+        private void SpecializationsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (_blnSkipSpecializationRefresh)
                 return;
             _blnSkipSpecializationRefresh = true; // Needed to make sure we don't call this method another time when we set the specialization's Parent
-            Specializations[e.OldIndex].Parent = null;
+            foreach (SkillSpecialization objSkillSpecialization in e.OldItems)
+            {
+                if (objSkillSpecialization.Parent == this)
+                    objSkillSpecialization.Parent = null;
+            }
             _blnSkipSpecializationRefresh = false;
         }
 

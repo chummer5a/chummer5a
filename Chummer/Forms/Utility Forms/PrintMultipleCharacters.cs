@@ -60,6 +60,7 @@ namespace Chummer
                 objTemp.Dispose();
             }
             _objGenericCancellationTokenSource.Cancel(false);
+            // ReSharper disable once MethodSupportsCancellation
             await CleanUpOldCharacters();
         }
 

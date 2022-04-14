@@ -441,7 +441,7 @@ namespace Chummer.UI.Skills
                 return;
             if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteKnowledgeSkill")))
                 return;
-            _objSkill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(_objSkill);
+            await _objSkill.CharacterObject.SkillsSection.KnowledgeSkills.RemoveAsync(_objSkill);
         }
 
         [UsedImplicitly]

@@ -3227,9 +3227,20 @@ namespace Chummer
                         case Improvement.ImprovementType.SkillsoftAccess:
                             if (!blnHasDuplicate)
                             {
-                                foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
+                                if (blnSync)
                                 {
-                                    objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
+                                    foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
+                                    }
+                                }
+                                else
+                                {
+                                    foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
+                                    {
+                                        await objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objKnowledgeSkill);
+                                    }
                                 }
                             }
 
@@ -3240,13 +3251,31 @@ namespace Chummer
                             {
                                 objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(
                                     x => x.InternalId == strImprovedName);
-                                for (int i = objCharacter.SkillsSection.KnowsoftSkills.Count - 1; i >= 0; --i)
+                                if (blnSync)
                                 {
-                                    KnowledgeSkill objSkill = objCharacter.SkillsSection.KnowsoftSkills[i];
-                                    if (objSkill.InternalId == strImprovedName)
+                                    for (int i = objCharacter.SkillsSection.KnowsoftSkills.Count - 1; i >= 0; --i)
                                     {
-                                        objCharacter.SkillsSection.KnowledgeSkills.Remove(objSkill);
-                                        objCharacter.SkillsSection.KnowsoftSkills.RemoveAt(i);
+                                        KnowledgeSkill objSkill = objCharacter.SkillsSection.KnowsoftSkills[i];
+                                        if (objSkill.InternalId == strImprovedName)
+                                        {
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objCharacter.SkillsSection.KnowledgeSkills.Remove(objSkill);
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objCharacter.SkillsSection.KnowsoftSkills.RemoveAt(i);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    for (int i = objCharacter.SkillsSection.KnowsoftSkills.Count - 1; i >= 0; --i)
+                                    {
+                                        KnowledgeSkill objSkill = objCharacter.SkillsSection.KnowsoftSkills[i];
+                                        if (objSkill.InternalId == strImprovedName)
+                                        {
+                                            await Task.WhenAll(
+                                                objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objSkill),
+                                                objCharacter.SkillsSection.KnowsoftSkills.RemoveAtAsync(i));
+                                        }
                                     }
                                 }
                             }
@@ -3578,7 +3607,13 @@ namespace Chummer
                                 // Kept for legacy reasons
                                 : objSkill?.Specializations.FirstOrDefault(x => x.Name == strUniqueName);
                             if (objSkillSpec != null)
-                                objSkill.Specializations.Remove(objSkillSpec);
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objSkill.Specializations.Remove(objSkillSpec);
+                                else
+                                    await objSkill.Specializations.RemoveAsync(objSkillSpec);
+                            }
                         }
                             break;
 

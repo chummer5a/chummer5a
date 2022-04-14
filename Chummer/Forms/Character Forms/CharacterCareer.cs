@@ -6599,7 +6599,7 @@ namespace Chummer
             if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteCalendarWeek")))
                 return;
 
-            CharacterObject.Calendar.Remove(objCharacterWeek);
+            await CharacterObject.Calendar.RemoveAsync(objCharacterWeek);
         }
 
         private async void cmdEditWeek_Click(object sender, EventArgs e)
@@ -8856,20 +8856,20 @@ namespace Chummer
                     }
                 case KarmaExpenseType.SkillSpec:  //I am reasonably sure those 2 are the same. Was written looking at old AddSpecialization code
                 case KarmaExpenseType.AddSpecialization:
-                    {
-                        SkillSpecialization objSpec = CharacterObject.SkillsSection.KnowledgeSkills
-                                                                     .SelectMany(x => x.Specializations)
-                                                                     .FirstOrDefault(
-                                                                         x => x.InternalId == strUndoId)
-                                                      ?? CharacterObject.SkillsSection.Skills
-                                                                        .SelectMany(x => x.Specializations)
-                                                                        .FirstOrDefault(
-                                                                            x => x.InternalId == strUndoId);
+                {
+                    SkillSpecialization objSpec = CharacterObject.SkillsSection.KnowledgeSkills
+                                                                 .SelectMany(x => x.Specializations)
+                                                                 .FirstOrDefault(
+                                                                     x => x.InternalId == strUndoId)
+                                                  ?? CharacterObject.SkillsSection.Skills
+                                                                    .SelectMany(x => x.Specializations)
+                                                                    .FirstOrDefault(
+                                                                        x => x.InternalId == strUndoId);
+                    if (objSpec != null)
+                        await objSpec.Parent.Specializations.RemoveAsync(objSpec);
 
-                        objSpec?.Parent.Specializations.Remove(objSpec);
-
-                        break;
-                    }
+                    break;
+                }
                 case KarmaExpenseType.ImproveSkillGroup:
                     {
                         // Locate the Skill Group that was affected.
@@ -8898,7 +8898,7 @@ namespace Chummer
                         if (objSkill != null)
                         {
                             if (objSkill.AllowDelete)
-                                CharacterObject.SkillsSection.Skills.Remove(objSkill);
+                                await CharacterObject.SkillsSection.Skills.RemoveAsync(objSkill);
                             else
                             {
                                 objSkill.BasePoints = 0;
@@ -8911,7 +8911,7 @@ namespace Chummer
                             if (objKnowledgeSkill != null)
                             {
                                 if (objKnowledgeSkill.AllowDelete)
-                                    CharacterObject.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
+                                    await CharacterObject.SkillsSection.KnowledgeSkills.RemoveAsync(objKnowledgeSkill);
                                 else
                                 {
                                     objKnowledgeSkill.BasePoints = 0;

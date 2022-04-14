@@ -92,9 +92,9 @@ namespace Chummer.UI.Powers
             //Might also be useless horseshit, 2 lines
 
             //Visible = false;
-            await this.DoThreadSafeAsync(() =>
+            await this.DoThreadSafeAsync(x =>
             {
-                SuspendLayout();
+                x.SuspendLayout();
                 try
                 {
                     Stopwatch parts = Stopwatch.StartNew();
@@ -105,13 +105,19 @@ namespace Chummer.UI.Powers
                     parts.TaskEnd("MakePowerDisplay()");
 
                     cboDisplayFilter.BeginUpdate();
-                    cboDisplayFilter.DataSource = null;
-                    cboDisplayFilter.ValueMember = "Item2";
-                    cboDisplayFilter.DisplayMember = "Item1";
-                    cboDisplayFilter.DataSource = _dropDownList;
-                    cboDisplayFilter.SelectedIndex = 1;
-                    cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
-                    cboDisplayFilter.EndUpdate();
+                    try
+                    {
+                        cboDisplayFilter.DataSource = null;
+                        cboDisplayFilter.ValueMember = "Item2";
+                        cboDisplayFilter.DisplayMember = "Item1";
+                        cboDisplayFilter.DataSource = _dropDownList;
+                        cboDisplayFilter.SelectedIndex = 1;
+                        cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
+                    }
+                    finally
+                    {
+                        cboDisplayFilter.EndUpdate();
+                    }
 
                     parts.TaskEnd("_ddl databind");
 
@@ -126,7 +132,7 @@ namespace Chummer.UI.Powers
                 }
                 finally
                 {
-                    ResumeLayout(true);
+                    x.ResumeLayout(true);
                 }
             });
 
@@ -251,7 +257,7 @@ namespace Chummer.UI.Powers
                     XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.MyForm.SelectedPower.CleanXPath() + ']');
                     if (objPower.Create(objXmlPower))
                     {
-                        _objCharacter.Powers.Add(objPower);
+                        await _objCharacter.Powers.AddAsync(objPower);
                     }
                 }
             }
