@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Chummer.UI.Shared;
+using Chummer.Controls.Shared;
 using ChummerDataViewer.Model;
 
 namespace ChummerDataViewer

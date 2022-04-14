@@ -29,7 +29,7 @@ using System.Windows.Forms;
 using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Skills;
-using Chummer.UI.Shared;
+using Chummer.Controls.Shared;
 
 namespace Chummer.UI.Skills
 {

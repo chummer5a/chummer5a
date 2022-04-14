@@ -1,6 +1,6 @@
 namespace Chummer.Controls.Shared
 {
-    partial class BindingListDisplay<TType>
+    partial class ObservableCollectionDisplay<TType>
     {
         /// <summary> 
         /// Required designer variable.
@@ -16,7 +16,7 @@ namespace Chummer.Controls.Shared
             if (disposing)
             {
                 components?.Dispose();
-                Contents.ListChanged -= ContentsChanged;
+                Contents.CollectionChanged -= OnCollectionChanged;
                 System.Windows.Forms.Application.Idle -= ApplicationOnIdle;
             }
             base.Dispose(disposing);
@@ -38,9 +38,9 @@ namespace Chummer.Controls.Shared
             this.pnlDisplay.Location = new System.Drawing.Point(0, 0);
             this.pnlDisplay.Name = "pnlDisplay";
             this.pnlDisplay.Size = new System.Drawing.Size(637, 477);
-            this.pnlDisplay.TabIndex = 0;
+            this.pnlDisplay.TabIndex = 1;
             // 
-            // BindingListDisplay
+            // ObservableCollectionDisplay
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.AutoScroll = true;
@@ -48,12 +48,12 @@ namespace Chummer.Controls.Shared
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.pnlDisplay);
             this.DoubleBuffered = true;
-            this.Name = "BindingListDisplay";
+            this.Name = "ObservableCollectionDisplay";
             this.Size = new System.Drawing.Size(640, 480);
-            this.Load += new System.EventHandler(this.BindingListDisplay_Load);
-            this.Scroll += new System.Windows.Forms.ScrollEventHandler(this.BindingListDisplay_Scroll);
-            this.SizeChanged += new System.EventHandler(this.BindingListDisplay_SizeChanged);
-            this.DpiChangedAfterParent += new System.EventHandler(this.BindingListDisplay_DpiChangedAfterParent);
+            this.Load += new System.EventHandler(this.ObservableCollectionDisplay_Load);
+            this.Scroll += new System.Windows.Forms.ScrollEventHandler(this.ObservableCollectionDisplay_Scroll);
+            this.SizeChanged += new System.EventHandler(this.ObservableCollectionDisplay_SizeChanged);
+            this.DpiChangedAfterParent += new System.EventHandler(this.ObservableCollectionDisplay_DpiChangedAfterParent);
             this.ResumeLayout(false);
 
         }

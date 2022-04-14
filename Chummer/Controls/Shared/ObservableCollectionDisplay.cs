@@ -20,6 +20,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -29,9 +30,9 @@ using NLog;
 
 namespace Chummer.Controls.Shared
 {
-    public partial class BindingListDisplay<TType> : UserControl where TType : INotifyPropertyChanged
+    public partial class ObservableCollectionDisplay<TType> : UserControl
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger(typeof(BindingListDisplay<TType>));
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger(typeof(ObservableCollectionDisplay<TType>));
         public PropertyChangedEventHandler ChildPropertyChanged { get; set; }
 
         private bool _blnIsTopmostSuspendLayout;
@@ -47,7 +48,7 @@ namespace Chummer.Controls.Shared
         private Predicate<TType> _visibleFilter = x => true;
         private IComparer<TType> _comparison;
 
-        public BindingListDisplay(ThreadSafeBindingList<TType> contents, Func<TType, Control> funcCreateControl, bool blnLoadVisibleOnly = true)
+        public ObservableCollectionDisplay(ThreadSafeObservableCollection<TType> contents, Func<TType, Control> funcCreateControl, bool blnLoadVisibleOnly = true)
         {
             InitializeComponent();
             Contents = contents ?? throw new ArgumentNullException(nameof(contents));
@@ -70,10 +71,10 @@ namespace Chummer.Controls.Shared
                 pnlDisplay.Controls.AddRange(_lstContentList.Select(x => x.Control).ToArray());
                 _indexComparer = new IndexComparer(Contents);
                 _comparison = _comparison ?? _indexComparer;
-                Contents.ListChanged += ContentsChanged;
+                Contents.CollectionChanged += OnCollectionChanged;
                 ComputeDisplayIndex();
                 LoadScreenContent();
-                BindingListDisplay_SizeChanged(null, null);
+                ObservableCollectionDisplay_SizeChanged(null, null);
             }
             finally
             {
@@ -82,15 +83,15 @@ namespace Chummer.Controls.Shared
             }
         }
 
-        private void BindingListDisplay_Load(object sender, EventArgs e)
+        private void ObservableCollectionDisplay_Load(object sender, EventArgs e)
         {
             Application.Idle += ApplicationOnIdle;
         }
 
         /// <summary>
-        /// Base BindingList that represents all possible contents of the display, not necessarily all visible.
+        /// Base ObservableCollection that represents all possible contents of the display, not necessarily all visible.
         /// </summary>
-        public ThreadSafeBindingList<TType> Contents { get; }
+        public ThreadSafeObservableCollection<TType> Contents { get; }
 
         public Panel DisplayPanel => pnlDisplay;
 
@@ -333,61 +334,51 @@ namespace Chummer.Controls.Shared
             }
         }
 
-        private void ContentsChanged(object sender, ListChangedEventArgs eventArgs)
+        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            int intNewIndex = eventArgs?.NewIndex ?? 0;
-            IEnumerable<ControlWithMetaData> lstToRedraw;
-            switch (eventArgs?.ListChangedType)
+            IEnumerable<ControlWithMetaData> lstToRedraw = null;
+            switch (e.Action)
             {
-                case ListChangedType.ItemChanged:
-                    return;
-
-                case ListChangedType.Reset:
-                    bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
-                    if (blnIsTopmostSuspendLayout)
-                        _blnIsTopmostSuspendLayout = false;
-                    pnlDisplay.SuspendLayout();
-                    try
+                case NotifyCollectionChangedAction.Add:
+                {
+                    int intIndex = e.NewStartingIndex;
+                    foreach (TType objNewItem in e.NewItems)
+                        _lstContentList.Insert(intIndex++, new ControlWithMetaData(objNewItem, this));
+                    _indexComparer.Reset(Contents);
+                    lstToRedraw = _lstContentList.Skip(e.NewStartingIndex);
+                    break;
+                }
+                case NotifyCollectionChangedAction.Remove:
+                {
+                    int intIndex = e.OldStartingIndex;
+                    foreach (TType _ in e.OldItems)
                     {
-                        foreach (ControlWithMetaData objLoopControl in _lstContentList)
-                        {
-                            objLoopControl.Cleanup();
-                        }
-                        _lstContentList.Clear();
-                        foreach (TType objLoopTType in Contents)
-                        {
-                            _lstContentList.Add(new ControlWithMetaData(objLoopTType, this, false));
-                        }
-                        pnlDisplay.Controls.AddRange(_lstContentList.Select(x => x.Control).ToArray());
-                    }
-                    finally
-                    {
-                        if (blnIsTopmostSuspendLayout)
-                        {
-                            _blnIsTopmostSuspendLayout = true;
-                            pnlDisplay.ResumeLayout();
-                        }
+                        _lstContentList[intIndex].Cleanup();
+                        _lstContentList.RemoveAt(intIndex);
                     }
                     _indexComparer.Reset(Contents);
-                    lstToRedraw = _lstContentList;
+                    lstToRedraw = _lstContentList.Skip(e.OldStartingIndex);
                     break;
-
-                case ListChangedType.ItemAdded:
-                    _lstContentList.Insert(intNewIndex, new ControlWithMetaData(Contents[intNewIndex], this));
+                }
+                case NotifyCollectionChangedAction.Replace:
+                {
+                    int intIndex = e.OldStartingIndex;
+                    foreach (TType _ in e.OldItems)
+                    {
+                        _lstContentList[intIndex].Cleanup();
+                        _lstContentList.RemoveAt(intIndex);
+                    }
+                    foreach (TType objNewItem in e.NewItems)
+                        _lstContentList.Insert(intIndex++, new ControlWithMetaData(objNewItem, this));
                     _indexComparer.Reset(Contents);
-                    lstToRedraw = _lstContentList.Skip(intNewIndex);
+                    lstToRedraw = _lstContentList.Skip(e.OldStartingIndex);
                     break;
-
-                case ListChangedType.ItemDeleted:
-                    _lstContentList[intNewIndex].Cleanup();
-                    _lstContentList.RemoveAt(intNewIndex);
-                    _indexComparer.Reset(Contents);
-                    lstToRedraw = _lstContentList.Skip(intNewIndex);
-                    break;
-
-                case ListChangedType.ItemMoved:
+                }
+                case NotifyCollectionChangedAction.Move:
+                {
                     // Refresh the underlying lists, but do not refresh any displays
-                    int intOldIndex = eventArgs.OldIndex;
+                    int intNewIndex = e.NewStartingIndex;
+                    int intOldIndex = e.OldStartingIndex;
                     int intDirection = intOldIndex < intNewIndex ? 1 : -1;
                     ControlWithMetaData objMovedControl = _lstContentList[intOldIndex];
                     int intLoopDisplayIndex = _lstDisplayIndex.IndexOf(intOldIndex);
@@ -419,15 +410,41 @@ namespace Chummer.Controls.Shared
                         _ablnRendered[intLoopDisplayIndex] = blnFinalRenderedValue;
                     }
                     return;
-                //case ListChangedType.PropertyDescriptorAdded:
-                //    break;
-                //case ListChangedType.PropertyDescriptorDeleted:
-                //    break;
-                //case ListChangedType.PropertyDescriptorChanged:
-                //    break;
-                default:
-                    Utils.BreakIfDebug();
-                    return;
+                }
+                case NotifyCollectionChangedAction.Reset:
+                {
+                    bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
+                    if (blnIsTopmostSuspendLayout)
+                        _blnIsTopmostSuspendLayout = false;
+                    pnlDisplay.SuspendLayout();
+                    try
+                    {
+                        foreach (ControlWithMetaData objLoopControl in _lstContentList)
+                        {
+                            objLoopControl.Cleanup();
+                        }
+
+                        _lstContentList.Clear();
+                        foreach (TType objLoopTType in Contents)
+                        {
+                            _lstContentList.Add(new ControlWithMetaData(objLoopTType, this, false));
+                        }
+
+                        pnlDisplay.Controls.AddRange(_lstContentList.Select(x => x.Control).ToArray());
+                    }
+                    finally
+                    {
+                        if (blnIsTopmostSuspendLayout)
+                        {
+                            _blnIsTopmostSuspendLayout = true;
+                            pnlDisplay.ResumeLayout();
+                        }
+                    }
+
+                    _indexComparer.Reset(Contents);
+                    lstToRedraw = _lstContentList;
+                    break;
+                }
             }
             if (lstToRedraw != null)
             {
@@ -451,7 +468,7 @@ namespace Chummer.Controls.Shared
             }
         }
 
-        private void BindingListDisplay_Scroll(object sender, ScrollEventArgs e)
+        private void ObservableCollectionDisplay_Scroll(object sender, ScrollEventArgs e)
         {
             bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
             if (blnIsTopmostSuspendLayout)
@@ -471,7 +488,7 @@ namespace Chummer.Controls.Shared
             }
         }
 
-        private void BindingListDisplay_SizeChanged(object sender, EventArgs e)
+        private void ObservableCollectionDisplay_SizeChanged(object sender, EventArgs e)
         {
             bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
             if (blnIsTopmostSuspendLayout)
@@ -526,11 +543,11 @@ namespace Chummer.Controls.Shared
 
             public bool Visible => _visible ?? (_visible = _parent._visibleFilter(Item)).Value;
 
-            private readonly BindingListDisplay<TType> _parent;
+            private readonly ObservableCollectionDisplay<TType> _parent;
             private Control _control;
             private bool? _visible;
 
-            public ControlWithMetaData(TType item, BindingListDisplay<TType> parent, bool blnAddControlAfterCreation = true)
+            public ControlWithMetaData(TType item, ObservableCollectionDisplay<TType> parent, bool blnAddControlAfterCreation = true)
             {
                 _parent = parent;
                 Item = item;
@@ -718,7 +735,7 @@ namespace Chummer.Controls.Shared
             }
         }
 
-        private void BindingListDisplay_DpiChangedAfterParent(object sender, EventArgs e)
+        private void ObservableCollectionDisplay_DpiChangedAfterParent(object sender, EventArgs e)
         {
             int intMaxControlHeight = 0;
             foreach (ControlWithMetaData objControl in _lstContentList)
