@@ -88,14 +88,22 @@ namespace Chummer
         /// <inheritdoc />
         public bool Remove(T item)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 return _lstData.Remove(item);
         }
 
+        /// <inheritdoc cref="List{T}.Remove(T)" />
         public async ValueTask<bool> RemoveAsync(T item)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
                 return _lstData.Remove(item);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc cref="EnhancedObservableCollection{T}.RemoveAt" />
