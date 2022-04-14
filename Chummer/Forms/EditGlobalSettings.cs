@@ -1626,10 +1626,10 @@ namespace Chummer
                 string strOldSelected;
                 try
                 {
-                    strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
+                    strOldSelected = await cboXSLT.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token) ?? string.Empty;
                 }
                 catch(IndexOutOfRangeException)
-                { 
+                {
                     strOldSelected = string.Empty;
                 }
                  
