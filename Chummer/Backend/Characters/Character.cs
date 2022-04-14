@@ -22587,7 +22587,7 @@ namespace Chummer
                                  .SelectAndCacheExpression("/chummer/availmap/avail"))
                     {
                         _dicAvailabilityMap.Add(
-                            Convert.ToDecimal(objNode.SelectSingleNodeAndCacheExpression("value").Value),
+                            Convert.ToDecimal(objNode.SelectSingleNodeAndCacheExpression("value").Value, GlobalSettings.InvariantCultureInfo),
                             new Tuple<string, string>(objNode.SelectSingleNodeAndCacheExpression("duration").Value,
                                                       objNode.SelectSingleNodeAndCacheExpression("interval").Value));
                     }
