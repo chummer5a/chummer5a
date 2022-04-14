@@ -1640,10 +1640,16 @@ namespace Chummer
                     RefreshSuppressed();
                 }
 
-                foreach (string strPropertyToChange in lstPropertyNames)
+                Program.MainForm.DoThreadSafe(() =>
                 {
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-                }
+                    if (PropertyChanged != null)
+                    {
+                        foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                        {
+                            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                        }
+                    }
+                });
             }
             finally
             {

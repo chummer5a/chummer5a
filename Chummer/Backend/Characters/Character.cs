@@ -827,7 +827,7 @@ namespace Chummer
                     break;
             }
 
-            SettingsPropertyChanged?.Invoke(sender, e);
+            Program.MainForm.DoThreadSafe(() => SettingsPropertyChanged?.Invoke(sender, e));
         }
 
         private void AttributeSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -26801,10 +26801,16 @@ namespace Chummer
                             RefreshAstralReputationImprovements();
                     }
 
-                    foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                    Program.MainForm.DoThreadSafe(() =>
                     {
-                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-                    }
+                        if (PropertyChanged != null)
+                        {
+                            foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                            {
+                                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                            }
+                        }
+                    });
 
                     if (!Created)
                     {

@@ -49,10 +49,16 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            foreach (string strPropertyToChange in lstPropertyNames)
+            Program.MainForm.DoThreadSafe(() =>
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-            }
+                if (PropertyChanged != null)
+                {
+                    foreach (string strPropertyToChange in lstPropertyNames)
+                    {
+                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                    }
+                }
+            });
         }
 
         #region Constructor, Save, Load, and Print Methods

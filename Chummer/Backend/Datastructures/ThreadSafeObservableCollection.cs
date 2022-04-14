@@ -553,8 +553,13 @@ namespace Chummer
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            using (EnterReadLock.Enter(LockObject))
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyName));
+            Program.MainForm.DoThreadSafe(() =>
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyName));
+                }
+            });
         }
 
         protected virtual void Dispose(bool disposing)

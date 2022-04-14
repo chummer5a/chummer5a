@@ -238,10 +238,16 @@ namespace Chummer.Backend.Skills
                 if (setNamesOfChangedProperties.Contains(nameof(KnowledgeSkillPoints)))
                     _intCachedKnowledgePoints = int.MinValue;
 
-                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                Program.MainForm.DoThreadSafe(() =>
                 {
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-                }
+                    if (PropertyChanged != null)
+                    {
+                        foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                        {
+                            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                        }
+                    }
+                });
             }
             finally
             {

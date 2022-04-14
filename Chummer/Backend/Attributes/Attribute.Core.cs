@@ -1994,10 +1994,16 @@ namespace Chummer.Backend.Attributes
                     _intCachedUpgradeKarmaCost = int.MinValue;
                 if (setNamesOfChangedProperties.Contains(nameof(ToolTip)))
                     _strCachedToolTip = string.Empty;
-                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                Program.MainForm.DoThreadSafe(() =>
                 {
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-                }
+                    if (PropertyChanged != null)
+                    {
+                        foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                        {
+                            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                        }
+                    }
+                });
             }
             finally
             {
