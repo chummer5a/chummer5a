@@ -1712,6 +1712,6 @@ namespace Chummer
         /// </summary>
         [CLSCompliant(false)]
         public static SafeDisposableObjectPool<DebuggableSemaphoreSlim> SemaphorePool { get; }
-            = new SafeDisposableObjectPool<DebuggableSemaphoreSlim>(() => new DebuggableSemaphoreSlim());
+            = new SafeDisposableObjectPool<DebuggableSemaphoreSlim>(Math.Max(MaxParallelBatchSize, 256), () => new DebuggableSemaphoreSlim());
     }
 }
