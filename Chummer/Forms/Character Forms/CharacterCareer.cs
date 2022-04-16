@@ -3058,6 +3058,7 @@ namespace Chummer
                     = await CharacterObject.LockObject.EnterWriteLockAsync(token);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdOutdatedItems))
                     {

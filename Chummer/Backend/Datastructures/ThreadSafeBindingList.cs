@@ -831,6 +831,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
+                token.ThrowIfCancellationRequested();
                 return _lstData.AddNew();
             }
             finally
@@ -866,6 +867,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
+                token.ThrowIfCancellationRequested();
                 _lstData.ResetBindings();
             }
             finally
@@ -887,6 +889,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
+                token.ThrowIfCancellationRequested();
                 _lstData.ResetItem(position);
             }
             finally
@@ -1206,6 +1209,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     // We're going to disable events while we work with the list, then call them all at once at the end
                     _lstData.RaiseListChangedEvents = false;
                     try
@@ -1300,6 +1304,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     // We're going to disable events while we work with the list, then call them all at once at the end
                     _lstData.RaiseListChangedEvents = false;
                     try
@@ -1395,6 +1400,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     // We're going to disable events while we work with the list, then call them all at once at the end
                     _lstData.RaiseListChangedEvents = false;
                     try
@@ -1495,6 +1501,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
+                token.ThrowIfCancellationRequested();
                 bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
                 try
                 {

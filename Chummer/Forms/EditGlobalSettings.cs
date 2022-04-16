@@ -1216,6 +1216,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await GlobalSettings.SourcebookInfos.LockObject.EnterWriteLockAsync(token);
             try
             {
+                token.ThrowIfCancellationRequested();
                 await GlobalSettings.SourcebookInfos.ClearAsync(token);
                 foreach (SourcebookInfo objInfo in _dicSourcebookInfos.Values)
                     await GlobalSettings.SourcebookInfos.AddAsync(objInfo.Code, objInfo, token);

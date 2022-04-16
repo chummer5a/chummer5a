@@ -109,6 +109,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
+                token.ThrowIfCancellationRequested();
                 _dicData.Add(item.Key, item.Value);
             }
             finally
@@ -147,6 +148,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
+                token.ThrowIfCancellationRequested();
                 _dicData.Clear();
             }
             finally
@@ -281,6 +283,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
+                token.ThrowIfCancellationRequested();
                 return _dicData.TryGetValue(item.Key, out TValue objValue) && objValue.Equals(item.Value)
                                                                            && _dicData.Remove(item.Key);
             }
@@ -295,6 +298,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
+                token.ThrowIfCancellationRequested();
                 return _dicData.Remove(key);
             }
             finally
@@ -321,6 +325,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
+                token.ThrowIfCancellationRequested();
                 bool blnSuccess = _dicData.TryGetValue(key, out TValue value) && _dicData.Remove(key);
                 return new Tuple<bool, TValue>(blnSuccess, value);
             }
@@ -415,6 +420,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
+                token.ThrowIfCancellationRequested();
                 _dicData.Add(key, value);
             }
             finally
@@ -441,6 +447,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicData.ContainsKey(key))
                     return false;
                 _dicData.Add(key, value);
@@ -536,6 +543,7 @@ namespace Chummer
                     IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         _dicData[key] = objReturn;
                     }
                     finally
@@ -549,6 +557,7 @@ namespace Chummer
                     IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         _dicData.Add(key, objReturn);
                     }
                     finally
@@ -579,6 +588,7 @@ namespace Chummer
                     objLocker = await LockObject.EnterWriteLockAsync(token);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         _dicData[key] = objNewValue;
                     }
                     finally
@@ -590,6 +600,7 @@ namespace Chummer
                 objLocker = await LockObject.EnterWriteLockAsync(token);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     _dicData.Add(key, addValue);
                 }
                 finally

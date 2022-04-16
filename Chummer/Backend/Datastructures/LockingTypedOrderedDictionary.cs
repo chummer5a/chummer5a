@@ -236,6 +236,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
+                token.ThrowIfCancellationRequested();
                 _dicUnorderedData.Add(key, value);
                 _lstIndexes.Add(key);
             }
@@ -302,6 +303,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicUnorderedData.ContainsKey(key))
                     return false;
                 _dicUnorderedData.Add(key, value);

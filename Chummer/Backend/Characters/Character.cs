@@ -4133,6 +4133,7 @@ namespace Chummer
                     IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
                     }
                     finally
@@ -4417,6 +4418,7 @@ namespace Chummer
                 objLockerAsync = await LockObject.EnterWriteLockAsync(token);
             try
             {
+                token.ThrowIfCancellationRequested();
                 LoadAsDirty = false;
                 using (CustomActivity loadActivity = blnSync
                            // ReSharper disable once MethodHasAsyncOverload

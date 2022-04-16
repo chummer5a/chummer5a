@@ -961,6 +961,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await _lstCharacters.LockObject.EnterWriteLockAsync(token);
             try
             {
+                token.ThrowIfCancellationRequested();
                 foreach (Character objCharacter in _lstCharacters)
                 {
                     objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;

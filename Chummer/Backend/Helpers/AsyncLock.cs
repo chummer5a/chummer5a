@@ -36,7 +36,21 @@ namespace Chummer
         private readonly DebuggableSemaphoreSlim _objTopLevelSemaphore = new DebuggableSemaphoreSlim();
         private bool _blnIsDisposed;
         
-        public Task<IAsyncDisposable> TakeLockAsync(CancellationToken token = default)
+        public Task<IAsyncDisposable> TakeLockAsync()
+        {
+            if (_blnIsDisposed)
+                return Task.FromException<IAsyncDisposable>(new ObjectDisposedException(nameof(AsyncLock)));
+            DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
+            DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentSemaphore.Value ?? _objTopLevelSemaphore;
+            _objCurrentSemaphore.Value = objNextSemaphore;
+            SafeSemaphoreRelease objRelease = new SafeSemaphoreRelease(objCurrentSemaphore, objNextSemaphore, this);
+            return TakeLockCoreAsync(objCurrentSemaphore, objRelease);
+        }
+
+        /// <summary>
+        /// NOTE: Ensure that you are separately handling OperationCanceledException in the calling context and disposing of this result if the token is canceled!
+        /// </summary>
+        public Task<IAsyncDisposable> TakeLockAsync(CancellationToken token)
         {
             if (_blnIsDisposed)
                 return Task.FromException<IAsyncDisposable>(new ObjectDisposedException(nameof(AsyncLock)));
@@ -45,19 +59,24 @@ namespace Chummer
             DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentSemaphore.Value ?? _objTopLevelSemaphore;
             _objCurrentSemaphore.Value = objNextSemaphore;
             SafeSemaphoreRelease objRelease = new SafeSemaphoreRelease(objCurrentSemaphore, objNextSemaphore, this);
-            return TakeLockCoreAsync(objCurrentSemaphore, objNextSemaphore, objRelease, token);
+            return TakeLockCoreAsync(objCurrentSemaphore, objRelease, token);
         }
 
-        private static async Task<IAsyncDisposable> TakeLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, DebuggableSemaphoreSlim objNextSemaphore, SafeSemaphoreRelease objRelease, CancellationToken token = default)
+        private static async Task<IAsyncDisposable> TakeLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, SafeSemaphoreRelease objRelease)
+        {
+            await objCurrentSemaphore.WaitAsync();
+            return objRelease;
+        }
+
+        private static async Task<IAsyncDisposable> TakeLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, SafeSemaphoreRelease objRelease, CancellationToken token)
         {
             try
             {
                 await objCurrentSemaphore.WaitAsync(token);
             }
-            catch
+            catch (OperationCanceledException)
             {
-                Utils.SemaphorePool.Return(ref objNextSemaphore);
-                throw;
+                //swallow this because it must be handled as a disposal in the original ExecutionContext
             }
             return objRelease;
         }
@@ -164,10 +183,25 @@ namespace Chummer
 
             private async ValueTask DisposeCoreAsync()
             {
-                await _objNextSemaphore.WaitAsync();
-                _objCurrentSemaphore.Release();
-                _objNextSemaphore.Release();
-                Utils.SemaphorePool.Return(ref _objNextSemaphore);
+                try
+                {
+                    if (_objCurrentSemaphore.CurrentCount == 0)
+                    {
+                        await _objNextSemaphore.WaitAsync();
+                        try
+                        {
+                            _objCurrentSemaphore.Release();
+                        }
+                        finally
+                        {
+                            _objNextSemaphore.Release();
+                        }
+                    }
+                }
+                finally
+                {
+                    Utils.SemaphorePool.Return(ref _objNextSemaphore);
+                }
             }
 
             public void Dispose()
@@ -187,10 +221,25 @@ namespace Chummer
                 }
 
                 _objAsyncLock._objCurrentSemaphore.Value = _objCurrentSemaphore;
-                _objNextSemaphore.SafeWait();
-                _objCurrentSemaphore.Release();
-                _objNextSemaphore.Release();
-                Utils.SemaphorePool.Return(ref _objNextSemaphore);
+                try
+                {
+                    if (_objCurrentSemaphore.CurrentCount == 0)
+                    {
+                        _objNextSemaphore.SafeWait();
+                        try
+                        {
+                            _objCurrentSemaphore.Release();
+                        }
+                        finally
+                        {
+                            _objNextSemaphore.Release();
+                        }
+                    }
+                }
+                finally
+                {
+                    Utils.SemaphorePool.Return(ref _objNextSemaphore);
+                }
             }
         }
     }

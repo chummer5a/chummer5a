@@ -408,6 +408,7 @@ namespace Chummer
                             objLockerAsync = await s_objDataDirectoriesLock.EnterWriteLockAsync(token);
                         try
                         {
+                            token.ThrowIfCancellationRequested();
                             if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
                             {
                                 setLoop = new HashSet<string>();
@@ -681,6 +682,7 @@ namespace Chummer
                         objLockerAsync = await xmlReferenceOfReturn.LockObject.EnterWriteLockAsync(token);
                     try
                     {
+                        token.ThrowIfCancellationRequested();
                         if (blnHasCustomData)
                         {
                             // If we have any custom data, make sure the base data is already loaded so we can easily just copy it over
