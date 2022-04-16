@@ -491,13 +491,11 @@ namespace Chummer
                 return;
             }
 
-            CancellationToken innerToken = objNewSource.Token;
-
             await this.DoThreadSafeAsync(x => x.SuspendLayout(), token);
             try
             {
                 _tskMostRecentlyUsedsRefresh
-                    = LoadMruCharacters(strMruType != "mru", innerToken);
+                    = LoadMruCharacters(strMruType != "mru", objNewSource.Token);
                 try
                 {
                     await _tskMostRecentlyUsedsRefresh;
