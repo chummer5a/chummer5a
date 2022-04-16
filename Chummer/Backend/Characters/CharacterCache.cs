@@ -935,7 +935,7 @@ namespace Chummer
         {
             if (_blnIsDisposed)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _blnIsDisposed = true;
@@ -945,7 +945,7 @@ namespace Chummer
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objLocker.DisposeAsync();
             }
             await LockObject.DisposeAsync();
         }

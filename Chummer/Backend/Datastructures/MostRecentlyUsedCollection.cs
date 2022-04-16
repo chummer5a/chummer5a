@@ -53,7 +53,7 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Insert" />
         public override async ValueTask InsertAsync(int index, T item)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 int intExistingIndex = await IndexOfAsync(item);
@@ -64,7 +64,7 @@ namespace Chummer
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objLocker.DisposeAsync();
             }
         }
 

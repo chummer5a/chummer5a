@@ -94,13 +94,13 @@ namespace Chummer
                 while (true)
                 {
                     bool blnLoadComplete;
-                    using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                    using (await EnterReadLock.EnterAsync(LockObject, token))
                         blnLoadComplete = _blnInitialLoadComplete;
                     if (blnLoadComplete)
                         break;
                     await Utils.SafeSleepAsync(token);
                 }
-                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                using (await EnterReadLock.EnterAsync(LockObject, token))
                     return _xmlContent;
             }
 
@@ -139,11 +139,11 @@ namespace Chummer
             /// </summary>
             public async ValueTask SetXmlContentAsync(XmlDocument objContent)
             {
-                using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
+                using (await EnterReadLock.EnterAsync(LockObject))
                 {
                     if (objContent == _xmlContent)
                         return;
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
                     try
                     {
                         _xmlContent = objContent;
@@ -164,7 +164,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        await objLocker.DisposeAsync();
                     }
                 }
             }
@@ -197,13 +197,13 @@ namespace Chummer
                 while (true)
                 {
                     bool blnLoadComplete;
-                    using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                    using (await EnterReadLock.EnterAsync(LockObject, token))
                         blnLoadComplete = _blnInitialLoadComplete;
                     if (blnLoadComplete)
                         break;
                     await Utils.SafeSleepAsync(token);
                 }
-                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                using (await EnterReadLock.EnterAsync(LockObject, token))
                     return _objXPathContent;
             }
 
@@ -285,13 +285,11 @@ namespace Chummer
 
         public static async ValueTask RebuildDataDirectoryInfoAsync(IEnumerable<CustomDataDirectoryInfo> lstCustomDirectories)
         {
-            IAsyncDisposable objLocker = await s_objDataDirectoriesLock.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await s_objDataDirectoriesLock.EnterWriteLockAsync();
             try
             {
-                await s_DicXmlDocuments.ForEachAsync(async kvpDocument =>
-                                                         await kvpDocument.Value.DisposeAsync().ConfigureAwait(false))
-                                       .ConfigureAwait(false);
-                await s_DicXmlDocuments.ClearAsync().ConfigureAwait(false);
+                await s_DicXmlDocuments.ForEachAsync(async kvpDocument => await kvpDocument.Value.DisposeAsync());
+                await s_DicXmlDocuments.ClearAsync();
                 s_SetDataDirectories.Clear();
                 s_SetDataDirectories.Add(s_StrBaseDataPath);
                 foreach (CustomDataDirectoryInfo objCustomDataDirectory in lstCustomDirectories)
@@ -317,7 +315,7 @@ namespace Chummer
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -407,7 +405,7 @@ namespace Chummer
                             // ReSharper disable once MethodHasAsyncOverload
                             objLocker = s_objDataDirectoriesLock.EnterWriteLock(token);
                         else
-                            objLockerAsync = await s_objDataDirectoriesLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                            objLockerAsync = await s_objDataDirectoriesLock.EnterWriteLockAsync(token);
                         try
                         {
                             if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
@@ -424,7 +422,7 @@ namespace Chummer
                                 // ReSharper disable once MethodHasAsyncOverload
                                 objLocker.Dispose();
                             else
-                                await objLockerAsync.DisposeAsync().ConfigureAwait(false);
+                                await objLockerAsync.DisposeAsync();
                         }
                     }
                 }
@@ -444,7 +442,7 @@ namespace Chummer
                     else
                     {
                         bool blnLoadSuccess;
-                        (blnLoadSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token).ConfigureAwait(false);
+                        (blnLoadSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token);
                         blnDoLoad = !blnLoadSuccess;
                     }
                 }
@@ -462,13 +460,13 @@ namespace Chummer
                     else
                     {
                         xmlDocumentOfReturn
-                            = await LoadAsync(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
+                            = await LoadAsync(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token);
                         // Need this conditional so that we actually await the line above before we check to see if the load was successful or not
                         // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
                         if (xmlDocumentOfReturn != null)
                         {
                             (blnLoadSuccess, xmlReferenceOfReturn)
-                                = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token).ConfigureAwait(false);
+                                = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token);
                         }
                         else
                         {
@@ -501,7 +499,7 @@ namespace Chummer
                 XPathDocument objTemp = blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? xmlReferenceOfReturn.GetXPathContent(token)
-                    : await xmlReferenceOfReturn.GetXPathContentAsync(token).ConfigureAwait(false);
+                    : await xmlReferenceOfReturn.GetXPathContentAsync(token);
 
                 return objTemp.CreateNavigator();
             }
@@ -555,7 +553,7 @@ namespace Chummer
             using (blnSync
                        // ReSharper disable once MethodHasAsyncOverload
                        ? EnterReadLock.Enter(s_objDataDirectoriesLock, token)
-                       : await EnterReadLock.EnterAsync(s_objDataDirectoriesLock, token).ConfigureAwait(false))
+                       : await EnterReadLock.EnterAsync(s_objDataDirectoriesLock, token))
             {
                 foreach (string strDirectory in s_SetDataDirectories)
                 {
@@ -636,7 +634,7 @@ namespace Chummer
                 else
                 {
                     bool blnSuccess;
-                    (blnSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token).ConfigureAwait(false);
+                    (blnSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token);
                     if (!blnSuccess)
                     {
                         int intEmergencyRelease = 0;
@@ -645,13 +643,13 @@ namespace Chummer
                         for (; intEmergencyRelease <= Utils.SleepEmergencyReleaseMaxTicks; ++intEmergencyRelease)
                         {
                             // The file was not found in the reference list, so it must be loaded.
-                            if (await s_DicXmlDocuments.TryAddAsync(objDataKey, xmlReferenceOfReturn, token).ConfigureAwait(false))
+                            if (await s_DicXmlDocuments.TryAddAsync(objDataKey, xmlReferenceOfReturn, token))
                             {
                                 blnLoadFile = true;
                                 break;
                             }
 
-                            await xmlReferenceOfReturn.DisposeAsync().ConfigureAwait(false);
+                            await xmlReferenceOfReturn.DisposeAsync();
 
                             // It somehow got added in the meantime, so let's fetch it again
                             (blnSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token);
@@ -666,7 +664,7 @@ namespace Chummer
                                 .SleepEmergencyReleaseMaxTicks) // Shouldn't ever happen, but just in case it does, emergency exit out of the loading function
                         {
                             Utils.BreakIfDebug();
-                            await xmlReferenceOfReturn.DisposeAsync().ConfigureAwait(false);
+                            await xmlReferenceOfReturn.DisposeAsync();
                             return new XmlDocument {XmlResolver = null};
                         }
                     }
@@ -680,7 +678,7 @@ namespace Chummer
                         // ReSharper disable once MethodHasAsyncOverload
                         objLocker = xmlReferenceOfReturn.LockObject.EnterWriteLock(token);
                     else
-                        objLockerAsync = await xmlReferenceOfReturn.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        objLockerAsync = await xmlReferenceOfReturn.LockObject.EnterWriteLockAsync(token);
                     try
                     {
                         if (blnHasCustomData)
@@ -689,7 +687,7 @@ namespace Chummer
                             XmlDocument xmlBaseDocument = blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? Load(strFileName, null, strLanguage, token: token)
-                                : await LoadAsync(strFileName, null, strLanguage, token: token).ConfigureAwait(false);
+                                : await LoadAsync(strFileName, null, strLanguage, token: token);
                             xmlReturn = xmlBaseDocument.Clone() as XmlDocument;
                         }
                         else if (!strLanguage.Equals(GlobalSettings.DefaultLanguage,
@@ -699,8 +697,7 @@ namespace Chummer
                             XmlDocument xmlBaseDocument = blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? Load(strFileName, null, GlobalSettings.DefaultLanguage, token: token)
-                                : await LoadAsync(strFileName, null, GlobalSettings.DefaultLanguage, token: token)
-                                    .ConfigureAwait(false);
+                                : await LoadAsync(strFileName, null, GlobalSettings.DefaultLanguage, token: token);
                             xmlReturn = xmlBaseDocument.Clone() as XmlDocument;
                         }
 
@@ -760,7 +757,7 @@ namespace Chummer
                             XPathDocument objDataDoc = blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? LanguageManager.GetDataDocument(strLanguage, token)
-                                : await LanguageManager.GetDataDocumentAsync(strLanguage, token).ConfigureAwait(false);
+                                : await LanguageManager.GetDataDocumentAsync(strLanguage, token);
                             if (objDataDoc != null)
                             {
                                 XmlNode xmlBaseChummerNode = xmlReturn.SelectSingleNode("/chummer");
@@ -778,7 +775,7 @@ namespace Chummer
                             // ReSharper disable once MethodHasAsyncOverload
                             xmlReferenceOfReturn.SetXmlContent(xmlReturn);
                         else
-                            await xmlReferenceOfReturn.SetXmlContentAsync(xmlReturn).ConfigureAwait(false);
+                            await xmlReferenceOfReturn.SetXmlContentAsync(xmlReturn);
                     }
                     finally
                     {
@@ -786,7 +783,7 @@ namespace Chummer
                             // ReSharper disable once MethodHasAsyncOverload
                             objLocker.Dispose();
                         else
-                            await objLockerAsync.DisposeAsync().ConfigureAwait(false);
+                            await objLockerAsync.DisposeAsync();
                     }
 
                     // Make sure we do not override the cached document with our live data
@@ -795,7 +792,7 @@ namespace Chummer
                         XmlDocument objTemp = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? xmlReferenceOfReturn.GetXmlContent(token)
-                            : await xmlReferenceOfReturn.GetXmlContentAsync(token).ConfigureAwait(false);
+                            : await xmlReferenceOfReturn.GetXmlContentAsync(token);
                         xmlReturn = objTemp.Clone() as XmlDocument;
                     }
                 }
@@ -804,7 +801,7 @@ namespace Chummer
                     XmlDocument objTemp = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? xmlReferenceOfReturn.GetXmlContent(token)
-                        : await xmlReferenceOfReturn.GetXmlContentAsync(token).ConfigureAwait(false);
+                        : await xmlReferenceOfReturn.GetXmlContentAsync(token);
                     // Make sure we do not override the cached document with our live data
                     if (GlobalSettings.LiveCustomData && blnHasCustomData)
                         xmlReturn = objTemp.Clone() as XmlDocument;

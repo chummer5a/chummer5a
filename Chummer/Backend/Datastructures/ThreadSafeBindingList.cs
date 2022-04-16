@@ -137,14 +137,14 @@ namespace Chummer
 
         public async ValueTask AddAsync(T item)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _lstData.Add(item);
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -157,14 +157,14 @@ namespace Chummer
 
         public async ValueTask AddRangeAsync(IEnumerable<T> collection)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _lstData.AddRange(collection);
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -206,14 +206,14 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Clear" />
         public async ValueTask ClearAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _lstData.Clear();
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -501,14 +501,14 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Insert" />
         public async ValueTask InsertAsync(int index, T item)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _lstData.Insert(index, item);
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -522,14 +522,14 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.InsertRange" />
         public async ValueTask InsertRangeAsync(int index, IEnumerable<T> collection)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _lstData.InsertRange(index, collection);
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -563,14 +563,14 @@ namespace Chummer
 
         public async Task<bool> RemoveAsync(T item)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 return _lstData.Remove(item);
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -584,14 +584,14 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.RemoveAt" />
         public async Task RemoveAtAsync(int index)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _lstData.RemoveAt(index);
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -605,14 +605,14 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.RemoveRange" />
         public async ValueTask RemoveRangeAsync(int index, int count)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _lstData.RemoveRange(index, count);
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objLocker.DisposeAsync();
             }
         }
 

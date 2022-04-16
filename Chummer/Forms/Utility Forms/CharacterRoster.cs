@@ -349,10 +349,8 @@ namespace Chummer
                         }
                     }
 
-                    await _dicSavedCharacterCaches.ForEachAsync(async kvpCache =>
-                                                                    await kvpCache.Value.DisposeAsync()
-                                                                        .ConfigureAwait(false), _objGenericToken)
-                        ;
+                    await _dicSavedCharacterCaches.ForEachAsync(async kvpCache => await kvpCache.Value.DisposeAsync(),
+                                                                _objGenericToken);
                     await _dicSavedCharacterCaches.DisposeAsync();
 
                     try

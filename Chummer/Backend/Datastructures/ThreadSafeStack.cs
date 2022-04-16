@@ -79,14 +79,14 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.Clear"/>
         public async ValueTask ClearAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _stkData.Clear();
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -114,14 +114,14 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.TrimExcess"/>
         public async ValueTask TrimExcessAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _stkData.TrimExcess();
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -149,14 +149,14 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.Pop"/>
         public async ValueTask<T> PopAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 return _stkData.Pop();
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -170,14 +170,14 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.Push"/>
         public async ValueTask PushAsync(T item)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _stkData.Push(item);
             }
             finally
             {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await objLocker.DisposeAsync();
             }
         }
 

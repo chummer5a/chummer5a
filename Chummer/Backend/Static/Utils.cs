@@ -951,7 +951,7 @@ namespace Chummer
         /// Because async functions don't lock threads, it does not need to manually call events anyway.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ConfiguredTaskAwaitable SafeSleepAsync()
+        public static Task SafeSleepAsync()
         {
             // ReSharper disable once IntroduceOptionalParameters.Global
             return SafeSleepAsync(DefaultSleepDuration);
@@ -963,7 +963,7 @@ namespace Chummer
         /// Because async functions don't lock threads, it does not need to manually call events anyway.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ConfiguredTaskAwaitable SafeSleepAsync(CancellationToken token)
+        public static Task SafeSleepAsync(CancellationToken token)
         {
             // ReSharper disable once IntroduceOptionalParameters.Global
             return SafeSleepAsync(DefaultSleepDuration, token);
@@ -976,9 +976,9 @@ namespace Chummer
         /// </summary>
         /// <param name="intDurationMilliseconds">Duration to wait in milliseconds.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ConfiguredTaskAwaitable SafeSleepAsync(int intDurationMilliseconds)
+        public static Task SafeSleepAsync(int intDurationMilliseconds)
         {
-            return Task.Delay(intDurationMilliseconds).ConfigureAwait(false);
+            return Task.Delay(intDurationMilliseconds);
         }
 
         /// <summary>
@@ -989,9 +989,9 @@ namespace Chummer
         /// <param name="intDurationMilliseconds">Duration to wait in milliseconds.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ConfiguredTaskAwaitable SafeSleepAsync(int intDurationMilliseconds, CancellationToken token)
+        public static Task SafeSleepAsync(int intDurationMilliseconds, CancellationToken token)
         {
-            return Task.Delay(intDurationMilliseconds, token).ConfigureAwait(false);
+            return Task.Delay(intDurationMilliseconds, token);
         }
 
         /// <summary>

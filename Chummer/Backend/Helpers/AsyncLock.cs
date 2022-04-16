@@ -52,7 +52,7 @@ namespace Chummer
         {
             try
             {
-                await objCurrentSemaphore.WaitAsync(token).ConfigureAwait(false);
+                await objCurrentSemaphore.WaitAsync(token);
             }
             catch
             {
