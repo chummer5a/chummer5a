@@ -732,7 +732,7 @@ namespace Chummer
 
                     await lblCost.DoThreadSafeAsync(x => x.Text = decItemCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥');
                 }
-                lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
+                await lblCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblCost.Text));
 
                 // Update the Avail Test Label.
                 string strTest = _objCharacter.AvailTest(decItemCost, strAvail);
