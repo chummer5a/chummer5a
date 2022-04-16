@@ -194,14 +194,13 @@ namespace Chummer
         /// Asynchronously release a lock held for writing.
         /// Use the SafeSemaphoreWriterRelease object gotten after obtaining a write lock as this method's argument.
         /// </summary>
-        public Task ExitWriteLockAsync(IAsyncDisposable objRelease)
+        public ValueTask ExitWriteLockAsync(IAsyncDisposable objRelease)
         {
             if (_blnIsDisposed)
-                return Task.FromException(new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock)));
+                throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
             if (!(objRelease is SafeWriterSemaphoreRelease objReleaseCast))
-                return Task.FromException(new ArgumentException(
-                                              "Argument is not a " + nameof(SafeWriterSemaphoreRelease),
-                                              nameof(objRelease)));
+                throw new ArgumentException("Argument is not a " + nameof(SafeWriterSemaphoreRelease),
+                                            nameof(objRelease));
             if (Interlocked.Decrement(ref _intCountActiveReaders) == 0
                 // Release the reader lock only if there have been no other write locks before us
                 && (_objTopLevelWriterSemaphore.CurrentCount != 0 || objReleaseCast._objCurrentSemaphore == _objTopLevelWriterSemaphore))
@@ -414,22 +413,24 @@ namespace Chummer
                 _objReaderWriterLock = objReaderWriterLock;
             }
 
-            public Task DoReleaseAsync(bool blnReleaseLock = true)
+            public ValueTask DoReleaseAsync(bool blnReleaseLock = true)
             {
                 if (_objReaderWriterLock.IsDisposed)
-                    return Task.FromException(new InvalidOperationException(
-                                                  "Lock object was disposed before a writer lock release object assigned to it"));
+                    throw new InvalidOperationException(
+                        "Lock object was disposed before a writer lock release object assigned to it");
                 (DebuggableSemaphoreSlim objCurrentSemaphoreSlim, DebuggableSemaphoreSlim objNextSemaphoreSlim)
                     = _objReaderWriterLock._objCurrentWriterSemaphore.Value;
                 if (_objNextSemaphore != objNextSemaphoreSlim)
                 {
                     if (objNextSemaphoreSlim == _objCurrentSemaphore)
-                        return Task.FromException(new InvalidOperationException("_objNextSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset."));
+                        throw new InvalidOperationException(
+                            "_objNextSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset.");
                     if (objNextSemaphoreSlim == null)
-                        return Task.FromException(new InvalidOperationException("_objNextSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
-                                                      + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
-                                                      + "the lock inside a function and then leaving the function before exiting the lock can produce this situation."));
-                    return Task.FromException(new InvalidOperationException("_objNextSemaphore was expected to be the current semaphore"));
+                        throw new InvalidOperationException(
+                            "_objNextSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
+                            + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
+                            + "the lock inside a function and then leaving the function before exiting the lock can produce this situation.");
+                    throw new InvalidOperationException("_objNextSemaphore was expected to be the current semaphore");
                 }
 
                 if (objCurrentSemaphoreSlim != _objCurrentSemaphore && (objCurrentSemaphoreSlim != null
@@ -438,10 +439,11 @@ namespace Chummer
                                                                             ._objTopLevelWriterSemaphore))
                 {
                     if (objCurrentSemaphoreSlim == null)
-                        return Task.FromException(new InvalidOperationException("_objCurrentSemaphore was expected to be the previous semaphore. Instead, the previous semaphore is null.\n\n"
-                                                      + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
-                                                      + "the lock inside a function and then leaving the function before exiting the lock can produce this situation."));
-                    return Task.FromException(new InvalidOperationException("_objCurrentSemaphore was expected to be the previous semaphore"));
+                        throw new InvalidOperationException(
+                            "_objCurrentSemaphore was expected to be the previous semaphore. Instead, the previous semaphore is null.\n\n"
+                            + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
+                            + "the lock inside a function and then leaving the function before exiting the lock can produce this situation.");
+                    throw new InvalidOperationException("_objCurrentSemaphore was expected to be the previous semaphore");
                 }
                 
                 // Update _objReaderWriterLock._objCurrentSemaphore in the calling ExecutionContext
@@ -453,7 +455,7 @@ namespace Chummer
                 return DoReleaseCoreAsync(blnReleaseLock);
             }
 
-            private async Task DoReleaseCoreAsync(bool blnReleaseLock)
+            private async ValueTask DoReleaseCoreAsync(bool blnReleaseLock)
             {
                 try
                 {
@@ -502,10 +504,12 @@ namespace Chummer
                                                                             ._objTopLevelWriterSemaphore))
                 {
                     if (objCurrentSemaphoreSlim == null)
-                        throw new InvalidOperationException("_objCurrentSemaphore was expected to be the previous semaphore. Instead, the previous semaphore is null.\n\n"
-                                                           + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
-                                                           + "the lock inside a function and then leaving the function before exiting the lock can produce this situation.");
-                    throw new InvalidOperationException("_objCurrentSemaphore was expected to be the previous semaphore");
+                        throw new InvalidOperationException(
+                            "_objCurrentSemaphore was expected to be the previous semaphore. Instead, the previous semaphore is null.\n\n"
+                            + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
+                            + "the lock inside a function and then leaving the function before exiting the lock can produce this situation.");
+                    throw new InvalidOperationException(
+                        "_objCurrentSemaphore was expected to be the previous semaphore");
                 }
                 
                 _objReaderWriterLock._objCurrentWriterSemaphore.Value = new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(_objLastSemaphore, objCurrentSemaphoreSlim);
@@ -540,7 +544,7 @@ namespace Chummer
             /// <inheritdoc />
             public ValueTask DisposeAsync()
             {
-                return new ValueTask(_objReaderWriterLock.ExitWriteLockAsync(this));
+                return _objReaderWriterLock.ExitWriteLockAsync(this);
             }
         }
     }
