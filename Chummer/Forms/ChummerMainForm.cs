@@ -403,7 +403,7 @@ namespace Chummer
                         NativeMethods.ChangeFilterStruct changeFilter = new NativeMethods.ChangeFilterStruct();
                         changeFilter.size = (uint) Marshal.SizeOf(changeFilter);
                         changeFilter.info = 0;
-                        if (NativeMethods.ChangeWindowMessageFilterEx(Handle, NativeMethods.WM_COPYDATA,
+                        if (NativeMethods.ChangeWindowMessageFilterEx(await this.DoThreadSafeFuncAsync(x => x.Handle), NativeMethods.WM_COPYDATA,
                                                                       NativeMethods.ChangeWindowMessageFilterExAction
                                                                           .Allow, ref changeFilter))
                             _blnAbleToReceiveData = true;
