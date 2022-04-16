@@ -59,6 +59,10 @@ namespace Chummer
                 = _objCurrentWriterSemaphore.Value
                   ?? new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(null, _objTopLevelWriterSemaphore);
             DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
+            // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
+            // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
+            while (objNextSemaphore == objCurrentSemaphore || objNextSemaphore == objLastSemaphore)
+                objNextSemaphore = Utils.SemaphorePool.Get();
             _objCurrentWriterSemaphore.Value = new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(objCurrentSemaphore, objNextSemaphore);
             SafeWriterSemaphoreRelease objRelease = new SafeWriterSemaphoreRelease(objLastSemaphore, objCurrentSemaphore, objNextSemaphore, this);
             try
@@ -127,6 +131,10 @@ namespace Chummer
                 = _objCurrentWriterSemaphore.Value
                   ?? new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(null, _objTopLevelWriterSemaphore);
             DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
+            // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
+            // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
+            while (objNextSemaphore == objCurrentSemaphore || objNextSemaphore == objLastSemaphore)
+                objNextSemaphore = Utils.SemaphorePool.Get();
             _objCurrentWriterSemaphore.Value = new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(objCurrentSemaphore, objNextSemaphore);
             SafeWriterSemaphoreRelease objRelease = new SafeWriterSemaphoreRelease(objLastSemaphore, objCurrentSemaphore, objNextSemaphore, this);
             return TakeWriteLockCoreAsync(objCurrentSemaphore, objRelease);
@@ -146,6 +154,10 @@ namespace Chummer
                 = _objCurrentWriterSemaphore.Value
                   ?? new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(null, _objTopLevelWriterSemaphore);
             DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
+            // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
+            // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
+            while (objNextSemaphore == objCurrentSemaphore || objNextSemaphore == objLastSemaphore)
+                objNextSemaphore = Utils.SemaphorePool.Get();
             _objCurrentWriterSemaphore.Value = new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(objCurrentSemaphore, objNextSemaphore);
             SafeWriterSemaphoreRelease objRelease = new SafeWriterSemaphoreRelease(objLastSemaphore, objCurrentSemaphore, objNextSemaphore, this);
             return TakeWriteLockCoreAsync(objCurrentSemaphore, objRelease, token);
