@@ -827,7 +827,7 @@ namespace Chummer
                     break;
             }
 
-            Program.MainForm.DoThreadSafe(() => SettingsPropertyChanged?.Invoke(sender, e));
+            await Program.MainForm.DoThreadSafeAsync(() => SettingsPropertyChanged?.Invoke(sender, e));
         }
 
         private void AttributeSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1005,8 +1005,7 @@ namespace Chummer
             {
                 case NotifyCollectionChangedAction.Add:
                 case NotifyCollectionChangedAction.Replace:
-                    foreach (MentorSpirit objNewItem in e.NewItems)
-                        lstImprovementSourcesToProcess.Add(objNewItem);
+                    lstImprovementSourcesToProcess.AddRange(e.NewItems.Cast<MentorSpirit>());
                     break;
                 case NotifyCollectionChangedAction.Move:
                     return;
@@ -1081,8 +1080,7 @@ namespace Chummer
             {
                 case NotifyCollectionChangedAction.Add:
                 case NotifyCollectionChangedAction.Replace:
-                    foreach (Quality objNewItem in e.NewItems)
-                        lstImprovementSourcesToProcess.Add(objNewItem);
+                    lstImprovementSourcesToProcess.AddRange(e.NewItems.Cast<Quality>());
                     break;
                 case NotifyCollectionChangedAction.Move:
                     return;
@@ -1162,8 +1160,7 @@ namespace Chummer
             {
                 case NotifyCollectionChangedAction.Add:
                 case NotifyCollectionChangedAction.Replace:
-                    foreach (MartialArt objNewItem in e.NewItems)
-                        lstImprovementSourcesToProcess.Add(objNewItem);
+                    lstImprovementSourcesToProcess.AddRange(e.NewItems.Cast<MartialArt>());
                     break;
                 case NotifyCollectionChangedAction.Move:
                     return;
@@ -1238,8 +1235,7 @@ namespace Chummer
             {
                 case NotifyCollectionChangedAction.Add:
                 case NotifyCollectionChangedAction.Replace:
-                    foreach (Metamagic objNewItem in e.NewItems)
-                        lstImprovementSourcesToProcess.Add(objNewItem);
+                    lstImprovementSourcesToProcess.AddRange(e.NewItems.Cast<Metamagic>());
                     break;
                 case NotifyCollectionChangedAction.Move:
                     return;
@@ -9245,6 +9241,8 @@ namespace Chummer
                     _lstPowers.Dispose();
                     _lstCritterPowers.Dispose();
                     _lstFoci.Dispose();
+                    foreach (StackedFocus objItem in _lstStackedFoci)
+                        objItem.Dispose();
                     _lstStackedFoci.Dispose();
                     _lstMetamagics.Dispose();
                     _lstArts.Dispose();
@@ -9349,6 +9347,8 @@ namespace Chummer
                     await _lstPowers.DisposeAsync();
                     await _lstCritterPowers.DisposeAsync();
                     await _lstFoci.DisposeAsync();
+                    foreach (StackedFocus objItem in _lstStackedFoci)
+                        objItem.Dispose();
                     await _lstStackedFoci.DisposeAsync();
                     await _lstMetamagics.DisposeAsync();
                     await _lstArts.DisposeAsync();
@@ -9503,6 +9503,8 @@ namespace Chummer
                 foreach (Spell objItem in _lstSpells)
                     objItem.Dispose();
                 foreach (MartialArt objItem in _lstMartialArts)
+                    objItem.Dispose();
+                foreach (StackedFocus objItem in _lstStackedFoci)
                     objItem.Dispose();
                 // Reset all of the Lists.
                 // This kills the GC
@@ -10235,7 +10237,7 @@ namespace Chummer
         /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
         public async Task<List<Grade>> GetGradesListAsync(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
         {
-            List<Grade> lstReturn = new List<Grade>();
+            List<Grade> lstReturn;
             using (await EnterReadLock.EnterAsync(LockObject))
             {
                 string strXPath;
@@ -10266,6 +10268,7 @@ namespace Chummer
                 using (XmlNodeList xmlGradeList = (await LoadDataAsync(Grade.GetDataFileNameFromImprovementSource(objSource)))
                            .SelectNodes(strXPath))
                 {
+                    lstReturn = new List<Grade>(xmlGradeList?.Count ?? 0);
                     if (xmlGradeList?.Count > 0)
                     {
                         foreach (XmlNode objNode in xmlGradeList)

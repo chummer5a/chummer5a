@@ -3776,6 +3776,7 @@ namespace Chummer.Backend.Equipment
                             decReturn += ImprovementManager.RemoveImprovements(_objCharacter,
                                 Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
                             _objCharacter.StackedFoci.Remove(objStack);
+                            objStack.Dispose();
                         }
 
                         break;

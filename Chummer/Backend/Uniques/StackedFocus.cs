@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -33,12 +32,12 @@ namespace Chummer
     /// A Stacked Focus.
     /// </summary>
     [DebuggerDisplay("{Name(GlobalSettings.DefaultLanguage)}")]
-    public class StackedFocus
+    public class StackedFocus : IDisposable
     {
         private Guid _guiID;
         private bool _blnBonded;
         private Guid _guiGearId;
-        private readonly List<Gear> _lstGear = new List<Gear>(2);
+        private readonly ThreadSafeList<Gear> _lstGear = new ThreadSafeList<Gear>(2);
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, and Load Methods
@@ -286,7 +285,7 @@ namespace Chummer
         /// <summary>
         /// List of Gear that make up the Stacked Focus.
         /// </summary>
-        public List<Gear> Gear => _lstGear;
+        public ThreadSafeList<Gear> Gear => _lstGear;
 
         #endregion Properties
 
@@ -309,5 +308,11 @@ namespace Chummer
         }
 
         #endregion Methods
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _lstGear.Dispose();
+        }
     }
 }

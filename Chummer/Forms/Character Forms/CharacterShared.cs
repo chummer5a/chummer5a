@@ -1006,7 +1006,6 @@ namespace Chummer
                             {
                                 foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.OldItems)
                                 {
-
                                     TreeNode objNode = x.FindNodeByTag(objAIProgram);
                                     if (objNode != null)
                                     {
@@ -1152,7 +1151,6 @@ namespace Chummer
                             }
                         case NotifyCollectionChangedAction.Remove:
                         {
-
                             foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 await treComplexForms.DoThreadSafeAsync(x =>
@@ -4907,6 +4905,7 @@ namespace Chummer
                                                         {
                                                             await CharacterObject.StackedFoci.RemoveAtAsync(i);
                                                             await treFoci.DoThreadSafeAsync(x => x.FindNodeByTag(objStack)?.Remove(), GenericToken);
+                                                            objStack.Dispose();
                                                         }
                                                     }
                                                 }
@@ -4953,6 +4952,7 @@ namespace Chummer
                                                         {
                                                             await CharacterObject.StackedFoci.RemoveAtAsync(i);
                                                             await treFoci.DoThreadSafeAsync(x => x.FindNodeByTag(objStack)?.Remove(), GenericToken);
+                                                            objStack.Dispose();
                                                         }
                                                     }
                                                 }

@@ -6767,7 +6767,7 @@ namespace Chummer
             // Create the Stacked Focus.
             StackedFocus objStack = new StackedFocus(CharacterObject);
             foreach (Gear objGear in lstStack)
-                objStack.Gear.Add(objGear);
+                await objStack.Gear.AddAsync(objGear);
             await CharacterObject.StackedFoci.AddAsync(objStack);
 
             // Remove the Gear from the character and replace it with a Stacked Focus item.
@@ -13995,7 +13995,6 @@ namespace Chummer
                             {
                                 for (int i = intMax + 1; i <= intConditionMax + intOverflow; i++)
                                 {
-
                                     DpiFriendlyCheckBoxDisguisedAsButton cb
                                         = new DpiFriendlyCheckBoxDisguisedAsButton(components)
                                         {
@@ -14496,7 +14495,7 @@ namespace Chummer
             {
                 TreeNode objSelectedNode = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
                 object objSelectedNodeTag = objSelectedNode?.Tag;
-                if (objSelectedNodeTag == null || objSelectedNode.Level == 0)
+                if (objSelectedNodeTag == null || objSelectedNode?.Level == 0)
                 {
                     await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = false, token);
                     await gpbCyberwareMatrix.DoThreadSafeAsync(x => x.Visible = false, token);

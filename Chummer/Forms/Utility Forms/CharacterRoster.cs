@@ -1416,10 +1416,7 @@ namespace Chummer
                         string strText2 = objCache.FileName;
                         if (string.IsNullOrEmpty(strText2))
                             strText2 = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound");
-                        await lblFilePath.DoThreadSafeAsync(x =>
-                        {
-                            x.Text = strText2;
-                        }, token);
+                        await lblFilePath.DoThreadSafeAsync(x => x.Text = strText2, token);
                         await lblSettings.DoThreadSafeAsync(x =>
                         {
                             x.Text = objCache.SettingsFile;
