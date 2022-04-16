@@ -36,42 +36,57 @@ namespace Chummer
         private readonly DebuggableSemaphoreSlim _objTopLevelSemaphore = new DebuggableSemaphoreSlim();
         private bool _blnIsDisposed;
         
-        public Task<IAsyncDisposable> TakeLockAsync()
+        public Task<IAsyncDisposable> TakeLockAsync(CancellationToken token = default)
         {
             if (_blnIsDisposed)
                 return Task.FromException<IAsyncDisposable>(new ObjectDisposedException(nameof(AsyncLock)));
+            token.ThrowIfCancellationRequested();
             DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
-            DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentSemaphore.Value;
+            DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentSemaphore.Value ?? _objTopLevelSemaphore;
             _objCurrentSemaphore.Value = objNextSemaphore;
-            if (objCurrentSemaphore == null)
-                objCurrentSemaphore = _objTopLevelSemaphore;
             SafeSemaphoreRelease objRelease = new SafeSemaphoreRelease(objCurrentSemaphore, objNextSemaphore, this);
-            return TakeLockCoreAsync(objCurrentSemaphore, objRelease);
+            return TakeLockCoreAsync(objCurrentSemaphore, objNextSemaphore, objRelease, token);
         }
 
-        private static async Task<IAsyncDisposable> TakeLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, SafeSemaphoreRelease objRelease)
+        private static async Task<IAsyncDisposable> TakeLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, DebuggableSemaphoreSlim objNextSemaphore, SafeSemaphoreRelease objRelease, CancellationToken token = default)
         {
-            await objCurrentSemaphore.WaitAsync();
+            try
+            {
+                await objCurrentSemaphore.WaitAsync(token).ConfigureAwait(false);
+            }
+            catch
+            {
+                Utils.SemaphorePool.Return(ref objNextSemaphore);
+                throw;
+            }
             return objRelease;
         }
 
-        public IDisposable TakeLock()
+        public IDisposable TakeLock(CancellationToken token = default)
         {
             if (_blnIsDisposed)
                 throw new ObjectDisposedException(nameof(AsyncLock));
+            token.ThrowIfCancellationRequested();
             DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
-            DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentSemaphore.Value;
+            DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentSemaphore.Value ?? _objTopLevelSemaphore;
             _objCurrentSemaphore.Value = objNextSemaphore;
-            if (objCurrentSemaphore == null)
-                objCurrentSemaphore = _objTopLevelSemaphore;
-            objCurrentSemaphore.SafeWait();
+            try
+            {
+                objCurrentSemaphore.SafeWait(token);
+            }
+            catch
+            {
+                _objCurrentSemaphore.Value = objCurrentSemaphore;
+                Utils.SemaphorePool.Return(ref objNextSemaphore);
+                throw;
+            }
             return new SafeSemaphoreRelease(objCurrentSemaphore, objNextSemaphore, this);
         }
 
         /// <summary>
         /// Are there any async locks held below this one?
         /// </summary>
-        public bool IsLockHeldRecursively => IsLockHeld && _objCurrentSemaphore.Value != null && _objCurrentSemaphore.Value.CurrentCount == 0;
+        public bool IsLockHeldRecursively => IsLockHeld && _objCurrentSemaphore.Value != null && _objCurrentSemaphore.Value != _objTopLevelSemaphore;
 
         /// <summary>
         /// Is there anything holding the lock?
@@ -124,14 +139,17 @@ namespace Chummer
 
             public ValueTask DisposeAsync()
             {
-                if (_objNextSemaphore != _objAsyncLock._objCurrentSemaphore.Value)
+                DebuggableSemaphoreSlim objNextSemaphoreSlim = _objAsyncLock._objCurrentSemaphore.Value;
+                if (_objNextSemaphore != objNextSemaphoreSlim)
                 {
-                    if (_objAsyncLock._objCurrentSemaphore.Value == _objCurrentSemaphore)
-                        throw new InvalidOperationException("_objNextSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset.");
-                    if (_objAsyncLock._objCurrentSemaphore.Value == null)
-                        throw new InvalidOperationException("_objNextSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
-                                                            + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
-                                                            + "the lock inside a function and then leaving the function before exiting the lock can produce this situation.");
+                    if (objNextSemaphoreSlim == _objCurrentSemaphore)
+                        throw new InvalidOperationException(
+                            "_objNextSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset.");
+                    if (objNextSemaphoreSlim == null)
+                        throw new InvalidOperationException(
+                            "_objNextSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
+                            + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
+                            + "the lock inside a function and then leaving the function before exiting the lock can produce this situation.");
                     throw new InvalidOperationException("_objNextSemaphore was expected to be the current semaphore");
                 }
 
@@ -139,9 +157,7 @@ namespace Chummer
                 // and defer any awaits to DisposeCoreAsync(). If this isn't done, the
                 // update will happen in a copy of the ExecutionContext and the caller
                 // won't see the changes.
-                _objAsyncLock._objCurrentSemaphore.Value = _objCurrentSemaphore == _objAsyncLock._objTopLevelSemaphore
-                    ? null
-                    : _objCurrentSemaphore;
+                _objAsyncLock._objCurrentSemaphore.Value = _objCurrentSemaphore;
 
                 return DisposeCoreAsync();
             }
@@ -156,12 +172,13 @@ namespace Chummer
 
             public void Dispose()
             {
-                if (_objNextSemaphore != _objAsyncLock._objCurrentSemaphore.Value)
+                DebuggableSemaphoreSlim objNextSemaphoreSlim = _objAsyncLock._objCurrentSemaphore.Value;
+                if (_objNextSemaphore != objNextSemaphoreSlim)
                 {
-                    if (_objAsyncLock._objCurrentSemaphore.Value == _objCurrentSemaphore)
+                    if (objNextSemaphoreSlim == _objCurrentSemaphore)
                         throw new InvalidOperationException(
                             "_objNextSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset.");
-                    if (_objAsyncLock._objCurrentSemaphore.Value == null)
+                    if (objNextSemaphoreSlim == null)
                         throw new InvalidOperationException(
                             "_objNextSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
                             + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
@@ -169,8 +186,7 @@ namespace Chummer
                     throw new InvalidOperationException("_objNextSemaphore was expected to be the current semaphore");
                 }
 
-                _objAsyncLock._objCurrentSemaphore.Value
-                    = _objCurrentSemaphore == _objAsyncLock._objTopLevelSemaphore ? null : _objCurrentSemaphore;
+                _objAsyncLock._objCurrentSemaphore.Value = _objCurrentSemaphore;
                 _objNextSemaphore.SafeWait();
                 _objCurrentSemaphore.Release();
                 _objNextSemaphore.Release();
