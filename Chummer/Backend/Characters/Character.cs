@@ -1658,7 +1658,7 @@ namespace Chummer
         {
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
-            bool blnDoEncumbranceRefresh = false;
+            bool blnDoEquippedArmorRefresh = false;
             bool blnDoArmorEncumbranceRefresh = false;
             using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
@@ -1673,7 +1673,7 @@ namespace Chummer
                             {
                                 if (objNewItem.Equipped)
                                 {
-                                    blnDoEncumbranceRefresh = true;
+                                    blnDoEquippedArmorRefresh = true;
                                     if (objNewItem.Encumbrance)
                                         blnDoArmorEncumbranceRefresh = true;
                                 }
@@ -1716,7 +1716,7 @@ namespace Chummer
                             {
                                 if (objOldItem.Equipped)
                                 {
-                                    blnDoEncumbranceRefresh = true;
+                                    blnDoEquippedArmorRefresh = true;
                                     if (objOldItem.Encumbrance)
                                     {
                                         blnDoArmorEncumbranceRefresh = true;
@@ -1731,7 +1731,7 @@ namespace Chummer
                             {
                                 if (objOldItem.Equipped)
                                 {
-                                    blnDoEncumbranceRefresh = true;
+                                    blnDoEquippedArmorRefresh = true;
                                     if (objOldItem.Encumbrance)
                                     {
                                         blnDoArmorEncumbranceRefresh = true;
@@ -1744,7 +1744,7 @@ namespace Chummer
                             {
                                 if (objNewItem.Equipped)
                                 {
-                                    blnDoEncumbranceRefresh = true;
+                                    blnDoEquippedArmorRefresh = true;
                                     if (objNewItem.Encumbrance)
                                         blnDoArmorEncumbranceRefresh = true;
                                 }
@@ -1783,18 +1783,19 @@ namespace Chummer
 
                             break;
                         case NotifyCollectionChangedAction.Reset:
-                            blnDoEncumbranceRefresh = true;
+                            blnDoEquippedArmorRefresh = true;
                             blnDoArmorEncumbranceRefresh = true;
                             break;
                     }
 
-                    if (blnDoEncumbranceRefresh)
+                    if (blnDoEquippedArmorRefresh)
                     {
                         if (!dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
                         {
                             setChangedProperties = Utils.StringHashSetPool.Get();
                             dicChangedProperties.Add(this, setChangedProperties);
                         }
+                        setChangedProperties.Add(nameof(GetArmorRating));
                         setChangedProperties.Add(nameof(TotalCarriedWeight));
                     }
 

@@ -111,7 +111,7 @@ namespace Chummer.Backend.Equipment
         {
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
-            bool blnDoEncumbranceRefresh = false;
+            bool blnDoEquippedArmorRefresh = false;
             bool blnDoArmorEncumbranceRefresh = false;
             List<ArmorMod> lstImprovementSourcesToProcess = new List<ArmorMod>(e.NewItems?.Count ?? 0);
             switch (e.Action)
@@ -123,7 +123,7 @@ namespace Chummer.Backend.Equipment
                         objNewItem.Parent = this;
                         if (objNewItem.Equipped)
                         {
-                            blnDoEncumbranceRefresh = Equipped;
+                            blnDoEquippedArmorRefresh = Equipped;
                             blnDoArmorEncumbranceRefresh = Equipped && objNewItem.Encumbrance;
                             lstImprovementSourcesToProcess.Add(objNewItem);
                         }
@@ -137,7 +137,7 @@ namespace Chummer.Backend.Equipment
                         objOldItem.Parent = null;
                         if (objOldItem.Equipped)
                         {
-                            blnDoEncumbranceRefresh = Equipped;
+                            blnDoEquippedArmorRefresh = Equipped;
                             blnDoArmorEncumbranceRefresh = Equipped && objOldItem.Encumbrance;
                         }
                     }
@@ -154,7 +154,7 @@ namespace Chummer.Backend.Equipment
                         objOldItem.Parent = null;
                         if (objOldItem.Equipped)
                         {
-                            blnDoEncumbranceRefresh = Equipped;
+                            blnDoEquippedArmorRefresh = Equipped;
                             blnDoArmorEncumbranceRefresh = Equipped && objOldItem.Encumbrance;
                         }
                     }
@@ -164,7 +164,7 @@ namespace Chummer.Backend.Equipment
                         objNewItem.Parent = this;
                         if (objNewItem.Equipped)
                         {
-                            blnDoEncumbranceRefresh = Equipped;
+                            blnDoEquippedArmorRefresh = Equipped;
                             blnDoArmorEncumbranceRefresh = Equipped && objNewItem.Encumbrance;
                             lstImprovementSourcesToProcess.Add(objNewItem);
                         }
@@ -185,7 +185,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (_objCharacter != null)
                     {
-                        if (blnDoEncumbranceRefresh)
+                        if (blnDoEquippedArmorRefresh)
                         {
                             if (!dicChangedProperties.TryGetValue(_objCharacter,
                                                                   out HashSet<string> setChangedProperties))
@@ -195,6 +195,7 @@ namespace Chummer.Backend.Equipment
                             }
 
                             setChangedProperties.Add(nameof(Character.TotalCarriedWeight));
+                            setChangedProperties.Add(nameof(Character.GetArmorRating));
                         }
                         if (blnDoArmorEncumbranceRefresh)
                         {
