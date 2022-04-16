@@ -111,10 +111,10 @@ namespace Chummer
             DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
             _objCurrentWriterSemaphore.Value = new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(objCurrentSemaphore, objNextSemaphore);
             SafeWriterSemaphoreRelease objRelease = new SafeWriterSemaphoreRelease(objLastSemaphore, objCurrentSemaphore, objNextSemaphore, this);
-            return TakeWriteLockCoreAsync(objCurrentSemaphore, objRelease, token);
+            return TakeWriteLockCoreAsync(objCurrentSemaphore, objNextSemaphore, objRelease, token);
         }
 
-        private async Task<IAsyncDisposable> TakeWriteLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, SafeWriterSemaphoreRelease objRelease, CancellationToken token)
+        private async Task<IAsyncDisposable> TakeWriteLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, DebuggableSemaphoreSlim objNextSemaphore, SafeWriterSemaphoreRelease objRelease, CancellationToken token)
         {
             try
             {
@@ -122,30 +122,51 @@ namespace Chummer
             }
             catch
             {
-                await objRelease.DoReleaseAsync(false);
+                // Don't bother with _objCurrentWriterSemaphore assignment because the shallow copy made when executing in this async
+                // context gets discarded when the context is exited anyway.
+                Utils.SemaphorePool.Return(ref objNextSemaphore);
                 throw;
             }
             try
             {
-                token.ThrowIfCancellationRequested();
-            }
-            catch
-            {
-                await objRelease.DoReleaseAsync();
-                throw;
-            }
-            try
-            {
-                if (Interlocked.Increment(ref _intCountActiveReaders) == 1
-                    // Wait for the reader lock only if there have been no other write locks before us
-                    && (_objTopLevelWriterSemaphore.CurrentCount != 0 || objCurrentSemaphore == _objTopLevelWriterSemaphore))
+                if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
                 {
-                    await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false); // Decrement on error already happens in Dispose
+                    try
+                    {
+                        // Wait for the reader lock only if there have been no other write locks before us
+                        if (_objTopLevelWriterSemaphore.CurrentCount != 0 || objCurrentSemaphore == _objTopLevelWriterSemaphore)
+                        {
+                            await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
+                        }
+                    }
+                    catch
+                    {
+                        Interlocked.Decrement(ref _intCountActiveReaders);
+                        throw;
+                    }
                 }
             }
             catch
             {
-                await objRelease.DisposeAsync().ConfigureAwait(false);
+                // Don't bother with _objCurrentWriterSemaphore assignment because the shallow copy made when executing in this async
+                // context gets discarded when the context is exited anyway.
+                try
+                {
+                    // ReSharper disable once MethodSupportsCancellation
+                    await objNextSemaphore.WaitAsync().ConfigureAwait(false);
+                    try
+                    {
+                        objCurrentSemaphore.Release();
+                    }
+                    finally
+                    {
+                        objNextSemaphore.Release();
+                    }
+                }
+                finally
+                {
+                    Utils.SemaphorePool.Return(ref objNextSemaphore);
+                }
                 throw;
             }
             return objRelease;
