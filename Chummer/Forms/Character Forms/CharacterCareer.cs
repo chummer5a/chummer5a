@@ -14495,7 +14495,7 @@ namespace Chummer
             {
                 TreeNode objSelectedNode = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
                 object objSelectedNodeTag = objSelectedNode?.Tag;
-                if (objSelectedNodeTag == null || objSelectedNode?.Level == 0)
+                if (objSelectedNodeTag == null || objSelectedNode.Level == 0)
                 {
                     await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = false, token);
                     await gpbCyberwareMatrix.DoThreadSafeAsync(x => x.Visible = false, token);

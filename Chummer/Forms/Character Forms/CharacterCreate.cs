@@ -11259,7 +11259,7 @@ namespace Chummer
             {
                 TreeNode objSelectedNode = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
                 object objSelectedNodeTag = objSelectedNode?.Tag;
-                if (objSelectedNodeTag == null || objSelectedNode?.Level <= 0)
+                if (objSelectedNodeTag == null || objSelectedNode.Level <= 0)
                 {
                     await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = false, token);
                     await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = false, token);
@@ -13406,7 +13406,7 @@ namespace Chummer
             {
                 TreeNode objSelectedNode = await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
                 object objSelectedNodeTag = objSelectedNode?.Tag;
-                if (objSelectedNodeTag == null || objSelectedNode?.Level <= 0 || !(objSelectedNodeTag is Lifestyle objLifestyle))
+                if (objSelectedNodeTag == null || objSelectedNode.Level <= 0 || !(objSelectedNodeTag is Lifestyle objLifestyle))
                 {
                     await flpLifestyleDetails.DoThreadSafeAsync(x => x.Visible = false, token);
                     await cmdDeleteLifestyle.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove, token);
@@ -13555,7 +13555,7 @@ namespace Chummer
             {
                 TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
                 object objSelectedNodeTag = objSelectedNode?.Tag;
-                if (objSelectedNodeTag == null || objSelectedNode?.Level <= 0 || objSelectedNodeTag is Location)
+                if (objSelectedNodeTag == null || objSelectedNode.Level <= 0 || objSelectedNodeTag is Location)
                 {
                     await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = false, token);
                     await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false, token);
@@ -14679,7 +14679,7 @@ namespace Chummer
             {
                 TreeNode objSelectedNode = await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
                 object objSelectedNodeTag = objSelectedNode?.Tag;
-                if (objSelectedNodeTag is Drug objDrug && objSelectedNode?.Level != 0)
+                if (objSelectedNodeTag is Drug objDrug && objSelectedNode.Level != 0)
                 {
                     await flpDrugs.DoThreadSafeAsync(x => x.Visible = true, token);
                     await btnDeleteCustomDrug.DoThreadSafeAsync(x => x.Enabled = true, token);
@@ -14736,7 +14736,7 @@ namespace Chummer
             {
                 TreeNode objSelectedNode = await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
                 object objSelectedNodeTag = objSelectedNode?.Tag;
-                if (objSelectedNodeTag is Spell objSpell && objSelectedNode?.Level > 0)
+                if (objSelectedNodeTag is Spell objSpell && objSelectedNode.Level > 0)
                 {
                     await gpbMagicianSpell.DoThreadSafeAsync(x => x.Visible = true, token);
                     await cmdDeleteSpell.DoThreadSafeAsync(x => x.Enabled = objSpell.Grade == 0, token);
@@ -14787,7 +14787,7 @@ namespace Chummer
             {
                 TreeNode objSelectedNode = await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
                 object objSelectedNodeTag = objSelectedNode?.Tag;
-                if (objSelectedNodeTag is ComplexForm objComplexForm && objSelectedNode?.Level > 0)
+                if (objSelectedNodeTag is ComplexForm objComplexForm && objSelectedNode.Level > 0)
                 {
                     await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.Visible = true, token);
                     await cmdDeleteComplexForm.DoThreadSafeAsync(x => x.Enabled = objComplexForm.Grade == 0, token);

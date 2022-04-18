@@ -310,7 +310,8 @@ namespace Chummer
         {
             try
             {
-                using (await CursorWait.NewAsync(this, token: _objGenericToken))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken);
+                try
                 {
                     try
                     {
@@ -429,6 +430,10 @@ namespace Chummer
                     {
                         Program.ShowMessageBox(this, ex.ToString());
                     }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
             catch (OperationCanceledException)
@@ -649,7 +654,8 @@ namespace Chummer
         private async Task RefreshCharacterXml(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this, true, token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token);
+            try
             {
                 await Task.WhenAll(this.DoThreadSafeAsync(() =>
                                    {
@@ -671,6 +677,10 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 await RefreshSheet(token);
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         /// <summary>
@@ -679,7 +689,8 @@ namespace Chummer
         private async Task AsyncGenerateOutput(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 await Task.WhenAll(this.DoThreadSafeAsync(() =>
                                    {
@@ -700,6 +711,7 @@ namespace Chummer
                     Program.ShowMessageBox(this, strReturn);
                     return;
                 }
+
                 token.ThrowIfCancellationRequested();
                 XslCompiledTransform objXslTransform;
                 try
@@ -758,7 +770,9 @@ namespace Chummer
 
                 using (MemoryStream objStream = new MemoryStream())
                 {
-                    using (XmlWriter objWriter = objSettings != null ? XmlWriter.Create(objStream, objSettings) : Utils.GetXslTransformXmlWriter(objStream))
+                    using (XmlWriter objWriter = objSettings != null
+                               ? XmlWriter.Create(objStream, objSettings)
+                               : Utils.GetXslTransformXmlWriter(objStream))
                     {
                         token.ThrowIfCancellationRequested();
                         await Task.Run(() => objXslTransform.Transform(_objCharacterXml, objWriter), token);
@@ -807,6 +821,10 @@ namespace Chummer
                         }
                     }
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 

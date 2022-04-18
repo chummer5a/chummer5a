@@ -383,7 +383,8 @@ namespace Chummer
         //in case of a commandline argument not asking for the mainform to be shown.
         private async void ChummerMainForm_Load(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 using (CustomActivity opFrmChummerMain = await Timekeeper.StartSyncronAsync(
                            "frmChummerMain_Load", null, CustomActivity.OperationType.DependencyOperation,
@@ -403,7 +404,8 @@ namespace Chummer
                         NativeMethods.ChangeFilterStruct changeFilter = new NativeMethods.ChangeFilterStruct();
                         changeFilter.size = (uint) Marshal.SizeOf(changeFilter);
                         changeFilter.info = 0;
-                        if (NativeMethods.ChangeWindowMessageFilterEx(await this.DoThreadSafeFuncAsync(x => x.Handle), NativeMethods.WM_COPYDATA,
+                        if (NativeMethods.ChangeWindowMessageFilterEx(await this.DoThreadSafeFuncAsync(x => x.Handle),
+                                                                      NativeMethods.WM_COPYDATA,
                                                                       NativeMethods.ChangeWindowMessageFilterExAction
                                                                           .Allow, ref changeFilter))
                             _blnAbleToReceiveData = true;
@@ -741,6 +743,10 @@ namespace Chummer
 
                 IsFinishedLoading = true;
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         [CLSCompliant(false)]
@@ -995,19 +1001,36 @@ namespace Chummer
 
         private async void mnuGlobalSettings_Click(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
-            using (ThreadSafeForm<EditGlobalSettings> frmOptions = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings()))
-                await frmOptions.ShowDialogSafeAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
+                using (ThreadSafeForm<EditGlobalSettings> frmOptions = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings()))
+                    await frmOptions.ShowDialogSafeAsync(this);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void mnuCharacterSettings_Click(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
-            using (ThreadSafeForm<EditCharacterSettings> frmCharacterOptions =
-                   await ThreadSafeForm<EditCharacterSettings>.GetAsync(() =>
-                       new EditCharacterSettings((tabForms.SelectedTab?.Tag as CharacterShared)?.CharacterObject
-                           ?.Settings)))
-                await frmCharacterOptions.ShowDialogSafeAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
+                using (ThreadSafeForm<EditCharacterSettings> frmCharacterOptions =
+                       await ThreadSafeForm<EditCharacterSettings>.GetAsync(() =>
+                                                                                new EditCharacterSettings(
+                                                                                    (tabForms.SelectedTab?.Tag as
+                                                                                        CharacterShared)
+                                                                                    ?.CharacterObject
+                                                                                    ?.Settings)))
+                    await frmCharacterOptions.ShowDialogSafeAsync(this);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void mnuToolsUpdate_Click(object sender, EventArgs e)
@@ -1156,12 +1179,15 @@ namespace Chummer
 
         private async void mnuNewCritter_Click(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 Character objCharacter = new Character();
                 try
                 {
-                    using (ThreadSafeForm<SelectBuildMethod> frmPickSetting = await ThreadSafeForm<SelectBuildMethod>.GetAsync(() => new SelectBuildMethod(objCharacter)))
+                    using (ThreadSafeForm<SelectBuildMethod> frmPickSetting
+                           = await ThreadSafeForm<SelectBuildMethod>.GetAsync(
+                               () => new SelectBuildMethod(objCharacter)))
                     {
                         if (await frmPickSetting.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             return;
@@ -1175,7 +1201,8 @@ namespace Chummer
                     // Show the Metatype selection window.
                     using (ThreadSafeForm<SelectMetatypeKarma> frmSelectMetatype =
                            await ThreadSafeForm<SelectMetatypeKarma>.GetAsync(() =>
-                               new SelectMetatypeKarma(objCharacter, "critters.xml")))
+                                                                                  new SelectMetatypeKarma(
+                                                                                      objCharacter, "critters.xml")))
                     {
                         if (await frmSelectMetatype.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             return;
@@ -1186,8 +1213,13 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objCharacter.DisposeAsync(); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
+                    await objCharacter
+                        .DisposeAsync(); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -1196,12 +1228,18 @@ namespace Chummer
             string strFileName = await mnuProcessFile.DoThreadSafeFuncAsync(() => ((ToolStripMenuItem)sender).Tag) as string;
             if (string.IsNullOrEmpty(strFileName))
                 return;
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 Character objCharacter;
-                using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strFileName, Character.NumLoadingSections))
+                using (LoadingBar frmLoadingBar
+                       = await Program.CreateAndShowProgressBarAsync(strFileName, Character.NumLoadingSections))
                     objCharacter = await Program.LoadCharacterAsync(strFileName, frmLoadingBar: frmLoadingBar);
                 await OpenCharacter(objCharacter);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -1391,11 +1429,13 @@ namespace Chummer
         /// </summary>
         public async Task<bool> SwitchToOpenCharacter(Character objCharacter, CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 if (objCharacter == null)
                     return false;
-                CharacterShared objCharacterForm = await OpenCharacterEditorForms.FirstOrDefaultAsync(x => x.CharacterObject == objCharacter, token);
+                CharacterShared objCharacterForm
+                    = await OpenCharacterEditorForms.FirstOrDefaultAsync(x => x.CharacterObject == objCharacter, token);
                 if (objCharacterForm == null)
                     return false;
                 await objCharacterForm.DoThreadSafeAsync(x =>
@@ -1409,9 +1449,14 @@ namespace Chummer
                             _mascotChummy.CharacterObject = objCharacter;
                         return;
                     }
+
                     x.BringToFront();
                 }, token);
                 return true;
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -1420,11 +1465,14 @@ namespace Chummer
         /// </summary>
         public async Task<bool> SwitchToOpenPrintCharacter(Character objCharacter, CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 if (objCharacter == null)
                     return false;
-                CharacterSheetViewer objCharacterForm = await OpenCharacterSheetViewers.FirstOrDefaultAsync(x => x.CharacterObjects.Contains(objCharacter), token);
+                CharacterSheetViewer objCharacterForm
+                    = await OpenCharacterSheetViewers.FirstOrDefaultAsync(
+                        x => x.CharacterObjects.Contains(objCharacter), token);
                 if (objCharacterForm == null)
                     return false;
                 await objCharacterForm.DoThreadSafeAsync(x =>
@@ -1438,9 +1486,14 @@ namespace Chummer
                             _mascotChummy.CharacterObject = objCharacter;
                         return;
                     }
+
                     x.BringToFront();
                 }, token);
                 return true;
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -1449,11 +1502,14 @@ namespace Chummer
         /// </summary>
         public async Task<bool> SwitchToOpenExportCharacter(Character objCharacter, CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 if (objCharacter == null)
                     return false;
-                ExportCharacter objCharacterForm = await OpenCharacterExportForms.FirstOrDefaultAsync(x => ReferenceEquals(x.CharacterObject, objCharacter), token);
+                ExportCharacter objCharacterForm
+                    = await OpenCharacterExportForms.FirstOrDefaultAsync(
+                        x => ReferenceEquals(x.CharacterObject, objCharacter), token);
                 if (objCharacterForm == null)
                     return false;
                 await objCharacterForm.DoThreadSafeAsync(x =>
@@ -1467,9 +1523,14 @@ namespace Chummer
                             _mascotChummy.CharacterObject = objCharacter;
                         return;
                     }
+
                     x.BringToFront();
                 }, token);
                 return true;
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -1579,14 +1640,17 @@ namespace Chummer
 
         private async void ChummerMainForm_DragDrop(object sender, DragEventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 // Open each file that has been dropped into the window.
-                string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+                string[] s = (string[]) e.Data.GetData(DataFormats.FileDrop, false);
                 if (s.Length == 0)
                     return;
                 Character[] lstCharacters = new Character[s.Length];
-                using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(string.Empty, Character.NumLoadingSections * s.Length))
+                using (LoadingBar frmLoadingBar
+                       = await Program.CreateAndShowProgressBarAsync(string.Empty,
+                                                                     Character.NumLoadingSections * s.Length))
                 {
                     Task<Character>[] tskCharacterLoads = new Task<Character>[s.Length];
                     // Array instead of concurrent bag because we want to preserve order
@@ -1594,14 +1658,20 @@ namespace Chummer
                     {
                         string strFile = s[i];
                         // ReSharper disable once AccessToDisposedClosure
-                        tskCharacterLoads[i] = Task.Run(() => Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar));
+                        tskCharacterLoads[i]
+                            = Task.Run(() => Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar));
                     }
 
                     await Task.WhenAll(tskCharacterLoads);
                     for (int i = 0; i < lstCharacters.Length; ++i)
                         lstCharacters[i] = await tskCharacterLoads[i];
                 }
+
                 await OpenCharacterList(lstCharacters);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -1734,10 +1804,13 @@ namespace Chummer
             Character objCharacter = new Character();
             try
             {
-                using (await CursorWait.NewAsync(this))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this);
+                try
                 {
                     // Show the BP selection window.
-                    using (ThreadSafeForm<SelectBuildMethod> frmBP = await ThreadSafeForm<SelectBuildMethod>.GetAsync(() => new SelectBuildMethod(objCharacter)))
+                    using (ThreadSafeForm<SelectBuildMethod> frmBP
+                           = await ThreadSafeForm<SelectBuildMethod>.GetAsync(
+                               () => new SelectBuildMethod(objCharacter)))
                     {
                         if (await frmBP.ShowDialogSafeAsync(this) != DialogResult.OK)
                             return;
@@ -1746,7 +1819,9 @@ namespace Chummer
                     // Show the Metatype selection window.
                     if (objCharacter.EffectiveBuildMethodUsesPriorityTables)
                     {
-                        using (ThreadSafeForm<SelectMetatypePriority> frmSelectMetatype = await ThreadSafeForm<SelectMetatypePriority>.GetAsync(() => new SelectMetatypePriority(objCharacter)))
+                        using (ThreadSafeForm<SelectMetatypePriority> frmSelectMetatype
+                               = await ThreadSafeForm<SelectMetatypePriority>.GetAsync(
+                                   () => new SelectMetatypePriority(objCharacter)))
                         {
                             if (await frmSelectMetatype.ShowDialogSafeAsync(this) != DialogResult.OK)
                                 return;
@@ -1754,7 +1829,9 @@ namespace Chummer
                     }
                     else
                     {
-                        using (ThreadSafeForm<SelectMetatypeKarma> frmSelectMetatype = await ThreadSafeForm<SelectMetatypeKarma>.GetAsync(() => new SelectMetatypeKarma(objCharacter)))
+                        using (ThreadSafeForm<SelectMetatypeKarma> frmSelectMetatype
+                               = await ThreadSafeForm<SelectMetatypeKarma>.GetAsync(
+                                   () => new SelectMetatypeKarma(objCharacter)))
                         {
                             if (await frmSelectMetatype.ShowDialogSafeAsync(this) != DialogResult.OK)
                                 return;
@@ -1763,8 +1840,13 @@ namespace Chummer
 
                     await Program.OpenCharacters.AddAsync(objCharacter);
                 }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
 
-                using (await CursorWait.NewAsync(this))
+                objCursorWait = await CursorWait.NewAsync(this);
+                try
                 {
                     await this.DoThreadSafeAsync(() =>
                     {
@@ -1780,6 +1862,10 @@ namespace Chummer
                             frmNewCharacter.WindowState = FormWindowState.Maximized;
                     });
                 }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
             }
             finally
             {
@@ -1794,15 +1880,16 @@ namespace Chummer
         {
             if (Utils.IsUnitTest)
                 return;
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 List<string> lstFilesToOpen;
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
-                {
-                    Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
-                             await LanguageManager.GetStringAsync("DialogFilter_All"),
-                    Multiselect = true
-                })
+                       {
+                           Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
+                                    await LanguageManager.GetStringAsync("DialogFilter_All"),
+                           Multiselect = true
+                       })
                 {
                     if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                         return;
@@ -1810,7 +1897,8 @@ namespace Chummer
                     lstFilesToOpen = new List<string>(openFileDialog.FileNames.Length);
                     foreach (string strFile in openFileDialog.FileNames)
                     {
-                        Character objLoopCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile);
+                        Character objLoopCharacter
+                            = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile);
                         if (objLoopCharacter != null)
                         {
                             if (!await SwitchToOpenCharacter(objLoopCharacter))
@@ -1826,7 +1914,8 @@ namespace Chummer
                 // Array instead of concurrent bag because we want to preserve order
                 Character[] lstCharacters = new Character[lstFilesToOpen.Count];
                 using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
-                           string.Join(',' + await LanguageManager.GetStringAsync("String_Space"), lstFilesToOpen.Select(Path.GetFileName)),
+                           string.Join(',' + await LanguageManager.GetStringAsync("String_Space"),
+                                       lstFilesToOpen.Select(Path.GetFileName)),
                            lstFilesToOpen.Count * Character.NumLoadingSections))
                 {
                     Task<Character>[] tskCharacterLoads = new Task<Character>[lstFilesToOpen.Count];
@@ -1834,13 +1923,20 @@ namespace Chummer
                     {
                         string strFile = lstFilesToOpen[i];
                         // ReSharper disable once AccessToDisposedClosure
-                        tskCharacterLoads[i] = Task.Run(() => Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar));
+                        tskCharacterLoads[i]
+                            = Task.Run(() => Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar));
                     }
+
                     await Task.WhenAll(tskCharacterLoads);
                     for (int i = 0; i < lstCharacters.Length; ++i)
                         lstCharacters[i] = await tskCharacterLoads[i];
                 }
+
                 await OpenCharacterList(lstCharacters);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
 
             //Timekeeper.Finish("load_sum");
@@ -1863,7 +1959,8 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public async Task OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = true, CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 if (lstCharacters == null)
                     return;
@@ -1890,7 +1987,8 @@ namespace Chummer
                             frmLoadingBar.PerformStep(objCharacter == null
                                                           ? strUI
                                                           : strUI + strSpace + '(' + objCharacter.CharacterName + ')');
-                            if (objCharacter == null || OpenCharacterEditorForms.Any(x => x.CharacterObject == objCharacter))
+                            if (objCharacter == null
+                                || OpenCharacterEditorForms.Any(x => x.CharacterObject == objCharacter))
                                 continue;
                             if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 8000 : 7500)
                                 && Program.ShowMessageBox(
@@ -1898,7 +1996,8 @@ namespace Chummer
                                     strTooManyHandlesTitle,
                                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                             {
-                                if (Program.OpenCharacters.All(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
+                                if (Program.OpenCharacters.All(
+                                        x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
                                     Program.OpenCharacters.Remove(objCharacter);
                                 continue;
                             }
@@ -1923,64 +2022,18 @@ namespace Chummer
                 foreach (CharacterShared frmNewCharacter in lstNewFormsToProcess)
                     await frmNewCharacter.DoThreadSafeAsync(x => x.WindowState = wsPreference, token);
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void mnuOpenForPrinting_Click(object sender, EventArgs e)
         {
             if (Utils.IsUnitTest)
                 return;
-            using (await CursorWait.NewAsync(this))
-            {
-                string strFile;
-                using (OpenFileDialog openFileDialog = new OpenFileDialog
-                {
-                    Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
-                             await LanguageManager.GetStringAsync("DialogFilter_All")
-                })
-                {
-                    if (openFileDialog.ShowDialog(this) != DialogResult.OK)
-                        return;
-                    strFile = openFileDialog.FileName;
-                }
-
-                if (!File.Exists(strFile))
-                    return;
-
-                Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile);
-                if (objCharacter == null)
-                {
-                    using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strFile, Character.NumLoadingSections))
-                        objCharacter = await Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar);
-                }
-                await OpenCharacterForPrinting(objCharacter);
-            }
-        }
-
-        /// <summary>
-        /// Open a character's print form up without necessarily opening them up fully for editing.
-        /// </summary>
-        public async Task OpenCharacterForPrinting(Character objCharacter, CancellationToken token = default)
-        {
-            using (await CursorWait.NewAsync(this, token: token))
-            {
-                // Character is already open in an existing form, so switch to it and make it open up its print viewer
-                if (!await SwitchToOpenPrintCharacter(objCharacter, token))
-                {
-                    CharacterSheetViewer frmViewer = await this.DoThreadSafeFuncAsync(x => new CharacterSheetViewer
-                    {
-                        MdiParent = x
-                    }, token);
-                    await frmViewer.SetCharacters(token, objCharacter);
-                    await frmViewer.DoThreadSafeAsync(x => x.Show(), token);
-                }
-            }
-        }
-
-        private async void mnuOpenForExport_Click(object sender, EventArgs e)
-        {
-            if (Utils.IsUnitTest)
-                return;
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 string strFile;
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
@@ -2000,10 +2053,79 @@ namespace Chummer
                 Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile);
                 if (objCharacter == null)
                 {
-                    using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strFile, Character.NumLoadingSections))
+                    using (LoadingBar frmLoadingBar
+                           = await Program.CreateAndShowProgressBarAsync(strFile, Character.NumLoadingSections))
                         objCharacter = await Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar);
                 }
+
+                await OpenCharacterForPrinting(objCharacter);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
+        }
+
+        /// <summary>
+        /// Open a character's print form up without necessarily opening them up fully for editing.
+        /// </summary>
+        public async Task OpenCharacterForPrinting(Character objCharacter, CancellationToken token = default)
+        {
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
+            {
+                // Character is already open in an existing form, so switch to it and make it open up its print viewer
+                if (!await SwitchToOpenPrintCharacter(objCharacter, token))
+                {
+                    CharacterSheetViewer frmViewer = await this.DoThreadSafeFuncAsync(x => new CharacterSheetViewer
+                    {
+                        MdiParent = x
+                    }, token);
+                    await frmViewer.SetCharacters(token, objCharacter);
+                    await frmViewer.DoThreadSafeAsync(x => x.Show(), token);
+                }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
+        }
+
+        private async void mnuOpenForExport_Click(object sender, EventArgs e)
+        {
+            if (Utils.IsUnitTest)
+                return;
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
+                string strFile;
+                using (OpenFileDialog openFileDialog = new OpenFileDialog
+                       {
+                           Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
+                                    await LanguageManager.GetStringAsync("DialogFilter_All")
+                       })
+                {
+                    if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                        return;
+                    strFile = openFileDialog.FileName;
+                }
+
+                if (!File.Exists(strFile))
+                    return;
+
+                Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile);
+                if (objCharacter == null)
+                {
+                    using (LoadingBar frmLoadingBar
+                           = await Program.CreateAndShowProgressBarAsync(strFile, Character.NumLoadingSections))
+                        objCharacter = await Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar);
+                }
+
                 await OpenCharacterForExport(objCharacter);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -2012,7 +2134,8 @@ namespace Chummer
         /// </summary>
         public async Task OpenCharacterForExport(Character objCharacter, CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 // Character is already open in an existing form, so switch to it and make it open up its exporter
                 if (!await SwitchToOpenExportCharacter(objCharacter, token))
@@ -2023,6 +2146,10 @@ namespace Chummer
                     }, token);
                     await frmViewer.DoThreadSafeAsync(x => x.Show(), token);
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 

@@ -149,7 +149,9 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
         /// Create a Gear from an XmlNode and return the TreeNodes for it.
+        /// </summary>
         /// <param name="objXmlGear">XmlNode to create the object from.</param>
         /// <param name="intRating">Selected Rating for the Gear.</param>
         /// <param name="lstWeapons">List of Weapons that should be added to the character.</param>

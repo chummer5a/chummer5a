@@ -1480,10 +1480,17 @@ namespace Chummer
 
                 objLoopControl = await objLoopControl.DoThreadSafeFuncAsync(x => x.Parent);
             }
-            
-            using (await CursorWait.NewAsync(await objControl.DoThreadSafeFuncAsync(x => x.FindForm()) ?? objControl))
+
+            CursorWait objCursorWait
+                = await CursorWait.NewAsync(await objControl.DoThreadSafeFuncAsync(x => x.FindForm()) ?? objControl);
+            try
             {
-                await OpenPdf(await objControl.DoThreadSafeFuncAsync(x => x.Text), objCharacter, string.Empty, string.Empty, true);
+                await OpenPdf(await objControl.DoThreadSafeFuncAsync(x => x.Text), objCharacter, string.Empty,
+                              string.Empty, true);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -1509,9 +1516,11 @@ namespace Chummer
                 if (!blnOpenOptions || Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NoPDFProgramSet"),
                     await LanguageManager.GetStringAsync("MessageTitle_NoPDFProgramSet"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
-                using (await CursorWait.NewAsync(Program.MainForm))
+                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm);
+                try
                 {
-                    using (ThreadSafeForm<EditGlobalSettings> frmOptions = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings()))
+                    using (ThreadSafeForm<EditGlobalSettings> frmOptions
+                           = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings()))
                     {
                         if (string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
                             // ReSharper disable once AccessToDisposedClosure
@@ -1521,6 +1530,10 @@ namespace Chummer
                         strPdfParameters = GlobalSettings.PdfParameters;
                         strPdfAppPath = GlobalSettings.PdfAppPath;
                     }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
 
@@ -1582,9 +1595,11 @@ namespace Chummer
                 if (Program.ShowMessageBox(string.Format(await LanguageManager.GetStringAsync("Message_NoLinkedPDF"), await LanguageBookLongAsync(strBook)),
                         await LanguageManager.GetStringAsync("MessageTitle_NoLinkedPDF"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
-                using (await CursorWait.NewAsync(Program.MainForm))
+                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm);
+                try
                 {
-                    using (ThreadSafeForm<EditGlobalSettings> frmOptions = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings()))
+                    using (ThreadSafeForm<EditGlobalSettings> frmOptions
+                           = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings()))
                     {
                         // ReSharper disable once AccessToDisposedClosure
                         await frmOptions.MyForm.DoLinkPdf(objBookInfo.Code);
@@ -1601,6 +1616,10 @@ namespace Chummer
                             objBookInfo.Path = string.Empty;
                         }
                     }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
 

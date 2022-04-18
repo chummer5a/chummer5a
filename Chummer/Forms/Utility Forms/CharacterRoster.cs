@@ -238,7 +238,8 @@ namespace Chummer
         {
             try
             {
-                using (await CursorWait.NewAsync(this, token: _objGenericToken))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken);
+                try
                 {
                     try
                     {
@@ -289,6 +290,10 @@ namespace Chummer
                         //swallow this
                     }
                 }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
             }
             catch (OperationCanceledException)
             {
@@ -306,7 +311,8 @@ namespace Chummer
         {
             try
             {
-                using (await CursorWait.NewAsync(this, token: _objGenericToken))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken);
+                try
                 {
                     if (_blnIsClosing)
                         return;
@@ -372,6 +378,10 @@ namespace Chummer
                     }
 
                     _objGenericFormClosingCancellationTokenSource.Cancel(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
             catch (OperationCanceledException)
@@ -1356,7 +1366,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (await this.DoThreadSafeFuncAsync(x => x.IsNullOrDisposed(), token)) // Safety check for external calls
                 return;
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 await tlpRight.DoThreadSafeAsync(x => x.SuspendLayout(), token);
                 try
@@ -1371,11 +1382,13 @@ namespace Chummer
                                       .Unwrap();
                         await objCache.Background.RtfToPlainTextAsync(token)
                                       .ContinueWith(
-                                          y => txtCharacterBackground.DoThreadSafeAsync(x => x.Text = y.Result, token), token)
+                                          y => txtCharacterBackground.DoThreadSafeAsync(x => x.Text = y.Result, token),
+                                          token)
                                       .Unwrap();
                         await objCache.CharacterNotes.RtfToPlainTextAsync(token)
                                       .ContinueWith(
-                                          y => txtCharacterNotes.DoThreadSafeAsync(x => x.Text = y.Result, token), token)
+                                          y => txtCharacterNotes.DoThreadSafeAsync(x => x.Text = y.Result, token),
+                                          token)
                                       .Unwrap();
                         await objCache.GameNotes.RtfToPlainTextAsync(token)
                                       .ContinueWith(
@@ -1383,7 +1396,8 @@ namespace Chummer
                                       .Unwrap();
                         await objCache.Concept.RtfToPlainTextAsync(token)
                                       .ContinueWith(
-                                          y => txtCharacterConcept.DoThreadSafeAsync(x => x.Text = y.Result, token), token)
+                                          y => txtCharacterConcept.DoThreadSafeAsync(x => x.Text = y.Result, token),
+                                          token)
                                       .Unwrap();
                         string strText = objCache.Karma;
                         if (string.IsNullOrEmpty(strText) || strText == 0.ToString(GlobalSettings.CultureInfo))
@@ -1425,12 +1439,14 @@ namespace Chummer
                         }, token);
                         await lblFilePath.SetToolTipAsync(
                             await objCache.FilePath.CheapReplaceAsync(Utils.GetStartupPath,
-                                                                      () => '<' + Application.ProductName + '>'), token);
+                                                                      () => '<' + Application.ProductName + '>'),
+                            token);
                         await picMugshot.DoThreadSafeAsync(x => x.Image = objCache.Mugshot, token);
                         // Populate character information fields.
                         if (objCache.Metatype != null)
                         {
-                            XPathNavigator objMetatypeDoc = await XmlManager.LoadXPathAsync("metatypes.xml", token: token);
+                            XPathNavigator objMetatypeDoc
+                                = await XmlManager.LoadXPathAsync("metatypes.xml", token: token);
                             XPathNavigator objMetatypeNode
                                 = objMetatypeDoc.SelectSingleNode(
                                     "/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + ']');
@@ -1440,6 +1456,7 @@ namespace Chummer
                                 objMetatypeNode = objMetatypeDoc.SelectSingleNode(
                                     "/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + ']');
                             }
+
                             token.ThrowIfCancellationRequested();
                             string strMetatype = objMetatypeNode != null
                                 ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
@@ -1465,7 +1482,8 @@ namespace Chummer
                         {
                             await LanguageManager.GetStringAsync("String_MetatypeLoadError")
                                                  .ContinueWith(
-                                                     y => lblMetatype.DoThreadSafeAsync(x => x.Text = y.Result, token), token)
+                                                     y => lblMetatype.DoThreadSafeAsync(x => x.Text = y.Result, token),
+                                                     token)
                                                  .Unwrap();
                         }
 
@@ -1504,24 +1522,33 @@ namespace Chummer
                         await lblSettings.DoThreadSafeAsync(x => x.Text = string.Empty, token);
                         await picMugshot.DoThreadSafeAsync(x => x.Image = null, token);
                     }
+
                     await lblCareerKarmaLabel.DoThreadSafeAsync(
                         x => x.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text), token);
-                    await lblMetatypeLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblMetatype.Text), token);
+                    await lblMetatypeLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblMetatype.Text),
+                                                             token);
                     await lblPlayerNameLabel.DoThreadSafeAsync(
                         x => x.Visible = !string.IsNullOrEmpty(lblPlayerName.Text), token);
                     await lblCharacterNameLabel.DoThreadSafeAsync(
                         x => x.Visible = !string.IsNullOrEmpty(lblCharacterName.Text), token);
                     await lblCharacterAliasLabel.DoThreadSafeAsync(
                         x => x.Visible = !string.IsNullOrEmpty(lblCharacterAlias.Text), token);
-                    await lblEssenceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblEssence.Text), token);
-                    await lblFilePathLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblFilePath.Text), token);
-                    await lblSettingsLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblSettings.Text), token);
+                    await lblEssenceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblEssence.Text),
+                                                            token);
+                    await lblFilePathLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblFilePath.Text),
+                                                             token);
+                    await lblSettingsLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblSettings.Text),
+                                                             token);
                     await ProcessMugshotSizeMode(token);
                 }
                 finally
                 {
                     await tlpRight.DoThreadSafeAsync(x => x.ResumeLayout(), token);
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -1559,9 +1586,14 @@ namespace Chummer
                         return;
 
                     case CharacterCache objCache:
-                        using (await CursorWait.NewAsync(this, token: _objGenericToken))
+                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken);
+                        try
                         {
                             objCache.OnMyDoubleClick(sender, e);
+                        }
+                        finally
+                        {
+                            await objCursorWait.DisposeAsync();
                         }
 
                         break;
@@ -1750,16 +1782,27 @@ namespace Chummer
 
                 if (t?.Tag is CharacterCache objCache)
                 {
-                    using (await CursorWait.NewAsync(this, token: _objGenericToken))
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken);
+                    try
                     {
-                        Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName, _objGenericToken);
+                        Character objCharacter
+                            = await Program.OpenCharacters.FirstOrDefaultAsync(
+                                x => x.FileName == objCache.FileName, _objGenericToken);
                         if (objCharacter == null)
                         {
-                            using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(objCache.FilePath, Character.NumLoadingSections))
-                                objCharacter = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar, token: _objGenericToken);
+                            using (LoadingBar frmLoadingBar
+                                   = await Program.CreateAndShowProgressBarAsync(
+                                       objCache.FilePath, Character.NumLoadingSections))
+                                objCharacter = await Program.LoadCharacterAsync(
+                                    objCache.FilePath, frmLoadingBar: frmLoadingBar, token: _objGenericToken);
                         }
+
                         if (!await Program.SwitchToOpenCharacter(objCharacter, _objGenericToken))
                             await Program.OpenCharacter(objCharacter, token: _objGenericToken);
+                    }
+                    finally
+                    {
+                        await objCursorWait.DisposeAsync();
                     }
                 }
             }
@@ -1779,15 +1822,27 @@ namespace Chummer
                 TreeNode t = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken);
                 if (!(t?.Tag is CharacterCache objCache))
                     return;
-                using (await CursorWait.NewAsync(this, token: _objGenericToken))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken);
+                try
                 {
-                    Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName, _objGenericToken);
+                    Character objCharacter
+                        = await Program.OpenCharacters.FirstOrDefaultAsync(
+                            x => x.FileName == objCache.FileName, _objGenericToken);
                     if (objCharacter == null)
                     {
-                        using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(objCache.FilePath, Character.NumLoadingSections))
-                            objCharacter = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar, token: _objGenericToken);
+                        using (LoadingBar frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(
+                                   objCache.FilePath, Character.NumLoadingSections))
+                            objCharacter
+                                = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar,
+                                                                   token: _objGenericToken);
                     }
+
                     await Program.OpenCharacterForPrinting(objCharacter, _objGenericToken);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
             catch (OperationCanceledException)
@@ -1806,15 +1861,27 @@ namespace Chummer
                 TreeNode t = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken);
                 if (!(t?.Tag is CharacterCache objCache))
                     return;
-                using (await CursorWait.NewAsync(this, token: _objGenericToken))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken);
+                try
                 {
-                    Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == objCache.FileName, _objGenericToken);
+                    Character objCharacter
+                        = await Program.OpenCharacters.FirstOrDefaultAsync(
+                            x => x.FileName == objCache.FileName, _objGenericToken);
                     if (objCharacter == null)
                     {
-                        using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(objCache.FilePath, Character.NumLoadingSections))
-                            objCharacter = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar, token: _objGenericToken);
+                        using (LoadingBar frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(
+                                   objCache.FilePath, Character.NumLoadingSections))
+                            objCharacter
+                                = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar,
+                                                                   token: _objGenericToken);
                     }
+
                     await Program.OpenCharacterForExport(objCharacter, _objGenericToken);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
             catch (OperationCanceledException)
@@ -1902,15 +1969,21 @@ namespace Chummer
                     = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile, _objGenericToken);
                 if (objOpenCharacter != null)
                 {
-                    using (await CursorWait.NewAsync(this, token: _objGenericToken))
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken);
+                    try
                     {
                         foreach (IHasCharacterObjects objOpenForm in Program.MainForm.OpenFormsWithCharacters)
                         {
-                            if (objOpenForm.CharacterObjects.Contains(objOpenCharacter) && objOpenForm is Form frmOpenForm)
+                            if (objOpenForm.CharacterObjects.Contains(objOpenCharacter)
+                                && objOpenForm is Form frmOpenForm)
                             {
                                 await frmOpenForm.DoThreadSafeAsync(x => x.Close(), _objGenericToken);
                             }
                         }
+                    }
+                    finally
+                    {
+                        await objCursorWait.DisposeAsync();
                     }
                 }
             }

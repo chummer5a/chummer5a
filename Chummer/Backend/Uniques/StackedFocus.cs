@@ -32,7 +32,7 @@ namespace Chummer
     /// A Stacked Focus.
     /// </summary>
     [DebuggerDisplay("{Name(GlobalSettings.DefaultLanguage)}")]
-    public class StackedFocus : IDisposable
+    public sealed class StackedFocus : IDisposable
     {
         private Guid _guiID;
         private bool _blnBonded;
