@@ -8309,7 +8309,7 @@ namespace Chummer
 
         public Task DoExport(CancellationToken token = default)
         {
-            return Program.OpenCharacterForPrinting(CharacterObject, token);
+            return Program.OpenCharacterForExport(CharacterObject, token);
         }
 
         /// <summary>
