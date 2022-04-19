@@ -6076,7 +6076,7 @@ namespace Translator
                 xmlRootNode = objDataDoc.CreateElement("chummer");
                 objDataDoc.AppendChild(xmlRootNode);
             }
-
+            
             XmlNode xmlRootSettingsFileNode = objDataDoc.SelectSingleNode("/chummer/chummer[@file = \"settings.xml\"]");
             if (xmlRootSettingsFileNode == null)
             {
@@ -6184,6 +6184,14 @@ namespace Translator
                         }
                     }
                 }
+            }
+
+            // Remove Gameplay Options entry
+
+            XmlNode xmlRootGameplayOptionsFileNode = objDataDoc.SelectSingleNode("/chummer/chummer[@file = \"gameplayoptions.xml\"]");
+            if (xmlRootGameplayOptionsFileNode != null)
+            {
+                xmlRootNode.RemoveChild(xmlRootGameplayOptionsFileNode);
             }
         }
 

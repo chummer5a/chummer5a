@@ -244,10 +244,10 @@ namespace Translator
                     xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[. = " + strEnglish.CleanXPath() + "]");
                     if (xmlNodeLocal?.Attributes != null)
                     {
-                        xmlNodeLocal.Attributes["translate"].InnerText = strTranslated;
-                        XmlAttribute objAttrib = xmlNodeLocal.Attributes?["translated"];
+                        XmlAttribute objAttrib = xmlNodeLocal.Attributes["translated"];
                         if (objAttrib != null)
                         {
+                            objAttrib.InnerText = strTranslated;
                             if (!blnSetTranslatedAttribute)
                                 xmlNodeLocal.Attributes.Remove(objAttrib);
                             else

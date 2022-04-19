@@ -95,16 +95,14 @@ namespace Translator
             // 
             this.dgvTranslate.AllowUserToAddRows = false;
             this.dgvTranslate.AllowUserToDeleteRows = false;
-            this.dgvTranslate.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvTranslate.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvTranslate.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvTranslate.Location = new System.Drawing.Point(3, 3);
+            this.dgvTranslate.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvTranslate.Location = new System.Drawing.Point(0, 0);
             this.dgvTranslate.MultiSelect = false;
             this.dgvTranslate.Name = "dgvTranslate";
             this.dgvTranslate.RowHeadersVisible = false;
-            this.dgvTranslate.Size = new System.Drawing.Size(1240, 599);
+            this.dgvTranslate.Size = new System.Drawing.Size(1246, 605);
             this.dgvTranslate.TabIndex = 14;
             this.dgvTranslate.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvTranslate_CellValueChanged);
             this.dgvTranslate.Sorted += new System.EventHandler(this.dgvTranslate_Sorted);
@@ -295,14 +293,14 @@ namespace Translator
             this.pnlMain.Size = new System.Drawing.Size(1246, 605);
             this.pnlMain.TabIndex = 150;
             // 
-            // frmTranslate
+            // TranslateData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1264, 681);
             this.Controls.Add(this.tlpMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "frmTranslate";
+            this.Name = "TranslateData";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.Text = "frmTranslate";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmTranslate_FormClosing);
