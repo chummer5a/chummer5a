@@ -266,26 +266,30 @@ namespace Translator
                     XmlElement element = xmlNodeLocal["translate"];
                     if (element != null)
                         element.InnerText = strTranslated;
-                    element = xmlNodeLocal.Name == "book" ? xmlNodeLocal["altcode"] : xmlNodeLocal["altpage"];
-                    if (element != null)
-                        element.InnerText = item.Cells[cboFile.Text == "books.xml" ? "Code" : "Page"].Value.ToString();
-                    if (cboFile.Text == "qualities.xml")
+                    if (cboFile.Text != "settings.xml")
                     {
-                        string strNameOnPage = item.Cells["NameOnPage"].Value.ToString();
-                        element = xmlNodeLocal["altnameonpage"];
-                        if (string.IsNullOrWhiteSpace(strNameOnPage) && element != null)
+                        element = xmlNodeLocal.Name == "book" ? xmlNodeLocal["altcode"] : xmlNodeLocal["altpage"];
+                        if (element != null)
+                            element.InnerText = item.Cells[cboFile.Text == "books.xml" ? "Code" : "Page"].Value
+                                                    .ToString();
+                        if (cboFile.Text == "qualities.xml")
                         {
-                            xmlNodeLocal.RemoveChild(element);
-                        }
-                        else
-                        {
-                            if (element == null)
+                            string strNameOnPage = item.Cells["NameOnPage"].Value.ToString();
+                            element = xmlNodeLocal["altnameonpage"];
+                            if (string.IsNullOrWhiteSpace(strNameOnPage) && element != null)
                             {
-                                element = _objDataDoc.CreateElement("altnameonpage");
-                                xmlNodeLocal.AppendChild(element);
+                                xmlNodeLocal.RemoveChild(element);
                             }
+                            else
+                            {
+                                if (element == null)
+                                {
+                                    element = _objDataDoc.CreateElement("altnameonpage");
+                                    xmlNodeLocal.AppendChild(element);
+                                }
 
-                            element.InnerText = strNameOnPage;
+                                element.InnerText = strNameOnPage;
+                            }
                         }
                     }
 
@@ -442,7 +446,7 @@ namespace Translator
             dataTable.Columns.Add("Key");
             dataTable.Columns.Add("English");
             dataTable.Columns.Add("Text");
-            dataTable.Columns.Add("Translated?");
+            dataTable.Columns.Add(new DataColumn("Translated?", typeof(bool)));
             XmlNodeList xmlNodeList = xmlDocument.SelectNodes("/chummer/strings/string");
             if (xmlNodeList != null)
             {
@@ -562,7 +566,7 @@ namespace Translator
                 dataTable.Columns.Add("English Code");
                 dataTable.Columns.Add("Code");
             }
-            else if (strFileName != "tips.xml")
+            else if (strFileName != "tips.xml" && strFileName != "settings.xml")
             {
                 dataTable.Columns.Add("Book");
                 dataTable.Columns.Add("Page");
@@ -576,7 +580,7 @@ namespace Translator
                 dataTable.Columns.Add("Translated Disadvantage");
             }
 
-            dataTable.Columns.Add("Translated?");
+            dataTable.Columns.Add(new DataColumn("Translated?", typeof(bool)));
             if (blnHasNameOnPage)
                 dataTable.Columns.Add("NameOnPage");
             if (strSection == "[Show All Sections]")
@@ -633,7 +637,22 @@ namespace Translator
 
                                     if (!blnTranslated || !chkOnlyTranslation.Checked)
                                     {
-                                        object[] objArray = new object[] {strId, strText, strTranslated, blnTranslated};
+                                        object[] objArray = {strId, strText, strTranslated, blnTranslated};
+                                        lock (arrayRowsToDisplayLock)
+                                            arrayRowsToDisplay[i] = objArray;
+                                    }
+                                }
+                                else if (strFileName == "settings.xml")
+                                {
+                                    string strText = xmlChildNode["name"]?.InnerText ?? string.Empty;
+                                    strTranslated = xmlChildNode["translate"]?.InnerText ?? string.Empty;
+                                    blnTranslated = strText != strTranslated
+                                                    || xmlChildNode.Attributes?["translated"]?.InnerText
+                                                    == bool.TrueString;
+
+                                    if (!blnTranslated || !chkOnlyTranslation.Checked)
+                                    {
+                                        object[] objArray = { strId, strText, strTranslated, blnTranslated };
                                         lock (arrayRowsToDisplayLock)
                                             arrayRowsToDisplay[i] = objArray;
                                     }
@@ -791,7 +810,7 @@ namespace Translator
                 dgvSection.Columns[1].FillWeight = 4.0f;
                 dgvSection.Columns[2].FillWeight = 4.0f;
                 dgvSection.Columns[3].FillWeight = 0.5f;
-                if (cboFile.Text != "tips.xml")
+                if (cboFile.Text != "tips.xml" && cboFile.Text != "settings.xml")
                 {
                     dgvSection.Columns[4].FillWeight = 0.5f;
                     dgvSection.Columns[5].FillWeight = 0.5f;

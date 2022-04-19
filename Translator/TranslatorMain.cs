@@ -313,7 +313,7 @@ namespace Translator
                 return;
             Cursor = Cursors.AppStarting;
             string strLanguage = cboLanguages.Text;
-            TranslateData frmOpenTranslate = _lstOpenTranslateWindows.FirstOrDefault(x => x.Language == strLanguage);
+            TranslateData frmOpenTranslate = _lstOpenTranslateWindows.Find(x => x.Language == strLanguage);
             if (frmOpenTranslate != null)
                 frmOpenTranslate.Activate();
             else
@@ -336,7 +336,7 @@ namespace Translator
 
             _strLanguageToLoad = cboLanguages.Text;
 
-            TranslateData frmOpenTranslate = _lstOpenTranslateWindows.FirstOrDefault(x => x.Language == _strLanguageToLoad);
+            TranslateData frmOpenTranslate = _lstOpenTranslateWindows.Find(x => x.Language == _strLanguageToLoad);
             if (frmOpenTranslate != null)
             {
                 frmOpenTranslate.Close();
@@ -374,7 +374,7 @@ namespace Translator
 
             _strLanguageToLoad = cboLanguages.Text;
 
-            TranslateData frmOpenTranslate = _lstOpenTranslateWindows.FirstOrDefault(x => x.Language == _strLanguageToLoad);
+            TranslateData frmOpenTranslate = _lstOpenTranslateWindows.Find(x => x.Language == _strLanguageToLoad);
             if (frmOpenTranslate != null)
             {
                 frmOpenTranslate.Close();
