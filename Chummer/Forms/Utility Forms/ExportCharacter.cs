@@ -189,7 +189,8 @@ namespace Chummer
 
             try
             {
-                using (await CursorWait.NewAsync(this, token: _objGenericToken))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken);
+                try
                 {
                     if (_strXslt == "JSON")
                     {
@@ -199,6 +200,10 @@ namespace Chummer
                     {
                         await ExportNormal(token: _objGenericToken);
                     }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
             catch (OperationCanceledException)
@@ -271,7 +276,8 @@ namespace Chummer
                     _strXslt = await cboXSLT.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
                     if (!string.IsNullOrEmpty(_strXslt))
                     {
-                        using (await CursorWait.NewAsync(this, token: token))
+                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+                        try
                         {
                             token.ThrowIfCancellationRequested();
                             string strText = await LanguageManager.GetStringAsync("String_Generating_Data");
@@ -323,6 +329,10 @@ namespace Chummer
                                     : Task.Run(() => GenerateXml(objToken), objToken);
                             }
                         }
+                        finally
+                        {
+                            await objCursorWait.DisposeAsync();
+                        }
                     }
                 }
                 else
@@ -330,7 +340,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     CancellationTokenSource objNewSource = new CancellationTokenSource();
                     CancellationTokenSource objTemp
-                        = Interlocked.Exchange(ref _objXmlGeneratorCancellationTokenSource, objNewSource);
+                        = Interlocked.Exchange(ref _objCharacterXmlGeneratorCancellationTokenSource, objNewSource);
                     if (objTemp?.IsCancellationRequested == false)
                     {
                         objTemp.Cancel(false);
@@ -343,7 +353,7 @@ namespace Chummer
                     }
                     catch (OperationCanceledException)
                     {
-                        Interlocked.CompareExchange(ref _objXmlGeneratorCancellationTokenSource, null,
+                        Interlocked.CompareExchange(ref _objCharacterXmlGeneratorCancellationTokenSource, null,
                                                     objNewSource);
                         objNewSource.Dispose();
                         throw;
@@ -387,7 +397,8 @@ namespace Chummer
         private async Task GenerateCharacterXml(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 await Task.WhenAll(cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token),
                                    LanguageManager.GetStringAsync("String_Generating_Data")
@@ -402,6 +413,10 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (_objCharacterXml != null)
                     await DoXsltUpdate(token);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -474,7 +489,8 @@ namespace Chummer
         private async Task GenerateXml(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token);
                 try
@@ -539,11 +555,14 @@ namespace Chummer
                     string strText;
                     using (MemoryStream objStream = new MemoryStream())
                     {
-                        using (XmlWriter objWriter = objSettings != null ? XmlWriter.Create(objStream, objSettings) : Utils.GetXslTransformXmlWriter(objStream))
+                        using (XmlWriter objWriter = objSettings != null
+                                   ? XmlWriter.Create(objStream, objSettings)
+                                   : Utils.GetXslTransformXmlWriter(objStream))
                         {
                             token.ThrowIfCancellationRequested();
                             await Task.Run(() => objXslTransform.Transform(_objCharacterXml, objWriter), token);
                         }
+
                         token.ThrowIfCancellationRequested();
                         objStream.Position = 0;
 
@@ -551,6 +570,7 @@ namespace Chummer
                         using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                             strText = await objReader.ReadToEndAsync();
                     }
+
                     token.ThrowIfCancellationRequested();
                     await SetTextToWorkerResult(strText, token);
                 }
@@ -559,12 +579,17 @@ namespace Chummer
                     await cmdOK.DoThreadSafeAsync(x => x.Enabled = true, token);
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async Task GenerateJson(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token);
                 try
@@ -578,6 +603,10 @@ namespace Chummer
                 {
                     await cmdOK.DoThreadSafeAsync(x => x.Enabled = true, token);
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 

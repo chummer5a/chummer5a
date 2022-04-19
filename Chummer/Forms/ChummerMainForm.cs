@@ -1322,7 +1322,7 @@ namespace Chummer
                             await objTabPage.DoThreadSafeAsync(
                                 x => x.Text = string.Format(
                                     strExport,
-                                    frmExportCharacter.CharacterObject.Name.Trim()));
+                                    frmExportCharacter.CharacterObject.CharacterName.Trim()));
                             if (GlobalSettings.AllowEasterEggs && _mascotChummy != null)
                             {
                                 _mascotChummy.CharacterObject = null;
