@@ -552,11 +552,15 @@ namespace Chummer
                 // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
                 foreach (ExportCharacter objForm in e.OldItems)
                 {
-                    if (await GlobalSettings.FavoriteCharacters.ContainsAsync(objForm.CharacterObject.FileName))
-                        continue;
-                    if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
-                            objForm.CharacterObject.FileName))
-                        continue;
+                    if (await Program.OpenCharacters.ContainsAsync(objForm.CharacterObject))
+                    {
+                        if (await GlobalSettings.FavoriteCharacters.ContainsAsync(
+                                objForm.CharacterObject.FileName))
+                            continue;
+                        if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
+                                objForm.CharacterObject.FileName))
+                            continue;
+                    }
                     blnRefreshMru = true;
                     break;
                 }
@@ -594,11 +598,15 @@ namespace Chummer
                             // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
                             foreach (ExportCharacter objForm in e.OldItems)
                             {
-                                if (await GlobalSettings.FavoriteCharacters.ContainsAsync(objForm.CharacterObject.FileName))
-                                    continue;
-                                if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
-                                        objForm.CharacterObject.FileName))
-                                    continue;
+                                if (await Program.OpenCharacters.ContainsAsync(objForm.CharacterObject))
+                                {
+                                    if (await GlobalSettings.FavoriteCharacters.ContainsAsync(
+                                            objForm.CharacterObject.FileName))
+                                        continue;
+                                    if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
+                                            objForm.CharacterObject.FileName))
+                                        continue;
+                                }
                                 blnRefreshMru = true;
                                 break;
                             }
@@ -637,7 +645,17 @@ namespace Chummer
                     foreach (CharacterSheetViewer objForm in e.OldItems)
                     {
                         setCharacters.Clear();
-                        setCharacters.AddRange(objForm.CharacterObjects.Select(x => x.FileName));
+                        foreach (Character objCharacter in objForm.CharacterObjects)
+                        {
+                            if (!await Program.OpenCharacters.ContainsAsync(objCharacter))
+                            {
+                                blnRefreshMru = true;
+                                break;
+                            }
+                            setCharacters.Add(objCharacter.FileName);
+                        }
+                        if (blnRefreshMru)
+                            break;
                         setCharacters.ExceptWith(GlobalSettings.FavoriteCharacters);
                         setCharacters.ExceptWith(GlobalSettings.MostRecentlyUsedCharacters);
                         if (setCharacters.Count > 0)
@@ -685,7 +703,17 @@ namespace Chummer
                             foreach (CharacterSheetViewer objForm in e.OldItems)
                             {
                                 setCharacters.Clear();
-                                setCharacters.AddRange(objForm.CharacterObjects.Select(x => x.FileName));
+                                foreach (Character objCharacter in objForm.CharacterObjects)
+                                {
+                                    if (!await Program.OpenCharacters.ContainsAsync(objCharacter))
+                                    {
+                                        blnRefreshMru = true;
+                                        break;
+                                    }
+                                    setCharacters.Add(objCharacter.FileName);
+                                }
+                                if (blnRefreshMru)
+                                    break;
                                 setCharacters.ExceptWith(GlobalSettings.FavoriteCharacters);
                                 setCharacters.ExceptWith(GlobalSettings.MostRecentlyUsedCharacters);
                                 if (setCharacters.Count > 0)
@@ -726,11 +754,15 @@ namespace Chummer
                 // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
                 foreach (CharacterShared objForm in e.OldItems)
                 {
-                    if (await GlobalSettings.FavoriteCharacters.ContainsAsync(objForm.CharacterObject.FileName))
-                        continue;
-                    if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
-                            objForm.CharacterObject.FileName))
-                        continue;
+                    if (await Program.OpenCharacters.ContainsAsync(objForm.CharacterObject))
+                    {
+                        if (await GlobalSettings.FavoriteCharacters.ContainsAsync(
+                                objForm.CharacterObject.FileName))
+                            continue;
+                        if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
+                                objForm.CharacterObject.FileName))
+                            continue;
+                    }
                     blnRefreshMru = true;
                     break;
                 }
@@ -768,11 +800,15 @@ namespace Chummer
                         // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
                         foreach (CharacterShared objForm in e.OldItems)
                         {
-                            if (await GlobalSettings.FavoriteCharacters.ContainsAsync(objForm.CharacterObject.FileName))
-                                continue;
-                            if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
-                                    objForm.CharacterObject.FileName))
-                                continue;
+                            if (await Program.OpenCharacters.ContainsAsync(objForm.CharacterObject))
+                            {
+                                if (await GlobalSettings.FavoriteCharacters.ContainsAsync(
+                                        objForm.CharacterObject.FileName))
+                                    continue;
+                                if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
+                                        objForm.CharacterObject.FileName))
+                                    continue;
+                            }
                             blnRefreshMru = true;
                             break;
                         }
