@@ -27,6 +27,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer;
 
 namespace Translator
 {
@@ -734,7 +735,6 @@ namespace Translator
             ProcessCyberware,
             ProcessDrugs,
             ProcessEchoes,
-            ProcessGameplayOptions,
             ProcessGear,
             ProcessImprovements,
             ProcessLicenses,
@@ -750,6 +750,7 @@ namespace Translator
             ProcessPrograms,
             ProcessQualities,
             ProcessRanges,
+            ProcessSettings,
             ProcessSkills,
             ProcessSpells,
             ProcessSpiritPowers,
@@ -2951,129 +2952,6 @@ namespace Translator
                                 xmlEchoNode.Attributes?.Append(xmlExistsAttribute);
 #else
                                 xmlEchoNodesParent.RemoveChild(xmlEchoNode);
-#endif
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private static void ProcessGameplayOptions(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
-        {
-            XmlDocument xmlDataDocument = new XmlDocument();
-            xmlDataDocument.Load(Path.Combine(s_Path, "data", "gameplayoptions.xml"));
-            XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
-
-            XmlNode xmlRootNode = objDataDoc.SelectSingleNode("/chummer");
-            if (xmlRootNode == null)
-            {
-                xmlRootNode = objDataDoc.CreateElement("chummer");
-                objDataDoc.AppendChild(xmlRootNode);
-            }
-
-            XmlNode xmlRootGameplayOptionsFileNode = objDataDoc.SelectSingleNode("/chummer/chummer[@file = \"gameplayoptions.xml\"]");
-            if (xmlRootGameplayOptionsFileNode == null)
-            {
-                xmlRootGameplayOptionsFileNode = objDataDoc.CreateElement("chummer");
-                XmlAttribute xmlAttribute = objDataDoc.CreateAttribute("file");
-                xmlAttribute.Value = "gameplayoptions.xml";
-                xmlRootGameplayOptionsFileNode.Attributes?.Append(xmlAttribute);
-                xmlRootNode.AppendChild(xmlRootGameplayOptionsFileNode);
-            }
-
-            // Process GameplayOptions
-
-            XmlNode xmlGameplayOptionNodesParent = xmlRootGameplayOptionsFileNode.SelectSingleNode("gameplayoptions");
-            if (xmlGameplayOptionNodesParent == null)
-            {
-                xmlGameplayOptionNodesParent = objDataDoc.CreateElement("gameplayoptions");
-                xmlRootGameplayOptionsFileNode.AppendChild(xmlGameplayOptionNodesParent);
-            }
-
-            XPathNavigator xmlDataGameplayOptionNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("gameplayoptions");
-            if (xmlDataGameplayOptionNodeList != null)
-            {
-                foreach (XPathNavigator xmlDataGameplayOptionNode in xmlDataGameplayOptionNodeList.Select("gameplayoption"))
-                {
-                    if (objWorker.CancellationPending)
-                        return;
-                    string strDataGameplayOptionName = xmlDataGameplayOptionNode.SelectSingleNode("name")?.Value ?? string.Empty;
-                    string strDataGameplayOptionId = xmlDataGameplayOptionNode.SelectSingleNode("id")?.Value ?? string.Empty;
-                    XmlNode xmlGameplayOptionNode = xmlGameplayOptionNodesParent.SelectSingleNode("gameplayoption[id = " + strDataGameplayOptionId.CleanXPath() + ']');
-                    if (xmlGameplayOptionNode != null)
-                    {
-                        if (xmlGameplayOptionNode["id"] == null)
-                        {
-                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
-                            xmlIdElement.InnerText = strDataGameplayOptionId;
-                            xmlGameplayOptionNode.PrependChild(xmlIdElement);
-                        }
-
-                        if (xmlGameplayOptionNode["name"] == null)
-                        {
-                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
-                            xmlNameElement.InnerText = strDataGameplayOptionName;
-                            xmlGameplayOptionNode.AppendChild(xmlNameElement);
-                        }
-
-                        if (xmlGameplayOptionNode["translate"] == null)
-                        {
-                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
-                            xmlTranslateElement.InnerText = strDataGameplayOptionName;
-                            xmlGameplayOptionNode.AppendChild(xmlTranslateElement);
-                        }
-                    }
-                    else
-                    {
-                        xmlGameplayOptionNode = objDataDoc.CreateElement("gameplayoption");
-
-                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
-                        xmlIdElement.InnerText = strDataGameplayOptionId;
-                        xmlGameplayOptionNode.AppendChild(xmlIdElement);
-
-                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
-                        xmlNameElement.InnerText = strDataGameplayOptionName;
-                        xmlGameplayOptionNode.AppendChild(xmlNameElement);
-
-                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
-                        xmlTranslateElement.InnerText = strDataGameplayOptionName;
-                        xmlGameplayOptionNode.AppendChild(xmlTranslateElement);
-
-                        xmlGameplayOptionNodesParent.AppendChild(xmlGameplayOptionNode);
-                    }
-                }
-            }
-
-            if (blnRemoveTranslationIfSourceNotFound)
-            {
-                using (XmlNodeList xmlGameplayOptionNodeList = xmlGameplayOptionNodesParent.SelectNodes("gameplayoption"))
-                {
-                    if (xmlGameplayOptionNodeList?.Count > 0)
-                    {
-                        foreach (XmlNode xmlGameplayOptionNode in xmlGameplayOptionNodeList)
-                        {
-                            if (objWorker.CancellationPending)
-                                return;
-                            if (xmlGameplayOptionNode.Attributes != null)
-                            {
-                                for (int i = xmlGameplayOptionNode.Attributes.Count - 1; i >= 0; --i)
-                                {
-                                    XmlAttribute xmlAttribute = xmlGameplayOptionNode.Attributes[i];
-                                    if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:", StringComparison.Ordinal))
-                                        xmlGameplayOptionNode.Attributes.RemoveAt(i);
-                                }
-                            }
-
-                            string strId = xmlGameplayOptionNode["id"]?.InnerText;
-                            if (string.IsNullOrEmpty(strId) || xmlDataGameplayOptionNodeList?.SelectSingleNode("gameplayoption[id = " + strId.CleanXPath() + ']') == null)
-                            {
-#if !DELETE
-                                XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
-                                xmlExistsAttribute.Value = "False";
-                                xmlGameplayOptionNode.Attributes?.Append(xmlExistsAttribute);
-#else
-                                xmlGameplayOptionNodesParent.RemoveChild(xmlGameplayOptionNode);
 #endif
                             }
                         }
@@ -6178,6 +6056,129 @@ namespace Translator
                                 xmlQualityNode.Attributes?.Append(xmlExistsAttribute);
 #else
                                 xmlQualityNodesParent.RemoveChild(xmlQualityNode);
+#endif
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void ProcessSettings(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
+        {
+            XmlDocument xmlDataDocument = new XmlDocument();
+            xmlDataDocument.Load(Path.Combine(s_Path, "data", "settings.xml"));
+            XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
+
+            XmlNode xmlRootNode = objDataDoc.SelectSingleNode("/chummer");
+            if (xmlRootNode == null)
+            {
+                xmlRootNode = objDataDoc.CreateElement("chummer");
+                objDataDoc.AppendChild(xmlRootNode);
+            }
+
+            XmlNode xmlRootSettingsFileNode = objDataDoc.SelectSingleNode("/chummer/chummer[@file = \"settings.xml\"]");
+            if (xmlRootSettingsFileNode == null)
+            {
+                xmlRootSettingsFileNode = objDataDoc.CreateElement("chummer");
+                XmlAttribute xmlAttribute = objDataDoc.CreateAttribute("file");
+                xmlAttribute.Value = "settings.xml";
+                xmlRootSettingsFileNode.Attributes?.Append(xmlAttribute);
+                xmlRootNode.AppendChild(xmlRootSettingsFileNode);
+            }
+
+            // Process Settings
+
+            XmlNode xmlSettingNodesParent = xmlRootSettingsFileNode.SelectSingleNode("settings");
+            if (xmlSettingNodesParent == null)
+            {
+                xmlSettingNodesParent = objDataDoc.CreateElement("settings");
+                xmlRootSettingsFileNode.AppendChild(xmlSettingNodesParent);
+            }
+
+            XPathNavigator xmlDataSettingNodeList = xmlDataDocumentBaseChummerNode?.SelectSingleNode("settings");
+            if (xmlDataSettingNodeList != null)
+            {
+                foreach (XPathNavigator xmlDataSettingNode in xmlDataSettingNodeList.Select("setting"))
+                {
+                    if (objWorker.CancellationPending)
+                        return;
+                    string strDataSettingName = xmlDataSettingNode.SelectSingleNode("name")?.Value ?? string.Empty;
+                    string strDataSettingId = xmlDataSettingNode.SelectSingleNode("id")?.Value ?? string.Empty;
+                    XmlNode xmlSettingNode = xmlSettingNodesParent.SelectSingleNode("setting[id = " + strDataSettingId.CleanXPath() + ']');
+                    if (xmlSettingNode != null)
+                    {
+                        if (xmlSettingNode["id"] == null)
+                        {
+                            XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                            xmlIdElement.InnerText = strDataSettingId;
+                            xmlSettingNode.PrependChild(xmlIdElement);
+                        }
+
+                        if (xmlSettingNode["name"] == null)
+                        {
+                            XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                            xmlNameElement.InnerText = strDataSettingName;
+                            xmlSettingNode.AppendChild(xmlNameElement);
+                        }
+
+                        if (xmlSettingNode["translate"] == null)
+                        {
+                            XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                            xmlTranslateElement.InnerText = strDataSettingName;
+                            xmlSettingNode.AppendChild(xmlTranslateElement);
+                        }
+                    }
+                    else
+                    {
+                        xmlSettingNode = objDataDoc.CreateElement("setting");
+
+                        XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                        xmlIdElement.InnerText = strDataSettingId;
+                        xmlSettingNode.AppendChild(xmlIdElement);
+
+                        XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                        xmlNameElement.InnerText = strDataSettingName;
+                        xmlSettingNode.AppendChild(xmlNameElement);
+
+                        XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                        xmlTranslateElement.InnerText = strDataSettingName;
+                        xmlSettingNode.AppendChild(xmlTranslateElement);
+
+                        xmlSettingNodesParent.AppendChild(xmlSettingNode);
+                    }
+                }
+            }
+
+            if (blnRemoveTranslationIfSourceNotFound)
+            {
+                using (XmlNodeList xmlSettingNodeList = xmlSettingNodesParent.SelectNodes("setting"))
+                {
+                    if (xmlSettingNodeList?.Count > 0)
+                    {
+                        foreach (XmlNode xmlSettingNode in xmlSettingNodeList)
+                        {
+                            if (objWorker.CancellationPending)
+                                return;
+                            if (xmlSettingNode.Attributes != null)
+                            {
+                                for (int i = xmlSettingNode.Attributes.Count - 1; i >= 0; --i)
+                                {
+                                    XmlAttribute xmlAttribute = xmlSettingNode.Attributes[i];
+                                    if (xmlAttribute.Name != "translated" && !xmlAttribute.Name.StartsWith("xml:", StringComparison.Ordinal))
+                                        xmlSettingNode.Attributes.RemoveAt(i);
+                                }
+                            }
+
+                            string strId = xmlSettingNode["id"]?.InnerText;
+                            if (string.IsNullOrEmpty(strId) || xmlDataSettingNodeList?.SelectSingleNode("setting[id = " + strId.CleanXPath() + ']') == null)
+                            {
+#if !DELETE
+                                XmlAttribute xmlExistsAttribute = objDataDoc.CreateAttribute("exists");
+                                xmlExistsAttribute.Value = "False";
+                                xmlSettingNode.Attributes?.Append(xmlExistsAttribute);
+#else
+                                xmlSettingNodesParent.RemoveChild(xmlSettingNode);
 #endif
                             }
                         }

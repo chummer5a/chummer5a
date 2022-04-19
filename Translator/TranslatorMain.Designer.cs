@@ -347,7 +347,7 @@ namespace Translator
             this.tlpMain.Size = new System.Drawing.Size(446, 143);
             this.tlpMain.TabIndex = 149;
             // 
-            // frmTranslatorMain
+            // TranslatorMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -356,7 +356,7 @@ namespace Translator
             this.ClientSize = new System.Drawing.Size(464, 161);
             this.Controls.Add(this.tlpMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "frmTranslatorMain";
+            this.Name = "TranslatorMain";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Chummer Translator";

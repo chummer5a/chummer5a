@@ -30,6 +30,7 @@ Application Changes:
 - Loading ammo into a weapon no longer causes the gear entry for that ammo to have its quantity deducted immediately. Instead, quantities will get deducted as the weapon is fired. This also fixes various other issues arising from this strange handling of ammo gear entries. Fixes #4760.
 - Added the ability to (re-)open the Master Index and/or Character Roster forms through the Tools menu.
 - Purchasing windows no longer crash when using Chummer in a language that uses commmas as decimal separators. Fixes #4771.
+- Updated the Translator tool to recognize built-in settings names to be translated.
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.

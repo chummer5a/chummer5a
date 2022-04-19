@@ -23,6 +23,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Textblock-Converter", "TextblockConverter\Textblock-Converter.csproj", "{97EFDBA5-9A5A-459E-BEC4-BA7647295675}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Translator", "Translator\Translator.csproj", "{B65D0252-6BCB-4901-9CA6-856EF785DF8D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{95279469-5A3E-42E6-993C-6A403586C86E} = {95279469-5A3E-42E6-993C-6A403586C86E}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chummer.Tests", "Chummer.Tests\Chummer.Tests.csproj", "{8C20E7FA-9C93-42A9-A969-C3F5BDF093EA}"
 EndProject
