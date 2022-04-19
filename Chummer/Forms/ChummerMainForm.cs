@@ -1303,7 +1303,7 @@ namespace Chummer
                         case CharacterSheetViewer frmSheetViewer:
                         {
                             string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                            string strSheet = await LanguageManager.GetStringAsync("String_Sheet");
+                            string strSheet = await LanguageManager.GetStringAsync("String_Sheet_Blank");
                             await objTabPage.DoThreadSafeAsync(
                                 x => x.Text = string.Format(
                                     strSheet,
@@ -1318,7 +1318,7 @@ namespace Chummer
                         }
                         case ExportCharacter frmExportCharacter:
                         {
-                            string strExport = await LanguageManager.GetStringAsync("String_Export");
+                            string strExport = await LanguageManager.GetStringAsync("String_Export_Blank");
                             await objTabPage.DoThreadSafeAsync(
                                 x => x.Text = string.Format(
                                     strExport,
@@ -1546,8 +1546,8 @@ namespace Chummer
         private async Task UpdateCharacterTabTitle(Character objCharacter, string strCharacterName)
         {
             string strSpace = await LanguageManager.GetStringAsync("String_Space");
-            string strSheet = await LanguageManager.GetStringAsync("String_Sheet");
-            string strExport = await LanguageManager.GetStringAsync("String_Export");
+            string strSheet = await LanguageManager.GetStringAsync("String_Sheet_Blank");
+            string strExport = await LanguageManager.GetStringAsync("String_Export_Blank");
             await tabForms.DoThreadSafeAsync(x =>
             {
                 foreach (TabPage objTabPage in x.TabPages)

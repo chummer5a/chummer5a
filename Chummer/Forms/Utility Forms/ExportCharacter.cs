@@ -91,7 +91,7 @@ namespace Chummer
                     }
                 }
                 lstExportMethods.Sort();
-                lstExportMethods.Insert(0, new ListItem("JSON", await LanguageManager.GetStringAsync("String_Export_JSON")));
+                lstExportMethods.Insert(0, new ListItem("JSON", string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Export_Blank"), "JSON")));
 
                 await cboXSLT.PopulateWithListItemsAsync(lstExportMethods, _objGenericToken);
                 await cboXSLT.DoThreadSafeAsync(x =>
@@ -176,39 +176,56 @@ namespace Chummer
             }
             _objGenericFormClosingCancellationTokenSource?.Cancel(false);
         }
-
-        private void cmdCancel_Click(object sender, EventArgs e)
+        
+        private async void cmdExport_Click(object sender, EventArgs e)
         {
-            DialogResult = DialogResult.Cancel;
-        }
-
-        private async void cmdOK_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(_strXslt))
-                return;
-
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken);
-                try
-                {
-                    if (_strXslt == "JSON")
-                    {
-                        await ExportJson(token: _objGenericToken);
-                    }
-                    else
-                    {
-                        await ExportNormal(token: _objGenericToken);
-                    }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync();
-                }
+                await DoExport(_objGenericToken);
             }
             catch (OperationCanceledException)
             {
                 //swallow this
+            }
+        }
+
+        private async void cmdExportClose_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                await DoExport(_objGenericToken);
+                await this.DoThreadSafeAsync(x =>
+                {
+                    x.DialogResult = DialogResult.OK;
+                    x.Close();
+                }, _objGenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async ValueTask DoExport(CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(_strXslt))
+                return;
+
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
+            {
+                if (_strXslt == "JSON")
+                {
+                    await ExportJson(token: token);
+                }
+                else
+                {
+                    await ExportNormal(token: token);
+                }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -400,7 +417,8 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
             try
             {
-                await Task.WhenAll(cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token),
+                await Task.WhenAll(cmdExport.DoThreadSafeAsync(x => x.Enabled = false, token),
+                                   cmdExportClose.DoThreadSafeAsync(x => x.Enabled = false, token),
                                    LanguageManager.GetStringAsync("String_Generating_Data")
                                                   .ContinueWith(
                                                       y => txtText.DoThreadSafeAsync(x => x.Text = y.Result, token),
@@ -478,12 +496,6 @@ namespace Chummer
                                   ? strBoxText.Item1
                                   : txtText.Text,
                               Encoding.UTF8);
-
-            await this.DoThreadSafeAsync(x =>
-            {
-                x.DialogResult = DialogResult.OK;
-                x.Close();
-            }, token);
         }
 
         private async Task GenerateXml(CancellationToken token = default)
@@ -492,7 +504,8 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
             try
             {
-                await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token);
+                await cmdExport.DoThreadSafeAsync(x => x.Enabled = false, token);
+                await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = false, token);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -576,7 +589,8 @@ namespace Chummer
                 }
                 finally
                 {
-                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = true, token);
+                    await cmdExport.DoThreadSafeAsync(x => x.Enabled = true, token);
+                    await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = true, token);
                 }
             }
             finally
@@ -591,7 +605,8 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
             try
             {
-                await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token);
+                await cmdExport.DoThreadSafeAsync(x => x.Enabled = false, token);
+                await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = false, token);
                 try
                 {
                     token.ThrowIfCancellationRequested();
@@ -601,7 +616,8 @@ namespace Chummer
                 }
                 finally
                 {
-                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = true, token);
+                    await cmdExport.DoThreadSafeAsync(x => x.Enabled = true, token);
+                    await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = true, token);
                 }
             }
             finally
@@ -662,12 +678,6 @@ namespace Chummer
                                   ? strBoxText.Item1
                                   : txtText.Text,
                               Encoding.UTF8);
-
-            await this.DoThreadSafeAsync(x =>
-            {
-                x.DialogResult = DialogResult.OK;
-                x.Close();
-            }, token);
         }
 
         #endregion JSON

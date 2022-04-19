@@ -48,11 +48,13 @@ Changed/New Strings:
 - String_Export_JSON
 - Menu_Main_MasterIndex
 - Menu_Main_CharacterRoster
-- String_Sheet
-- String_Export
+- String_Sheet_Blank
+- String_Export_Blank
+- String_Export_And_Close
 
 Removed Strings:
 - Message_UnderLanguageLimit
+- String_Export_JSON
 
 Build 222
 Application Changes:

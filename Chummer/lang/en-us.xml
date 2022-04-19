@@ -9386,8 +9386,8 @@
       <text>An error was encountered while attempting to open up the printing dialog for "{0}". Chummer5a will now proceed with its built-in PDF file saving system.</text>
     </string>
     <string>
-      <key>String_Sheet</key>
-      <text>Sheet - {0}</text>
+      <key>String_Sheet_Blank</key>
+      <text>Sheet {0}</text>
     </string>
     <!-- End Region-->
     <!-- Region Create Improvement Window -->
@@ -9476,11 +9476,15 @@
       <text>Generating Data...</text>
     </string>
     <string>
-      <key>String_Export_JSON</key>
-      <text>Export JSON</text>
+      <key>String_Export</key>
+      <text>Export</text>
     </string>
     <string>
-      <key>String_Export</key>
+      <key>String_Export_And_Close</key>
+      <text>Export and Close</text>
+    </string>
+    <string>
+      <key>String_Export_Blank</key>
       <text>Export {0}</text>
     </string>
     <!-- End Region-->
