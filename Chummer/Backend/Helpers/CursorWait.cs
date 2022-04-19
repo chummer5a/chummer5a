@@ -102,27 +102,35 @@ namespace Chummer
                 return objReturn;
             }
             Form frmControl = objReturn._objControl as Form;
-            if (frmControl == null || await frmControl.DoThreadSafeFuncAsync(x => x.IsMdiChild, token))
+            try
             {
-                if (frmControl != null)
+                if (frmControl == null || await frmControl.DoThreadSafeFuncAsync(x => x.IsMdiChild, token))
                 {
-                    objReturn._frmControlTopParent = await frmControl.DoThreadSafeFuncAsync(x => x.MdiParent, token);
-                }
-                else if (objReturn._objControl is UserControl objUserControl)
-                {
-                    objReturn._frmControlTopParent = await objUserControl.DoThreadSafeFuncAsync(x => x.ParentForm, token);
-                }
-                else if (objReturn._objControl != null)
-                {
-                    for (Control objLoop = await objReturn._objControl.DoThreadSafeFuncAsync(x => x.Parent, token); objLoop != null; objLoop = await objLoop.DoThreadSafeFuncAsync(x => x.Parent, token))
+                    if (frmControl != null)
                     {
-                        if (objLoop is Form objLoopForm)
+                        objReturn._frmControlTopParent = await frmControl.DoThreadSafeFuncAsync(x => x.MdiParent, token);
+                    }
+                    else if (objReturn._objControl is UserControl objUserControl)
+                    {
+                        objReturn._frmControlTopParent = await objUserControl.DoThreadSafeFuncAsync(x => x.ParentForm, token);
+                    }
+                    else if (objReturn._objControl != null)
+                    {
+                        for (Control objLoop = await objReturn._objControl.DoThreadSafeFuncAsync(x => x.Parent, token); objLoop != null; objLoop = await objLoop.DoThreadSafeFuncAsync(x => x.Parent, token))
                         {
-                            objReturn._frmControlTopParent = objLoopForm;
-                            break;
+                            if (objLoop is Form objLoopForm)
+                            {
+                                objReturn._frmControlTopParent = objLoopForm;
+                                break;
+                            }
                         }
                     }
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                await objReturn.DisposeAsync();
+                throw;
             }
 
             if (objReturn._objControl != null)
@@ -130,13 +138,29 @@ namespace Chummer
                 if (objReturn._blnAppStartingCursor)
                 {
                     int intNewValue = s_DicCursorControls.AddOrUpdate(objReturn._objControl, 1, (x, y) => Interlocked.Increment(ref y));
-                    await objReturn.SetControlCursorAsync(intNewValue < short.MaxValue ? Cursors.AppStarting : Cursors.WaitCursor, token);
+                    try
+                    {
+                        await objReturn.SetControlCursorAsync(intNewValue < short.MaxValue ? Cursors.AppStarting : Cursors.WaitCursor, token);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        await objReturn.DisposeAsync();
+                        throw;
+                    }
                     objReturn._blnDoUnsetCursorOnDispose = true;
                 }
                 else
                 {
                     s_DicCursorControls.AddOrUpdate(objReturn._objControl, short.MaxValue, (x, y) => Interlocked.Add(ref y, short.MaxValue));
-                    await objReturn.SetControlCursorAsync(Cursors.WaitCursor, token);
+                    try
+                    {
+                        await objReturn.SetControlCursorAsync(Cursors.WaitCursor, token);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        await objReturn.DisposeAsync();
+                        throw;
+                    }
                     objReturn._blnDoUnsetCursorOnDispose = true;
                 }
             }
