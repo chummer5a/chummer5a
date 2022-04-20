@@ -2006,19 +2006,21 @@ namespace Chummer
         /// </summary>
         /// <param name="strLanguage">Language to check.</param>
         /// <param name="lstBooks">List of books.</param>
-        public static void Verify(string strLanguage, ICollection<string> lstBooks)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async ValueTask Verify(string strLanguage, ICollection<string> lstBooks,
+                                             CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return;
             XPathDocument objLanguageDoc;
-            string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
-            string strFilePath = Path.Combine(languageDirectoryPath, strLanguage + "_data.xml");
+            string strFilePath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage + "_data.xml");
 
             try
             {
                 using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                        objLanguageDoc = new XPathDocument(objXmlReader);
+                using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
+                    objLanguageDoc = new XPathDocument(objXmlReader);
             }
             catch (IOException ex)
             {
@@ -2031,369 +2033,437 @@ namespace Chummer
                 return;
             }
 
+            token.ThrowIfCancellationRequested();
+
             XPathNavigator objLanguageNavigator = objLanguageDoc.CreateNavigator();
 
-            string strLangPath = Path.Combine(languageDirectoryPath, "results_" + strLanguage + ".xml");
-            FileStream objStream = new FileStream(strLangPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+            string strLangPath = Path.Combine(Utils.GetLanguageFolderPath, "results_" + strLanguage + ".xml");
+            using (FileStream objStream
+                   = new FileStream(strLangPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
             {
-                objWriter.WriteStartDocument();
-                // <results>
-                objWriter.WriteStartElement("results");
-                
-                foreach (string strFile in Directory.EnumerateFiles(Utils.GetDataFolderPath, "*.xml"))
+                token.ThrowIfCancellationRequested();
+                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {
-                    string strFileName = Path.GetFileName(strFile);
+                    await objWriter.WriteStartDocumentAsync();
+                    // <results>
+                    await objWriter.WriteStartElementAsync("results");
 
-                    if (string.IsNullOrEmpty(strFileName)
-                        || strFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase)
-                        || strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
-                        || strFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
-                        || strFile.EndsWith("packs.xml", StringComparison.OrdinalIgnoreCase)
-                        || strFile.EndsWith("lifemodules.xml", StringComparison.OrdinalIgnoreCase)
-                        || strFile.EndsWith("sheets.xml", StringComparison.OrdinalIgnoreCase))
-                        continue;
-
-                    // First pass: make sure the document exists.
-                    bool blnExists = false;
-                    XPathNavigator objLanguageRoot = objLanguageNavigator.SelectSingleNode("/chummer/chummer[@file = " + strFileName.CleanXPath() + ']');
-                    if (objLanguageRoot != null)
-                        blnExists = true;
-
-                    // <file name="x" needstobeadded="y">
-                    objWriter.WriteStartElement("file");
-                    objWriter.WriteAttributeString("name", strFileName);
-
-                    if (blnExists)
+                    foreach (string strFile in Directory.EnumerateFiles(Utils.GetDataFolderPath, "*.xml"))
                     {
-                        // Load the current English file.
-                        XPathNavigator objEnglishDoc = LoadXPath(strFileName);
-                        XPathNavigator objEnglishRoot = objEnglishDoc.SelectSingleNodeAndCacheExpression("/chummer");
+                        token.ThrowIfCancellationRequested();
+                        string strFileName = Path.GetFileName(strFile);
 
-                        foreach (XPathNavigator objType in objEnglishRoot.SelectChildren(XPathNodeType.Element))
+                        if (string.IsNullOrEmpty(strFileName)
+                            || strFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase)
+                            || strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
+                            || strFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
+                            || strFile.EndsWith("packs.xml", StringComparison.OrdinalIgnoreCase)
+                            || strFile.EndsWith("lifemodules.xml", StringComparison.OrdinalIgnoreCase)
+                            || strFile.EndsWith("sheets.xml", StringComparison.OrdinalIgnoreCase))
+                            continue;
+
+                        // First pass: make sure the document exists.
+                        bool blnExists = false;
+                        XPathNavigator objLanguageRoot
+                            = objLanguageNavigator.SelectSingleNode(
+                                "/chummer/chummer[@file = " + strFileName.CleanXPath() + ']');
+                        if (objLanguageRoot != null)
+                            blnExists = true;
+
+                        // <file name="x" needstobeadded="y">
+                        await objWriter.WriteStartElementAsync("file");
+                        await objWriter.WriteAttributeStringAsync("name", strFileName);
+
+                        if (blnExists)
                         {
-                            string strTypeName = objType.Name;
-                            bool blnTypeWritten = false;
-                            foreach (XPathNavigator objChild in objType.SelectChildren(XPathNodeType.Element))
+                            // Load the current English file.
+                            XPathNavigator objEnglishDoc = await LoadXPathAsync(strFileName, token: token);
+                            XPathNavigator objEnglishRoot
+                                = await objEnglishDoc.SelectSingleNodeAndCacheExpressionAsync("/chummer");
+
+                            foreach (XPathNavigator objType in objEnglishRoot.SelectChildren(XPathNodeType.Element))
                             {
-                                // If the Node has a source element, check it and see if it's in the list of books that were specified.
-                                // This is done since not all of the books are available in every language or the user may only wish to verify the content of certain books.
-                                bool blnContinue = true;
-                                XPathNavigator xmlSource = objChild.SelectSingleNodeAndCacheExpression("source");
-                                if (xmlSource != null)
+                                token.ThrowIfCancellationRequested();
+                                string strTypeName = objType.Name;
+                                bool blnTypeWritten = false;
+                                foreach (XPathNavigator objChild in objType.SelectChildren(XPathNodeType.Element))
                                 {
-                                    blnContinue = lstBooks.Contains(xmlSource.Value);
-                                }
-
-                                if (blnContinue)
-                                {
-                                    if ((strTypeName == "costs"
-                                         || strTypeName == "safehousecosts"
-                                         || strTypeName == "comforts"
-                                         || strTypeName == "neighborhoods"
-                                         || strTypeName == "securities")
-                                        && strFile.EndsWith("lifestyles.xml", StringComparison.OrdinalIgnoreCase))
-                                        continue;
-                                    if (strTypeName == "modifiers" && strFile.EndsWith("ranges.xml", StringComparison.OrdinalIgnoreCase))
-                                        continue;
-
-                                    string strChildName = objChild.Name;
-                                    XPathNavigator xmlTranslatedType = objLanguageRoot.SelectSingleNode(strTypeName);
-                                    XPathNavigator xmlName = objChild.SelectSingleNodeAndCacheExpression("name");
-                                    // Look for a matching entry in the Language file.
-                                    if (xmlName != null)
+                                    token.ThrowIfCancellationRequested();
+                                    // If the Node has a source element, check it and see if it's in the list of books that were specified.
+                                    // This is done since not all of the books are available in every language or the user may only wish to verify the content of certain books.
+                                    bool blnContinue = true;
+                                    XPathNavigator xmlSource
+                                        = await objChild.SelectSingleNodeAndCacheExpressionAsync("source");
+                                    if (xmlSource != null)
                                     {
-                                        string strChildNameElement = xmlName.Value;
-                                        XPathNavigator xmlNode = xmlTranslatedType?.SelectSingleNode(strChildName + "[name = " + strChildNameElement.CleanXPath() + ']');
-                                        if (xmlNode != null)
+                                        blnContinue = lstBooks.Contains(xmlSource.Value);
+                                    }
+
+                                    if (blnContinue)
+                                    {
+                                        if ((strTypeName == "costs"
+                                             || strTypeName == "safehousecosts"
+                                             || strTypeName == "comforts"
+                                             || strTypeName == "neighborhoods"
+                                             || strTypeName == "securities")
+                                            && strFile.EndsWith("lifestyles.xml", StringComparison.OrdinalIgnoreCase))
+                                            continue;
+                                        if (strTypeName == "modifiers"
+                                            && strFile.EndsWith("ranges.xml", StringComparison.OrdinalIgnoreCase))
+                                            continue;
+
+                                        string strChildName = objChild.Name;
+                                        XPathNavigator xmlTranslatedType
+                                            = objLanguageRoot.SelectSingleNode(strTypeName);
+                                        XPathNavigator xmlName
+                                            = await objChild.SelectSingleNodeAndCacheExpressionAsync("name");
+                                        // Look for a matching entry in the Language file.
+                                        if (xmlName != null)
                                         {
-                                            // A match was found, so see what elements, if any, are missing.
-                                            bool blnTranslate = false;
-                                            bool blnAltPage = false;
-                                            bool blnAdvantage = false;
-                                            bool blnDisadvantage = false;
-
-                                            if (objChild.HasChildren)
+                                            string strChildNameElement = xmlName.Value;
+                                            XPathNavigator xmlNode
+                                                = xmlTranslatedType?.SelectSingleNode(
+                                                    strChildName + "[name = " + strChildNameElement.CleanXPath() + ']');
+                                            if (xmlNode != null)
                                             {
-                                                if (xmlNode.SelectSingleNodeAndCacheExpression("translate") != null)
-                                                    blnTranslate = true;
+                                                // A match was found, so see what elements, if any, are missing.
+                                                bool blnTranslate = false;
+                                                bool blnAltPage = false;
+                                                bool blnAdvantage = false;
+                                                bool blnDisadvantage = false;
 
-                                                // Do not mark page as missing if the original does not have it.
-                                                if (objChild.SelectSingleNodeAndCacheExpression("page") != null)
+                                                if (objChild.HasChildren)
                                                 {
-                                                    if (xmlNode.SelectSingleNodeAndCacheExpression("altpage") != null)
+                                                    if (await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
+                                                            "translate") != null)
+                                                        blnTranslate = true;
+
+                                                    // Do not mark page as missing if the original does not have it.
+                                                    if (await objChild.SelectSingleNodeAndCacheExpressionAsync("page")
+                                                        != null)
+                                                    {
+                                                        if (await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
+                                                                "altpage") != null)
+                                                            blnAltPage = true;
+                                                    }
+                                                    else
                                                         blnAltPage = true;
-                                                }
-                                                else
-                                                    blnAltPage = true;
 
-                                                if (strFile.EndsWith("mentors.xml", StringComparison.OrdinalIgnoreCase)
-                                                    || strFile.EndsWith("paragons.xml", StringComparison.OrdinalIgnoreCase))
-                                                {
-                                                    if (xmlNode.SelectSingleNodeAndCacheExpression("altadvantage") != null)
+                                                    if (strFile.EndsWith("mentors.xml",
+                                                                         StringComparison.OrdinalIgnoreCase)
+                                                        || strFile.EndsWith(
+                                                            "paragons.xml", StringComparison.OrdinalIgnoreCase))
+                                                    {
+                                                        if (await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
+                                                                "altadvantage") != null)
+                                                            blnAdvantage = true;
+                                                        if (await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
+                                                                "altdisadvantage") != null)
+                                                            blnDisadvantage = true;
+                                                    }
+                                                    else
+                                                    {
                                                         blnAdvantage = true;
-                                                    if (xmlNode.SelectSingleNodeAndCacheExpression("altdisadvantage") != null)
                                                         blnDisadvantage = true;
+                                                    }
                                                 }
                                                 else
                                                 {
-                                                    blnAdvantage = true;
-                                                    blnDisadvantage = true;
+                                                    blnAltPage = true;
+                                                    if (await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
+                                                            "@translate") != null)
+                                                        blnTranslate = true;
+                                                }
+
+                                                // At least one piece of data was missing so write out the result node.
+                                                if (!blnTranslate || !blnAltPage || !blnAdvantage || !blnDisadvantage)
+                                                {
+                                                    if (!blnTypeWritten)
+                                                    {
+                                                        blnTypeWritten = true;
+                                                        await objWriter.WriteStartElementAsync(strTypeName);
+                                                    }
+
+                                                    // <results>
+                                                    await objWriter.WriteStartElementAsync(strChildName);
+                                                    await objWriter.WriteElementStringAsync(
+                                                        "name", strChildNameElement);
+                                                    if (!blnTranslate)
+                                                        await objWriter.WriteElementStringAsync("missing", "translate");
+                                                    if (!blnAltPage)
+                                                        await objWriter.WriteElementStringAsync("missing", "altpage");
+                                                    if (!blnAdvantage)
+                                                        await objWriter.WriteElementStringAsync(
+                                                            "missing", "altadvantage");
+                                                    if (!blnDisadvantage)
+                                                        await objWriter.WriteElementStringAsync(
+                                                            "missing", "altdisadvantage");
+                                                    // </results>
+                                                    await objWriter.WriteEndElementAsync();
                                                 }
                                             }
                                             else
                                             {
-                                                blnAltPage = true;
-                                                if (xmlNode.SelectSingleNodeAndCacheExpression("@translate") != null)
-                                                    blnTranslate = true;
-                                            }
-
-                                            // At least one piece of data was missing so write out the result node.
-                                            if (!blnTranslate || !blnAltPage || !blnAdvantage || !blnDisadvantage)
-                                            {
                                                 if (!blnTypeWritten)
                                                 {
                                                     blnTypeWritten = true;
-                                                    objWriter.WriteStartElement(strTypeName);
+                                                    await objWriter.WriteStartElementAsync(strTypeName);
                                                 }
 
-                                                // <results>
-                                                objWriter.WriteStartElement(strChildName);
-                                                objWriter.WriteElementString("name", strChildNameElement);
-                                                if (!blnTranslate)
-                                                    objWriter.WriteElementString("missing", "translate");
-                                                if (!blnAltPage)
-                                                    objWriter.WriteElementString("missing", "altpage");
-                                                if (!blnAdvantage)
-                                                    objWriter.WriteElementString("missing", "altadvantage");
-                                                if (!blnDisadvantage)
-                                                    objWriter.WriteElementString("missing", "altdisadvantage");
-                                                // </results>
-                                                objWriter.WriteEndElement();
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (!blnTypeWritten)
-                                            {
-                                                blnTypeWritten = true;
-                                                objWriter.WriteStartElement(strTypeName);
+                                                // No match was found, so write out that the data item is missing.
+                                                // <result>
+                                                await objWriter.WriteStartElementAsync(strChildName);
+                                                await objWriter.WriteAttributeStringAsync(
+                                                    "needstobeadded", bool.TrueString);
+                                                await objWriter.WriteElementStringAsync("name", strChildNameElement);
+                                                // </result>
+                                                await objWriter.WriteEndElementAsync();
                                             }
 
-                                            // No match was found, so write out that the data item is missing.
-                                            // <result>
-                                            objWriter.WriteStartElement(strChildName);
-                                            objWriter.WriteAttributeString("needstobeadded", bool.TrueString);
-                                            objWriter.WriteElementString("name", strChildNameElement);
-                                            // </result>
-                                            objWriter.WriteEndElement();
-                                        }
-
-                                        if (strFileName == "metatypes.xml")
-                                        {
-                                            XPathNavigator xmlMetavariants = objChild.SelectSingleNodeAndCacheExpression("metavariants");
-                                            if (xmlMetavariants != null)
+                                            if (strFileName == "metatypes.xml")
                                             {
-                                                foreach (XPathNavigator objMetavariant in xmlMetavariants.SelectAndCacheExpression("metavariant"))
+                                                XPathNavigator xmlMetavariants
+                                                    = await objChild.SelectSingleNodeAndCacheExpressionAsync(
+                                                        "metavariants");
+                                                if (xmlMetavariants != null)
                                                 {
-                                                    string strMetavariantName = objMetavariant.SelectSingleNodeAndCacheExpression("name").Value;
-                                                    XPathNavigator objTranslate =
-                                                        objLanguageRoot.SelectSingleNode(
-                                                            "metatypes/metatype[name = "
-                                                            + strChildNameElement.CleanXPath()
-                                                            + "]/metavariants/metavariant[name = "
-                                                            + strMetavariantName.CleanXPath() + ']');
-                                                    if (objTranslate != null)
+                                                    foreach (XPathNavigator objMetavariant in await xmlMetavariants
+                                                                 .SelectAndCacheExpressionAsync("metavariant"))
                                                     {
-                                                        bool blnTranslate = objTranslate.SelectSingleNodeAndCacheExpression("translate") != null;
-                                                        bool blnAltPage = objTranslate.SelectSingleNodeAndCacheExpression("altpage") != null;
+                                                        string strMetavariantName
+                                                            = (await objMetavariant
+                                                                .SelectSingleNodeAndCacheExpressionAsync("name")).Value;
+                                                        XPathNavigator objTranslate =
+                                                            objLanguageRoot.SelectSingleNode(
+                                                                "metatypes/metatype[name = "
+                                                                + strChildNameElement.CleanXPath()
+                                                                + "]/metavariants/metavariant[name = "
+                                                                + strMetavariantName.CleanXPath() + ']');
+                                                        if (objTranslate != null)
+                                                        {
+                                                            bool blnTranslate
+                                                                = await objTranslate
+                                                                    .SelectSingleNodeAndCacheExpressionAsync(
+                                                                        "translate") != null;
+                                                            bool blnAltPage
+                                                                = await objTranslate
+                                                                      .SelectSingleNodeAndCacheExpressionAsync(
+                                                                          "altpage")
+                                                                  != null;
 
-                                                        // Item exists, so make sure it has its translate attribute populated.
-                                                        if (!blnTranslate || !blnAltPage)
+                                                            // Item exists, so make sure it has its translate attribute populated.
+                                                            if (!blnTranslate || !blnAltPage)
+                                                            {
+                                                                if (!blnTypeWritten)
+                                                                {
+                                                                    blnTypeWritten = true;
+                                                                    await objWriter.WriteStartElementAsync(strTypeName);
+                                                                }
+
+                                                                // <result>
+                                                                await objWriter.WriteStartElementAsync("metavariants");
+                                                                await objWriter.WriteStartElementAsync("metavariant");
+                                                                await objWriter.WriteElementStringAsync(
+                                                                    "name", strMetavariantName);
+                                                                if (!blnTranslate)
+                                                                    await objWriter.WriteElementStringAsync(
+                                                                        "missing", "translate");
+                                                                if (!blnAltPage)
+                                                                    await objWriter.WriteElementStringAsync(
+                                                                        "missing", "altpage");
+                                                                await objWriter.WriteEndElementAsync();
+                                                                // </result>
+                                                                await objWriter.WriteEndElementAsync();
+                                                            }
+                                                        }
+                                                        else
                                                         {
                                                             if (!blnTypeWritten)
                                                             {
                                                                 blnTypeWritten = true;
-                                                                objWriter.WriteStartElement(strTypeName);
+                                                                await objWriter.WriteStartElementAsync(strTypeName);
                                                             }
 
                                                             // <result>
-                                                            objWriter.WriteStartElement("metavariants");
-                                                            objWriter.WriteStartElement("metavariant");
-                                                            objWriter.WriteElementString("name", strMetavariantName);
-                                                            if (!blnTranslate)
-                                                                objWriter.WriteElementString("missing", "translate");
-                                                            if (!blnAltPage)
-                                                                objWriter.WriteElementString("missing", "altpage");
-                                                            objWriter.WriteEndElement();
+                                                            await objWriter.WriteStartElementAsync("metavariants");
+                                                            await objWriter.WriteStartElementAsync("metavariant");
+                                                            await objWriter.WriteAttributeStringAsync(
+                                                                "needstobeadded", bool.TrueString);
+                                                            await objWriter.WriteElementStringAsync(
+                                                                "name", strMetavariantName);
+                                                            await objWriter.WriteEndElementAsync();
                                                             // </result>
-                                                            objWriter.WriteEndElement();
+                                                            await objWriter.WriteEndElementAsync();
                                                         }
                                                     }
-                                                    else
+                                                }
+                                            }
+                                        }
+                                        else if (strChildName == "#comment")
+                                        {
+                                            //Ignore this node, as it's a comment node.
+                                        }
+                                        else if (strFile.EndsWith("tips.xml", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            XPathNavigator xmlText
+                                                = await objChild.SelectSingleNodeAndCacheExpressionAsync("text");
+                                            // Look for a matching entry in the Language file.
+                                            if (xmlText != null)
+                                            {
+                                                string strChildTextElement = xmlText.Value;
+                                                XPathNavigator xmlNode
+                                                    = xmlTranslatedType?.SelectSingleNode(
+                                                        strChildName + "[text = " + strChildTextElement.CleanXPath()
+                                                        + ']');
+                                                if (xmlNode != null)
+                                                {
+                                                    // A match was found, so see what elements, if any, are missing.
+                                                    bool blnTranslate
+                                                        = await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
+                                                              "translate") != null
+                                                          || (await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
+                                                              "@translated"))?.Value == bool.TrueString;
+
+                                                    // At least one piece of data was missing so write out the result node.
+                                                    if (!blnTranslate)
                                                     {
                                                         if (!blnTypeWritten)
                                                         {
                                                             blnTypeWritten = true;
-                                                            objWriter.WriteStartElement(strTypeName);
+                                                            await objWriter.WriteStartElementAsync(strTypeName);
+                                                        }
+
+                                                        // <results>
+                                                        await objWriter.WriteStartElementAsync(strChildName);
+                                                        await objWriter.WriteElementStringAsync(
+                                                            "text", strChildTextElement);
+                                                        if (!blnTranslate)
+                                                            await objWriter.WriteElementStringAsync(
+                                                                "missing", "translate");
+                                                        // </results>
+                                                        await objWriter.WriteEndElementAsync();
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (!blnTypeWritten)
+                                                    {
+                                                        blnTypeWritten = true;
+                                                        await objWriter.WriteStartElementAsync(strTypeName);
+                                                    }
+
+                                                    // No match was found, so write out that the data item is missing.
+                                                    // <result>
+                                                    await objWriter.WriteStartElementAsync(strChildName);
+                                                    await objWriter.WriteAttributeStringAsync(
+                                                        "needstobeadded", bool.TrueString);
+                                                    await objWriter.WriteElementStringAsync(
+                                                        "text", strChildTextElement);
+                                                    // </result>
+                                                    await objWriter.WriteEndElementAsync();
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            string strChildInnerText = objChild.Value;
+                                            if (!string.IsNullOrEmpty(strChildInnerText))
+                                            {
+                                                // The item does not have a name which means it should have a translate CharacterAttribute instead.
+                                                XPathNavigator objNode
+                                                    = xmlTranslatedType?.SelectSingleNode(
+                                                        strChildName + "[. =" + strChildInnerText.CleanXPath() + ']');
+                                                if (objNode != null)
+                                                {
+                                                    // Make sure the translate attribute is populated.
+                                                    if (await objNode.SelectSingleNodeAndCacheExpressionAsync(
+                                                            "@translate") == null)
+                                                    {
+                                                        if (!blnTypeWritten)
+                                                        {
+                                                            blnTypeWritten = true;
+                                                            await objWriter.WriteStartElementAsync(strTypeName);
                                                         }
 
                                                         // <result>
-                                                        objWriter.WriteStartElement("metavariants");
-                                                        objWriter.WriteStartElement("metavariant");
-                                                        objWriter.WriteAttributeString("needstobeadded", bool.TrueString);
-                                                        objWriter.WriteElementString("name", strMetavariantName);
-                                                        objWriter.WriteEndElement();
+                                                        await objWriter.WriteStartElementAsync(strChildName);
+                                                        await objWriter.WriteElementStringAsync(
+                                                            "name", strChildInnerText);
+                                                        await objWriter.WriteElementStringAsync("missing", "translate");
                                                         // </result>
-                                                        objWriter.WriteEndElement();
+                                                        await objWriter.WriteEndElementAsync();
                                                     }
                                                 }
-                                            }
-                                        }
-                                    }
-                                    else if (strChildName == "#comment")
-                                    {
-                                        //Ignore this node, as it's a comment node.
-                                    }
-                                    else if (strFile.EndsWith("tips.xml", StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        XPathNavigator xmlText = objChild.SelectSingleNodeAndCacheExpression("text");
-                                        // Look for a matching entry in the Language file.
-                                        if (xmlText != null)
-                                        {
-                                            string strChildTextElement = xmlText.Value;
-                                            XPathNavigator xmlNode = xmlTranslatedType?.SelectSingleNode(strChildName + "[text = " + strChildTextElement.CleanXPath() + ']');
-                                            if (xmlNode != null)
-                                            {
-                                                // A match was found, so see what elements, if any, are missing.
-                                                bool blnTranslate = xmlNode.SelectSingleNodeAndCacheExpression("translate") != null || xmlNode.SelectSingleNodeAndCacheExpression("@translated")?.Value == bool.TrueString;
-
-                                                // At least one piece of data was missing so write out the result node.
-                                                if (!blnTranslate)
+                                                else
                                                 {
                                                     if (!blnTypeWritten)
                                                     {
                                                         blnTypeWritten = true;
-                                                        objWriter.WriteStartElement(strTypeName);
+                                                        await objWriter.WriteStartElementAsync(strTypeName);
                                                     }
 
-                                                    // <results>
-                                                    objWriter.WriteStartElement(strChildName);
-                                                    objWriter.WriteElementString("text", strChildTextElement);
-                                                    if (!blnTranslate)
-                                                        objWriter.WriteElementString("missing", "translate");
-                                                    // </results>
-                                                    objWriter.WriteEndElement();
-                                                }
-                                            }
-                                            else
-                                            {
-                                                if (!blnTypeWritten)
-                                                {
-                                                    blnTypeWritten = true;
-                                                    objWriter.WriteStartElement(strTypeName);
-                                                }
-
-                                                // No match was found, so write out that the data item is missing.
-                                                // <result>
-                                                objWriter.WriteStartElement(strChildName);
-                                                objWriter.WriteAttributeString("needstobeadded", bool.TrueString);
-                                                objWriter.WriteElementString("text", strChildTextElement);
-                                                // </result>
-                                                objWriter.WriteEndElement();
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        string strChildInnerText = objChild.Value;
-                                        if (!string.IsNullOrEmpty(strChildInnerText))
-                                        {
-                                            // The item does not have a name which means it should have a translate CharacterAttribute instead.
-                                            XPathNavigator objNode = xmlTranslatedType?.SelectSingleNode(strChildName + "[. =" + strChildInnerText.CleanXPath() + ']');
-                                            if (objNode != null)
-                                            {
-                                                // Make sure the translate attribute is populated.
-                                                if (objNode.SelectSingleNodeAndCacheExpression("@translate") == null)
-                                                {
-                                                    if (!blnTypeWritten)
-                                                    {
-                                                        blnTypeWritten = true;
-                                                        objWriter.WriteStartElement(strTypeName);
-                                                    }
-
+                                                    // No match was found, so write out that the data item is missing.
                                                     // <result>
-                                                    objWriter.WriteStartElement(strChildName);
-                                                    objWriter.WriteElementString("name", strChildInnerText);
-                                                    objWriter.WriteElementString("missing", "translate");
+                                                    await objWriter.WriteStartElementAsync(strChildName);
+                                                    await objWriter.WriteAttributeStringAsync(
+                                                        "needstobeadded", bool.TrueString);
+                                                    await objWriter.WriteElementStringAsync("name", strChildInnerText);
                                                     // </result>
-                                                    objWriter.WriteEndElement();
+                                                    await objWriter.WriteEndElementAsync();
                                                 }
-                                            }
-                                            else
-                                            {
-                                                if (!blnTypeWritten)
-                                                {
-                                                    blnTypeWritten = true;
-                                                    objWriter.WriteStartElement(strTypeName);
-                                                }
-
-                                                // No match was found, so write out that the data item is missing.
-                                                // <result>
-                                                objWriter.WriteStartElement(strChildName);
-                                                objWriter.WriteAttributeString("needstobeadded", bool.TrueString);
-                                                objWriter.WriteElementString("name", strChildInnerText);
-                                                // </result>
-                                                objWriter.WriteEndElement();
                                             }
                                         }
                                     }
                                 }
+
+                                if (blnTypeWritten)
+                                    await objWriter.WriteEndElementAsync();
                             }
 
-                            if (blnTypeWritten)
-                                objWriter.WriteEndElement();
-                        }
-
-                        // Now loop through the translation file and determine if there are any entries in there that are not part of the base content.
-                        foreach (XPathNavigator objType in objLanguageRoot.SelectChildren(XPathNodeType.Element))
-                        {
-                            foreach (XPathNavigator objChild in objType.SelectChildren(XPathNodeType.Element))
+                            // Now loop through the translation file and determine if there are any entries in there that are not part of the base content.
+                            foreach (XPathNavigator objType in objLanguageRoot.SelectChildren(XPathNodeType.Element))
                             {
-                                string strChildNameElement = objChild.SelectSingleNodeAndCacheExpression("name")?.Value;
-                                // Look for a matching entry in the English file.
-                                if (!string.IsNullOrEmpty(strChildNameElement))
+                                token.ThrowIfCancellationRequested();
+                                foreach (XPathNavigator objChild in objType.SelectChildren(XPathNodeType.Element))
                                 {
-                                    string strChildName = objChild.Name;
-                                    XPathNavigator objNode = objEnglishRoot.SelectSingleNode(
-                                        "/chummer/" + objType.Name + '/' + strChildName + "[name = "
-                                        + strChildNameElement.CleanXPath() + ']');
-                                    if (objNode == null)
+                                    token.ThrowIfCancellationRequested();
+                                    string strChildNameElement
+                                        = (await objChild.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
+                                    // Look for a matching entry in the English file.
+                                    if (!string.IsNullOrEmpty(strChildNameElement))
                                     {
-                                        // <noentry>
-                                        objWriter.WriteStartElement("noentry");
-                                        objWriter.WriteStartElement(strChildName);
-                                        objWriter.WriteElementString("name", strChildNameElement);
-                                        objWriter.WriteEndElement();
-                                        // </noentry>
-                                        objWriter.WriteEndElement();
+                                        string strChildName = objChild.Name;
+                                        XPathNavigator objNode = objEnglishRoot.SelectSingleNode(
+                                            "/chummer/" + objType.Name + '/' + strChildName + "[name = "
+                                            + strChildNameElement.CleanXPath() + ']');
+                                        if (objNode == null)
+                                        {
+                                            // <noentry>
+                                            await objWriter.WriteStartElementAsync("noentry");
+                                            await objWriter.WriteStartElementAsync(strChildName);
+                                            await objWriter.WriteElementStringAsync("name", strChildNameElement);
+                                            await objWriter.WriteEndElementAsync();
+                                            // </noentry>
+                                            await objWriter.WriteEndElementAsync();
+                                        }
                                     }
                                 }
                             }
                         }
+                        else
+                            await objWriter.WriteAttributeStringAsync("needstobeadded", bool.TrueString);
+
+                        // </file>
+                        await objWriter.WriteEndElementAsync();
                     }
-                    else
-                        objWriter.WriteAttributeString("needstobeadded", bool.TrueString);
 
-                    // </file>
-                    objWriter.WriteEndElement();
+                    // </results>
+                    await objWriter.WriteEndElementAsync();
+                    await objWriter.WriteEndDocumentAsync();
                 }
-
-                // </results>
-                objWriter.WriteEndElement();
-                objWriter.WriteEndDocument();
             }
         }
+
         #endregion
     }
 }

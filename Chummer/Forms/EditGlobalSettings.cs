@@ -236,7 +236,7 @@ namespace Chummer
                         setBooks.Add(strItemValue);
                     }
 
-                    XmlManager.Verify(strSelectedLanguage, setBooks);
+                    await XmlManager.Verify(strSelectedLanguage, setBooks);
                 }
 
                 string strFilePath
