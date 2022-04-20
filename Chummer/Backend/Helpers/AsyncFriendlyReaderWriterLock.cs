@@ -42,8 +42,7 @@ namespace Chummer
         private readonly AsyncLocal<Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>> _objCurrentWriterSemaphore = new AsyncLocal<Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>>();
         private readonly DebuggableSemaphoreSlim _objTopLevelWriterSemaphore = new DebuggableSemaphoreSlim();
         private int _intCountActiveReaders;
-        private bool _blnIsDisposed;
-        private bool _blnIsDisposing;
+        private int _intDisposedStatus;
 
         /// <summary>
         /// Try to synchronously obtain a lock for writing.
@@ -51,7 +50,7 @@ namespace Chummer
         /// </summary>
         public IDisposable EnterWriteLock(CancellationToken token = default)
         {
-            if (_blnIsDisposed || _blnIsDisposing)
+            if (_intDisposedStatus != 0)
                 throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
 
             token.ThrowIfCancellationRequested();
@@ -125,7 +124,7 @@ namespace Chummer
         /// </summary>
         public Task<IAsyncDisposable> EnterWriteLockAsync()
         {
-            if (_blnIsDisposed || _blnIsDisposing)
+            if (_intDisposedStatus != 0)
                 return Task.FromException<IAsyncDisposable>(new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock)));
             (DebuggableSemaphoreSlim objLastSemaphore, DebuggableSemaphoreSlim objCurrentSemaphore)
                 = _objCurrentWriterSemaphore.Value
@@ -147,7 +146,7 @@ namespace Chummer
         /// </summary>
         public Task<IAsyncDisposable> EnterWriteLockAsync(CancellationToken token)
         {
-            if (_blnIsDisposed || _blnIsDisposing)
+            if (_intDisposedStatus != 0)
                 return Task.FromException<IAsyncDisposable>(new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock)));
             token.ThrowIfCancellationRequested();
             (DebuggableSemaphoreSlim objLastSemaphore, DebuggableSemaphoreSlim objCurrentSemaphore)
@@ -219,7 +218,7 @@ namespace Chummer
         /// </summary>
         public void EnterReadLock(CancellationToken token = default)
         {
-            if (_blnIsDisposed || _blnIsDisposing)
+            if (_intDisposedStatus != 0)
                 throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
 
             token.ThrowIfCancellationRequested();
@@ -268,7 +267,7 @@ namespace Chummer
         /// </summary>
         public Task EnterReadLockAsync(CancellationToken token = default)
         {
-            if (_blnIsDisposed || _blnIsDisposing)
+            if (_intDisposedStatus != 0)
                 return Task.FromException(new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock)));
             token.ThrowIfCancellationRequested();
             if (_objTopLevelWriterSemaphore.CurrentCount != 0)
@@ -328,7 +327,7 @@ namespace Chummer
         /// </summary>
         public void ExitReadLock()
         {
-            if (_blnIsDisposed)
+            if (_intDisposedStatus > 1)
                 throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
             if (Interlocked.Decrement(ref _intCountActiveReaders) == 0)
             {
@@ -344,25 +343,24 @@ namespace Chummer
         /// <summary>
         /// Is there anything holding the lock?
         /// </summary>
-        public bool IsWriteLockHeld => !IsDisposed && _objTopLevelWriterSemaphore.CurrentCount == 0;
+        public bool IsWriteLockHeld => _intDisposedStatus == 0 && _objTopLevelWriterSemaphore.CurrentCount == 0;
 
         /// <summary>
         /// Is there anything holding the reader lock?
         /// </summary>
-        public bool IsReadLockHeld => !IsDisposed && _objReaderSemaphore.CurrentCount == 0;
+        public bool IsReadLockHeld => _intDisposedStatus == 0 && _objReaderSemaphore.CurrentCount == 0;
 
         /// <summary>
         /// Is the locker object already disposed and its allocatable semaphores returned to the semaphore pool?
         /// </summary>
-        public bool IsDisposed => _blnIsDisposed;
+        public bool IsDisposed => _intDisposedStatus > 1;
 
         /// <inheritdoc />
         public void Dispose()
         {
-            if (_blnIsDisposed || _blnIsDisposing)
+            if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) != 0)
                 return;
-
-            _blnIsDisposing = true;
+            
             try
             {
                 // Ensure the locks aren't held. If they are, wait for them to be released
@@ -373,21 +371,19 @@ namespace Chummer
                 _objReaderSemaphore.Dispose();
                 _objTopLevelWriterSemaphore.Release();
                 _objTopLevelWriterSemaphore.Dispose();
-                _blnIsDisposed = true;
             }
             finally
             {
-                _blnIsDisposing = false;
+                Interlocked.CompareExchange(ref _intDisposedStatus, 2, 1);
             }
         }
 
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            if (_blnIsDisposed || _blnIsDisposing)
+            if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) != 0)
                 return;
 
-            _blnIsDisposing = true;
             try
             {
                 // Ensure the locks aren't held. If they are, wait for them to be released
@@ -398,11 +394,10 @@ namespace Chummer
                 _objReaderSemaphore.Dispose();
                 _objTopLevelWriterSemaphore.Release();
                 _objTopLevelWriterSemaphore.Dispose();
-                _blnIsDisposed = true;
             }
             finally
             {
-                _blnIsDisposing = false;
+                Interlocked.CompareExchange(ref _intDisposedStatus, 2, 1);
             }
         }
 
@@ -437,8 +432,8 @@ namespace Chummer
             /// <inheritdoc />
             public ValueTask DisposeAsync()
             {
-                if (_objReaderWriterLock._blnIsDisposed)
-                    throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
+                if (_objReaderWriterLock._intDisposedStatus > 1)
+                    throw new ObjectDisposedException(nameof(_objReaderWriterLock));
                 if (Interlocked.Decrement(ref _objReaderWriterLock._intCountActiveReaders) == 0
                     // Release the reader lock only if there have been no other write locks before us
                     && (_objReaderWriterLock._objTopLevelWriterSemaphore.CurrentCount != 0 || _objCurrentSemaphore == _objReaderWriterLock._objTopLevelWriterSemaphore))
@@ -506,8 +501,8 @@ namespace Chummer
             /// <inheritdoc />
             public void Dispose()
             {
-                if (_objReaderWriterLock._blnIsDisposed)
-                    throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
+                if (_objReaderWriterLock._intDisposedStatus > 1)
+                    throw new ObjectDisposedException(nameof(_objReaderWriterLock));
                 if (Interlocked.Decrement(ref _objReaderWriterLock._intCountActiveReaders) == 0
                     // Release the reader lock only if there have been no other write locks before us
                     && (_objReaderWriterLock._objTopLevelWriterSemaphore.CurrentCount != 0 || _objCurrentSemaphore == _objReaderWriterLock._objTopLevelWriterSemaphore))

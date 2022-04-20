@@ -34,11 +34,11 @@ namespace Chummer
         // that is a bit like a singly-linked list. Each lock creates a disposable SafeSemaphoreRelease, and only disposing it frees the lock.
         private readonly AsyncLocal<DebuggableSemaphoreSlim> _objCurrentSemaphore = new AsyncLocal<DebuggableSemaphoreSlim>();
         private readonly DebuggableSemaphoreSlim _objTopLevelSemaphore = new DebuggableSemaphoreSlim();
-        private bool _blnIsDisposed;
+        private int _intDisposedStatus;
         
         public Task<IAsyncDisposable> TakeLockAsync()
         {
-            if (_blnIsDisposed)
+            if (_intDisposedStatus != 0)
                 return Task.FromException<IAsyncDisposable>(new ObjectDisposedException(nameof(AsyncLock)));
             DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
             DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentSemaphore.Value ?? _objTopLevelSemaphore;
@@ -52,7 +52,7 @@ namespace Chummer
         /// </summary>
         public Task<IAsyncDisposable> TakeLockAsync(CancellationToken token)
         {
-            if (_blnIsDisposed)
+            if (_intDisposedStatus != 0)
                 return Task.FromException<IAsyncDisposable>(new ObjectDisposedException(nameof(AsyncLock)));
             token.ThrowIfCancellationRequested();
             DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
@@ -83,7 +83,7 @@ namespace Chummer
 
         public IDisposable TakeLock(CancellationToken token = default)
         {
-            if (_blnIsDisposed)
+            if (_intDisposedStatus != 0)
                 throw new ObjectDisposedException(nameof(AsyncLock));
             token.ThrowIfCancellationRequested();
             DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
@@ -110,37 +110,49 @@ namespace Chummer
         /// <summary>
         /// Is there anything holding the lock?
         /// </summary>
-        public bool IsLockHeld => !IsDisposed && _objTopLevelSemaphore.CurrentCount == 0;
+        public bool IsLockHeld => _intDisposedStatus == 0 && _objTopLevelSemaphore.CurrentCount == 0;
 
         /// <summary>
         /// Is the locker object already disposed and its allocatable semaphores returned to the semaphore pool?
         /// </summary>
-        public bool IsDisposed => _blnIsDisposed;
+        public bool IsDisposed => _intDisposedStatus > 1;
 
         public void Dispose()
         {
-            if (_blnIsDisposed)
+            if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) != 0)
                 return;
-
-            _blnIsDisposed = true;
-            // Ensure the lock isn't held. If it is, wait for it to be released
-            // before completing the dispose.
-            _objTopLevelSemaphore.SafeWait();
-            _objTopLevelSemaphore.Release();
-            _objTopLevelSemaphore.Dispose();
+            
+            try
+            {
+                // Ensure the lock isn't held. If it is, wait for it to be released
+                // before completing the dispose.
+                _objTopLevelSemaphore.SafeWait();
+                _objTopLevelSemaphore.Release();
+                _objTopLevelSemaphore.Dispose();
+            }
+            finally
+            {
+                Interlocked.CompareExchange(ref _intDisposedStatus, 2, 1);
+            }
         }
 
         public async ValueTask DisposeAsync()
         {
-            if (_blnIsDisposed)
+            if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) != 0)
                 return;
 
-            _blnIsDisposed = true;
-            // Ensure the lock isn't held. If it is, wait for it to be released
-            // before completing the dispose.
-            await _objTopLevelSemaphore.WaitAsync();
-            _objTopLevelSemaphore.Release();
-            _objTopLevelSemaphore.Dispose();
+            try
+            {
+                // Ensure the lock isn't held. If it is, wait for it to be released
+                // before completing the dispose.
+                await _objTopLevelSemaphore.WaitAsync();
+                _objTopLevelSemaphore.Release();
+                _objTopLevelSemaphore.Dispose();
+            }
+            finally
+            {
+                Interlocked.CompareExchange(ref _intDisposedStatus, 2, 1);
+            }
         }
 
         private struct SafeSemaphoreRelease : IAsyncDisposable, IDisposable
@@ -158,6 +170,8 @@ namespace Chummer
 
             public ValueTask DisposeAsync()
             {
+                if (_objAsyncLock._intDisposedStatus > 1)
+                    throw new ObjectDisposedException(nameof(_objAsyncLock));
                 DebuggableSemaphoreSlim objNextSemaphoreSlim = _objAsyncLock._objCurrentSemaphore.Value;
                 if (_objNextSemaphore != objNextSemaphoreSlim)
                 {
@@ -206,6 +220,8 @@ namespace Chummer
 
             public void Dispose()
             {
+                if (_objAsyncLock._intDisposedStatus > 1)
+                    throw new ObjectDisposedException(nameof(_objAsyncLock));
                 DebuggableSemaphoreSlim objNextSemaphoreSlim = _objAsyncLock._objCurrentSemaphore.Value;
                 if (_objNextSemaphore != objNextSemaphoreSlim)
                 {

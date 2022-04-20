@@ -30,7 +30,6 @@ namespace Chummer
         private static int _intApplicationWaitCursors;
         private static readonly ConcurrentDictionary<Control, int> s_DicCursorControls = new ConcurrentDictionary<Control, int>();
         private readonly bool _blnAppStartingCursor;
-        private bool _blnDisposed;
         private readonly Control _objControl;
         private Form _frmControlTopParent;
         private bool _blnDoUnsetCursorOnDispose;
@@ -203,11 +202,12 @@ namespace Chummer
             }
         }
 
+        private int _intDisposed;
+
         public void Dispose()
         {
-            if (_blnDisposed)
+            if (Interlocked.Exchange(ref _intDisposed, 1) != 0)
                 return;
-            _blnDisposed = true;
             if (_objControl == null)
             {
                 if (Interlocked.Decrement(ref _intApplicationWaitCursors) == 0 && _blnDoUnsetCursorOnDispose)
@@ -244,9 +244,8 @@ namespace Chummer
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            if (_blnDisposed)
+            if (Interlocked.Exchange(ref _intDisposed, 1) != 0)
                 return;
-            _blnDisposed = true;
             if (_objControl == null)
             {
                 if (Interlocked.Decrement(ref _intApplicationWaitCursors) == 0 && _blnDoUnsetCursorOnDispose)
