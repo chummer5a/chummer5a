@@ -17942,7 +17942,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = await AddVehicle(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) as Location ?? null);
+                blnAddAgain = await AddVehicle(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) as Location);
             }
             while (blnAddAgain);
         }

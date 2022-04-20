@@ -645,7 +645,7 @@ namespace Chummer
                         chkFree.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.FreeEnabled));
                         //We don't actually pay for contacts in play so everyone is free
                         //Don't present a useless field
-                        chkFree.Visible = _objContact.CharacterObject.Created == false;
+                        chkFree.Visible = _objContact.CharacterObject?.Created == false;
                         chkFamily.DoDataBinding("Checked", _objContact, nameof(_objContact.Family));
                         chkFamily.DoOneWayNegatableDataBinding("Visible", _objContact, nameof(_objContact.IsEnemy));
                         chkBlackmail.DoDataBinding("Checked", _objContact, nameof(_objContact.Blackmail));
