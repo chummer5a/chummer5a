@@ -710,10 +710,10 @@ namespace Chummer
         {
             internal uint cbSize;
             internal IntPtr hIcon;
-            internal int iSysIconIndex;
-            internal int iIcon;
+            internal readonly int iSysIconIndex;
+            internal readonly int iIcon;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260/*MAX_PATH*/)]
-            internal string szPath;
+            internal readonly string szPath;
         }
 
         [DllImport("Shell32.dll", SetLastError = false)]

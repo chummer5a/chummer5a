@@ -393,16 +393,16 @@ namespace Translator
             else
             {
                 XmlNode newNode = _objTranslationDoc.CreateNode(XmlNodeType.Element, "string", null);
-
+                
                 XmlElement elem = _objTranslationDoc.CreateElement("key");
                 XmlText xmlString = _objTranslationDoc.CreateTextNode(strKey);
                 newNode.AppendChild(elem);
-                newNode.LastChild.AppendChild(xmlString);
+                elem.AppendChild(xmlString);
 
                 elem = _objTranslationDoc.CreateElement("text");
                 xmlString = _objTranslationDoc.CreateTextNode(strTranslated);
                 newNode.AppendChild(elem);
-                newNode.LastChild.AppendChild(xmlString);
+                elem.AppendChild(xmlString);
 
                 XmlAttribute objAttrib = _objTranslationDoc.CreateAttribute("translated");
                 objAttrib.Value = bool.TrueString;
