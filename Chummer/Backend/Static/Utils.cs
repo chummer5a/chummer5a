@@ -632,20 +632,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (blnSync)
             {
-                object objSuccessLock = new object();
-                bool blnReturn = true;
+                int intReturn = 1;
                 Parallel.ForEach(astrFilesToDelete, () => true, (strToDelete, x, y) => SafeDeleteFile(strToDelete, false, intTimeout, token), blnLoop =>
                 {
                     if (!blnLoop)
-                    {
-                        lock (objSuccessLock)
-                        {
-                            // ReSharper disable once AccessToModifiedClosure
-                            blnReturn = false;
-                        }
-                    }
+                        Interlocked.Exchange(ref intReturn, 0);
                 });
-                return blnReturn;
+                return intReturn > 0;
             }
 
             Task<bool>[] atskSuccesses = new Task<bool>[astrFilesToDelete.Length];

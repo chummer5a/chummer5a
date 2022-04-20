@@ -67,7 +67,10 @@ namespace Chummer
             if (lstItems == null)
                 return 0;
             // uint to prevent overflows
-            return (int)lstItems.Aggregate<T, uint>(19, (current, objItem) => current * 31 + (uint)objItem.GetHashCode());
+            unchecked
+            {
+                return (int)lstItems.Aggregate<T, uint>(19, (current, objItem) => current * 31 + (uint)objItem.GetHashCode());
+            }
         }
 
         /// <summary>
@@ -82,7 +85,10 @@ namespace Chummer
             if (lstItems == null)
                 return 0;
             // uint to prevent overflows
-            return (int)(19 + lstItems.Aggregate<T, uint>(0, (current, obj) => current + (uint)obj.GetHashCode()) * 31);
+            unchecked
+            {
+                return (int)(19 + lstItems.Aggregate<T, uint>(0, (current, obj) => current + (uint)obj.GetHashCode()) * 31);
+            }
         }
 
         /// <summary>
