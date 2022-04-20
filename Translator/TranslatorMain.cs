@@ -314,19 +314,19 @@ namespace Translator
         {
             if (cboLanguages.SelectedIndex == -1)
                 return;
-            Cursor = Cursors.AppStarting;
-            string strLanguage = cboLanguages.Text;
-            TranslateData frmOpenTranslate = _lstOpenTranslateWindows.Find(x => x.Language == strLanguage);
-            if (frmOpenTranslate != null)
-                frmOpenTranslate.Activate();
-            else
+            using (CursorWait.New(this, true))
             {
-                frmOpenTranslate = new TranslateData(cboLanguages.Text);
-                _lstOpenTranslateWindows.Add(frmOpenTranslate);
-                frmOpenTranslate.Show();
+                string strLanguage = cboLanguages.Text;
+                TranslateData frmOpenTranslate = _lstOpenTranslateWindows.Find(x => x.Language == strLanguage);
+                if (frmOpenTranslate != null)
+                    frmOpenTranslate.Activate();
+                else
+                {
+                    frmOpenTranslate = new TranslateData(cboLanguages.Text);
+                    _lstOpenTranslateWindows.Add(frmOpenTranslate);
+                    frmOpenTranslate.Show();
+                }
             }
-
-            Cursor = Cursors.Default;
         }
 
         private void cmdUpdate_Click(object sender, EventArgs e)
@@ -503,20 +503,26 @@ namespace Translator
 
         private void FinishLoading(bool blnWasCancelled)
         {
-            cmdCancel.Enabled = false;
-            if (!blnWasCancelled && _objDataDocWithPath != null && _objStringsDocWithPath != null)
+            try
             {
-                _objStringsDocWithPath.Item1.Save(_objStringsDocWithPath.Item2);
-                _objDataDocWithPath.Item1.Save(_objDataDocWithPath.Item2);
+                cmdCancel.Enabled = false;
+                if (!blnWasCancelled && _objDataDocWithPath != null && _objStringsDocWithPath != null)
+                {
+                    _objStringsDocWithPath.Item1.Save(_objStringsDocWithPath.Item2);
+                    _objDataDocWithPath.Item1.Save(_objDataDocWithPath.Item2);
 
-                LoadLanguageList();
-                TranslateData frmOpenTranslate = new TranslateData(_strLanguageToLoad);
-                _lstOpenTranslateWindows.Add(frmOpenTranslate);
-                frmOpenTranslate.Show();
+                    LoadLanguageList();
+                    TranslateData frmOpenTranslate = new TranslateData(_strLanguageToLoad);
+                    _lstOpenTranslateWindows.Add(frmOpenTranslate);
+                    frmOpenTranslate.Show();
+                }
+
+                pbProcessProgress.Value = 0;
             }
-
-            pbProcessProgress.Value = 0;
-            Cursor = Cursors.Default;
+            finally
+            {
+                ResetCursor();
+            }
         }
 
         private void FinishStringsProcessing(object sender, RunWorkerCompletedEventArgs e)
