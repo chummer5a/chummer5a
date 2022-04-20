@@ -1074,15 +1074,18 @@ namespace Chummer
                 yield break;
             foreach (string strLoopPath in lstPaths)
             {
-                if (Directory.EnumerateFiles(strLoopPath, "*_" + strFileName, SearchOption.AllDirectories)
-                             .Any(x =>
-                             {
-                                 string strInnerFileName = Path.GetFileName(x);
-                                 return strInnerFileName.StartsWith("override_") || strInnerFileName.StartsWith("custom_")
-                                     || strInnerFileName.StartsWith("amend_");
-                             }))
+                if (!Directory.Exists(strLoopPath))
+                    continue;
+                foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName,
+                                                                        SearchOption.AllDirectories))
                 {
-                    yield return strLoopPath;
+                    string strInnerFileName = Path.GetFileName(strLoopFile);
+                    if (strInnerFileName.StartsWith("override_") || strInnerFileName.StartsWith("custom_")
+                                                                 || strInnerFileName.StartsWith("amend_"))
+                    {
+                        yield return strLoopPath;
+                        break;
+                    }
                 }
             }
         }

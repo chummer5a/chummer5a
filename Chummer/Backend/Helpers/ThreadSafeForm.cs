@@ -40,17 +40,24 @@ namespace Chummer
 
         public static ThreadSafeForm<T> Get(Func<T> funcFormConstructor)
         {
-            return new ThreadSafeForm<T>(Program.MainForm.DoThreadSafeFunc(funcFormConstructor));
+            return new ThreadSafeForm<T>(Program.MainForm != null
+                                             ? Program.MainForm.DoThreadSafeFunc(funcFormConstructor)
+                                             : Utils.RunWithoutThreadLock(() => Utils.StartStaTask(funcFormConstructor)));
         }
 
         public static async ValueTask<ThreadSafeForm<T>> GetAsync(Func<T> funcFormConstructor, CancellationToken token = default)
         {
-            return new ThreadSafeForm<T>(await Program.MainForm.DoThreadSafeFuncAsync(funcFormConstructor, token));
+            return new ThreadSafeForm<T>(Program.MainForm != null
+                                             ? await Program.MainForm.DoThreadSafeFuncAsync(funcFormConstructor, token)
+                                             : await Utils.StartStaTask(funcFormConstructor, token));
         }
 
         public static async ValueTask<ThreadSafeForm<T>> GetAsync(Func<CancellationToken, T> funcFormConstructor, CancellationToken token = default)
         {
-            return new ThreadSafeForm<T>(await Program.MainForm.DoThreadSafeFuncAsync(funcFormConstructor, token));
+            return new ThreadSafeForm<T>(Program.MainForm != null
+                                             ? await Program.MainForm.DoThreadSafeFuncAsync(funcFormConstructor, token)
+                                             : await Utils.StartStaTask(() => funcFormConstructor.Invoke(token),
+                                                                        token));
         }
 
         public void Dispose()

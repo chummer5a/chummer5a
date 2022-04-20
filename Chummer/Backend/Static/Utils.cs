@@ -150,7 +150,7 @@ namespace Chummer
         private static readonly Lazy<string[]> s_astrBasicDataFileNames = new Lazy<string[]>(() =>
         {
             List<string> lstFiles = new List<string>();
-            foreach (string strFile in Directory.EnumerateFiles(GetDataFolderPath, "*.xml"))
+            foreach (string strFile in Directory.EnumerateFiles(GetDataFolderPath, "*.xml").Select(Path.GetFileName))
             {
                 if (string.IsNullOrEmpty(strFile)
                     || strFile.StartsWith("amend_", StringComparison.OrdinalIgnoreCase)
