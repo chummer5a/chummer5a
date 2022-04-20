@@ -198,8 +198,7 @@ namespace Chummer.Backend
             try
             {
                 DumpData dump = new DumpData(ex);
-                foreach (string strSettingFile in Directory.EnumerateFiles(
-                             Path.Combine(Utils.GetStartupPath, "settings"), "*.xml"))
+                foreach (string strSettingFile in Directory.EnumerateFiles(Utils.GetSettingsFolderPath, "*.xml"))
                 {
                     dump.AddFile(strSettingFile);
                 }

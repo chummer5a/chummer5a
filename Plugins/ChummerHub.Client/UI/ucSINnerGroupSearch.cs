@@ -518,9 +518,9 @@ namespace ChummerHub.Client.UI
                         bCreateGroup.Enabled = true;
                         bJoinGroup.Enabled = true;
                     }
-                    else if ((MyCE?.MySINnerFile.MyGroup?.Id != item.Id
-                              || MyCE?.MySINnerFile.MyGroup.Groupname != tbSearchGroupname.Text)
-                             && MyCE?.MySINnerFile.MyGroup.Groupname != item.Groupname)
+                    else if ((MyCE.MySINnerFile.MyGroup.Id != item.Id
+                              || MyCE.MySINnerFile.MyGroup.Groupname != tbSearchGroupname.Text)
+                             && MyCE.MySINnerFile.MyGroup.Groupname != item.Groupname)
                     {
                         bCreateGroup.Enabled = true;
                         bJoinGroup.Enabled = true;

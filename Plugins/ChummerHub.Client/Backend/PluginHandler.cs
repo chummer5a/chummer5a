@@ -63,7 +63,7 @@ namespace Chummer.Plugins
                 return false;
             if (objNode.ContextMenuStrip == null)
             {
-                string strTag = objNode.Tag?.ToString();
+                string strTag = objNode.Tag?.ToString() ?? string.Empty;
                 objNode.ContextMenuStrip = MainForm.CharacterRoster.CreateContextMenuStrip(strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
                                                                                            && MainForm.OpenCharacterEditorForms.Any(x => x.CharacterObject?.FileName == strTag));
             }
@@ -527,13 +527,16 @@ namespace Chummer.Plugins
         {
             CharacterShared found = null;
             if (MainForm?.OpenCharacterEditorForms != null)
-                foreach (CharacterShared a in (MainForm?.OpenCharacterEditorForms))
+            {
+                foreach (CharacterShared a in MainForm.OpenCharacterEditorForms)
                 {
                     if (a?.CharacterObject != input)
                         continue;
                     found = a;
                     break;
                 }
+            }
+
             TabPage sinnertab = null;
             if (found != null)
             {

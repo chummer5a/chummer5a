@@ -139,51 +139,30 @@ namespace Chummer
         /// </summary>
         public static string GetStartupPath => IsUnitTest ? AppDomain.CurrentDomain.SetupInformation.ApplicationBase : Application.StartupPath;
 
-        public static string GetAutosavesFolderPath => Path.Combine(GetStartupPath, "saves", "autosave");
+        public static string GetAutosavesFolderPath { get; } = Path.Combine(GetStartupPath, "saves", "autosave");
 
-        public static ReadOnlyCollection<string> BasicDataFileNames { get; } = Array.AsReadOnly(new[]
+        public static string GetDataFolderPath { get; } = Path.Combine(GetStartupPath, "data");
+
+        public static string GetLanguageFolderPath { get; } = Path.Combine(GetStartupPath, "lang");
+
+        public static string GetSettingsFolderPath { get; } = Path.Combine(GetStartupPath, "settings");
+
+        private static readonly Lazy<string[]> s_astrBasicDataFileNames = new Lazy<string[]>(() =>
         {
-            "actions.xml",
-            "armor.xml",
-            "bioware.xml",
-            "books.xml",
-            "complexforms.xml",
-            "contacts.xml",
-            "critters.xml",
-            "critterpowers.xml",
-            "cyberware.xml",
-            "drugcomponents.xml",
-            "echoes.xml",
-            "options.xml",
-            "gear.xml",
-            "improvements.xml",
-            "licenses.xml",
-            "lifemodules.xml",
-            "lifestyles.xml",
-            "martialarts.xml",
-            "mentors.xml",
-            "metamagic.xml",
-            "metatypes.xml",
-            "options.xml",
-            "packs.xml",
-            "paragons.xml",
-            "powers.xml",
-            "priorities.xml",
-            "programs.xml",
-            "qualities.xml",
-            "ranges.xml",
-            "references.xml",
-            "settings.xml",
-            "sheets.xml",
-            "skills.xml",
-            "spells.xml",
-            "spiritpowers.xml",
-            "strings.xml",
-            "streams.xml",
-            "traditions.xml",
-            "vehicles.xml",
-            "weapons.xml"
+            List<string> lstFiles = new List<string>();
+            foreach (string strFile in Directory.EnumerateFiles(GetDataFolderPath, "*.xml"))
+            {
+                if (string.IsNullOrEmpty(strFile)
+                    || strFile.StartsWith("amend_", StringComparison.OrdinalIgnoreCase)
+                    || strFile.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
+                    || strFile.StartsWith("override_", StringComparison.OrdinalIgnoreCase))
+                    continue;
+                lstFiles.Add(strFile);
+            }
+            return lstFiles.ToArray();
         });
+
+        public static ReadOnlyCollection<string> BasicDataFileNames { get; } = Array.AsReadOnly(s_astrBasicDataFileNames.Value);
 
         private static readonly Lazy<Version> s_ObjCurrentChummerVersion = new Lazy<Version>(() => typeof(Program).Assembly.GetName().Version);
 

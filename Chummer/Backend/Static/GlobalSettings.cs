@@ -696,7 +696,7 @@ namespace Chummer
             string strCustomDataRootPath = Path.Combine(Utils.GetStartupPath, "customdata");
             if (Directory.Exists(strCustomDataRootPath))
             {
-                foreach (string strLoopDirectoryPath in Directory.GetDirectories(strCustomDataRootPath))
+                foreach (string strLoopDirectoryPath in Directory.EnumerateDirectories(strCustomDataRootPath))
                 {
                     // Only add directories for which we don't already have entries loaded from registry
                     if (s_SetCustomDataDirectoryInfos.Any(x => x.DirectoryPath == strLoopDirectoryPath))

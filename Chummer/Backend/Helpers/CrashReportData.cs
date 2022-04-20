@@ -59,7 +59,7 @@ namespace Chummer
             //here
 
             //try to include all settings files
-            foreach (string strSettingFile in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "settings"), "*.xml"))
+            foreach (string strSettingFile in Directory.EnumerateFiles(Utils.GetSettingsFolderPath, "*.xml"))
             {
                 string strName = Path.GetFileName(strSettingFile);
                 try

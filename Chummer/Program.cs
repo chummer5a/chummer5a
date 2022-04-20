@@ -166,10 +166,13 @@ namespace Chummer
                     // We avoid weird issues with ProfileOptimization pointing JIT to the wrong place by checking for and removing all profile optimization files that
                     // were made in an older version (i.e. an older assembly)
                     string strProfileOptimizationName = "chummerprofile_" + Utils.CurrentChummerVersion + ".profile";
-                    foreach (string strProfileFile in Directory.GetFiles(Utils.GetStartupPath, "*.profile", SearchOption.TopDirectoryOnly))
+                    foreach (string strProfileFile in Directory.GetFiles(Utils.GetStartupPath, "*.profile"))
+                    {
                         if (!string.Equals(strProfileFile, strProfileOptimizationName,
                                            StringComparison.OrdinalIgnoreCase))
                             Utils.SafeDeleteFile(strProfileFile);
+                    }
+
                     // Mono, non-Windows native stuff, and Win11 don't always play nice with ProfileOptimization, so it's better to just not bother with it when running under them
                     if (!IsMono && Utils.HumanReadableOSVersion.StartsWith("Windows") && !Utils.HumanReadableOSVersion.StartsWith("Windows 11"))
                     {
@@ -568,7 +571,7 @@ namespace Chummer
         {
             bool blnAllUnblocked = true;
 
-            foreach (string strFile in Directory.GetFiles(strPath))
+            foreach (string strFile in Directory.EnumerateFiles(strPath))
             {
                 if (!UnblockFile(strFile))
                 {
@@ -593,7 +596,7 @@ namespace Chummer
                 }
             }
 
-            foreach (string strDir in Directory.GetDirectories(strPath))
+            foreach (string strDir in Directory.EnumerateDirectories(strPath))
             {
                 if (!UnblockPath(strDir))
                     blnAllUnblocked = false;
@@ -1193,10 +1196,10 @@ namespace Chummer
 
         private static void FixCwd()
         {
-            //If launched by file assiocation, the cwd is file location.
-            //Chummer looks for data in cwd, to be able to move exe (legacy+bootstraper uses this)
+            //If launched by file association, the cwd is file location.
+            //Chummer looks for data in cwd, to be able to move exe (legacy+bootstrapper uses this)
 
-            if (Directory.Exists(Path.Combine(Utils.GetStartupPath, "data"))
+            if (Directory.Exists(Utils.GetDataFolderPath)
                 && Directory.Exists(Path.Combine(Utils.GetStartupPath, "lang")))
             {
                 //both normally used data dirs present (add file loading abstraction to the list)

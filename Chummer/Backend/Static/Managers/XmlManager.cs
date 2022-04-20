@@ -222,12 +222,11 @@ namespace Chummer
             /// <inheritdoc />
             public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
         }
-
-        private static readonly string s_StrBaseDataPath = Path.Combine(Utils.GetStartupPath, "data");
+        
         private static readonly LockingDictionary<KeyArray<string>, XmlReference> s_DicXmlDocuments =
             new LockingDictionary<KeyArray<string>, XmlReference>(); // Key is language + array of all file paths for the complete combination of data used
         private static readonly AsyncFriendlyReaderWriterLock s_objDataDirectoriesLock = new AsyncFriendlyReaderWriterLock();
-        private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>(s_StrBaseDataPath.Yield());
+        private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>(Utils.GetDataFolderPath.Yield());
         private static readonly Dictionary<string, HashSet<string>> s_DicPathsWithCustomFiles = new Dictionary<string, HashSet<string>>();
 
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
@@ -259,7 +258,7 @@ namespace Chummer
                     objReference.Dispose();
                 s_DicXmlDocuments.Clear();
                 s_SetDataDirectories.Clear();
-                s_SetDataDirectories.Add(s_StrBaseDataPath);
+                s_SetDataDirectories.Add(Utils.GetDataFolderPath);
                 foreach (CustomDataDirectoryInfo objCustomDataDirectory in lstCustomDirectories)
                 {
                     s_SetDataDirectories.Add(objCustomDataDirectory.DirectoryPath);
@@ -291,7 +290,7 @@ namespace Chummer
                 await s_DicXmlDocuments.ForEachAsync(async kvpDocument => await kvpDocument.Value.DisposeAsync());
                 await s_DicXmlDocuments.ClearAsync();
                 s_SetDataDirectories.Clear();
-                s_SetDataDirectories.Add(s_StrBaseDataPath);
+                s_SetDataDirectories.Add(Utils.GetDataFolderPath);
                 foreach (CustomDataDirectoryInfo objCustomDataDirectory in lstCustomDirectories)
                 {
                     s_SetDataDirectories.Add(objCustomDataDirectory.DirectoryPath);
@@ -374,7 +373,7 @@ namespace Chummer
 
                 string strPath;
                 if (Utils.BasicDataFileNames.Contains(strFileName))
-                    strPath = Path.Combine(s_StrBaseDataPath, strFileName);
+                    strPath = Path.Combine(Utils.GetDataFolderPath, strFileName);
                 else
                 {
                     strPath = FetchBaseFileFromCustomDataPaths(strFileName, lstEnabledCustomDataPaths);
@@ -1053,10 +1052,11 @@ namespace Chummer
             {
                 foreach (string strLoopPath in lstPaths)
                 {
-                    string strLoop = Directory.EnumerateFiles(strLoopPath, strFileName, SearchOption.AllDirectories)
-                                              .FirstOrDefault();
-                    if (!string.IsNullOrEmpty(strLoop))
-                        return strLoop;
+                    foreach (string strLoop in Directory.EnumerateFiles(strLoopPath, strFileName, SearchOption.AllDirectories))
+                    {
+                        if (!string.IsNullOrEmpty(strLoop))
+                            return strLoop;
+                    }
                 }
             }
             return string.Empty;
@@ -1091,7 +1091,18 @@ namespace Chummer
         {
             bool blnReturn = false;
             XmlElement objDocElement = xmlDataDoc.DocumentElement;
-            List<string> lstPossibleCustomFiles = Directory.GetFiles(strLoopPath, "*_" + strFileName, eSearchOption).ToList();
+            List<string> lstPossibleCustomFiles = new List<string>(Utils.BasicDataFileNames.Count);
+            foreach (string strFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName, eSearchOption))
+            {
+                string strLoopFileName = Path.GetFileName(strFile);
+                if (!strLoopFileName.StartsWith("override_"))
+                    continue;
+                if (!strLoopFileName.StartsWith("custom_"))
+                    continue;
+                if (!strLoopFileName.StartsWith("amend_"))
+                    continue;
+                lstPossibleCustomFiles.Add(strFile);
+            }
             foreach (string strFile in lstPossibleCustomFiles)
             {
                 if (!Path.GetFileName(strFile).StartsWith("override_"))
@@ -2029,9 +2040,8 @@ namespace Chummer
                 objWriter.WriteStartDocument();
                 // <results>
                 objWriter.WriteStartElement("results");
-
-                string strPath = s_StrBaseDataPath;
-                foreach (string strFile in Directory.GetFiles(strPath, "*.xml"))
+                
+                foreach (string strFile in Directory.EnumerateFiles(Utils.GetDataFolderPath, "*.xml"))
                 {
                     string strFileName = Path.GetFileName(strFile);
 

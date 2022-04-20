@@ -1709,14 +1709,14 @@ namespace Chummer
             }
         }
 
-        public static List<ListItem> GetSheetLanguageList(IEnumerable<Character> lstCharacters = null, bool blnUsePool = false)
+        public static List<ListItem> GetSheetLanguageList(IEnumerable<Character> lstCharacters = null, bool blnUsePool = false, CancellationToken token = default)
         {
-            string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
+            token.ThrowIfCancellationRequested();
             List<Character> lstCharacterToUse = lstCharacters?.ToList();
-            string[] astrFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
-            List<ListItem> lstLanguages = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(astrFilePaths.Length);
-            foreach (string filePath in astrFilePaths)
+            List<ListItem> lstLanguages = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(5);
+            foreach (string filePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
             {
+                token.ThrowIfCancellationRequested();
                 XPathDocument xmlDocument;
                 try
                 {
@@ -1733,10 +1733,14 @@ namespace Chummer
                     continue;
                 }
 
+                token.ThrowIfCancellationRequested();
+
                 XPathNavigator node = xmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression("/chummer/name");
 
                 if (node == null)
                     continue;
+
+                token.ThrowIfCancellationRequested();
 
                 string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
                 if (XmlManager.AnyXslFiles(strLanguageCode, lstCharacterToUse))
@@ -1744,18 +1748,19 @@ namespace Chummer
                     lstLanguages.Add(new ListItem(strLanguageCode, node.Value));
                 }
             }
+            token.ThrowIfCancellationRequested();
             lstLanguages.Sort(CompareListItems.CompareNames);
             return lstLanguages;
         }
 
-        public static async Task<List<ListItem>> GetSheetLanguageListAsync(IEnumerable<Character> lstCharacters = null, bool blnUsePool = false)
+        public static async Task<List<ListItem>> GetSheetLanguageListAsync(IEnumerable<Character> lstCharacters = null, bool blnUsePool = false, CancellationToken token = default)
         {
-            string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
+            token.ThrowIfCancellationRequested();
             List<Character> lstCharacterToUse = lstCharacters?.ToList();
-            string[] astrFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
-            List<ListItem> lstLanguages = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(astrFilePaths.Length);
-            foreach (string filePath in astrFilePaths)
+            List<ListItem> lstLanguages = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(5);
+            foreach (string filePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
             {
+                token.ThrowIfCancellationRequested();
                 XPathDocument xmlDocument;
                 try
                 {
@@ -1772,10 +1777,14 @@ namespace Chummer
                     continue;
                 }
 
+                token.ThrowIfCancellationRequested();
+
                 XPathNavigator node = await xmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpressionAsync("/chummer/name");
 
                 if (node == null)
                     continue;
+
+                token.ThrowIfCancellationRequested();
 
                 string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
                 if (await XmlManager.AnyXslFilesAsync(strLanguageCode, lstCharacterToUse))
@@ -1783,6 +1792,7 @@ namespace Chummer
                     lstLanguages.Add(new ListItem(strLanguageCode, node.Value));
                 }
             }
+            token.ThrowIfCancellationRequested();
             lstLanguages.Sort(CompareListItems.CompareNames);
             return lstLanguages;
         }

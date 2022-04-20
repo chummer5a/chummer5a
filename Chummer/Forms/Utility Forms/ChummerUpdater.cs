@@ -708,11 +708,11 @@ namespace Chummer
                     await cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = false, token);
                     if (!(await CreateBackupZip(token)))
                         return;
-
-                    string[] astrAllFiles = Directory.GetFiles(_strAppPath, "*", SearchOption.AllDirectories);
-                    List<string> lstFilesToDelete = new List<string>(astrAllFiles.Length);
-                    foreach (string strFileToDelete in astrAllFiles)
+                    
+                    List<string> lstFilesToDelete = new List<string>(byte.MaxValue);
+                    foreach (string strFileToDelete in Directory.EnumerateFiles(_strAppPath, "*", SearchOption.AllDirectories))
                     {
+                        token.ThrowIfCancellationRequested();
                         string strFileName = Path.GetFileName(strFileToDelete);
                         if (string.IsNullOrEmpty(strFileName)
                             || strFileName.EndsWith(".old", StringComparison.OrdinalIgnoreCase)
@@ -778,11 +778,11 @@ namespace Chummer
                     await cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = false, token);
                     if (!await CreateBackupZip(token))
                         return;
-
-                    string[] astrAllFiles = Directory.GetFiles(_strAppPath, "*", SearchOption.AllDirectories);
-                    List<string> lstFilesToDelete = new List<string>(astrAllFiles.Length);
-                    foreach (string strFileToDelete in astrAllFiles)
+                    
+                    List<string> lstFilesToDelete = new List<string>(byte.MaxValue);
+                    foreach (string strFileToDelete in Directory.EnumerateFiles(_strAppPath, "*", SearchOption.AllDirectories))
                     {
+                        token.ThrowIfCancellationRequested();
                         string strFileName = Path.GetFileName(strFileToDelete);
                         if (string.IsNullOrEmpty(strFileName)
                             || strFileName.EndsWith(".old", StringComparison.OrdinalIgnoreCase)

@@ -223,7 +223,7 @@ namespace Chummer.Plugins
                 }
                 Log.Info("Plugins are globally enabled - entering PluginControl.Initialize()");
 
-                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
+                string path = Path.Combine(Utils.GetStartupPath, "plugins");
                 path = Path.GetFullPath(path);
                 if (!Directory.Exists(path))
                 {
@@ -233,14 +233,11 @@ namespace Chummer.Plugins
                 _objCatalog = new AggregateCatalog();
                 //delete old NeonJungleLC-Plugin
                 Utils.SafeDeleteDirectory(Path.Combine(path, "NeonJungleLC"));
-                string[] plugindirectories = Directory.GetDirectories(path);
-                if (plugindirectories.Length == 0)
-                {
-                    throw new ArgumentException("No Plugin-Subdirectories in " + path + " !");
-                }
 
-                foreach (string plugindir in plugindirectories)
+                bool blnAnyPlugins = false;
+                foreach (string plugindir in Directory.EnumerateDirectories(path))
                 {
+                    blnAnyPlugins = true;
                     if (plugindir.Contains("SamplePlugin", StringComparison.OrdinalIgnoreCase))
                     {
                         Log.Warn("Found an old SamplePlugin (not maintaned anymore) and deleteing it to not mess with the plugin catalog composition.");
@@ -284,6 +281,10 @@ namespace Chummer.Plugins
                         Log.Info("Searching for dlls in path " + _objMyDirectoryCatalog?.FullPath);
                         _objCatalog.Catalogs.Add(_objMyDirectoryCatalog);
                     }
+                }
+                if (!blnAnyPlugins)
+                {
+                    throw new ArgumentException("No Plugin-Subdirectories in " + path + " !");
                 }
 
                 _container = new CompositionContainer(_objCatalog);

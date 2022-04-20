@@ -1180,7 +1180,7 @@ namespace ChummerHub.Client.Backend
             using (await CursorWait.NewAsync(PluginHandler.MainForm, true, token))
             {
                 Character objOpenCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FilePath)
-                                             ?? await Program.LoadCharacterAsync(objCache.FilePath);
+                                             ?? await Program.LoadCharacterAsync(objCache.FilePath, token: token);
                 await SwitchToCharacter(objOpenCharacter, token);
             }
         }

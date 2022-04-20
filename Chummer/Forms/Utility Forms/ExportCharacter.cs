@@ -79,8 +79,7 @@ namespace Chummer
                        Utils.ListItemListPool, out List<ListItem> lstExportMethods))
             {
                 // Populate the XSLT list with all of the XSL files found in the sheets directory.
-                string exportDirectoryPath = Path.Combine(Utils.GetStartupPath, "export");
-                foreach (string strFile in Directory.GetFiles(exportDirectoryPath))
+                foreach (string strFile in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "export")))
                 {
                     // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
                     if (!strFile.EndsWith(".xslt", StringComparison.OrdinalIgnoreCase)

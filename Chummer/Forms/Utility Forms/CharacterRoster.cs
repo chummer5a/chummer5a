@@ -1064,10 +1064,8 @@ namespace Chummer
             Dictionary<string, string> dicWatch = null;
             if (!string.IsNullOrEmpty(GlobalSettings.CharacterRosterPath) && Directory.Exists(GlobalSettings.CharacterRosterPath))
             {
-                string[] astrFiles
-                    = Directory.GetFiles(GlobalSettings.CharacterRosterPath, "*.chum5", SearchOption.AllDirectories);
-                dicWatch = new Dictionary<string, string>(astrFiles.Length);
-                foreach (string strFile in astrFiles)
+                dicWatch = new Dictionary<string, string>();
+                foreach (string strFile in Directory.EnumerateFiles(GlobalSettings.CharacterRosterPath, "*.chum5", SearchOption.AllDirectories))
                 {
                     token.ThrowIfCancellationRequested();
 

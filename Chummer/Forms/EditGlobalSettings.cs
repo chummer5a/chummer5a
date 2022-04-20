@@ -1566,12 +1566,11 @@ namespace Chummer
         private async ValueTask PopulateLanguageList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
-            string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLanguages))
             {
-                foreach (string filePath in languageFilePaths)
+                foreach (string filePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
                 {
+                    token.ThrowIfCancellationRequested();
                     XPathDocument xmlDocument;
                     try
                     {
@@ -1589,10 +1588,14 @@ namespace Chummer
                         continue;
                     }
 
+                    token.ThrowIfCancellationRequested();
+
                     XPathNavigator node = await xmlDocument.CreateNavigator()
                                                            .SelectSingleNodeAndCacheExpressionAsync("/chummer/name");
                     if (node == null)
                         continue;
+
+                    token.ThrowIfCancellationRequested();
 
                     lstLanguages.Add(new ListItem(Path.GetFileNameWithoutExtension(filePath), node.Value));
                 }
@@ -1616,14 +1619,14 @@ namespace Chummer
                     setLanguagesWithSheets.Add(xmlSheetLanguage.Value);
                 }
 
-                string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
-                string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
+                token.ThrowIfCancellationRequested();
 
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstSheetLanguages))
                 {
-                    foreach (string filePath in languageFilePaths)
+                    foreach (string filePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
                     {
+                        token.ThrowIfCancellationRequested();
                         string strLanguageName = Path.GetFileNameWithoutExtension(filePath);
                         if (!setLanguagesWithSheets.Contains(strLanguageName))
                             continue;
@@ -1645,10 +1648,14 @@ namespace Chummer
                             continue;
                         }
 
+                        token.ThrowIfCancellationRequested();
+
                         XPathNavigator node = await xmlDocument.CreateNavigator()
                                                                .SelectSingleNodeAndCacheExpressionAsync("/chummer/name");
                         if (node == null)
                             continue;
+
+                        token.ThrowIfCancellationRequested();
 
                         lstSheetLanguages.Add(new ListItem(strLanguageName, node.Value));
                     }
@@ -1856,14 +1863,14 @@ namespace Chummer
                         return;
                     Stopwatch sw = new Stopwatch();
                     sw.Start();
-                    string[] files = Directory.GetFiles(fbd.SelectedPath, "*.pdf", SearchOption.TopDirectoryOnly);
                     XPathNavigator books = await tskLoadBooks;
+                    string[] astrFiles = Directory.GetFiles(fbd.SelectedPath, "*.pdf");
                     XPathNodeIterator matches = books.Select("/chummer/books/book/matches/match[language = "
                                                              + _strSelectedLanguage.CleanXPath() + ']');
                     using (LoadingBar frmLoadingBar
-                           = await Program.CreateAndShowProgressBarAsync(fbd.SelectedPath, files.Length))
+                           = await Program.CreateAndShowProgressBarAsync(fbd.SelectedPath, astrFiles.Length))
                     {
-                        List<SourcebookInfo> list = await ScanFilesForPDFTexts(files, matches, frmLoadingBar);
+                        List<SourcebookInfo> list = await ScanFilesForPDFTexts(astrFiles, matches, frmLoadingBar);
                         sw.Stop();
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdFeedback))

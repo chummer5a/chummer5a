@@ -1688,11 +1688,14 @@ namespace Chummer
                 );
 
             Gear objNewGear = Purchase(bonusNode);
-            if (bonusNode["children"]?.ChildNodes.Count > 0)
+            using (XmlNodeList xmlChildren = bonusNode["children"]?.ChildNodes)
             {
-                foreach (XmlNode xmlChildNode in bonusNode["children"]?.ChildNodes)
+                if (xmlChildren?.Count > 0)
                 {
-                    Purchase(xmlChildNode, objNewGear);
+                    foreach (XmlNode xmlChildNode in xmlChildren)
+                    {
+                        Purchase(xmlChildNode, objNewGear);
+                    }
                 }
             }
 

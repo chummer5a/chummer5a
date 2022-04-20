@@ -175,6 +175,8 @@ namespace ChummerHub.Client.Sinners
 
         public async Task<bool> Upload(ucSINnerShare.MyUserState myState = null, CustomActivity parentActivity = null)
         {
+            if (MyCharacter == null)
+                return true;
             using (CustomActivity op_uploadChummer = await Timekeeper.StartSyncronAsync(
                        "Uploading Chummer", parentActivity,
                        CustomActivity.OperationType.DependencyOperation, MyCharacter.FileName))
@@ -188,7 +190,7 @@ namespace ChummerHub.Client.Sinners
                             ResultSinnerGetSINById found = null;
                             using (_ = await Timekeeper.StartSyncronAsync(
                                        "Checking if already online Chummer", op_uploadChummer,
-                                       CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
+                                       CustomActivity.OperationType.DependencyOperation, MyCharacter.FileName))
                             {
                                 if (myState != null)
                                 {
@@ -236,7 +238,7 @@ namespace ChummerHub.Client.Sinners
                                 myState.CurrentProgress += myState.ProgressSteps;
                             using (_ = await Timekeeper.StartSyncronAsync(
                                        "Setting Visibility for Chummer", op_uploadChummer,
-                                       CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
+                                       CustomActivity.OperationType.DependencyOperation, MyCharacter.FileName))
                             {
                                 if (found?.CallSuccess == true)
                                 {
@@ -716,7 +718,13 @@ namespace ChummerHub.Client.Sinners
                 await MyCharacter.SaveAsync(tempfile, false, false);
             MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
             if (readCallback)
-                MyCharacter.DoOnSaveCompletedAsync.Add(PluginHandler.MyOnSaveUpload);
+            {
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    MyCharacter.DoOnSaveCompletedAsync.Add(PluginHandler.MyOnSaveUpload);
+                else
+                    await MyCharacter.DoOnSaveCompletedAsync.AddAsync(PluginHandler.MyOnSaveUpload);
+            }
 
             if (File.Exists(zipPath))
             {

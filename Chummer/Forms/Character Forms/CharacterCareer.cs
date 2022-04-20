@@ -13584,7 +13584,7 @@ namespace Chummer
         private void treImprovements_ItemDrag(object sender, ItemDragEventArgs e)
         {
             // Do not allow the root element to be moved.
-            if (treImprovements.SelectedNode == null || treImprovements.SelectedNode?.Tag.ToString() == "Node_SelectedImprovements")
+            if (treImprovements.SelectedNode == null || treImprovements.SelectedNode.Tag.ToString() == "Node_SelectedImprovements")
                 return;
             _intDragLevel = treImprovements.SelectedNode.Level;
             DoDragDrop(e.Item, DragDropEffects.Move);

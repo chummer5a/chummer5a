@@ -115,19 +115,20 @@ namespace ChummerDataViewer.Model
                     using (Stream s = userstoryEntry.Open())
                     {
                         byte[] buffer = new byte[userstoryEntry.Length];
-                        s.Read(buffer, 0, buffer.Length);
-                        userstory = Encoding.UTF8.GetString(buffer);
+                        int intByteCount = s.Read(buffer, 0, buffer.Length);
+                        userstory = intByteCount > 0 ? Encoding.UTF8.GetString(buffer) : string.Empty;
                     }
                 }
 
                 ZipArchiveEntry exceptionEntry = archive.GetEntry("exception.txt");
                 if (exceptionEntry != null)
                 {
-                    Stream s = exceptionEntry.Open();
-                    byte[] buffer = new byte[exceptionEntry.Length];
-                    s.Read(buffer, 0, buffer.Length);
-                    exception = Encoding.UTF8.GetString(buffer);
-                    s.Close();
+                    using (Stream s = exceptionEntry.Open())
+                    {
+                        byte[] buffer = new byte[exceptionEntry.Length];
+                        int intByteCount = s.Read(buffer, 0, buffer.Length);
+                        exception = intByteCount > 0 ? Encoding.UTF8.GetString(buffer) : string.Empty;
+                    }
                 }
             }
             Userstory = userstory;

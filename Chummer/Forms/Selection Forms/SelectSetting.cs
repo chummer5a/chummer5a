@@ -43,10 +43,9 @@ namespace Chummer
         private async void SelectSetting_Load(object sender, EventArgs e)
         {
             // Build the list of XML files found in the settings directory.
-            string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSettings))
             {
-                foreach (string strFileName in Directory.GetFiles(settingsDirectoryPath, "*.xml"))
+                foreach (string strFileName in Directory.EnumerateFiles(Utils.GetSettingsFolderPath, "*.xml"))
                 {
                     // Load the file so we can get the Setting name.
                     XPathDocument objXmlDocument;
