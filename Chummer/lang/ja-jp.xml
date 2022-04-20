@@ -21,7 +21,7 @@
 
 <chummer>
     <version>-497</version>
-    <name>日本語（ｊａ－ＪＰ）</name>
+    <name>日本語（ja-JP）</name>
     <strings>
         <!-- Meta Strings -->
         <string>
@@ -4674,7 +4674,7 @@
         </string>
         <string>
             <key>Checkbox_Options_MoreLethalGameplace</key>
-            <text>よりデッドリーなプレイ（ＳＲ４　91）</text>
+            <text>よりデッドリーなプレイ（ＳＲ四91）</text>
         </string>
         <string>
             <key>Checkbox_Options_SingleArmorEncumbrance</key>
@@ -4682,11 +4682,11 @@
         </string>
         <string>
             <key>Checkbox_Options_LimitSkills</key>
-            <text>ダイスプールの上限を20か「(自然能力値足す技能値)の2倍」の高いほうにする（ＳＲ４　74）</text>
+            <text>ダイスプールの上限を20か「(自然能力値足す技能値)の2倍」の高いほうにする（ＳＲ四74）</text>
         </string>
         <string>
             <key>Checkbox_Options_SkillRegroup</key>
-            <text>技能値がすべて同じなら、能動技能を再びグループにしてもよい（ＳＲ４　FAQ）</text>
+            <text>技能値がすべて同じなら、能動技能を再びグループにしてもよい（ＳＲ四ＦＡＱ）</text>
         </string>
         <string>
             <key>Checkbox_Options_FreeContactPointsKarma</key>
@@ -4754,15 +4754,15 @@
         </string>
         <string>
             <key>Checkbox_Options_AllowCustomTransgenics</key>
-            <text>好きなバイオウェアを遺伝子導入とみなせる（ＡＵ　100）</text>
+            <text>好きなバイオウェアを遺伝子導入とみなせる（ＡＵ100）</text>
         </string>
         <string>
             <key>Checkbox_Options_BreakSkillGroupsInCreateMode</key>
-            <text>キャラクター作成時の技能グループの解体を認める（ＳＲ４　83）</text>
+            <text>キャラクター作成時の技能グループの解体を認める（ＳＲ四83）</text>
         </string>
         <string>
             <key>Checkbox_Options_ExtendAnyDetectionSpell</key>
-            <text>好きな探知呪文を広域バージョンとして習得できる（ＳＭ　179）</text>
+            <text>好きな探知呪文を広域バージョンとして習得できる（ＳＭ179）</text>
         </string>
         <string>
             <key>Checkbox_Options_ErgonomicProgramLimit</key>
@@ -4774,7 +4774,7 @@
         </string>
         <string>
             <key>Checkbox_Options_UseRestrictionsToRecoilCompensation</key>
-            <text>反動補正の制限を適用する（ＲＧ　53）</text>
+            <text>反動補正の制限を適用する（ＲＧ53）</text>
         </string>
         <string>
             <key>Checkbox_Options_AutomaticCopyProtection</key>
@@ -4794,7 +4794,7 @@
         </string>
         <string>
             <key>Checkbox_Options_ExceedNegativeQualitiesLimit</key>
-            <text>不利な資質では-25カルマまでしか獲得できない　キャラクターはカルマがゲームプレイオプションの制限を超えて不利な資質を獲得はできない</text>
+            <text>不利な資質では-25カルマまでしか獲得できないキャラクターはカルマがゲームプレイオプションの制限を超えて不利な資質を獲得はできない</text>
         </string>
         <string>
             <key>Checkbox_Options_StartupFullscreen</key>
@@ -4914,7 +4914,7 @@
         </string>
         <string>
             <key>Button_Options_PDFTest</key>
-            <text>テスト－3ページを開く</text>
+            <text>テスト・3ページを開く</text>
         </string>
         <!-- Print Multiple Window -->
         <string>
@@ -5460,7 +5460,7 @@
         </string>
         <string>
             <key>Checkbox_SelectSpell_LimitedSpell</key>
-            <text>制限呪文（ＳＧ　212）</text>
+            <text>制限呪文（ＳＧ212）</text>
         </string>
         <string>
             <key>Tip_SelectSpell_LimitedSpell</key>
@@ -5468,7 +5468,7 @@
         </string>
         <string>
             <key>Checkbox_SelectSpell_ExtendedSpell</key>
-            <text>広域呪文（ＳＲ５　285）</text>
+            <text>広域呪文（ＳＲ五285）</text>
         </string>
         <string>
             <key>Tip_SelectSpell_ExtendedSpell</key>
@@ -6508,7 +6508,7 @@
         </string>
         <string>
             <key>Checkbox_Options_AllowInitiation</key>
-            <text>作成時の　イニシエーション/サブマージョン　を認める</text>
+            <text>作成時のイニシエーション/サブマージョンを認める</text>
         </string>
         <string>
             <key>Checkbox_Options_DroneArmorMultiplier</key>
@@ -8066,7 +8066,7 @@
         </string>
         <string>
             <key>Label_Options_QiFocus</key>
-            <text>気　収束具</text>
+            <text>気収束具</text>
         </string>
         <string>
             <key>Label_Options_RitualSpellcastingFocus</key>

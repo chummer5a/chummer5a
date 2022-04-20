@@ -22,7 +22,7 @@
 -->
 <chummer>
     <version>-350</version>
-    <name>汉语（ｚｈ－ＣＮ）</name>
+    <name>汉语（zh-CN）</name>
   <righttoleft>False</righttoleft>
     <strings>
         <!-- Meta Strings -->

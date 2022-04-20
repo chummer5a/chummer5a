@@ -55,7 +55,10 @@ namespace Translator
             ApplicationPath = Application.StartupPath;
             Language = strLanguage;
             // ReSharper disable once StringIndexOfIsCultureSpecific.1
-            Code = Language.Substring(Language.IndexOf('(') + 1, 5).ToLower();
+            int intIndex = Language.IndexOf('(');
+            if (intIndex == -1)
+                intIndex = Language.IndexOf('（');
+            Code = Language.Substring(intIndex + 1, 5).ToLower();
 
             InitializeComponent();
 

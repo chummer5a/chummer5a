@@ -139,6 +139,8 @@ namespace Translator
                     CultureInfo objSelectedCulture = CultureInfo.GetCultureInfo(strLowerCode);
                     string strName = objSelectedCulture.NativeName;
                     int intCountryNameIndex = strName.LastIndexOf('(');
+                    if (intCountryNameIndex == -1)
+                        intCountryNameIndex = strName.LastIndexOf('（');
                     if (intCountryNameIndex != -1)
                         strName = strName.Substring(0, intCountryNameIndex).Trim();
                     txtLanguageName.Text = objSelectedCulture.TextInfo.ToTitleCase(strName);
@@ -166,6 +168,8 @@ namespace Translator
                     CultureInfo objSelectedCulture = CultureInfo.GetCultureInfo(strLowerCode);
                     string strName = objSelectedCulture.NativeName;
                     int intCountryNameIndex = strName.LastIndexOf('(');
+                    if (intCountryNameIndex == -1)
+                        intCountryNameIndex = strName.LastIndexOf('（');
                     if (intCountryNameIndex != -1)
                         strName = objSelectedCulture.TextInfo.ToTitleCase(strName.Substring(0, intCountryNameIndex).Trim());
                     if (strName != "Unknown Locale")
@@ -343,7 +347,10 @@ namespace Translator
                 _lstOpenTranslateWindows.Remove(frmOpenTranslate);
             }
 
-            _astrArgs[0] = cboLanguages.Text.Substring(cboLanguages.Text.IndexOf('(') + 1, 5).ToLower();
+            int intIndex = cboLanguages.Text.IndexOf('(');
+            if (intIndex == -1)
+                intIndex = cboLanguages.Text.IndexOf('（');
+            _astrArgs[0] = cboLanguages.Text.Substring(intIndex + 1, 5).ToLower();
             _astrArgs[1] = _strLanguageToLoad;
             _astrArgs[2] = bool.FalseString;
 
@@ -381,7 +388,10 @@ namespace Translator
                 _lstOpenTranslateWindows.Remove(frmOpenTranslate);
             }
 
-            _astrArgs[0] = cboLanguages.Text.Substring(cboLanguages.Text.IndexOf('(') + 1, 5).ToLower();
+            int intIndex = cboLanguages.Text.IndexOf('(');
+            if (intIndex == -1)
+                intIndex = cboLanguages.Text.IndexOf('（');
+            _astrArgs[0] = cboLanguages.Text.Substring(intIndex + 1, 5).ToLower();
             _astrArgs[1] = _strLanguageToLoad;
             _astrArgs[2] = bool.TrueString;
 
@@ -425,6 +435,8 @@ namespace Translator
             if (!string.IsNullOrEmpty(_strLanguageToLoad))
             {
                 int intParenthesesIndex = _strLanguageToLoad.IndexOf('(');
+                if (intParenthesesIndex == -1)
+                    intParenthesesIndex = _strLanguageToLoad.IndexOf('（');
                 if (intParenthesesIndex + 5 < _strLanguageToLoad.Length)
                 {
                     string strCode = _strLanguageToLoad.Substring(intParenthesesIndex + 1, 5).ToLower();
