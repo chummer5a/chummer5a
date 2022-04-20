@@ -495,6 +495,12 @@
     <Compile Include="Controls\Shared\SustainedObjectControl.Designer.cs">
       <DependentUpon>SustainedObjectControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ScrollableMessageBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ScrollableMessageBox.Designer.cs">
+      <DependentUpon>ScrollableMessageBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Utility Forms\CharacterRoster.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1703,6 +1709,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Shared\SustainedObjectControl.resx">
       <DependentUpon>SustainedObjectControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ScrollableMessageBox.resx">
+      <DependentUpon>ScrollableMessageBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Utility Forms\CharacterRoster.resx">
       <DependentUpon>CharacterRoster.cs</DependentUpon>

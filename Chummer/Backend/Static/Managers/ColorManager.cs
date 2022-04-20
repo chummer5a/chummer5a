@@ -724,7 +724,7 @@ namespace Chummer
                             x.ForeColor = WindowTextLight;
                         else
                             x.ForeColor = WindowTextDark;
-                        if (x.ReadOnly)
+                        if (x.ReadOnly && (x.BackColor == ControlLight || x.BackColor == ControlDark))
                             x.BackColor = blnLightMode ? ControlLight : ControlDark;
                         else
                             x.BackColor = blnLightMode ? WindowLight : WindowDark;
@@ -867,7 +867,9 @@ namespace Chummer
                             x.ForeColor = blnLightMode ? ControlDarkerLight : ControlDarkerDark;
                         else if (x.ForeColor == (blnLightMode ? ControlDarkestDark : ControlDarkestLight))
                             x.ForeColor = blnLightMode ? ControlDarkestLight : ControlDarkestDark;
-                        else
+                        else if (x.ForeColor == (blnLightMode ? WindowTextDark : WindowTextLight))
+                            x.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
+                        else if (x.BackColor == ControlTextLight || x.BackColor == ControlTextDark)
                             x.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
                         // These controls never have backgrounds set explicitly, so shouldn't have their backgrounds overwritten
                         if (!(x is Label || x is CheckBox || x is PictureBox || x is Button
@@ -877,7 +879,9 @@ namespace Chummer
                                 x.BackColor = blnLightMode ? ControlLighterLight : ControlLighterDark;
                             else if (x.BackColor == (blnLightMode ? ControlLightestDark : ControlLightestLight))
                                 x.BackColor = blnLightMode ? ControlLightestLight : ControlLightestDark;
-                            else
+                            else if (x.BackColor == (blnLightMode ? WindowDark : WindowLight))
+                                x.BackColor = blnLightMode ? WindowLight : WindowDark;
+                            else if (x.BackColor == ControlLight || x.BackColor == ControlDark)
                                 x.BackColor = blnLightMode ? ControlLight : ControlDark;
                         }
                     });

@@ -21,6 +21,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -2261,5 +2262,50 @@ namespace Chummer
         }
 
         #endregion TreeNodeCollection Extensions
+
+        #region TextBox Extensions
+        /// <summary>
+        /// Automatically (un)set vertical scrollbars for a TextBox based on whether or not it needs them.
+        /// </summary>
+        /// <param name="txtTextBox">Control to analyze and potentially (un)set scrollbars</param>
+        public static void AutoSetScrollbars(this TextBox txtTextBox)
+        {
+            txtTextBox.DoThreadSafe(txtText =>
+            {
+                // Set textbox vertical scrollbar based on whether it's needed or not
+                string[] astrLines = txtText.Lines;
+                int intNumDisplayedLines = 0;
+                int intMaxLineHeight = 0;
+                if (astrLines != null)
+                {
+                    foreach (string strLine in astrLines)
+                    {
+                        Size objTextSize = TextRenderer.MeasureText(strLine, txtText.Font);
+                        intNumDisplayedLines += ((decimal) objTextSize.Width / txtText.Width).StandardRound();
+                        intMaxLineHeight = Math.Max(intMaxLineHeight, objTextSize.Height);
+                    }
+                }
+
+                // Search the height of the biggest line and set scrollbars based on that
+                ScrollBars eOldScrollBars = txtText.ScrollBars;
+                ScrollBars eNewScrollBars
+                    = intNumDisplayedLines * intMaxLineHeight >= Math.Max(txtText.Height, txtText.PreferredHeight)
+                        ? ScrollBars.Vertical
+                        : ScrollBars.None;
+                if (eOldScrollBars == eNewScrollBars)
+                    return;
+                txtText.SuspendLayout();
+                try
+                {
+                    txtText.ScrollBars = eNewScrollBars;
+                }
+                finally
+                {
+                    txtText.ResumeLayout();
+                }
+            });
+        }
+
+        #endregion
     }
 }

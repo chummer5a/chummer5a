@@ -945,7 +945,7 @@ namespace Chummer
             }
 
             // Display the message.
-            Program.ShowMessageBox(!string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.",
+            Program.ShowScrollableMessageBox(!string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.",
                 "Language File Contents", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 

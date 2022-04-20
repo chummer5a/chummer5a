@@ -22,7 +22,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security;
 #if DEBUG
@@ -128,6 +131,50 @@ namespace Chummer
                 _intIsOkToRunDoEvents = DefaultIsOkToRunDoEvents ? 1 : 0;
             }
         }
+
+        private static readonly Lazy<Dictionary<Icon, Bitmap>> s_dicSystemIconBitmaps
+            = new Lazy<Dictionary<Icon, Bitmap>>(
+                () =>
+                {
+                    PropertyInfo[] aobjProperties = typeof(SystemIcons).GetProperties();
+                    Dictionary<Icon, Bitmap> dicReturn = new Dictionary<Icon, Bitmap>(aobjProperties.Length);
+                    foreach (PropertyInfo objPropertyInfo in aobjProperties)
+                    {
+                        if (objPropertyInfo.GetValue(typeof(SystemIcons), null) is Icon objIcon)
+                            dicReturn.Add(objIcon, objIcon.ToBitmap());
+                    }
+                    return dicReturn;
+                });
+
+        /// <summary>
+        /// Dictionary assigning system icons to singly-initialized instances of their bitmaps.
+        /// </summary>
+        public static IReadOnlyDictionary<Icon, Bitmap> SystemIconBitmaps => s_dicSystemIconBitmaps.Value;
+
+        private static readonly Lazy<Dictionary<Icon, Bitmap>> s_dicStockIconBitmapsForSystemIcons
+            = new Lazy<Dictionary<Icon, Bitmap>>(
+                () =>
+                {
+                    Dictionary<Icon, Bitmap> dicReturn = new Dictionary<Icon, Bitmap>(typeof(SystemIcons).GetProperties().Length)
+                    {
+                        {SystemIcons.Application, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_APPLICATION).ToBitmap()},
+                        {SystemIcons.Asterisk, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_INFO).ToBitmap()},
+                        {SystemIcons.Error, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_ERROR).ToBitmap()},
+                        {SystemIcons.Exclamation, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_WARNING).ToBitmap()},
+                        {SystemIcons.Hand, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_ERROR).ToBitmap()},
+                        {SystemIcons.Information, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_INFO).ToBitmap()},
+                        {SystemIcons.Question, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_HELP).ToBitmap()},
+                        {SystemIcons.Shield, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_SHIELD).ToBitmap()},
+                        {SystemIcons.Warning, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_WARNING).ToBitmap()},
+                        {SystemIcons.WinLogo, SystemIcons.WinLogo.ToBitmap()}
+                    };
+                    return dicReturn;
+                });
+
+        /// <summary>
+        /// Dictionary assigning Windows stock icons' bitmaps to SystemIcons equivalents. Needed where the graphics used in dialog windows in newer versions of windows are different from those in SystemIcons. 
+        /// </summary>
+        public static IReadOnlyDictionary<Icon, Bitmap> StockIconBitmapsForSystemIcons => s_dicStockIconBitmapsForSystemIcons.Value;
 
         /// <summary>
         /// Maximum amount of tasks to run in parallel, useful to use with batching to avoid overloading the task scheduler.
