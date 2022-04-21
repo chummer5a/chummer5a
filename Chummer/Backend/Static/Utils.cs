@@ -153,22 +153,18 @@ namespace Chummer
 
         private static readonly Lazy<Dictionary<Icon, Bitmap>> s_dicStockIconBitmapsForSystemIcons
             = new Lazy<Dictionary<Icon, Bitmap>>(
-                () =>
+                () => new Dictionary<Icon, Bitmap>(typeof(SystemIcons).GetProperties().Length)
                 {
-                    Dictionary<Icon, Bitmap> dicReturn = new Dictionary<Icon, Bitmap>(typeof(SystemIcons).GetProperties().Length)
-                    {
-                        {SystemIcons.Application, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_APPLICATION).ToBitmap()},
-                        {SystemIcons.Asterisk, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_INFO).ToBitmap()},
-                        {SystemIcons.Error, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_ERROR).ToBitmap()},
-                        {SystemIcons.Exclamation, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_WARNING).ToBitmap()},
-                        {SystemIcons.Hand, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_ERROR).ToBitmap()},
-                        {SystemIcons.Information, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_INFO).ToBitmap()},
-                        {SystemIcons.Question, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_HELP).ToBitmap()},
-                        {SystemIcons.Shield, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_SHIELD).ToBitmap()},
-                        {SystemIcons.Warning, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_WARNING).ToBitmap()},
-                        {SystemIcons.WinLogo, SystemIcons.WinLogo.ToBitmap()}
-                    };
-                    return dicReturn;
+                    {SystemIcons.Application, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_APPLICATION).ToBitmap()},
+                    {SystemIcons.Asterisk, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_INFO).ToBitmap()},
+                    {SystemIcons.Error, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_ERROR).ToBitmap()},
+                    {SystemIcons.Exclamation, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_WARNING).ToBitmap()},
+                    {SystemIcons.Hand, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_ERROR).ToBitmap()},
+                    {SystemIcons.Information, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_INFO).ToBitmap()},
+                    {SystemIcons.Question, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_HELP).ToBitmap()},
+                    {SystemIcons.Shield, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_SHIELD).ToBitmap()},
+                    {SystemIcons.Warning, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_WARNING).ToBitmap()},
+                    {SystemIcons.WinLogo, SystemIcons.WinLogo.ToBitmap()}
                 });
 
         /// <summary>
@@ -181,18 +177,33 @@ namespace Chummer
         /// </summary>
         public static int MaxParallelBatchSize { get; } = Environment.ProcessorCount * 2;
 
+        private static readonly Lazy<string> s_strGetStartupPath = new Lazy<string>(
+            () => IsUnitTest ? AppDomain.CurrentDomain.SetupInformation.ApplicationBase : Application.StartupPath);
+
+        private static readonly Lazy<string> s_strGetAutosavesFolderPath
+            = new Lazy<string>(() => Path.Combine(GetStartupPath, "saves", "autosave"));
+
+        private static readonly Lazy<string> s_strGetDataFolderPath
+            = new Lazy<string>(() => Path.Combine(GetStartupPath, "data"));
+
+        private static readonly Lazy<string> s_strGetLanguageFolderPath
+            = new Lazy<string>(() => Path.Combine(GetStartupPath, "lang"));
+
+        private static readonly Lazy<string> s_strGetSettingsFolderPath
+            = new Lazy<string>(() => Path.Combine(GetStartupPath, "settings"));
+
         /// <summary>
         /// Returns the actual path of the Chummer-Directory regardless of running as Unit test or not.
         /// </summary>
-        public static string GetStartupPath => IsUnitTest ? AppDomain.CurrentDomain.SetupInformation.ApplicationBase : Application.StartupPath;
+        public static string GetStartupPath => s_strGetStartupPath.Value;
 
-        public static string GetAutosavesFolderPath { get; } = Path.Combine(GetStartupPath, "saves", "autosave");
+        public static string GetAutosavesFolderPath => s_strGetAutosavesFolderPath.Value;
 
-        public static string GetDataFolderPath { get; } = Path.Combine(GetStartupPath, "data");
+        public static string GetDataFolderPath => s_strGetDataFolderPath.Value;
 
-        public static string GetLanguageFolderPath { get; } = Path.Combine(GetStartupPath, "lang");
+        public static string GetLanguageFolderPath => s_strGetLanguageFolderPath.Value;
 
-        public static string GetSettingsFolderPath { get; } = Path.Combine(GetStartupPath, "settings");
+        public static string GetSettingsFolderPath => s_strGetSettingsFolderPath.Value;
 
         private static readonly Lazy<string[]> s_astrBasicDataFileNames = new Lazy<string[]>(() =>
         {
@@ -209,7 +220,7 @@ namespace Chummer
             return lstFiles.ToArray();
         });
 
-        public static ReadOnlyCollection<string> BasicDataFileNames { get; } = Array.AsReadOnly(s_astrBasicDataFileNames.Value);
+        public static ReadOnlyCollection<string> BasicDataFileNames => Array.AsReadOnly(s_astrBasicDataFileNames.Value);
 
         private static readonly Lazy<Version> s_ObjCurrentChummerVersion = new Lazy<Version>(() => typeof(Program).Assembly.GetName().Version);
 
