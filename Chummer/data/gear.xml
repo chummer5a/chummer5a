@@ -772,6 +772,7 @@
       <cost>(Rating * 2) + 25</cost>
       <costfor>1</costfor>
       <weaponbonus>
+        <accuracy>-1</accuracy>
         <ap>-5</ap>
         <damagereplace>8S(e)</damagereplace>
       </weaponbonus>
@@ -788,6 +789,7 @@
       <cost>(Rating * 25) + 25</cost>
       <costfor>1</costfor>
       <weaponbonus>
+        <accuracy>-1</accuracy>
         <ap>-5</ap>
         <damagereplace>12S(e)</damagereplace>
       </weaponbonus>
@@ -1594,7 +1596,7 @@
       </weaponbonus>
       <ammoforweapontype>slingshot</ammoforweapontype>
     </gear>
-	
+
     <!-- Region Kill Code-->
 
     <gear>
