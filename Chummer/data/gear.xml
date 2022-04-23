@@ -722,6 +722,7 @@
       <cost>(Rating * 2) + 5</cost>
       <costfor>1</costfor>
       <weaponbonus>
+        <accuracy>-1</accuracy>
         <ap>2</ap>
         <damage>1</damage>
         <damagetype>S</damagetype>
@@ -740,6 +741,8 @@
       <costfor>1</costfor>
       <weaponbonus>
         <accuracy>-1</accuracy>
+        <damagereplace>8P</damagereplace>
+        <apreplace>-6</apreplace>
       </weaponbonus>
       <ammoforweapontype>bow</ammoforweapontype>
     </gear>
