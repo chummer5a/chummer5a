@@ -387,27 +387,25 @@ namespace Chummer
 
         private static int CalculateCharacterSettingsMatchScore(CharacterSettings objBaselineSettings, CharacterSettings objOptionsToCheck)
         {
-            int intReturn = objOptionsToCheck.BuiltInOption ? 0 : 1;
-            int intDummy = objBaselineSettings.BuildKarma - objOptionsToCheck.BuildKarma;
-            intReturn -= intDummy.RaiseToPower(2);
-            intDummy = objBaselineSettings.NuyenMaximumBP.StandardRound() -
-                       objOptionsToCheck.NuyenMaximumBP.StandardRound();
-            intReturn -= intDummy.RaiseToPower(2);
-            int intBaseline = objBaselineSettings.NuyenMaximumBP.StandardRound().RaiseToPower(2) +
-                              objBaselineSettings.BuildKarma.RaiseToPower(2);
-            intDummy = objBaselineSettings.Books.Count *
-                       (objBaselineSettings.EnabledCustomDataDirectoryInfos.Count + 1) *
-                       intBaseline;
-            if (objOptionsToCheck.BuildMethod == objBaselineSettings.BuildMethod)
+            int intBaseline
+                = (Convert.ToDecimal((objBaselineSettings.BuildKarma - objOptionsToCheck.BuildKarma).RaiseToPower(2))
+                   + (objBaselineSettings.NuyenMaximumBP - objOptionsToCheck.NuyenMaximumBP).RaiseToPower(2))
+                  .RaiseToPower(0.5m).StandardRound();
+            if (objOptionsToCheck.BuiltInOption)
+                ++intBaseline;
+
+            int intReturn = int.MaxValue;
+            if (objOptionsToCheck.BuildMethod != objBaselineSettings.BuildMethod)
             {
-                intReturn += int.MaxValue / 2 + intDummy.RaiseToPower(2);
-            }
-            else if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
-                     objBaselineSettings.BuildMethod.UsesPriorityTables())
-            {
-                intReturn += int.MaxValue / 2 + intDummy.RaiseToPower(2) / 2;
+                if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
+                    objBaselineSettings.BuildMethod.UsesPriorityTables())
+                    intReturn -= intBaseline.RaiseToPower(2) / 2;
+                else
+                    intReturn -= intBaseline.RaiseToPower(2);
             }
 
+            int intBaselineCustomDataCount = Math.Max(objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count,
+                                                      objBaselineSettings.EnabledCustomDataDirectoryInfos.Count);
             for (int i = 0;
                  i < objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count;
                  ++i)
@@ -417,34 +415,30 @@ namespace Chummer
                 int intLoopIndex =
                     objBaselineSettings.EnabledCustomDataDirectoryInfos.FindIndex(x => x.Name == strLoopCustomDataName);
                 if (intLoopIndex < 0)
-                    intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count
-                                                  .RaiseToPower(2) *
-                                 intBaseline;
+                    intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
                 else
                     intReturn -= (i - intLoopIndex).RaiseToPower(2) * intBaseline;
             }
 
             foreach (string strLoopCustomDataName in objBaselineSettings.EnabledCustomDataDirectoryInfos.Select(x => x.Name))
             {
-                if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(
-                        x => x.Name != strLoopCustomDataName))
-                    intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count
-                                                  .RaiseToPower(2) *
-                                 intBaseline;
+                if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(x => x.Name != strLoopCustomDataName))
+                    intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
             }
-
-            int intBookBaselineScore =
-                (objBaselineSettings.EnabledCustomDataDirectoryInfos.Count + 1) * intBaseline;
+            
             using (new FetchSafelyFromPool<HashSet<string>>(
                        Utils.StringHashSetPool, out HashSet<string> setDummyBooks))
             {
                 setDummyBooks.AddRange(objBaselineSettings.Books);
+                int intExtraBooks = 0;
+                foreach (string strBook in objOptionsToCheck.Books)
+                {
+                    if (setDummyBooks.Remove(strBook))
+                        ++intExtraBooks;
+                }
                 setDummyBooks.IntersectWith(objOptionsToCheck.Books);
-                intReturn -=
-                    ((objBaselineSettings.Books.Count - setDummyBooks.Count).RaiseToPower(4)
-                     + (objOptionsToCheck.Books.Count - setDummyBooks.Count)
-                     .RaiseToPower(2))
-                    * intBookBaselineScore;
+                intReturn -= (setDummyBooks.Count.RaiseToPower(2) * (intBaselineCustomDataCount + 1)
+                              + intExtraBooks.RaiseToPower(2)) * intBaseline;
             }
 
             return intReturn;

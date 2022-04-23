@@ -47,6 +47,10 @@ namespace Chummer
             switch (intPower)
             {
                 case 2: // Extremely common case, so handle it explicitly
+#if DEBUG
+                    if (intBase >= 46341 || intBase <= -46341) // squaring this will cause an overflow exception, so break
+                        Utils.BreakIfDebug();
+#endif
                     return intBase * intBase;
 
                 case 1:

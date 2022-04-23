@@ -4777,41 +4777,39 @@ namespace Chummer
                                     // Settings with a negative score should not be considered suitable at all
                                     int CalculateCharacterSettingsMatchScore(CharacterSettings objOptionsToCheck)
                                     {
-                                        int intReturn = objOptionsToCheck.BuiltInOption ? 0 : 1;
-                                        int intDummy = intLegacyMaxKarma - objOptionsToCheck.BuildKarma;
-                                        intReturn -= intDummy.RaiseToPower(2);
-                                        intDummy = decLegacyMaxNuyen.StandardRound() -
-                                                   objOptionsToCheck.NuyenMaximumBP.StandardRound();
-                                        intReturn -= intDummy.RaiseToPower(2);
-                                        int intBaseline = decLegacyMaxNuyen.StandardRound().RaiseToPower(2) +
-                                                          intLegacyMaxKarma.RaiseToPower(2);
-                                        intDummy = setSavedBooks.Count *
-                                                   (lstSavedCustomDataDirectoryNames.Count + 1) *
-                                                   intBaseline;
+                                        int intBaseline = Convert
+                                                          .ToDecimal(
+                                                              (intLegacyMaxKarma - objOptionsToCheck.BuildKarma)
+                                                              .RaiseToPower(2)
+                                                              + (decLegacyMaxNuyen - objOptionsToCheck.NuyenMaximumBP)
+                                                              .RaiseToPower(2)).RaiseToPower(0.5m).StandardRound();
+                                        if (objOptionsToCheck.BuiltInOption)
+                                            ++intBaseline;
+
+                                        int intReturn = int.MaxValue;
                                         if (Created && eSavedBuildMethod != CharacterBuildMethod.LifeModule)
                                         {
-                                            if (objOptionsToCheck.BuildMethod == eSavedBuildMethod)
+                                            if (objOptionsToCheck.BuildMethod != eSavedBuildMethod)
                                             {
-                                                intReturn += int.MaxValue / 2 + 4;
+                                                if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
+                                                    eSavedBuildMethod.UsesPriorityTables())
+                                                    intReturn -= 2;
+                                                else
+                                                    intReturn -= 4;
                                             }
-                                            else if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
-                                                     eSavedBuildMethod.UsesPriorityTables())
-                                            {
-                                                intReturn += int.MaxValue / 2 + 2;
-                                            }
+                                        }
+                                        else if (objOptionsToCheck.BuildMethod != eSavedBuildMethod)
+                                        {
+                                            if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
+                                                eSavedBuildMethod.UsesPriorityTables())
+                                                intReturn -= intBaseline.RaiseToPower(2) / 2;
                                             else
-                                                intReturn += int.MaxValue / 2;
-                                        }
-                                        else if (objOptionsToCheck.BuildMethod == eSavedBuildMethod)
-                                        {
-                                            intReturn += int.MaxValue / 2 + intDummy.RaiseToPower(2);
-                                        }
-                                        else if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
-                                                 eSavedBuildMethod.UsesPriorityTables())
-                                        {
-                                            intReturn += int.MaxValue / 2 + intDummy.RaiseToPower(2) / 2;
+                                                intReturn -= intBaseline.RaiseToPower(2);
                                         }
 
+                                        int intBaselineCustomDataCount = Math.Max(
+                                            objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count,
+                                            lstSavedCustomDataDirectoryNames.Count);
                                         for (int i = 0;
                                              i < objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count;
                                              ++i)
@@ -4821,9 +4819,7 @@ namespace Chummer
                                             int intLoopIndex =
                                                 lstSavedCustomDataDirectoryNames.IndexOf(strLoopCustomDataName);
                                             if (intLoopIndex < 0)
-                                                intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count
-                                                                              .RaiseToPower(2) *
-                                                             intBaseline;
+                                                intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
                                             else
                                                 intReturn -= (i - intLoopIndex).RaiseToPower(2) * intBaseline;
                                         }
@@ -4832,23 +4828,22 @@ namespace Chummer
                                         {
                                             if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(
                                                     x => x.Name != strLoopCustomDataName))
-                                                intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count
-                                                                              .RaiseToPower(2) *
-                                                             intBaseline;
+                                                intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
                                         }
-
-                                        int intBookBaselineScore =
-                                            (lstSavedCustomDataDirectoryNames.Count + 1) * intBaseline;
+                                        
                                         using (new FetchSafelyFromPool<HashSet<string>>(
                                                    Utils.StringHashSetPool, out HashSet<string> setDummyBooks))
                                         {
                                             setDummyBooks.AddRange(setSavedBooks);
+                                            int intExtraBooks = 0;
+                                            foreach (string strBook in objOptionsToCheck.Books)
+                                            {
+                                                if (setDummyBooks.Remove(strBook))
+                                                    ++intExtraBooks;
+                                            }
                                             setDummyBooks.IntersectWith(objOptionsToCheck.Books);
-                                            intReturn -=
-                                                ((setSavedBooks.Count - setDummyBooks.Count).RaiseToPower(4)
-                                                 + (objOptionsToCheck.Books.Count - setDummyBooks.Count)
-                                                 .RaiseToPower(2))
-                                                * intBookBaselineScore;
+                                            intReturn -= (setDummyBooks.Count.RaiseToPower(2) * (intBaselineCustomDataCount + 1)
+                                                          + intExtraBooks.RaiseToPower(2)) * intBaseline;
                                         }
 
                                         return intReturn;
