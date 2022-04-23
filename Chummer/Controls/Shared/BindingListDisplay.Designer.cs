@@ -1,3 +1,5 @@
+using System;
+
 namespace Chummer.Controls.Shared
 {
     partial class BindingListDisplay<TType>
@@ -16,7 +18,14 @@ namespace Chummer.Controls.Shared
             if (disposing)
             {
                 components?.Dispose();
-                Contents.ListChanged -= ContentsChanged;
+                try
+                {
+                    Contents.ListChanged -= ContentsChanged;
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
                 System.Windows.Forms.Application.Idle -= ApplicationOnIdle;
             }
             base.Dispose(disposing);
