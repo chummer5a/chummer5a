@@ -41,6 +41,7 @@ Data Changes:
 - Neural Amplifiers (Learning Stimulus) has had its backend modified so that it stacks and works better together with other karma cost-modifying improvements. 
 - Fixed incorrect autosoft type on the Avibras-Nissan AN 822.
 - Fixed incorrect damage, accuracy and AP values for Hammerhead and Incendiary Head arrows. Fixed incorrect Stick-n-Shock arrowhead accuracy (courtesy of Stexinator)
+- Added RAW weights for explosives, where each quantity of an explosive weights one kilogram.
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups

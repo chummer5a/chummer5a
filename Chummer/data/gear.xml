@@ -2015,6 +2015,7 @@
       <avail>8R</avail>
       <cost>100</cost>
       <minrating>5</minrating>
+      <weight>1</weight>
     </gear>
     <gear>
       <id>df3efeef-661f-41fd-9007-01ba7db42dee</id>
@@ -2026,6 +2027,7 @@
       <avail>8R</avail>
       <cost>350</cost>
       <minrating>3</minrating>
+      <weight>1</weight>
     </gear>
     <gear>
       <id>381a235b-5282-45b4-a4c1-9c75d20f71b3</id>
@@ -2037,6 +2039,7 @@
       <avail>11F</avail>
       <cost>350</cost>
       <minrating>6</minrating>
+      <weight>1</weight>
     </gear>
     <gear>
       <id>733504c5-f2bb-4114-9132-e92979dc2010</id>
@@ -2048,6 +2051,7 @@
       <avail>12R</avail>
       <cost>200</cost>
       <minrating>5</minrating>
+      <weight>1</weight>
     </gear>
     <gear>
       <id>0183db3c-974e-40f8-ab73-ccf733beadd5</id>
@@ -2059,6 +2063,7 @@
       <avail>12F</avail>
       <cost>Rating * 100</cost>
       <minrating>6</minrating>
+      <weight>1</weight>
     </gear>
     <gear>
       <id>0b5b01f5-9c02-4513-8393-7bd64e1ca86c</id>
@@ -2070,6 +2075,7 @@
       <avail>16F</avail>
       <cost>Rating * 100</cost>
       <minrating>6</minrating>
+      <weight>1</weight>
     </gear>
     <gear>
       <id>de117700-4b5f-45f0-ae65-aab803d39220</id>
@@ -2081,6 +2087,7 @@
       <avail>5</avail>
       <cost>80</cost>
       <minrating>4</minrating>
+      <weight>1</weight>
     </gear>
     <gear>
       <id>6625fd1b-53d0-4f17-a4ec-f6645fc1707f</id>
@@ -2092,6 +2099,7 @@
       <avail>7</avail>
       <cost>100</cost>
       <minrating>6</minrating>
+      <weight>1</weight>
     </gear>
     <gear>
       <id>89549b33-b3fa-48ac-bd6f-8b0aec288ae7</id>
@@ -2103,6 +2111,7 @@
       <avail>10R</avail>
       <cost>100</cost>
       <minrating>3</minrating>
+      <weight>1</weight>
     </gear>
     <gear>
       <id>6a38466e-f5ea-451b-bdf9-51aacc5e1537</id>
@@ -2114,6 +2123,7 @@
       <avail>14R</avail>
       <cost>150</cost>
       <minrating>6</minrating>
+      <weight>1</weight>
     </gear>
     <gear>
       <id>ded12d46-347a-424f-9e18-0d8c8cdfa48e</id>
@@ -2125,6 +2135,7 @@
       <avail>18F</avail>
       <cost>Rating * 125</cost>
       <minrating>1</minrating>
+      <weight>1</weight>
     </gear>
     <gear>
       <id>38268be5-dd9a-439c-932b-aae2ead8bcc6</id>
@@ -2136,6 +2147,7 @@
       <avail>16R</avail>
       <cost>Rating * 250</cost>
       <minrating>1</minrating>
+      <weight>1</weight>
     </gear>
     <gear>
       <id>de29bcc2-025f-40dd-87e7-d15c6ca1ec10</id>
@@ -2147,6 +2159,7 @@
       <avail>16F</avail>
       <cost>Rating * 150</cost>
       <minrating>1</minrating>
+      <weight>1</weight>
     </gear>
     <gear>
       <id>2c98be77-22d7-4116-90fc-e8489944578d</id>
@@ -17929,6 +17942,7 @@
       <avail>8F</avail>
       <cost>80</cost>
       <minrating>6</minrating>
+      <weight>1</weight>
     </gear>
     <gear>
       <id>af65f401-4008-43e5-b32a-ea8134ccdce1</id>
@@ -17940,6 +17954,7 @@
       <avail>10F</avail>
       <cost>200</cost>
       <minrating>12</minrating>
+      <weight>1</weight>
     </gear>
     <gear>
       <id>94961a50-9d6a-44b7-bfb2-426be45e60c9</id>
@@ -17951,6 +17966,7 @@
       <avail>6R</avail>
       <cost>60</cost>
       <minrating>3</minrating>
+      <weight>1</weight>
     </gear>
     <!-- Missiles -->
     <gear>
