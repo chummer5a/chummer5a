@@ -604,6 +604,12 @@ namespace Chummer
             {
                 // Swallow this
             }
+            catch
+            {
+                Interlocked.CompareExchange(ref _objRefresherCancellationTokenSource, null, objNewSource);
+                objNewSource.Dispose();
+                throw;
+            }
 
             CancellationToken objToken = objNewSource.Token;
             _tskRefresher = Task.Run(() => RefreshCharacterXml(objToken), objToken);
@@ -642,6 +648,12 @@ namespace Chummer
             catch (OperationCanceledException)
             {
                 // Swallow this
+            }
+            catch
+            {
+                Interlocked.CompareExchange(ref _objOutputGeneratorCancellationTokenSource, null, objNewSource);
+                objNewSource.Dispose();
+                throw;
             }
 
             CancellationToken objToken = objNewSource.Token;

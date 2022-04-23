@@ -143,6 +143,12 @@ namespace Chummer
                         objNewSource.Dispose();
                         return;
                     }
+                    catch
+                    {
+                        Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                        objNewSource.Dispose();
+                        throw;
+                    }
                     if (_frmPrintView != null)
                     {
                         CancellationToken objToken = objNewSource.Token;
@@ -184,6 +190,12 @@ namespace Chummer
                 Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
                 objNewSource.Dispose();
                 return;
+            }
+            catch
+            {
+                Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                objNewSource.Dispose();
+                throw;
             }
             CancellationToken objToken = objNewSource.Token;
             _tskPrinter = Task.Run(() => DoPrint(objToken), objToken);

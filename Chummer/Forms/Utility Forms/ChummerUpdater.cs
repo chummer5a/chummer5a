@@ -241,6 +241,12 @@ namespace Chummer
             {
                 // Swallow this
             }
+            catch
+            {
+                Interlocked.CompareExchange(ref _objConnectionLoaderCancellationTokenSource, null, objNewSource);
+                objNewSource.Dispose();
+                throw;
+            }
             CancellationToken objToken = objNewSource.Token;
             _tskConnectionLoader = Task.Run(async () =>
             {

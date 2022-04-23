@@ -8098,7 +8098,13 @@ namespace Chummer
                 {
                     //swallow this
                 }
-                
+                catch
+                {
+                    Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objNewSource);
+                    objNewSource.Dispose();
+                    throw;
+                }
+
                 CancellationToken objToken = objNewSource.Token;
                 _tskUpdateCharacterInfo = Task.Run(() => DoUpdateCharacterInfo(objToken), objToken);
             }

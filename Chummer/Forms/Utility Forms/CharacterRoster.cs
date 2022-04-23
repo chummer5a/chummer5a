@@ -410,6 +410,12 @@ namespace Chummer
             {
                 //swallow this
             }
+            catch
+            {
+                Interlocked.CompareExchange(ref _objWatchFolderRefreshCancellationTokenSource, null, objNewSource);
+                objNewSource.Dispose();
+                throw;
+            }
 
             if (this.IsNullOrDisposed())
             {
@@ -492,6 +498,12 @@ namespace Chummer
             catch (OperationCanceledException)
             {
                 //swallow this
+            }
+            catch
+            {
+                Interlocked.CompareExchange(ref _objWatchFolderRefreshCancellationTokenSource, null, objNewSource);
+                objNewSource.Dispose();
+                throw;
             }
 
             if (this.IsNullOrDisposed())

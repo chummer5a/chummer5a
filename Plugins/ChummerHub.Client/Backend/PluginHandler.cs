@@ -298,9 +298,7 @@ namespace Chummer.Plugins
             if (!disposing || PipeManager == null)
                 return;
             //only stop the server if this is the last instance!
-            if (!BlnHasDuplicate)
-                PipeManager.StopServer();
-            PipeManager.Dispose();
+            PipeManager.StopServer(!HasDuplicate);
         }
 
         /// <inheritdoc />
@@ -1181,7 +1179,7 @@ namespace Chummer.Plugins
         //    }
         //}
 
-        public bool BlnHasDuplicate { get; set; }
+        public bool HasDuplicate { get; set; }
 
         public void CustomInitialize(ChummerMainForm mainControl)
         {
@@ -1193,23 +1191,23 @@ namespace Chummer.Plugins
             }
 
             //check global mutex
-            BlnHasDuplicate = false;
+            HasDuplicate = false;
             try
             {
-                BlnHasDuplicate = !Program.GlobalChummerMutex.WaitOne(0, false);
+                HasDuplicate = !Program.GlobalChummerMutex.WaitOne(0, false);
             }
             catch (AbandonedMutexException ex)
             {
                 Log.Error(ex);
                 Utils.BreakIfDebug();
-                BlnHasDuplicate = true;
+                HasDuplicate = true;
             }
             if (PipeManager == null)
             {
                 PipeManager = new NamedPipeManager();
-                Log.Info("blnHasDuplicate = " + BlnHasDuplicate.ToString(CultureInfo.InvariantCulture));
+                Log.Info("blnHasDuplicate = " + HasDuplicate.ToString(CultureInfo.InvariantCulture));
                 // If there is more than 1 instance running, do not let the application start a receiving server.
-                if (BlnHasDuplicate)
+                if (HasDuplicate)
                 {
                     Log.Info("More than one instance, not starting NamedPipe-Server...");
                     throw new InvalidOperationException("More than one instance is running.");

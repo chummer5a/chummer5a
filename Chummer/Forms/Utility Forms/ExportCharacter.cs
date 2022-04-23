@@ -338,6 +338,12 @@ namespace Chummer
                                 {
                                     // Swallow this
                                 }
+                                catch
+                                {
+                                    Interlocked.CompareExchange(ref _objXmlGeneratorCancellationTokenSource, null, objNewSource);
+                                    objNewSource.Dispose();
+                                    throw;
+                                }
 
                                 CancellationToken objToken = objNewSource.Token;
                                 _tskXmlGenerator = _strXslt == "JSON"
@@ -383,6 +389,12 @@ namespace Chummer
                     catch (OperationCanceledException)
                     {
                         // Swallow this
+                    }
+                    catch
+                    {
+                        Interlocked.CompareExchange(ref _objCharacterXmlGeneratorCancellationTokenSource, null, objNewSource);
+                        objNewSource.Dispose();
+                        throw;
                     }
 
                     CancellationToken objToken = objNewSource.Token;

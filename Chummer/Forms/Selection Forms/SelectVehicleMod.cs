@@ -396,7 +396,7 @@ namespace Chummer
                         // If the rating is "qty", we're looking at Tires instead of actual Rating, so update the fields appropriately.
                         if (strRating.Equals("qty", StringComparison.OrdinalIgnoreCase))
                         {
-                            intMinRating = Math.Min(intMinRating, 20);
+                            intMinRating = Math.Min(intMinRating, Vehicle.MaxWheels);
                         }
                         //Used for the Armor modifications.
                         else if (strRating.Equals("body", StringComparison.OrdinalIgnoreCase))

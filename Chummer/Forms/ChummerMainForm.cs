@@ -926,7 +926,7 @@ namespace Chummer
             {
                 // Swallow this
             }
-            catch (Exception)
+            catch
             {
                 Interlocked.CompareExchange(ref _objVersionUpdaterCancellationTokenSource, null, objNewSource);
                 objNewSource.Dispose();
