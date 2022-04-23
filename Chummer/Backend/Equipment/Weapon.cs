@@ -7164,8 +7164,12 @@ namespace Chummer.Backend.Equipment
                     {
                         await objWriter.WriteElementStringAsync("id", AmmoGear.InternalId);
                         await objWriter.WriteStartElementAsync("ammotype");
+
+                        await AmmoGear.PrintWeaponBonusEntries(objWriter, objCulture, strLanguageToPrint, true);
+                        // Here for Legacy reasons
                         await objWriter.WriteElementStringAsync("DV", await AmmoGear.WeaponBonusDamageAsync(strLanguageToPrint));
                         await objWriter.WriteElementStringAsync("BonusRange", AmmoGear.WeaponBonusRange.ToString(objCulture));
+
                         await objWriter.WriteEndElementAsync();
                     }
                     else

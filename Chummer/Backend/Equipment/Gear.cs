@@ -1462,24 +1462,8 @@ namespace Chummer.Backend.Equipment
                     // </children>
                     await objChildrenElement.DisposeAsync();
                 }
-                
-                if (_nodWeaponBonus != null)
-                {
-                    await objWriter.WriteElementStringAsync("weaponbonusdamage", await WeaponBonusDamageAsync(strLanguageToPrint));
-                    await objWriter.WriteElementStringAsync("weaponbonusdamage_english",
-                                                            await WeaponBonusDamageAsync(GlobalSettings.DefaultLanguage));
-                    await objWriter.WriteElementStringAsync("weaponbonusap", WeaponBonusAP);
-                    await objWriter.WriteElementStringAsync("weaponbonusacc", WeaponBonusAcc);
-                }
 
-                if (_nodFlechetteWeaponBonus != null)
-                {
-                    await objWriter.WriteElementStringAsync("flechetteweaponbonusdamage",
-                                                            await FlechetteWeaponBonusDamageAsync(strLanguageToPrint));
-                    await objWriter.WriteElementStringAsync("flechetteweaponbonusdamage_english",
-                                                            await FlechetteWeaponBonusDamageAsync(GlobalSettings.DefaultLanguage));
-                    await objWriter.WriteElementStringAsync("flechetteweaponbonusap", FlechetteWeaponBonusAP);
-                }
+                await PrintWeaponBonusEntries(objWriter, objCulture, strLanguageToPrint);
 
                 if (GlobalSettings.PrintNotes)
                     await objWriter.WriteElementStringAsync("notes", Notes);
@@ -1488,6 +1472,32 @@ namespace Chummer.Backend.Equipment
             {
                 // </gear>
                 await objBaseElement.DisposeAsync();
+            }
+        }
+
+        public async ValueTask PrintWeaponBonusEntries(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, bool blnForcePrintAllBlocks = false)
+        {
+            if (objWriter == null)
+                return;
+
+            if (_nodWeaponBonus != null || blnForcePrintAllBlocks)
+            {
+                await objWriter.WriteElementStringAsync("weaponbonusdamage", await WeaponBonusDamageAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("weaponbonusdamage_english",
+                                                        await WeaponBonusDamageAsync(GlobalSettings.DefaultLanguage));
+                await objWriter.WriteElementStringAsync("weaponbonusap", WeaponBonusAP);
+                await objWriter.WriteElementStringAsync("weaponbonusacc", WeaponBonusAcc);
+                await objWriter.WriteElementStringAsync("weaponbonusrange", WeaponBonusRange.ToString(objCulture));
+            }
+
+            if (_nodFlechetteWeaponBonus != null || blnForcePrintAllBlocks)
+            {
+                await objWriter.WriteElementStringAsync("flechetteweaponbonusdamage",
+                                                        await FlechetteWeaponBonusDamageAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("flechetteweaponbonusdamage_english",
+                                                        await FlechetteWeaponBonusDamageAsync(GlobalSettings.DefaultLanguage));
+                await objWriter.WriteElementStringAsync("flechetteweaponbonusap", FlechetteWeaponBonusAP);
+                await objWriter.WriteElementStringAsync("flechetteweaponbonusrange", FlechetteWeaponBonusRange.ToString(objCulture));
             }
         }
 

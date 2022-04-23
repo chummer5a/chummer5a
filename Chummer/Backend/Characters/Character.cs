@@ -22594,7 +22594,7 @@ namespace Chummer
                             SortedDictionary<decimal, Tuple<string, string>> dicAvailabilityMap
                                 = Interlocked.Exchange(ref _dicAvailabilityMap, null)
                                   ?? new SortedDictionary<decimal, Tuple<string, string>>();
-                            dicAvailabilityMap?.Clear();
+                            dicAvailabilityMap.Clear();
                             foreach (XPathNavigator objNode in LoadDataXPath("options.xml")
                                          .SelectAndCacheExpression("/chummer/availmap/avail"))
                             {
