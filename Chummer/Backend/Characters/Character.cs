@@ -247,7 +247,7 @@ namespace Chummer
 
         private readonly ThreadSafeObservableCollection<Drug> _lstDrugs = new ThreadSafeObservableCollection<Drug>();
 
-        private readonly SortedDictionary<decimal, Tuple<string, string>> _dicAvailabilityMap = new SortedDictionary<decimal, Tuple<string, string>>();
+        private SortedDictionary<decimal, Tuple<string, string>> _dicAvailabilityMap;
         //private readonly List<LifeModule> _lstLifeModules = new List<LifeModule>(10);
         private readonly ThreadSafeList<string> _lstInternalIdsNeedingReapplyImprovements = new ThreadSafeList<string>(1);
 
@@ -22585,17 +22585,33 @@ namespace Chummer
             {
                 // Find the character's Negotiation total.
                 int intPool = SkillsSection.GetActiveSkill("Negotiation")?.Pool ?? 0;
-                if (GlobalSettings.LiveCustomData)
-                    _dicAvailabilityMap.Clear();
-                if (_dicAvailabilityMap.Count == 0)
+                if (_dicAvailabilityMap == null || GlobalSettings.LiveCustomData)
                 {
-                    foreach (XPathNavigator objNode in LoadDataXPath("options.xml")
-                                 .SelectAndCacheExpression("/chummer/availmap/avail"))
+                    using (LockObject.EnterWriteLock())
                     {
-                        _dicAvailabilityMap.Add(
-                            Convert.ToDecimal(objNode.SelectSingleNodeAndCacheExpression("value").Value, GlobalSettings.InvariantCultureInfo),
-                            new Tuple<string, string>(objNode.SelectSingleNodeAndCacheExpression("duration").Value,
-                                                      objNode.SelectSingleNodeAndCacheExpression("interval").Value));
+                        if (_dicAvailabilityMap == null || GlobalSettings.LiveCustomData)
+                        {
+                            SortedDictionary<decimal, Tuple<string, string>> dicAvailabilityMap
+                                = Interlocked.Exchange(ref _dicAvailabilityMap, null)
+                                  ?? new SortedDictionary<decimal, Tuple<string, string>>();
+                            dicAvailabilityMap?.Clear();
+                            foreach (XPathNavigator objNode in LoadDataXPath("options.xml")
+                                         .SelectAndCacheExpression("/chummer/availmap/avail"))
+                            {
+                                decimal decValue = 0;
+                                if (objNode.TryGetDecFieldQuickly("value", ref decValue)
+                                    && !dicAvailabilityMap.ContainsKey(decValue))
+                                {
+                                    dicAvailabilityMap.Add(
+                                        decValue,
+                                        new Tuple<string, string>(
+                                            objNode.SelectSingleNodeAndCacheExpression("duration").Value,
+                                            objNode.SelectSingleNodeAndCacheExpression("interval")
+                                                   .Value));
+                                }
+                            }
+                            Interlocked.CompareExchange(ref _dicAvailabilityMap, dicAvailabilityMap, null);
+                        }
                     }
                 }
 
