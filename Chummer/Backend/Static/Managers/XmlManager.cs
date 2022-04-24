@@ -1098,11 +1098,9 @@ namespace Chummer
             foreach (string strFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName, eSearchOption))
             {
                 string strLoopFileName = Path.GetFileName(strFile);
-                if (!strLoopFileName.StartsWith("override_"))
-                    continue;
-                if (!strLoopFileName.StartsWith("custom_"))
-                    continue;
-                if (!strLoopFileName.StartsWith("amend_"))
+                if (!strLoopFileName.StartsWith("override_")
+                    && !strLoopFileName.StartsWith("custom_")
+                    && !strLoopFileName.StartsWith("amend_"))
                     continue;
                 lstPossibleCustomFiles.Add(strFile);
             }
