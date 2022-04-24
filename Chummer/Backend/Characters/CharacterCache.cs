@@ -876,17 +876,17 @@ namespace Chummer
                              + LanguageManager.GetString(Created ? "Title_CareerMode" : "Title_CreateMode") + ')';
             }
 
-            if (blnAddMarkerIfOpen)
+            if (blnAddMarkerIfOpen && Program.MainForm != null)
             {
                 string strMarker = string.Empty;
-                if (Program.MainForm?.OpenCharacterEditorForms.Any(
-                        x => !x.CharacterObject.IsDisposed && x.CharacterObject.FileName == FilePath) == true)
+                if (Program.MainForm.OpenCharacterEditorForms.Any(
+                        x => !x.CharacterObject.IsDisposed && x.CharacterObject.FileName == FilePath))
                     strMarker += '*';
-                if (Program.MainForm?.OpenCharacterSheetViewers.Any(
-                        x => x.CharacterObjects.Any(y => !y.IsDisposed && y.FileName == FilePath)) == true)
+                if (Program.MainForm.OpenCharacterSheetViewers.Any(
+                        x => x.CharacterObjects.Any(y => !y.IsDisposed && y.FileName == FilePath)))
                     strMarker += '^';
-                if (Program.MainForm?.OpenCharacterSheetViewers.Any(
-                        x => x.CharacterObjects.Any(y => !y.IsDisposed && y.FileName == FilePath)) == true)
+                if (Program.MainForm.OpenCharacterExportForms.Any(
+                        x => !x.CharacterObject.IsDisposed && x.CharacterObject.FileName == FilePath))
                     strMarker += '\'';
                 if (!string.IsNullOrEmpty(strMarker))
                     strReturn = strMarker + strSpace + strReturn;

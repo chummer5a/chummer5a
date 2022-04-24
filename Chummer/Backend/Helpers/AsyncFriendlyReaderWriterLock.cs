@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -219,8 +220,13 @@ namespace Chummer
         public void EnterReadLock(CancellationToken token = default)
         {
             if (_intDisposedStatus != 0)
-                throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
-
+            {
+#if DEBUG
+                Debug.WriteLine("Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
+                Debug.WriteLine(Environment.StackTrace);
+#endif
+                return;
+            }
             token.ThrowIfCancellationRequested();
             // Only do the complicated steps if any write lock is currently being held, otherwise skip it and just process the read lock
             if (_objTopLevelWriterSemaphore.CurrentCount == 0)
@@ -268,7 +274,13 @@ namespace Chummer
         public Task EnterReadLockAsync(CancellationToken token = default)
         {
             if (_intDisposedStatus != 0)
-                return Task.FromException(new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock)));
+            {
+#if DEBUG
+                Debug.WriteLine("Entering a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
+                Debug.WriteLine(Environment.StackTrace);
+#endif
+                return Task.CompletedTask;
+            }
             token.ThrowIfCancellationRequested();
             if (_objTopLevelWriterSemaphore.CurrentCount != 0)
                 return TakeReadLockCoreLightAsync(token);
@@ -328,7 +340,13 @@ namespace Chummer
         public void ExitReadLock()
         {
             if (_intDisposedStatus > 1)
-                throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
+            {
+#if DEBUG
+                Debug.WriteLine("Exiting a read lock after it has been disposed. Not fatal, just potentially a sign of bad code. Stacktrace:");
+                Debug.WriteLine(Environment.StackTrace);
+#endif
+                return;
+            }
             if (Interlocked.Decrement(ref _intCountActiveReaders) == 0)
             {
                 _objReaderSemaphore.Release();
