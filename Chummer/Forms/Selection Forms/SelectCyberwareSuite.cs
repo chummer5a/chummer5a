@@ -173,7 +173,7 @@ namespace Chummer
             }
 
             lblEssence.Text = decTotalESS.ToString(_objCharacter.Settings.EssenceFormat, GlobalSettings.CultureInfo);
-            lblCost.Text = decTotalCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+            lblCost.Text = decTotalCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
             lblGrade.Text = objGrade.CurrentDisplayName;
             _decCost = decTotalCost;
         }

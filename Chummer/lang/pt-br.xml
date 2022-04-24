@@ -355,6 +355,10 @@
       <text xml:space="preserve"> de </text>
     </string>
     <string>
+      <key>String_NuyenSymbol</key>
+      <text>¥</text>
+    </string>
+    <string>
       <key>String_Remaining</key>
       <text>restante</text>
     </string>

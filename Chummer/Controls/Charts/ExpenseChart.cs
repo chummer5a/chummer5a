@@ -84,7 +84,7 @@ namespace Chummer.UI.Charts
             if (NuyenMode)
             {
                 await _objYAxis.DoThreadSafeAsync(x => x.LabelFormatter = val =>
-                                                      val.ToString((_objCharacter?.Settings.NuyenFormat ?? "#,0.##") + '¥',
+                                                      val.ToString((_objCharacter?.Settings.NuyenFormat ?? "#,0.##") + LanguageManager.GetString("String_NuyenSymbol"),
                                                                    GlobalSettings.CultureInfo));
             }
         }
@@ -144,7 +144,7 @@ namespace Chummer.UI.Charts
                         {
                             x.Title = LanguageManager.GetString("Label_SummaryNuyen");
                             x.LabelFormatter = val =>
-                                val.ToString((_objCharacter?.Settings.NuyenFormat ?? "#,0.##") + '¥',
+                                val.ToString((_objCharacter?.Settings.NuyenFormat ?? "#,0.##") + LanguageManager.GetString("String_NuyenSymbol"),
                                              GlobalSettings.CultureInfo);
                         });
                         _objMainSeries.DoThreadSafe(x =>

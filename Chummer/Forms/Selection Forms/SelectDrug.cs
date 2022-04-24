@@ -657,7 +657,7 @@ namespace Chummer
             decimal decItemCost = 0;
             if (await chkFree.DoThreadSafeFuncAsync(x => x.Checked))
             {
-                await lblCost.DoThreadSafeAsync(x => x.Text = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥');
+                await lblCost.DoThreadSafeAsync(x => x.Text = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"));
             }
             else
             {
@@ -690,7 +690,7 @@ namespace Chummer
                                                             : decMin.ToString(_objCharacter.Settings.NuyenFormat,
                                                                               GlobalSettings.CultureInfo) + " - "
                                                             + decMax.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                              GlobalSettings.CultureInfo) + '¥');
+                                                                              GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"));
 
                         decItemCost = decMin;
                     }
@@ -710,16 +710,16 @@ namespace Chummer
                                 decItemCost *= 0.9m;
                             }
 
-                            await lblCost.DoThreadSafeAsync(x => x.Text = decItemCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥');
+                            await lblCost.DoThreadSafeAsync(x => x.Text = decItemCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"));
                         }
                         else
                         {
-                            await lblCost.DoThreadSafeAsync(x => x.Text = strCost + '¥');
+                            await lblCost.DoThreadSafeAsync(x => x.Text = strCost + LanguageManager.GetString("String_NuyenSymbol"));
                         }
                     }
                 }
                 else
-                    await lblCost.DoThreadSafeAsync(x => x.Text = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥');
+                    await lblCost.DoThreadSafeAsync(x => x.Text = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"));
             }
 
             await lblCost.DoThreadSafeFuncAsync(x => x.Text)

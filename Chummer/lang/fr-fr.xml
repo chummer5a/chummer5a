@@ -436,6 +436,10 @@
       <text xml:space="preserve"> </text>
     </string>
     <string>
+      <key>String_NuyenSymbol</key>
+      <text>¥</text>
+    </string>
+    <string>
       <key>String_Colon</key>
       <text> :</text>
     </string>

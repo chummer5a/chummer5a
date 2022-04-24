@@ -671,7 +671,7 @@ namespace Chummer
                 // Cost.
                 decimal decItemCost = 0;
                 if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked))
-                    await lblCost.DoThreadSafeAsync(x => x.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥');
+                    await lblCost.DoThreadSafeAsync(x => x.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"));
                 else
                 {
                     string strCost = xmlVehicleMod.SelectSingleNode("cost")?.Value ?? string.Empty;
@@ -701,7 +701,7 @@ namespace Chummer
                                                               GlobalSettings.CultureInfo)
                                               + strSpace + '-' + strSpace
                                               + decMax.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                GlobalSettings.CultureInfo) + '¥');
+                                                                GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"));
                         }
 
                         strCost = decMin.ToString(GlobalSettings.InvariantCultureInfo);
@@ -730,7 +730,7 @@ namespace Chummer
                         decItemCost *= 0.9m;
                     }
 
-                    await lblCost.DoThreadSafeAsync(x => x.Text = decItemCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥');
+                    await lblCost.DoThreadSafeAsync(x => x.Text = decItemCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"));
                 }
                 await lblCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblCost.Text));
 

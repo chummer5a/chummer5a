@@ -790,7 +790,7 @@ namespace Chummer
                         await lblCost.DoThreadSafeAsync(
                             x => x.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat,
                                                           GlobalSettings.CultureInfo)
-                                          + '¥');
+                                          + LanguageManager.GetString("String_NuyenSymbol"));
                     }
                     else
                     {
@@ -835,7 +835,7 @@ namespace Chummer
                                                                     : decMin.ToString(_objCharacter.Settings.NuyenFormat,
                                                                           GlobalSettings.CultureInfo)
                                                                       + " - " + decMax.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                          GlobalSettings.CultureInfo) + '¥');
+                                                                          GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"));
 
                                 decItemCost = decMin;
                             }
@@ -871,11 +871,11 @@ namespace Chummer
 
                                     await lblCost.DoThreadSafeAsync(x => x.Text
                                                                         = decItemCost.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                            GlobalSettings.CultureInfo) + '¥');
+                                                                            GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"));
                                 }
                                 else
                                 {
-                                    await lblCost.DoThreadSafeAsync(x => x.Text = strCost + '¥');
+                                    await lblCost.DoThreadSafeAsync(x => x.Text = strCost + LanguageManager.GetString("String_NuyenSymbol"));
                                 }
                             }
                         }
@@ -883,7 +883,7 @@ namespace Chummer
                             await lblCost.DoThreadSafeAsync(x => x.Text
                                                                 = (0.0m).ToString(_objCharacter.Settings.NuyenFormat,
                                                                       GlobalSettings.CultureInfo)
-                                                                  + '¥');
+                                                                  + LanguageManager.GetString("String_NuyenSymbol"));
                     }
 
                     await lblCost.DoThreadSafeFuncAsync(x => x.Text)

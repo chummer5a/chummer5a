@@ -600,7 +600,7 @@ namespace Chummer
                 _blnSkipRefresh = false;
 
                 lblQualityLp.Text = objQuality.LP.ToString(GlobalSettings.CultureInfo);
-                lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+                lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
                 objQuality.SetSourceDetail(lblQualitySource);
                 cmdDeleteQuality.Enabled = objQuality.OriginSource != QualitySource.BuiltIn;
             }

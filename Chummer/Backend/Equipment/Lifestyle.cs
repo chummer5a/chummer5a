@@ -1569,7 +1569,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public string DisplayTotalMonthlyCost => TotalMonthlyCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+        public string DisplayTotalMonthlyCost => TotalMonthlyCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
 
         public static string GetEquivalentLifestyle(string strLifestyle)
         {

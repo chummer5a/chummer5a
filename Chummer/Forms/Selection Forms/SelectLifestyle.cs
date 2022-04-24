@@ -155,7 +155,7 @@ namespace Chummer
                                              + strSpace
                                              + '['
                                              + decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
-                                             + "¥]";
+                                             + LanguageManager.GetString("String_NuyenSymbol") + ']';
                         }
                         await treQualities.DoThreadSafeAsync(x => x.Nodes.Add(nodOption));
                     }
@@ -480,7 +480,7 @@ namespace Chummer
 
             decimal decNuyen = decBaseCost + decBaseCost * decMod + decCost;
 
-            await lblCost.DoThreadSafeAsync(x => x.Text = decNuyen.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥');
+            await lblCost.DoThreadSafeAsync(x => x.Text = decNuyen.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"));
             decimal decPercentage = await nudPercentage.DoThreadSafeFuncAsync(x => x.Value);
             if (decPercentage != 100 || decRoommates != 0 && !await chkPrimaryTenant.DoThreadSafeFuncAsync(x => x.Checked))
             {
@@ -492,7 +492,7 @@ namespace Chummer
                 }
 
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                await lblCost.DoThreadSafeAsync(x => x.Text += strSpace + '(' + decDiscount.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + "¥)");
+                await lblCost.DoThreadSafeAsync(x => x.Text += strSpace + '(' + decDiscount.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol") + ')');
             }
 
             await lblCost.DoThreadSafeFuncAsync(x => x.Text)

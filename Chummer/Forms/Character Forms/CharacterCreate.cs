@@ -11028,7 +11028,7 @@ namespace Chummer
                         await lblCyberwareCost.DoThreadSafeAsync(x => x.Text
                                                                      = objCyberware.TotalCost.ToString(
                                                                          CharacterObjectSettings.NuyenFormat,
-                                                                         GlobalSettings.CultureInfo) + '¥', token);
+                                                                         GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token);
                         if (objCyberware.Category.Equals("Cyberlimb", StringComparison.Ordinal)
                             || objCyberware.AllowedSubsystems.Contains("Cyberlimb"))
                         {
@@ -11174,7 +11174,7 @@ namespace Chummer
                         await lblCyberwareCapacity.DoThreadSafeAsync(x => x.Text = objGear.DisplayCapacity, token);
                         await lblCyberwareCost.DoThreadSafeAsync(x => x.Text =
                                                                      objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo)
-                                                                     + '¥', token);
+                                                                     + LanguageManager.GetString("String_NuyenSymbol"), token);
                         await lblCyberlimbAGILabel.DoThreadSafeAsync(x => x.Visible = false, token);
                         await lblCyberlimbAGI.DoThreadSafeAsync(x => x.Visible = false, token);
                         await lblCyberlimbSTRLabel.DoThreadSafeAsync(x => x.Visible = false, token);
@@ -11332,7 +11332,7 @@ namespace Chummer
                         await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = objWeapon.DisplayTotalAvail, token);
                         await lblWeaponCost.DoThreadSafeAsync(x => x.Text
                                                                   = objWeapon.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
-                                                                      GlobalSettings.CultureInfo) + '¥', token);
+                                                                      GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token);
                         await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblWeaponSlots.DoThreadSafeAsync(x => x.Visible = true, token);
                         if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
@@ -11575,7 +11575,7 @@ namespace Chummer
                         await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = objSelectedAccessory.DisplayTotalAvail, token);
                         await lblWeaponCost.DoThreadSafeAsync(x => x.Text
                                                                   = objSelectedAccessory.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
-                                                                      GlobalSettings.CultureInfo) + '¥', token);
+                                                                      GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token);
                         await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblWeaponSlots.DoThreadSafeAsync(x => x.Visible = true, token);
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -11827,7 +11827,7 @@ namespace Chummer
                         await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = objGear.DisplayTotalAvail, token);
                         await lblWeaponCost.DoThreadSafeAsync(x => x.Text
                                                                   = objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
-                                                                      GlobalSettings.CultureInfo) + '¥', token);
+                                                                      GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token);
                         await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = false, token);
                         await lblWeaponSlots.DoThreadSafeAsync(x => x.Visible = false, token);
                         await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = false, token);
@@ -11998,7 +11998,7 @@ namespace Chummer
                     await lblArmorCost.DoThreadSafeAsync(x => x.Text
                                                              = objArmor.TotalCost.ToString(
                                                                    CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo)
-                                                               + '¥', token);
+                                                               + LanguageManager.GetString("String_NuyenSymbol"), token);
                     await chkArmorEquipped.DoThreadSafeAsync(x =>
                     {
                         x.Visible = true;
@@ -12127,7 +12127,7 @@ namespace Chummer
                         await lblArmorCost.DoThreadSafeAsync(x => x.Text
                                                                  = objArmorMod.TotalCost.ToString(
                                                                      CharacterObjectSettings.NuyenFormat,
-                                                                     GlobalSettings.CultureInfo) + '¥', token);
+                                                                     GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token);
                         await chkArmorEquipped.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
@@ -12215,7 +12215,7 @@ namespace Chummer
                                 await lblArmorCost.DoThreadSafeAsync(x => x.Text
                                                                          = objSelectedGear.TotalCost.ToString(
                                                                              CharacterObjectSettings.NuyenFormat,
-                                                                             GlobalSettings.CultureInfo) + '¥', token);
+                                                                             GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token);
                                 await chkArmorEquipped.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
@@ -12524,12 +12524,12 @@ namespace Chummer
                     try
                     {
                         await lblGearCost.DoThreadSafeAsync(x => x.Text
-                                                                = objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat + '¥',
+                                                                = objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat + LanguageManager.GetString("String_NuyenSymbol"),
                                                                     GlobalSettings.CultureInfo), token);
                     }
                     catch (FormatException)
                     {
-                        await lblGearCost.DoThreadSafeAsync(x => x.Text = objGear.Cost + '¥', token);
+                        await lblGearCost.DoThreadSafeAsync(x => x.Text = objGear.Cost + LanguageManager.GetString("String_NuyenSymbol"), token);
                     }
                     await lblGearAvail.DoThreadSafeAsync(x => x.Text = objGear.DisplayTotalAvail, token);
                     await lblGearCapacity.DoThreadSafeAsync(x => x.Text = objGear.DisplayCapacity, token);
@@ -13417,7 +13417,7 @@ namespace Chummer
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 await lblLifestyleCost.DoThreadSafeAsync(x => x.Text
                                                              = objLifestyle.TotalMonthlyCost.ToString(CharacterObjectSettings.NuyenFormat,
-                                                                 GlobalSettings.CultureInfo) + '¥', token);
+                                                                 GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token);
                 await nudLifestyleMonths.DoThreadSafeAsync(x => x.Value = objLifestyle.Increments, token);
                 string strText = objLifestyle.Dice.ToString(GlobalSettings.CultureInfo)
                                  + await LanguageManager.GetStringAsync("String_D6")
@@ -13425,14 +13425,14 @@ namespace Chummer
                                  + '×' + strSpace
                                  + objLifestyle.Multiplier.ToString(
                                      CharacterObjectSettings.NuyenFormat,
-                                     GlobalSettings.CultureInfo) + '¥';
+                                     GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
                 await lblLifestyleStartingNuyen.DoThreadSafeAsync(x => x.Text = strText, token);
                 await objLifestyle.SetSourceDetailAsync(lblLifestyleSource, token);
                 await lblLifestyleTotalCost.DoThreadSafeAsync(x => x.Text
                                                                   = objLifestyle.TotalCost.ToString(
                                                                         CharacterObjectSettings.NuyenFormat,
                                                                         GlobalSettings.CultureInfo)
-                                                                    + '¥', token);
+                                                                    + LanguageManager.GetString("String_NuyenSymbol"), token);
                 string strCostLabelString;
                 string strIncrementString;
                 // Change the Cost/Month label.
@@ -13627,7 +13627,7 @@ namespace Chummer
                         await lblVehicleCost.DoThreadSafeAsync(x => x.Text
                                                                    = objVehicle.TotalCost.ToString(
                                                                        CharacterObjectSettings.NuyenFormat,
-                                                                       GlobalSettings.CultureInfo) + '¥', token);
+                                                                       GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token);
                         if (CharacterObjectSettings.BookEnabled("R5"))
                         {
                             await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = false, token);
@@ -13927,7 +13927,7 @@ namespace Chummer
                         await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objMod.DisplayTotalAvail, token);
                         await lblVehicleCost.DoThreadSafeAsync(x => x.Text
                                                                    = objMod.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo)
-                                                                     + '¥', token);
+                                                                     + LanguageManager.GetString("String_NuyenSymbol"), token);
                         await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblVehicleSlots.DoThreadSafeAsync(x =>
                         {
@@ -13996,7 +13996,7 @@ namespace Chummer
                         await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objWeapon.DisplayTotalAvail, token);
                         await lblVehicleCost.DoThreadSafeAsync(x => x.Text
                                                                    = objWeapon.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
-                                                                       GlobalSettings.CultureInfo) + '¥', token);
+                                                                       GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token);
                         await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblVehicleSlots.DoThreadSafeAsync(x => x.Visible = true, token);
                         if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
@@ -14219,7 +14219,7 @@ namespace Chummer
                         await lblVehicleCost.DoThreadSafeAsync(x => x.Text
                                                                    = objAccessory.TotalCost.ToString(
                                                                        CharacterObjectSettings.NuyenFormat,
-                                                                       GlobalSettings.CultureInfo) + '¥', token);
+                                                                       GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token);
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdMount))
                         {
@@ -14439,7 +14439,7 @@ namespace Chummer
                         await lblVehicleCost.DoThreadSafeAsync(x => x.Text
                                                                    = objCyberware.TotalCost.ToString(
                                                                        CharacterObjectSettings.NuyenFormat,
-                                                                       GlobalSettings.CultureInfo) + '¥', token);
+                                                                       GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token);
                         await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible
                                                                                    = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount), token);
                         await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x => x.Visible = false, token);
@@ -14582,7 +14582,7 @@ namespace Chummer
                         await lblVehicleCost.DoThreadSafeAsync(x => x.Text
                                                                    = objGear.TotalCost.ToString(
                                                                        CharacterObjectSettings.NuyenFormat,
-                                                                       GlobalSettings.CultureInfo) + '¥', token);
+                                                                       GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token);
                         await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         strText = objGear.CalculatedCapacity + strSpace + '('
                                   + objGear.CapacityRemaining.ToString(
@@ -14689,7 +14689,7 @@ namespace Chummer
                     await lblDrugCost.DoThreadSafeAsync(x => x.Text
                                                             = objDrug.Cost.ToString(
                                                                   CharacterObject.Settings.NuyenFormat, GlobalSettings.CultureInfo)
-                                                              + '¥', token);
+                                                              + LanguageManager.GetString("String_NuyenSymbol"), token);
                     await nudDrugQty.DoThreadSafeAsync(x =>
                     {
                         x.Value = objDrug.Quantity;
@@ -15132,7 +15132,7 @@ namespace Chummer
                                   .AppendFormat(GlobalSettings.CultureInfo,
                                                 await LanguageManager.GetStringAsync("Message_InvalidNuyenExcess"),
                                                 (-decNuyen).ToString(CharacterObjectSettings.NuyenFormat,
-                                                                     GlobalSettings.CultureInfo)).Append('¥');
+                                                                     GlobalSettings.CultureInfo)).Append(LanguageManager.GetString("String_NuyenSymbol"));
                     }
 
                     if (CharacterObject.StolenNuyen < 0)
@@ -15143,7 +15143,7 @@ namespace Chummer
                                                                               "Message_InvalidStolenNuyenExcess"),
                                                                           (-CharacterObject.StolenNuyen).ToString(
                                                                               CharacterObjectSettings.NuyenFormat,
-                                                                              GlobalSettings.CultureInfo)).Append('¥');
+                                                                              GlobalSettings.CultureInfo)).Append(LanguageManager.GetString("String_NuyenSymbol"));
                     }
 
                     // Check if the character's Essence is above 0.

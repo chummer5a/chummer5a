@@ -684,9 +684,9 @@ namespace Chummer.Backend.Equipment
                 strReturn += strSpace + '[' + Multiplier.ToString(objCulture) + "%]";
 
             if (Cost > 0)
-                strReturn += strSpace + "[+" + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + "¥]";
+                strReturn += strSpace + "[+" + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + LanguageManager.GetString("String_NuyenSymbol") + ']';
             else if (Cost < 0)
-                strReturn += strSpace + '[' + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + "¥]";
+                strReturn += strSpace + '[' + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + LanguageManager.GetString("String_NuyenSymbol") + ']';
             return strReturn;
         }
 
@@ -701,9 +701,9 @@ namespace Chummer.Backend.Equipment
                 strReturn += strSpace + '[' + Multiplier.ToString(objCulture) + "%]";
 
             if (Cost > 0)
-                strReturn += strSpace + "[+" + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + "¥]";
+                strReturn += strSpace + "[+" + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + LanguageManager.GetString("String_NuyenSymbol") + ']';
             else if (Cost < 0)
-                strReturn += strSpace + '[' + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + "¥]";
+                strReturn += strSpace + '[' + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + LanguageManager.GetString("String_NuyenSymbol") + ']';
             return strReturn;
         }
 

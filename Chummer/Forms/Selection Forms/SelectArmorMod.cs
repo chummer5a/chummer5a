@@ -323,7 +323,7 @@ namespace Chummer
                 if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked))
                 {
                     await lblCost.DoThreadSafeAsync(x => x.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
-                                                                  + '¥');
+                                                                  + LanguageManager.GetString("String_NuyenSymbol"));
                     await lblTest.DoThreadSafeAsync(x => x.Text = _objCharacter.AvailTest(0, strAvail));
                 }
                 else
@@ -364,7 +364,7 @@ namespace Chummer
                             : decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
                               + await LanguageManager.GetStringAsync("String_Space") + '-'
                               + await LanguageManager.GetStringAsync("String_Space")
-                              + decMax.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+                              + decMax.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
                         await lblCost.DoThreadSafeAsync(x => x.Text = strCost);
                         await lblTest.DoThreadSafeAsync(x => x.Text = _objCharacter.AvailTest(decMin, strAvail));
                     }
@@ -383,7 +383,7 @@ namespace Chummer
                         decCost *= 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value) / 100.0m);
 
                         await lblCost.DoThreadSafeAsync(x => x.Text = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
-                                                                      + '¥');
+                                                                      + LanguageManager.GetString("String_NuyenSymbol"));
 
                         await lblTest.DoThreadSafeAsync(x => x.Text = _objCharacter.AvailTest(decCost, strAvail));
                     }

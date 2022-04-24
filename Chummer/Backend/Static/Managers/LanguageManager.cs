@@ -576,6 +576,18 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Retrieve a string from the language file.
+        /// </summary>
+        /// <param name="strKey">Key to retrieve.</param>
+        /// <param name="strLanguage">Language from which the string should be retrieved.</param>
+        /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string GetString(string strKey, string strLanguage = "", bool blnReturnError = true)
+        {
+            return GetStringCoreAsync(true, strKey, strLanguage, blnReturnError).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
         /// Overload for standard GetString method, using GlobalSettings.Language as default string, but explicitly defining if an error is returned or not.
         /// </summary>
         /// <param name="strKey">Key to retrieve.</param>
@@ -594,9 +606,20 @@ namespace Chummer
         /// <param name="strLanguage">Language from which the string should be retrieved.</param>
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string GetString(string strKey, string strLanguage = "", bool blnReturnError = true)
+        public static Task<string> GetStringAsync(string strKey, string strLanguage = "", bool blnReturnError = true)
         {
-            return GetStringCoreAsync(true, strKey, strLanguage, blnReturnError).GetAwaiter().GetResult();
+            return GetStringCoreAsync(false, strKey, strLanguage, blnReturnError);
+        }
+
+        /// <summary>
+        /// Overload for standard GetString method, using GlobalSettings.Language as default string, but explicitly defining if an error is returned or not.
+        /// </summary>
+        /// <param name="strKey">Key to retrieve.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static char GetChar(string strKey)
+        {
+            return GetChar(strKey, GlobalSettings.Language);
         }
 
         /// <summary>
@@ -604,11 +627,33 @@ namespace Chummer
         /// </summary>
         /// <param name="strKey">Key to retrieve.</param>
         /// <param name="strLanguage">Language from which the string should be retrieved.</param>
-        /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task<string> GetStringAsync(string strKey, string strLanguage = "", bool blnReturnError = true)
+        public static char GetChar(string strKey, string strLanguage)
         {
-            return GetStringCoreAsync(false, strKey, strLanguage, blnReturnError);
+            string strReturn = GetStringCoreAsync(true, strKey, strLanguage, false).GetAwaiter().GetResult();
+            return string.IsNullOrWhiteSpace(strReturn) ? default : strReturn[0];
+        }
+
+        /// <summary>
+        /// Overload for standard GetString method, using GlobalSettings.Language as default string, but explicitly defining if an error is returned or not.
+        /// </summary>
+        /// <param name="strKey">Key to retrieve.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<char> GetCharAsync(string strKey)
+        {
+            return GetCharAsync(strKey, GlobalSettings.Language);
+        }
+
+        /// <summary>
+        /// Retrieve a string from the language file.
+        /// </summary>
+        /// <param name="strKey">Key to retrieve.</param>
+        /// <param name="strLanguage">Language from which the string should be retrieved.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<char> GetCharAsync(string strKey, string strLanguage)
+        {
+            return GetStringCoreAsync(false, strKey, strLanguage, false).ContinueWith(x => string.IsNullOrWhiteSpace(x.Result) ? default : x.Result[0]);
         }
 
         /// <summary>

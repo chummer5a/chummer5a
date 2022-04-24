@@ -64,6 +64,10 @@
             <text>：</text>
         </string>
         <string>
+          <key>String_NuyenSymbol</key>
+          <text>￥</text>
+        </string>
+        <string>
             <key>String_Remaining</key>
             <text>剩余</text>
         </string>

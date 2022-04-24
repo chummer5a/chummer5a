@@ -1056,7 +1056,7 @@ namespace Chummer.Backend.Equipment
                                       .AppendLine((AddictionThreshold * (intLevel + 1)).ToString(objCulture))
                                       .Append(LanguageManager.GetString("Label_Cost", strLanguage)).Append(strSpace)
                                       .Append((Cost * (intLevel + 1)).ToString(
-                                                  _objCharacter.Settings.NuyenFormat, objCulture)).AppendLine('¥')
+                                                  _objCharacter.Settings.NuyenFormat, objCulture)).AppendLine(LanguageManager.GetString("String_NuyenSymbol"))
                                       .Append(LanguageManager.GetString("Label_Avail", strLanguage)).Append(strSpace)
                                       .AppendLine(TotalAvail(objCulture, strLanguage));
                     }
@@ -1071,7 +1071,7 @@ namespace Chummer.Backend.Equipment
                                   .Append(LanguageManager.GetString("Label_Cost", strLanguage)).Append(strSpace)
                                   .Append((Cost * (intLevel + 1)).ToString(
                                               _objCharacter.Settings.NuyenFormat, objCulture))
-                                  .AppendLine('¥')
+                                  .AppendLine(LanguageManager.GetString("String_NuyenSymbol"))
                                   .Append(LanguageManager.GetString("Label_Avail", strLanguage)).Append(strSpace)
                                   .AppendLine(TotalAvail(objCulture, strLanguage));
                 }
@@ -1212,7 +1212,7 @@ namespace Chummer.Backend.Equipment
                                       .AppendLine((AddictionThreshold * (intLevel + 1)).ToString(objCulture))
                                       .Append(await LanguageManager.GetStringAsync("Label_Cost", strLanguage)).Append(strSpace)
                                       .Append((Cost * (intLevel + 1)).ToString(
-                                                  _objCharacter.Settings.NuyenFormat, objCulture)).AppendLine('¥')
+                                                  _objCharacter.Settings.NuyenFormat, objCulture)).AppendLine(LanguageManager.GetString("String_NuyenSymbol"))
                                       .Append(await LanguageManager.GetStringAsync("Label_Avail", strLanguage)).Append(strSpace)
                                       .AppendLine(TotalAvail(objCulture, strLanguage));
                     }
@@ -1227,7 +1227,7 @@ namespace Chummer.Backend.Equipment
                                   .Append(await LanguageManager.GetStringAsync("Label_Cost", strLanguage)).Append(strSpace)
                                   .Append((Cost * (intLevel + 1)).ToString(
                                               _objCharacter.Settings.NuyenFormat, objCulture))
-                                  .AppendLine('¥')
+                                  .AppendLine(LanguageManager.GetString("String_NuyenSymbol"))
                                   .Append(await LanguageManager.GetStringAsync("Label_Avail", strLanguage)).Append(strSpace)
                                   .AppendLine(TotalAvail(objCulture, strLanguage));
                 }
@@ -2030,7 +2030,7 @@ namespace Chummer.Backend.Equipment
                     sbdDescription.Append(LanguageManager.GetString("Label_Cost")).Append(strSpace)
                                   .Append((CostPerLevel * (intLevel + 1)).ToString(
                                               _objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo))
-                                  .AppendLine('¥');
+                                  .AppendLine(LanguageManager.GetString("String_NuyenSymbol"));
                     sbdDescription.Append(LanguageManager.GetString("Label_Avail")).Append(strSpace)
                                   .AppendLine(DisplayTotalAvail);
                 }
@@ -2046,7 +2046,7 @@ namespace Chummer.Backend.Equipment
                     sbdDescription.Append(LanguageManager.GetString("Label_Cost")).Append(strSpace)
                                   .Append((CostPerLevel * (intLevel + 1)).ToString(
                                               _objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo))
-                                  .Append('¥')
+                                  .Append(LanguageManager.GetString("String_NuyenSymbol"))
                                   .Append(strSpace).AppendLine(strPerLevel);
                     sbdDescription.Append(LanguageManager.GetString("Label_Avail")).Append(strSpace)
                                   .AppendLine(DisplayTotalAvail);
@@ -2179,7 +2179,7 @@ namespace Chummer.Backend.Equipment
                     sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Cost")).Append(strSpace)
                                   .Append((CostPerLevel * (intLevel + 1)).ToString(
                                               _objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo))
-                                  .AppendLine('¥');
+                                  .AppendLine(LanguageManager.GetString("String_NuyenSymbol"));
                     sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Avail")).Append(strSpace)
                                   .AppendLine(DisplayTotalAvail);
                 }
@@ -2195,7 +2195,7 @@ namespace Chummer.Backend.Equipment
                     sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Cost")).Append(strSpace)
                                   .Append((CostPerLevel * (intLevel + 1)).ToString(
                                               _objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo))
-                                  .Append('¥')
+                                  .Append(LanguageManager.GetString("String_NuyenSymbol"))
                                   .Append(strSpace).AppendLine(strPerLevel);
                     sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Avail")).Append(strSpace)
                                   .AppendLine(DisplayTotalAvail);

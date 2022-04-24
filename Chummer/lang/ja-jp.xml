@@ -6885,7 +6885,11 @@
     </string>
     <string>
       <key>String_Space</key>
-      <text xml:space="preserve"> </text>
+      <text xml:space="preserve"></text>
+    </string>
+    <string>
+      <key>String_NuyenSymbol</key>
+      <text>￥</text>
     </string>
     <string>
       <key>String_TotalRating</key>
@@ -8630,7 +8634,7 @@
     </string>
     <string>
       <key>String_Colon</key>
-      <text>:</text>
+      <text>：</text>
     </string>
     <string>
       <key>String_UpgradedRating</key>

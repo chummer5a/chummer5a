@@ -545,7 +545,7 @@ namespace Chummer
                             x => x.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat,
                                                           GlobalSettings.CultureInfo) + strSpace + '-'
                                           + strSpace + decMax.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                       GlobalSettings.CultureInfo) + '¥');
+                                                                       GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"));
                     }
 
                     await lblTest.DoThreadSafeAsync(x => x.Text = _objCharacter.AvailTest(decMax, strAvail));
@@ -571,13 +571,13 @@ namespace Chummer
                         }
                     }
 
-                    await lblCost.DoThreadSafeAsync(x => x.Text = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥');
+                    await lblCost.DoThreadSafeAsync(x => x.Text = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"));
                     await lblTest.DoThreadSafeAsync(x => x.Text = _objCharacter.AvailTest(decCost, strAvail));
                 }
             }
             else
             {
-                await lblCost.DoThreadSafeAsync(x => x.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥');
+                await lblCost.DoThreadSafeAsync(x => x.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"));
                 await lblTest.DoThreadSafeAsync(x => x.Text = _objCharacter.AvailTest(0, strAvail));
             }
 

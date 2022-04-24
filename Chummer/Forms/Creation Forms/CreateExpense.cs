@@ -66,7 +66,7 @@ namespace Chummer
                     string.Format(GlobalSettings.CultureInfo,
                                   await LanguageManager.GetStringAsync("Message_KarmaNuyenExchange"),
                                   _objCharacterSettings.NuyenPerBPWftP.ToString(
-                                      _objCharacterSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥'),
+                                      _objCharacterSettings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol")),
                     await LanguageManager.GetStringAsync("MessageTitle_KarmaNuyenExchange"), MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
             }

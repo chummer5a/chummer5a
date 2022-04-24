@@ -13658,7 +13658,7 @@ namespace Chummer
             get
             {
                 using (EnterReadLock.Enter(LockObject))
-                    return CareerNuyen.ToString(Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+                    return CareerNuyen.ToString(Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
             }
         }
 
@@ -20349,7 +20349,7 @@ namespace Chummer
             get
             {
                 using (EnterReadLock.Enter(LockObject))
-                    return Nuyen.ToString(Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+                    return Nuyen.ToString(Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
             }
         }
 
@@ -20358,7 +20358,7 @@ namespace Chummer
             get
             {
                 using (EnterReadLock.Enter(LockObject))
-                    return StolenNuyen.ToString(Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+                    return StolenNuyen.ToString(Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
             }
         }
 
@@ -20450,7 +20450,7 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                     return '=' + LanguageManager.GetString("String_Space") +
-                           TotalStartingNuyen.ToString(Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+                           TotalStartingNuyen.ToString(Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
             }
         }
 

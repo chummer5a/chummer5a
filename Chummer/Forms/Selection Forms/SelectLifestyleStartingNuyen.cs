@@ -75,9 +75,9 @@ namespace Chummer
                 await lblResult.DoThreadSafeAsync(x => x.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalSettings.CultureInfo) + ')' +
                                                                 strSpace + '×'
                                                                 + strSpace + (SelectedLifestyle?.Multiplier ?? 0).ToString(
-                                                                    _objCharacter.Settings.NuyenFormat + '¥', GlobalSettings.CultureInfo)
+                                                                    _objCharacter.Settings.NuyenFormat + LanguageManager.GetString("String_NuyenSymbol"), GlobalSettings.CultureInfo)
                                                                 + strSpace + '=' + strSpace +
-                                                                StartingNuyen.ToString(_objCharacter.Settings.NuyenFormat + '¥',
+                                                                StartingNuyen.ToString(_objCharacter.Settings.NuyenFormat + LanguageManager.GetString("String_NuyenSymbol"),
                                                                     GlobalSettings.CultureInfo));
             }
         }

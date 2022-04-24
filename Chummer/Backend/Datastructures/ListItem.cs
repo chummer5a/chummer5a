@@ -233,8 +233,8 @@ namespace Chummer
                 }
                 else
                 {
-                    string strX = objListViewX?.SubItems[_intColumnToSort].Text.FastEscape('¥');
-                    string strY = objListViewY?.SubItems[_intColumnToSort].Text.FastEscape('¥');
+                    string strX = objListViewX?.SubItems[_intColumnToSort].Text.FastEscape(LanguageManager.GetString("String_NuyenSymbol").ToCharArray());
+                    string strY = objListViewY?.SubItems[_intColumnToSort].Text.FastEscape(LanguageManager.GetString("String_NuyenSymbol").ToCharArray());
                     if (decimal.TryParse(strX, System.Globalization.NumberStyles.Any, GlobalSettings.CultureInfo,
                             out decimal decX) &&
                         decimal.TryParse(strY, System.Globalization.NumberStyles.Any, GlobalSettings.CultureInfo,
@@ -292,10 +292,12 @@ namespace Chummer
             // Compare the two items
             string strX = datagridviewrowX?.Cells[_intColumnToSort].Value.ToString();
             string strY = datagridviewrowY?.Cells[_intColumnToSort].Value.ToString();
-            string strNumberX = strX?.TrimEnd('¥', '+')
+            string strNumberX = strX?.TrimEnd(LanguageManager.GetString("String_NuyenSymbol").ToCharArray())
+                                    .TrimEnd('+')
                                     .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted"))
                                     .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden"));
-            string strNumberY = strY?.TrimEnd('¥', '+')
+            string strNumberY = strY?.TrimEnd(LanguageManager.GetString("String_NuyenSymbol").ToCharArray())
+                                    .TrimEnd('+')
                                     .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted"))
                                     .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden"));
             if (decimal.TryParse(strNumberX, System.Globalization.NumberStyles.Any, GlobalSettings.CultureInfo, out decimal decX))

@@ -72,7 +72,7 @@ namespace Chummer
             DataGridViewCellStyle dataGridViewNuyenCellStyle = new DataGridViewCellStyle
             {
                 Alignment = DataGridViewContentAlignment.TopRight,
-                Format = _objCharacter.Settings.NuyenFormat + '¥',
+                Format = _objCharacter.Settings.NuyenFormat + LanguageManager.GetString("String_NuyenSymbol"),
                 NullValue = null
             };
             dgvc_Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
@@ -226,7 +226,7 @@ namespace Chummer
                     string strWeaponCost;
                     if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked))
                     {
-                        strWeaponCost = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+                        strWeaponCost = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
                     }
                     else
                     {

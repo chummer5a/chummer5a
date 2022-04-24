@@ -658,7 +658,7 @@ namespace Chummer
                 {
                     await lblCost.DoThreadSafeAsync(
                         x => x.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
-                                      + '¥');
+                                      + LanguageManager.GetString("String_NuyenSymbol"));
                 }
                 else
                 {
@@ -708,7 +708,7 @@ namespace Chummer
                                                                 = (decCost * _intCostMultiplier).ToString(
                                                                       _objCharacter.Settings.NuyenFormat,
                                                                       GlobalSettings.CultureInfo)
-                                                                  + '¥');
+                                                                  + LanguageManager.GetString("String_NuyenSymbol"));
                             decItemCost = decCost;
                         }
                         catch (XPathException)
@@ -721,7 +721,7 @@ namespace Chummer
                                 await lblCost.DoThreadSafeAsync(x => x.Text
                                                                     = (decItemCost * _intCostMultiplier).ToString(
                                                                         _objCharacter.Settings.NuyenFormat,
-                                                                        GlobalSettings.CultureInfo) + '¥');
+                                                                        GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"));
                             }
                         }
 
@@ -777,7 +777,7 @@ namespace Chummer
                                                                       + decMax.ToString(
                                                                           _objCharacter.Settings.NuyenFormat,
                                                                           GlobalSettings.CultureInfo)
-                                                                      + '¥');
+                                                                      + LanguageManager.GetString("String_NuyenSymbol"));
                             }
 
                             decItemCost = decMin;

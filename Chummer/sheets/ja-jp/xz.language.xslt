@@ -392,7 +392,7 @@
 
   <!-- miscellaneous signs and symbols -->
     <!-- currency symbol -->
-  <xsl:variable name="lang.NuyenSymbol"  select="string('&#165;')" />
+  <xsl:variable name="lang.NuyenSymbol"  select="string('&#65509;')" />
     <!-- diacrtic marks: decimal mark and grouping separator -->
   <xsl:variable name="lang.marks"      select="string('.,')" />
 </xsl:stylesheet>

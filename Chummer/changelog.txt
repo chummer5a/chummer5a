@@ -61,6 +61,7 @@ Changed/New Strings:
 - String_Export_Blank
 - String_Export_And_Close
 - Message_KarmaNuyenExchange
+- String_NuyenSymbol
 
 Removed Strings:
 - Message_UnderLanguageLimit

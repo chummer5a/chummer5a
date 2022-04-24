@@ -50,6 +50,10 @@
             <key>String_Space</key>
             <text xml:space="preserve"> </text>
         </string>
+      <string>
+        <key>String_NuyenSymbol</key>
+        <text>¥</text>
+      </string>
         <string>
             <key>String_Remaining</key>
             <text>verbleibend</text>

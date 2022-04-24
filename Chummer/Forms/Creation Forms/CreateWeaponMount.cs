@@ -575,7 +575,7 @@ namespace Chummer
 
                     if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token))
                     {
-                        await lblCost.DoThreadSafeAsync(x => x.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥', token);
+                        await lblCost.DoThreadSafeAsync(x => x.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token);
                     }
                     else
                     {
@@ -606,7 +606,7 @@ namespace Chummer
                         await lblCost.DoThreadSafeAsync(
                             x => x.Text
                                 = (objMod.TotalCostInMountCreation(intTotalSlots) * (1 + decMarkup / 100.0m))
-                                .ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥', token);
+                                .ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token);
                     }
 
                     await objMod.SetSourceDetailAsync(lblSource, token);
@@ -746,7 +746,7 @@ namespace Chummer
 
             decCost *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token) / 100.0m;
 
-            await lblCost.DoThreadSafeAsync(x => x.Text = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥', token);
+            await lblCost.DoThreadSafeAsync(x => x.Text = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token);
             await lblSlots.DoThreadSafeAsync(x => x.Text = intSlots.ToString(GlobalSettings.CultureInfo), token);
             await lblAvailability.DoThreadSafeAsync(x => x.Text = strAvailText, token);
             string strSource = xmlSelectedMount["source"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown");
