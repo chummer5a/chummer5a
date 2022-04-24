@@ -105,6 +105,7 @@ namespace Chummer.Backend.Equipment
         private string _strPlugsIntoModularMount = string.Empty;
         private string _strBlocksMounts = string.Empty;
         private string _strForced = string.Empty;
+        private bool _blnIsGeneware;
 
         private string _strDeviceRating = string.Empty;
         private string _strAttack = string.Empty;
@@ -667,8 +668,9 @@ namespace Chummer.Backend.Equipment
                         DisplayPage(GlobalSettings.Language), _objCharacter);
                 }
 
-                _blnAddToParentESS = objXmlCyberware["addtoparentess"] != null;
-                _blnAddToParentCapacity = objXmlCyberware["addtoparentcapacity"] != null;
+                _blnAddToParentESS = objXmlCyberware["addtoparentess"] != null && objXmlCyberware["addtoparentess"].InnerText != bool.FalseString;
+                _blnAddToParentCapacity = objXmlCyberware["addtoparentcapacity"] != null && objXmlCyberware["addtoparentcapacity"].InnerText != bool.FalseString;
+                _blnIsGeneware = objXmlCyberware["isgeneware"] != null && objXmlCyberware["isgeneware"].InnerText != bool.FalseString;
                 _nodBonus = objXmlCyberware["bonus"];
                 _nodPairBonus = objXmlCyberware["pairbonus"];
                 _nodWirelessBonus = objXmlCyberware["wirelessbonus"];
@@ -1528,6 +1530,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("addtoparentess", _blnAddToParentESS.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("addtoparentcapacity", _blnAddToParentCapacity.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("isgeneware", _blnIsGeneware.ToString(GlobalSettings.InvariantCultureInfo));
 
             objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
@@ -1773,6 +1776,19 @@ namespace Chummer.Backend.Equipment
                 else
                     _blnAddToParentCapacity = objMyNode.Value?["addtoparentcapacity"] != null;
 
+                if (objNode["geneware"] != null)
+                {
+                    if (bool.TryParse(objNode["geneware"].InnerText, out bool blnTmp))
+                    {
+                        _blnIsGeneware = blnTmp;
+                    }
+                }
+                else
+                {
+                    _blnIsGeneware = objMyNode.Value?["geneware"] != null;
+                    _strCategory = objMyNode.Value?["category"]?.InnerText ?? _strCategory;
+                }
+
                 bool blnIsActive = false;
                 if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
                     this.SetActiveCommlink(_objCharacter, true);
@@ -1960,6 +1976,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("location", Location);
                 await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint));
                 await objWriter.WriteElementStringAsync("improvementsource", SourceType.ToString());
+                await objWriter.WriteElementStringAsync("isgeneware", IsGeneware.ToString(GlobalSettings.InvariantCultureInfo));
 
                 await objWriter.WriteElementStringAsync("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
                 await objWriter.WriteElementStringAsync("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
@@ -3519,6 +3536,11 @@ namespace Chummer.Backend.Equipment
         public string ForceGrade => _strForceGrade;
 
         /// <summary>
+        /// Is this cyberware/bioware geneware?
+        /// </summary>
+        public bool IsGeneware => _blnIsGeneware;
+
+        /// <summary>
         /// Is the Bioware's cost affected by Prototype Transhuman?
         /// </summary>
         public bool PrototypeTranshuman
@@ -3636,14 +3658,6 @@ namespace Chummer.Backend.Equipment
         #endregion Properties
 
         #region Complex Properties
-
-        /// <summary>
-        /// Ghetto workaround for flagging an object as geneware.
-        /// </summary>
-        public bool IsGeneware =>
-            SourceType == Improvement.ImprovementSource.Bioware &&
-            (Category.StartsWith("Genetech", StringComparison.Ordinal) || Category.StartsWith("Genetic Infusions", StringComparison.Ordinal) ||
-             Category.StartsWith("Genemods", StringComparison.Ordinal));
 
         /// <summary>
         /// Total Availability in the program's current language.
@@ -4031,7 +4045,7 @@ namespace Chummer.Backend.Equipment
                 switch (SourceType)
                 {
                     // Apply the character's Cyberware Essence cost multiplier if applicable.
-                    case Improvement.ImprovementSource.Cyberware:
+                    case Improvement.ImprovementSource.Cyberware when !IsGeneware:
                         if (blnSync)
                             UpdateMultipliers(Improvement.ImprovementType.CyberwareEssCost,
                                               Improvement.ImprovementType.CyberwareTotalEssMultiplier);
@@ -4063,6 +4077,15 @@ namespace Chummer.Backend.Equipment
                             }
                         }
 
+                        break;
+                    // Apply the character's Geneware Essence cost multiplier if applicable. Since Geneware does not use Grades, we only check the genetechessmultiplier improvement.
+                    case Improvement.ImprovementSource.Cyberware when IsGeneware:
+                        if (blnSync)
+                            UpdateMultipliers(Improvement.ImprovementType.GenetechEssMultiplier,
+                                              Improvement.ImprovementType.None);
+                        else
+                            await UpdateMultipliersAsync(Improvement.ImprovementType.GenetechEssMultiplier,
+                                                         Improvement.ImprovementType.None);
                         break;
                     // Apply the character's Geneware Essence cost multiplier if applicable. Since Geneware does not use Grades, we only check the genetechessmultiplier improvement.
                     case Improvement.ImprovementSource.Bioware when IsGeneware:

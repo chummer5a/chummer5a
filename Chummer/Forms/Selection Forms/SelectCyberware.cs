@@ -766,13 +766,12 @@ namespace Chummer
                 {
                     string strSelectCategory = objXmlCyberware.SelectSingleNode("category")?.Value ?? string.Empty;
                     bool blnForceNoESSModifier = objXmlCyberware.SelectSingleNode("forcegrade")?.Value == "None";
+                    bool blnIsGeneware = objXmlCyberware.SelectSingleNode("isgeneware") != null && objXmlCyberware.SelectSingleNode("isgeneware")?.Value != bool.FalseString;
 
                     // Place the Genetech cost multiplier in a variable that can be safely modified.
                     decimal decGenetechCostModifier = 1;
                     // Genetech cost modifier only applies to Genetech.
-                    if (strSelectCategory.StartsWith("Genetech", StringComparison.Ordinal)
-                        || strSelectCategory.StartsWith("Genetic Infusions", StringComparison.Ordinal)
-                        || strSelectCategory.StartsWith("Genemods", StringComparison.Ordinal))
+                    if (blnIsGeneware)
                         decGenetechCostModifier = GenetechCostMultiplier;
 
                     // Extract the Avail and Cost values from the Cyberware info since these may contain formulas and/or be based off of the Rating.
@@ -915,18 +914,14 @@ namespace Chummer
                             {
                                 decCharacterESSModifier = CharacterESSMultiplier;
                                 // If Basic Bioware is selected, apply the Basic Bioware ESS Multiplier.
-                                if (strSelectCategory == "Basic")
+                                if (strSelectCategory == "Basic" && _eMode == Mode.Bioware)
                                     decCharacterESSModifier -= (1 - BasicBiowareESSMultiplier);
-                                else if (strSelectCategory.StartsWith("Genetech", StringComparison.Ordinal)
-                                         || strSelectCategory.StartsWith("Genetic Infusions", StringComparison.Ordinal)
-                                         || strSelectCategory.StartsWith("Genemods", StringComparison.Ordinal))
-                                {
+                                if (blnIsGeneware)
                                     decCharacterESSModifier -= (1 - GenetechEssMultiplier);
-                                }
 
-                                if (nudESSDiscount.Visible)
+                                if (_objCharacter.Settings.AllowCyberwareESSDiscounts)
                                 {
-                                    decimal decDiscountModifier = nudESSDiscount.Value / 100.0m;
+                                    decimal decDiscountModifier = await nudESSDiscount.DoThreadSafeFuncAsync(x => x.Value) / 100.0m;
                                     decCharacterESSModifier *= (1.0m - decDiscountModifier);
                                 }
 

@@ -32,6 +32,7 @@ Application Changes:
 - Purchasing windows no longer crash when using Chummer in a language that uses commmas as decimal separators. Fixes #4771.
 - Updated the Translator tool to recognize built-in settings names to be translated.
 - All weapon stat-modifying entries for ammo that is loaded into a weapon are now exported as part of the weapon's `clip` node, not just bonus damage and bonus range.
+- Geneware is now identified based on the `isgeneware` tag instead of through category names.
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.
@@ -42,6 +43,7 @@ Data Changes:
 - Fixed incorrect autosoft type on the Avibras-Nissan AN 822.
 - Fixed incorrect damage, accuracy and AP values for Hammerhead and Incendiary Head arrows. Fixed incorrect Stick-n-Shock arrowhead accuracy (courtesy of Stexinator)
 - Added RAW weights for explosives, where each quantity of an explosive weights one kilogram.
+- Replaced the Genemod category with the actual category types used for geneware.
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups

@@ -120,10 +120,16 @@
     <category blackmarket="Bioware">Chemical Gland Modifications</category>
     <category blackmarket="Bioware">Cosmetic Bioware</category>
     <category blackmarket="Bioware">Cultured</category>
-    <category blackmarket="Bioware">Genemods</category>
     <category blackmarket="Bioware">Orthoskin Upgrades</category>
     <category blackmarket="Bioware">Symbionts</category>
-    <category blackmarket="Bioware">Genetic Restoration</category>
+    <category blackmarket="Geneware">Genetic Restoration</category>
+    <category blackmarket="Geneware">Phenotype Adjustment</category>
+    <category blackmarket="Geneware">Exotic Metagenetics</category>
+    <category blackmarket="Geneware">Transgenics</category>
+    <category blackmarket="Geneware">Environmental Microadaptation</category>
+    <category blackmarket="Geneware">Immunization</category>
+    <category blackmarket="Geneware">Transgenic Alteration</category>
+    <category blackmarket="Geneware">Complimentary Genetics</category>
   </categories>
   <biowares>
     <!-- Region Shadowrun 5-->
@@ -2060,28 +2066,30 @@
       <page>118</page>
     </bioware>
     <!-- End Region -->
-    <!-- Region Genemods -->
+    <!-- Region Geneware -->
     <bioware>
       <id>4e9c11ed-730a-478f-a53d-d36220040506</id>
       <name>Genewipe</name>
-      <category>Genemods</category>
+      <category>Phenotype Adjustment</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
       <avail>16F</avail>
       <cost>57000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>157</page>
     </bioware>
     <bioware>
       <id>163a1d28-9f0d-414f-8b8f-473f78a3740d</id>
       <name>Masque</name>
-      <category>Genemods</category>
+      <category>Phenotype Adjustment</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>10F</avail>
       <cost>40000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>157</page>
     </bioware>
@@ -2089,48 +2097,52 @@
       <id>5f3da0ce-261f-4d1a-87a7-1e0614d65ef0</id>
       <name>Reprint</name>
       <limit>False</limit>
-      <category>Genemods</category>
+      <category>Phenotype Adjustment</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>12F</avail>
       <cost>30000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>157</page>
     </bioware>
     <bioware>
       <id>0f9ebf2e-d949-49f2-8f30-4e8413e92e39</id>
       <name>Shuffle</name>
-      <category>Genemods</category>
+      <category>Phenotype Adjustment</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
       <avail>12F</avail>
       <cost>20000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>157</page>
     </bioware>
     <bioware>
       <id>6bd96ba6-1e0c-4de1-89e7-01b6973e1115</id>
       <name>Elastic Stomach</name>
-      <category>Genemods</category>
+      <category>Exotic Metagenetics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>10000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>159</page>
     </bioware>
     <bioware>
       <id>4a529d50-45cd-4f2d-8766-4ecd7c15f292</id>
       <name>Hyperthymesia</name>
-      <category>Genemods</category>
+      <category>Exotic Metagenetics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>15000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <memory>2</memory>
       </bonus>
@@ -2140,7 +2152,7 @@
     <bioware>
       <id>f3e1922e-cd73-4567-983c-7409e755f30a</id>
       <name>Lung Expansion</name>
-      <category>Genemods</category>
+      <category>Exotic Metagenetics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>6</avail>
@@ -2149,13 +2161,14 @@
         <fatigueresist>1</fatigueresist>
       </bonus>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>159</page>
     </bioware>
     <bioware>
       <id>b111b7c3-d44f-40b5-bba2-7d805cf9fd4c</id>
       <name>Increased Myelination</name>
-      <category>Genemods</category>
+      <category>Exotic Metagenetics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>8</avail>
@@ -2164,18 +2177,20 @@
         <electricityarmor>1</electricityarmor>
       </bonus>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>159</page>
     </bioware>
     <bioware>
       <id>1b6713f7-f5b6-49fb-a89a-68322c06f38d</id>
       <name>Myostatin Inhibitor</name>
-      <category>Genemods</category>
+      <category>Exotic Metagenetics</category>
       <ess>0.3</ess>
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>30500</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <specificattribute>
           <name>STR</name>
@@ -2192,7 +2207,7 @@
     <bioware>
       <id>92a00ca4-7e2b-47ca-ac02-1d58e4932d0a</id>
       <name>Narco</name>
-      <category>Genemods</category>
+      <category>Exotic Metagenetics</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
       <avail>12F</avail>
@@ -2204,30 +2219,33 @@
         <psychologicaladdictionalreadyaddicted>2</psychologicaladdictionalreadyaddicted>
       </bonus>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>159</page>
     </bioware>
     <bioware>
       <id>8d57009b-86c8-4fde-b8b5-1cf64942f517</id>
       <name>Selective Hearing</name>
-      <category>Genemods</category>
+      <category>Exotic Metagenetics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>17000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>160</page>
     </bioware>
     <bioware>
       <id>a2acbc5a-187c-4e6f-95e5-c015f1aab56b</id>
       <name>Thickened Digestive Tract Lining</name>
-      <category>Genemods</category>
+      <category>Exotic Metagenetics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>8000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <toxincontactresist>1</toxincontactresist>
         <toxiningestionresist>1</toxiningestionresist>
@@ -2241,12 +2259,13 @@
     <bioware>
       <id>3f8b9030-662e-4212-8f30-5aa394a41568</id>
       <name>Adapsin</name>
-      <category>Genemods</category>
+      <category>Transgenics</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
       <avail>16</avail>
       <cost>30000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <adapsin />
       </bonus>
@@ -2256,12 +2275,13 @@
     <bioware>
       <id>6a62e21f-f291-4e93-b109-df9c56c938f9</id>
       <name>Dareadrenaline</name>
-      <category>Genemods</category>
+      <category>Transgenics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>61000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
 		<composure>1</composure>
 		<judgeintentionsdefense>1</judgeintentionsdefense>
@@ -2297,7 +2317,7 @@
     <bioware>
       <id>04bea47c-85f3-4efa-b058-72def7d0d73b</id>
       <name>Double Elastin</name>
-      <category>Genemods</category>
+      <category>Transgenics</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
       <avail>12</avail>
@@ -2306,18 +2326,20 @@
         <fatigueresist>-1</fatigueresist>
       </bonus>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>160</page>
     </bioware>
     <bioware>
       <id>cd0d68d6-34e5-440e-9d78-5400008a5f71</id>
       <name>Hyper-Glucagon</name>
-      <category>Genemods</category>
+      <category>Transgenics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>8000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <lifestylecost>10</lifestylecost>
       </bonus>
@@ -2327,12 +2349,13 @@
     <bioware>
       <id>ef4a3bfe-5698-43ae-a4ff-8056aec4095d</id>
       <name>Magnesense</name>
-      <category>Genemods</category>
+      <category>Transgenics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>7000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <specificskill>
           <name>Navigation</name>
@@ -2345,12 +2368,13 @@
     <bioware>
       <id>bd4aade6-a0f2-40af-8073-f1e62ae4b3f9</id>
       <name>Neo-EPO</name>
-      <category>Genemods</category>
+      <category>Transgenics</category>
       <ess>0.2</ess>
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>38000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <physicallimit>1</physicallimit>
         <stuncmrecovery>1</stuncmrecovery>
@@ -2367,12 +2391,13 @@
     <bioware>
       <id>2c988cbe-e6e6-4c22-ae3c-14ad6e1fff1f</id>
       <name>PuSHed</name>
-      <category>Genemods</category>
+      <category>Transgenics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>14</avail>
       <cost>62000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <skilllinkedattribute>
           <name>LOG</name>
@@ -2385,12 +2410,13 @@
     <bioware>
       <id>b110516e-36e8-4c69-a682-066e91c02351</id>
       <name>Qualia</name>
-      <category>Genemods</category>
+      <category>Transgenics</category>
       <ess>0.4</ess>
       <capacity>0</capacity>
       <avail>14</avail>
       <cost>65000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <skilllinkedattribute>
           <name>INT</name>
@@ -2403,12 +2429,13 @@
     <bioware>
       <id>eb25dd41-2649-4e75-b0fb-dc47df3a7daa</id>
       <name>Reakt</name>
-      <category>Genemods</category>
+      <category>Transgenics</category>
       <ess>0.4</ess>
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>73000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <dodge>2</dodge>
       </bonus>
@@ -2418,12 +2445,13 @@
     <bioware>
       <id>afea1a35-d8ca-4cab-9555-7a7d5df1390d</id>
       <name>Skeletal Pneumaticity</name>
-      <category>Genemods</category>
+      <category>Transgenics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>5</avail>
       <cost>9000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <specificskill>
           <name>Gymnastics</name>
@@ -2436,12 +2464,13 @@
     <bioware>
       <id>e1cf23c7-9c79-4007-a2e8-ff872ee212e2</id>
       <name>Solus</name>
-      <category>Genemods</category>
+      <category>Transgenics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>8000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <lifestylecost>-10</lifestylecost>
       </bonus>
@@ -2451,12 +2480,13 @@
     <bioware>
       <id>92b4c2a4-10a3-486a-8ab6-1e00d40dd69a</id>
       <name>Synaptic Acceleration</name>
-      <category>Genemods</category>
+      <category>Transgenics</category>
       <ess>0.4</ess>
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>78000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <dodge>1</dodge> <!-- TODO: Turn this off if any initiative boosters are present, even if they don't increase REA or defense test dice -->
         <initiative precedence="0">1</initiative>
@@ -2469,12 +2499,13 @@
     <bioware>
       <id>89d6f0e2-f618-4a5f-b24f-e42603100fc3</id>
       <name>Synch</name>
-      <category>Genemods</category>
+      <category>Transgenics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>14000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <specificskill>
           <name>Perception</name>
@@ -2487,12 +2518,13 @@
     <bioware>
       <id>6aa86a49-d947-47ac-bf04-e1578c029333</id>
       <name>Tetrachromacy</name>
-      <category>Genemods</category>
+      <category>Transgenics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>8000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <specificskill>
           <name>Perception</name>
@@ -2506,32 +2538,34 @@
     <bioware>
       <id>ae1d7612-7805-4962-8f9a-beb17619762d</id>
       <name>Vasocon</name>
-      <category>Genemods</category>
+      <category>Transgenics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>15000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>161</page>
     </bioware>
     <bioware>
       <id>7aad79ff-7722-440d-a9c6-5b33b4ad7440</id>
       <name>Allergen Tolerance</name>
-      <category>Genemods</category>
+      <category>Environmental Microadaptation</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>20000</cost>
       <bonus unique="microadaptation" />
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>163</page>
     </bioware>
     <bioware>
       <id>d4f12de1-29bc-4d6e-9ef2-d395b446c9e4</id>
       <name>Cold Adaptation</name>
-      <category>Genemods</category>
+      <category>Environmental Microadaptation</category>
       <ess>0.5</ess>
       <capacity>0</capacity>
       <avail>5</avail>
@@ -2545,26 +2579,28 @@
         </oneof>
       </forbidden>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>163</page>
     </bioware>
     <bioware>
       <id>f5b67712-1609-4f76-bb61-ad83d3d3e926</id>
       <name>Cryo Tolerance</name>
-      <category>Genemods</category>
+      <category>Environmental Microadaptation</category>
       <ess>0.5</ess>
       <capacity>0</capacity>
       <avail>18</avail>
       <cost>50000</cost>
       <bonus unique="microadaptation" />
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>163</page>
     </bioware>
     <bioware>
       <id>7b5bfe60-c7f6-4df2-9e53-56a76a4e8a8e</id>
       <name>Heat Adaptation</name>
-      <category>Genemods</category>
+      <category>Environmental Microadaptation</category>
       <ess>0.5</ess>
       <capacity>0</capacity>
       <avail>5</avail>
@@ -2578,13 +2614,14 @@
         </oneof>
       </forbidden>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>163</page>
     </bioware>
     <bioware>
       <id>0453cf1e-3224-46ce-82bb-fde03ef6e451</id>
       <name>Low Oxygen Adaptation</name>
-      <category>Genemods</category>
+      <category>Environmental Microadaptation</category>
       <ess>0.5</ess>
       <capacity>0</capacity>
       <avail>4</avail>
@@ -2593,26 +2630,28 @@
         <lifestylecost>10</lifestylecost>
       </bonus>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>163</page>
     </bioware>
     <bioware>
       <id>4c67dc6a-eafb-40c7-88a1-b32518800db2</id>
       <name>Microgravity Adaptation</name>
-      <category>Genemods</category>
+      <category>Environmental Microadaptation</category>
       <ess>0.5</ess>
       <capacity>0</capacity>
       <avail>4</avail>
       <cost>30000</cost>
       <bonus unique="microadaptation" />
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>163</page>
     </bioware>
     <bioware>
       <id>5b3d3dce-2cd2-4720-84ae-4445092a4245</id>
       <name>Pollution Tolerance</name>
-      <category>Genemods</category>
+      <category>Environmental Microadaptation</category>
       <ess>0.5</ess>
       <capacity>0</capacity>
       <avail>5</avail>
@@ -2623,13 +2662,14 @@
         <toxininhalationresist>2</toxininhalationresist>
       </bonus>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>163</page>
     </bioware>
     <bioware>
       <id>3550fe0d-453d-431f-bd84-d9cd50581f39</id>
       <name>Radiation Tolerance</name>
-      <category>Genemods</category>
+      <category>Environmental Microadaptation</category>
       <ess>0.5</ess>
       <capacity>0</capacity>
       <avail>6</avail>
@@ -2638,13 +2678,14 @@
         <radiationresist>2</radiationresist>
       </bonus>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>164</page>
     </bioware>
     <bioware>
       <id>a950129b-00a6-4445-a1b6-d82f158e83dc</id>
       <name>Transgenic Alteration</name>
-      <category>Genemods</category>
+      <category>Transgenic Alteration</category>
       <ess>0.3</ess>
       <capacity>0</capacity>
       <avail>10</avail>
@@ -2653,18 +2694,20 @@
         <selecttext />
       </bonus>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>164</page>
     </bioware>
     <bioware>
       <id>5c277258-ea34-46a3-b10a-323e0eed4dfa</id>
       <name>Control Rig Optimization</name>
-      <category>Genemods</category>
+      <category>Complimentary Genetics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>7</avail>
       <cost>4600</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <required>
         <oneof>
           <cyberware>Control Rig</cyberware>
@@ -2676,12 +2719,13 @@
     <bioware>
       <id>dc3dbcd5-dc86-44db-8b99-ae69a8b60a1d</id>
       <name>Reaction Optimization</name>
-      <category>Genemods</category>
+      <category>Complimentary Genetics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>6</avail>
       <cost>6600</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <initiative>1</initiative>
       </bonus>
@@ -2696,12 +2740,13 @@
     <bioware>
       <id>afe25e41-8d6c-4476-9d18-ecd23219207c</id>
       <name>Reflex Recorder Optimization</name>
-      <category>Genemods</category>
+      <category>Complimentary Genetics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>11</avail>
       <cost>3800</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <reflexrecorderoptimization />
       </bonus>
@@ -2716,12 +2761,13 @@
     <bioware>
       <id>99c04ae8-e1c0-4455-8f76-ff77edfb790f</id>
       <name>Wired Reflex Optimization</name>
-      <category>Genemods</category>
+      <category>Complimentary Genetics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>9R</avail>
       <cost>9000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <required>
         <oneof>
           <cyberware>Wired Reflexes</cyberware>
@@ -2733,11 +2779,12 @@
     <bioware>
       <id>b6682632-5566-4156-8dab-4187e13901d8</id>
       <name>Adrenaline Pump Optimization</name>
-      <category>Genemods</category>
+      <category>Complimentary Genetics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>7F</avail>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <cost>6000</cost>
       <required>
         <oneof>
@@ -2750,11 +2797,12 @@
     <bioware>
       <id>f0a72240-00e0-4b4f-b25f-b38f19e51a38</id>
       <name>Enhanced Symbiosis</name>
-      <category>Genemods</category>
+      <category>Complimentary Genetics</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>6</avail>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <cost>4000</cost>
       <required>
         <oneof>
@@ -2767,12 +2815,13 @@
     <bioware>
       <id>c0c9314e-1fa2-4bd7-a02d-70beaf99def2</id>
       <name>Genetic Optimization (Body)</name>
-      <category>Genemods</category>
+      <category>Phenotype Adjustment</category>
       <ess>0.3</ess>
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>47000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <specificattribute>
           <name>BOD</name>
@@ -2790,12 +2839,13 @@
     <bioware>
       <id>70552613-23ca-4e53-bf8f-83f87f134b05</id>
       <name>Genetic Optimization (Agility)</name>
-      <category>Genemods</category>
+      <category>Phenotype Adjustment</category>
       <ess>0.3</ess>
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>47000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <specificattribute>
           <name>AGI</name>
@@ -2813,12 +2863,13 @@
     <bioware>
       <id>da01f3fc-e77a-419f-8cad-907fe7e995d5</id>
       <name>Genetic Optimization (Reaction)</name>
-      <category>Genemods</category>
+      <category>Phenotype Adjustment</category>
       <ess>0.3</ess>
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>47000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <specificattribute>
           <name>REA</name>
@@ -2836,12 +2887,13 @@
     <bioware>
       <id>4b10adbe-567f-4e7d-affd-70c312efdb22</id>
       <name>Genetic Optimization (Strength)</name>
-      <category>Genemods</category>
+      <category>Phenotype Adjustment</category>
       <ess>0.3</ess>
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>47000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <specificattribute>
           <name>STR</name>
@@ -2859,12 +2911,13 @@
     <bioware>
       <id>aeab29b0-4ac1-47cc-980e-36cfb562ac17</id>
       <name>Genetic Optimization (Charisma)</name>
-      <category>Genemods</category>
+      <category>Phenotype Adjustment</category>
       <ess>0.3</ess>
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>47000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <specificattribute>
           <name>CHA</name>
@@ -2882,12 +2935,13 @@
     <bioware>
       <id>5ec34679-27d6-4bb7-b408-1ca1b2f81bd0</id>
       <name>Genetic Optimization (Intuition)</name>
-      <category>Genemods</category>
+      <category>Phenotype Adjustment</category>
       <ess>0.3</ess>
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>47000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <specificattribute>
           <name>INT</name>
@@ -2905,12 +2959,13 @@
     <bioware>
       <id>c388537e-e533-48c3-a101-c57be8426295</id>
       <name>Genetic Optimization (Logic)</name>
-      <category>Genemods</category>
+      <category>Phenotype Adjustment</category>
       <ess>0.3</ess>
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>47000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <specificattribute>
           <name>LOG</name>
@@ -2928,12 +2983,13 @@
     <bioware>
       <id>19142a2e-1078-4b23-9996-313cb57daa07</id>
       <name>Genetic Optimization (Willpower)</name>
-      <category>Genemods</category>
+      <category>Phenotype Adjustment</category>
       <ess>0.3</ess>
       <capacity>0</capacity>
       <avail>10</avail>
       <cost>47000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <specificattribute>
           <name>WIL</name>
@@ -2952,7 +3008,7 @@
       <id>da62e249-cb11-4907-98d3-edc50e7efc2a</id>
       <name>Cosmetic Alteration</name>
       <limit>False</limit>
-      <category>Genemods</category>
+      <category>Phenotype Adjustment</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>8</avail>
@@ -2961,18 +3017,20 @@
         <selecttext />
       </bonus>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>158</page>
     </bioware>
     <bioware>
       <id>cd268d9e-52c7-4f02-913c-ff37bdd14e6e</id>
       <name>Print Removal</name>
-      <category>Genemods</category>
+      <category>Phenotype Adjustment</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>10F</avail>
       <cost>18000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>158</page>
     </bioware>
@@ -2980,12 +3038,13 @@
       <id>d23aac11-8e3c-4739-9da5-b8322f81d64c</id>
       <name>Metaposeur</name>
       <limit>False</limit>
-      <category>Genemods</category>
+      <category>Phenotype Adjustment</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>38000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <selecttext xml="metatypes.xml" xpath="/chummer/metatypes/metatype | /chummer/metatypes/metatype/metavariants/metavariant" allowedit="True" />
       </bonus>
@@ -2996,12 +3055,13 @@
       <id>181f09c2-af17-4676-bb6a-62706c4fc521</id>
       <name>Immunization</name>
       <limit>{BODUnaug}</limit>
-      <category>Genemods</category>
+      <category>Immunization</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
       <avail>8</avail>
       <cost>20000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <selecttext />
       </bonus>
@@ -3020,6 +3080,7 @@
       <avail>10</avail>
       <cost>90000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <bonus>
         <selecttext />
       </bonus>
@@ -3036,6 +3097,7 @@
       <avail>15</avail>
       <cost>2000000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>156</page>
     </bioware>
@@ -3049,6 +3111,7 @@
       <avail>12</avail>
       <cost>300000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>157</page>
     </bioware>
@@ -3062,6 +3125,7 @@
       <avail>13</avail>
       <cost>250000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>156</page>
     </bioware>
@@ -3075,6 +3139,7 @@
       <avail>10</avail>
       <cost>35000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>156</page>
     </bioware>
@@ -3088,6 +3153,7 @@
       <avail>10</avail>
       <cost>65000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>156</page>
     </bioware>
@@ -3101,6 +3167,7 @@
       <avail>14</avail>
       <cost>110000</cost>
       <forcegrade>None</forcegrade>
+      <isgeneware />
       <source>CF</source>
       <page>157</page>
     </bioware>
