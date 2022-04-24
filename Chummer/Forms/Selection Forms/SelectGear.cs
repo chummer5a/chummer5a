@@ -744,7 +744,7 @@ namespace Chummer
                                                                 = (decCost * _intCostMultiplier).ToString(
                                                                       _objCharacter.Settings.NuyenFormat,
                                                                       GlobalSettings.CultureInfo)
-                                                                  + "¥+");
+                                                                  + LanguageManager.GetString("String_NuyenSymbol") + '+');
                             decItemCost = decCost;
                         }
                         else if (objCostNode.Value.StartsWith("Variable(", StringComparison.Ordinal))
@@ -766,7 +766,7 @@ namespace Chummer
                                 await lblCost.DoThreadSafeAsync(x => x.Text
                                                                     = decMin.ToString(_objCharacter.Settings.NuyenFormat,
                                                                           GlobalSettings.CultureInfo)
-                                                                      + "¥+");
+                                                                      + LanguageManager.GetString("String_NuyenSymbol") + '+');
                             else
                             {
                                 string strSpace = await LanguageManager.GetStringAsync("String_Space");

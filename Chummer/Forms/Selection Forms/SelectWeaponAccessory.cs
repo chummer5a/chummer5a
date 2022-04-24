@@ -536,7 +536,7 @@ namespace Chummer
                     {
                         await lblCost.DoThreadSafeAsync(
                             x => x.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat,
-                                                          GlobalSettings.CultureInfo) + "¥+");
+                                                          GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol") + '+');
                     }
                     else
                     {

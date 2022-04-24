@@ -692,7 +692,7 @@ namespace Chummer
                         if (decMax == decimal.MaxValue)
                             await lblCost.DoThreadSafeAsync(
                                 x => x.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat,
-                                                              GlobalSettings.CultureInfo) + "¥+");
+                                                              GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol") + '+');
                         else
                         {
                             string strSpace = await LanguageManager.GetStringAsync("String_Space");

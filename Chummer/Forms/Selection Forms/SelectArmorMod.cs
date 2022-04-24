@@ -360,7 +360,7 @@ namespace Chummer
                             decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
 
                         strCost = decMax == decimal.MaxValue
-                            ? decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + "¥+"
+                            ? decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol") + '+'
                             : decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
                               + await LanguageManager.GetStringAsync("String_Space") + '-'
                               + await LanguageManager.GetStringAsync("String_Space")

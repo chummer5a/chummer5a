@@ -686,7 +686,7 @@ namespace Chummer
 
                         await lblCost.DoThreadSafeAsync(x => x.Text = decMax == decimal.MaxValue
                                                             ? decMin.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                              GlobalSettings.CultureInfo) + "¥+"
+                                                                              GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol") + '+'
                                                             : decMin.ToString(_objCharacter.Settings.NuyenFormat,
                                                                               GlobalSettings.CultureInfo) + " - "
                                                             + decMax.ToString(_objCharacter.Settings.NuyenFormat,
