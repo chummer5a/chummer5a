@@ -1230,21 +1230,81 @@ namespace Chummer
             get => _strLanguage;
             set
             {
-                if (value != _strLanguage)
+                if (value == _strLanguage)
+                    return;
+                _strLanguage = value;
+                try
                 {
-                    _strLanguage = value;
-                    try
-                    {
-                        _objLanguageCultureInfo = CultureInfo.GetCultureInfo(value);
-                    }
-                    catch (CultureNotFoundException)
-                    {
-                        _objLanguageCultureInfo = SystemCultureInfo;
-                    }
-                    // Set default cultures based on the currently set language
-                    CultureInfo.DefaultThreadCurrentCulture = _objLanguageCultureInfo;
-                    CultureInfo.DefaultThreadCurrentUICulture = _objLanguageCultureInfo;
+                    _objLanguageCultureInfo = CultureInfo.GetCultureInfo(value);
                 }
+                catch (CultureNotFoundException)
+                {
+                    _objLanguageCultureInfo = SystemCultureInfo;
+                }
+                // Set default cultures based on the currently set language
+                CultureInfo.DefaultThreadCurrentCulture = _objLanguageCultureInfo;
+                CultureInfo.DefaultThreadCurrentUICulture = _objLanguageCultureInfo;
+                if (Program.MainForm != null)
+                {
+                    Program.MainForm.TranslateWinForm();
+                    foreach (CharacterShared frmLoop in Program.MainForm.OpenCharacterEditorForms)
+                    {
+                        frmLoop.TranslateWinForm();
+                    }
+                    foreach (CharacterSheetViewer frmLoop in Program.MainForm.OpenCharacterSheetViewers)
+                    {
+                        frmLoop.TranslateWinForm();
+                    }
+                    foreach (ExportCharacter frmLoop in Program.MainForm.OpenCharacterExportForms)
+                    {
+                        frmLoop.TranslateWinForm();
+                    }
+                    Program.MainForm.PrintMultipleCharactersForm?.TranslateWinForm();
+                    Program.MainForm.CharacterRoster?.TranslateWinForm();
+                    Program.MainForm.MasterIndex?.TranslateWinForm();
+                    Program.MainForm.RefreshAllTabTitles();
+                }
+            }
+        }
+
+        public static async ValueTask SetLanguageAsync(string strValue)
+        {
+            if (strValue == _strLanguage)
+                return;
+            _strLanguage = strValue;
+            try
+            {
+                _objLanguageCultureInfo = CultureInfo.GetCultureInfo(strValue);
+            }
+            catch (CultureNotFoundException)
+            {
+                _objLanguageCultureInfo = SystemCultureInfo;
+            }
+            // Set default cultures based on the currently set language
+            CultureInfo.DefaultThreadCurrentCulture = _objLanguageCultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = _objLanguageCultureInfo;
+            if (Program.MainForm != null)
+            {
+                await Program.MainForm.TranslateWinFormAsync();
+                foreach (CharacterShared frmLoop in Program.MainForm.OpenCharacterEditorForms)
+                {
+                    await frmLoop.TranslateWinFormAsync();
+                }
+                foreach (CharacterSheetViewer frmLoop in Program.MainForm.OpenCharacterSheetViewers)
+                {
+                    await frmLoop.TranslateWinFormAsync();
+                }
+                foreach (ExportCharacter frmLoop in Program.MainForm.OpenCharacterExportForms)
+                {
+                    await frmLoop.TranslateWinFormAsync();
+                }
+                if (Program.MainForm.PrintMultipleCharactersForm != null)
+                    await Program.MainForm.PrintMultipleCharactersForm.TranslateWinFormAsync();
+                if (Program.MainForm.CharacterRoster != null)
+                    await Program.MainForm.CharacterRoster.TranslateWinFormAsync();
+                if (Program.MainForm.MasterIndex != null)
+                    await Program.MainForm.MasterIndex.TranslateWinFormAsync();
+                await Program.MainForm.RefreshAllTabTitlesAsync();
             }
         }
 

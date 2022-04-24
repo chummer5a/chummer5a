@@ -35,6 +35,7 @@ Application Changes:
 - Geneware is now identified based on the `isgeneware` tag instead of through category names.
 - If Work for the People nuyen cost is set to a value other than 2000, the warning shown for expenses that are not a multiple of this number now properly shows this number instead of 2000.
 - Bonuses affecting skills that have minimum and/or maximum rating requirements now ignore skillsoft-given ratings.
+- Changing Chummer's language immediately causes all open forms to be translated into a new language, even before restarting.
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.

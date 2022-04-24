@@ -1565,8 +1565,74 @@ namespace Chummer
                                                 frmCharacterSheetViewer.CharacterObjects.Select(
                                                     y => y.CharacterName.Trim())));
                             break;
-                        case CharacterShared frmExport when frmExport.CharacterObject == objCharacter:
+                        case ExportCharacter frmExport when frmExport.CharacterObject == objCharacter:
                             objTabPage.Text = string.Format(strExport, strCharacterName);
+                            break;
+                    }
+                }
+            });
+        }
+
+        public void RefreshAllTabTitles()
+        {
+            string strSpace = LanguageManager.GetString("String_Space");
+            string strSheet = LanguageManager.GetString("String_Sheet_Blank");
+            string strExport = LanguageManager.GetString("String_Export_Blank");
+            tabForms.DoThreadSafe(x =>
+            {
+                foreach (TabPage objTabPage in x.TabPages)
+                {
+                    switch (objTabPage.Tag)
+                    {
+                        case CharacterShared frmCharacter:
+                            objTabPage.Text = frmCharacter.CharacterObject.CharacterName.Trim();
+                            break;
+                        case CharacterSheetViewer frmCharacterSheetViewer:
+                            objTabPage.Text
+                                = string.Format(
+                                    strSheet,
+                                    string.Join(',' + strSpace,
+                                                frmCharacterSheetViewer.CharacterObjects.Select(
+                                                    y => y.CharacterName.Trim())));
+                            break;
+                        case ExportCharacter frmExport:
+                            objTabPage.Text = string.Format(strExport, frmExport.CharacterObject.CharacterName);
+                            break;
+                        case Form frmOther:
+                            objTabPage.Text = frmOther.Text;
+                            break;
+                    }
+                }
+            });
+        }
+
+        public async Task RefreshAllTabTitlesAsync()
+        {
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
+            string strSheet = await LanguageManager.GetStringAsync("String_Sheet_Blank");
+            string strExport = await LanguageManager.GetStringAsync("String_Export_Blank");
+            await tabForms.DoThreadSafeAsync(x =>
+            {
+                foreach (TabPage objTabPage in x.TabPages)
+                {
+                    switch (objTabPage.Tag)
+                    {
+                        case CharacterShared frmCharacter:
+                            objTabPage.Text = frmCharacter.CharacterObject.CharacterName.Trim();
+                            break;
+                        case CharacterSheetViewer frmCharacterSheetViewer:
+                            objTabPage.Text
+                                = string.Format(
+                                    strSheet,
+                                    string.Join(',' + strSpace,
+                                                frmCharacterSheetViewer.CharacterObjects.Select(
+                                                    y => y.CharacterName.Trim())));
+                            break;
+                        case ExportCharacter frmExport:
+                            objTabPage.Text = string.Format(strExport, frmExport.CharacterObject.CharacterName);
+                            break;
+                        case Form frmOther:
+                            objTabPage.Text = frmOther.Text;
                             break;
                     }
                 }
