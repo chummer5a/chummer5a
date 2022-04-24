@@ -246,10 +246,10 @@
     <category blackmarket="Cyberware">Cyber Implant Weapon Accessory</category>
     <category blackmarket="Cyberware">Earware</category>
     <category blackmarket="Cyberware">Eyeware</category>
-    <category blackmarket="Cyberware">Hard Nanoware</category>
+    <category blackmarket="Nanoware">Hard Nanoware</category>
     <category blackmarket="Cyberware">Headware</category>
-    <category blackmarket="Cyberware">Nanocybernetics</category>
-    <category blackmarket="Cyberware">Soft Nanoware</category>
+    <category blackmarket="Nanoware">Nanocybernetics</category>
+    <category blackmarket="Nanoware">Soft Nanoware</category>
     <category blackmarket="Cyberware">Special Biodrone Cyberware</category>
   </categories>
   <cyberwares>

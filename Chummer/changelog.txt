@@ -44,6 +44,8 @@ Data Changes:
 - Fixed incorrect damage, accuracy and AP values for Hammerhead and Incendiary Head arrows. Fixed incorrect Stick-n-Shock arrowhead accuracy (courtesy of Stexinator)
 - Added RAW weights for explosives, where each quantity of an explosive weights one kilogram.
 - Replaced the Genemod category with the actual category types used for geneware.
+- Added Geneware, Magic, Nanoware and Software as Black Market Pipeline categories. Some categories that used to be flagged as part of Cyberware, Bioware, or Electronics have had their flags changed to one of the new ones.
+- Expanded the categories covered by the Black Market Pipeline options of Armor, Weapons, Drugs, Electronics, and Drugs to cover a few more categories than before that include items that would fall into those options.
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups

@@ -23,76 +23,76 @@
   <!-- Due to the large variety of items in gear.xml, Regions are organised by category rather than sourcebook. -->
 
   <categories>
-    <category>Alchemical Tools</category>
+    <category blackmarket="Magic">Alchemical Tools</category>
     <category blackmarket="Weapons">Ammunition</category>
     <category blackmarket="Armor">Armor Enhancements</category>
     <category blackmarket="Electronics">Audio Devices</category>
     <category blackmarket="Electronics">Audio Enhancements</category>
-    <category blackmarket="Electronics">Autosofts</category>
+    <category blackmarket="Software">Autosofts</category>
     <category blackmarket="Drugs">Biotech</category>
-    <category>Breaking and Entering Gear</category>
-    <category blackmarket="Drugs">BTLs</category>
+    <category blackmarket="Electronics">Breaking and Entering Gear</category>
+    <category blackmarket="Drugs,Software">BTLs</category>
     <category blackmarket="Drugs">Chemicals</category>
     <category blackmarket="Electronics">Commlinks</category>
     <category blackmarket="Electronics">Commlink/Cyberdeck Form Factors</category>
     <category blackmarket="Electronics">Commlink Accessories</category>
-    <category blackmarket="Electronics">Commlink Apps</category>
-    <category blackmarket="Electronics">Common Programs</category>
+    <category blackmarket="Software">Commlink Apps</category>
+    <category blackmarket="Software">Common Programs</category>
     <category blackmarket="Electronics">Communications and Countermeasures</category>
-    <category>Contracts/Upkeep</category>
+    <category blackmarket="Software">Contracts/Upkeep</category>
     <category>Critter Gear</category>
     <category>Currency</category>
-    <category>Custom</category>
+    <category blackmarket="Armor,Bioware,Cyberware,Drugs,Electronics,Geneware,Magic,Nanoware,Software,Vehicles,Weapons">Custom</category>
     <category blackmarket="Electronics">Custom Cyberdeck Attributes</category>
     <category blackmarket="Drugs">Custom Drug</category>
     <category blackmarket="Electronics">Cyberdeck Modules</category>
     <category blackmarket="Electronics">Cyberdecks</category>
     <category blackmarket="Electronics">Cyberterminals</category>
-    <category>Disguises</category>
+    <category blackmarket="Electronics">Disguises</category>
     <category blackmarket="Drugs">Drugs</category>
     <category blackmarket="Electronics">Electronics Accessories</category>
     <category blackmarket="Electronics">Electronic Modification</category>
     <category blackmarket="Electronics">Electronic Parts</category>
-    <category>Entertainment</category>
-    <category>Explosives</category>
+    <category blackmarket="Electronics,Software">Entertainment</category>
+    <category blackmarket="Weapons">Explosives</category>
     <category>Extraction Devices</category>
-    <category>Foci</category>
+    <category blackmarket="Magic">Foci</category>
     <category>Food</category>
-    <category>Formulae</category>
-    <category>Grapple Gun</category>
-    <category blackmarket="Electronics">Hacking Programs</category>
-    <category>Housewares</category>
+    <category blackmarket="Magic">Formulae</category>
+    <category blackmarket="Weapons">Grapple Gun</category>
+    <category blackmarket="Software">Hacking Programs</category>
+    <category blackmarket="Electronics">Housewares</category>
     <category>ID/Credsticks</category>
-    <category>Magical Compounds</category>
-    <category>Magical Supplies</category>
+    <category blackmarket="Magic">Magical Compounds</category>
+    <category blackmarket="Magic">Magical Supplies</category>
     <category>Metatype-Specific</category>
     <category>Miscellany</category>
     <category>Musical Instruments</category>
-    <category>Nanogear</category>
-    <category>Paydata</category>
+    <category blackmarket="Nanoware">Nanogear</category>
+    <category blackmarket="Software">Paydata</category>
     <category blackmarket="Electronics">PI-Tac</category>
     <category>Printing</category>
-    <category>Reporter Gear</category>
-    <category>RFID Tags</category>
-    <category blackmarket="Electronics,Vehicles">Rigger Command Consoles</category>
-    <category>Security Devices</category>
+    <category blackmarket="Electronics">Reporter Gear</category>
+    <category blackmarket="Electronics">RFID Tags</category>
+    <category blackmarket="Electronics">Rigger Command Consoles</category>
+    <category blackmarket="Electronics">Security Devices</category>
     <category blackmarket="Electronics">Sensors</category>
     <category blackmarket="Electronics">Sensor Functions</category>
     <category blackmarket="Electronics">Sensor Housings</category>
     <category>Services</category>
-    <category>Skillsofts</category>
+    <category blackmarket="Software">Skillsofts</category>
     <category blackmarket="Electronics">Software</category>
     <category blackmarket="Electronics">Software Tweaks</category>
-    <category>Survival Gear</category>
-    <category>Tailored Perfume/Cologne</category>
-    <category>Tools</category>
-    <category>Tools of the Trade</category>
+    <category blackmarket="Electronics">Survival Gear</category>
+    <category blackmarket="Drugs">Tailored Perfume/Cologne</category>
+    <category blackmarket="Armor,Bioware,Cyberware,Drugs,Electronics,Geneware,Magic,Nanoware,Software,Vehicles,Weapons">Tools</category>
+    <category blackmarket="Armor,Electronics">Tools of the Trade</category>
     <category blackmarket="Drugs">Toxins</category>
     <category blackmarket="Electronics">Vision Devices</category>
     <category blackmarket="Electronics">Vision Enhancements</category>
     <category blackmarket="Electronics">Matrix Accessories</category>
     <category blackmarket="Electronics">Booster Chips</category>
-    <category>Appearance Modification</category>
+    <category blackmarket="Magic">Appearance Modification</category>
   </categories>
   <gears>
     <!-- Region Ammo -->

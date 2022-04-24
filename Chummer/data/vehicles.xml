@@ -44,7 +44,7 @@
   <modcategories>
     <category blackmarket="Vehicles" >Body</category>
     <category blackmarket="Vehicles" >Cosmetic</category>
-    <category blackmarket="Vehicles" >Electromagnetic</category>
+    <category blackmarket="Software,Vehicles" >Electromagnetic</category>
     <category blackmarket="Vehicles" >Model-Specific</category>
     <category blackmarket="Vehicles" >Powertrain</category>
     <category blackmarket="Vehicles" >Protection</category>
