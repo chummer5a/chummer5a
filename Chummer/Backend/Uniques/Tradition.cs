@@ -440,13 +440,12 @@ namespace Chummer.Backend.Uniques
             get => _eTraditionType;
             set
             {
-                if (_eTraditionType != value)
-                {
-                    _xmlCachedMyXmlNode = null;
-                    _objCachedMyXPathNode = null;
-                    _eTraditionType = value;
-                    OnPropertyChanged();
-                }
+                if (_eTraditionType == value)
+                    return;
+                _xmlCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+                _eTraditionType = value;
+                OnPropertyChanged();
             }
         }
 

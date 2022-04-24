@@ -9158,11 +9158,9 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedId))
                 return;
 
-            XmlNode xmlTradition = CharacterObject.MagicTradition.Type == TraditionType.MAG
-                ? (await CharacterObject.LoadDataAsync("traditions.xml"))
-                                 .SelectSingleNode("/chummer/traditions/tradition[id = " + strSelectedId.CleanXPath()
-                                                   + ']')
-                : null;
+            XmlNode xmlTradition = (await CharacterObject.LoadDataAsync("traditions.xml"))
+                .SelectSingleNode("/chummer/traditions/tradition[id = " + strSelectedId.CleanXPath()
+                                                                        + ']');
 
             if (xmlTradition == null)
             {
@@ -9181,11 +9179,14 @@ namespace Chummer
                 await cboSpiritIllusion.DoThreadSafeAsync(x => x.Visible = false);
                 await cboSpiritManipulation.DoThreadSafeAsync(x => x.Visible = false);
 
-                if (CharacterObject.MagicTradition.Type != TraditionType.RES)
+                if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
+                {
                     CharacterObject.MagicTradition.ResetTradition();
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
+                }
 
-                await RequestCharacterUpdate();
-                await SetDirty(true);
+                await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID);
             }
             else if (strSelectedId == Tradition.CustomMagicalTraditionGuid)
             {
@@ -9200,16 +9201,31 @@ namespace Chummer
                     await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible = true);
                     await lblTraditionSource.DoThreadSafeAsync(x => x.Visible = false);
                     await lblTraditionSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
-                    await cboSpiritCombat.DoThreadSafeAsync(x => x.Enabled = true);
-                    await cboSpiritDetection.DoThreadSafeAsync(x => x.Enabled = true);
-                    await cboSpiritHealth.DoThreadSafeAsync(x => x.Enabled = true);
-                    await cboSpiritIllusion.DoThreadSafeAsync(x => x.Enabled = true);
-                    await cboSpiritManipulation.DoThreadSafeAsync(x => x.Enabled = true);
-                    await cboSpiritCombat.DoThreadSafeAsync(x => x.Visible = true);
-                    await cboSpiritDetection.DoThreadSafeAsync(x => x.Visible = true);
-                    await cboSpiritHealth.DoThreadSafeAsync(x => x.Visible = true);
-                    await cboSpiritIllusion.DoThreadSafeAsync(x => x.Visible = true);
-                    await cboSpiritManipulation.DoThreadSafeAsync(x => x.Visible = true);
+                    await cboSpiritCombat.DoThreadSafeAsync(x =>
+                    {
+                        x.Enabled = true;
+                        x.Visible = true;
+                    });
+                    await cboSpiritDetection.DoThreadSafeAsync(x =>
+                    {
+                        x.Enabled = true;
+                        x.Visible = true;
+                    });
+                    await cboSpiritHealth.DoThreadSafeAsync(x =>
+                    {
+                        x.Enabled = true;
+                        x.Visible = true;
+                    });
+                    await cboSpiritIllusion.DoThreadSafeAsync(x =>
+                    {
+                        x.Enabled = true;
+                        x.Visible = true;
+                    });
+                    await cboSpiritManipulation.DoThreadSafeAsync(x =>
+                    {
+                        x.Enabled = true;
+                        x.Visible = true;
+                    });
 
                     await RequestCharacterUpdate();
                     await SetDirty(true);
@@ -9229,16 +9245,31 @@ namespace Chummer
                 await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible = true);
                 await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible = true);
                 await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible = true);
-                await cboSpiritCombat.DoThreadSafeAsync(x => x.Enabled = false);
-                await cboSpiritDetection.DoThreadSafeAsync(x => x.Enabled = false);
-                await cboSpiritHealth.DoThreadSafeAsync(x => x.Enabled = false);
-                await cboSpiritIllusion.DoThreadSafeAsync(x => x.Enabled = false);
-                await cboSpiritManipulation.DoThreadSafeAsync(x => x.Enabled = false);
-                await cboSpiritCombat.DoThreadSafeAsync(x => x.Visible = true);
-                await cboSpiritDetection.DoThreadSafeAsync(x => x.Visible = true);
-                await cboSpiritHealth.DoThreadSafeAsync(x => x.Visible = true);
-                await cboSpiritIllusion.DoThreadSafeAsync(x => x.Visible = true);
-                await cboSpiritManipulation.DoThreadSafeAsync(x => x.Visible = true);
+                await cboSpiritCombat.DoThreadSafeAsync(x =>
+                {
+                    x.Enabled = false;
+                    x.Visible = true;
+                });
+                await cboSpiritDetection.DoThreadSafeAsync(x =>
+                {
+                    x.Enabled = false;
+                    x.Visible = true;
+                });
+                await cboSpiritHealth.DoThreadSafeAsync(x =>
+                {
+                    x.Enabled = false;
+                    x.Visible = true;
+                });
+                await cboSpiritIllusion.DoThreadSafeAsync(x =>
+                {
+                    x.Enabled = false;
+                    x.Visible = true;
+                });
+                await cboSpiritManipulation.DoThreadSafeAsync(x =>
+                {
+                    x.Enabled = false;
+                    x.Visible = true;
+                });
 
                 await lblTraditionSource.DoThreadSafeAsync(x => x.Visible = true);
                 await lblTraditionSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
@@ -9284,7 +9315,12 @@ namespace Chummer
             }
             else
             {
-                CharacterObject.MagicTradition.ResetTradition();
+                if (CharacterObject.MagicTradition.Type == TraditionType.RES)
+                {
+                    CharacterObject.MagicTradition.ResetTradition();
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
+                }
                 await cboStream.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID);
             }
         }
