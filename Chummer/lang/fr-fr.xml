@@ -7842,7 +7842,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Message_KarmaNuyenExchange</key>
-      <text>Nuyen ne peut être échangé qu'en multiples de 2.000 ¥.</text>
+      <text>Nuyen ne peut être échangé qu'en multiples de {0}.</text>
     </string>
     <string>
       <key>Checkbox_Options_UseLifeModule</key>

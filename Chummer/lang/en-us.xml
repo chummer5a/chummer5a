@@ -5659,7 +5659,7 @@
     </string>
     <string>
       <key>Message_KarmaNuyenExchange</key>
-      <text>Nuyen can only be exchanged in multiples of 2,000¥.</text>
+      <text>Nuyen can only be exchanged in multiples of {0}.</text>
     </string>
     <string>
       <key>MessageTitle_KarmaNuyenExchange</key>

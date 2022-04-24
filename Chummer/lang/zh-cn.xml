@@ -7310,7 +7310,7 @@
         </string>
         <string>
             <key>Message_KarmaNuyenExchange</key>
-            <text>只能以2,000¥的整数倍来兑换新円。</text>
+            <text>只能以{0}的整数倍来兑换新円。</text>
         </string>
         <string>
             <key>Message_NoExtraKarma</key>

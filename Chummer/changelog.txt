@@ -33,6 +33,7 @@ Application Changes:
 - Updated the Translator tool to recognize built-in settings names to be translated.
 - All weapon stat-modifying entries for ammo that is loaded into a weapon are now exported as part of the weapon's `clip` node, not just bonus damage and bonus range.
 - Geneware is now identified based on the `isgeneware` tag instead of through category names.
+- If Work for the People nuyen cost is set to a value other than 2000, the warning shown for expenses that are not a multiple of this number now properly shows this number instead of 2000.
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.
@@ -59,6 +60,7 @@ Changed/New Strings:
 - String_Sheet_Blank
 - String_Export_Blank
 - String_Export_And_Close
+- Message_KarmaNuyenExchange
 
 Removed Strings:
 - Message_UnderLanguageLimit

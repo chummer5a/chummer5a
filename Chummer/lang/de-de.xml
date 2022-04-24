@@ -7880,7 +7880,7 @@
         </string>
         <string>
             <key>Message_KarmaNuyenExchange</key>
-            <text>Nuyen kann nur in Vielfachen von 2,000¥ getauscht werden.</text>
+            <text>Nuyen kann nur in Vielfachen von {0} getauscht werden.</text>
         </string>
         <string>
             <key>Message_MissingSourceBooks</key>

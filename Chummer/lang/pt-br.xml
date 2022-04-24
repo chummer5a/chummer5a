@@ -4532,7 +4532,7 @@
     </string>
     <string>
       <key>Message_KarmaNuyenExchange</key>
-      <text>Neoiene só pode ser trocado em múltiplos de 2.000¥.</text>
+      <text>Neoiene só pode ser trocado em múltiplos de {0}.</text>
     </string>
     <string>
       <key>MessageTitle_KarmaNuyenExchange</key>
