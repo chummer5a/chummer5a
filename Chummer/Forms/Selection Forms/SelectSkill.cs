@@ -183,8 +183,8 @@ namespace Chummer
                                 continue;
                             }
                         }
-                        else if (objExistingSkill.Rating < _intMinimumRating
-                                 || objExistingSkill.Rating > _intMaximumRating)
+                        else if (objExistingSkill.TotalBaseRating < _intMinimumRating
+                                 || objExistingSkill.TotalBaseRating > _intMaximumRating)
                         {
                             continue;
                         }
@@ -202,7 +202,7 @@ namespace Chummer
                     {
                         ExoticSkill objExoticSkill = objSkill as ExoticSkill;
                         bool blnAddSkill = true;
-                        if (objSkill.Rating < _intMinimumRating || objSkill.Rating > _intMaximumRating)
+                        if (objSkill.TotalBaseRating < _intMinimumRating || objSkill.TotalBaseRating > _intMaximumRating)
                             blnAddSkill = false;
                         else if (!string.IsNullOrEmpty(_strForceSkill))
                             blnAddSkill = _strForceSkill == objExoticSkill.DictionaryKey;

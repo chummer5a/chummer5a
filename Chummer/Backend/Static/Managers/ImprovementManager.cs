@@ -1631,32 +1631,128 @@ namespace Chummer
                                         }
                                     }
 
-                                    lstDropdownItems.Sort(CompareListItems.CompareNames);
-
-                                    using (ThreadSafeForm<SelectItem> frmPickSkill
-                                           = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
-                                           {
-                                               Description = LanguageManager.GetString("Title_SelectSkill"),
-                                               AllowAutoSelect = string.IsNullOrWhiteSpace(strPrompt)
-                                           }))
+                                    if (lstDropdownItems.Count == 1
+                                        && (setAllowedNames == null || !string.IsNullOrWhiteSpace(strPrompt)))
                                     {
-                                        if (setAllowedNames != null && string.IsNullOrWhiteSpace(strPrompt))
-                                            frmPickSkill.MyForm.SetGeneralItemsMode(lstDropdownItems);
-                                        else
-                                            frmPickSkill.MyForm.SetDropdownItemsMode(lstDropdownItems);
+                                        strSelectedSkill = lstDropdownItems[0].Value.ToString();
+                                    }
+                                    else
+                                    {
+                                        lstDropdownItems.Sort(CompareListItems.CompareNames);
 
-                                        if (frmPickSkill.ShowDialogSafe(objCharacter) == DialogResult.Cancel)
+                                        using (ThreadSafeForm<SelectItem> frmPickSkill
+                                               = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
+                                               {
+                                                   Description = LanguageManager.GetString("Title_SelectSkill"),
+                                                   AllowAutoSelect = string.IsNullOrWhiteSpace(strPrompt)
+                                               }))
                                         {
-                                            throw new AbortedException();
-                                        }
+                                            if (setAllowedNames != null && string.IsNullOrWhiteSpace(strPrompt))
+                                                frmPickSkill.MyForm.SetGeneralItemsMode(lstDropdownItems);
+                                            else
+                                                frmPickSkill.MyForm.SetDropdownItemsMode(lstDropdownItems);
 
-                                        strSelectedSkill = frmPickSkill.MyForm.SelectedItem;
+                                            if (frmPickSkill.ShowDialogSafe(objCharacter) == DialogResult.Cancel)
+                                            {
+                                                throw new AbortedException();
+                                            }
+
+                                            strSelectedSkill = frmPickSkill.MyForm.SelectedItem;
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
+            }
+            else if (!string.IsNullOrEmpty(ForcedValue))
+            {
+                XPathNavigator xmlSkillNode = objCharacter.LoadDataXPath("skills.xml").SelectSingleNode(
+                    "/chummer/skills/skill[name = "
+                    + ForcedValue.CleanXPath() + " and not(exotic) and ("
+                    + objCharacter.Settings.BookXPath() + ")]");
+                if (xmlSkillNode == null)
+                    throw new AbortedException();
+                int intMinimumRating = 0;
+                string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strMinimumRating))
+                    intMinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
+                int intMaximumRating = int.MaxValue;
+                string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
+                if (!string.IsNullOrWhiteSpace(strMaximumRating))
+                    intMaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
+                if (intMinimumRating != 0 || intMaximumRating != int.MaxValue)
+                {
+                    Skill objExistingSkill = objCharacter.SkillsSection.GetActiveSkill(ForcedValue);
+                    if (objExistingSkill == null)
+                    {
+                        if (intMinimumRating > 0)
+                            throw new AbortedException();
+                    }
+                    else
+                    {
+                        int intCurrentRating = objExistingSkill.TotalBaseRating;
+                        if (intCurrentRating > intMaximumRating || intCurrentRating < intMinimumRating)
+                            throw new AbortedException();
+                    }
+                }
+                XmlNode xmlSkillCategories = xmlBonusNode.SelectSingleNode("skillcategories");
+                if (xmlSkillCategories != null)
+                {
+                    string strCategory = xmlSkillNode.SelectSingleNode("category")?.Value ?? string.Empty;
+                    if (string.IsNullOrWhiteSpace(strCategory))
+                        throw new AbortedException();
+                    using (XmlNodeList xmlCategoryList = xmlSkillCategories.SelectNodes("category"))
+                    {
+                        if (xmlCategoryList == null)
+                            throw new AbortedException();
+                        if (xmlCategoryList.Cast<XmlNode>().All(objNode => strCategory != objNode.InnerText))
+                            throw new AbortedException();
+                    }
+                }
+                string strTemp = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp))
+                {
+                    string strCategory = xmlSkillNode.SelectSingleNode("category")?.Value ?? string.Empty;
+                    if (string.IsNullOrWhiteSpace(strCategory) || !strTemp.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(strCategory))
+                        throw new AbortedException();
+                }
+                strTemp = xmlBonusNode.SelectSingleNode("@skillgroup")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp))
+                {
+                    string strSkillGroup = xmlSkillNode.SelectSingleNode("skillgroup")?.Value ?? string.Empty;
+                    if (string.IsNullOrWhiteSpace(strSkillGroup) || !strTemp.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(strSkillGroup))
+                        throw new AbortedException();
+                }
+                strTemp = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp))
+                {
+                    string strCategory = xmlSkillNode.SelectSingleNode("category")?.Value ?? string.Empty;
+                    if (!string.IsNullOrWhiteSpace(strCategory) && strTemp.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(strCategory))
+                        throw new AbortedException();
+                }
+                strTemp = xmlBonusNode.SelectSingleNode("@excludeskillgroup")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp))
+                {
+                    string strSkillGroup = xmlSkillNode.SelectSingleNode("skillgroup")?.Value ?? string.Empty;
+                    if (!string.IsNullOrWhiteSpace(strSkillGroup) && strTemp.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(strSkillGroup))
+                        throw new AbortedException();
+                }
+                strTemp = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp) && !strTemp.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(ForcedValue))
+                    throw new AbortedException();
+                strTemp = xmlBonusNode.SelectSingleNode("@excludeskill")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp) && strTemp.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(ForcedValue))
+                    throw new AbortedException();
+                strTemp = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
+                if (!string.IsNullOrEmpty(strTemp))
+                {
+                    string strAttribute = xmlSkillNode.SelectSingleNode("attribute")?.Value ?? string.Empty;
+                    if (string.IsNullOrWhiteSpace(strAttribute) || !strTemp.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(strAttribute))
+                        throw new AbortedException();
+                }
+                strSelectedSkill = ForcedValue;
             }
             else
             {
@@ -1702,12 +1798,6 @@ namespace Chummer
                     strTemp = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
                     if (!string.IsNullOrEmpty(strTemp))
                         frmPickSkill.MyForm.LinkedAttribute = strTemp;
-
-                    if (!string.IsNullOrEmpty(ForcedValue))
-                    {
-                        frmPickSkill.MyForm.OnlySkill = ForcedValue;
-                        frmPickSkill.MyForm.Opacity = 0;
-                    }
 
                     if (frmPickSkill.ShowDialogSafe(objCharacter) == DialogResult.Cancel)
                     {
