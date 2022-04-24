@@ -3763,7 +3763,7 @@
       <source>2050</source>
       <page>205</page>
     </bioware>
-    <!-- Ende SR5 2050 -->
+    <!-- End SR5 2050 -->
     <!-- Region Kill Code -->
     <bioware>
       <id>b5af679d-e70d-43f3-9aa4-f3638796e948</id>
@@ -3778,7 +3778,6 @@
     </bioware>
     <!-- End Region -->
     <!-- Region No Future -->
-    <!-- Region Cybersenses -->
     <bioware>
       <id>ac03e91f-4a00-4df7-8ab8-cd840ac5c67f</id>
       <name>Vocal Expansion</name>
