@@ -17475,7 +17475,7 @@
         <power select="Bite: DV (STR+1)P, AP -1">Natural Weapon</power>
       </powers>
       <skills>
-        <skill rating="4">Exotic Ranged Weapon</skill>
+        <skill rating="4" spec="Elemental Attack">Exotic Ranged Weapon</skill>
         <skill rating="5">Sneaking</skill>
         <skill rating="3">Intimidation</skill>
         <skill rating="4">Running</skill>
@@ -19009,7 +19009,7 @@
       </powers>
       <skills>
         <skill rating="5">Astral Combat</skill>
-        <skill rating="5" spec="Lightning">Exotic Ranged Weapon</skill>
+        <skill rating="5" spec="Elemental Attack">Exotic Ranged Weapon</skill>
         <skill rating="5">Flight</skill>
         <skill rating="6">Perception</skill>
         <skill rating="5">Unarmed Combat</skill>
@@ -27857,7 +27857,7 @@
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F" spec="Elemental Attack">Exotic Ranged Weapon</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
@@ -28038,7 +28038,7 @@
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F" spec="Elemental Attack">Exotic Ranged Weapon</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
@@ -28129,7 +28129,7 @@
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F" spec="Elemental Attack">Exotic Ranged Weapon</skill>
         <skill rating="F">Flight</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
@@ -28315,7 +28315,7 @@
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F" spec="Elemental Attack">Exotic Ranged Weapon</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
@@ -28485,7 +28485,7 @@
         <skill rating="F">Blades</skill>
         <skill rating="F">Clubs</skill>
         <skill rating="F">Counterspelling</skill>
-        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F" spec="Elemental Attack">Exotic Ranged Weapon</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
@@ -28673,7 +28673,7 @@
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
         <skill rating="F">Counterspelling</skill>
-        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F" spec="Noxious Breath">Exotic Ranged Weapon</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
@@ -28956,7 +28956,7 @@
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
         <skill rating="F">Gymnastics</skill>
-        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F" spec="Corrosive Spit">Exotic Ranged Weapon</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Running</skill>
         <skill rating="F">Unarmed Combat</skill>
@@ -29049,7 +29049,7 @@
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F" spec="Elemental Attack">Exotic Ranged Weapon</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
@@ -30223,7 +30223,7 @@
       <run>2/0/0</run>
       <sprint>1/1/0</sprint>
       <skills>
-        <skill rating="6" spec="Spit">Exotic Ranged Weapon</skill>
+        <skill rating="6" spec="Corrosive Spit">Exotic Ranged Weapon</skill>
         <skill rating="5">Gymnastics</skill>
         <skill rating="4">Perception</skill>
         <skill rating="2">Running</skill>
@@ -30296,7 +30296,7 @@
       <sprint>4/1/0</sprint>
       <armor>10</armor>
       <skills>
-        <skill rating="4">Exotic Ranged Weapon (Spit)</skill>
+        <skill rating="4" spec="Corrosive Spit">Exotic Ranged Weapon</skill>
         <skill rating="4">Perception</skill>
         <skill rating="4">Running</skill>
         <skill rating="7">Unarmed Combat</skill>
@@ -30353,7 +30353,7 @@
       <sprint>5/1/0</sprint>
       <armor>6H</armor>
       <skills>
-        <skill rating="5">Exotic Ranged Weapon (Feathers)</skill>
+        <skill rating="5" spec="Feathers">Exotic Ranged Weapon</skill>
         <skill rating="6">Flight</skill>
       </skills>
       <powers>
@@ -30634,7 +30634,7 @@
       </powers>
       <optionalpowers />
       <skills>
-        <skill rating="2">Exotic Ranged Weapon</skill>
+        <skill rating="2" spec="Corrosive Spit">Exotic Ranged Weapon</skill>
         <skill rating="2">Perception</skill>
         <skill rating="3">Running</skill>
         <skill rating="2">Unarmed Combat</skill>
@@ -30954,7 +30954,7 @@
       </powers>
       <optionalpowers />
       <skills>
-        <skill rating="3">Exotic Ranged Weapon</skill>
+        <skill rating="3" spec="Noxious Breath">Exotic Ranged Weapon</skill>
         <skill rating="2">Flight</skill>
         <skill rating="1">Infiltration</skill>
         <skill rating="3">Perception</skill>
@@ -31476,7 +31476,7 @@
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
         <skill rating="F">Dodge</skill>
-        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F" spec="Elemental Attack">Exotic Ranged Weapon</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
@@ -31827,7 +31827,7 @@
         <skill rating="6">Assensing</skill>
         <skill rating="6">Astral Combat</skill>
         <skill rating="6">Dodge</skill>
-        <skill rating="6">Exotic Ranged Weapon</skill>
+        <skill rating="6" spec="Sonic Projection">Exotic Ranged Weapon</skill>
         <skill rating="6">Flight</skill>
         <skill rating="6">Perception</skill>
         <skill rating="6">Tracking</skill>
@@ -31919,7 +31919,7 @@
         <skill rating="6">Assensing</skill>
         <skill rating="6">Astral Combat</skill>
         <skill rating="6">Dodge</skill>
-        <skill rating="6">Exotic Ranged Weapon</skill>
+        <skill rating="6" spec="Noxious Breath">Exotic Ranged Weapon</skill>
         <skill rating="6">Flight</skill>
         <skill rating="6">Perception</skill>
         <skill rating="6">Unarmed Combat</skill>
@@ -32742,7 +32742,7 @@
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F" spec="Elemental Attack">Exotic Ranged Weapon</skill>
         <skill rating="F">Flight</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
@@ -32835,7 +32835,7 @@
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F" spec="Elemental Attack">Exotic Ranged Weapon</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
@@ -32928,7 +32928,7 @@
         <skill rating="F">Clubs</skill>
         <skill rating="F">Counterspelling</skill>
         <skill rating="F">Dodge</skill>
-        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F" spec="Elemental Attack">Exotic Ranged Weapon</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
@@ -33115,7 +33115,7 @@
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F" spec="Noxious Breath">Exotic Ranged Weapon</skill>
         <skill rating="F">Running</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
@@ -36591,7 +36591,7 @@
         <skill rating="F">Astral Combat</skill>
         <skill rating="F">Counterspelling</skill>
         <skill rating="F">Gymnastics</skill>
-        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F" spec="Noxious Breath">Exotic Ranged Weapon</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
@@ -36685,7 +36685,7 @@
             <skill rating="F">Astral Combat</skill>
             <skill rating="F">Counterspelling</skill>
             <skill rating="F">Gymnastics</skill>
-            <skill rating="F">Exotic Ranged Weapon</skill>
+            <skill rating="F" spec="Noxious Breath">Exotic Ranged Weapon</skill>
             <skill rating="F">Perception</skill>
             <skill rating="F">Unarmed Combat</skill>
           </skills>
@@ -36779,7 +36779,7 @@
             <skill rating="F">Astral Combat</skill>
             <skill rating="F">Counterspelling</skill>
             <skill rating="F">Gymnastics</skill>
-            <skill rating="F">Exotic Ranged Weapon</skill>
+            <skill rating="F" spec="Noxious Breath">Exotic Ranged Weapon</skill>
             <skill rating="F">Perception</skill>
             <skill rating="F">Unarmed Combat</skill>
           </skills>
@@ -36873,7 +36873,7 @@
             <skill rating="F">Astral Combat</skill>
             <skill rating="F">Counterspelling</skill>
             <skill rating="F">Gymnastics</skill>
-            <skill rating="F">Exotic Ranged Weapon</skill>
+            <skill rating="F" spec="Noxious Breath">Exotic Ranged Weapon</skill>
             <skill rating="F">Perception</skill>
             <skill rating="F">Unarmed Combat</skill>
           </skills>
@@ -36967,7 +36967,7 @@
             <skill rating="F">Astral Combat</skill>
             <skill rating="F">Counterspelling</skill>
             <skill rating="F">Gymnastics</skill>
-            <skill rating="F">Exotic Ranged Weapon</skill>
+            <skill rating="F" spec="Noxious Breath">Exotic Ranged Weapon</skill>
             <skill rating="F">Perception</skill>
             <skill rating="F">Unarmed Combat</skill>
             <skill rating="F">Flight</skill>
@@ -37062,7 +37062,7 @@
             <skill rating="F">Astral Combat</skill>
             <skill rating="F">Counterspelling</skill>
             <skill rating="F">Gymnastics</skill>
-            <skill rating="F">Exotic Ranged Weapon</skill>
+            <skill rating="F" spec="Noxious Breath">Exotic Ranged Weapon</skill>
             <skill rating="F">Perception</skill>
             <skill rating="F">Unarmed Combat</skill>
           </skills>
@@ -37156,7 +37156,7 @@
             <skill rating="F">Astral Combat</skill>
             <skill rating="F">Counterspelling</skill>
             <skill rating="F">Gymnastics</skill>
-            <skill rating="F">Exotic Ranged Weapon</skill>
+            <skill rating="F" spec="Noxious Breath">Exotic Ranged Weapon</skill>
             <skill rating="F">Perception</skill>
             <skill rating="F">Unarmed Combat</skill>
             <skill rating="F">Flight</skill>
@@ -37251,7 +37251,7 @@
             <skill rating="F">Astral Combat</skill>
             <skill rating="F">Counterspelling</skill>
             <skill rating="F">Gymnastics</skill>
-            <skill rating="F">Exotic Ranged Weapon</skill>
+            <skill rating="F" spec="Noxious Breath">Exotic Ranged Weapon</skill>
             <skill rating="F">Perception</skill>
             <skill rating="F">Unarmed Combat</skill>
             <skill rating="F">Flight</skill>
@@ -37347,7 +37347,7 @@
             <skill rating="F">Astral Combat</skill>
             <skill rating="F">Counterspelling</skill>
             <skill rating="F">Gymnastics</skill>
-            <skill rating="F">Exotic Ranged Weapon</skill>
+            <skill rating="F" spec="Noxious Breath">Exotic Ranged Weapon</skill>
             <skill rating="F">Perception</skill>
             <skill rating="F">Unarmed Combat</skill>
             <skill rating="F">Flight</skill>
@@ -37442,7 +37442,7 @@
             <skill rating="F">Astral Combat</skill>
             <skill rating="F">Counterspelling</skill>
             <skill rating="F">Gymnastics</skill>
-            <skill rating="F">Exotic Ranged Weapon</skill>
+            <skill rating="F" spec="Noxious Breath">Exotic Ranged Weapon</skill>
             <skill rating="F">Perception</skill>
             <skill rating="F">Unarmed Combat</skill>
           </skills>
@@ -37537,7 +37537,7 @@
             <skill rating="F">Astral Combat</skill>
             <skill rating="F">Counterspelling</skill>
             <skill rating="F">Gymnastics</skill>
-            <skill rating="F">Exotic Ranged Weapon</skill>
+            <skill rating="F" spec="Noxious Breath">Exotic Ranged Weapon</skill>
             <skill rating="F">Perception</skill>
             <skill rating="F">Unarmed Combat</skill>
             <skill rating="F">Flight</skill>
@@ -37633,7 +37633,7 @@
             <skill rating="F">Astral Combat</skill>
             <skill rating="F">Counterspelling</skill>
             <skill rating="F">Gymnastics</skill>
-            <skill rating="F">Exotic Ranged Weapon</skill>
+            <skill rating="F" spec="Noxious Breath">Exotic Ranged Weapon</skill>
             <skill rating="F">Perception</skill>
             <skill rating="F">Unarmed Combat</skill>
           </skills>
@@ -41088,7 +41088,7 @@
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
         <skill rating="F">Dodge</skill>
-        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F" spec="Elemental Attack">Exotic Ranged Weapon</skill>
         <skill rating="F">Flight</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
@@ -41181,7 +41181,7 @@
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
         <skill rating="F">Dodge</skill>
-        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F" spec="Elemental Attack">Exotic Ranged Weapon</skill>
         <skill rating="F">Flight</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
@@ -41373,7 +41373,9 @@
       </powers>
       <skills>
         <skill rating="14">Assensing</skill>
-        <skill rating="12">Exotic Ranged Weapon</skill>
+        <skill rating="12" spec="Elemental Attack">Exotic Ranged Weapon</skill>
+        <skill rating="12" spec="Corrosive Spit">Exotic Ranged Weapon</skill>
+        <skill rating="12" spec="Noxious Breath">Exotic Ranged Weapon</skill>
         <skill rating="12">Flight</skill>
         <skill rating="10">Running</skill>
         <skill rating="12">Perception</skill>
@@ -41475,7 +41477,9 @@
       </powers>
       <skills>
         <skill rating="14">Assensing</skill>
-        <skill rating="12">Exotic Ranged Weapon</skill>
+        <skill rating="12" spec="Elemental Attack">Exotic Ranged Weapon</skill>
+        <skill rating="12" spec="Corrosive Spit">Exotic Ranged Weapon</skill>
+        <skill rating="12" spec="Noxious Breath">Exotic Ranged Weapon</skill>
         <skill rating="12">Flight</skill>
         <skill rating="10">Running</skill>
         <skill rating="12">Perception</skill>
@@ -41673,7 +41677,9 @@
       </powers>
       <skills>
         <skill rating="14">Assensing</skill>
-        <skill rating="12">Exotic Ranged Weapon</skill>
+        <skill rating="12" spec="Elemental Attack">Exotic Ranged Weapon</skill>
+        <skill rating="12" spec="Corrosive Spit">Exotic Ranged Weapon</skill>
+        <skill rating="12" spec="Noxious Breath">Exotic Ranged Weapon</skill>
         <skill rating="12">Flight</skill>
         <skill rating="10">Running</skill>
         <skill rating="12">Perception</skill>
@@ -51919,10 +51925,10 @@
       <sprint>3/1/0</sprint>
       <armor>12</armor>
       <skills>
-        <skill>Assensing 4</skill>
-        <skill>Counterspelling 6</skill>
-        <skill>Intimidation 3</skill>
-        <skill>Sneaking</skill>
+        <skill rating="4">Assensing</skill>
+        <skill rating="6">Counterspelling</skill>
+        <skill rating="3">Intimidation</skill>
+        <skill rating="1">Sneaking</skill>
       </skills>
       <powers>
         <power>Essence Drain</power>
@@ -52528,12 +52534,22 @@
       <skills>
         <skill>Assensing</skill>
         <skill>Astral Combat</skill>
-        <skill rating="Ranged Weapon">Exotic</skill>
+        <skill spec="Elemental Attack">Exotic Ranged Weapon</skill>
       </skills>
       <powers>
         <power>Astral Form</power>
         <power>Banishing Resistance</power>
         <power>Concealment</power>
+        <power>Confusion</power>
+        <power select="Water">Elemental Attack</power>
+        <power select="Water">Engulf</power>
+        <power>Fey Glamour</power>
+        <power>Influence</power>
+        <power>Materialization</power>
+        <power>Movement</power>
+        <power>Sapience</power>
+        <power>Search</power>
+        <power>Vanishing</power>
       </powers>
       <bonus>
         <enabletab>
@@ -53384,7 +53400,7 @@
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F" spec="Elemental Attack">Exotic Ranged Weapon</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
@@ -53481,7 +53497,7 @@
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
         <skill rating="F">Counterspelling</skill>
-        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F" spec="Noxious Breath">Exotic Ranged Weapon</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
@@ -53572,7 +53588,7 @@
       <skills>
         <skill rating="F">Assensing</skill>
         <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F" spec="Elemental Attack">Exotic Ranged Weapon</skill>
         <skill rating="F">Perception</skill>
         <skill rating="F">Unarmed Combat</skill>
       </skills>
