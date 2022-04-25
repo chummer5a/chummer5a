@@ -662,6 +662,11 @@
               <bonus>2</bonus>
               <condition>Physical Combat</condition>
             </specificskill>
+            <specificskill>
+              <name>Alchemy</name>
+              <bonus>2</bonus>
+              <condition>Physical Combat</condition>
+            </specificskill>
           </bonus>
         </choice>
         <choice>
@@ -2045,6 +2050,16 @@
             </specificskill>
             <specificskill>
               <name>Ritual Spellcasting</name>
+              <bonus>2</bonus>
+              <condition>Fire</condition>
+            </specificskill>
+            <specificskill>
+              <name>Alchemy</name>
+              <bonus>2</bonus>
+              <condition>Sun</condition>
+            </specificskill>
+            <specificskill>
+              <name>Alchemy</name>
               <bonus>2</bonus>
               <condition>Fire</condition>
             </specificskill>
