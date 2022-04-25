@@ -12140,6 +12140,36 @@
       </bonus>
       <cost>2000</cost>
     </gear>
+	<gear>
+      <id>39904022-312d-49d8-9f4c-b2626e971fe6</id>
+      <name>FAB I</name>
+      <category>Magical Supplies</category>
+      <rating>1</rating>
+      <source>SG</source>
+      <page>212</page>
+      <avail>10</avail>
+      <cost>50</cost>
+    </gear>
+	<gear>
+      <id>056ff454-2e43-4351-b934-93ef1451b610</id>
+      <name>FAB II</name>
+      <category>Magical Supplies</category>
+      <rating>20</rating>
+      <source>SG</source>
+      <page>212</page>
+      <avail>16R</avail>
+      <cost>Rating * 50</cost>
+    </gear>
+	<gear>
+      <id>f03501df-05c3-4d47-b068-d64fe829df05</id>
+      <name>FAB III</name>
+      <category>Magical Supplies</category>
+      <rating>20</rating>
+      <source>SG</source>
+      <page>212</page>
+      <avail>20F</avail>
+      <cost>Rating * 25000</cost>
+    </gear>
     <gear>
       <id>95e064d4-74ee-4bd5-83a3-ad9fc3716d75</id>
       <name>Aqua Fictus</name>
