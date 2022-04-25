@@ -481,6 +481,7 @@ namespace Chummer
             if (!IsFinishedLoading)
                 return;
             CancellationTokenSource objNewSource = new CancellationTokenSource();
+            CancellationToken objToken = objNewSource.Token;
             CancellationTokenSource objTemp
                 = Interlocked.Exchange(ref _objMostRecentlyUsedsRefreshCancellationTokenSource, objNewSource);
             if (objTemp?.IsCancellationRequested == false)
@@ -501,7 +502,7 @@ namespace Chummer
             }
             catch
             {
-                Interlocked.CompareExchange(ref _objWatchFolderRefreshCancellationTokenSource, null, objNewSource);
+                Interlocked.CompareExchange(ref _objMostRecentlyUsedsRefreshCancellationTokenSource, null, objNewSource);
                 objNewSource.Dispose();
                 throw;
             }
@@ -517,7 +518,7 @@ namespace Chummer
             try
             {
                 _tskMostRecentlyUsedsRefresh
-                    = LoadMruCharacters(strMruType != "mru", objNewSource.Token);
+                    = LoadMruCharacters(strMruType != "mru", objToken);
                 try
                 {
                     await _tskMostRecentlyUsedsRefresh;
