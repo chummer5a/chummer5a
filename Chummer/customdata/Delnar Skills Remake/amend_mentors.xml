@@ -21,6 +21,22 @@
 <chummer>
   <mentors>
     <mentor>
+      <bonus>
+        <specificskill xpathfilter="name = 'Ritual Spellcasting'">
+          <name>Ceremony</name>
+        </specificskill>
+      </bonus>
+      <choices>
+        <choice>
+          <bonus>
+            <specificskill xpathfilter="name = 'Ritual Spellcasting'">
+              <name>Ceremony</name>
+            </specificskill>
+          </bonus>
+        </choice>
+      </choices>
+    </mentor>
+    <mentor>
       <name>Cat</name>
       <advantage>All: +2 dice to either Acrobatics or Sneaking Tests (choose one).</advantage>
       <choices>
@@ -75,9 +91,11 @@
     </mentor>
     <mentor>
       <name>Seducer</name>
-      <advantage>All: +2 dice for tests to seduce someone.</advantage>
+      <advantage>All: +2 dice for Socialize Tests.</advantage>
       <bonus>
-        <specificskill xpathfilter="name = 'Con'" amendoperation="remove" />
+        <specificskill xpathfilter="name = 'Con'">
+          <name>Socialize</name>
+        </specificskill>
       </bonus>
       <choices>
         <choice xpathfilter="name = 'Adept: 1 free level of Improved Ability for a skill in the Acting or Influence skill group'">
@@ -165,7 +183,13 @@
     </mentor>
     <mentor>
       <name>Monkey</name>
-      <advantage>All: +2 dice to Acrobatics tests involving climbing.</advantage>
+      <advantage>All: +2 dice to Acrobatics tests.</advantage>
+      <bonus amendoperation="replace">
+        <specificskill>
+          <name>Acrobatics</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </bonus>
     </mentor>
     <mentor>
       <name>Artist</name>
@@ -237,7 +261,10 @@
         <choice>
           <name>+2 dice on Assensing Tests</name>
           <bonus>
-            <specificskill xpathfilter="name = 'Assensing'" amendoperation="remove" />
+            <specificskill xpathfilter="name = 'Assensing'">
+              <name>Astral</name>
+              <condition>Assensing</condition>
+            </specificskill>
           </bonus>
         </choice>
       </choices>
@@ -349,7 +376,7 @@
     </mentor>
     <mentor>
       <name>Dove</name>
-      <advantage>All: +2 dice to Negotiation Tests.</advantage>
+      <advantage>All: +2 dice to Persuade Tests.</advantage>
       <bonus>
         <specificskill xpathfilter="name = 'Negotiation'">
           <name>Persuade</name>
@@ -459,9 +486,12 @@
     </mentor>
     <mentor>
       <name>Heinzelmännchen</name>
-      <advantage>All: +2 dice pool modifier for tests using skills from the Engineering skill group.</advantage>
-      <bonus>
-        <specificskill xpathfilter="name = 'Artisan'" amendoperation="remove" />
+      <advantage>All: +2 dice pool modifier for Engineering Tests.</advantage>
+      <bonus amendoperation="replace">
+        <specificskill>
+          <name>Engineering</name>
+          <bonus>2</bonus>
+        </specificskill>
       </bonus>
       <choices>
         <choice xpathfilter="name = 'Adept: Gain 1 free level of Improved Ability (Artisan or a skill from the Engineering group).'">

@@ -23,7 +23,18 @@
     <cyberware>
       <bonus>
         <skilllinkedattribute amendoperation="remove" />
-        <specificskill xpathfilter="name = 'Impersonation' or name = 'Disguise' or name = 'Intimidation'" amendoperation="remove" />
+        <specificskill xpathfilter="name = 'Impersonation'">
+          <name>Acting</name>
+          <condition>Voice</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Disguise'">
+          <name>Acting</name>
+          <condition>Make-Up</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Intimidation'">
+          <name>Command</name>
+          <condition>Intimidate/Interrogate</condition>
+        </specificskill>
         <specificskill xpathfilter="name = 'Swimming'">
           <name>Aquatics</name>
         </specificskill>
@@ -32,7 +43,18 @@
         </specificskill>
       </bonus>
       <pairbonus>
-        <specificskill xpathfilter="name = 'Impersonation' or name = 'Disguise' or name = 'Intimidation'" amendoperation="remove" />
+        <specificskill xpathfilter="name = 'Impersonation'">
+          <name>Acting</name>
+          <condition>Voice</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Disguise'">
+          <name>Acting</name>
+          <condition>Make-Up</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Intimidation'">
+          <name>Command</name>
+          <condition>Intimidate/Interrogate</condition>
+        </specificskill>
         <specificskill xpathfilter="name = 'Swimming'">
           <name>Aquatics</name>
         </specificskill>

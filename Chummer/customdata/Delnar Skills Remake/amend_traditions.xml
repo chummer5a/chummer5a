@@ -32,10 +32,15 @@
         <specificskill>
           <name xpathfilter=". = 'Ritual Spellcasting'">Ceremony</name>
         </specificskill>
-        <skilldisable xpathfilter=". = 'Artificing'" amendoperation="remove" />
-        <specificskill xpathfilter="name = 'Artificing'" amendoperation="remove" />
-        <skilldisable xpathfilter=". = 'Disenchanting'" amendoperation="remove" />
-        <specificskill xpathfilter="name = 'Disenchanting'" amendoperation="remove" />
+        <skilldisable xpathfilter=". = 'Artificing' or . = 'Disenchanting'" amendoperation="remove" />
+        <specificskill xpathfilter="name = 'Artificing'">
+          <name>Arcana</name>
+          <condition>Artificing</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Disenchanting'">
+          <name>Arcana</name>
+          <condition>Disenchanting</condition>
+        </specificskill>
         <skillgroupdisable xpathfilter=". = 'Enchanting'" amendoperation="remove" />
       </bonus>
     </tradition>
@@ -49,14 +54,14 @@
         <skill xpathfilter=". = 'Pilot Aircraft'" amendoperation="replace" attr="rea">Pilot Aerospace</skill>
         <skill xpathfilter=". = 'Pilot Ground Craft'" amendoperation="replace" attr="rea">Pilot Groundcraft</skill>
         <skill xpathfilter=". = 'Running' or . = 'Flight'" amendoperation="replace" attr="str">Athletics</skill>
-        <skill xpathfilter=". = 'Swimming'" amendoperation="replace" attr="str">Aquatics</skill>
-        <skill xpathfilter=". = 'Gymnastics' or . = 'Free-Fall'" amendoperation="replace" attr="str">Acrobatics</skill>
+        <skill xpathfilter=". = 'Swimming' or . = 'Diving'" amendoperation="replace" attr="str">Aquatics</skill>
+        <skill xpathfilter=". = 'Gymnastics' or . = 'Free-Fall' or . = 'Escape Artist'" amendoperation="replace" attr="str">Acrobatics</skill>
         <skill xpathfilter=". = 'Blades'" amendoperation="replace" attr="agi">Edged Weapons</skill>
         <skill xpathfilter=". = 'Clubs'" amendoperation="replace" attr="agi">Blunt Weapons</skill>
-        <skill xpathfilter=". = 'Impersonation'" amendoperation="replace" attr="cha">Acting</skill>
+        <skill xpathfilter=". = 'Impersonation' or . = 'Disguise'" amendoperation="replace" attr="cha">Acting</skill>
         <skill xpathfilter=". = 'Negotiation'" amendoperation="replace" attr="cha">Persuade</skill>
         <skill xpathfilter=". = 'Con' or . = 'Etiquette'" amendoperation="replace" attr="cha">Socialize</skill>
-        <skill xpathfilter=". = 'Leadership' or . = 'Intimidation'" amendoperation="replace" attr="cha">Command</skill>
+        <skill xpathfilter=". = 'Leadership' or . = 'Instruction' or . = 'Intimidation'" amendoperation="replace" attr="cha">Command</skill>
       </skills>
     </spirit>
   </spirits>

@@ -39,20 +39,39 @@
         </specificskill>
         <specificskill xpathfilter="name = 'Navigation'">
           <name>Query</name>
+          <condition>Navigation</condition>
         </specificskill>
-        <unlockskills xpathfilter="@name = 'Assensing'" amendoperation="replace" name="Astral">Name</unlockskills>
-        <specificskill xpathfilter="name = 'Perception' or name = 'Assensing' or name = 'Disguise' or name = 'Instruction' or name = 'Intimidation'" amendoperation="remove" />
+        <unlockskills xpathfilter="@name = 'Assensing' or @name = 'Astral Combat'" amendoperation="replace" name="Astral">Name</unlockskills>
+        <specificskill xpathfilter="name = 'Perception'" amendoperation="remove" />
+        <specificskill xpathfilter="name = 'Assensing'">
+          <name>Astral</name>
+          <bonus>Assensing</bonus>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Disguise'">
+          <name>Acting</name>
+          <condition>Make-Up</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Impersonation'">
+          <name>Acting</name>
+          <condition>Voice</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Intimidation'">
+          <name>Command</name>
+          <condition>Intimidate/Interrogate</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Instruction'">
+          <name>Command</name>
+          <condition>Instruction</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Leadership'">
+          <name>Command</name>
+          <condition>Leadership</condition>
+        </specificskill>
         <specificskill xpathfilter="name = 'Palming'">
           <name>Sleight of Hand</name>
         </specificskill>
         <specificskill xpathfilter="name = 'Etiquette'">
           <name>Socialize</name>
-        </specificskill>
-        <specificskill xpathfilter="name = 'Leadership'">
-          <name>Command</name>
-        </specificskill>
-        <specificskill xpathfilter="name = 'Impersonation'">
-          <name>Acting</name>
         </specificskill>
         <specificskill xpathfilter="name = 'Negotiation'">
           <name>Persuade</name>

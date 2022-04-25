@@ -51,6 +51,7 @@ Data Changes:
 - Expanded the categories covered by the Black Market Pipeline options of Armor, Weapons, Drugs, Electronics, and Drugs to cover a few more categories than before that include items that would fall into those options.
 - Added missing FAB I, FAB II, and FAB III entries from Street Grimoire.
 - Mentor spirit dice pool bonuses that apply to skills only under specific circumstances now have those bonuses show up under those circumstances in Chummer (e.g. a bonus to summoning Spirits of Man now shows up to Summoning specializations for Spirits of Man). Existing characters with mentor spirits that would have these bonuses are unaffected unless improvements are reapplied.
+- Updated bonuses when using Delnar Skills Remake to account for cases where old skills have become new skill specializations.
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups

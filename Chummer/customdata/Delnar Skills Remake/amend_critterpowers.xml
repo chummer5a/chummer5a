@@ -22,7 +22,7 @@
   <powers>
     <power>
       <bonus>
-        <unlockskills xpathfilter="@name = 'Assensing'" amendoperation="replace" name="Astral">Name</unlockskills>
+        <unlockskills xpathfilter="@name = 'Assensing' or @name = 'Astral Combat'" amendoperation="replace" name="Astral">Name</unlockskills>
         <specificskill xpathfilter="@name = 'Swimming'">
           <name>Aquatics</name>
         </specificskill>
