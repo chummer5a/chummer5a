@@ -245,7 +245,7 @@ namespace Chummer.Backend.Skills
                 int intReturn = 0;
                 if (ImprovementManager
                     .GetCachedImprovementListForValueOf(_objCharacter,
-                                                        Improvement.ImprovementType.DisableSpecializationEffects, Name)
+                                                        Improvement.ImprovementType.DisableSpecializationEffects, Parent.DictionaryKey)
                     .Count == 0)
                 {
                     if (Expertise)

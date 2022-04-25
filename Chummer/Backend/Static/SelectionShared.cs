@@ -1313,7 +1313,7 @@ namespace Chummer
                                                                               objCharacter,
                                                                               Improvement.ImprovementType
                                                                                   .DisableSpecializationEffects,
-                                                                              objKnowledgeSkill.Name).Count == 0)
+                                                                              objKnowledgeSkill.DictionaryKey).Count == 0)
                                     {
                                         strName += strSpace + '(' + strSpec + ')';
                                     }
@@ -1338,7 +1338,7 @@ namespace Chummer
                                     if (blnShowMessage)
                                     {
                                         strName = objSkill.CurrentDisplayName;
-                                        if (!string.IsNullOrEmpty(strSpec) && ImprovementManager.GetCachedImprovementListForValueOf(objCharacter, Improvement.ImprovementType.DisableSpecializationEffects, objSkill.Name).Count == 0)
+                                        if (!string.IsNullOrEmpty(strSpec) && ImprovementManager.GetCachedImprovementListForValueOf(objCharacter, Improvement.ImprovementType.DisableSpecializationEffects, objSkill.DictionaryKey).Count == 0)
                                         {
                                             strName += strSpace + '(' + strSpec + ')';
                                         }

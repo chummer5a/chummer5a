@@ -1827,20 +1827,29 @@ namespace Chummer.Backend.Skills
                                                          CharacterObject
                                                              .GetAttribute(objSwapSkillAttribute.ImprovedName).Value);
                     SkillSpecialization objSpecialization = null;
-                    if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
+                    if (Specializations.Count > 0 && ImprovementManager
+                                                     .GetCachedImprovementListForValueOf(
+                                                         CharacterObject,
+                                                         Improvement.ImprovementType.DisableSpecializationEffects,
+                                                         DictionaryKey).Count == 0)
                     {
-                        objSpecialization = Specializations.FirstOrDefault(y =>
-                                                                               y.Name == strExclude
-                                                                               && ImprovementManager
-                                                                                   .GetCachedImprovementListForValueOf(
-                                                                                       CharacterObject,
-                                                                                       Improvement.ImprovementType
-                                                                                           .DisableSpecializationEffects,
-                                                                                       y.Name).Count == 0);
-                        if (objSpecialization != null)
+                        int intMaxBonus = 0;
+                        foreach (SkillSpecialization objLoopSpecialization in Specializations)
                         {
-                            intBasePool += objSpecialization.SpecializationBonus;
+                            if (objLoopSpecialization.Name == strExclude)
+                            {
+                                int intLoopBonus = objLoopSpecialization.SpecializationBonus;
+                                if (intLoopBonus > intMaxBonus)
+                                {
+                                    objSpecialization = objLoopSpecialization;
+                                    intMaxBonus = intLoopBonus;
+                                }
+                            }
                         }
+                    }
+                    if (objSpecialization != null)
+                    {
+                        intBasePool += objSpecialization.SpecializationBonus;
                     }
 
                     sbdReturn.Append(intBasePool.ToString(GlobalSettings.CultureInfo));
