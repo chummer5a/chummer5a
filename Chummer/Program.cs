@@ -1191,27 +1191,51 @@ namespace Chummer
         /// <summary>
         /// Open a character's print form up without necessarily opening them up fully for editing.
         /// </summary>
-        public static Task OpenCharacterForPrinting(Character objCharacter, CancellationToken token = default)
+        public static Task OpenCharacterForPrinting(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
         {
-            if (objCharacter == null || MainForm == null)
+            token.ThrowIfCancellationRequested();
+            return objCharacter == null ? Task.CompletedTask : OpenCharacterListForPrinting(objCharacter.Yield(), blnIncludeInMru, token);
+        }
+
+        /// <summary>
+        /// Open print forms for a list of characters (thread-safe).
+        /// </summary>
+        /// <param name="lstCharacters">Characters for which windows should be opened.</param>
+        /// <param name="blnIncludeInMru">Added the opened characters to the Most Recently Used list.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task OpenCharacterListForPrinting(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = false, CancellationToken token = default)
+        {
+            if (lstCharacters == null)
                 return Task.CompletedTask;
             if (MainForm != null)
-                return MainForm.OpenCharacterForPrinting(objCharacter, token);
+                return MainForm.OpenCharacterListForPrinting(lstCharacters, blnIncludeInMru, token);
             return Task.Run(() => MainFormOnAssignAsyncActions.Add(
-                                x => x.OpenCharacterForPrinting(objCharacter, token)), token);
+                                x => x.OpenCharacterListForPrinting(lstCharacters, blnIncludeInMru, token)), token);
         }
 
         /// <summary>
         /// Open a character for exporting without necessarily opening them up fully for editing.
         /// </summary>
-        public static Task OpenCharacterForExport(Character objCharacter, CancellationToken token = default)
+        public static Task OpenCharacterForExport(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
         {
-            if (objCharacter == null || MainForm == null)
+            token.ThrowIfCancellationRequested();
+            return objCharacter == null ? Task.CompletedTask : OpenCharacterListForExport(objCharacter.Yield(), blnIncludeInMru, token);
+        }
+
+        /// <summary>
+        /// Open export forms for a list of characters (thread-safe).
+        /// </summary>
+        /// <param name="lstCharacters">Characters for which windows should be opened.</param>
+        /// <param name="blnIncludeInMru">Added the opened characters to the Most Recently Used list.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task OpenCharacterListForExport(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = false, CancellationToken token = default)
+        {
+            if (lstCharacters == null)
                 return Task.CompletedTask;
             if (MainForm != null)
-                return MainForm.OpenCharacterForExport(objCharacter, token);
+                return MainForm.OpenCharacterListForExport(lstCharacters, blnIncludeInMru, token);
             return Task.Run(() => MainFormOnAssignAsyncActions.Add(
-                                x => x.OpenCharacterForExport(objCharacter, token)), token);
+                                x => x.OpenCharacterListForExport(lstCharacters, blnIncludeInMru, token)), token);
         }
 
         public static LoadingBar TopMostLoadingBar => s_lstLoadingBars.Count > 0 ? s_lstLoadingBars[0] : null;

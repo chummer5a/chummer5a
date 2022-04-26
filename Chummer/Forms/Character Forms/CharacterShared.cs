@@ -55,6 +55,7 @@ namespace Chummer
         private int _intLoadingCount = 1;
         private int _intUpdatingCount;
         private FileSystemWatcher _objCharacterFileWatcher;
+        protected readonly SaveFileDialog dlgSaveFile;
 
         protected CancellationTokenSource GenericCancellationTokenSource { get; } = new CancellationTokenSource();
 
@@ -65,6 +66,8 @@ namespace Chummer
             GenericToken = GenericCancellationTokenSource.Token;
             _objCharacter = objCharacter;
             _objCharacter.PropertyChanged += CharacterPropertyChanged;
+            dlgSaveFile = new SaveFileDialog();
+            Load += OnLoad;
             Program.MainForm.OpenCharacterEditorForms.Add(this);
             string name = "Show_Form_" + GetType();
             PageViewTelemetry pvt = new PageViewTelemetry(name)
@@ -95,6 +98,12 @@ namespace Chummer
         [Obsolete("This constructor is for use by form designers only.", true)]
         protected CharacterShared()
         {
+        }
+
+        private async void OnLoad(object sender, EventArgs e)
+        {
+            dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
+                + await LanguageManager.GetStringAsync("DialogFilter_All");
         }
 
         protected virtual void LiveUpdateFromCharacterFile(object sender, FileSystemEventArgs e)
@@ -7299,21 +7308,19 @@ namespace Chummer
             {
                 XPathDocument xmlDoc;
                 // Displays an OpenFileDialog so the user can select the XML to read.
-                using (OpenFileDialog dlgOpenFileDialog = new OpenFileDialog
-                       {
-                           Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml") + '|' +
-                                    await LanguageManager.GetStringAsync("DialogFilter_All")
-                       })
+                using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog(), token))
                 {
+                    dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml") + '|' +
+                                         await LanguageManager.GetStringAsync("DialogFilter_All");
                     // Show the Dialog.
                     // If the user cancels out, return early.
-                    if (dlgOpenFileDialog.ShowDialog(this) != DialogResult.OK)
+                    if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), token) != DialogResult.OK)
                         return;
 
                     try
                     {
                         using (StreamReader objStreamReader =
-                               new StreamReader(dlgOpenFileDialog.FileName, Encoding.UTF8, true))
+                               new StreamReader(dlgOpenFile.FileName, Encoding.UTF8, true))
                         using (XmlReader objXmlReader =
                                XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
                             xmlDoc = new XPathDocument(objXmlReader);
@@ -7693,18 +7700,18 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             using (await CursorWait.NewAsync(this, token: token))
             {
-                using (OpenFileDialog dlgOpenFileDialog = new OpenFileDialog())
+                using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog(), token))
                 {
                     if (!string.IsNullOrWhiteSpace(GlobalSettings.RecentImageFolder) &&
                         Directory.Exists(GlobalSettings.RecentImageFolder))
                     {
-                        dlgOpenFileDialog.InitialDirectory = GlobalSettings.RecentImageFolder;
+                        dlgOpenFile.InitialDirectory = GlobalSettings.RecentImageFolder;
                     }
                     // Prompt the user to select an image to associate with this character.
 
                     ImageCodecInfo[] lstCodecs = ImageCodecInfo.GetImageEncoders();
                     string strFormat = "{0}" + await LanguageManager.GetStringAsync("String_Space") + "({1})|{1}";
-                    dlgOpenFileDialog.Filter = string.Format(
+                    dlgOpenFile.Filter = string.Format(
                         GlobalSettings.InvariantCultureInfo,
                         await LanguageManager.GetStringAsync("DialogFilter_ImagesPrefix") + "({1})|{1}|{0}|" +
                         await LanguageManager.GetStringAsync("DialogFilter_All"),
@@ -7719,22 +7726,22 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         blnMakeLoop = false;
-                        if (dlgOpenFileDialog.ShowDialog(this) != DialogResult.OK)
+                        if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), token) != DialogResult.OK)
                             return false;
-                        if (!File.Exists(dlgOpenFileDialog.FileName))
+                        if (!File.Exists(dlgOpenFile.FileName))
                         {
                             Program.ShowMessageBox(string.Format(
                                                        await LanguageManager.GetStringAsync(
                                                            "Message_File_Cannot_Be_Read_Accessed"),
-                                                       dlgOpenFileDialog.FileName));
+                                                       dlgOpenFile.FileName));
                             blnMakeLoop = true;
                         }
                     }
 
                     // Convert the image to a string using Base64.
-                    GlobalSettings.RecentImageFolder = Path.GetDirectoryName(dlgOpenFileDialog.FileName);
+                    GlobalSettings.RecentImageFolder = Path.GetDirectoryName(dlgOpenFile.FileName);
 
-                    using (Bitmap bmpMugshot = new Bitmap(dlgOpenFileDialog.FileName, true))
+                    using (Bitmap bmpMugshot = new Bitmap(dlgOpenFile.FileName, true))
                     {
                         if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
                         {
@@ -8268,28 +8275,20 @@ namespace Chummer
                 }
 
                 string strOldFileName = CharacterObject.FileName;
-                using (SaveFileDialog saveFileDialog = new SaveFileDialog
-                       {
-                           Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
-                                    await LanguageManager.GetStringAsync("DialogFilter_All")
-                       })
-                {
-                    string strShowFileName = CharacterObject.FileName
-                                                            .SplitNoAlloc(
-                                                                Path.DirectorySeparatorChar,
-                                                                StringSplitOptions.RemoveEmptyEntries)
-                                                            .LastOrDefault();
+                string strShowFileName = CharacterObject.FileName
+                                                        .SplitNoAlloc(
+                                                            Path.DirectorySeparatorChar,
+                                                            StringSplitOptions.RemoveEmptyEntries)
+                                                        .LastOrDefault();
 
-                    if (string.IsNullOrEmpty(strShowFileName))
-                        strShowFileName = CharacterObject.CharacterName;
+                if (string.IsNullOrEmpty(strShowFileName))
+                    strShowFileName = CharacterObject.CharacterName;
+                dlgSaveFile.FileName = strShowFileName;
 
-                    saveFileDialog.FileName = strShowFileName;
+                if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token: token) != DialogResult.OK)
+                    return false;
 
-                    if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
-                        return false;
-
-                    CharacterObject.FileName = saveFileDialog.FileName;
-                }
+                CharacterObject.FileName = dlgSaveFile.FileName;
 
                 bool blnReturn = await SaveCharacter(false, blnDoCreated, token);
                 if (!blnReturn)
@@ -8310,12 +8309,12 @@ namespace Chummer
 
         public Task DoPrint(CancellationToken token = default)
         {
-            return Program.OpenCharacterForPrinting(CharacterObject, token);
+            return Program.OpenCharacterForPrinting(CharacterObject, token: token);
         }
 
         public Task DoExport(CancellationToken token = default)
         {
-            return Program.OpenCharacterForExport(CharacterObject, token);
+            return Program.OpenCharacterForExport(CharacterObject, token: token);
         }
 
         /// <summary>
@@ -8345,6 +8344,7 @@ namespace Chummer
                     }
                 }
                 _objUpdateCharacterInfoSemaphoreSlim.Dispose();
+                dlgSaveFile.Dispose();
             }
             base.Dispose(disposing);
         }

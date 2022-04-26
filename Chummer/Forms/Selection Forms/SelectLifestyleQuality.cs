@@ -199,7 +199,7 @@ namespace Chummer
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
                         decimal decCost = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
                         strCost = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
-                                  + LanguageManager.GetString("String_NuyenSymbol");
+                                  + await LanguageManager.GetStringAsync("String_NuyenSymbol");
                     }
 
                     await lblCost.DoThreadSafeAsync(x =>

@@ -1847,7 +1847,7 @@ namespace Chummer
                                                                    token: _objGenericToken);
                     }
 
-                    await Program.OpenCharacterForPrinting(objCharacter, _objGenericToken);
+                    await Program.OpenCharacterForPrinting(objCharacter, token: _objGenericToken);
                 }
                 finally
                 {
@@ -1886,7 +1886,7 @@ namespace Chummer
                                                                    token: _objGenericToken);
                     }
 
-                    await Program.OpenCharacterForExport(objCharacter, _objGenericToken);
+                    await Program.OpenCharacterForExport(objCharacter, token: _objGenericToken);
                 }
                 finally
                 {

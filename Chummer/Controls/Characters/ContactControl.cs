@@ -342,20 +342,19 @@ namespace Chummer
         private async void tsAttachCharacter_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            using (OpenFileDialog openFileDialog = new OpenFileDialog
+            using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog()))
             {
-                Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' + await LanguageManager.GetStringAsync("DialogFilter_All")
-            })
-            {
+                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
+                    + await LanguageManager.GetStringAsync("DialogFilter_All");
                 if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
                 {
-                    openFileDialog.InitialDirectory = Path.GetDirectoryName(_objContact.FileName);
-                    openFileDialog.FileName = Path.GetFileName(_objContact.FileName);
+                    dlgOpenFile.InitialDirectory = Path.GetDirectoryName(_objContact.FileName);
+                    dlgOpenFile.FileName = Path.GetFileName(_objContact.FileName);
                 }
 
-                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)) != DialogResult.OK)
                     return;
-                _objContact.FileName = openFileDialog.FileName;
+                _objContact.FileName = dlgOpenFile.FileName;
                 if (cmdLink != null)
                 {
                     string strText = _objContact.IsEnemy

@@ -47,6 +47,7 @@ namespace Chummer
 
         private async void PrintMultipleCharacters_Load(object sender, EventArgs e)
         {
+            dlgOpenFile.Title = await LanguageManager.GetStringAsync("Title_PrintMultiple");
             dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
                                  await LanguageManager.GetStringAsync("DialogFilter_All");
         }
@@ -67,50 +68,49 @@ namespace Chummer
         private async void cmdSelectCharacter_Click(object sender, EventArgs e)
         {
             // Add the selected Files to the list of characters to print.
-            if (dlgOpenFile.ShowDialog(this) == DialogResult.OK)
+            if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), token: _objGenericToken) != DialogResult.OK)
+                return;
+            CancellationTokenSource objNewSource = new CancellationTokenSource();
+            CancellationTokenSource objTemp = Interlocked.Exchange(ref _objPrinterCancellationTokenSource, objNewSource);
+            if (objTemp?.IsCancellationRequested == false)
             {
-                CancellationTokenSource objNewSource = new CancellationTokenSource();
-                CancellationTokenSource objTemp = Interlocked.Exchange(ref _objPrinterCancellationTokenSource, objNewSource);
-                if (objTemp?.IsCancellationRequested == false)
-                {
-                    objTemp.Cancel(false);
-                    objTemp.Dispose();
-                }
-                try
-                {
-                    if (_tskPrinter?.IsCompleted == false)
-                        await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
-                                           prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken));
-                    else
-                        await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
-                                           prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken));
-                    foreach (string strFileName in dlgOpenFile.FileNames)
-                    {
-                        TreeNode objNode = new TreeNode
-                        {
-                            Text = Path.GetFileName(strFileName) ?? await LanguageManager.GetStringAsync("String_Unknown"),
-                            Tag = strFileName
-                        };
-                        await treCharacters.DoThreadSafeAsync(x => x.Nodes.Add(objNode), _objGenericToken);
-                    }
-                }
-                catch (OperationCanceledException)
-                {
-                    Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
-                    objNewSource.Dispose();
-                    return;
-                }
-
-                if (_frmPrintView != null)
-                {
-                    CancellationToken objToken = objNewSource.Token;
-                    _tskPrinter = Task.Run(() => DoPrint(objToken), objToken);
-                }
+                objTemp.Cancel(false);
+                objTemp.Dispose();
+            }
+            try
+            {
+                if (_tskPrinter?.IsCompleted == false)
+                    await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
+                                       prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken));
                 else
+                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
+                                       prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken));
+                foreach (string strFileName in dlgOpenFile.FileNames)
                 {
-                    Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
-                    objNewSource.Dispose();
+                    TreeNode objNode = new TreeNode
+                    {
+                        Text = Path.GetFileName(strFileName) ?? await LanguageManager.GetStringAsync("String_Unknown"),
+                        Tag = strFileName
+                    };
+                    await treCharacters.DoThreadSafeAsync(x => x.Nodes.Add(objNode), _objGenericToken);
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                objNewSource.Dispose();
+                return;
+            }
+
+            if (_frmPrintView != null)
+            {
+                CancellationToken objToken = objNewSource.Token;
+                _tskPrinter = Task.Run(() => DoPrint(objToken), objToken);
+            }
+            else
+            {
+                Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                objNewSource.Dispose();
             }
         }
 

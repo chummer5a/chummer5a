@@ -155,7 +155,7 @@ namespace Chummer
                                              + strSpace
                                              + '['
                                              + decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
-                                             + LanguageManager.GetString("String_NuyenSymbol") + ']';
+                                             + await LanguageManager.GetStringAsync("String_NuyenSymbol") + ']';
                         }
                         await treQualities.DoThreadSafeAsync(x => x.Nodes.Add(nodOption));
                     }

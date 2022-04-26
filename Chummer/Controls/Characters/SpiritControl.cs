@@ -232,25 +232,23 @@ namespace Chummer
         private async void tsAttachCharacter_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            using (OpenFileDialog openFileDialog = new OpenFileDialog
+            using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog()))
             {
-                Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' + await LanguageManager.GetStringAsync("DialogFilter_All")
-            })
-            {
+                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
+                    + await LanguageManager.GetStringAsync("DialogFilter_All");
                 if (!string.IsNullOrEmpty(_objSpirit.FileName) && File.Exists(_objSpirit.FileName))
                 {
-                    openFileDialog.InitialDirectory = Path.GetDirectoryName(_objSpirit.FileName);
-                    openFileDialog.FileName = Path.GetFileName(_objSpirit.FileName);
+                    dlgOpenFile.InitialDirectory = Path.GetDirectoryName(_objSpirit.FileName);
+                    dlgOpenFile.FileName = Path.GetFileName(_objSpirit.FileName);
                 }
 
-                if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-                {
-                    _objSpirit.FileName = openFileDialog.FileName;
-                    string strText = await LanguageManager.GetStringAsync(
-                        _objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile");
-                    await cmdLink.SetToolTipTextAsync(strText);
-                    ContactDetailChanged?.Invoke(this, e);
-                }
+                if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)) != DialogResult.OK)
+                    return;
+                _objSpirit.FileName = dlgOpenFile.FileName;
+                string strText = await LanguageManager.GetStringAsync(
+                    _objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile");
+                await cmdLink.SetToolTipTextAsync(strText);
+                ContactDetailChanged?.Invoke(this, e);
             }
         }
 
@@ -564,18 +562,17 @@ namespace Chummer
                         objCharacter.Name = strCritterCharacterName;
 
                     string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                    using (SaveFileDialog saveFileDialog = new SaveFileDialog
-                           {
-                               Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
-                                   + await LanguageManager.GetStringAsync("DialogFilter_All"),
-                               FileName = strCritterName + strSpace + '('
-                                          + await LanguageManager.GetStringAsync(_objSpirit.RatingLabel) + strSpace
-                                          + _objSpirit.Force.ToString(GlobalSettings.InvariantCultureInfo) + ").chum5"
-                           })
+                    using (SaveFileDialog dlgSaveFile = await this.DoThreadSafeFuncAsync(() => new SaveFileDialog()))
                     {
-                        if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
+                        dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
+                            + await LanguageManager.GetStringAsync("DialogFilter_All");
+                        dlgSaveFile.FileName = strCritterName + strSpace + '('
+                                               + await LanguageManager.GetStringAsync(_objSpirit.RatingLabel) + strSpace
+                                               + _objSpirit.Force.ToString(GlobalSettings.InvariantCultureInfo)
+                                               + ").chum5";
+                        if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x)) != DialogResult.OK)
                             return;
-                        string strFileName = saveFileDialog.FileName;
+                        string strFileName = dlgSaveFile.FileName;
                         objCharacter.FileName = strFileName;
                     }
 

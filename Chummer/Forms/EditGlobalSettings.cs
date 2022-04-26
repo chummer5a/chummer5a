@@ -538,9 +538,10 @@ namespace Chummer
         private async void cmdAddCustomDirectory_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            using (FolderBrowserDialog dlgSelectFolder = new FolderBrowserDialog { SelectedPath = Utils.GetStartupPath })
+            using (FolderBrowserDialog dlgSelectFolder = await this.DoThreadSafeFuncAsync(() => new FolderBrowserDialog()))
             {
-                if (dlgSelectFolder.ShowDialog(this) != DialogResult.OK)
+                dlgSelectFolder.SelectedPath = Utils.GetStartupPath;
+                if (await this.DoThreadSafeFuncAsync(x => dlgSelectFolder.ShowDialog(x)) != DialogResult.OK)
                     return;
                 string strDescription
                     = await LanguageManager.GetStringAsync("String_CustomItem_SelectText", _strSelectedLanguage);
@@ -934,22 +935,20 @@ namespace Chummer
             try
             {
                 string strNewFileName;
-                using (OpenFileDialog openFileDialog = new OpenFileDialog
-                       {
-                           Filter = await LanguageManager.GetStringAsync("DialogFilter_Pdf") + '|' +
-                                    await LanguageManager.GetStringAsync("DialogFilter_All")
-                       })
+                using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog(), token: token))
                 {
+                    dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Pdf") + '|' +
+                                         await LanguageManager.GetStringAsync("DialogFilter_All");
                     if (!string.IsNullOrEmpty(txtPDFLocation.Text) && File.Exists(txtPDFLocation.Text))
                     {
-                        openFileDialog.InitialDirectory = Path.GetDirectoryName(txtPDFLocation.Text);
-                        openFileDialog.FileName = Path.GetFileName(txtPDFLocation.Text);
+                        dlgOpenFile.InitialDirectory = Path.GetDirectoryName(txtPDFLocation.Text);
+                        dlgOpenFile.FileName = Path.GetFileName(txtPDFLocation.Text);
                     }
 
-                    if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                    if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), token: token) != DialogResult.OK)
                         return;
 
-                    strNewFileName = openFileDialog.FileName;
+                    strNewFileName = dlgOpenFile.FileName;
                 }
 
                 try
@@ -986,22 +985,20 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
             try
             {
-                using (OpenFileDialog openFileDialog = new OpenFileDialog
-                       {
-                           Filter = await LanguageManager.GetStringAsync("DialogFilter_Exe") + '|' +
-                                    await LanguageManager.GetStringAsync("DialogFilter_All")
-                       })
+                using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog(), token))
                 {
+                    dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Exe") + '|' +
+                                         await LanguageManager.GetStringAsync("DialogFilter_All");
                     string strPdfAppPath = await txtPDFAppPath.DoThreadSafeFuncAsync(x => x.Text, token);
                     if (!string.IsNullOrEmpty(strPdfAppPath) && File.Exists(strPdfAppPath))
                     {
-                        openFileDialog.InitialDirectory = Path.GetDirectoryName(strPdfAppPath);
-                        openFileDialog.FileName = Path.GetFileName(strPdfAppPath);
+                        dlgOpenFile.InitialDirectory = Path.GetDirectoryName(strPdfAppPath);
+                        dlgOpenFile.FileName = Path.GetFileName(strPdfAppPath);
                     }
 
-                    if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                    if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), token) != DialogResult.OK)
                         return;
-                    await txtPDFAppPath.DoThreadSafeAsync(x => x.Text = openFileDialog.FileName, token);
+                    await txtPDFAppPath.DoThreadSafeAsync(x => x.Text = dlgOpenFile.FileName, token);
                 }
             }
             finally
@@ -1855,20 +1852,21 @@ namespace Chummer
             {
                 Task<XPathNavigator> tskLoadBooks
                     = XmlManager.LoadXPathAsync("books.xml", strLanguage: _strSelectedLanguage);
-                using (FolderBrowserDialog fbd = new FolderBrowserDialog {ShowNewFolderButton = false})
+                using (FolderBrowserDialog dlgSelectFolder = await this.DoThreadSafeFuncAsync(() => new FolderBrowserDialog()))
                 {
-                    DialogResult result = fbd.ShowDialog();
-
-                    if (result != DialogResult.OK || string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                    dlgSelectFolder.ShowNewFolderButton = false;
+                    if (await this.DoThreadSafeFuncAsync(x => dlgSelectFolder.ShowDialog(x)) != DialogResult.OK)
+                        return;
+                    if (string.IsNullOrWhiteSpace(dlgSelectFolder.SelectedPath))
                         return;
                     Stopwatch sw = new Stopwatch();
                     sw.Start();
                     XPathNavigator books = await tskLoadBooks;
-                    string[] astrFiles = Directory.GetFiles(fbd.SelectedPath, "*.pdf");
+                    string[] astrFiles = Directory.GetFiles(dlgSelectFolder.SelectedPath, "*.pdf");
                     XPathNodeIterator matches = books.Select("/chummer/books/book/matches/match[language = "
                                                              + _strSelectedLanguage.CleanXPath() + ']');
                     using (LoadingBar frmLoadingBar
-                           = await Program.CreateAndShowProgressBarAsync(fbd.SelectedPath, astrFiles.Length))
+                           = await Program.CreateAndShowProgressBarAsync(dlgSelectFolder.SelectedPath, astrFiles.Length))
                     {
                         List<SourcebookInfo> list = await ScanFilesForPDFTexts(astrFiles, matches, frmLoadingBar);
                         sw.Stop();
@@ -1879,7 +1877,7 @@ namespace Chummer
                                        .AppendLine("-------------------------------------------------------------")
                                        .AppendFormat(GlobalSettings.InvariantCultureInfo,
                                                      "Scan for PDFs in Folder {0} completed in {1}ms.{2}{3} sourcebook(s) was/were found:",
-                                                     fbd.SelectedPath, sw.ElapsedMilliseconds, Environment.NewLine,
+                                                     dlgSelectFolder.SelectedPath, sw.ElapsedMilliseconds, Environment.NewLine,
                                                      list.Count).AppendLine().AppendLine();
                             foreach (SourcebookInfo sourcebook in list)
                             {
@@ -1896,7 +1894,7 @@ namespace Chummer
                         string message = string.Format(_objSelectedCultureInfo,
                                                        await LanguageManager.GetStringAsync(
                                                            "Message_FoundPDFsInFolder", _strSelectedLanguage),
-                                                       list.Count, fbd.SelectedPath);
+                                                       list.Count, dlgSelectFolder.SelectedPath);
                         string title
                             = await LanguageManager.GetStringAsync("MessageTitle_FoundPDFsInFolder",
                                                                    _strSelectedLanguage);

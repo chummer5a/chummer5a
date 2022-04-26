@@ -13461,7 +13461,7 @@ namespace Chummer
                                  + '×' + strSpace
                                  + objLifestyle.Multiplier.ToString(
                                      CharacterObjectSettings.NuyenFormat,
-                                     GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
+                                     GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol");
                 await lblLifestyleStartingNuyen.DoThreadSafeAsync(x => x.Text = strText, token);
                 await objLifestyle.SetSourceDetailAsync(lblLifestyleSource, token);
                 await lblLifestyleTotalCost.DoThreadSafeAsync(x => x.Text
@@ -15168,7 +15168,7 @@ namespace Chummer
                                   .AppendFormat(GlobalSettings.CultureInfo,
                                                 await LanguageManager.GetStringAsync("Message_InvalidNuyenExcess"),
                                                 (-decNuyen).ToString(CharacterObjectSettings.NuyenFormat,
-                                                                     GlobalSettings.CultureInfo)).Append(LanguageManager.GetString("String_NuyenSymbol"));
+                                                                     GlobalSettings.CultureInfo)).Append(await LanguageManager.GetStringAsync("String_NuyenSymbol"));
                     }
 
                     if (CharacterObject.StolenNuyen < 0)
@@ -15179,7 +15179,7 @@ namespace Chummer
                                                                               "Message_InvalidStolenNuyenExcess"),
                                                                           (-CharacterObject.StolenNuyen).ToString(
                                                                               CharacterObjectSettings.NuyenFormat,
-                                                                              GlobalSettings.CultureInfo)).Append(LanguageManager.GetString("String_NuyenSymbol"));
+                                                                              GlobalSettings.CultureInfo)).Append(await LanguageManager.GetStringAsync("String_NuyenSymbol"));
                     }
 
                     // Check if the character's Essence is above 0.

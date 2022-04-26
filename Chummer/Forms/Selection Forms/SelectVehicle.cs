@@ -81,7 +81,7 @@ namespace Chummer
             DataGridViewCellStyle dataGridViewNuyenCellStyle = new DataGridViewCellStyle
             {
                 Alignment = DataGridViewContentAlignment.TopRight,
-                Format = _objCharacter.Settings.NuyenFormat + LanguageManager.GetString("String_NuyenSymbol"),
+                Format = _objCharacter.Settings.NuyenFormat + await LanguageManager.GetStringAsync("String_NuyenSymbol"),
                 NullValue = null
             };
             dgvc_Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
@@ -408,7 +408,7 @@ namespace Chummer
                         decCost *= 0.9m;
                 }
 
-                strCost = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
+                strCost = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol");
                 await lblVehicleCost.DoThreadSafeAsync(x => x.Text = strCost);
                 await lblVehicleCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strCost));
                 string strTest = _objCharacter.AvailTest(decCost, await lblVehicleAvail.DoThreadSafeFuncAsync(x => x.Text));

@@ -35,7 +35,7 @@ namespace Chummer
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.dlgColor = new System.Windows.Forms.ColorDialog();
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
@@ -145,9 +145,9 @@ namespace Chummer
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // colorDialog1
+            // dlgColor
             // 
-            this.colorDialog1.AnyColor = true;
+            this.dlgColor.AnyColor = true;
             // 
             // frmNotes
             // 
@@ -183,7 +183,7 @@ namespace Chummer
         private BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.TextBox txtNotes;
         private DpiFriendlyImagedButton btnColorSelect;
-        private System.Windows.Forms.ColorDialog colorDialog1;
+        private System.Windows.Forms.ColorDialog dlgColor;
         private BufferedTableLayoutPanel tlpButtons;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;

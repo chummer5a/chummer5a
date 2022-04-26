@@ -41,7 +41,7 @@ namespace Chummer
             this.tsSaveAsHtml = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.cmsPrintButton = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsPrintPreview = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.SaveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.dlgSaveFile = new System.Windows.Forms.SaveFileDialog();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.webViewer = new System.Windows.Forms.WebBrowser();
             this.cmdPrint = new SplitButton();
@@ -273,7 +273,7 @@ namespace Chummer
         #endregion
         internal SplitButton cmdPrint;
         private System.Windows.Forms.ContextMenuStrip cmsPrintButton;
-        internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
+        internal System.Windows.Forms.SaveFileDialog dlgSaveFile;
         private ElasticComboBox cboXSLT;
         private System.Windows.Forms.Label lblCharacterSheet;
         private System.Windows.Forms.ContextMenuStrip cmsSaveButton;

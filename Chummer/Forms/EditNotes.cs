@@ -125,11 +125,10 @@ namespace Chummer
 
         private async void btnColorSelect_Click(object sender, EventArgs e)
         {
-            _colNotes = colorDialog1.Color; //Selected color is always how it is shown in light mode, use the stored one for it.
-            DialogResult resNewColor = colorDialog1.ShowDialog();
-            if (resNewColor != DialogResult.OK)
+            _colNotes = dlgColor.Color; //Selected color is always how it is shown in light mode, use the stored one for it.
+            if (await this.DoThreadSafeFuncAsync(x => dlgColor.ShowDialog(x)) != DialogResult.OK)
                 return;
-            _colNotes = await ColorManager.GenerateModeIndependentColorAsync(colorDialog1.Color);
+            _colNotes = await ColorManager.GenerateModeIndependentColorAsync(dlgColor.Color);
             await UpdateColorRepresentation();
         }
 

@@ -194,7 +194,7 @@ namespace Chummer.UI.Editors
                 FontMustExist = true
             })
             {
-                if (dlgNewFont.ShowDialog() != DialogResult.OK)
+                if (dlgNewFont.ShowDialog(this) != DialogResult.OK)
                     return;
                 rtbContent.SelectionFont = dlgNewFont.Font;
                 UpdateButtons(sender, e);
@@ -205,7 +205,7 @@ namespace Chummer.UI.Editors
         {
             using (ColorDialog dlgNewColor = new ColorDialog { Color = rtbContent.SelectionColor })
             {
-                if (dlgNewColor.ShowDialog() != DialogResult.OK)
+                if (dlgNewColor.ShowDialog(this) != DialogResult.OK)
                     return;
                 rtbContent.SelectionColor = dlgNewColor.Color;
             }
@@ -215,7 +215,7 @@ namespace Chummer.UI.Editors
         {
             using (ColorDialog dlgNewColor = new ColorDialog { Color = rtbContent.SelectionBackColor })
             {
-                if (dlgNewColor.ShowDialog() != DialogResult.OK)
+                if (dlgNewColor.ShowDialog(this) != DialogResult.OK)
                     return;
                 rtbContent.SelectionBackColor = dlgNewColor.Color;
             }

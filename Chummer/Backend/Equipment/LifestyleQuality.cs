@@ -701,9 +701,9 @@ namespace Chummer.Backend.Equipment
                 strReturn += strSpace + '[' + Multiplier.ToString(objCulture) + "%]";
 
             if (Cost > 0)
-                strReturn += strSpace + "[+" + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + LanguageManager.GetString("String_NuyenSymbol") + ']';
+                strReturn += strSpace + "[+" + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + await LanguageManager.GetStringAsync("String_NuyenSymbol") + ']';
             else if (Cost < 0)
-                strReturn += strSpace + '[' + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + LanguageManager.GetString("String_NuyenSymbol") + ']';
+                strReturn += strSpace + '[' + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + await LanguageManager.GetStringAsync("String_NuyenSymbol") + ']';
             return strReturn;
         }
 

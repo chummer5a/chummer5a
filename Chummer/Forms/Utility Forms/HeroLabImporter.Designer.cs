@@ -65,6 +65,7 @@ namespace Chummer
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).BeginInit();
             this.tabCharacterText.SuspendLayout();
             this.panCharacterBio.SuspendLayout();
@@ -514,7 +515,7 @@ namespace Chummer
             this.tlpRight.Size = new System.Drawing.Size(460, 514);
             this.tlpRight.TabIndex = 56;
             // 
-            // frmHeroLabImporter
+            // HeroLabImporter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -527,6 +528,7 @@ namespace Chummer
             this.Padding = new System.Windows.Forms.Padding(9);
             this.Tag = "Title_HeroLabImporter";
             this.Text = "Hero Lab Importer";
+            this.Load += new System.EventHandler(this.HeroLabImporter_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).EndInit();
             this.tabCharacterText.ResumeLayout(false);
             this.panCharacterBio.ResumeLayout(false);
@@ -583,5 +585,6 @@ namespace Chummer
         private Chummer.BufferedTableLayoutPanel tlpMain;
         private BufferedTableLayoutPanel tlpButtons;
         private BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.OpenFileDialog dlgOpenFile;
     }
 }

@@ -418,6 +418,8 @@ namespace Chummer
                         }
 
                         await this.DoThreadSafeAsync(x => x.Text = MainTitle);
+                        dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
+                                             await LanguageManager.GetStringAsync("DialogFilter_All");
 
                         //this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;
 
@@ -1949,30 +1951,20 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this);
             try
             {
-                List<string> lstFilesToOpen;
-                using (OpenFileDialog openFileDialog = new OpenFileDialog
-                       {
-                           Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
-                                    await LanguageManager.GetStringAsync("DialogFilter_All"),
-                           Multiselect = true
-                       })
+                if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)) != DialogResult.OK)
+                    return;
+                List<string> lstFilesToOpen = new List<string>(dlgOpenFile.FileNames.Length);
+                foreach (string strFile in dlgOpenFile.FileNames)
                 {
-                    if (openFileDialog.ShowDialog(this) != DialogResult.OK)
-                        return;
-                    //Timekeeper.Start("load_sum");
-                    lstFilesToOpen = new List<string>(openFileDialog.FileNames.Length);
-                    foreach (string strFile in openFileDialog.FileNames)
+                    Character objLoopCharacter
+                        = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile);
+                    if (objLoopCharacter != null)
                     {
-                        Character objLoopCharacter
-                            = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile);
-                        if (objLoopCharacter != null)
-                        {
-                            if (!await SwitchToOpenCharacter(objLoopCharacter))
-                                await OpenCharacter(objLoopCharacter);
-                        }
-                        else
-                            lstFilesToOpen.Add(strFile);
+                        if (!await SwitchToOpenCharacter(objLoopCharacter))
+                            await OpenCharacter(objLoopCharacter);
                     }
+                    else
+                        lstFilesToOpen.Add(strFile);
                 }
 
                 if (lstFilesToOpen.Count == 0)
@@ -2094,37 +2086,53 @@ namespace Chummer
             }
         }
 
-        private async void mnuOpenForPrinting_Click(object sender, EventArgs e)
+        private async void OpenFileForPrinting(object sender, EventArgs e)
         {
             if (Utils.IsUnitTest)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this);
             try
             {
-                string strFile;
-                using (OpenFileDialog openFileDialog = new OpenFileDialog
-                       {
-                           Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
-                                    await LanguageManager.GetStringAsync("DialogFilter_All")
-                       })
-                {
-                    if (openFileDialog.ShowDialog(this) != DialogResult.OK)
-                        return;
-                    strFile = openFileDialog.FileName;
-                }
-
-                if (!File.Exists(strFile))
+                if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)) != DialogResult.OK)
                     return;
-
-                Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile);
-                if (objCharacter == null)
+                List<string> lstFilesToOpen = new List<string>(dlgOpenFile.FileNames.Length);
+                foreach (string strFile in dlgOpenFile.FileNames)
                 {
-                    using (LoadingBar frmLoadingBar
-                           = await Program.CreateAndShowProgressBarAsync(strFile, Character.NumLoadingSections))
-                        objCharacter = await Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar);
+                    Character objLoopCharacter
+                        = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile);
+                    if (objLoopCharacter != null)
+                    {
+                        if (!await SwitchToOpenPrintCharacter(objLoopCharacter))
+                            await OpenCharacterForPrinting(objLoopCharacter);
+                    }
+                    else
+                        lstFilesToOpen.Add(strFile);
                 }
 
-                await OpenCharacterForPrinting(objCharacter);
+                if (lstFilesToOpen.Count == 0)
+                    return;
+                // Array instead of concurrent bag because we want to preserve order
+                Character[] lstCharacters = new Character[lstFilesToOpen.Count];
+                using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
+                           string.Join(',' + await LanguageManager.GetStringAsync("String_Space"),
+                                       lstFilesToOpen.Select(Path.GetFileName)),
+                           lstFilesToOpen.Count * Character.NumLoadingSections))
+                {
+                    Task<Character>[] tskCharacterLoads = new Task<Character>[lstFilesToOpen.Count];
+                    for (int i = 0; i < lstFilesToOpen.Count; ++i)
+                    {
+                        string strFile = lstFilesToOpen[i];
+                        // ReSharper disable once AccessToDisposedClosure
+                        tskCharacterLoads[i]
+                            = Task.Run(() => Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar));
+                    }
+
+                    await Task.WhenAll(tskCharacterLoads);
+                    for (int i = 0; i < lstCharacters.Length; ++i)
+                        lstCharacters[i] = await tskCharacterLoads[i];
+                }
+
+                await OpenCharacterListForPrinting(lstCharacters);
             }
             finally
             {
@@ -2135,20 +2143,87 @@ namespace Chummer
         /// <summary>
         /// Open a character's print form up without necessarily opening them up fully for editing.
         /// </summary>
-        public async Task OpenCharacterForPrinting(Character objCharacter, CancellationToken token = default)
+        public Task OpenCharacterForPrinting(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
+        {
+            return OpenCharacterListForPrinting(objCharacter.Yield(), blnIncludeInMru, token);
+        }
+
+        /// <summary>
+        /// Open print forms for a list of characters.
+        /// </summary>
+        /// <param name="lstCharacters">Characters for which windows should be opened.</param>
+        /// <param name="blnIncludeInMru">Added the opened characters to the Most Recently Used list.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task OpenCharacterListForPrinting(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = false, CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
             try
             {
-                // Character is already open in an existing form, so switch to it and make it open up its print viewer
-                if (!await SwitchToOpenPrintCharacter(objCharacter, token))
+                if (lstCharacters == null)
+                    return;
+                List<Character> lstNewCharacters = lstCharacters.ToList();
+                if (lstNewCharacters.Count == 0)
+                    return;
+                FormWindowState wsPreference
+                    = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
+                                                            || x.MdiChildren.Any(
+                                                                y => y.WindowState == FormWindowState.Maximized), token)
+                        ? FormWindowState.Maximized
+                        : FormWindowState.Normal;
+                List<Tuple<CharacterSheetViewer, Character>> lstNewFormsToProcess = new List<Tuple<CharacterSheetViewer, Character>>(lstNewCharacters.Count);
+                string strUI = await LanguageManager.GetStringAsync("String_UI");
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                string strTooManyHandles = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
+                string strTooManyHandlesTitle = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
+                await this.DoThreadSafeAsync(y =>
                 {
-                    CharacterSheetViewer frmViewer = await this.DoThreadSafeFuncAsync(x => new CharacterSheetViewer
+                    using (LoadingBar frmLoadingBar = Program.CreateAndShowProgressBar(strUI, lstNewCharacters.Count))
                     {
-                        MdiParent = x
-                    }, token);
-                    await frmViewer.SetCharacters(token, objCharacter);
-                    await frmViewer.DoThreadSafeAsync(x => x.Show(), token);
+                        foreach (Character objCharacter in lstNewCharacters)
+                        {
+                            frmLoadingBar.PerformStep(objCharacter == null
+                                                          ? strUI
+                                                          : strUI + strSpace + '(' + objCharacter.CharacterName + ')');
+                            if (objCharacter == null
+                                || OpenCharacterEditorForms.Any(x => x.CharacterObject == objCharacter))
+                                continue;
+                            if (Program.MyProcess.HandleCount >= 9500
+                                && Program.ShowMessageBox(
+                                    string.Format(strTooManyHandles, objCharacter.CharacterName),
+                                    strTooManyHandlesTitle,
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                            {
+                                if (Program.OpenCharacters.All(
+                                        x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
+                                    Program.OpenCharacters.Remove(objCharacter);
+                                continue;
+                            }
+
+                            //Timekeeper.Start("load_event_time");
+                            // Show the character forms.
+                            CharacterSheetViewer frmViewer = new CharacterSheetViewer
+                            {
+                                MdiParent = y
+                            };
+                            lstNewFormsToProcess.Add(new Tuple<CharacterSheetViewer, Character>(frmViewer, objCharacter));
+                            if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
+                                                && File.Exists(objCharacter.FileName))
+                                GlobalSettings.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
+                            //Timekeeper.Finish("load_event_time");
+                        }
+                    }
+                }, token);
+
+                // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
+                foreach (Tuple<CharacterSheetViewer, Character> tupForm in lstNewFormsToProcess)
+                {
+                    CharacterSheetViewer frmViewer = tupForm.Item1;
+                    await frmViewer.SetCharacters(token, tupForm.Item2);
+                    await frmViewer.DoThreadSafeAsync(x => x.Show(this), token);
+                }
+                foreach (Tuple<CharacterSheetViewer, Character> tupForm in lstNewFormsToProcess)
+                {
+                    await tupForm.Item1.DoThreadSafeAsync(x => x.WindowState = wsPreference, token);
                 }
             }
             finally
@@ -2157,37 +2232,53 @@ namespace Chummer
             }
         }
 
-        private async void mnuOpenForExport_Click(object sender, EventArgs e)
+        private async void OpenFileForExport(object sender, EventArgs e)
         {
             if (Utils.IsUnitTest)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this);
             try
             {
-                string strFile;
-                using (OpenFileDialog openFileDialog = new OpenFileDialog
-                       {
-                           Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
-                                    await LanguageManager.GetStringAsync("DialogFilter_All")
-                       })
-                {
-                    if (openFileDialog.ShowDialog(this) != DialogResult.OK)
-                        return;
-                    strFile = openFileDialog.FileName;
-                }
-
-                if (!File.Exists(strFile))
+                if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)) != DialogResult.OK)
                     return;
-
-                Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile);
-                if (objCharacter == null)
+                List<string> lstFilesToOpen = new List<string>(dlgOpenFile.FileNames.Length);
+                foreach (string strFile in dlgOpenFile.FileNames)
                 {
-                    using (LoadingBar frmLoadingBar
-                           = await Program.CreateAndShowProgressBarAsync(strFile, Character.NumLoadingSections))
-                        objCharacter = await Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar);
+                    Character objLoopCharacter
+                        = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile);
+                    if (objLoopCharacter != null)
+                    {
+                        if (!await SwitchToOpenExportCharacter(objLoopCharacter))
+                            await OpenCharacterForExport(objLoopCharacter);
+                    }
+                    else
+                        lstFilesToOpen.Add(strFile);
                 }
 
-                await OpenCharacterForExport(objCharacter);
+                if (lstFilesToOpen.Count == 0)
+                    return;
+                // Array instead of concurrent bag because we want to preserve order
+                Character[] lstCharacters = new Character[lstFilesToOpen.Count];
+                using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
+                           string.Join(',' + await LanguageManager.GetStringAsync("String_Space"),
+                                       lstFilesToOpen.Select(Path.GetFileName)),
+                           lstFilesToOpen.Count * Character.NumLoadingSections))
+                {
+                    Task<Character>[] tskCharacterLoads = new Task<Character>[lstFilesToOpen.Count];
+                    for (int i = 0; i < lstFilesToOpen.Count; ++i)
+                    {
+                        string strFile = lstFilesToOpen[i];
+                        // ReSharper disable once AccessToDisposedClosure
+                        tskCharacterLoads[i]
+                            = Task.Run(() => Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar));
+                    }
+
+                    await Task.WhenAll(tskCharacterLoads);
+                    for (int i = 0; i < lstCharacters.Length; ++i)
+                        lstCharacters[i] = await tskCharacterLoads[i];
+                }
+
+                await OpenCharacterListForExport(lstCharacters);
             }
             finally
             {
@@ -2196,21 +2287,84 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Open a character for exporting without necessarily opening them up fully for editing.
+        /// Open a character's export form up without necessarily opening them up fully for editing.
         /// </summary>
-        public async Task OpenCharacterForExport(Character objCharacter, CancellationToken token = default)
+        public Task OpenCharacterForExport(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
+        {
+            return OpenCharacterListForExport(objCharacter.Yield(), blnIncludeInMru, token);
+        }
+
+        /// <summary>
+        /// Open export forms for a list of characters.
+        /// </summary>
+        /// <param name="lstCharacters">Characters for which windows should be opened.</param>
+        /// <param name="blnIncludeInMru">Added the opened characters to the Most Recently Used list.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task OpenCharacterListForExport(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = false, CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
             try
             {
-                // Character is already open in an existing form, so switch to it and make it open up its exporter
-                if (!await SwitchToOpenExportCharacter(objCharacter, token))
+                if (lstCharacters == null)
+                    return;
+                List<Character> lstNewCharacters = lstCharacters.ToList();
+                if (lstNewCharacters.Count == 0)
+                    return;
+                FormWindowState wsPreference
+                    = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
+                                                            || x.MdiChildren.Any(
+                                                                y => y.WindowState == FormWindowState.Maximized), token)
+                        ? FormWindowState.Maximized
+                        : FormWindowState.Normal;
+                List<ExportCharacter> lstNewFormsToProcess = new List<ExportCharacter>(lstNewCharacters.Count);
+                string strUI = await LanguageManager.GetStringAsync("String_UI");
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                string strTooManyHandles = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
+                string strTooManyHandlesTitle = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
+                await this.DoThreadSafeAsync(y =>
                 {
-                    ExportCharacter frmViewer = await this.DoThreadSafeFuncAsync(x => new ExportCharacter(objCharacter)
+                    using (LoadingBar frmLoadingBar = Program.CreateAndShowProgressBar(strUI, lstNewCharacters.Count))
                     {
-                        MdiParent = x
-                    }, token);
-                    await frmViewer.DoThreadSafeAsync(x => x.Show(), token);
+                        foreach (Character objCharacter in lstNewCharacters)
+                        {
+                            frmLoadingBar.PerformStep(objCharacter == null
+                                                          ? strUI
+                                                          : strUI + strSpace + '(' + objCharacter.CharacterName + ')');
+                            if (objCharacter == null
+                                || OpenCharacterEditorForms.Any(x => x.CharacterObject == objCharacter))
+                                continue;
+                            if (Program.MyProcess.HandleCount >= 9500
+                                && Program.ShowMessageBox(
+                                    string.Format(strTooManyHandles, objCharacter.CharacterName),
+                                    strTooManyHandlesTitle,
+                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                            {
+                                if (Program.OpenCharacters.All(
+                                        x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
+                                    Program.OpenCharacters.Remove(objCharacter);
+                                continue;
+                            }
+
+                            //Timekeeper.Start("load_event_time");
+                            // Show the character forms.
+                            ExportCharacter frmViewer = new ExportCharacter(objCharacter)
+                            {
+                                MdiParent = y
+                            };
+                            frmViewer.Show(this);
+                            lstNewFormsToProcess.Add(frmViewer);
+                            if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
+                                                && File.Exists(objCharacter.FileName))
+                                GlobalSettings.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
+                            //Timekeeper.Finish("load_event_time");
+                        }
+                    }
+                }, token);
+
+                // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
+                foreach (ExportCharacter frmViewer in lstNewFormsToProcess)
+                {
+                    await frmViewer.DoThreadSafeAsync(x => x.WindowState = wsPreference, token);
                 }
             }
             finally

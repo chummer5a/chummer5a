@@ -46,12 +46,14 @@ namespace Chummer
         /// </summary>
         private async void OpenFile(object sender, EventArgs e)
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog
+            using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog()))
             {
-                Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' + await LanguageManager.GetStringAsync("DialogFilter_All")
-            })
-                if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-                    await LoadCharacter(openFileDialog.FileName);
+                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
+                    + await LanguageManager.GetStringAsync("DialogFilter_All");
+                if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)) != DialogResult.OK)
+                    return;
+                await LoadCharacter(dlgOpenFile.FileName);
+            }
         }
 
         /// <summary>

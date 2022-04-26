@@ -152,11 +152,11 @@ namespace Chummer
 
         private async void cmdChangeColour_Click(object sender, EventArgs e)
         {
-            using (ColorDialog dlgColour = new ColorDialog())
+            using (ColorDialog dlgColor = await this.DoThreadSafeFuncAsync(() => new ColorDialog()))
             {
-                dlgColour.ShowDialog(this);
-
-                if (dlgColour.Color.Name == "White" || dlgColour.Color.Name == "Black")
+                if (await this.DoThreadSafeFuncAsync(x => dlgColor.ShowDialog(x)) != DialogResult.OK)
+                    return;
+                if (dlgColor.Color.Name == "White" || dlgColor.Color.Name == "Black")
                 {
                     Color objColor = await ColorManager.ControlAsync;
                     await cmdChangeColour.DoThreadSafeAsync(x => x.BackColor = objColor);
@@ -164,8 +164,8 @@ namespace Chummer
                 }
                 else
                 {
-                    await cmdChangeColour.DoThreadSafeAsync(x => x.BackColor = dlgColour.Color);
-                    _objColour = dlgColour.Color;
+                    await cmdChangeColour.DoThreadSafeAsync(x => x.BackColor = dlgColor.Color);
+                    _objColour = dlgColor.Color;
                 }
             }
         }

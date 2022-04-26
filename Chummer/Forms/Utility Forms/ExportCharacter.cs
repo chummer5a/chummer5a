@@ -486,16 +486,17 @@ namespace Chummer
                 }
 
                 if (strExtension.Equals("XML", StringComparison.OrdinalIgnoreCase))
-                    SaveFileDialog1.Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml");
+                    dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml");
                 else if (strExtension.Equals("JSON", StringComparison.OrdinalIgnoreCase))
-                    SaveFileDialog1.Filter = await LanguageManager.GetStringAsync("DialogFilter_Json");
+                    dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Json");
                 else if (strExtension.Equals("HTM", StringComparison.OrdinalIgnoreCase) || strExtension.Equals("HTML", StringComparison.OrdinalIgnoreCase))
-                    SaveFileDialog1.Filter = await LanguageManager.GetStringAsync("DialogFilter_Html");
+                    dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Html");
                 else
-                    SaveFileDialog1.Filter = strExtension.ToUpper(GlobalSettings.CultureInfo) + "|*." + strExtension.ToLowerInvariant();
-                SaveFileDialog1.Title = await LanguageManager.GetStringAsync("Button_Viewer_SaveAsHtml");
-                SaveFileDialog1.ShowDialog();
-                strSaveFile = SaveFileDialog1.FileName;
+                    dlgSaveFile.Filter = strExtension.ToUpper(GlobalSettings.CultureInfo) + "|*." + strExtension.ToLowerInvariant();
+                dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Viewer_SaveAsHtml");
+                if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token) != DialogResult.OK)
+                    return;
+                strSaveFile = dlgSaveFile.FileName;
             }
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
@@ -672,12 +673,13 @@ namespace Chummer
             string strSaveFile = destination;
             if (string.IsNullOrEmpty(strSaveFile))
             {
-                SaveFileDialog1.AddExtension = true;
-                SaveFileDialog1.DefaultExt = "json";
-                SaveFileDialog1.Filter = await LanguageManager.GetStringAsync("DialogFilter_Json") + '|' + await LanguageManager.GetStringAsync("DialogFilter_All");
-                SaveFileDialog1.Title = await LanguageManager.GetStringAsync("Button_Export_SaveJsonAs");
-                SaveFileDialog1.ShowDialog();
-                strSaveFile = SaveFileDialog1.FileName;
+                dlgSaveFile.AddExtension = true;
+                dlgSaveFile.DefaultExt = "json";
+                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Json") + '|' + await LanguageManager.GetStringAsync("DialogFilter_All");
+                dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Export_SaveJsonAs");
+                if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token) != DialogResult.OK)
+                    return;
+                strSaveFile = dlgSaveFile.FileName;
             }
             if (string.IsNullOrWhiteSpace(strSaveFile))
                 return;

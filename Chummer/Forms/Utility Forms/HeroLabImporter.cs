@@ -44,31 +44,29 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
+        private async void HeroLabImporter_Load(object sender, EventArgs e)
+        {
+            dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_HeroLab") + '|'
+                + await LanguageManager.GetStringAsync("DialogFilter_All");
+        }
+
         private async void cmdSelectFile_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to possess.
-            using (OpenFileDialog openFileDialog = new OpenFileDialog
-                   {
-                       Filter = await LanguageManager.GetStringAsync("DialogFilter_HeroLab") + '|'
-                           + await LanguageManager.GetStringAsync("DialogFilter_All"),
-                       Multiselect = false
-                   })
+            if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)) != DialogResult.OK)
+                return;
+            using (await CursorWait.NewAsync(this))
             {
-                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
-                    return;
-                using (await CursorWait.NewAsync(this))
+                string strSelectedFile = dlgOpenFile.FileName;
+                TreeNode objNode = await CacheCharacters(strSelectedFile);
+                if (objNode != null)
                 {
-                    string strSelectedFile = openFileDialog.FileName;
-                    TreeNode objNode = await CacheCharacters(strSelectedFile);
-                    if (objNode != null)
+                    await treCharacterList.DoThreadSafeAsync(x =>
                     {
-                        await treCharacterList.DoThreadSafeAsync(x =>
-                        {
-                            x.Nodes.Clear();
-                            x.Nodes.Add(objNode);
-                            x.SelectedNode = objNode.Nodes.Count > 0 ? objNode.Nodes[0] : objNode;
-                        });
-                    }
+                        x.Nodes.Clear();
+                        x.Nodes.Add(objNode);
+                        x.SelectedNode = objNode.Nodes.Count > 0 ? objNode.Nodes[0] : objNode;
+                    });
                 }
             }
         }

@@ -48,7 +48,6 @@ namespace Chummer
             // 
             this.dlgOpenFile.Filter = "Chummer5 Files (*.chum5)|*.chum5";
             this.dlgOpenFile.Multiselect = true;
-            this.dlgOpenFile.Title = "Select Character(s)";
             // 
             // cmdSelectCharacter
             // 

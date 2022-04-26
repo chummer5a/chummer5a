@@ -95,7 +95,7 @@ namespace Chummer
             DataGridViewCellStyle dataGridViewNuyenCellStyle = new DataGridViewCellStyle
             {
                 Alignment = DataGridViewContentAlignment.TopRight,
-                Format = _objCharacter.Settings.NuyenFormat + LanguageManager.GetString("String_NuyenSymbol"),
+                Format = _objCharacter.Settings.NuyenFormat + await LanguageManager.GetStringAsync("String_NuyenSymbol"),
                 NullValue = null
             };
             Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;

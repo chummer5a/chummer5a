@@ -71,7 +71,6 @@ namespace Chummer
             this.tslCarriedWeightLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.tslCarriedWeight = new System.Windows.Forms.ToolStripStatusLabel();
             this.pgbProgress = new System.Windows.Forms.ToolStripProgressBar();
-            this.dlgSaveFile = new System.Windows.Forms.SaveFileDialog();
             this.lblCMStunLabel = new System.Windows.Forms.Label();
             this.lblCMPhysicalLabel = new System.Windows.Forms.Label();
             this.lblRemainingNuyenLabel = new System.Windows.Forms.Label();
@@ -1783,12 +1782,6 @@ namespace Chummer
             this.pgbProgress.Name = "pgbProgress";
             this.pgbProgress.Size = new System.Drawing.Size(400, 18);
             this.pgbProgress.Visible = false;
-            // 
-            // dlgSaveFile
-            // 
-            this.dlgSaveFile.DefaultExt = "sr5";
-            this.dlgSaveFile.Filter = "Chummer Character|*.sr5";
-            this.dlgSaveFile.Title = "Save Character";
             // 
             // lblCMStunLabel
             // 

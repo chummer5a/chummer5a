@@ -3792,15 +3792,13 @@ namespace Chummer
 
             string strFileName;
             // Prompt the user to select a save file to possess.
-            using (OpenFileDialog openFileDialog = new OpenFileDialog
-                   {
-                       Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
-                           + await LanguageManager.GetStringAsync("DialogFilter_All")
-                   })
+            using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog()))
             {
-                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
+                    + await LanguageManager.GetStringAsync("DialogFilter_All");
+                if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)) != DialogResult.OK)
                     return;
-                strFileName = openFileDialog.FileName;
+                strFileName = dlgOpenFile.FileName;
             }
 
             try
@@ -3967,25 +3965,18 @@ namespace Chummer
                                           + await LanguageManager.GetStringAsync("String_Possessed") + ')';
 
                         // Now that everything is done, save the merged character and open them.
-                        using (SaveFileDialog saveFileDialog = new SaveFileDialog
-                               {
-                                   Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
-                                       + await LanguageManager.GetStringAsync("DialogFilter_All"),
-                                   FileName = strShowFileName
-                               })
+                        dlgSaveFile.FileName = strShowFileName;
+                        if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x)) != DialogResult.OK)
+                            return;
+                        using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
                         {
-                            if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
-                                return;
-                            using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
+                            await frmLoadingBar.PerformStepAsync(objMerge.CharacterName,
+                                                                 LoadingBar.ProgressBarTextPatterns.Saving, token: GenericToken);
+                            objMerge.FileName = dlgSaveFile.FileName;
+                            if (await objMerge.SaveAsync(token: GenericToken))
                             {
-                                await frmLoadingBar.PerformStepAsync(objMerge.CharacterName,
-                                                                     LoadingBar.ProgressBarTextPatterns.Saving, token: GenericToken);
-                                objMerge.FileName = saveFileDialog.FileName;
-                                if (await objMerge.SaveAsync(token: GenericToken))
-                                {
-                                    // Get the name of the file and destroy the references to the Vessel and the merged character.
-                                    strOpenFile = objMerge.FileName;
-                                }
+                                // Get the name of the file and destroy the references to the Vessel and the merged character.
+                                strOpenFile = objMerge.FileName;
                             }
                         }
                     }
@@ -4181,25 +4172,18 @@ namespace Chummer
 
                     strShowFileName += await LanguageManager.GetStringAsync("String_Space") + '('
                         + await LanguageManager.GetStringAsync("String_Possessed") + ')';
-                    using (SaveFileDialog saveFileDialog = new SaveFileDialog
-                           {
-                               Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
-                                   + await LanguageManager.GetStringAsync("DialogFilter_All"),
-                               FileName = strShowFileName
-                           })
+                    dlgSaveFile.FileName = strShowFileName;
+                    if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x)) != DialogResult.OK)
+                        return;
+                    using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
                     {
-                        if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
-                            return;
-                        using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
+                        await frmLoadingBar.PerformStepAsync(objMerge.CharacterName,
+                                                             LoadingBar.ProgressBarTextPatterns.Saving);
+                        objMerge.FileName = dlgSaveFile.FileName;
+                        if (await objMerge.SaveAsync())
                         {
-                            await frmLoadingBar.PerformStepAsync(objMerge.CharacterName,
-                                                                LoadingBar.ProgressBarTextPatterns.Saving);
-                            objMerge.FileName = saveFileDialog.FileName;
-                            if (await objMerge.SaveAsync())
-                            {
-                                // Get the name of the file and destroy the references to the Vessel and the merged character.
-                                strOpenFile = objMerge.FileName;
-                            }
+                            // Get the name of the file and destroy the references to the Vessel and the merged character.
+                            strOpenFile = objMerge.FileName;
                         }
                     }
                 }
@@ -5101,7 +5085,7 @@ namespace Chummer
                         , await LanguageManager.GetStringAsync("String_InitiateGrade")
                         , (CharacterObject.InitiateGrade + 1).ToString(GlobalSettings.CultureInfo)
                         , intKarmaExpense.ToString(GlobalSettings.CultureInfo)
-                        , 10000.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"))))
+                        , 10000.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol"))))
                         return;
                 }
                 else if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense")
