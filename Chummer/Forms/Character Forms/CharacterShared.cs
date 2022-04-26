@@ -8236,9 +8236,9 @@ namespace Chummer
                     return await SaveCharacterAsCreated(token);
                 }
 
-                using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
+                using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
                 {
-                    await frmLoadingBar.PerformStepAsync(CharacterObject.CharacterName,
+                    await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
                                                          LoadingBar.ProgressBarTextPatterns.Saving, token);
                     if (_objCharacterFileWatcher != null)
                         _objCharacterFileWatcher.Changed -= LiveUpdateFromCharacterFile;

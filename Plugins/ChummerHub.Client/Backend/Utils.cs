@@ -977,9 +977,9 @@ namespace ChummerHub.Client.Backend
             {
                 Log.Trace("Loading: " + fileName);
                 objCharacter = new Character {FileName = fileName};
-                using (LoadingBar frmLoadingForm = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(fileName), Character.NumLoadingSections))
+                using (ThreadSafeForm<LoadingBar> frmLoadingForm = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(fileName), Character.NumLoadingSections))
                 {
-                    if (!await objCharacter.LoadAsync(frmLoadingForm, false))
+                    if (!await objCharacter.LoadAsync(frmLoadingForm.MyForm, false))
                         return null;
                     Log.Trace("Character loaded: " + objCharacter.Name);
                 }

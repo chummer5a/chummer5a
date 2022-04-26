@@ -623,8 +623,8 @@ namespace Chummer
             Character objOpenCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == FileName);
             if (objOpenCharacter == null)
             {
-                using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(FilePath, Character.NumLoadingSections))
-                    objOpenCharacter = await Program.LoadCharacterAsync(FilePath, frmLoadingBar: frmLoadingBar);
+                using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(FilePath, Character.NumLoadingSections))
+                    objOpenCharacter = await Program.LoadCharacterAsync(FilePath, frmLoadingBar: frmLoadingBar.MyForm);
             }
 
             if (!await Program.SwitchToOpenCharacter(objOpenCharacter))

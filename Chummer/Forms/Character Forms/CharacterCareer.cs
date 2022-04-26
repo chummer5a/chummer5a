@@ -3006,7 +3006,7 @@ namespace Chummer
                 using (await CursorWait.NewAsync(this, token: GenericToken))
                 {
                     Character[] lstClones = new Character[intClones];
-                    using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(CharacterObject.Alias, Character.NumLoadingSections * intClones))
+                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(CharacterObject.Alias, Character.NumLoadingSections * intClones))
                     {
                         string strSpace = await LanguageManager.GetStringAsync("String_Space");
                         Task<Character>[] tskLoadingTasks = new Task<Character>[intClones];
@@ -3015,7 +3015,7 @@ namespace Chummer
                             string strNewName = CharacterObject.Alias + strSpace + i.ToString(GlobalSettings.CultureInfo);
                             tskLoadingTasks[i]
                                 // ReSharper disable once AccessToDisposedClosure
-                                = Task.Run(() => Program.LoadCharacterAsync(CharacterObject.FileName, strNewName, true, frmLoadingBar: frmLoadingBar));
+                                = Task.Run(() => Program.LoadCharacterAsync(CharacterObject.FileName, strNewName, true, frmLoadingBar: frmLoadingBar.MyForm));
                         }
 
                         // Await structure prevents UI thread lock-ups if the LoadCharacter() function shows any messages
@@ -3812,11 +3812,11 @@ namespace Chummer
                         Character objVessel = new Character {FileName = strFileName};
                         try
                         {
-                            using (LoadingBar frmLoadingBar
+                            using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                    = await Program.CreateAndShowProgressBarAsync(
                                        Path.GetFileName(objVessel.FileName), Character.NumLoadingSections * 2 + 7))
                             {
-                                bool blnSuccess = await objVessel.LoadAsync(frmLoadingBar, token: GenericToken);
+                                bool blnSuccess = await objVessel.LoadAsync(frmLoadingBar.MyForm, token: GenericToken);
                                 if (!blnSuccess)
                                 {
                                     Program.ShowMessageBox(this,
@@ -3841,8 +3841,8 @@ namespace Chummer
                                 }
 
                                 // Load the Spirit's save file into a new Merge character.
-                                frmLoadingBar.CharacterFile = objMerge.FileName;
-                                blnSuccess = await objMerge.LoadAsync(frmLoadingBar, token: GenericToken);
+                                frmLoadingBar.MyForm.CharacterFile = objMerge.FileName;
+                                blnSuccess = await objMerge.LoadAsync(frmLoadingBar.MyForm, token: GenericToken);
                                 if (!blnSuccess)
                                 {
                                     Program.ShowMessageBox(this,
@@ -3894,13 +3894,13 @@ namespace Chummer
                             objMerge.STR.Value = objVessel.STR.Value + objMerge.MAG.TotalValue;
                             */
 
-                                await frmLoadingBar.PerformStepAsync(
+                                await frmLoadingBar.MyForm.PerformStepAsync(
                                     await LanguageManager.GetStringAsync("String_SelectPACKSKit_Lifestyles"), token: GenericToken);
                                 // Copy any Lifestyles the Vessel has.
                                 foreach (Lifestyle objLifestyle in objVessel.Lifestyles)
                                     await objMerge.Lifestyles.AddAsync(objLifestyle);
 
-                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Armor"), token: GenericToken);
+                                await frmLoadingBar.MyForm.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Armor"), token: GenericToken);
                                 // Copy any Armor the Vessel has.
                                 foreach (Armor objArmor in objVessel.Armor)
                                 {
@@ -3908,7 +3908,7 @@ namespace Chummer
                                     CopyArmorImprovements(objVessel, objMerge, objArmor);
                                 }
 
-                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Gear"), token: GenericToken);
+                                await frmLoadingBar.MyForm.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Gear"), token: GenericToken);
                                 // Copy any Gear the Vessel has.
                                 foreach (Gear objGear in objVessel.Gear)
                                 {
@@ -3916,7 +3916,7 @@ namespace Chummer
                                     CopyGearImprovements(objVessel, objMerge, objGear);
                                 }
 
-                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Cyberware"), token: GenericToken);
+                                await frmLoadingBar.MyForm.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Cyberware"), token: GenericToken);
                                 // Copy any Cyberware/Bioware the Vessel has.
                                 foreach (Cyberware objCyberware in objVessel.Cyberware)
                                 {
@@ -3924,17 +3924,17 @@ namespace Chummer
                                     CopyCyberwareImprovements(objVessel, objMerge, objCyberware);
                                 }
 
-                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Weapons"), token: GenericToken);
+                                await frmLoadingBar.MyForm.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Weapons"), token: GenericToken);
                                 // Copy any Weapons the Vessel has.
                                 foreach (Weapon objWeapon in objVessel.Weapons)
                                     await objMerge.Weapons.AddAsync(objWeapon);
 
-                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Vehicles"), token: GenericToken);
+                                await frmLoadingBar.MyForm.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Vehicles"), token: GenericToken);
                                 // Copy and Vehicles the Vessel has.
                                 foreach (Vehicle objVehicle in objVessel.Vehicles)
                                     await objMerge.Vehicles.AddAsync(objVehicle);
 
-                                await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("String_Settings"), token: GenericToken);
+                                await frmLoadingBar.MyForm.PerformStepAsync(await LanguageManager.GetStringAsync("String_Settings"), token: GenericToken);
                                 // Copy the character info.
                                 objMerge.Gender = objVessel.Gender;
                                 objMerge.Age = objVessel.Age;
@@ -3968,9 +3968,9 @@ namespace Chummer
                         dlgSaveFile.FileName = strShowFileName;
                         if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x)) != DialogResult.OK)
                             return;
-                        using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
                         {
-                            await frmLoadingBar.PerformStepAsync(objMerge.CharacterName,
+                            await frmLoadingBar.MyForm.PerformStepAsync(objMerge.CharacterName,
                                                                  LoadingBar.ProgressBarTextPatterns.Saving, token: GenericToken);
                             objMerge.FileName = dlgSaveFile.FileName;
                             if (await objMerge.SaveAsync(token: GenericToken))
@@ -3992,8 +3992,8 @@ namespace Chummer
                     using (await CursorWait.NewAsync(this, token: GenericToken))
                     {
                         Character objOpenCharacter;
-                        using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strOpenFile, Character.NumLoadingSections))
-                            objOpenCharacter = await Program.LoadCharacterAsync(strOpenFile, frmLoadingBar: frmLoadingBar, token: GenericToken);
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strOpenFile, Character.NumLoadingSections))
+                            objOpenCharacter = await Program.LoadCharacterAsync(strOpenFile, frmLoadingBar: frmLoadingBar.MyForm, token: GenericToken);
                         await Program.OpenCharacter(objOpenCharacter, token: GenericToken);
                     }
                 }
@@ -4058,10 +4058,10 @@ namespace Chummer
                 Character objMerge = new Character {FileName = CharacterObject.FileName};
                 try
                 {
-                    using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(objMerge.FileName, 36))
+                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(objMerge.FileName, Character.NumLoadingSections + 1))
                     {
-                        await objMerge.LoadAsync();
-                        await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("String_UI"));
+                        await objMerge.LoadAsync(frmLoadingBar.MyForm);
+                        await frmLoadingBar.MyForm.PerformStepAsync(await LanguageManager.GetStringAsync("String_UI"));
                         objMerge.Possessed = true;
                         objMerge.Alias = strSelectedVessel + await LanguageManager.GetStringAsync("String_Space") + '('
                                          + await LanguageManager.GetStringAsync("String_Possessed") + ')';
@@ -4175,9 +4175,9 @@ namespace Chummer
                     dlgSaveFile.FileName = strShowFileName;
                     if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x)) != DialogResult.OK)
                         return;
-                    using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
+                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
                     {
-                        await frmLoadingBar.PerformStepAsync(objMerge.CharacterName,
+                        await frmLoadingBar.MyForm.PerformStepAsync(objMerge.CharacterName,
                                                              LoadingBar.ProgressBarTextPatterns.Saving);
                         objMerge.FileName = dlgSaveFile.FileName;
                         if (await objMerge.SaveAsync())
@@ -4199,8 +4199,8 @@ namespace Chummer
                 using (await CursorWait.NewAsync(this))
                 {
                     Character objOpenCharacter;
-                    using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strOpenFile, Character.NumLoadingSections))
-                        objOpenCharacter = await Program.LoadCharacterAsync(strOpenFile, frmLoadingBar: frmLoadingBar);
+                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strOpenFile, Character.NumLoadingSections))
+                        objOpenCharacter = await Program.LoadCharacterAsync(strOpenFile, frmLoadingBar: frmLoadingBar.MyForm);
                     await Program.OpenCharacter(objOpenCharacter, token: GenericToken);
                 }
             }
@@ -14397,15 +14397,15 @@ namespace Chummer
                 using (await CursorWait.NewAsync(this, true))
                 {
                     using (await CursorWait.NewAsync(this))
-                    using (LoadingBar frmLoadingBar
+                    using (ThreadSafeForm<LoadingBar> frmLoadingBar
                            = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName),
-                                                                         Character.NumLoadingSections))
+                                                                         Character.NumLoadingSections + 1))
                     {
                         SkipUpdate = true;
                         try
                         {
-                            await CharacterObject.LoadAsync(frmLoadingBar);
-                            await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("String_UI"));
+                            await CharacterObject.LoadAsync(frmLoadingBar.MyForm);
+                            await frmLoadingBar.MyForm.PerformStepAsync(await LanguageManager.GetStringAsync("String_UI"));
                         }
                         finally
                         {

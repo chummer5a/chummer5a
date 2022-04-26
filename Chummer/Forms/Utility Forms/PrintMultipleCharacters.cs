@@ -232,8 +232,8 @@ namespace Chummer
                         innerToken.ThrowIfCancellationRequested();
 
                         Character objReturn;
-                        using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strLoopFile, Character.NumLoadingSections))
-                            objReturn = await Program.LoadCharacterAsync(strLoopFile, string.Empty, false, false, frmLoadingBar, innerToken);
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strLoopFile, Character.NumLoadingSections))
+                            objReturn = await Program.LoadCharacterAsync(strLoopFile, string.Empty, false, false, frmLoadingBar.MyForm, innerToken);
                         bool blnLoadSuccessful = objReturn != null;
                         innerToken.ThrowIfCancellationRequested();
 

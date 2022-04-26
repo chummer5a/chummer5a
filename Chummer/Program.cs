@@ -1270,19 +1270,17 @@ namespace Chummer
         /// <param name="strFile"></param>
         /// <param name="intCount"></param>
         /// <returns></returns>
-        public static async ValueTask<LoadingBar> CreateAndShowProgressBarAsync(string strFile = "", int intCount = 1)
+        public static async ValueTask<ThreadSafeForm<LoadingBar>> CreateAndShowProgressBarAsync(string strFile = "", int intCount = 1)
         {
-            LoadingBar frmReturn = MainForm != null
-                ? await MainForm.DoThreadSafeFuncAsync(() => new LoadingBar { CharacterFile = strFile })
-                : new LoadingBar { CharacterFile = strFile };
+            ThreadSafeForm<LoadingBar> frmReturn = await ThreadSafeForm<LoadingBar>.GetAsync(() => new LoadingBar { CharacterFile = strFile });
             if (intCount > 0)
-                await frmReturn.ResetAsync(intCount);
-            await frmReturn.DoThreadSafeAsync(x =>
+                await frmReturn.MyForm.ResetAsync(intCount);
+            await frmReturn.MyForm.DoThreadSafeAsync(x =>
             {
                 x.Closed += (sender, args) => s_lstLoadingBars.Remove(x);
                 x.Show();
             });
-            await s_lstLoadingBars.AddAsync(frmReturn);
+            await s_lstLoadingBars.AddAsync(frmReturn.MyForm);
             return frmReturn;
         }
 

@@ -1865,10 +1865,10 @@ namespace Chummer
                     string[] astrFiles = Directory.GetFiles(dlgSelectFolder.SelectedPath, "*.pdf");
                     XPathNodeIterator matches = books.Select("/chummer/books/book/matches/match[language = "
                                                              + _strSelectedLanguage.CleanXPath() + ']');
-                    using (LoadingBar frmLoadingBar
+                    using (ThreadSafeForm<LoadingBar> frmLoadingBar
                            = await Program.CreateAndShowProgressBarAsync(dlgSelectFolder.SelectedPath, astrFiles.Length))
                     {
-                        List<SourcebookInfo> list = await ScanFilesForPDFTexts(astrFiles, matches, frmLoadingBar);
+                        List<SourcebookInfo> list = await ScanFilesForPDFTexts(astrFiles, matches, frmLoadingBar.MyForm);
                         sw.Stop();
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdFeedback))

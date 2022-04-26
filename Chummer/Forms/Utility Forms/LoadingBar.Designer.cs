@@ -15,10 +15,10 @@ namespace Chummer
         {
             if (disposing && (components != null))
             {
-                this.DoThreadSafe(x => x.components.Dispose());
+                components.Dispose();
             }
 
-            this.DoThreadSafe(() => base.Dispose(disposing));
+            base.Dispose(disposing);
         }
 
         #region Windows Form Designer generated code

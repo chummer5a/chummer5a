@@ -438,13 +438,13 @@ namespace Chummer
                         ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>(1);
                         try
                         {
-                            using (LoadingBar frmLoadingBar
+                            using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                    = await Program.CreateAndShowProgressBarAsync(
                                        Text,
                                        GlobalSettings.AllowEasterEggs ? 4 : 3))
                             {
                                 Task objCharacterLoadingTask = null;
-                                await frmLoadingBar.PerformStepAsync(
+                                await frmLoadingBar.MyForm.PerformStepAsync(
                                     await LanguageManager.GetStringAsync("String_UI"));
 
                                 Program.OpenCharacters.CollectionChanged += OpenCharactersOnCollectionChanged;
@@ -544,7 +544,7 @@ namespace Chummer
 
                                         if (setFilesToLoad.Count > 0)
                                         {
-                                            await frmLoadingBar.ResetAsync(
+                                            await frmLoadingBar.MyForm.ResetAsync(
                                                 (GlobalSettings.AllowEasterEggs ? 3 : 2)
                                                 + setFilesToLoad.Count * Character.NumLoadingSections);
                                             List<Task> tskLoadingTasks = new List<Task>(setFilesToLoad.Count);
@@ -555,7 +555,7 @@ namespace Chummer
                                                     Character objCharacter
                                                         = await Program.LoadCharacterAsync(
                                                             // ReSharper disable once AccessToDisposedClosure
-                                                            strFile, frmLoadingBar: frmLoadingBar);
+                                                            strFile, frmLoadingBar: frmLoadingBar.MyForm);
                                                     // ReSharper disable once AccessToDisposedClosure
                                                     await lstCharactersToLoad
                                                         .AddAsync(objCharacter);
@@ -571,7 +571,7 @@ namespace Chummer
                                     }
                                 }
 
-                                await frmLoadingBar.PerformStepAsync(
+                                await frmLoadingBar.MyForm.PerformStepAsync(
                                     await LanguageManager.GetStringAsync("Title_MasterIndex"));
 
                                 if (MasterIndex != null)
@@ -584,7 +584,7 @@ namespace Chummer
                                     });
                                 }
 
-                                await frmLoadingBar.PerformStepAsync(
+                                await frmLoadingBar.MyForm.PerformStepAsync(
                                     await LanguageManager.GetStringAsync("String_CharacterRoster"));
 
                                 if (CharacterRoster != null)
@@ -599,7 +599,7 @@ namespace Chummer
 
                                 if (GlobalSettings.AllowEasterEggs)
                                 {
-                                    await frmLoadingBar.PerformStepAsync(
+                                    await frmLoadingBar.MyForm.PerformStepAsync(
                                         await LanguageManager.GetStringAsync("String_Chummy"));
                                     _mascotChummy = await this.DoThreadSafeFuncAsync(() => new Chummy(null));
                                     await _mascotChummy.DoThreadSafeAsync(x => x.Show(this));
@@ -1234,9 +1234,9 @@ namespace Chummer
             try
             {
                 Character objCharacter;
-                using (LoadingBar frmLoadingBar
+                using (ThreadSafeForm<LoadingBar> frmLoadingBar
                        = await Program.CreateAndShowProgressBarAsync(strFileName, Character.NumLoadingSections))
-                    objCharacter = await Program.LoadCharacterAsync(strFileName, frmLoadingBar: frmLoadingBar);
+                    objCharacter = await Program.LoadCharacterAsync(strFileName, frmLoadingBar: frmLoadingBar.MyForm);
                 await OpenCharacter(objCharacter);
             }
             finally
@@ -1716,7 +1716,7 @@ namespace Chummer
                 if (s.Length == 0)
                     return;
                 Character[] lstCharacters = new Character[s.Length];
-                using (LoadingBar frmLoadingBar
+                using (ThreadSafeForm<LoadingBar> frmLoadingBar
                        = await Program.CreateAndShowProgressBarAsync(string.Empty,
                                                                      Character.NumLoadingSections * s.Length))
                 {
@@ -1727,7 +1727,7 @@ namespace Chummer
                         string strFile = s[i];
                         // ReSharper disable once AccessToDisposedClosure
                         tskCharacterLoads[i]
-                            = Task.Run(() => Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar));
+                            = Task.Run(() => Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar.MyForm));
                     }
 
                     await Task.WhenAll(tskCharacterLoads);
@@ -1971,7 +1971,7 @@ namespace Chummer
                     return;
                 // Array instead of concurrent bag because we want to preserve order
                 Character[] lstCharacters = new Character[lstFilesToOpen.Count];
-                using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
+                using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
                            string.Join(',' + await LanguageManager.GetStringAsync("String_Space"),
                                        lstFilesToOpen.Select(Path.GetFileName)),
                            lstFilesToOpen.Count * Character.NumLoadingSections))
@@ -1982,7 +1982,7 @@ namespace Chummer
                         string strFile = lstFilesToOpen[i];
                         // ReSharper disable once AccessToDisposedClosure
                         tskCharacterLoads[i]
-                            = Task.Run(() => Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar));
+                            = Task.Run(() => Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar.MyForm));
                     }
 
                     await Task.WhenAll(tskCharacterLoads);
@@ -2113,7 +2113,7 @@ namespace Chummer
                     return;
                 // Array instead of concurrent bag because we want to preserve order
                 Character[] lstCharacters = new Character[lstFilesToOpen.Count];
-                using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
+                using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
                            string.Join(',' + await LanguageManager.GetStringAsync("String_Space"),
                                        lstFilesToOpen.Select(Path.GetFileName)),
                            lstFilesToOpen.Count * Character.NumLoadingSections))
@@ -2124,7 +2124,7 @@ namespace Chummer
                         string strFile = lstFilesToOpen[i];
                         // ReSharper disable once AccessToDisposedClosure
                         tskCharacterLoads[i]
-                            = Task.Run(() => Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar));
+                            = Task.Run(() => Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar.MyForm));
                     }
 
                     await Task.WhenAll(tskCharacterLoads);
@@ -2259,7 +2259,7 @@ namespace Chummer
                     return;
                 // Array instead of concurrent bag because we want to preserve order
                 Character[] lstCharacters = new Character[lstFilesToOpen.Count];
-                using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
+                using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
                            string.Join(',' + await LanguageManager.GetStringAsync("String_Space"),
                                        lstFilesToOpen.Select(Path.GetFileName)),
                            lstFilesToOpen.Count * Character.NumLoadingSections))
@@ -2270,7 +2270,7 @@ namespace Chummer
                         string strFile = lstFilesToOpen[i];
                         // ReSharper disable once AccessToDisposedClosure
                         tskCharacterLoads[i]
-                            = Task.Run(() => Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar));
+                            = Task.Run(() => Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar.MyForm));
                     }
 
                     await Task.WhenAll(tskCharacterLoads);

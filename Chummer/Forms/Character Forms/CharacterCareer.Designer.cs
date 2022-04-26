@@ -22598,7 +22598,6 @@ namespace Chummer
         #endregion
 
         private System.Windows.Forms.StatusStrip StatusStrip;
-        private System.Windows.Forms.SaveFileDialog dlgSaveFile;
         private System.Windows.Forms.TabControl tabInfo;
         private System.Windows.Forms.TabPage tabOtherInfo;
         private System.Windows.Forms.Label lblESSMax;

@@ -1799,11 +1799,11 @@ namespace Chummer
                                 x => x.FileName == objCache.FileName, _objGenericToken);
                         if (objCharacter == null)
                         {
-                            using (LoadingBar frmLoadingBar
+                            using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                    = await Program.CreateAndShowProgressBarAsync(
                                        objCache.FilePath, Character.NumLoadingSections))
                                 objCharacter = await Program.LoadCharacterAsync(
-                                    objCache.FilePath, frmLoadingBar: frmLoadingBar, token: _objGenericToken);
+                                    objCache.FilePath, frmLoadingBar: frmLoadingBar.MyForm, token: _objGenericToken);
                         }
 
                         if (!await Program.SwitchToOpenCharacter(objCharacter, _objGenericToken))
@@ -1839,11 +1839,11 @@ namespace Chummer
                             x => x.FileName == objCache.FileName, _objGenericToken);
                     if (objCharacter == null)
                     {
-                        using (LoadingBar frmLoadingBar
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(
                                    objCache.FilePath, Character.NumLoadingSections))
                             objCharacter
-                                = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar,
+                                = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar.MyForm,
                                                                    token: _objGenericToken);
                     }
 
@@ -1878,11 +1878,11 @@ namespace Chummer
                             x => x.FileName == objCache.FileName, _objGenericToken);
                     if (objCharacter == null)
                     {
-                        using (LoadingBar frmLoadingBar
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(
                                    objCache.FilePath, Character.NumLoadingSections))
                             objCharacter
-                                = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar,
+                                = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar.MyForm,
                                                                    token: _objGenericToken);
                     }
 

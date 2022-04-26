@@ -10747,15 +10747,15 @@ namespace Chummer
                 using (await CursorWait.NewAsync(this, true))
                 {
                     using (await CursorWait.NewAsync(this))
-                    using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
+                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
                                Path.GetFileName(CharacterObject.FileName),
-                               Character.NumLoadingSections))
+                               Character.NumLoadingSections + 1))
                     {
                         SkipUpdate = true;
                         try
                         {
-                            await CharacterObject.LoadAsync(frmLoadingBar, token: GenericToken);
-                            await frmLoadingBar.PerformStepAsync(await LanguageManager.GetStringAsync("String_UI"),
+                            await CharacterObject.LoadAsync(frmLoadingBar.MyForm, token: GenericToken);
+                            await frmLoadingBar.MyForm.PerformStepAsync(await LanguageManager.GetStringAsync("String_UI"),
                                                                  token: GenericToken);
 
                             await this.DoThreadSafeAsync(() =>
@@ -12739,9 +12739,9 @@ namespace Chummer
 
                 CharacterObject.Created = true;
 
-                using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
+                using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
                 {
-                    await frmLoadingBar.PerformStepAsync(CharacterObject.CharacterName,
+                    await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
                                                         LoadingBar.ProgressBarTextPatterns.Saving, token);
                     _blnFileUpdateQueued = true;
                     try
@@ -15759,9 +15759,9 @@ namespace Chummer
 
                     using (await CursorWait.NewAsync(this, token: token))
                     {
-                        using (LoadingBar frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
                         {
-                            await frmLoadingBar.PerformStepAsync(CharacterObject.CharacterName,
+                            await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
                                                                 LoadingBar.ProgressBarTextPatterns.Saving, token);
                             if (!await CharacterObject.SaveAsync(strNewName, token: token))
                                 return false;

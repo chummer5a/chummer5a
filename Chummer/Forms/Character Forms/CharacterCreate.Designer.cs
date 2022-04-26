@@ -15844,7 +15844,6 @@ namespace Chummer
         private System.Windows.Forms.ToolStripStatusLabel tslKarmaRemainingLabel;
         private System.Windows.Forms.ToolStripStatusLabel tslKarmaRemaining;
         private System.Windows.Forms.Label lblAttributes;
-        private System.Windows.Forms.SaveFileDialog dlgSaveFile;
         private System.Windows.Forms.TabControl tabCharacterTabs;
         private System.Windows.Forms.TabPage tabCommon;
         private System.Windows.Forms.TabPage tabMagician;
