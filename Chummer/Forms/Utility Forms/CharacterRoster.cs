@@ -932,11 +932,12 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             if (objNode == null)
                                 continue;
-                            if (objFavoriteNode.TreeView != null)
+                            TreeView treFavoriteNode = objFavoriteNode.TreeView;
+                            if (treFavoriteNode != null)
                             {
-                                if (objFavoriteNode.TreeView.IsDisposed)
+                                if (treFavoriteNode.IsNullOrDisposed())
                                     continue;
-                                await objFavoriteNode.TreeView.DoThreadSafeAsync(
+                                await treFavoriteNode.DoThreadSafeAsync(
                                     () => objFavoriteNode.Nodes.Add(objNode), token);
                             }
                             else
@@ -959,11 +960,12 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
                             if (objNode == null)
                                 continue;
-                            if (objRecentNode.TreeView != null)
+                            TreeView treRecentNode = objRecentNode.TreeView;
+                            if (treRecentNode != null)
                             {
-                                if (objRecentNode.TreeView.IsDisposed)
+                                if (treRecentNode.IsNullOrDisposed())
                                     continue;
-                                await objRecentNode.TreeView.DoThreadSafeAsync(
+                                await treRecentNode.DoThreadSafeAsync(
                                     () => objRecentNode.Nodes.Add(objNode), token);
                             }
                             else
@@ -982,50 +984,64 @@ namespace Chummer
             await treCharacterList.DoThreadSafeAsync(treList =>
             {
                 treList.SuspendLayout();
-                if (blnRefreshFavorites && objFavoriteNode != null)
+                try
                 {
-                    if (blnAddFavoriteNode)
+                    if (blnRefreshFavorites && objFavoriteNode != null)
                     {
-                        treList.Nodes.Insert(0, objFavoriteNode);
-                    }
-                    else if (lstFavoritesNodes != null)
-                    {
-                        objFavoriteNode.Nodes.Clear();
-                        foreach (TreeNode objNode in lstFavoritesNodes)
+                        if (blnAddFavoriteNode)
                         {
-                            if (objNode != null)
-                                objFavoriteNode.Nodes.Add(objNode);
+                            treList.Nodes.Insert(0, objFavoriteNode);
                         }
-                    }
-                    objFavoriteNode.ExpandAll();
-                }
-
-                if (objRecentNode != null)
-                {
-                    if (blnAddRecentNode)
-                    {
-                        treList.Nodes.Insert(objFavoriteNode != null ? 1 : 0, objRecentNode);
-                    }
-                    else if (lstRecentsNodes != null)
-                    {
-                        try
+                        else if (lstFavoritesNodes != null)
                         {
-                            objRecentNode.Nodes.Clear();
-                            foreach (TreeNode objNode in lstRecentsNodes)
+                            try
                             {
-                                if (objNode != null)
-                                    objRecentNode.Nodes.Add(objNode);
+                                objFavoriteNode.Nodes.Clear();
+                                foreach (TreeNode objNode in lstFavoritesNodes)
+                                {
+                                    if (objNode != null)
+                                        objFavoriteNode.Nodes.Add(objNode);
+                                }
+                            }
+                            catch (ObjectDisposedException e)
+                            {
+                                //just swallow this
+                                Log.Trace(e, "ObjectDisposedException can be ignored here.");
                             }
                         }
-                        catch (ObjectDisposedException e)
-                        {
-                            //just swallow this
-                            Log.Trace(e, "ObjectDisposedException can be ignored here.");
-                        }
+                        objFavoriteNode.ExpandAll();
                     }
-                    objRecentNode.ExpandAll();
+
+                    if (objRecentNode != null)
+                    {
+                        if (blnAddRecentNode)
+                        {
+                            treList.Nodes.Insert(objFavoriteNode != null ? 1 : 0, objRecentNode);
+                        }
+                        else if (lstRecentsNodes != null)
+                        {
+                            try
+                            {
+                                objRecentNode.Nodes.Clear();
+                                foreach (TreeNode objNode in lstRecentsNodes)
+                                {
+                                    if (objNode != null)
+                                        objRecentNode.Nodes.Add(objNode);
+                                }
+                            }
+                            catch (ObjectDisposedException e)
+                            {
+                                //just swallow this
+                                Log.Trace(e, "ObjectDisposedException can be ignored here.");
+                            }
+                        }
+                        objRecentNode.ExpandAll();
+                    }
                 }
-                treList.ResumeLayout();
+                finally
+                {
+                    treList.ResumeLayout();
+                }
             }, token);
         }
 

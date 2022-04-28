@@ -1117,8 +1117,8 @@ namespace Chummer
                     _objLinkedCharacter = objOpenCharacter;
                     if (_objLinkedCharacter == null)
                     {
-                        using (LoadingBar frmLoadingBar = Program.CreateAndShowProgressBar(strFile, Character.NumLoadingSections))
-                            _objLinkedCharacter = Program.LoadCharacter(strFile, string.Empty, false, false, frmLoadingBar);
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar = Program.CreateAndShowProgressBar(strFile, Character.NumLoadingSections))
+                            _objLinkedCharacter = Program.LoadCharacter(strFile, string.Empty, false, false, frmLoadingBar.MyForm);
                     }
                     if (_objLinkedCharacter != null)
                         CharacterObject.LinkedCharacters.Add(_objLinkedCharacter);

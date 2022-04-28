@@ -165,14 +165,14 @@ namespace Chummer.Tests
                 {
                     Utils.IsUnitTestForUI = true;
                     // Attempt to cache all XML files that are used the most.
-                    using (LoadingBar frmLoadingBar = Program.CreateAndShowProgressBar(Application.ProductName, Utils.BasicDataFileNames.Count))
+                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = Program.CreateAndShowProgressBar(Application.ProductName, Utils.BasicDataFileNames.Count))
                     {
                         List<Task> lstCachingTasks = new List<Task>(Utils.MaxParallelBatchSize);
                         int intCounter = 0;
                         foreach (string strLoopFile in Utils.BasicDataFileNames)
                         {
                             // ReSharper disable once AccessToDisposedClosure
-                            lstCachingTasks.Add(Task.Run(() => CacheCommonFile(strLoopFile, frmLoadingBar)));
+                            lstCachingTasks.Add(Task.Run(() => CacheCommonFile(strLoopFile, frmLoadingBar.MyForm)));
                             if (++intCounter != Utils.MaxParallelBatchSize)
                                 continue;
                             Utils.RunWithoutThreadLock(() => Task.WhenAll(lstCachingTasks));

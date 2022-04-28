@@ -290,14 +290,21 @@ namespace Chummer
             }
         }
 
+        private bool _blnSkipReopenUntilAllClear;
+        private readonly ThreadSafeList<Character> _lstCharactersToReopen = new ThreadSafeList<Character>();
+
         private async void OpenCharacterEditorFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (Utils.IsUnitTest)
                 return;
+            _blnSkipReopenUntilAllClear = true;
             foreach (CharacterShared objOldForm in e.OldItems)
             {
                 if (objOldForm is CharacterCreate objOldCreateForm && objOldCreateForm.IsReopenQueued)
+                {
+                    await _lstCharactersToReopen.AddAsync(objOldCreateForm.CharacterObject);
                     continue;
+                }
                 Character objCharacter = objOldForm.CharacterObject;
                 if (objCharacter == null)
                     continue;
@@ -329,7 +336,10 @@ namespace Chummer
                     foreach (CharacterShared objOldForm in e.OldItems)
                     {
                         if (objOldForm is CharacterCreate objOldCreateForm && objOldCreateForm.IsReopenQueued)
+                        {
+                            await _lstCharactersToReopen.AddAsync(objOldCreateForm.CharacterObject);
                             continue;
+                        }
                         Character objCharacter = objOldForm.CharacterObject;
                         if (objCharacter == null)
                             continue;
@@ -351,7 +361,10 @@ namespace Chummer
                             if (e.NewItems.Contains(objOldForm))
                                 continue;
                             if (objOldForm is CharacterCreate objOldCreateForm && objOldCreateForm.IsReopenQueued)
+                            {
+                                await _lstCharactersToReopen.AddAsync(objOldCreateForm.CharacterObject);
                                 continue;
+                            }
                             Character objCharacter = objOldForm.CharacterObject;
                             if (objCharacter == null)
                                 continue;
@@ -1388,42 +1401,68 @@ namespace Chummer
             await tabForms.DoThreadSafeAsync(x => x.Visible = x.TabCount > 1);
         }
 
-        private void ActiveMdiChild_FormClosed(object sender, FormClosedEventArgs e)
+        private async void ActiveMdiChild_FormClosed(object sender, FormClosedEventArgs e)
         {
             if (sender is Form objForm)
             {
                 objForm.FormClosed -= ActiveMdiChild_FormClosed;
                 if (objForm.Tag is TabPage objTabPage)
                 {
-                    if (tabForms.TabCount > 1)
+                    await tabForms.DoThreadSafeAsync(x =>
                     {
-                        int intSelectTab = tabForms.TabPages.IndexOf(objTabPage);
-                        if (intSelectTab > 0)
+                        if (x.TabCount > 1)
                         {
-                            if (intSelectTab + 1 >= tabForms.TabCount)
-                                --intSelectTab;
-                            else
-                                ++intSelectTab;
-                            tabForms.SelectedIndex = intSelectTab;
+                            int intSelectTab = x.TabPages.IndexOf(objTabPage);
+                            if (intSelectTab > 0)
+                            {
+                                if (intSelectTab + 1 >= x.TabCount)
+                                    --intSelectTab;
+                                else
+                                    ++intSelectTab;
+                                x.SelectedIndex = intSelectTab;
+                            }
                         }
-                    }
-                    objTabPage.Dispose();
+                    });
+                    await objTabPage.DoThreadSafeAsync(x => x.Dispose());
                 }
-                if (!objForm.IsDisposed)
-                    objForm.Dispose();
             }
 
-            tabForms.DoThreadSafe(x =>
+            await tabForms.DoThreadSafeAsync(x =>
             {
                 // Don't show the tab control if there is only one window open.
                 if (x.TabCount <= 1)
                     x.Visible = false;
             });
+
+            await DoReopenCharacters();
         }
 
         private void tabForms_SelectedIndexChanged(object sender, EventArgs e)
         {
             (tabForms.SelectedTab?.Tag as Form)?.Select();
+        }
+
+        private async Task DoReopenCharacters(CancellationToken token = default)
+        {
+            if (_blnSkipReopenUntilAllClear)
+            {
+                if (await OpenCharacterEditorForms.CountAsync != 0)
+                    return;
+                _blnSkipReopenUntilAllClear = false;
+            }
+            List<Character> lstLocal;
+            IAsyncDisposable objLocker = await _lstCharactersToReopen.LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                lstLocal = await _lstCharactersToReopen.ToListAsync(token);
+                await _lstCharactersToReopen.ClearAsync();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+
+            await Program.OpenCharacterList(lstLocal, token: token);
         }
 
         /// <summary>
@@ -1824,17 +1863,21 @@ namespace Chummer
 
         private async void tsSave_Click(object sender, EventArgs e)
         {
-            if (await tabForms.DoThreadSafeFuncAsync(x => x.SelectedTab.Tag) is CharacterShared objShared)
+            if (await tabForms.DoThreadSafeFuncAsync(x => x.SelectedTab.Tag) is CharacterShared objShared
+                && await objShared.SaveCharacter() && objShared is CharacterCreate objCreate
+                && objCreate.IsReopenQueued)
             {
-                await objShared.SaveCharacter();
+                await objCreate.DoThreadSafeAsync(x => x.Close());
             }
         }
 
         private async void tsSaveAs_Click(object sender, EventArgs e)
         {
-            if (await tabForms.DoThreadSafeFuncAsync(x => x.SelectedTab.Tag) is CharacterShared objShared)
+            if (await tabForms.DoThreadSafeFuncAsync(x => x.SelectedTab.Tag) is CharacterShared objShared
+                && await objShared.SaveCharacterAs() && objShared is CharacterCreate objCreate
+                && objCreate.IsReopenQueued)
             {
-                await objShared.SaveCharacterAs();
+                await objCreate.DoThreadSafeAsync(x => x.Close());
             }
         }
 
@@ -2036,45 +2079,46 @@ namespace Chummer
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 string strTooManyHandles = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
                 string strTooManyHandlesTitle = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
-                await this.DoThreadSafeAsync(y =>
+                using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count))
                 {
-                    using (LoadingBar frmLoadingBar = Program.CreateAndShowProgressBar(strUI, lstNewCharacters.Count))
+                    foreach (Character objCharacter in lstNewCharacters)
                     {
-                        foreach (Character objCharacter in lstNewCharacters)
+                        token.ThrowIfCancellationRequested();
+                        await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
+                                                                        ? strUI
+                                                                        : strUI + strSpace + '(' + objCharacter.CharacterName
+                                                                          + ')', token: token);
+                        if (objCharacter == null
+                            || OpenCharacterEditorForms.Any(x => x.CharacterObject == objCharacter))
+                            continue;
+                        if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 8000 : 7500)
+                            && Program.ShowMessageBox(
+                                string.Format(strTooManyHandles, objCharacter.CharacterName),
+                                strTooManyHandlesTitle,
+                                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                         {
-                            frmLoadingBar.PerformStep(objCharacter == null
-                                                          ? strUI
-                                                          : strUI + strSpace + '(' + objCharacter.CharacterName + ')');
-                            if (objCharacter == null
-                                || OpenCharacterEditorForms.Any(x => x.CharacterObject == objCharacter))
-                                continue;
-                            if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 8000 : 7500)
-                                && Program.ShowMessageBox(
-                                    string.Format(strTooManyHandles, objCharacter.CharacterName),
-                                    strTooManyHandlesTitle,
-                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
-                            {
-                                if (Program.OpenCharacters.All(
-                                        x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
-                                    Program.OpenCharacters.Remove(objCharacter);
-                                continue;
-                            }
-
-                            //Timekeeper.Start("load_event_time");
-                            // Show the character forms.
-                            CharacterShared frmNewCharacter = objCharacter.Created
-                                ? (CharacterShared) new CharacterCareer(objCharacter)
-                                : new CharacterCreate(objCharacter);
-                            frmNewCharacter.MdiParent = y;
-                            frmNewCharacter.Show();
-                            lstNewFormsToProcess.Add(frmNewCharacter);
-                            if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
-                                                && File.Exists(objCharacter.FileName))
-                                GlobalSettings.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
-                            //Timekeeper.Finish("load_event_time");
+                            if (Program.OpenCharacters.All(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
+                                await Program.OpenCharacters.RemoveAsync(objCharacter);
+                            continue;
                         }
+
+                    //Timekeeper.Start("load_event_time");
+                    // Show the character forms.
+                    await this.DoThreadSafeAsync(y =>
+                    {
+                        CharacterShared frmNewCharacter = objCharacter.Created
+                            ? (CharacterShared) new CharacterCareer(objCharacter)
+                            : new CharacterCreate(objCharacter);
+                        frmNewCharacter.MdiParent = y;
+                        frmNewCharacter.Show();
+                        lstNewFormsToProcess.Add(frmNewCharacter);
+                    }, token);
+                    if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
+                                        && File.Exists(objCharacter.FileName))
+                            await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, objCharacter.FileName);
+                        //Timekeeper.Finish("load_event_time");
                     }
-                }, token);
+                }
 
                 // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
                 foreach (CharacterShared frmNewCharacter in lstNewFormsToProcess)
@@ -2175,44 +2219,49 @@ namespace Chummer
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 string strTooManyHandles = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
                 string strTooManyHandlesTitle = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
-                await this.DoThreadSafeAsync(y =>
+                using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                       = await Program.CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count))
                 {
-                    using (LoadingBar frmLoadingBar = Program.CreateAndShowProgressBar(strUI, lstNewCharacters.Count))
+                    foreach (Character objCharacter in lstNewCharacters)
                     {
-                        foreach (Character objCharacter in lstNewCharacters)
+                        token.ThrowIfCancellationRequested();
+                        await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
+                                                                        ? strUI
+                                                                        : strUI + strSpace + '(' + objCharacter.CharacterName
+                                                                          + ')', token: token);
+                        if (objCharacter == null
+                            || OpenCharacterEditorForms.Any(x => x.CharacterObject == objCharacter))
+                            continue;
+                        if (Program.MyProcess.HandleCount >= 9500
+                            && Program.ShowMessageBox(
+                                string.Format(strTooManyHandles, objCharacter.CharacterName),
+                                strTooManyHandlesTitle,
+                                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                         {
-                            frmLoadingBar.PerformStep(objCharacter == null
-                                                          ? strUI
-                                                          : strUI + strSpace + '(' + objCharacter.CharacterName + ')');
-                            if (objCharacter == null
-                                || OpenCharacterEditorForms.Any(x => x.CharacterObject == objCharacter))
-                                continue;
-                            if (Program.MyProcess.HandleCount >= 9500
-                                && Program.ShowMessageBox(
-                                    string.Format(strTooManyHandles, objCharacter.CharacterName),
-                                    strTooManyHandlesTitle,
-                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
-                            {
-                                if (Program.OpenCharacters.All(
-                                        x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
-                                    Program.OpenCharacters.Remove(objCharacter);
-                                continue;
-                            }
+                            if (Program.OpenCharacters.All(
+                                    x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
+                                await Program.OpenCharacters.RemoveAsync(objCharacter);
+                            continue;
+                        }
 
-                            //Timekeeper.Start("load_event_time");
-                            // Show the character forms.
+                        //Timekeeper.Start("load_event_time");
+                        // Show the character forms.
+                        await this.DoThreadSafeAsync(y =>
+                        {
                             CharacterSheetViewer frmViewer = new CharacterSheetViewer
                             {
                                 MdiParent = y
                             };
-                            lstNewFormsToProcess.Add(new Tuple<CharacterSheetViewer, Character>(frmViewer, objCharacter));
-                            if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
-                                                && File.Exists(objCharacter.FileName))
-                                GlobalSettings.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
-                            //Timekeeper.Finish("load_event_time");
-                        }
+                            lstNewFormsToProcess.Add(
+                                new Tuple<CharacterSheetViewer, Character>(frmViewer, objCharacter));
+                        }, token: token);
+
+                        if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
+                                            && File.Exists(objCharacter.FileName))
+                            await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, objCharacter.FileName);
+                        //Timekeeper.Finish("load_event_time");
                     }
-                }, token);
+                }
 
                 // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
                 foreach (Tuple<CharacterSheetViewer, Character> tupForm in lstNewFormsToProcess)
@@ -2321,45 +2370,47 @@ namespace Chummer
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 string strTooManyHandles = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
                 string strTooManyHandlesTitle = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
-                await this.DoThreadSafeAsync(y =>
+                using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                       = await Program.CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count))
                 {
-                    using (LoadingBar frmLoadingBar = Program.CreateAndShowProgressBar(strUI, lstNewCharacters.Count))
+                    foreach (Character objCharacter in lstNewCharacters)
                     {
-                        foreach (Character objCharacter in lstNewCharacters)
+                        await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
+                                                                        ? strUI
+                                                                        : strUI + strSpace + '(' + objCharacter.CharacterName
+                                                                          + ')', token: token);
+                        if (objCharacter == null
+                            || OpenCharacterEditorForms.Any(x => x.CharacterObject == objCharacter))
+                            continue;
+                        if (Program.MyProcess.HandleCount >= 9500
+                            && Program.ShowMessageBox(
+                                string.Format(strTooManyHandles, objCharacter.CharacterName),
+                                strTooManyHandlesTitle,
+                                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                         {
-                            frmLoadingBar.PerformStep(objCharacter == null
-                                                          ? strUI
-                                                          : strUI + strSpace + '(' + objCharacter.CharacterName + ')');
-                            if (objCharacter == null
-                                || OpenCharacterEditorForms.Any(x => x.CharacterObject == objCharacter))
-                                continue;
-                            if (Program.MyProcess.HandleCount >= 9500
-                                && Program.ShowMessageBox(
-                                    string.Format(strTooManyHandles, objCharacter.CharacterName),
-                                    strTooManyHandlesTitle,
-                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
-                            {
-                                if (Program.OpenCharacters.All(
-                                        x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
-                                    Program.OpenCharacters.Remove(objCharacter);
-                                continue;
-                            }
+                            if (Program.OpenCharacters.All(
+                                    x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
+                                await Program.OpenCharacters.RemoveAsync(objCharacter);
+                            continue;
+                        }
 
-                            //Timekeeper.Start("load_event_time");
-                            // Show the character forms.
+                        //Timekeeper.Start("load_event_time");
+                        // Show the character forms.
+                        await this.DoThreadSafeAsync(y =>
+                        {
                             ExportCharacter frmViewer = new ExportCharacter(objCharacter)
                             {
                                 MdiParent = y
                             };
                             frmViewer.Show(this);
                             lstNewFormsToProcess.Add(frmViewer);
-                            if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
-                                                && File.Exists(objCharacter.FileName))
-                                GlobalSettings.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
-                            //Timekeeper.Finish("load_event_time");
-                        }
+                        }, token);
+                        if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
+                                            && File.Exists(objCharacter.FileName))
+                            await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, objCharacter.FileName);
+                        //Timekeeper.Finish("load_event_time");
                     }
-                }, token);
+                }
 
                 // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
                 foreach (ExportCharacter frmViewer in lstNewFormsToProcess)
@@ -2597,8 +2648,8 @@ namespace Chummer
             {
                 List<Character> lstCharactersToLoad = new List<Character>();
 
-                using (CursorWait.New(this))
-                using (LoadingBar frmLoadingBar = Program.CreateAndShowProgressBar())
+                using (CursorWait.New(this, true))
+                using (ThreadSafeForm<LoadingBar> frmLoadingBar = Program.CreateAndShowProgressBar())
                 {
                     Task objCharacterLoadingTask = null;
                     Task<Character>[] atskLoadingTasks = null;
@@ -2673,13 +2724,13 @@ namespace Chummer
 
                             if (setFilesToLoad.Count > 0)
                             {
-                                frmLoadingBar.Reset(setFilesToLoad.Count * Character.NumLoadingSections);
+                                frmLoadingBar.MyForm.Reset(setFilesToLoad.Count * Character.NumLoadingSections);
                                 atskLoadingTasks = new Task<Character>[setFilesToLoad.Count];
                                 for (int i = 0; i < setFilesToLoad.Count; ++i)
                                 {
                                     string strFile = setFilesToLoad.ElementAt(i);
                                     // ReSharper disable once AccessToDisposedClosure
-                                    atskLoadingTasks[i] = Task.Run(() => Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar));
+                                    atskLoadingTasks[i] = Task.Run(() => Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar.MyForm));
                                 }
 
                                 objCharacterLoadingTask = Task.WhenAll(atskLoadingTasks);
@@ -2697,7 +2748,7 @@ namespace Chummer
                         }
                     }
 
-                    Task.Run(async () =>
+                    Utils.RunWithoutThreadLock(async () =>
                     {
                         if (objCharacterLoadingTask?.IsCompleted == false)
                             await objCharacterLoadingTask;
@@ -2710,7 +2761,7 @@ namespace Chummer
                 }
 
                 if (lstCharactersToLoad.Count > 0)
-                    Task.Run(() => OpenCharacterList(lstCharactersToLoad));
+                    Utils.RunWithoutThreadLock(() => OpenCharacterList(lstCharactersToLoad));
             }
             base.WndProc(ref m);
         }

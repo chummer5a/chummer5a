@@ -691,8 +691,12 @@ namespace Chummer
                 if (objOpenCharacterForm.IsDirty)
                 {
                     string strCharacterName = objOpenCharacterForm.CharacterObject.CharacterName;
-                    DialogResult objResult = Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_UnsavedChanges", strLanguage), strCharacterName), await LanguageManager.GetStringAsync("MessageTitle_UnsavedChanges", strLanguage), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                    switch (objResult)
+                    switch (Program.ShowMessageBox(
+                                string.Format(GlobalSettings.CultureInfo,
+                                              await LanguageManager.GetStringAsync(
+                                                  "Message_UnsavedChanges", strLanguage), strCharacterName),
+                                await LanguageManager.GetStringAsync("MessageTitle_UnsavedChanges", strLanguage),
+                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
                     {
                         case DialogResult.Yes:
                             {
@@ -773,9 +777,6 @@ namespace Chummer
         /// <summary>
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="func"></param>
-        /// <returns></returns>
         public static Task<T> StartStaTask<T>(Func<T> func)
         {
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
@@ -798,8 +799,6 @@ namespace Chummer
         /// <summary>
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
-        /// <param name="func"></param>
-        /// <returns></returns>
         public static Task StartStaTask(Task func)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
@@ -829,9 +828,6 @@ namespace Chummer
         /// <summary>
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="func"></param>
-        /// <returns></returns>
         public static Task<T> StartStaTask<T>(Task<T> func)
         {
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
@@ -972,6 +968,264 @@ namespace Chummer
             }
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Run code on the main (UI) thread in a synchronous fashion.
+        /// </summary>
+        public static void RunOnMainThread(Action func)
+        {
+            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
+            {
+                func.Invoke();
+                return;
+            }
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            Program.MySynchronizationContext.Post(x =>
+            {
+                TaskCompletionSource<bool> objCompletionSource = (TaskCompletionSource<bool>)x;
+                try
+                {
+                    objCompletionSource.TrySetResult(DummyFunction());
+
+                    // This is needed because SetResult always needs a return type
+                    bool DummyFunction()
+                    {
+                        func.Invoke();
+                        return true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    objCompletionSource.TrySetException(e);
+                }
+            }, tcs);
+            RunWithoutThreadLock(() => tcs.Task);
+        }
+
+        /// <summary>
+        /// Run code on the main (UI) thread in a synchronous fashion.
+        /// </summary>
+        public static T RunOnMainThread<T>(Func<T> func)
+        {
+            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
+            {
+                return func.Invoke();
+            }
+            TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
+            Program.MySynchronizationContext.Post(x =>
+            {
+                TaskCompletionSource<T> objCompletionSource = (TaskCompletionSource<T>)x;
+                try
+                {
+                    objCompletionSource.TrySetResult(func());
+                }
+                catch (Exception e)
+                {
+                    objCompletionSource.TrySetException(e);
+                }
+            }, tcs);
+            return RunWithoutThreadLock(() => tcs.Task);
+        }
+
+        /// <summary>
+        /// Run code on the main (UI) thread in a synchronous fashion.
+        /// </summary>
+        public static void RunOnMainThread(Action func, CancellationToken token)
+        {
+            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
+            {
+                token.ThrowIfCancellationRequested();
+                func.Invoke();
+                return;
+            }
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            CancellationTokenRegistration reg = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            Program.MySynchronizationContext.Post(x =>
+            {
+                (TaskCompletionSource<bool> objCompletionSource, CancellationTokenRegistration objRegistration) = (Tuple<TaskCompletionSource<bool>, CancellationTokenRegistration>)x;
+                try
+                {
+                    objCompletionSource.TrySetResult(DummyFunction());
+
+                    // This is needed because SetResult always needs a return type
+                    bool DummyFunction()
+                    {
+                        func.Invoke();
+                        return true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    objCompletionSource.TrySetException(e);
+                }
+                finally
+                {
+                    objRegistration.Dispose();
+                }
+            }, new Tuple<TaskCompletionSource<bool>, CancellationTokenRegistration>(tcs, reg));
+            RunWithoutThreadLock(() => tcs.Task, token);
+        }
+
+        /// <summary>
+        /// Run code on the main (UI) thread in a synchronous fashion.
+        /// </summary>
+        public static T RunOnMainThread<T>(Func<T> func, CancellationToken token)
+        {
+            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
+            {
+                token.ThrowIfCancellationRequested();
+                return func.Invoke();
+            }
+            TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
+            CancellationTokenRegistration reg = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            Program.MySynchronizationContext.Post(x =>
+            {
+                (TaskCompletionSource<T> objCompletionSource, CancellationTokenRegistration objRegistration) = (Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>)x;
+                try
+                {
+                    objCompletionSource.TrySetResult(func());
+                }
+                catch (Exception e)
+                {
+                    objCompletionSource.TrySetException(e);
+                }
+                finally
+                {
+                    objRegistration.Dispose();
+                }
+            }, new Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>(tcs, reg));
+            return RunWithoutThreadLock(() => tcs.Task, token);
+        }
+
+        /// <summary>
+        /// Run code on the main (UI) thread in an awaitable, asynchronous fashion.
+        /// </summary>
+        public static Task RunOnMainThreadAsync(Action func)
+        {
+            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
+            {
+                func.Invoke();
+                return Task.CompletedTask;
+            }
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            Program.MySynchronizationContext.Post(x =>
+            {
+                TaskCompletionSource<bool> objCompletionSource = (TaskCompletionSource<bool>) x;
+                try
+                {
+                    objCompletionSource.TrySetResult(DummyFunction());
+
+                    // This is needed because SetResult always needs a return type
+                    bool DummyFunction()
+                    {
+                        func.Invoke();
+                        return true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    objCompletionSource.TrySetException(e);
+                }
+            }, tcs);
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Run code on the main (UI) thread in an awaitable, asynchronous fashion.
+        /// </summary>
+        public static Task<T> RunOnMainThreadAsync<T>(Func<T> func)
+        {
+            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
+            {
+                T objReturn = func.Invoke();
+                return Task.FromResult(objReturn);
+            }
+            TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
+            Program.MySynchronizationContext.Post(x =>
+            {
+                TaskCompletionSource<T> objCompletionSource = (TaskCompletionSource<T>)x;
+                try
+                {
+                    objCompletionSource.TrySetResult(func());
+                }
+                catch (Exception e)
+                {
+                    objCompletionSource.TrySetException(e);
+                }
+            }, tcs);
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Run code on the main (UI) thread in an awaitable, asynchronous fashion.
+        /// </summary>
+        public static Task RunOnMainThreadAsync(Action func, CancellationToken token)
+        {
+            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
+            {
+                token.ThrowIfCancellationRequested();
+                func.Invoke();
+                return Task.CompletedTask;
+            }
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            CancellationTokenRegistration reg = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            Program.MySynchronizationContext.Post(x =>
+            {
+                (TaskCompletionSource<bool> objCompletionSource, CancellationTokenRegistration objRegistration) = (Tuple<TaskCompletionSource<bool>, CancellationTokenRegistration>)x;
+                try
+                {
+                    objCompletionSource.TrySetResult(DummyFunction());
+
+                    // This is needed because SetResult always needs a return type
+                    bool DummyFunction()
+                    {
+                        func.Invoke();
+                        return true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    objCompletionSource.TrySetException(e);
+                }
+                finally
+                {
+                    objRegistration.Dispose();
+                }
+            }, new Tuple<TaskCompletionSource<bool>, CancellationTokenRegistration>(tcs, reg));
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Run code on the main (UI) thread in an awaitable, asynchronous fashion.
+        /// </summary>
+        public static Task<T> RunOnMainThreadAsync<T>(Func<T> func, CancellationToken token)
+        {
+            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
+            {
+                token.ThrowIfCancellationRequested();
+                T objReturn = func.Invoke();
+                return Task.FromResult(objReturn);
+            }
+            TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
+            CancellationTokenRegistration reg = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            Program.MySynchronizationContext.Post(x =>
+            {
+                (TaskCompletionSource<T> objCompletionSource, CancellationTokenRegistration objRegistration) = (Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>)x;
+                try
+                {
+                    objCompletionSource.TrySetResult(func());
+                }
+                catch (Exception e)
+                {
+                    objCompletionSource.TrySetException(e);
+                }
+                finally
+                {
+                    objRegistration.Dispose();
+                }
+            }, new Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>(tcs, reg));
             return tcs.Task;
         }
 

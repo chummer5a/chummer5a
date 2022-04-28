@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -28,8 +29,7 @@ namespace Chummer
     /// Special wrapper around forms that is meant to make sure `using` blocks' disposals always happen in a thread-safe manner
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public readonly struct ThreadSafeForm<T> : IDisposable where T : Form
-
+    public readonly struct ThreadSafeForm<T> : IDisposable, IEquatable<ThreadSafeForm<T>> where T : Form
     {
         public T MyForm { get; }
 
@@ -40,29 +40,32 @@ namespace Chummer
 
         public static ThreadSafeForm<T> Get(Func<T> funcFormConstructor)
         {
-            return new ThreadSafeForm<T>(Program.MainForm != null
-                                             ? Program.MainForm.DoThreadSafeFunc(funcFormConstructor)
-                                             : Utils.RunWithoutThreadLock(() => Utils.StartStaTask(funcFormConstructor)));
+            return new ThreadSafeForm<T>(Utils.RunOnMainThread(funcFormConstructor));
         }
 
         public static async ValueTask<ThreadSafeForm<T>> GetAsync(Func<T> funcFormConstructor, CancellationToken token = default)
         {
-            return new ThreadSafeForm<T>(Program.MainForm != null
-                                             ? await Program.MainForm.DoThreadSafeFuncAsync(funcFormConstructor, token)
-                                             : await Utils.StartStaTask(funcFormConstructor, token));
+            return new ThreadSafeForm<T>(await Utils.RunOnMainThreadAsync(funcFormConstructor, token));
         }
 
         public static async ValueTask<ThreadSafeForm<T>> GetAsync(Func<CancellationToken, T> funcFormConstructor, CancellationToken token = default)
         {
-            return new ThreadSafeForm<T>(Program.MainForm != null
-                                             ? await Program.MainForm.DoThreadSafeFuncAsync(funcFormConstructor, token)
-                                             : await Utils.StartStaTask(() => funcFormConstructor.Invoke(token),
-                                                                        token));
+            return new ThreadSafeForm<T>(
+                await Utils.RunOnMainThreadAsync(() => funcFormConstructor.Invoke(token), token));
         }
 
         public void Dispose()
         {
-            MyForm?.DoThreadSafe(x => x.Dispose());
+            if (MyForm.IsNullOrDisposed())
+                return;
+            try
+            {
+                MyForm.DoThreadSafe(x => x.Dispose());
+            }
+            catch (ObjectDisposedException)
+            {
+                //swallow this
+            }
         }
 
         public DialogResult ShowDialog()
@@ -108,6 +111,34 @@ namespace Chummer
         public Task<DialogResult> ShowDialogNonBlockingSafeAsync(Character objCharacter, CancellationToken token = default)
         {
             return MyForm.ShowDialogNonBlockingSafeAsync(objCharacter, token);
+        }
+
+        /// <inheritdoc />
+        public bool Equals(ThreadSafeForm<T> other)
+        {
+            return EqualityComparer<T>.Default.Equals(MyForm, other.MyForm);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return obj is ThreadSafeForm<T> other && Equals(other);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return EqualityComparer<T>.Default.GetHashCode(MyForm);
+        }
+
+        public static bool operator ==(ThreadSafeForm<T> left, ThreadSafeForm<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ThreadSafeForm<T> left, ThreadSafeForm<T> right)
+        {
+            return !left.Equals(right);
         }
     }
 }

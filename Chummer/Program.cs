@@ -54,6 +54,8 @@ namespace Chummer
 
         private static readonly Lazy<Process> s_objMyProcess = new Lazy<Process>(Process.GetCurrentProcess);
         internal static readonly Process MyProcess = s_objMyProcess.Value;
+        
+        internal static SynchronizationContext MySynchronizationContext { get; private set; }
 
         [CLSCompliant(false)]
         public static TelemetryClient ChummerTelemetryClient { get; } = new TelemetryClient();
@@ -79,6 +81,7 @@ namespace Chummer
             SetProcessDPI(GlobalSettings.DpiScalingMethodSetting);
             if (IsMainThread)
                 SetThreadDPI(GlobalSettings.DpiScalingMethodSetting);
+
             using (GlobalChummerMutex = new Mutex(false, @"Global\" + ChummerGuid, out bool blnIsNewInstance))
             {
                 try
@@ -260,6 +263,12 @@ namespace Chummer
                     sw.TaskEnd("Startup");
 
                     Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+
+                    if (IsMainThread)
+                    {
+                        using (new DummyForm()) // New Form needs to be created (or Application.Run() called) before Synchronization.Current is set
+                            MySynchronizationContext = SynchronizationContext.Current;
+                    }
 
                     if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
                     {
@@ -510,14 +519,14 @@ namespace Chummer
                     {
                         // Attempt to cache all XML files that are used the most.
                         using (_ = Timekeeper.StartSyncron("cache_load", null, CustomActivity.OperationType.DependencyOperation, Utils.CurrentChummerVersion.ToString(3)))
-                        using (LoadingBar frmLoadingBar = CreateAndShowProgressBar(Application.ProductName, Utils.BasicDataFileNames.Count))
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar = CreateAndShowProgressBar(Application.ProductName, Utils.BasicDataFileNames.Count))
                         {
                             List<Task> lstCachingTasks = new List<Task>(Utils.MaxParallelBatchSize);
                             int intCounter = 0;
                             foreach (string strLoopFile in Utils.BasicDataFileNames)
                             {
                                 // ReSharper disable once AccessToDisposedClosure
-                                lstCachingTasks.Add(Task.Run(() => CacheCommonFile(strLoopFile, frmLoadingBar)));
+                                lstCachingTasks.Add(Task.Run(() => CacheCommonFile(strLoopFile, frmLoadingBar.MyForm)));
                                 if (++intCounter != Utils.MaxParallelBatchSize)
                                     continue;
                                 Utils.RunWithoutThreadLock(() => Task.WhenAll(lstCachingTasks));
@@ -1248,14 +1257,12 @@ namespace Chummer
         /// <param name="strFile"></param>
         /// <param name="intCount"></param>
         /// <returns></returns>
-        public static LoadingBar CreateAndShowProgressBar(string strFile = "", int intCount = 1)
+        public static ThreadSafeForm<LoadingBar> CreateAndShowProgressBar(string strFile = "", int intCount = 1)
         {
-            LoadingBar frmReturn = MainForm != null
-                ? MainForm.DoThreadSafeFunc(() => new LoadingBar { CharacterFile = strFile })
-                : new LoadingBar { CharacterFile = strFile };
+            ThreadSafeForm<LoadingBar> frmReturn = ThreadSafeForm<LoadingBar>.Get(() => new LoadingBar { CharacterFile = strFile });
             if (intCount > 0)
-                frmReturn.Reset(intCount);
-            frmReturn.DoThreadSafe(x =>
+                frmReturn.MyForm.Reset(intCount);
+            frmReturn.MyForm.DoThreadSafe(x =>
             {
                 x.Closed += (sender, args) => s_lstLoadingBars.Remove(x);
                 x.Show();

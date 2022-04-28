@@ -1318,8 +1318,7 @@ namespace Chummer
                     if (Program.MainForm != null)
                         Program.MainForm.DoThreadSafe(() => s_RtbRtfManipulator.CreateControl());
                     else
-                        Utils.RunWithoutThreadLock(
-                            () => Utils.StartStaTask(() => s_RtbRtfManipulator.CreateControl(), token), token);
+                        Utils.RunOnMainThread(() => s_RtbRtfManipulator.CreateControl(), token);
                 }
                 return s_RtbRtfManipulator.DoThreadSafeFunc(x =>
                 {
@@ -1358,7 +1357,7 @@ namespace Chummer
                             await Program.MainForm.DoThreadSafeAsync(
                                 () => s_RtbRtfManipulator.CreateControl(), token);
                         else
-                            await Utils.StartStaTask(() => s_RtbRtfManipulator.CreateControl(), token);
+                            await Utils.RunOnMainThreadAsync(() => s_RtbRtfManipulator.CreateControl(), token);
                     }
                     return await s_RtbRtfManipulator.DoThreadSafeFuncAsync(x =>
                     {
@@ -1397,8 +1396,7 @@ namespace Chummer
                         if (Program.MainForm != null)
                             Program.MainForm.DoThreadSafe(() => s_RtbRtfManipulator.CreateControl());
                         else
-                            Utils.RunWithoutThreadLock(
-                                () => Utils.StartStaTask(() => s_RtbRtfManipulator.CreateControl(), token), token);
+                            Utils.RunOnMainThread(() => s_RtbRtfManipulator.CreateControl(), token);
                     }
                     try
                     {
@@ -1451,7 +1449,7 @@ namespace Chummer
                                 await Program.MainForm.DoThreadSafeAsync(
                                     () => s_RtbRtfManipulator.CreateControl(), token);
                             else
-                                await Utils.StartStaTask(() => s_RtbRtfManipulator.CreateControl(), token);
+                                await Utils.RunOnMainThreadAsync(() => s_RtbRtfManipulator.CreateControl(), token);
                         }
 
                         try
@@ -1520,8 +1518,7 @@ namespace Chummer
                             if (Program.MainForm != null)
                                 Program.MainForm.DoThreadSafe(() => s_RtbRtfManipulator.CreateControl());
                             else
-                                Utils.RunWithoutThreadLock(
-                                    () => Utils.StartStaTask(() => s_RtbRtfManipulator.CreateControl(), token), token);
+                                Utils.RunOnMainThread(() => s_RtbRtfManipulator.CreateControl(), token);
                         }
                         try
                         {
@@ -1566,7 +1563,7 @@ namespace Chummer
                             if (Program.MainForm != null)
                                 await Program.MainForm.DoThreadSafeAsync(() => s_RtbRtfManipulator.CreateControl(), token);
                             else
-                                await Utils.StartStaTask(() => s_RtbRtfManipulator.CreateControl(), token);
+                                await Utils.RunOnMainThreadAsync(() => s_RtbRtfManipulator.CreateControl(), token);
                         }
                         try
                         {

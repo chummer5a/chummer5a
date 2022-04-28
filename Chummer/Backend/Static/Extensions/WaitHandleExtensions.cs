@@ -95,8 +95,9 @@ namespace Chummer
             }
             finally
             {
-                objRegisteredHandle?.Unregister(null);
-                objTokenRegistration.Dispose();
+                objRegisteredHandle?.Unregister(objHandle);
+                if (objTokenRegistration != default)
+                    objTokenRegistration.Dispose();
             }
         }
 

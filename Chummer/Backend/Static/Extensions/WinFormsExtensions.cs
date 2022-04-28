@@ -17,6 +17,9 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+// Uncomment to use invoke-based thread safety stuff instead of SynchronizationContext-based thread safety stuff
+//#define USE_INVOKE
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -54,6 +57,7 @@ namespace Chummer
                 throw new ObjectDisposedException(nameof(frmForm));
             if (!Utils.IsUnitTest)
             {
+#if USE_INVOKE
                 DialogResult FuncToRun(Form x, IWin32Window y = null) => x.ShowDialog(y);
 
                 if (!frmForm.InvokeRequired)
@@ -67,6 +71,9 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 return (DialogResult) frmForm.Invoke((Func<Form, IWin32Window, DialogResult>) FuncToRun, frmForm,
                                                      owner);
+#else
+                return Utils.RunOnMainThread(() => frmForm.ShowDialog(owner), token);
+#endif
             }
             // Unit tests cannot use ShowDialog because that will stall them out
             bool blnDoClose = false;
@@ -120,97 +127,61 @@ namespace Chummer
                 throw new ObjectDisposedException(nameof(frmForm));
             if (!Utils.IsUnitTest)
             {
+#if USE_INVOKE
                 DialogResult FuncToRun(Form x, IWin32Window y = null) => x.ShowDialog(y);
 
                 if (frmForm.InvokeRequired)
                 {
-                    using (CancellationTokenSource objInnerTokenSource = new CancellationTokenSource())
-                        // ReSharper disable once AccessToDisposedClosure
-                    using (token.Register(() => objInnerTokenSource.Cancel(false)))
+                    IAsyncResult objInvoke
+                        = frmForm.BeginInvoke((Func<Form, IWin32Window, DialogResult>)FuncToRun, frmForm,
+                                              owner);
+                    WaitHandle objHandle = objInvoke.AsyncWaitHandle;
+                    try
                     {
-                        void MyControlCopyOnDisposed(object sender, EventArgs e)
-                        {
-                            try
-                            {
-                                // ReSharper disable once AccessToDisposedClosure
-                                objInnerTokenSource.Cancel(false);
-                            }
-                            catch (ObjectDisposedException)
-                            {
-                                //swallow this
-                            }
-                        }
-
-                        CancellationToken objInnerToken = objInnerTokenSource.Token;
-                        frmForm.Disposed += MyControlCopyOnDisposed;
-                        try
-                        {
-                            IAsyncResult objInvoke
-                                = frmForm.BeginInvoke((Func<Form, IWin32Window, DialogResult>) FuncToRun, frmForm,
-                                                      owner);
-                            using (WaitHandle objHandle = objInvoke.AsyncWaitHandle)
-                                await objHandle.WaitOneAsync(objInnerToken);
-                            token.ThrowIfCancellationRequested();
-                            objInnerToken.ThrowIfCancellationRequested();
-                            if (frmForm.IsNullOrDisposed())
-                                return default;
-                            object objReturn = frmForm.EndInvoke(objInvoke);
-                            if (objReturn is Exception ex)
-                                throw ex;
-                            return (DialogResult)objReturn;
-                        }
-                        finally
-                        {
-                            frmForm.Disposed -= MyControlCopyOnDisposed;
-                        }
+                        await objHandle.WaitOneAsync(token);
                     }
+                    finally
+                    {
+                        if (!objHandle.SafeWaitHandle.IsClosed)
+                            objHandle.Dispose();
+                    }
+                    token.ThrowIfCancellationRequested();
+                    if (frmForm.IsNullOrDisposed())
+                        return default;
+                    object objReturn = frmForm.EndInvoke(objInvoke);
+                    if (objReturn is Exception ex)
+                        throw ex;
+                    return (DialogResult)objReturn;
                 }
 
                 if (owner is Control objOwner && objOwner.InvokeRequired)
                 {
-                    using (CancellationTokenSource objInnerTokenSource = new CancellationTokenSource())
-                        // ReSharper disable once AccessToDisposedClosure
-                    using (token.Register(() => objInnerTokenSource.Cancel(false)))
+                    IAsyncResult objInvoke
+                        = objOwner.BeginInvoke((Func<Form, IWin32Window, DialogResult>)FuncToRun, frmForm,
+                                               owner);
+                    WaitHandle objHandle = objInvoke.AsyncWaitHandle;
+                    try
                     {
-                        void MyControlCopyOnDisposed(object sender, EventArgs e)
-                        {
-                            try
-                            {
-                                // ReSharper disable once AccessToDisposedClosure
-                                objInnerTokenSource.Cancel(false);
-                            }
-                            catch (ObjectDisposedException)
-                            {
-                                //swallow this
-                            }
-                        }
-
-                        CancellationToken objInnerToken = objInnerTokenSource.Token;
-                        objOwner.Disposed += MyControlCopyOnDisposed;
-                        try
-                        {
-                            IAsyncResult objInvoke
-                                = objOwner.BeginInvoke((Func<Form, IWin32Window, DialogResult>)FuncToRun, frmForm,
-                                                       owner);
-                            using (WaitHandle objHandle = objInvoke.AsyncWaitHandle)
-                                await objHandle.WaitOneAsync(objInnerToken);
-                            token.ThrowIfCancellationRequested();
-                            objInnerToken.ThrowIfCancellationRequested();
-                            if (objOwner.IsNullOrDisposed())
-                                return default;
-                            object objReturn = objOwner.EndInvoke(objInvoke);
-                            if (objReturn is Exception ex)
-                                throw ex;
-                            return (DialogResult)objReturn;
-                        }
-                        finally
-                        {
-                            objOwner.Disposed -= MyControlCopyOnDisposed;
-                        }
+                        await objHandle.WaitOneAsync(token);
                     }
+                    finally
+                    {
+                        if (!objHandle.SafeWaitHandle.IsClosed)
+                            objHandle.Dispose();
+                    }
+                    token.ThrowIfCancellationRequested();
+                    if (objOwner.IsNullOrDisposed())
+                        return default;
+                    object objReturn = objOwner.EndInvoke(objInvoke);
+                    if (objReturn is Exception ex)
+                        throw ex;
+                    return (DialogResult)objReturn;
                 }
 
                 return frmForm.ShowDialog(owner);
+#else
+                return await Utils.RunOnMainThreadAsync(() => frmForm.ShowDialog(owner), token);
+#endif
             }
 
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
@@ -333,9 +304,9 @@ namespace Chummer
             return frmForm.ShowDialogNonBlockingSafeAsync(Program.GetFormForDialog(objCharacter), token);
         }
 
-        #endregion
+#endregion
 
-        #region Controls Extensions
+#region Controls Extensions
 
         /// <summary>
         /// Runs code on a WinForms control in a thread-safe manner and waits for it to complete.
@@ -354,6 +325,7 @@ namespace Chummer
                 {
                     funcToRun.Invoke();
                 }
+#if USE_INVOKE
                 else if (!objControl.Disposing && !objControl.IsDisposed)
                 {
                     // ReSharper disable once InlineTemporaryVariable
@@ -366,6 +338,10 @@ namespace Chummer
                     else
                         funcToRun.Invoke();
                 }
+#else
+                else
+                    Utils.RunOnMainThread(funcToRun);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -412,6 +388,7 @@ namespace Chummer
                 {
                     funcToRun.Invoke(null);
                 }
+#if USE_INVOKE
                 else if (!objControl.Disposing && !objControl.IsDisposed)
                 {
                     // ReSharper disable once InlineTemporaryVariable
@@ -424,6 +401,10 @@ namespace Chummer
                     else
                         funcToRun.Invoke(myControlCopy);
                 }
+#else
+                else
+                    Utils.RunOnMainThread(() => funcToRun(objControl));
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -472,19 +453,23 @@ namespace Chummer
                 {
                     funcToRun.Invoke(token);
                 }
+#if USE_INVOKE
                 else if (!objControl.Disposing && !objControl.IsDisposed)
                 {
                     // ReSharper disable once InlineTemporaryVariable
                     T myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                     if (myControlCopy.InvokeRequired)
                     {
-                        token.ThrowIfCancellationRequested();
                         if (myControlCopy.Invoke(funcToRun, token) is Exception ex)
                             throw ex;
                     }
                     else
                         funcToRun.Invoke(token);
                 }
+#else
+                else
+                    Utils.RunOnMainThread(() => funcToRun(token), token);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -533,6 +518,7 @@ namespace Chummer
                 {
                     funcToRun.Invoke(null, token);
                 }
+#if USE_INVOKE
                 else if (!objControl.Disposing && !objControl.IsDisposed)
                 {
                     // ReSharper disable once InlineTemporaryVariable
@@ -546,6 +532,10 @@ namespace Chummer
                     else
                         funcToRun.Invoke(myControlCopy, token);
                 }
+#else
+                else
+                    Utils.RunOnMainThread(() => funcToRun(objControl, token), token);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -594,6 +584,7 @@ namespace Chummer
                 {
                     await Task.Run(funcToRun, token);
                 }
+#if USE_INVOKE
                 else if (!objControl.Disposing && !objControl.IsDisposed)
                 {
                     // ReSharper disable once InlineTemporaryVariable
@@ -601,48 +592,34 @@ namespace Chummer
                     if (myControlCopy.InvokeRequired)
                     {
                         token.ThrowIfCancellationRequested();
-                        using (CancellationTokenSource objInnerTokenSource = new CancellationTokenSource())
+                        // Second check needed just in case form got disposed in the meantime
+                        if (!objControl.Disposing && !objControl.IsDisposed)
                         {
-                            void MyControlCopyOnDisposed(object sender, EventArgs e)
-                            {
-                                try
-                                {
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    objInnerTokenSource.Cancel(false);
-                                }
-                                catch (ObjectDisposedException)
-                                {
-                                    //swallow this
-                                }
-                            }
-
-                            CancellationToken objInnerToken = objInnerTokenSource.Token;
-                            myControlCopy.Disposed += MyControlCopyOnDisposed;
+                            IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun);
+                            WaitHandle objHandle = objInvoke.AsyncWaitHandle;
                             try
                             {
-                                // Second check needed just in case form got disposed in the meantime
-                                if (!objControl.Disposing && !objControl.IsDisposed)
-                                {
-                                    IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun);
-                                    using (WaitHandle objHandle = objInvoke.AsyncWaitHandle)
-                                        await objHandle.WaitOneAsync(objInnerToken);
-                                    token.ThrowIfCancellationRequested();
-                                    objInnerToken.ThrowIfCancellationRequested();
-                                    if (myControlCopy.IsNullOrDisposed())
-                                        return;
-                                    if (myControlCopy.EndInvoke(objInvoke) is Exception ex)
-                                        throw ex;
-                                }
+                                await objHandle.WaitOneAsync(token);
                             }
                             finally
                             {
-                                myControlCopy.Disposed -= MyControlCopyOnDisposed;
+                                if (!objHandle.SafeWaitHandle.IsClosed)
+                                    objHandle.Dispose();
                             }
+                            token.ThrowIfCancellationRequested();
+                            if (myControlCopy.IsNullOrDisposed())
+                                return;
+                            if (myControlCopy.EndInvoke(objInvoke) is Exception ex)
+                                throw ex;
                         }
                     }
                     else
                         funcToRun.Invoke();
                 }
+#else
+                else
+                    await Utils.RunOnMainThreadAsync(funcToRun, token);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -691,6 +668,7 @@ namespace Chummer
                 {
                     await Task.Run(() => funcToRun(null), token);
                 }
+#if USE_INVOKE
                 else if (!objControl.Disposing && !objControl.IsDisposed)
                 {
                     // ReSharper disable once InlineTemporaryVariable
@@ -698,48 +676,34 @@ namespace Chummer
                     if (myControlCopy.InvokeRequired)
                     {
                         token.ThrowIfCancellationRequested();
-                        using (CancellationTokenSource objInnerTokenSource = new CancellationTokenSource())
+                        // Second check needed just in case form got disposed in the meantime
+                        if (!objControl.Disposing && !objControl.IsDisposed)
                         {
-                            void MyControlCopyOnDisposed(object sender, EventArgs e)
-                            {
-                                try
-                                {
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    objInnerTokenSource.Cancel(false);
-                                }
-                                catch (ObjectDisposedException)
-                                {
-                                    //swallow this
-                                }
-                            }
-
-                            CancellationToken objInnerToken = objInnerTokenSource.Token;
-                            myControlCopy.Disposed += MyControlCopyOnDisposed;
+                            IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
+                            WaitHandle objHandle = objInvoke.AsyncWaitHandle;
                             try
                             {
-                                // Second check needed just in case form got disposed in the meantime
-                                if (!objControl.Disposing && !objControl.IsDisposed)
-                                {
-                                    IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
-                                    using (WaitHandle objHandle = objInvoke.AsyncWaitHandle)
-                                        await objHandle.WaitOneAsync(objInnerToken);
-                                    token.ThrowIfCancellationRequested();
-                                    objInnerToken.ThrowIfCancellationRequested();
-                                    if (myControlCopy.IsNullOrDisposed())
-                                        return;
-                                    if (myControlCopy.EndInvoke(objInvoke) is Exception ex)
-                                        throw ex;
-                                }
+                                await objHandle.WaitOneAsync(token);
                             }
                             finally
                             {
-                                myControlCopy.Disposed -= MyControlCopyOnDisposed;
+                                if (!objHandle.SafeWaitHandle.IsClosed)
+                                    objHandle.Dispose();
                             }
+                            token.ThrowIfCancellationRequested();
+                            if (myControlCopy.IsNullOrDisposed())
+                                return;
+                            if (myControlCopy.EndInvoke(objInvoke) is Exception ex)
+                                throw ex;
                         }
                     }
                     else
                         funcToRun.Invoke(myControlCopy);
                 }
+#else
+                else
+                    await Utils.RunOnMainThreadAsync(() => funcToRun(objControl), token);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -788,6 +752,7 @@ namespace Chummer
                 {
                     await Task.Run(() => funcToRun(token), token);
                 }
+#if USE_INVOKE
                 else if (!objControl.Disposing && !objControl.IsDisposed)
                 {
                     // ReSharper disable once InlineTemporaryVariable
@@ -795,50 +760,34 @@ namespace Chummer
                     if (myControlCopy.InvokeRequired)
                     {
                         token.ThrowIfCancellationRequested();
-                        using (CancellationTokenSource objInnerTokenSource = new CancellationTokenSource())
-                            // ReSharper disable once AccessToDisposedClosure
-                        using (token.Register(() => objInnerTokenSource.Cancel(false)))
+                        // Second check needed just in case form got disposed in the meantime
+                        if (!objControl.Disposing && !objControl.IsDisposed)
                         {
-                            void MyControlCopyOnDisposed(object sender, EventArgs e)
-                            {
-                                try
-                                {
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    objInnerTokenSource.Cancel(false);
-                                }
-                                catch (ObjectDisposedException)
-                                {
-                                    //swallow this
-                                }
-                            }
-
-                            CancellationToken objInnerToken = objInnerTokenSource.Token;
-                            myControlCopy.Disposed += MyControlCopyOnDisposed;
+                            IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun, token);
+                            WaitHandle objHandle = objInvoke.AsyncWaitHandle;
                             try
                             {
-                                // Second check needed just in case form got disposed in the meantime
-                                if (!objControl.Disposing && !objControl.IsDisposed)
-                                {
-                                    IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun, objInnerToken);
-                                    using (WaitHandle objHandle = objInvoke.AsyncWaitHandle)
-                                        await objHandle.WaitOneAsync(objInnerToken);
-                                    token.ThrowIfCancellationRequested();
-                                    objInnerToken.ThrowIfCancellationRequested();
-                                    if (myControlCopy.IsNullOrDisposed())
-                                        return;
-                                    if (myControlCopy.EndInvoke(objInvoke) is Exception ex)
-                                        throw ex;
-                                }
+                                await objHandle.WaitOneAsync(token);
                             }
                             finally
                             {
-                                myControlCopy.Disposed -= MyControlCopyOnDisposed;
+                                if (!objHandle.SafeWaitHandle.IsClosed)
+                                    objHandle.Dispose();
                             }
+                            token.ThrowIfCancellationRequested();
+                            if (myControlCopy.IsNullOrDisposed())
+                                return;
+                            if (myControlCopy.EndInvoke(objInvoke) is Exception ex)
+                                throw ex;
                         }
                     }
                     else
                         funcToRun.Invoke(token);
                 }
+#else
+                else
+                    await Utils.RunOnMainThreadAsync(() => funcToRun(token), token);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -887,6 +836,7 @@ namespace Chummer
                 {
                     await Task.Run(() => funcToRun(null, token), token);
                 }
+#if USE_INVOKE
                 else if (!objControl.Disposing && !objControl.IsDisposed)
                 {
                     // ReSharper disable once InlineTemporaryVariable
@@ -894,50 +844,34 @@ namespace Chummer
                     if (myControlCopy.InvokeRequired)
                     {
                         token.ThrowIfCancellationRequested();
-                        using (CancellationTokenSource objInnerTokenSource = new CancellationTokenSource())
-                            // ReSharper disable once AccessToDisposedClosure
-                        using (token.Register(() => objInnerTokenSource.Cancel(false)))
+                        // Second check needed just in case form got disposed in the meantime
+                        if (!objControl.Disposing && !objControl.IsDisposed)
                         {
-                            void MyControlCopyOnDisposed(object sender, EventArgs e)
-                            {
-                                try
-                                {
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    objInnerTokenSource.Cancel(false);
-                                }
-                                catch (ObjectDisposedException)
-                                {
-                                    //swallow this
-                                }
-                            }
-
-                            CancellationToken objInnerToken = objInnerTokenSource.Token;
-                            myControlCopy.Disposed += MyControlCopyOnDisposed;
+                            IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun, myControlCopy, token);
+                            WaitHandle objHandle = objInvoke.AsyncWaitHandle;
                             try
                             {
-                                // Second check needed just in case form got disposed in the meantime
-                                if (!objControl.Disposing && !objControl.IsDisposed)
-                                {
-                                    IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun, myControlCopy, objInnerToken);
-                                    using (WaitHandle objHandle = objInvoke.AsyncWaitHandle)
-                                        await objHandle.WaitOneAsync(objInnerToken);
-                                    token.ThrowIfCancellationRequested();
-                                    objInnerToken.ThrowIfCancellationRequested();
-                                    if (myControlCopy.IsNullOrDisposed())
-                                        return;
-                                    if (myControlCopy.EndInvoke(objInvoke) is Exception ex)
-                                        throw ex;
-                                }
+                                await objHandle.WaitOneAsync(token);
                             }
                             finally
                             {
-                                myControlCopy.Disposed -= MyControlCopyOnDisposed;
+                                if (!objHandle.SafeWaitHandle.IsClosed)
+                                    objHandle.Dispose();
                             }
+                            token.ThrowIfCancellationRequested();
+                            if (myControlCopy.IsNullOrDisposed())
+                                return;
+                            if (myControlCopy.EndInvoke(objInvoke) is Exception ex)
+                                throw ex;
                         }
                     }
                     else
                         funcToRun.Invoke(myControlCopy, token);
                 }
+#else
+                else
+                    await Utils.RunOnMainThreadAsync(() => funcToRun(objControl, token), token);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -981,6 +915,7 @@ namespace Chummer
             T2 objReturn = default;
             try
             {
+#if USE_INVOKE
                 if (objControl == null)
                     objReturn = funcToRun.Invoke();
                 else if (!objControl.Disposing && !objControl.IsDisposed)
@@ -1000,6 +935,9 @@ namespace Chummer
                     else
                         objReturn = funcToRun.Invoke();
                 }
+#else
+                objReturn = objControl == null ? funcToRun.Invoke() : Utils.RunOnMainThread(funcToRun);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1045,6 +983,7 @@ namespace Chummer
             T2 objReturn = default;
             try
             {
+#if USE_INVOKE
                 if (objControl == null)
                     objReturn = funcToRun.Invoke(null);
                 else if (!objControl.Disposing && !objControl.IsDisposed)
@@ -1064,6 +1003,9 @@ namespace Chummer
                     else
                         objReturn = funcToRun.Invoke(myControlCopy);
                 }
+#else
+                objReturn = objControl == null ? funcToRun.Invoke(null) : Utils.RunOnMainThread(() => funcToRun(objControl));
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1111,6 +1053,7 @@ namespace Chummer
             T2 objReturn = default;
             try
             {
+#if USE_INVOKE
                 if (objControl == null)
                     objReturn = funcToRun.Invoke(token);
                 else if (!objControl.Disposing && !objControl.IsDisposed)
@@ -1131,6 +1074,9 @@ namespace Chummer
                     else
                         objReturn = funcToRun.Invoke(token);
                 }
+#else
+                objReturn = objControl == null ? funcToRun.Invoke(token) : Utils.RunOnMainThread(() => funcToRun(token), token);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1178,6 +1124,7 @@ namespace Chummer
             T2 objReturn = default;
             try
             {
+#if USE_INVOKE
                 if (objControl == null)
                     objReturn = funcToRun.Invoke(null, token);
                 else if (!objControl.Disposing && !objControl.IsDisposed)
@@ -1198,6 +1145,9 @@ namespace Chummer
                     else
                         objReturn = funcToRun.Invoke(myControlCopy, token);
                 }
+#else
+                objReturn = objControl == null ? funcToRun.Invoke(null, token) : Utils.RunOnMainThread(() => funcToRun(objControl, token), token);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1245,6 +1195,7 @@ namespace Chummer
             T2 objReturn = default;
             try
             {
+#if USE_INVOKE
                 if (objControl == null)
                     objReturn = await Task.Run(funcToRun, token);
                 else if (!objControl.Disposing && !objControl.IsDisposed)
@@ -1253,55 +1204,42 @@ namespace Chummer
                     if (myControlCopy.InvokeRequired)
                     {
                         token.ThrowIfCancellationRequested();
-                        using (CancellationTokenSource objInnerTokenSource = new CancellationTokenSource())
+                        // Second check needed just in case form got disposed in the meantime
+                        if (!objControl.Disposing && !objControl.IsDisposed)
                         {
-                            void MyControlCopyOnDisposed(object sender, EventArgs e)
-                            {
-                                try
-                                {
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    objInnerTokenSource.Cancel(false);
-                                }
-                                catch (ObjectDisposedException)
-                                {
-                                    //swallow this
-                                }
-                            }
-
-                            CancellationToken objInnerToken = objInnerTokenSource.Token;
-                            myControlCopy.Disposed += MyControlCopyOnDisposed;
+                            IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun);
+                            WaitHandle objHandle = objInvoke.AsyncWaitHandle;
                             try
                             {
-                                // Second check needed just in case form got disposed in the meantime
-                                if (!objControl.Disposing && !objControl.IsDisposed)
-                                {
-                                    IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun);
-                                    using (WaitHandle objHandle = objInvoke.AsyncWaitHandle)
-                                        await objHandle.WaitOneAsync(objInnerToken);
-                                    token.ThrowIfCancellationRequested();
-                                    objInnerToken.ThrowIfCancellationRequested();
-                                    if (!myControlCopy.IsNullOrDisposed())
-                                    {
-                                        switch (myControlCopy.EndInvoke(objInvoke))
-                                        {
-                                            case Exception ex:
-                                                throw ex;
-                                            case T2 objReturnRawCast:
-                                                objReturn = objReturnRawCast;
-                                                break;
-                                        }
-                                    }
-                                }
+                                await objHandle.WaitOneAsync(token);
                             }
                             finally
                             {
-                                myControlCopy.Disposed -= MyControlCopyOnDisposed;
+                                if (!objHandle.SafeWaitHandle.IsClosed)
+                                    objHandle.Dispose();
+                            }
+                            token.ThrowIfCancellationRequested();
+                            if (!myControlCopy.IsNullOrDisposed())
+                            {
+                                switch (myControlCopy.EndInvoke(objInvoke))
+                                {
+                                    case Exception ex:
+                                        throw ex;
+                                    case T2 objReturnRawCast:
+                                        objReturn = objReturnRawCast;
+                                        break;
+                                }
                             }
                         }
                     }
                     else
                         objReturn = funcToRun.Invoke();
                 }
+#else
+                objReturn = objControl == null
+                    ? await Task.Run(funcToRun, token)
+                    : await Utils.RunOnMainThreadAsync(funcToRun, token);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1349,6 +1287,7 @@ namespace Chummer
             T2 objReturn = default;
             try
             {
+#if USE_INVOKE
                 if (objControl == null)
                     objReturn = await Task.Run(() => funcToRun(null), token);
                 else if (!objControl.Disposing && !objControl.IsDisposed)
@@ -1357,55 +1296,42 @@ namespace Chummer
                     if (myControlCopy.InvokeRequired)
                     {
                         token.ThrowIfCancellationRequested();
-                        using (CancellationTokenSource objInnerTokenSource = new CancellationTokenSource())
+                        // Second check needed just in case form got disposed in the meantime
+                        if (!objControl.Disposing && !objControl.IsDisposed)
                         {
-                            void MyControlCopyOnDisposed(object sender, EventArgs e)
-                            {
-                                try
-                                {
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    objInnerTokenSource.Cancel(false);
-                                }
-                                catch (ObjectDisposedException)
-                                {
-                                    //swallow this
-                                }
-                            }
-
-                            CancellationToken objInnerToken = objInnerTokenSource.Token;
-                            myControlCopy.Disposed += MyControlCopyOnDisposed;
+                            IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
+                            WaitHandle objHandle = objInvoke.AsyncWaitHandle;
                             try
                             {
-                                // Second check needed just in case form got disposed in the meantime
-                                if (!objControl.Disposing && !objControl.IsDisposed)
-                                {
-                                    IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
-                                    using (WaitHandle objHandle = objInvoke.AsyncWaitHandle)
-                                        await objHandle.WaitOneAsync(objInnerToken);
-                                    token.ThrowIfCancellationRequested();
-                                    objInnerToken.ThrowIfCancellationRequested();
-                                    if (!myControlCopy.IsNullOrDisposed())
-                                    {
-                                        switch (myControlCopy.EndInvoke(objInvoke))
-                                        {
-                                            case Exception ex:
-                                                throw ex;
-                                            case T2 objReturnRawCast:
-                                                objReturn = objReturnRawCast;
-                                                break;
-                                        }
-                                    }
-                                }
+                                await objHandle.WaitOneAsync(token);
                             }
                             finally
                             {
-                                myControlCopy.Disposed -= MyControlCopyOnDisposed;
+                                if (!objHandle.SafeWaitHandle.IsClosed)
+                                    objHandle.Dispose();
+                            }
+                            token.ThrowIfCancellationRequested();
+                            if (!myControlCopy.IsNullOrDisposed())
+                            {
+                                switch (myControlCopy.EndInvoke(objInvoke))
+                                {
+                                    case Exception ex:
+                                        throw ex;
+                                    case T2 objReturnRawCast:
+                                        objReturn = objReturnRawCast;
+                                        break;
+                                }
                             }
                         }
                     }
                     else
                         objReturn = funcToRun.Invoke(myControlCopy);
                 }
+#else
+                objReturn = objControl == null
+                    ? await Task.Run(() => funcToRun(null), token)
+                    : await Utils.RunOnMainThreadAsync(() => funcToRun(objControl), token);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1453,6 +1379,7 @@ namespace Chummer
             T2 objReturn = default;
             try
             {
+#if USE_INVOKE
                 if (objControl == null)
                     objReturn = await Task.Run(() => funcToRun(token), token);
                 else if (!objControl.Disposing && !objControl.IsDisposed)
@@ -1461,57 +1388,42 @@ namespace Chummer
                     if (myControlCopy.InvokeRequired)
                     {
                         token.ThrowIfCancellationRequested();
-                        using (CancellationTokenSource objInnerTokenSource = new CancellationTokenSource())
-                            // ReSharper disable once AccessToDisposedClosure
-                        using (token.Register(() => objInnerTokenSource.Cancel(false)))
+                        // Second check needed just in case form got disposed in the meantime
+                        if (!objControl.Disposing && !objControl.IsDisposed)
                         {
-                            void MyControlCopyOnDisposed(object sender, EventArgs e)
-                            {
-                                try
-                                {
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    objInnerTokenSource.Cancel(false);
-                                }
-                                catch (ObjectDisposedException)
-                                {
-                                    //swallow this
-                                }
-                            }
-
-                            CancellationToken objInnerToken = objInnerTokenSource.Token;
-                            myControlCopy.Disposed += MyControlCopyOnDisposed;
+                            IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun, token);
+                            WaitHandle objHandle = objInvoke.AsyncWaitHandle;
                             try
                             {
-                                // Second check needed just in case form got disposed in the meantime
-                                if (!objControl.Disposing && !objControl.IsDisposed)
-                                {
-                                    IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun, objInnerToken);
-                                    using (WaitHandle objHandle = objInvoke.AsyncWaitHandle)
-                                        await objHandle.WaitOneAsync(objInnerToken);
-                                    token.ThrowIfCancellationRequested();
-                                    objInnerToken.ThrowIfCancellationRequested();
-                                    if (!myControlCopy.IsNullOrDisposed())
-                                    {
-                                        switch (myControlCopy.EndInvoke(objInvoke))
-                                        {
-                                            case Exception ex:
-                                                throw ex;
-                                            case T2 objReturnRawCast:
-                                                objReturn = objReturnRawCast;
-                                                break;
-                                        }
-                                    }
-                                }
+                                await objHandle.WaitOneAsync(token);
                             }
                             finally
                             {
-                                myControlCopy.Disposed -= MyControlCopyOnDisposed;
+                                if (!objHandle.SafeWaitHandle.IsClosed)
+                                    objHandle.Dispose();
+                            }
+                            token.ThrowIfCancellationRequested();
+                            if (!myControlCopy.IsNullOrDisposed())
+                            {
+                                switch (myControlCopy.EndInvoke(objInvoke))
+                                {
+                                    case Exception ex:
+                                        throw ex;
+                                    case T2 objReturnRawCast:
+                                        objReturn = objReturnRawCast;
+                                        break;
+                                }
                             }
                         }
                     }
                     else
                         objReturn = funcToRun.Invoke(token);
                 }
+#else
+                objReturn = objControl == null
+                    ? await Task.Run(() => funcToRun(token), token)
+                    : await Utils.RunOnMainThreadAsync(() => funcToRun(token), token);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1559,6 +1471,7 @@ namespace Chummer
             T2 objReturn = default;
             try
             {
+#if USE_INVOKE
                 if (objControl == null)
                     objReturn = await Task.Run(() => funcToRun(null, token), token);
                 else if (!objControl.Disposing && !objControl.IsDisposed)
@@ -1567,57 +1480,42 @@ namespace Chummer
                     if (myControlCopy.InvokeRequired)
                     {
                         token.ThrowIfCancellationRequested();
-                        using (CancellationTokenSource objInnerTokenSource = new CancellationTokenSource())
-                        // ReSharper disable once AccessToDisposedClosure
-                        using (token.Register(() => objInnerTokenSource.Cancel(false)))
+                        // Second check needed just in case form got disposed in the meantime
+                        if (!objControl.Disposing && !objControl.IsDisposed)
                         {
-                            void MyControlCopyOnDisposed(object sender, EventArgs e)
-                            {
-                                try
-                                {
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    objInnerTokenSource.Cancel(false);
-                                }
-                                catch (ObjectDisposedException)
-                                {
-                                    //swallow this
-                                }
-                            }
-
-                            CancellationToken objInnerToken = objInnerTokenSource.Token;
-                            myControlCopy.Disposed += MyControlCopyOnDisposed;
+                            IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun, myControlCopy, token);
+                            WaitHandle objHandle = objInvoke.AsyncWaitHandle;
                             try
                             {
-                                // Second check needed just in case form got disposed in the meantime
-                                if (!objControl.Disposing && !objControl.IsDisposed)
-                                {
-                                    IAsyncResult objInvoke = myControlCopy.BeginInvoke(funcToRun, myControlCopy, objInnerToken);
-                                    using (WaitHandle objHandle = objInvoke.AsyncWaitHandle)
-                                        await objHandle.WaitOneAsync(objInnerToken);
-                                    token.ThrowIfCancellationRequested();
-                                    objInnerToken.ThrowIfCancellationRequested();
-                                    if (!myControlCopy.IsNullOrDisposed())
-                                    {
-                                        switch (myControlCopy.EndInvoke(objInvoke))
-                                        {
-                                            case Exception ex:
-                                                throw ex;
-                                            case T2 objReturnRawCast:
-                                                objReturn = objReturnRawCast;
-                                                break;
-                                        }
-                                    }
-                                }
+                                await objHandle.WaitOneAsync(token);
                             }
                             finally
                             {
-                                myControlCopy.Disposed -= MyControlCopyOnDisposed;
+                                if (!objHandle.SafeWaitHandle.IsClosed)
+                                    objHandle.Dispose();
+                            }
+                            token.ThrowIfCancellationRequested();
+                            if (!myControlCopy.IsNullOrDisposed())
+                            {
+                                switch (myControlCopy.EndInvoke(objInvoke))
+                                {
+                                    case Exception ex:
+                                        throw ex;
+                                    case T2 objReturnRawCast:
+                                        objReturn = objReturnRawCast;
+                                        break;
+                                }
                             }
                         }
                     }
                     else
                         objReturn = funcToRun.Invoke(myControlCopy, token);
                 }
+#else
+                objReturn = objControl == null
+                    ? await Task.Run(() => funcToRun(null, token), token)
+                    : await Utils.RunOnMainThreadAsync(() => funcToRun(objControl, token), token);
+#endif
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1765,9 +1663,9 @@ namespace Chummer
             }
         }
 
-        #endregion Controls Extensions
+#endregion Controls Extensions
 
-        #region ComboBox Extensions
+#region ComboBox Extensions
 
         public static void PopulateWithListItems(this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
@@ -1946,9 +1844,9 @@ namespace Chummer
             }
         }
 
-        #endregion ComboBox Extensions
+#endregion ComboBox Extensions
 
-        #region TreeNode Extensions
+#region TreeNode Extensions
 
         public static TreeNode GetTopParent(this TreeNode objThis)
         {
@@ -2028,9 +1926,9 @@ namespace Chummer
             return intReturn;
         }
 
-        #endregion TreeNode Extensions
+#endregion TreeNode Extensions
 
-        #region TreeView Extensions
+#region TreeView Extensions
 
         /// <summary>
         /// Sort the contents of a TreeView alphabetically within each group Node.
@@ -2240,9 +2138,9 @@ namespace Chummer
             return intReturn;
         }
 
-        #endregion TreeView Extensions
+#endregion TreeView Extensions
 
-        #region TreeNodeCollection Extensions
+#region TreeNodeCollection Extensions
 
         /// <summary>
         /// Recursive method to clear the background color for all TreeNodes except the one currently being hovered over during a drag-and-drop operation.
@@ -2261,9 +2159,9 @@ namespace Chummer
             }
         }
 
-        #endregion TreeNodeCollection Extensions
+#endregion TreeNodeCollection Extensions
 
-        #region TextBox Extensions
+#region TextBox Extensions
         /// <summary>
         /// Automatically (un)set vertical scrollbars for a TextBox based on whether or not it needs them.
         /// </summary>
@@ -2306,6 +2204,6 @@ namespace Chummer
             });
         }
 
-        #endregion
+#endregion
     }
 }

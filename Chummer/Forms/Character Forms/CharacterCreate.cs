@@ -172,7 +172,7 @@ namespace Chummer
         {
             try
             {
-                using (await CursorWait.NewAsync(this))
+                using (await CursorWait.NewAsync(this, token: GenericToken))
                 {
                     using (CustomActivity op_load_frm_create = await Timekeeper.StartSyncronAsync(
                                "load_frm_create", null, CustomActivity.OperationType.RequestOperation,
@@ -468,7 +468,7 @@ namespace Chummer
                                 {
                                     // Populate the Magician Traditions list.
                                     XPathNavigator xmlTraditionsBaseChummerNode =
-                                        await (await CharacterObject.LoadDataXPathAsync("traditions.xml"))
+                                        await (await CharacterObject.LoadDataXPathAsync("traditions.xml", token: GenericToken))
                                             .SelectSingleNodeAndCacheExpressionAsync("/chummer");
                                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                out List<ListItem> lstTraditions))
@@ -1311,12 +1311,6 @@ namespace Chummer
             ToolStripManager.Merge(tsMain, "toolStrip");
         }
 
-        private async void ReopenCharacter(object sender, FormClosedEventArgs e)
-        {
-            await Program.OpenCharacter(CharacterObject);
-            await this.DoThreadSafeAsync(x => x.FormClosed -= ReopenCharacter);
-        }
-
         #endregion Form Events
 
         #region Character Events
@@ -1672,7 +1666,7 @@ namespace Chummer
                             {
                                 if (!x.TabPages.Contains(tabMagician))
                                     x.TabPages.Insert(3, tabMagician);
-                            });
+                            }, GenericToken);
                             await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true, GenericToken);
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
                                 && CharacterObject.AttributeSection.Attributes != null)
@@ -1687,7 +1681,7 @@ namespace Chummer
                         }
                         else
                         {
-                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabMagician));
+                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabMagician), GenericToken);
                             await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = false, GenericToken);
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute
                                 && CharacterObject.AttributeSection.Attributes != null)
@@ -1717,7 +1711,7 @@ namespace Chummer
                             {
                                 if (!x.TabPages.Contains(tabMagician))
                                     x.TabPages.Insert(3, tabMagician);
-                            });
+                            }, GenericToken);
                             await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true, GenericToken);
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
                                 && CharacterObject.AttributeSection.Attributes != null)
@@ -1734,13 +1728,13 @@ namespace Chummer
                             {
                                 if (!x.TabPages.Contains(tabAdept))
                                     x.TabPages.Insert(3, tabAdept);
-                            });
+                            }, GenericToken);
                         }
                         else
                         {
                             if (!CharacterObject.MagicianEnabled)
                             {
-                                await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabMagician));
+                                await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabMagician), GenericToken);
                                 await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = false, GenericToken);
                                 if (CharacterObjectSettings.MysAdeptSecondMAGAttribute
                                     && CharacterObject.AttributeSection.Attributes != null)
@@ -1756,7 +1750,7 @@ namespace Chummer
                             else
                                 await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true, GenericToken);
 
-                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabAdept));
+                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabAdept), GenericToken);
                         }
                     }
                         break;
@@ -1770,11 +1764,11 @@ namespace Chummer
                             {
                                 if (!x.TabPages.Contains(tabTechnomancer))
                                     x.TabPages.Insert(3, tabTechnomancer);
-                            });
+                            }, GenericToken);
                         }
                         else
                         {
-                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabTechnomancer));
+                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabTechnomancer), GenericToken);
                         }
                     }
                         break;
@@ -1788,11 +1782,11 @@ namespace Chummer
                             {
                                 if (!x.TabPages.Contains(tabAdvancedPrograms))
                                     x.TabPages.Insert(3, tabAdvancedPrograms);
-                            });
+                            }, GenericToken);
                         }
                         else
                         {
-                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabAdvancedPrograms));
+                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabAdvancedPrograms), GenericToken);
                         }
                     }
                         break;
@@ -1806,11 +1800,11 @@ namespace Chummer
                             {
                                 if (!x.TabPages.Contains(tabCritter))
                                     x.TabPages.Insert(3, tabCritter);
-                            });
+                            }, GenericToken);
                         }
                         else
                         {
-                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabCritter));
+                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabCritter), GenericToken);
                         }
                     }
                         break;
@@ -1956,11 +1950,11 @@ namespace Chummer
                             {
                                 if (!x.TabPages.Contains(tabInitiation))
                                     x.TabPages.Insert(3, tabInitiation);
-                            });
+                            }, GenericToken);
                         }
                         else
                         {
-                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabInitiation));
+                            await tabCharacterTabs.DoThreadSafeAsync(x => x.TabPages.Remove(tabInitiation), GenericToken);
                         }
 
                         await gpbInitiationType.DoThreadSafeAsync(x => x.Visible = CharacterObject.InitiationEnabled,
@@ -1972,7 +1966,7 @@ namespace Chummer
 
                     case nameof(Character.FirstMentorSpiritDisplayName):
                     {
-                        MentorSpirit objMentor = await CharacterObject.MentorSpirits.FirstOrDefaultAsync();
+                        MentorSpirit objMentor = await CharacterObject.MentorSpirits.FirstOrDefaultAsync(GenericToken);
                         if (objMentor != null)
                         {
                             await objMentor.SetSourceDetailAsync(lblMentorSpiritSource, GenericToken);
@@ -2001,9 +1995,9 @@ namespace Chummer
                     {
                         await RequestCharacterUpdate();
                         await lblPrototypeTranshumanESS.DoThreadSafeAsync(
-                            x => x.Visible = CharacterObject.IsPrototypeTranshuman);
+                            x => x.Visible = CharacterObject.IsPrototypeTranshuman, GenericToken);
                         await lblPrototypeTranshumanESSLabel.DoThreadSafeAsync(
-                            x => x.Visible = CharacterObject.IsPrototypeTranshuman);
+                            x => x.Visible = CharacterObject.IsPrototypeTranshuman, GenericToken);
                         break;
                     }
                     case nameof(Character.MetatypeCategory):
@@ -2064,7 +2058,7 @@ namespace Chummer
                     {
                         if (IsLoading)
                             break;
-                        using (await CursorWait.NewAsync(this))
+                        using (await CursorWait.NewAsync(this, token: GenericToken))
                         {
                             await this.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken);
                             try
@@ -2141,7 +2135,7 @@ namespace Chummer
                                 }, GenericToken);
 
                                 XPathNavigator xmlTraditionsBaseChummerNode =
-                                    await (await CharacterObject.LoadDataXPathAsync("traditions.xml"))
+                                    await (await CharacterObject.LoadDataXPathAsync("traditions.xml", token: GenericToken))
                                         .SelectSingleNodeAndCacheExpressionAsync("/chummer");
                                 using (new FetchSafelyFromPool<List<ListItem>>(
                                            Utils.ListItemListPool, out List<ListItem> lstTraditions))
@@ -2272,7 +2266,7 @@ namespace Chummer
 
                                 // Populate the Technomancer Streams list.
                                 xmlTraditionsBaseChummerNode =
-                                    await (await CharacterObject.LoadDataXPathAsync("streams.xml"))
+                                    await (await CharacterObject.LoadDataXPathAsync("streams.xml", token: GenericToken))
                                         .SelectSingleNodeAndCacheExpressionAsync("/chummer");
                                 using (new FetchSafelyFromPool<List<ListItem>>(
                                            Utils.ListItemListPool, out List<ListItem> lstStreams))
@@ -2339,7 +2333,7 @@ namespace Chummer
                     {
                         if (!CharacterObjectSettings.BookEnabled("HT"))
                         {
-                            using (await CursorWait.NewAsync(this))
+                            using (await CursorWait.NewAsync(this, token: GenericToken))
                             {
                                 await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
                                 await treLifestyles.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
@@ -2350,7 +2344,7 @@ namespace Chummer
                     }
                     case nameof(CharacterSettings.EnableEnemyTracking):
                     {
-                        using (await CursorWait.NewAsync(this))
+                        using (await CursorWait.NewAsync(this, token: GenericToken))
                         {
                             await this.DoThreadSafeAsync(x =>
                                       {
@@ -2401,7 +2395,8 @@ namespace Chummer
         {
             try
             {
-                await SaveCharacter(token: GenericToken);
+                if (await SaveCharacter(token: GenericToken) && IsReopenQueued)
+                    await this.DoThreadSafeAsync(x => x.Close(), GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -2413,7 +2408,8 @@ namespace Chummer
         {
             try
             {
-                await SaveCharacterAs(token: GenericToken);
+                if (await SaveCharacterAs(token: GenericToken) && IsReopenQueued)
+                    await this.DoThreadSafeAsync(x => x.Close(), GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -2425,7 +2421,8 @@ namespace Chummer
         {
             try
             {
-                await SaveCharacterAs(true, GenericToken);
+                if (await SaveCharacterAs(true, GenericToken) && IsReopenQueued)
+                    await this.DoThreadSafeAsync(x => x.Close(), GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -2518,7 +2515,14 @@ namespace Chummer
             if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ConfirmReapplyImprovements"), await LanguageManager.GetStringAsync("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
-            await DoReapplyImprovements();
+            try
+            {
+                await DoReapplyImprovements(token: GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async ValueTask DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null, CancellationToken token = default)
@@ -4403,142 +4407,149 @@ namespace Chummer
 
         private async void cmdAddQuality_Click(object sender, EventArgs e)
         {
-            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("qualities.xml");
-
-            using (await CursorWait.NewAsync(this))
+            try
             {
-                bool blnAddAgain;
-                do
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("qualities.xml", token: GenericToken);
+
+                using (await CursorWait.NewAsync(this, token: GenericToken))
                 {
-                    using (ThreadSafeForm<SelectQuality> frmPickQuality = await ThreadSafeForm<SelectQuality>.GetAsync(() => new SelectQuality(CharacterObject)))
+                    bool blnAddAgain;
+                    do
                     {
-                        // Don't do anything else if the form was canceled.
-                        if (await frmPickQuality.ShowDialogSafeAsync(this) == DialogResult.Cancel)
-                            break;
-
-                        blnAddAgain = frmPickQuality.MyForm.AddAgain;
-                        int intRatingToAdd = frmPickQuality.MyForm.SelectedRating;
-
-                        XmlNode objXmlQuality = objXmlDocument.SelectSingleNode(
-                            "/chummer/qualities/quality[id = " + frmPickQuality.MyForm.SelectedQuality.CleanXPath() + ']');
-                        int intDummy = 0;
-                        if (objXmlQuality != null && objXmlQuality["nolevels"] == null
-                                                  && objXmlQuality.TryGetInt32FieldQuickly("limit", ref intDummy))
+                        using (ThreadSafeForm<SelectQuality> frmPickQuality = await ThreadSafeForm<SelectQuality>.GetAsync(() => new SelectQuality(CharacterObject), GenericToken))
                         {
-                            intRatingToAdd -= CharacterObject.Qualities.Count(x =>
-                                                                                  x.SourceIDString.Equals(
-                                                                                      frmPickQuality.MyForm.SelectedQuality,
-                                                                                      StringComparison
-                                                                                          .InvariantCultureIgnoreCase)
-                                                                                  && string.IsNullOrEmpty(
-                                                                                      x.SourceName));
-                        }
-
-                        for (int i = 1; i <= intRatingToAdd; ++i)
-                        {
-                            List<Weapon> lstWeapons = new List<Weapon>(1);
-                            Quality objQuality = new Quality(CharacterObject);
-
-                            objQuality.Create(objXmlQuality, QualitySource.Selected, lstWeapons);
-                            if (objQuality.InternalId.IsEmptyGuid())
-                            {
-                                // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
-                                await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                    Improvement.ImprovementSource.Quality,
-                                    objQuality.InternalId);
+                            // Don't do anything else if the form was canceled.
+                            if (await frmPickQuality.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
                                 break;
+
+                            blnAddAgain = frmPickQuality.MyForm.AddAgain;
+                            int intRatingToAdd = frmPickQuality.MyForm.SelectedRating;
+
+                            XmlNode objXmlQuality = objXmlDocument.SelectSingleNode(
+                                "/chummer/qualities/quality[id = " + frmPickQuality.MyForm.SelectedQuality.CleanXPath() + ']');
+                            int intDummy = 0;
+                            if (objXmlQuality != null && objXmlQuality["nolevels"] == null
+                                                      && objXmlQuality.TryGetInt32FieldQuickly("limit", ref intDummy))
+                            {
+                                intRatingToAdd -= CharacterObject.Qualities.Count(x =>
+                                    x.SourceIDString.Equals(
+                                        frmPickQuality.MyForm.SelectedQuality,
+                                        StringComparison
+                                            .InvariantCultureIgnoreCase)
+                                    && string.IsNullOrEmpty(
+                                        x.SourceName));
                             }
 
-                            if (frmPickQuality.MyForm.FreeCost)
-                                objQuality.BP = 0;
-
-                            // Make sure that adding the Quality would not cause the character to exceed their BP limits.
-                            bool blnAddItem = true;
-                            if (objQuality.ContributeToLimit && !CharacterObject.IgnoreRules)
+                            for (int i = 1; i <= intRatingToAdd; ++i)
                             {
-                                // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
-                                int intMaxQualityAmount = CharacterObjectSettings.QualityKarmaLimit;
-                                string strAmount =
-                                    CharacterObjectSettings.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo) +
-                                    await LanguageManager.GetStringAsync("String_Space") +
-                                    await LanguageManager.GetStringAsync("String_Karma");
+                                List<Weapon> lstWeapons = new List<Weapon>(1);
+                                Quality objQuality = new Quality(CharacterObject);
 
-                                // Add the cost of the Quality that is being added.
-                                int intBP = objQuality.BP;
-
-                                if (objQuality.Type == QualityType.Negative)
+                                objQuality.Create(objXmlQuality, QualitySource.Selected, lstWeapons);
+                                if (objQuality.InternalId.IsEmptyGuid())
                                 {
+                                    // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
+                                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
+                                        Improvement.ImprovementSource.Quality,
+                                        objQuality.InternalId);
+                                    break;
+                                }
+
+                                if (frmPickQuality.MyForm.FreeCost)
+                                    objQuality.BP = 0;
+
+                                // Make sure that adding the Quality would not cause the character to exceed their BP limits.
+                                bool blnAddItem = true;
+                                if (objQuality.ContributeToLimit && !CharacterObject.IgnoreRules)
+                                {
+                                    // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
+                                    int intMaxQualityAmount = CharacterObjectSettings.QualityKarmaLimit;
+                                    string strAmount =
+                                        CharacterObjectSettings.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo) +
+                                        await LanguageManager.GetStringAsync("String_Space") +
+                                        await LanguageManager.GetStringAsync("String_Karma");
+
+                                    // Add the cost of the Quality that is being added.
+                                    int intBP = objQuality.BP;
+
+                                    if (objQuality.Type == QualityType.Negative)
+                                    {
+                                        // Check if adding this Quality would put the character over their limit.
+                                        if (!CharacterObjectSettings.ExceedNegativeQualities)
+                                        {
+                                            intBP += CharacterObject.NegativeQualityLimitKarma;
+                                            if (intBP < intMaxQualityAmount * -1)
+                                            {
+                                                Program.ShowMessageBox(this,
+                                                                       string.Format(GlobalSettings.CultureInfo,
+                                                                           await LanguageManager.GetStringAsync(
+                                                                               "Message_NegativeQualityLimit"),
+                                                                           strAmount),
+                                                                       await LanguageManager.GetStringAsync(
+                                                                           "MessageTitle_NegativeQualityLimit"),
+                                                                       MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                                blnAddItem = false;
+                                            }
+                                            else if (CharacterObject.MetatypeBP < 0
+                                                     && intBP + CharacterObject.MetatypeBP < intMaxQualityAmount * -1)
+                                            {
+                                                Program.ShowMessageBox(this,
+                                                                       string.Format(GlobalSettings.CultureInfo,
+                                                                           await LanguageManager.GetStringAsync(
+                                                                               "Message_NegativeQualityAndMetatypeLimit"),
+                                                                           strAmount),
+                                                                       await LanguageManager.GetStringAsync(
+                                                                           "MessageTitle_NegativeQualityLimit"),
+                                                                       MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                                blnAddItem = false;
+                                            }
+                                        }
+                                    }
                                     // Check if adding this Quality would put the character over their limit.
-                                    if (!CharacterObjectSettings.ExceedNegativeQualities)
+                                    else if (!CharacterObjectSettings.ExceedPositiveQualities)
                                     {
-                                        intBP += CharacterObject.NegativeQualityLimitKarma;
-                                        if (intBP < intMaxQualityAmount * -1)
+                                        intBP += CharacterObject.PositiveQualityKarma;
+                                        if (intBP > intMaxQualityAmount)
                                         {
                                             Program.ShowMessageBox(this,
                                                                    string.Format(GlobalSettings.CultureInfo,
                                                                        await LanguageManager.GetStringAsync(
-                                                                           "Message_NegativeQualityLimit"),
+                                                                           "Message_PositiveQualityLimit"),
                                                                        strAmount),
                                                                    await LanguageManager.GetStringAsync(
-                                                                       "MessageTitle_NegativeQualityLimit"),
-                                                                   MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                            blnAddItem = false;
-                                        }
-                                        else if (CharacterObject.MetatypeBP < 0
-                                                 && intBP + CharacterObject.MetatypeBP < intMaxQualityAmount * -1)
-                                        {
-                                            Program.ShowMessageBox(this,
-                                                                   string.Format(GlobalSettings.CultureInfo,
-                                                                       await LanguageManager.GetStringAsync(
-                                                                           "Message_NegativeQualityAndMetatypeLimit"),
-                                                                       strAmount),
-                                                                   await LanguageManager.GetStringAsync(
-                                                                       "MessageTitle_NegativeQualityLimit"),
+                                                                       "MessageTitle_PositiveQualityLimit"),
                                                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
                                             blnAddItem = false;
                                         }
                                     }
                                 }
-                                // Check if adding this Quality would put the character over their limit.
-                                else if (!CharacterObjectSettings.ExceedPositiveQualities)
+
+                                if (blnAddItem)
                                 {
-                                    intBP += CharacterObject.PositiveQualityKarma;
-                                    if (intBP > intMaxQualityAmount)
+                                    await CharacterObject.Qualities.AddAsync(objQuality);
+
+                                    // Add any created Weapons to the character.
+                                    foreach (Weapon objWeapon in lstWeapons)
                                     {
-                                        Program.ShowMessageBox(this,
-                                                               string.Format(GlobalSettings.CultureInfo,
-                                                                             await LanguageManager.GetStringAsync(
-                                                                                 "Message_PositiveQualityLimit"),
-                                                                             strAmount),
-                                                               await LanguageManager.GetStringAsync(
-                                                                   "MessageTitle_PositiveQualityLimit"),
-                                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                        blnAddItem = false;
+                                        await CharacterObject.Weapons.AddAsync(objWeapon);
                                     }
                                 }
-                            }
-
-                            if (blnAddItem)
-                            {
-                                await CharacterObject.Qualities.AddAsync(objQuality);
-
-                                // Add any created Weapons to the character.
-                                foreach (Weapon objWeapon in lstWeapons)
+                                else
                                 {
-                                    await CharacterObject.Weapons.AddAsync(objWeapon);
+                                    // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
+                                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
+                                        Improvement.ImprovementSource.Quality,
+                                        objQuality.InternalId);
+                                    break;
                                 }
-                            }
-                            else
-                            {
-                                // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
-                                await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                    Improvement.ImprovementSource.Quality,
-                                    objQuality.InternalId);
-                                break;
                             }
                         }
-                    }
-                } while (blnAddAgain);
+                    } while (blnAddAgain);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -4579,7 +4590,7 @@ namespace Chummer
         }
         */
 
-        private async ValueTask<bool> RemoveQuality(Quality objSelectedQuality, bool blnConfirmDelete = true, bool blnCompleteDelete = true)
+        private async ValueTask<bool> RemoveQuality(Quality objSelectedQuality, bool blnConfirmDelete = true, bool blnCompleteDelete = true, CancellationToken token = default)
         {
             XmlNode objXmlDeleteQuality = await objSelectedQuality.GetNodeAsync();
             switch (objSelectedQuality.OriginSource)
@@ -4596,7 +4607,7 @@ namespace Chummer
                     return false;
             }
 
-            using (await CursorWait.NewAsync(this))
+            using (await CursorWait.NewAsync(this, token: token))
             {
                 if (objSelectedQuality.OriginSource == QualitySource.MetatypeRemovable)
                 {
@@ -4672,7 +4683,7 @@ namespace Chummer
                         XPathNavigator xmlCharacterNode = await CharacterObject.GetNodeXPathAsync();
                         if (xmlCharacterNode != null)
                         {
-                            XmlDocument xmlQualitiesDoc = await CharacterObject.LoadDataAsync("qualities.xml");
+                            XmlDocument xmlQualitiesDoc = await CharacterObject.LoadDataAsync("qualities.xml", token: token);
                             // Create the Qualities that come with the Metatype.
                             foreach (XPathNavigator objXmlQualityItem in xmlCharacterNode.Select(
                                          "qualities/*/quality[. = " + objSelectedQuality.Name.CleanXPath() + ']'))
@@ -4696,7 +4707,7 @@ namespace Chummer
                 {
                     objXmlDeleteQuality
                         = Quality.GetNodeOverrideable(objSelectedQuality.SourceIDString,
-                                                      await CharacterObject.LoadDataAsync("lifemodules.xml"));
+                                                      await CharacterObject.LoadDataAsync("lifemodules.xml", token: token));
                 }
 
                 // Fix for legacy characters with old addqualities improvements.
@@ -4735,7 +4746,7 @@ namespace Chummer
                 Quality objLoopQuality = CharacterObject.Qualities[i];
                 if (objLoopQuality.InternalId != strInternalIDToRemove)
                     continue;
-                if (!await RemoveQuality(objLoopQuality, blnFirstRemoval))
+                if (!await RemoveQuality(objLoopQuality, blnFirstRemoval, token: token))
                     break;
                 blnFirstRemoval = false;
                 if (i > CharacterObject.Qualities.Count)
@@ -7486,111 +7497,118 @@ namespace Chummer
         {
             if (_blnSkipQualityLevelChanged)
                 return;
-            // Locate the selected Quality.
-            if (!(await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Quality objSelectedQuality))
-                return;
-            int intCurrentLevels = objSelectedQuality.Levels;
-            int intSelectedLevels = await nudQualityLevel.DoThreadSafeFuncAsync(x => x.ValueAsInt);
-            // Adding new levels
-            for (; intSelectedLevels > intCurrentLevels; ++intCurrentLevels)
+            try
             {
-                if (!(await objSelectedQuality.GetNodeXPathAsync()).RequirementsMet(CharacterObject, await LanguageManager.GetStringAsync("String_Quality")))
+                // Locate the selected Quality.
+                if (!(await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Quality objSelectedQuality))
+                    return;
+                int intCurrentLevels = objSelectedQuality.Levels;
+                int intSelectedLevels = await nudQualityLevel.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken);
+                // Adding new levels
+                for (; intSelectedLevels > intCurrentLevels; ++intCurrentLevels)
                 {
-                    await UpdateQualityLevelValue(objSelectedQuality);
-                    break;
-                }
-                List<Weapon> lstWeapons = new List<Weapon>(1);
-                Quality objQuality = new Quality(CharacterObject);
-
-                objQuality.Create(await objSelectedQuality.GetNodeAsync(), QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
-                if (objQuality.InternalId.IsEmptyGuid())
-                {
-                    // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
-                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
-                    await UpdateQualityLevelValue(objSelectedQuality);
-                    break;
-                }
-
-                objQuality.BP = objSelectedQuality.BP;
-                objQuality.ContributeToLimit = objSelectedQuality.ContributeToLimit;
-
-                // Make sure that adding the Quality would not cause the character to exceed their BP limits.
-                bool blnAddItem = true;
-                if (objQuality.ContributeToLimit && !CharacterObject.IgnoreRules)
-                {
-                    // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
-                    string strAmount = CharacterObjectSettings.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_Space") + await LanguageManager.GetStringAsync("String_Karma");
-                    int intMaxQualityAmount = CharacterObjectSettings.QualityKarmaLimit;
-
-                    // Add the cost of the Quality that is being added.
-                    int intBP = objQuality.BP;
-
-                    if (objQuality.Type == QualityType.Negative)
+                    if (!(await objSelectedQuality.GetNodeXPathAsync()).RequirementsMet(CharacterObject, await LanguageManager.GetStringAsync("String_Quality")))
                     {
+                        await UpdateQualityLevelValue(objSelectedQuality, GenericToken);
+                        break;
+                    }
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
+                    Quality objQuality = new Quality(CharacterObject);
+
+                    objQuality.Create(await objSelectedQuality.GetNodeAsync(), QualitySource.Selected, lstWeapons, objSelectedQuality.Extra);
+                    if (objQuality.InternalId.IsEmptyGuid())
+                    {
+                        // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
+                        await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
+                        await UpdateQualityLevelValue(objSelectedQuality, GenericToken);
+                        break;
+                    }
+
+                    objQuality.BP = objSelectedQuality.BP;
+                    objQuality.ContributeToLimit = objSelectedQuality.ContributeToLimit;
+
+                    // Make sure that adding the Quality would not cause the character to exceed their BP limits.
+                    bool blnAddItem = true;
+                    if (objQuality.ContributeToLimit && !CharacterObject.IgnoreRules)
+                    {
+                        // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
+                        string strAmount = CharacterObjectSettings.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_Space") + await LanguageManager.GetStringAsync("String_Karma");
+                        int intMaxQualityAmount = CharacterObjectSettings.QualityKarmaLimit;
+
+                        // Add the cost of the Quality that is being added.
+                        int intBP = objQuality.BP;
+
+                        if (objQuality.Type == QualityType.Negative)
+                        {
+                            // Check if adding this Quality would put the character over their limit.
+                            if (!CharacterObjectSettings.ExceedNegativeQualities)
+                            {
+                                intBP += CharacterObject.NegativeQualityLimitKarma;
+                                if (intBP < intMaxQualityAmount * -1)
+                                {
+                                    Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_NegativeQualityLimit"), strAmount),
+                                                           await LanguageManager.GetStringAsync("MessageTitle_NegativeQualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    blnAddItem = false;
+                                }
+                                else if (CharacterObject.MetatypeBP < 0 && intBP + CharacterObject.MetatypeBP < intMaxQualityAmount * -1)
+                                {
+                                    Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_NegativeQualityAndMetatypeLimit"), strAmount),
+                                                           await LanguageManager.GetStringAsync("MessageTitle_NegativeQualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    blnAddItem = false;
+                                }
+                            }
+                        }
                         // Check if adding this Quality would put the character over their limit.
-                        if (!CharacterObjectSettings.ExceedNegativeQualities)
+                        else if (!CharacterObjectSettings.ExceedPositiveQualities)
                         {
-                            intBP += CharacterObject.NegativeQualityLimitKarma;
-                            if (intBP < intMaxQualityAmount * -1)
+                            intBP += CharacterObject.PositiveQualityKarma;
+                            if (intBP > intMaxQualityAmount)
                             {
-                                Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_NegativeQualityLimit"), strAmount),
-                                    await LanguageManager.GetStringAsync("MessageTitle_NegativeQualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                blnAddItem = false;
-                            }
-                            else if (CharacterObject.MetatypeBP < 0 && intBP + CharacterObject.MetatypeBP < intMaxQualityAmount * -1)
-                            {
-                                Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_NegativeQualityAndMetatypeLimit"), strAmount),
-                                    await LanguageManager.GetStringAsync("MessageTitle_NegativeQualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                Program.ShowMessageBox(this,
+                                                       string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_PositiveQualityLimit"), strAmount),
+                                                       await LanguageManager.GetStringAsync("MessageTitle_PositiveQualityLimit"),
+                                                       MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 blnAddItem = false;
                             }
                         }
                     }
-                    // Check if adding this Quality would put the character over their limit.
-                    else if (!CharacterObjectSettings.ExceedPositiveQualities)
+
+                    if (blnAddItem)
                     {
-                        intBP += CharacterObject.PositiveQualityKarma;
-                        if (intBP > intMaxQualityAmount)
+                        //to avoid an System.InvalidOperationException: Cannot change ObservableCollection during a CollectionChanged event.
+                        _blnSkipQualityLevelChanged = true;
+                        await CharacterObject.Qualities.AddAsync(objQuality);
+                        _blnSkipQualityLevelChanged = false;
+
+                        // Add any created Weapons to the character.
+                        foreach (Weapon objWeapon in lstWeapons)
                         {
-                            Program.ShowMessageBox(this,
-                                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_PositiveQualityLimit"), strAmount),
-                                await LanguageManager.GetStringAsync("MessageTitle_PositiveQualityLimit"),
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            blnAddItem = false;
+                            await CharacterObject.Weapons.AddAsync(objWeapon);
                         }
                     }
-                }
-
-                if (blnAddItem)
-                {
-                    //to avoid an System.InvalidOperationException: Cannot change ObservableCollection during a CollectionChanged event.
-                    _blnSkipQualityLevelChanged = true;
-                    await CharacterObject.Qualities.AddAsync(objQuality);
-                    _blnSkipQualityLevelChanged = false;
-
-                    // Add any created Weapons to the character.
-                    foreach (Weapon objWeapon in lstWeapons)
+                    else
                     {
-                        await CharacterObject.Weapons.AddAsync(objWeapon);
+                        // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
+                        await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
+                        await UpdateQualityLevelValue(objSelectedQuality, GenericToken);
+                        break;
                     }
                 }
-                else
+                // Removing levels
+                for (; intSelectedLevels < intCurrentLevels; --intCurrentLevels)
                 {
-                    // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
-                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
-                    await UpdateQualityLevelValue(objSelectedQuality);
-                    break;
+                    Quality objInvisibleQuality = CharacterObject.Qualities.FirstOrDefault(x => x.SourceIDString == objSelectedQuality.SourceIDString && x.Extra == objSelectedQuality.Extra && x.SourceName == objSelectedQuality.SourceName && x.InternalId != objSelectedQuality.InternalId);
+                    if (objInvisibleQuality == null || !await RemoveQuality(objInvisibleQuality, false, false))
+                    {
+                        if (!await RemoveQuality(objSelectedQuality, false, false, GenericToken))
+                            await UpdateQualityLevelValue(objSelectedQuality, GenericToken);
+                        break;
+                    }
                 }
             }
-            // Removing levels
-            for (; intSelectedLevels < intCurrentLevels; --intCurrentLevels)
+            catch (OperationCanceledException)
             {
-                Quality objInvisibleQuality = CharacterObject.Qualities.FirstOrDefault(x => x.SourceIDString == objSelectedQuality.SourceIDString && x.Extra == objSelectedQuality.Extra && x.SourceName == objSelectedQuality.SourceName && x.InternalId != objSelectedQuality.InternalId);
-                if (objInvisibleQuality == null || !await RemoveQuality(objInvisibleQuality, false, false))
-                {
-                    if (!await RemoveQuality(objSelectedQuality, false, false))
-                        await UpdateQualityLevelValue(objSelectedQuality);
-                    break;
-                }
+                //swallow this
             }
         }
 
@@ -7617,43 +7635,61 @@ namespace Chummer
         {
             if (IsRefreshing || IsLoading)
                 return;
-            string strSelectedGrade = await cboCyberwareGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
-            if (string.IsNullOrEmpty(strSelectedGrade) ||
-                !(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Cyberware objCyberware))
-                return;
-            // Locate the selected piece of Cyberware.
-            Grade objNewGrade = CharacterObject.GetGrades(objCyberware.SourceType).FirstOrDefault(x => x.Name == strSelectedGrade);
-            if (objNewGrade == null)
-                return;
-            // Updated the selected Cyberware Grade.
-            objCyberware.Grade = objNewGrade;
+            try
+            {
+                string strSelectedGrade = await cboCyberwareGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), GenericToken);
+                if (string.IsNullOrEmpty(strSelectedGrade) ||
+                    !(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Cyberware objCyberware))
+                    return;
+                // Locate the selected piece of Cyberware.
+                Grade objNewGrade = CharacterObject.GetGrades(objCyberware.SourceType).FirstOrDefault(x => x.Name == strSelectedGrade);
+                if (objNewGrade == null)
+                    return;
+                // Updated the selected Cyberware Grade.
+                objCyberware.Grade = objNewGrade;
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void chkPrototypeTranshuman_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsRefreshing || !(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Cyberware objCyberware))
+            if (IsRefreshing)
                 return;
-            // Update the selected Cyberware Rating.
-            objCyberware.PrototypeTranshuman = await chkPrototypeTranshuman.DoThreadSafeFuncAsync(x => x.Checked);
+            try
+            {
+                if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Cyberware objCyberware))
+                    return;
+                // Update the selected Cyberware Rating.
+                objCyberware.PrototypeTranshuman = await chkPrototypeTranshuman.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void nudCyberwareRating_ValueChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            switch (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag))
+            try
             {
-                // Locate the selected piece of Cyberware.
-                case Cyberware objCyberware:
+                switch (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken))
+                {
+                    // Locate the selected piece of Cyberware.
+                    case Cyberware objCyberware:
                     {
                         // Update the selected Cyberware Rating.
-                        objCyberware.Rating = await nudCyberwareRating.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+                        objCyberware.Rating = await nudCyberwareRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken);
 
                         // See if a Bonus node exists.
                         if (objCyberware.Bonus?.InnerXml.Contains("Rating") == true || objCyberware.PairBonus?.InnerXml.Contains("Rating") == true || objCyberware.WirelessOn && objCyberware.WirelessBonus?.InnerXml.Contains("Rating") == true)
@@ -7700,20 +7736,20 @@ namespace Chummer
                                 objCyberware.ChangeModularEquip(false);
                         }
 
-                        await treCyberware.DoThreadSafeAsync(x => x.SelectedNode.Text = objCyberware.CurrentDisplayName);
+                        await treCyberware.DoThreadSafeAsync(x => x.SelectedNode.Text = objCyberware.CurrentDisplayName, GenericToken);
                         break;
                     }
-                case Gear objGear:
+                    case Gear objGear:
                     {
                         // Find the selected piece of Gear.
                         if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
                         {
-                            if (!await objGear.RefreshSingleFocusRating(treFoci, await nudCyberwareRating.DoThreadSafeFuncAsync(x => x.ValueAsInt)))
+                            if (!await objGear.RefreshSingleFocusRating(treFoci, await nudCyberwareRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)))
                             {
                                 IsRefreshing = true;
                                 try
                                 {
-                                    await nudCyberwareRating.DoThreadSafeAsync(x => x.ValueAsInt = objGear.Rating);
+                                    await nudCyberwareRating.DoThreadSafeAsync(x => x.ValueAsInt = objGear.Rating, GenericToken);
                                 }
                                 finally
                                 {
@@ -7724,7 +7760,7 @@ namespace Chummer
                             }
                         }
                         else
-                            objGear.Rating = await nudCyberwareRating.DoThreadSafeFuncAsync(x => x.ValueAsInt);
+                            objGear.Rating = await nudCyberwareRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken);
 
                         // See if a Bonus node exists.
                         if (objGear.Bonus != null || objGear.WirelessOn && objGear.WirelessBonus != null)
@@ -7743,13 +7779,18 @@ namespace Chummer
                                 objGear.ChangeEquippedStatus(false);
                         }
 
-                        await treCyberware.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName);
+                        await treCyberware.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName, GenericToken);
                         break;
                     }
-            }
+                }
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         #endregion Additional Cyberware Tab Control Events
@@ -7891,57 +7932,64 @@ namespace Chummer
 
         private async void treLifestyles_DoubleClick(object sender, EventArgs e)
         {
-            if (!(await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Lifestyle objLifestyle))
-                return;
-
-            string strGuid = objLifestyle.InternalId;
-            int intMonths = objLifestyle.Increments;
-            int intPosition = await CharacterObject.Lifestyles.IndexOfAsync(CharacterObject.Lifestyles.FirstOrDefault(p => p.InternalId == objLifestyle.InternalId));
-
-            if (objLifestyle.StyleType != LifestyleType.Standard)
+            try
             {
-                Lifestyle newLifestyle = objLifestyle;
-                // Edit Advanced Lifestyle.
-                using (ThreadSafeForm<SelectLifestyleAdvanced> frmPickLifestyle
-                       = await ThreadSafeForm<SelectLifestyleAdvanced>.GetAsync(
-                           () => new SelectLifestyleAdvanced(CharacterObject, newLifestyle)))
+                if (!(await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Lifestyle objLifestyle))
+                    return;
+
+                string strGuid = objLifestyle.InternalId;
+                int intMonths = objLifestyle.Increments;
+                int intPosition = await CharacterObject.Lifestyles.IndexOfAsync(CharacterObject.Lifestyles.FirstOrDefault(p => p.InternalId == objLifestyle.InternalId));
+
+                if (objLifestyle.StyleType != LifestyleType.Standard)
                 {
-                    if (await frmPickLifestyle.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                    Lifestyle newLifestyle = objLifestyle;
+                    // Edit Advanced Lifestyle.
+                    using (ThreadSafeForm<SelectLifestyleAdvanced> frmPickLifestyle
+                           = await ThreadSafeForm<SelectLifestyleAdvanced>.GetAsync(
+                               () => new SelectLifestyleAdvanced(CharacterObject, newLifestyle), GenericToken))
                     {
-                        if (!ReferenceEquals(objLifestyle, frmPickLifestyle.MyForm.SelectedLifestyle))
+                        if (await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        {
+                            if (!ReferenceEquals(objLifestyle, frmPickLifestyle.MyForm.SelectedLifestyle))
+                                frmPickLifestyle.MyForm.SelectedLifestyle.Dispose();
+                            return;
+                        }
+
+                        // Update the selected Lifestyle and refresh the list.
+                        objLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
+                    }
+                }
+                else
+                {
+                    // Edit Basic Lifestyle.
+                    using (ThreadSafeForm<SelectLifestyle> frmPickLifestyle
+                           = await ThreadSafeForm<SelectLifestyle>.GetAsync(() => new SelectLifestyle(CharacterObject), GenericToken))
+                    {
+                        frmPickLifestyle.MyForm.SetLifestyle(objLifestyle);
+
+                        if (await frmPickLifestyle.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                        {
                             frmPickLifestyle.MyForm.SelectedLifestyle.Dispose();
-                        return;
-                    }
+                            return;
+                        }
 
-                    // Update the selected Lifestyle and refresh the list.
-                    objLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
+                        // Update the selected Lifestyle and refresh the list.
+                        objLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
+                    }
                 }
+                objLifestyle.Increments = intMonths;
+
+                objLifestyle.SetInternalId(strGuid);
+                CharacterObject.Lifestyles[intPosition] = objLifestyle;
+
+                await RequestCharacterUpdate();
+                await SetDirty(true);
             }
-            else
+            catch (OperationCanceledException)
             {
-                // Edit Basic Lifestyle.
-                using (ThreadSafeForm<SelectLifestyle> frmPickLifestyle
-                       = await ThreadSafeForm<SelectLifestyle>.GetAsync(() => new SelectLifestyle(CharacterObject)))
-                {
-                    frmPickLifestyle.MyForm.SetLifestyle(objLifestyle);
-
-                    if (await frmPickLifestyle.ShowDialogSafeAsync(this) == DialogResult.Cancel)
-                    {
-                        frmPickLifestyle.MyForm.SelectedLifestyle.Dispose();
-                        return;
-                    }
-
-                    // Update the selected Lifestyle and refresh the list.
-                    objLifestyle = frmPickLifestyle.MyForm.SelectedLifestyle;
-                }
+                //swallow this
             }
-            objLifestyle.Increments = intMonths;
-
-            objLifestyle.SetInternalId(strGuid);
-            CharacterObject.Lifestyles[intPosition] = objLifestyle;
-
-            await RequestCharacterUpdate();
-            await SetDirty(true);
         }
 
         /*
@@ -8010,22 +8058,29 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            // Locate the selected Lifestyle.
-            if (!(await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Lifestyle objLifestyle))
-                return;
-
-            IsRefreshing = true;
             try
             {
-                objLifestyle.Increments = await nudLifestyleMonths.DoThreadSafeFuncAsync(x => x.ValueAsInt);
-            }
-            finally
-            {
-                IsRefreshing = false;
-            }
+                // Locate the selected Lifestyle.
+                if (!(await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Lifestyle objLifestyle))
+                    return;
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                IsRefreshing = true;
+                try
+                {
+                    objLifestyle.Increments = await nudLifestyleMonths.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken);
+                }
+                finally
+                {
+                    IsRefreshing = false;
+                }
+
+                await RequestCharacterUpdate();
+                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void treGear_AfterSelect(object sender, TreeViewEventArgs e)
@@ -8047,64 +8102,78 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            
-            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Gear objGear))
-                return;
 
-            if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
+            try
             {
-                if (!await objGear.RefreshSingleFocusRating(treFoci, await nudGearRating.DoThreadSafeFuncAsync(x => x.ValueAsInt)))
-                {
-                    IsRefreshing = true;
-                    try
-                    {
-                        await nudGearRating.DoThreadSafeAsync(x => x.ValueAsInt = objGear.Rating);
-                    }
-                    finally
-                    {
-                        IsRefreshing = false;
-                    }
-
+                if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Gear objGear))
                     return;
-                }
-            }
-            else
-                objGear.Rating = await nudGearRating.DoThreadSafeFuncAsync(x => x.ValueAsInt);
 
-            if (objGear.Bonus != null || objGear.WirelessOn && objGear.WirelessBonus != null)
+                if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
+                {
+                    if (!await objGear.RefreshSingleFocusRating(treFoci, await nudGearRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)))
+                    {
+                        IsRefreshing = true;
+                        try
+                        {
+                            await nudGearRating.DoThreadSafeAsync(x => x.ValueAsInt = objGear.Rating, GenericToken);
+                        }
+                        finally
+                        {
+                            IsRefreshing = false;
+                        }
+
+                        return;
+                    }
+                }
+                else
+                    objGear.Rating = await nudGearRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken);
+
+                if (objGear.Bonus != null || objGear.WirelessOn && objGear.WirelessBonus != null)
+                {
+                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
+                    if (!string.IsNullOrEmpty(objGear.Extra))
+                    {
+                        ImprovementManager.ForcedValue = objGear.Extra.TrimEndOnce(", Hacked");
+                    }
+                    if (objGear.Bonded || (objGear.Category != "Foci" && objGear.Category != "Metamagic Foci" && objGear.Category != "Stacked Focus"))
+                    {
+                        if (objGear.Bonus != null)
+                            await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, objGear.Rating, objGear.CurrentDisplayNameShort);
+                        if (objGear.WirelessOn && objGear.WirelessBonus != null)
+                            await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.CurrentDisplayNameShort);
+                    }
+
+                    if (!objGear.Equipped)
+                        objGear.ChangeEquippedStatus(false);
+                }
+
+                await RequestCharacterUpdate();
+                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
             {
-                await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
-                if (!string.IsNullOrEmpty(objGear.Extra))
-                {
-                    ImprovementManager.ForcedValue = objGear.Extra.TrimEndOnce(", Hacked");
-                }
-                if (objGear.Bonded || (objGear.Category != "Foci" && objGear.Category != "Metamagic Foci" && objGear.Category != "Stacked Focus"))
-                {
-                    if (objGear.Bonus != null)
-                        await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, objGear.Rating, objGear.CurrentDisplayNameShort);
-                    if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                        await ImprovementManager.CreateImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.CurrentDisplayNameShort);
-                }
-
-                if (!objGear.Equipped)
-                    objGear.ChangeEquippedStatus(false);
+                //swallow this
             }
-
-            await RequestCharacterUpdate();
-            await SetDirty(true);
         }
 
         private async void nudGearQty_ValueChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            // Attempt to locate the selected piece of Gear.
-            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Gear objGear))
-                return;
-            objGear.Quantity = await nudGearQty.DoThreadSafeFuncAsync(x => x.Value);
+            try
+            {
+                // Attempt to locate the selected piece of Gear.
+                if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Gear objGear))
+                    return;
+                objGear.Quantity = await nudGearQty.DoThreadSafeFuncAsync(x => x.Value, GenericToken);
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void nudDrugQty_ValueChanged(object sender, EventArgs e)
@@ -8113,13 +8182,20 @@ namespace Chummer
             if (IsLoading || IsRefreshing)
                 return;
 
-            if (!(await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Drug objDrug))
-                return;
-            objDrug.Quantity = await nudDrugQty.DoThreadSafeFuncAsync(x => x.ValueAsInt);
-            await RefreshSelectedDrug();
+            try
+            {
+                if (!(await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Drug objDrug))
+                    return;
+                objDrug.Quantity = await nudDrugQty.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken);
+                await RefreshSelectedDrug();
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void chkArmorEquipped_CheckedChanged(object sender, EventArgs e)
@@ -8127,47 +8203,54 @@ namespace Chummer
             if (IsRefreshing)
                 return;
 
-            object objSelected = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
-            if (objSelected == null)
-                return;
-
-            bool blnChecked = await chkArmorEquipped.DoThreadSafeFuncAsync(x => x.Checked);
-
-            // Locate the selected Armor or Armor Mod.
-            switch (objSelected)
+            try
             {
-                case Armor objArmor:
-                    objArmor.Equipped = blnChecked;
-                    break;
-
-                case ArmorMod objMod:
-                    objMod.Equipped = blnChecked;
-                    break;
-
-                case Gear objGear:
-                    objGear.Equipped = blnChecked;
-                    if (blnChecked)
-                    {
-                        CharacterObject.Armor.FindArmorGear(objGear.InternalId, out Armor objParentArmor, out ArmorMod objParentMod);
-                        // Add the Gear's Improvements to the character.
-                        if (objParentArmor.Equipped && objParentMod?.Equipped != false)
-                        {
-                            objGear.ChangeEquippedStatus(true);
-                        }
-                    }
-                    else
-                    {
-                        objGear.ChangeEquippedStatus(false);
-                    }
-
-                    break;
-
-                default:
+                object objSelected = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken);
+                if (objSelected == null)
                     return;
-            }
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                bool blnChecked = await chkArmorEquipped.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
+
+                // Locate the selected Armor or Armor Mod.
+                switch (objSelected)
+                {
+                    case Armor objArmor:
+                        objArmor.Equipped = blnChecked;
+                        break;
+
+                    case ArmorMod objMod:
+                        objMod.Equipped = blnChecked;
+                        break;
+
+                    case Gear objGear:
+                        objGear.Equipped = blnChecked;
+                        if (blnChecked)
+                        {
+                            CharacterObject.Armor.FindArmorGear(objGear.InternalId, out Armor objParentArmor, out ArmorMod objParentMod);
+                            // Add the Gear's Improvements to the character.
+                            if (objParentArmor.Equipped && objParentMod?.Equipped != false)
+                            {
+                                objGear.ChangeEquippedStatus(true);
+                            }
+                        }
+                        else
+                        {
+                            objGear.ChangeEquippedStatus(false);
+                        }
+
+                        break;
+
+                    default:
+                        return;
+                }
+
+                await RequestCharacterUpdate();
+                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void chkWeaponEquipped_CheckedChanged(object sender, EventArgs e)
@@ -8175,47 +8258,61 @@ namespace Chummer
             if (IsRefreshing)
                 return;
 
-            object objSelected = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
-            if (objSelected == null)
-                return;
-
-            bool blnChecked = await chkWeaponEquipped.DoThreadSafeFuncAsync(x => x.Checked);
-            // Determine if this is a Weapon.
-            switch (objSelected)
+            try
             {
-                case Weapon objWeapon:
-                    objWeapon.Equipped = blnChecked;
-                    break;
-
-                case Gear objGear:
-                    // Find the selected Gear.
-                    objGear.Equipped = blnChecked;
-                    objGear.ChangeEquippedStatus(blnChecked);
-                    break;
-
-                case WeaponAccessory objAccessory:
-                    objAccessory.Equipped = blnChecked;
-                    break;
-
-                default:
+                object objSelected = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken);
+                if (objSelected == null)
                     return;
-            }
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                bool blnChecked = await chkWeaponEquipped.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
+                // Determine if this is a Weapon.
+                switch (objSelected)
+                {
+                    case Weapon objWeapon:
+                        objWeapon.Equipped = blnChecked;
+                        break;
+
+                    case Gear objGear:
+                        // Find the selected Gear.
+                        objGear.Equipped = blnChecked;
+                        objGear.ChangeEquippedStatus(blnChecked);
+                        break;
+
+                    case WeaponAccessory objAccessory:
+                        objAccessory.Equipped = blnChecked;
+                        break;
+
+                    default:
+                        return;
+                }
+
+                await RequestCharacterUpdate();
+                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void chkIncludedInWeapon_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
-            // Locate the selected Weapon Accessory or Modification.
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is WeaponAccessory objAccessory))
-                return;
-            objAccessory.IncludedInWeapon = await chkIncludedInWeapon.DoThreadSafeFuncAsync(x => x.Checked);
+            try
+            {
+                // Locate the selected Weapon Accessory or Modification.
+                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is WeaponAccessory objAccessory))
+                    return;
+                objAccessory.IncludedInWeapon = await chkIncludedInWeapon.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void treGear_ItemDrag(object sender, ItemDragEventArgs e)
@@ -8283,15 +8380,22 @@ namespace Chummer
             if (IsRefreshing)
                 return;
 
-            // Attempt to locate the selected piece of Gear.
-            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Gear objSelectedGear))
-                return;
-            bool blnChecked = await chkGearEquipped.DoThreadSafeFuncAsync(x => x.Checked);
-            objSelectedGear.Equipped = blnChecked;
-            objSelectedGear.ChangeEquippedStatus(blnChecked);
+            try
+            {
+                // Attempt to locate the selected piece of Gear.
+                if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Gear objSelectedGear))
+                    return;
+                bool blnChecked = await chkGearEquipped.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
+                objSelectedGear.Equipped = blnChecked;
+                objSelectedGear.ChangeEquippedStatus(blnChecked);
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void chkGearHomeNode_CheckedChanged(object sender, EventArgs e)
@@ -8887,7 +8991,14 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshSelectedSpell();
+            try
+            {
+                await RefreshSelectedSpell(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void treFoci_AfterCheck(object sender, TreeViewEventArgs e)
@@ -9153,79 +9264,128 @@ namespace Chummer
         {
             if (IsLoading || IsRefreshing || IsDisposed)
                 return;
-
-            string strSelectedId = await cboTradition.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
-            if (string.IsNullOrEmpty(strSelectedId))
-                return;
-
-            XmlNode xmlTradition = (await CharacterObject.LoadDataAsync("traditions.xml"))
-                .SelectSingleNode("/chummer/traditions/tradition[id = " + strSelectedId.CleanXPath()
-                                                                        + ']');
-
-            if (xmlTradition == null)
+            try
             {
-                await lblTraditionName.DoThreadSafeAsync(x => x.Visible = false);
-                await txtTraditionName.DoThreadSafeAsync(x => x.Visible = false);
-                await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible = false);
-                await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible = false);
-                await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible = false);
-                await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible = false);
-                await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible = false);
-                await lblTraditionSource.DoThreadSafeAsync(x => x.Visible = false);
-                await lblTraditionSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
-                await cboSpiritCombat.DoThreadSafeAsync(x => x.Visible = false);
-                await cboSpiritDetection.DoThreadSafeAsync(x => x.Visible = false);
-                await cboSpiritHealth.DoThreadSafeAsync(x => x.Visible = false);
-                await cboSpiritIllusion.DoThreadSafeAsync(x => x.Visible = false);
-                await cboSpiritManipulation.DoThreadSafeAsync(x => x.Visible = false);
+                string strSelectedId = await cboTradition.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), GenericToken);
+                if (string.IsNullOrEmpty(strSelectedId))
+                    return;
 
-                if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
+                XmlNode xmlTradition = (await CharacterObject.LoadDataAsync("traditions.xml", token: GenericToken))
+                    .SelectSingleNode("/chummer/traditions/tradition[id = " + strSelectedId.CleanXPath()
+                                                                            + ']');
+
+                if (xmlTradition == null)
                 {
-                    CharacterObject.MagicTradition.ResetTradition();
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    await lblTraditionName.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await txtTraditionName.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await lblTraditionSource.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await lblTraditionSourceLabel.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await cboSpiritCombat.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await cboSpiritDetection.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await cboSpiritHealth.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await cboSpiritIllusion.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await cboSpiritManipulation.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+
+                    if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
+                    {
+                        CharacterObject.MagicTradition.ResetTradition();
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+
+                    await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID, GenericToken);
                 }
-
-                await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID);
-            }
-            else if (strSelectedId == Tradition.CustomMagicalTraditionGuid)
-            {
-                if (CharacterObject.MagicTradition.Create(xmlTradition))
+                else if (strSelectedId == Tradition.CustomMagicalTraditionGuid)
                 {
-                    await lblTraditionName.DoThreadSafeAsync(x => x.Visible = true);
-                    await txtTraditionName.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblTraditionSource.DoThreadSafeAsync(x => x.Visible = false);
-                    await lblTraditionSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    if (CharacterObject.MagicTradition.Create(xmlTradition))
+                    {
+                        await lblTraditionName.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                        await txtTraditionName.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                        await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                        await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                        await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                        await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                        await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                        await lblTraditionSource.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                        await lblTraditionSourceLabel.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                        await cboSpiritCombat.DoThreadSafeAsync(x =>
+                        {
+                            x.Enabled = true;
+                            x.Visible = true;
+                        }, GenericToken);
+                        await cboSpiritDetection.DoThreadSafeAsync(x =>
+                        {
+                            x.Enabled = true;
+                            x.Visible = true;
+                        }, GenericToken);
+                        await cboSpiritHealth.DoThreadSafeAsync(x =>
+                        {
+                            x.Enabled = true;
+                            x.Visible = true;
+                        }, GenericToken);
+                        await cboSpiritIllusion.DoThreadSafeAsync(x =>
+                        {
+                            x.Enabled = true;
+                            x.Visible = true;
+                        }, GenericToken);
+                        await cboSpiritManipulation.DoThreadSafeAsync(x =>
+                        {
+                            x.Enabled = true;
+                            x.Visible = true;
+                        }, GenericToken);
+
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+                    else
+                    {
+                        CharacterObject.MagicTradition.ResetTradition();
+                        await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID, GenericToken);
+                    }
+                }
+                else if (CharacterObject.MagicTradition.Create(xmlTradition))
+                {
+                    await lblTraditionName.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await txtTraditionName.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                    await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                    await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                    await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                    await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
                     await cboSpiritCombat.DoThreadSafeAsync(x =>
                     {
-                        x.Enabled = true;
+                        x.Enabled = false;
                         x.Visible = true;
-                    });
+                    }, GenericToken);
                     await cboSpiritDetection.DoThreadSafeAsync(x =>
                     {
-                        x.Enabled = true;
+                        x.Enabled = false;
                         x.Visible = true;
-                    });
+                    }, GenericToken);
                     await cboSpiritHealth.DoThreadSafeAsync(x =>
                     {
-                        x.Enabled = true;
+                        x.Enabled = false;
                         x.Visible = true;
-                    });
+                    }, GenericToken);
                     await cboSpiritIllusion.DoThreadSafeAsync(x =>
                     {
-                        x.Enabled = true;
+                        x.Enabled = false;
                         x.Visible = true;
                     });
                     await cboSpiritManipulation.DoThreadSafeAsync(x =>
                     {
-                        x.Enabled = true;
+                        x.Enabled = false;
                         x.Visible = true;
-                    });
+                    }, GenericToken);
+
+                    await lblTraditionSource.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                    await lblTraditionSourceLabel.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                    await CharacterObject.MagicTradition.SetSourceDetailAsync(lblTraditionSource, GenericToken);
 
                     await RequestCharacterUpdate();
                     await SetDirty(true);
@@ -9233,59 +9393,16 @@ namespace Chummer
                 else
                 {
                     CharacterObject.MagicTradition.ResetTradition();
-                    await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID);
+                    await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID, GenericToken);
                 }
+
+                await cboDrain.DoThreadSafeAsync(x => x.Visible = (!CharacterObject.AdeptEnabled || CharacterObject.MagicianEnabled) &&
+                                                                  CharacterObject.MagicTradition.CanChooseDrainAttribute, GenericToken);
             }
-            else if (CharacterObject.MagicTradition.Create(xmlTradition))
+            catch (OperationCanceledException)
             {
-                await lblTraditionName.DoThreadSafeAsync(x => x.Visible = false);
-                await txtTraditionName.DoThreadSafeAsync(x => x.Visible = false);
-                await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible = true);
-                await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible = true);
-                await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible = true);
-                await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible = true);
-                await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible = true);
-                await cboSpiritCombat.DoThreadSafeAsync(x =>
-                {
-                    x.Enabled = false;
-                    x.Visible = true;
-                });
-                await cboSpiritDetection.DoThreadSafeAsync(x =>
-                {
-                    x.Enabled = false;
-                    x.Visible = true;
-                });
-                await cboSpiritHealth.DoThreadSafeAsync(x =>
-                {
-                    x.Enabled = false;
-                    x.Visible = true;
-                });
-                await cboSpiritIllusion.DoThreadSafeAsync(x =>
-                {
-                    x.Enabled = false;
-                    x.Visible = true;
-                });
-                await cboSpiritManipulation.DoThreadSafeAsync(x =>
-                {
-                    x.Enabled = false;
-                    x.Visible = true;
-                });
-
-                await lblTraditionSource.DoThreadSafeAsync(x => x.Visible = true);
-                await lblTraditionSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
-                await CharacterObject.MagicTradition.SetSourceDetailAsync(lblTraditionSource);
-
-                await RequestCharacterUpdate();
-                await SetDirty(true);
+                //swallow this
             }
-            else
-            {
-                CharacterObject.MagicTradition.ResetTradition();
-                await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID);
-            }
-
-            await cboDrain.DoThreadSafeAsync(x => x.Visible = (!CharacterObject.AdeptEnabled || CharacterObject.MagicianEnabled) &&
-                                                              CharacterObject.MagicTradition.CanChooseDrainAttribute);
         }
 
         #endregion Additional Spells and Spirits Tab Control Events
@@ -9296,32 +9413,46 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            await RefreshSelectedComplexForm();
+            try
+            {
+                await RefreshSelectedComplexForm(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void cboStream_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsLoading || IsRefreshing || CharacterObject.MagicTradition.Type == TraditionType.MAG)
                 return;
-            string strSelectedId = await cboStream.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
-            if (string.IsNullOrEmpty(strSelectedId) || strSelectedId == CharacterObject.MagicTradition.SourceIDString)
-                return;
+            try
+            {
+                string strSelectedId = await cboStream.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), GenericToken);
+                if (string.IsNullOrEmpty(strSelectedId) || strSelectedId == CharacterObject.MagicTradition.SourceIDString)
+                    return;
 
-            XmlNode xmlNewStreamNode = (await CharacterObject.LoadDataAsync("streams.xml")).SelectSingleNode("/chummer/traditions/tradition[id = " + strSelectedId.CleanXPath() + ']');
-            if (xmlNewStreamNode != null && CharacterObject.MagicTradition.Create(xmlNewStreamNode, true))
-            {
-                await RequestCharacterUpdate();
-                await SetDirty(true);
-            }
-            else
-            {
-                if (CharacterObject.MagicTradition.Type == TraditionType.RES)
+                XmlNode xmlNewStreamNode = (await CharacterObject.LoadDataAsync("streams.xml", token: GenericToken)).SelectSingleNode("/chummer/traditions/tradition[id = " + strSelectedId.CleanXPath() + ']');
+                if (xmlNewStreamNode != null && CharacterObject.MagicTradition.Create(xmlNewStreamNode, true))
                 {
-                    CharacterObject.MagicTradition.ResetTradition();
                     await RequestCharacterUpdate();
                     await SetDirty(true);
                 }
-                await cboStream.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID);
+                else
+                {
+                    if (CharacterObject.MagicTradition.Type == TraditionType.RES)
+                    {
+                        CharacterObject.MagicTradition.ResetTradition();
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+                    await cboStream.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID, GenericToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -10744,9 +10875,9 @@ namespace Chummer
                     return;
 
                 // Character is not dirty and their savefile was updated outside of Chummer5 while it is open, so reload them
-                using (await CursorWait.NewAsync(this, true))
+                using (await CursorWait.NewAsync(this, true, GenericToken))
                 {
-                    using (await CursorWait.NewAsync(this))
+                    using (await CursorWait.NewAsync(this, token: GenericToken))
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(
                                Path.GetFileName(CharacterObject.FileName),
                                Character.NumLoadingSections + 1))
@@ -10798,7 +10929,7 @@ namespace Chummer
                             await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError"),
                             MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     {
-                        await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
+                        await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements, GenericToken);
                         await CharacterObject.InternalIdsNeedingReapplyImprovements.ClearAsync();
                     }
                 }
@@ -12662,7 +12793,8 @@ namespace Chummer
         /// </summary>
         public override async ValueTask<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false, CancellationToken token = default)
         {
-            return await base.SaveCharacter(blnNeedConfirm, blnDoCreated || await chkCharacterCreated.DoThreadSafeFuncAsync(x => x.Checked, token), token);
+            blnDoCreated = blnDoCreated || await chkCharacterCreated.DoThreadSafeFuncAsync(x => x.Checked, token);
+            return await base.SaveCharacter(blnNeedConfirm, blnDoCreated, token);
         }
 
         /// <summary>
@@ -12672,7 +12804,8 @@ namespace Chummer
         /// <param name="token">Cancellation token to use.</param>
         public override async ValueTask<bool> SaveCharacterAs(bool blnDoCreated = false, CancellationToken token = default)
         {
-            return await base.SaveCharacterAs(blnDoCreated || await chkCharacterCreated.DoThreadSafeFuncAsync(x => x.Checked, token), token);
+            blnDoCreated = blnDoCreated || await chkCharacterCreated.DoThreadSafeFuncAsync(x => x.Checked, token);
+            return await base.SaveCharacterAs(blnDoCreated, token);
         }
 
         /// <summary>
@@ -12770,11 +12903,6 @@ namespace Chummer
                 }
 
                 IsReopenQueued = true;
-                await this.DoThreadSafeAsync(x =>
-                {
-                    x.FormClosed += ReopenCharacter;
-                    x.Close();
-                }, token);
             }
             return true;
         }

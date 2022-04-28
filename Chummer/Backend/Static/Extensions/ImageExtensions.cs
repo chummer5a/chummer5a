@@ -180,12 +180,28 @@ namespace Chummer
         {
             if (imgToConvert == null)
                 return null;
+            // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
+            Bitmap bmpClone;
+            while (true)
+            {
+                try
+                {
+                    bmpClone = new Bitmap(imgToConvert);
+                }
+                catch (InvalidOperationException)
+                {
+                    Utils.SafeSleep();
+                    continue;
+                }
+                break;
+            }
+
             EncoderParameters lstJpegParameters = new EncoderParameters(1)
             {
-                Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(imgToConvert, intQuality)) }
+                Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
             };
-            // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
-            using (Bitmap bmpClone = new Bitmap(imgToConvert))
+
+            try
             {
                 using (MemoryStream objImageStream = new MemoryStream())
                 {
@@ -193,6 +209,10 @@ namespace Chummer
                     objImageStream.Position = 0;
                     return Image.FromStream(objImageStream, true);
                 }
+            }
+            finally
+            {
+                bmpClone.Dispose();
             }
         }
 
@@ -204,41 +224,50 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>A clone of <paramref name="imgToConvert"/> that is compressed.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task<Image> GetCompressedImageAsync(this Image imgToConvert, int intQuality = -1, CancellationToken token = default)
+        public static async Task<Image> GetCompressedImageAsync(this Image imgToConvert, int intQuality = -1, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (imgToConvert == null)
-                return Task.FromResult<Image>(null);
-            EncoderParameters lstJpegParameters = new EncoderParameters(1)
-            {
-                Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(imgToConvert, intQuality)) }
-            };
-            token.ThrowIfCancellationRequested();
+                return null;
             // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
-            Bitmap bmpClone = new Bitmap(imgToConvert);
-            return Task.Run(() =>
+            Bitmap bmpClone;
+            while (true)
             {
-                using (MemoryStream objImageStream = new MemoryStream())
-                {
-                    bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
-                    token.ThrowIfCancellationRequested();
-                    objImageStream.Position = 0;
-                    return Image.FromStream(objImageStream, true);
-                }
-                // ReSharper disable once MethodSupportsCancellation
-            }, token).ContinueWith(x =>
-            {
+                token.ThrowIfCancellationRequested();
                 try
                 {
-                    if (x.Exception != null)
-                        throw x.Exception;
-                    return x.Result;
+                    bmpClone = new Bitmap(imgToConvert);
                 }
-                finally
+                catch (InvalidOperationException)
                 {
-                    bmpClone.Dispose();
+                    await Utils.SafeSleepAsync(token);
+                    continue;
                 }
-            });
+                break;
+            }
+            token.ThrowIfCancellationRequested();
+            EncoderParameters lstJpegParameters = new EncoderParameters(1)
+            {
+                Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
+            };
+            token.ThrowIfCancellationRequested();
+            try
+            {
+                return await Task.Run(() =>
+                {
+                    using (MemoryStream objImageStream = new MemoryStream())
+                    {
+                        bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
+                        token.ThrowIfCancellationRequested();
+                        objImageStream.Position = 0;
+                        return Image.FromStream(objImageStream, true);
+                    }
+                }, token);
+            }
+            finally
+            {
+                bmpClone.Dispose();
+            }
         }
 
         /// <summary>
@@ -371,7 +400,22 @@ namespace Chummer
             if (imgToConvert == null)
                 return string.Empty;
             // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
-            using (Bitmap bmpClone = new Bitmap(imgToConvert))
+            Bitmap bmpClone;
+            while (true)
+            {
+                try
+                {
+                    bmpClone = new Bitmap(imgToConvert);
+                }
+                catch (InvalidOperationException)
+                {
+                    Utils.SafeSleep();
+                    continue;
+                }
+                break;
+            }
+
+            try
             {
                 using (MemoryStream objImageStream = new MemoryStream())
                 {
@@ -389,6 +433,10 @@ namespace Chummer
                     bmpClone.Save(objImageStream, eOverrideFormat);
                     return Convert.ToBase64String(objImageStream.ToArray());
                 }
+            }
+            finally
+            {
+                bmpClone.Dispose();
             }
         }
 
@@ -405,13 +453,32 @@ namespace Chummer
             if (imgToConvert == null)
                 return string.Empty;
             // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
-            using (Bitmap bmpClone = new Bitmap(imgToConvert))
+            Bitmap bmpClone;
+            while (true)
+            {
+                try
+                {
+                    bmpClone = new Bitmap(imgToConvert);
+                }
+                catch (InvalidOperationException)
+                {
+                    Utils.SafeSleep();
+                    continue;
+                }
+                break;
+            }
+
+            try
             {
                 using (MemoryStream objImageStream = new MemoryStream())
                 {
                     bmpClone.Save(objImageStream, objCodecInfo, lstEncoderParameters);
                     return Convert.ToBase64String(objImageStream.ToArray());
                 }
+            }
+            finally
+            {
+                bmpClone.Dispose();
             }
         }
 
@@ -423,48 +490,57 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Base64 string from Image.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task<string> ToBase64StringAsync(this Image imgToConvert, ImageFormat eOverrideFormat = null, CancellationToken token = default)
+        public static async Task<string> ToBase64StringAsync(this Image imgToConvert, ImageFormat eOverrideFormat = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (imgToConvert == null)
-                return Task.FromResult(string.Empty);
+                return string.Empty;
             // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
-            Bitmap bmpClone = new Bitmap(imgToConvert);
-            return Task.Run(() =>
+            Bitmap bmpClone;
+            while (true)
             {
-                using (MemoryStream objImageStream = new MemoryStream())
-                {
-                    if (eOverrideFormat == null)
-                    {
-                        // Need to do this because calling RawFormat on its own will result in the system not finding its encoder
-                        if (Equals(imgToConvert.RawFormat, ImageFormat.Jpeg))
-                            eOverrideFormat = ImageFormat.Jpeg;
-                        else if (Equals(imgToConvert.RawFormat, ImageFormat.Gif))
-                            eOverrideFormat = ImageFormat.Gif;
-                        else
-                            eOverrideFormat = ImageFormat.Png;
-                    }
-
-                    bmpClone.Save(objImageStream, eOverrideFormat);
-                    token.ThrowIfCancellationRequested();
-                    byte[] achrData = objImageStream.ToArray();
-                    token.ThrowIfCancellationRequested();
-                    return Convert.ToBase64String(achrData);
-                }
-                // ReSharper disable once MethodSupportsCancellation
-            }, token).ContinueWith(x =>
-            {
+                token.ThrowIfCancellationRequested();
                 try
                 {
-                    if (x.Exception != null)
-                        throw x.Exception;
-                    return x.Result;
+                    bmpClone = new Bitmap(imgToConvert);
                 }
-                finally
+                catch (InvalidOperationException)
                 {
-                    bmpClone.Dispose();
+                    await Utils.SafeSleepAsync(token);
+                    continue;
                 }
-            });
+                break;
+            }
+
+            try
+            {
+                return await Task.Run(() =>
+                {
+                    using (MemoryStream objImageStream = new MemoryStream())
+                    {
+                        if (eOverrideFormat == null)
+                        {
+                            // Need to do this because calling RawFormat on its own will result in the system not finding its encoder
+                            if (Equals(imgToConvert.RawFormat, ImageFormat.Jpeg))
+                                eOverrideFormat = ImageFormat.Jpeg;
+                            else if (Equals(imgToConvert.RawFormat, ImageFormat.Gif))
+                                eOverrideFormat = ImageFormat.Gif;
+                            else
+                                eOverrideFormat = ImageFormat.Png;
+                        }
+
+                        bmpClone.Save(objImageStream, eOverrideFormat);
+                        token.ThrowIfCancellationRequested();
+                        byte[] achrData = objImageStream.ToArray();
+                        token.ThrowIfCancellationRequested();
+                        return Convert.ToBase64String(achrData);
+                    }
+                }, token);
+            }
+            finally
+            {
+                bmpClone.Dispose();
+            }
         }
 
         /// <summary>
@@ -476,37 +552,46 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Base64 string from Image.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task<string> ToBase64StringAsync(this Image imgToConvert, ImageCodecInfo objCodecInfo, EncoderParameters lstEncoderParameters, CancellationToken token = default)
+        public static async Task<string> ToBase64StringAsync(this Image imgToConvert, ImageCodecInfo objCodecInfo, EncoderParameters lstEncoderParameters, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (imgToConvert == null)
-                return Task.FromResult(string.Empty);
+                return string.Empty;
             // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
-            Bitmap bmpClone = new Bitmap(imgToConvert);
-            return Task.Run(() =>
+            Bitmap bmpClone;
+            while (true)
             {
-                using (MemoryStream objImageStream = new MemoryStream())
-                {
-                    bmpClone.Save(objImageStream, objCodecInfo, lstEncoderParameters);
-                    token.ThrowIfCancellationRequested();
-                    byte[] achrData = objImageStream.ToArray();
-                    token.ThrowIfCancellationRequested();
-                    return Convert.ToBase64String(achrData);
-                }
-                // ReSharper disable once MethodSupportsCancellation
-            }, token).ContinueWith(x =>
-            {
+                token.ThrowIfCancellationRequested();
                 try
                 {
-                    if (x.Exception != null)
-                        throw x.Exception;
-                    return x.Result;
+                    bmpClone = new Bitmap(imgToConvert);
                 }
-                finally
+                catch (InvalidOperationException)
                 {
-                    bmpClone.Dispose();
+                    await Utils.SafeSleepAsync(token);
+                    continue;
                 }
-            });
+                break;
+            }
+
+            try
+            {
+                return await Task.Run(() =>
+                {
+                    using (MemoryStream objImageStream = new MemoryStream())
+                    {
+                        bmpClone.Save(objImageStream, objCodecInfo, lstEncoderParameters);
+                        token.ThrowIfCancellationRequested();
+                        byte[] achrData = objImageStream.ToArray();
+                        token.ThrowIfCancellationRequested();
+                        return Convert.ToBase64String(achrData);
+                    }
+                }, token);
+            }
+            finally
+            {
+                bmpClone.Dispose();
+            }
         }
 
         /// <summary>
@@ -520,11 +605,39 @@ namespace Chummer
         {
             if (imgToConvert == null)
                 return string.Empty;
+            // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
+            Bitmap bmpClone;
+            while (true)
+            {
+                try
+                {
+                    bmpClone = new Bitmap(imgToConvert);
+                }
+                catch (InvalidOperationException)
+                {
+                    Utils.SafeSleep();
+                    continue;
+                }
+                break;
+            }
+
             EncoderParameters lstJpegParameters = new EncoderParameters(1)
             {
-                Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(imgToConvert, intQuality)) }
+                Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
             };
-            return imgToConvert.ToBase64String(s_LzyJpegEncoder.Value, lstJpegParameters);
+
+            try
+            {
+                using (MemoryStream objImageStream = new MemoryStream())
+                {
+                    bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
+                    return Convert.ToBase64String(objImageStream.ToArray());
+                }
+            }
+            finally
+            {
+                bmpClone.Dispose();
+            }
         }
 
         /// <summary>
@@ -535,17 +648,51 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Base64 string of Jpeg version of Image with a quality of <paramref name="intQuality"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task<string> ToBase64StringAsJpegAsync(this Image imgToConvert, int intQuality = -1, CancellationToken token = default)
+        public static async Task<string> ToBase64StringAsJpegAsync(this Image imgToConvert, int intQuality = -1, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (imgToConvert == null)
-                return Task.FromResult(string.Empty);
+                return string.Empty;
+            // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
+            Bitmap bmpClone;
+            while (true)
+            {
+                token.ThrowIfCancellationRequested();
+                try
+                {
+                    bmpClone = new Bitmap(imgToConvert);
+                }
+                catch (InvalidOperationException)
+                {
+                    await Utils.SafeSleepAsync(token);
+                    continue;
+                }
+                break;
+            }
+            token.ThrowIfCancellationRequested();
             EncoderParameters lstJpegParameters = new EncoderParameters(1)
             {
-                Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(imgToConvert, intQuality)) }
+                Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
             };
             token.ThrowIfCancellationRequested();
-            return imgToConvert.ToBase64StringAsync(s_LzyJpegEncoder.Value, lstJpegParameters, token);
+            try
+            {
+                return await Task.Run(() =>
+                {
+                    using (MemoryStream objImageStream = new MemoryStream())
+                    {
+                        bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
+                        token.ThrowIfCancellationRequested();
+                        byte[] achrData = objImageStream.ToArray();
+                        token.ThrowIfCancellationRequested();
+                        return Convert.ToBase64String(achrData);
+                    }
+                }, token);
+            }
+            finally
+            {
+                bmpClone.Dispose();
+            }
         }
 
         /// <summary>

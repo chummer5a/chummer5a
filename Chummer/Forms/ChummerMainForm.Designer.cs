@@ -24,6 +24,7 @@ namespace Chummer
                 _lstOpenCharacterEditorForms?.Dispose();
                 _lstOpenCharacterSheetViewers?.Dispose();
                 _lstOpenCharacterExportForms?.Dispose();
+                _lstCharactersToReopen.Dispose();
             }
             base.Dispose(disposing);
         }
