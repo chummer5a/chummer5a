@@ -63,8 +63,15 @@
           <condition>Disenchanting</condition>
         </specificskill>
       </bonus>
+      <bonus xpathfilter="selectskill[@limittoskill = 'Artisan,Performance']/val = '1'">
+        <specificskill amendoperation="addnode">
+          <name>Performance</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
       <bonus>
         <specificskill xpathfilter="name = 'Escape Artist' or name = 'Free-Fall' or name = 'Perception' or name = 'Diving' or name = 'Tracking' or name = 'Artificing' or name = 'Disenchanting' or name = 'Exotic Melee Weapon'" amendoperation="remove" />
+        <selectskill xpathfilter="@limittoskill = 'Artisan,Performance' and val = '1'" amendoperation="remove"/>
         <specificskill xpathfilter="name = 'Assensing'">
           <name>Astral</name>
           <condition>Assensing</condition>
@@ -115,6 +122,7 @@
         </weaponcategorydv>
         <skilldisable xpathfilter=". = 'Ritual Spellcasting' or . = 'Artificing' or . = 'Disenchanting'" amendoperation="remove" />
         <skillgroupdisable xpathfilter=". = 'Enchanting'" amendoperation="remove" />
+        <selectskill xpathfilter="@limittoskill='Compiling, Computer, Cybercombat, Decompiling, Electronic Warfare, Hacking, Registering, Software'" amendoperation="replace" limittoskill="Compiling, Decompiling, Registering, Threading, Counterthreading, Nesting, Matrix, Cyberwarfare, Software" />
       </bonus>
       <bonus xpathfilter="unlockskills = 'Adept' or unlockskills = 'Aware' or unlockskills = 'Explorer'">
         <unlockskills amendoperation="addnode" name="Arcana">Name</unlockskills>
@@ -202,7 +210,7 @@
           <extracontains>Improved Ability (skill) (Cyberwarfare)</extracontains>
         </focusbindingkarmacost>
         <focusbindingkarmacost xpathfilter="name = 'Qi Focus' and extracontains = 'Improved Ability (skill) (Electronic Warfare)'">
-          <extracontains>Improved Ability (skill) (Small Unit Tactics)</extracontains>
+          <extracontains>Improved Ability (skill) (Combat Tactics)</extracontains>
         </focusbindingkarmacost>
         <focusbindingkarmacost xpathfilter="name = 'Qi Focus' and extracontains = 'Improved Ability (skill) (Hardware)'">
           <extracontains>Improved Ability (skill) (Electronics)</extracontains>
@@ -277,14 +285,6 @@
       <name>Hawk Eye</name>
       <bonus>
         <physicalillusionresist>1</physicalillusionresist>
-      </bonus>
-    </quality>
-    <quality>
-      <name>Inspired</name>
-      <bonus>
-        <selectskill xpathfilter="@limittoskill='Artisan,Performance'" amendoperation="replace" knowledgeskills="True">
-          <val>1</val>
-        </selectskill>
       </bonus>
     </quality>
     <quality>

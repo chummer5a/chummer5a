@@ -52,6 +52,9 @@
         <skill xpathfilter=". = 'Diving'" spec="Diving">Aquatics</skill>
         <skill xpathfilter=". = 'Tracking'" spec="Tailing/Tracking">Query</skill>
         <skill xpathfilter=". = 'Navigation'" spec="Navigation">Query</skill>
+        <skill xpathfilter=". = 'Computer'">Matrix</skill>
+        <skill xpathfilter=". = 'Cybercombat' or . = 'Hacking' or . = 'Electronic Warfare'">Cyberwarfare</skill>
+        <skill xpathfilter=". = 'Hardware' or . = 'Cybertechnology'">Electronics</skill>
         <skill xpathfilter=". = 'Perception' or . = 'Artisan' or . = 'Forgery' or . = 'Exotic Ranged Weapon'" amendoperation="remove"/>
       </skills>
     </metatype>

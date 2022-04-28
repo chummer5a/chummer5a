@@ -46023,7 +46023,7 @@
         <skill rating="2">Climbing</skill>
         <skill rating="3">Perception</skill>
         <skill rating="4">Unarmed Combat</skill>
-        <group rating="3">Intimidation</group>
+        <skill rating="3">Intimidation</skill>
       </skills>
       <source>SOX</source>
       <page>64</page>

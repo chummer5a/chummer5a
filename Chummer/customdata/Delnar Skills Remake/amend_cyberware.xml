@@ -41,6 +41,10 @@
         <specificskill xpathfilter="name = 'Palming'">
           <name>Sleight of Hand</name>
         </specificskill>
+        <specificskill xpathfilter="name = 'Navigation'">
+          <name>Query</name>
+          <condition>Navigation</condition>
+        </specificskill>
       </bonus>
       <pairbonus>
         <specificskill xpathfilter="name = 'Impersonation'">
@@ -60,6 +64,10 @@
         </specificskill>
         <specificskill xpathfilter="name = 'Palming'">
           <name>Sleight of Hand</name>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Navigation'">
+          <name>Query</name>
+          <condition>Navigation</condition>
         </specificskill>
       </pairbonus>
     </cyberware>

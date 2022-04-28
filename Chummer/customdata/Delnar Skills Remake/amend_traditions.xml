@@ -48,9 +48,11 @@
   <spirits>
     <spirit>
       <skills>
-        <skill xpathfilter=". = 'Astral Combat' or . = 'Navigation' or . = 'Exotic Ranged Weapon'  or . = 'Artisan'" amendoperation="remove" />
-        <skill xpathfilter=". = 'Assensing'" amendoperation="replace" attr="mag">Astral</skill>
-        <skill xpathfilter=". = 'Perception'" amendoperation="replace" attr="int">Query</skill>
+        <skill xpathfilter=". = 'Exotic Ranged Weapon'  or . = 'Artisan'" amendoperation="remove" />
+        <skill xpathfilter=". = 'Assensing'" amendoperation="replace" attr="mag" spec="Assensing">Astral</skill>
+        <skill xpathfilter=". = 'Astral Combat'" amendoperation="replace" attr="mag" spec="Astral Combat">Astral</skill>
+        <skill xpathfilter=". = 'Perception'" amendoperation="replace" attr="int" spec="Searching">Query</skill>
+        <skill xpathfilter=". = 'Navigation'" amendoperation="replace" attr="int" spec="Navigation">Query</skill>
         <skill xpathfilter=". = 'Pilot Aircraft'" amendoperation="replace" attr="rea">Pilot Aerospace</skill>
         <skill xpathfilter=". = 'Pilot Ground Craft'" amendoperation="replace" attr="rea">Pilot Groundcraft</skill>
         <skill xpathfilter=". = 'Running' or . = 'Flight'" amendoperation="replace" attr="str">Athletics</skill>
