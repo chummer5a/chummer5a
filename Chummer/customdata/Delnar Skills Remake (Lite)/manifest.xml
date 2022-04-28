@@ -21,7 +21,7 @@
 
 <manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
-  <guid>21079230-7ae7-4842-8dbb-2625bba40b12</guid>
+  <guid>c0660d50-328f-4b98-969f-1374752a1588</guid>
   <version>1</version>
   <authors>
     <author>
@@ -31,7 +31,7 @@
   </authors>
   <descriptions>
     <description>
-      <text>This ruleset overhauls the entire Skills system and replaces it with the 5th Edition-Like version of Delnar_Ersike's Active Skills Remake. The remake is meant to fix a lot of the issues and nebulousness that comes with the rules for skills in Shadowrun 5th edition.\n\nTo view the full details of this remake, go to this Google Doc: https://docs.google.com/document/d/1Km8Os33xNXZK8MFLiwn1CUG_sDzGC8WYaBlKokJkHrQ/. </text>
+      <text>This ruleset overhauls the entire Skills system and replaces it with the Lite version of Delnar_Ersike's Active Skills Remake. The remake is meant to fix a lot of the issues and nebulousness that comes with the rules for skills in Shadowrun 5th edition and also consolidate the skills list into a much smaller selection.\n\nTo view the full details of this remake, go to this Google Doc: https://docs.google.com/document/d/1Km8Os33xNXZK8MFLiwn1CUG_sDzGC8WYaBlKokJkHrQ/. </text>
       <lang>en-us</lang>
     </description>
   </descriptions>
@@ -41,8 +41,8 @@
       <guid>1D72E8C0-8FBA-4B85-B2FF-EBD68153BCF5</guid>
     </incompatibility>
     <incompatibility>
-      <name>Delnar Skills Remake (Lite)</name>
-      <guid>c0660d50-328f-4b98-969f-1374752a1588</guid>
+      <name>Delnar Skills Remake</name>
+      <guid>21079230-7ae7-4842-8dbb-2625bba40b12</guid>
     </incompatibility>
   </incompatibilities>
 </manifest>

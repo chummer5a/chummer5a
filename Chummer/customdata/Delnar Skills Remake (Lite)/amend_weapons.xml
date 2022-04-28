@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <categories>
+    <category amendoperation="addnode" blackmarket="Weapons" type="melee">Chainsaws</category>
+    <category amendoperation="addnode" blackmarket="Weapons" type="melee">Flexible Weapons</category>
+    <category amendoperation="addnode" blackmarket="Weapons" type="crossbow">Grapple Guns</category>
+    <category amendoperation="addnode" blackmarket="Weapons" type="crossbow">Harpoon Guns</category>
+    <category amendoperation="addnode" blackmarket="Weapons" type="crossbow">Net Guns</category>
+    <category amendoperation="addnode" blackmarket="Weapons" type="melee">Battering Rams</category>
+    <category amendoperation="addnode" blackmarket="Weapons" type="melee">Shields</category>
+    <category amendoperation="addnode" blackmarket="Weapons" type="crossbow">Slingshots</category>
+  </categories>
+  <weapons>
+    <weapon xpathfilter="useskill = 'Heavy Weapons' or (not(useskill) and (category = 'Assault Cannons' or category = 'Flamethrowers' or category = 'Light Machine Guns' or category = 'Medium Machine Guns' or category = 'Heavy Machine Guns'))">
+      <useskill>Firearms</useskill>
+      <spec>Heavy Weapons</spec>
+    </weapon>
+    <weapon xpathfilter="useskill = 'Longarms' or (not(useskill) and (category = 'Assault Rifles' or category = 'Carbines' or category = 'Sporting Rifles' or category = 'Sniper Rifles' or category = 'Submachine Guns' or category = 'Shotguns'))">
+      <useskill>Firearms</useskill>
+      <spec>Longarms</spec>
+    </weapon>
+    <weapon xpathfilter="useskill = 'Pistols' or (not(useskill) and (category = 'Tasers' or category = 'Holdouts' or category = 'Light Pistols' or category = 'Heavy Pistols' or category = 'Machine Pistols'))">
+      <useskill>Firearms</useskill>
+      <spec>Handguns</spec>
+    </weapon>
+    <weapon xpathfilter="category = 'Grenade Launchers' or ammocategory = 'Grenade Launchers' or (category = 'Gear' and (contains(spec,'Grenade Launcher') or contains(range,'Grenade Launcher')))">
+      <useskill>Projectile Weapons</useskill>
+      <spec>Projectile Launchers</spec>
+    </weapon>
+    <weapon xpathfilter="useskill = 'Archery' or (not(useskill) and category = 'Bows' or category = 'Crossbows')">
+      <useskill>Projectile Weapons</useskill>
+      <spec>Archery</spec>
+    </weapon>
+    <weapon xpathfilter="useskill = 'Throwing Weapons' or (not(useskill) and category = 'Gear')">
+      <useskill>Projectile Weapons</useskill>
+      <spec>Throwing Weapons</spec>
+    </weapon>
+    <weapon xpathfilter="useskill = 'Blades' or (not(useskill) and category = 'Blades')">
+      <useskill>Close Combat</useskill>
+      <spec>Edged Weapons</spec>
+    </weapon>
+    <weapon xpathfilter="useskill = 'Clubs' or (not(useskill) and category = 'Clubs')">
+      <useskill>Close Combat</useskill>
+      <spec>Blunt Weapons</spec>
+    </weapon>
+    <weapon xpathfilter="useskill = 'Unarmed Combat' or (not(useskill) and (category = 'Unarmed' or category = 'Bio-Weapon' or category = 'Quality'))">
+      <useskill>Close Combat</useskill>
+      <spec>Unarmed</spec>
+    </weapon>
+    <weapon xpathfilter="category = 'Missile Launchers' or (category = 'Gear' and (starts-with(name,'Missile') or starts-with(name,'Rocket')))">
+      <useskill>Military Science</useskill>
+      <spec>Gunnery</spec>
+    </weapon>
+    <weapon>
+      <spec2 amendoperation="remove"/>
+    </weapon>
+    <!-- Region Shadowrun 5 -->
+    <weapon>
+      <name>Aquadyne Shark-XS Harpoon Gun</name>
+      <spec>Projectile Launchers</spec>
+      <useskill>Projectile Weapons</useskill>
+    </weapon>
+    <weapon>
+      <name>Ares Giantslayer Slingshot</name>
+      <category>Slingshots</category>
+      <useskill>Projectile Weapons</useskill>
+      <spec>Archery</spec>
+    </weapon>
+    <weapon>
+      <name>Standard Harpoon Gun</name>
+      <spec>Projectile Launchers</spec>
+      <useskill>Projectile Weapons</useskill>
+    </weapon>
+    <weapon>
+      <name>Ballistic Shield</name>
+      <category>Shields</category>
+      <useskill>Close Combat</useskill>
+      <spec>Blunt Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Battering Ram, Fluid-Motion</name>
+      <category>Battering Rams</category>
+      <useskill>Close Combat</useskill>
+      <spec>Blunt Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Battering Ram, Pneumatic</name>
+      <category>Battering Rams</category>
+      <useskill>Close Combat</useskill>
+      <spec>Blunt Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Battering Ram, Shock</name>
+      <category>Battering Rams</category>
+      <useskill>Close Combat</useskill>
+      <spec>Blunt Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Battering Ram, Standard</name>
+      <category>Battering Rams</category>
+      <useskill>Close Combat</useskill>
+      <spec>Blunt Weapons</spec>
+    </weapon>
+    <weapon>
+      <id>ebbdbe5e-17da-4a97-8a65-9839513c91fe</id>
+      <name>Blast Shield</name>
+      <category>Shields</category>
+      <useskill>Close Combat</useskill>
+      <spec>Blunt Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Monofilament Chainsaw</name>
+      <category>Chainsaws</category>
+      <useskill>Close Combat</useskill>
+      <spec>Edged Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Riot Shield</name>
+      <category>Shields</category>
+      <useskill>Close Combat</useskill>
+      <spec>Blunt Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Ash Arms Combat Chainsaw</name>
+      <category>Chainsaws</category>
+      <useskill>Close Combat</useskill>
+      <spec>Edged Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Ash Arms Monofilament Chainsaw</name>
+      <category>Chainsaws</category>
+      <useskill>Close Combat</useskill>
+      <spec>Edged Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Bullwhip</name>
+      <category>Flexible Weapons</category>
+      <useskill>Close Combat</useskill>
+      <spec>Blunt Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Garrote</name>
+      <category>Flexible Weapons</category>
+      <useskill>Close Combat</useskill>
+      <spec>Blunt Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Monofilament Garrote</name>
+      <category>Flexible Weapons</category>
+      <useskill>Close Combat</useskill>
+      <spec>Edged Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Monofilament Whip</name>
+      <category>Flexible Weapons</category>
+      <useskill>Close Combat</useskill>
+      <spec>Edged Weapons</spec>
+    </weapon>
+    <weapon xpathfilter="name = 'Chakram' and category = 'Exotic Melee Weapons'">
+      <category>Blades</category>
+      <useskill>Close Combat</useskill>
+      <spec>Edged Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Stimtouch Hosiery</name>
+      <useskill>Close Combat</useskill>
+      <spec>Unarmed</spec>
+    </weapon>
+    <weapon>
+      <name>Grapple Gun</name>
+      <category>Grapple Guns</category>
+      <useskill>Projectile Weapons</useskill>
+      <spec>Projectile Launchers</spec>
+    </weapon>
+    <weapon>
+      <name>Hold-Fast Sprayer</name>
+      <useskill>Firearms</useskill>
+      <spec>Handguns</spec>
+    </weapon>
+    <weapon>
+      <name>Micro Flare Launcher</name>
+      <useskill>Projectile Weapons</useskill>
+      <spec>Projectile Launchers</spec>
+    </weapon>
+    <weapon>
+      <name>Net</name>
+      <spec>Throwing Weapons</spec>
+      <useskill>Projectile Weapons</useskill>
+    </weapon>
+    <weapon>
+      <name>Throwing Knife</name>
+      <spec>Throwing Weapons</spec>
+      <useskill>Projectile Weapons</useskill>
+    </weapon>
+    <weapon>
+      <name>Bottle (broken, after first hit)</name>
+      <spec>Edged Weapons</spec>
+      <useskill>Close Combat</useskill>
+    </weapon>
+    <weapon>
+      <name>Bottle (unbroken)</name>
+      <spec>Blunt Weapons</spec>
+      <useskill>Close Combat</useskill>
+    </weapon>
+    <weapon>
+      <name>Chain</name>
+      <spec>Blunt Weapons</spec>
+      <useskill>Close Combat</useskill>
+    </weapon>
+    <weapon>
+      <name>Chair</name>
+      <spec>Blunt Weapons</spec>
+      <useskill>Close Combat</useskill>
+    </weapon>
+    <weapon>
+      <name>Fork</name>
+      <spec>Edged Weapons</spec>
+      <useskill>Close Combat</useskill>
+    </weapon>
+    <weapon>
+      <name>Frying Pan</name>
+      <spec>Blunt Weapons</spec>
+      <useskill>Close Combat</useskill>
+    </weapon>
+    <weapon>
+      <name>Hammer</name>
+      <spec>Blunt Weapons</spec>
+      <useskill>Close Combat</useskill>
+    </weapon>
+    <weapon xpathfilter="name = 'Pistol' and category = 'Improvised Weapons'">
+      <spec>Blunt Weapons</spec>
+      <useskill>Close Combat</useskill>
+    </weapon>
+    <weapon>
+      <name>Pool Cue</name>
+      <spec>Blunt Weapons</spec>
+      <useskill>Close Combat</useskill>
+    </weapon>
+    <weapon>
+      <name>Rifle Butt</name>
+      <spec>Blunt Weapons</spec>
+      <useskill>Close Combat</useskill>
+    </weapon>
+    <weapon>
+      <name>Sledge Hammer</name>
+      <spec>Blunt Weapons</spec>
+      <useskill>Close Combat</useskill>
+    </weapon>
+    <weapon>
+      <name>Ares Archon Heavy MP Laser</name>
+      <spec>Heavy Weapons</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <weapon>
+      <name>Ares Lancer MP Laser</name>
+      <spec>Longarms</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <weapon>
+      <name>Ares Redline</name>
+      <spec>Longarms</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <weapon>
+      <name>Ares S-III Super Squirt</name>
+      <spec>Handguns</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <weapon>
+      <name>Blowgun</name>
+      <spec>Archery</spec>
+      <useskill>Projectile Weapons</useskill>
+    </weapon>
+    <weapon>
+      <name>Bola</name>
+      <spec>Throwing Weapons</spec>
+      <useskill>Projectile Weapons</useskill>
+    </weapon>
+    <weapon>
+      <name>FN-AAL Gyrojet Pistol</name>
+      <spec>Handguns</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <weapon>
+      <name>Fichetti Pain Inducer</name>
+      <spec>Longarms</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <weapon>
+      <name>Knockoff Gun Cane</name>
+      <spec>Longarms</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <weapon>
+      <name>Monofilament Bola</name>
+      <spec>Throwing Weapons</spec>
+      <useskill>Projectile Weapons</useskill>
+    </weapon>
+    <weapon>
+      <name>Mortimer of London 'Trafalger' Gun Cane</name>
+      <spec>Longarms</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <weapon>
+      <name>Parashield Dart Pistol</name>
+      <spec>Handguns</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <weapon>
+      <name>Parashield Dart Rifle</name>
+      <spec>Handguns</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <weapon>
+      <name>SA Retarius Net Gun</name>
+      <category>Net Guns</category>
+      <spec>Projectile Launchers</spec>
+      <useskill>Projectile Weapons</useskill>
+    </weapon>
+    <weapon>
+      <name>SA Retarius Net Gun XL</name>
+      <category>Net Guns</category>
+      <spec>Projectile Launchers</spec>
+      <useskill>Projectile Weapons</useskill>
+    </weapon>
+    <weapon>
+      <name>Tiffani Elegance Shooting Bracers</name>
+      <spec>Handguns</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <weapon>
+      <name>Springfield Model 1855 Reproduction</name>
+      <spec>Longarms</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <!-- End Region -->
+    <!-- Region Chrome Flesh-->
+    <!-- Region Chrome Flesh Cyber-Weapons -->
+    <weapon>
+      <name>Oral Slasher</name>
+      <spec>Edged Weapons</spec>
+      <useskill>Close Combat</useskill>
+    </weapon>
+    <weapon>
+      <name>Cyberfangs</name>
+      <spec>Unarmed</spec>
+      <useskill>Close Combat</useskill>
+    </weapon>
+    <weapon>
+      <name>Extreme Cyberimplant</name>
+      <spec>Unarmed</spec>
+      <useskill>Close Combat</useskill>
+    </weapon>
+    <weapon>
+      <name>Junkyard Jaw</name>
+      <spec>Unarmed</spec>
+      <useskill>Close Combat</useskill>
+    </weapon>
+    <weapon>
+      <name>Raptor Foot</name>
+      <spec>Unarmed</spec>
+      <useskill>Close Combat</useskill>
+    </weapon>
+    <weapon>
+      <name>Grapple Fist</name>
+      <spec>Projectile Launchers</spec>
+      <useskill>Projectile Weapons</useskill>
+    </weapon>
+    <!-- End Region -->
+    <!-- End Region-->
+    <!-- Region Hard Targets -->
+    <weapon>
+      <name>Tactical Grapple Gun</name>
+      <spec>Projectile Launchers</spec>
+      <useskill>Projectile Weapons</useskill>
+    </weapon>
+    <weapon>
+      <name>Foot Blade</name>
+      <spec>Edged Weapons</spec>
+      <useskill>Close Combat</useskill>
+    </weapon>
+    <weapon>
+      <name>Throwing Syringe</name>
+      <spec>Throwing Weapons</spec>
+      <useskill>Projectile Weapons</useskill>
+    </weapon>
+    <weapon>
+      <name>Shiawase Arms Simoom</name>
+      <spec>Handguns</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <weapon>
+      <name>Ares Armatus</name>
+      <spec>Longarms</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <weapon>
+      <name>Mounted Crossbow</name>
+      <spec>Archery</spec>
+      <useskill>Projectile Weapons</useskill>
+    </weapon>
+    <weapon>
+      <name>Underbarrel Shotgun</name>
+      <spec>Longarms</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <weapon>
+      <name>Underbarrel Laser</name>
+      <spec>Longarms</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <!-- End Region -->
+    <!-- Region Boston Lockdown-->
+    <weapon>
+      <name>Microwave Gun, High Frequency</name>
+      <spec>Longarms</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <weapon>
+      <name>Microwave Gun, Low Frequency</name>
+      <spec>Longarms</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <weapon>
+      <name>Repeating Laser</name>
+      <spec>Longarms</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <!-- End Region -->
+    <!-- Region Cutting Aces -->
+    <weapon>
+      <name>Injector Pen</name>
+      <spec>Edged Weapons</spec>
+      <useskill>Close Combat</useskill>
+    </weapon>
+    <weapon>
+      <name>Pepper Punch Pen</name>
+      <spec>Handguns</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <weapon>
+      <name>Modified Spray Pen</name>
+      <spec>Handguns</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <weapon>
+      <name>Ares Briefcase Shield</name>
+      <category>Shields</category>
+      <spec>Blunt Weapons</spec>
+      <useskill>Close Combat</useskill>
+    </weapon>
+    <!-- End Region -->
+    <!-- Region Street Lethal -->
+    <weapon>
+      <name>Narcoject One</name>
+      <useskill>Firearms</useskill>
+      <spec>Handguns</spec>
+    </weapon>
+    <weapon>
+      <name>Narcoject Gas Gun</name>
+      <useskill>Firearms</useskill>
+      <spec>Handguns</spec>
+    </weapon>
+    <weapon>
+      <name>Narcoject PEP</name>
+      <useskill>Firearms</useskill>
+      <spec>Handguns</spec>
+    </weapon>
+    <weapon>
+      <name>Narcoject Trackstopper</name>
+      <useskill>Firearms</useskill>
+      <spec>Handguns</spec>
+    </weapon>
+    <!-- End Region -->
+    <!-- Region Hamburg -->
+    <weapon>
+      <name>Elektro-Angel</name>
+      <useskill>Close Combat</useskill>
+      <spec>Blunt Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Elektro-Netz</name>
+      <spec>Throwing Weapons</spec>
+      <useskill>Projectile Weapons</useskill>
+    </weapon>
+    <!-- End Region -->
+    <!-- Region No Future -->
+    <weapon>
+      <name>Hardened Yo-Yo</name>
+      <category>Flexible Weapons</category>
+      <useskill>Close Combat</useskill>
+      <spec>Blunt Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Bladed Yo-Yo</name>
+      <category>Flexible Weapons</category>
+      <useskill>Close Combat</useskill>
+      <spec>Blunt Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Monofilament Yo-Yo</name>
+      <category>Flexible Weapons</category>
+      <useskill>Close Combat</useskill>
+      <spec>Edged Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Hardened Skateboard</name>
+      <useskill>Close Combat</useskill>
+      <spec>Blunt Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Bladed Skateboard</name>
+      <useskill>Close Combat</useskill>
+      <spec>Blunt Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Rolling Blades</name>
+      <useskill>Close Combat</useskill>
+      <spec>Unarmed</spec>
+    </weapon>
+    <weapon>
+      <name>Pitchfork</name>
+      <category>Blades</category>
+      <useskill>Close Combat</useskill>
+      <spec>Edged Weapons</spec>
+    </weapon>
+    <!-- End Region -->
+    <!-- Region Datapuls Sota 2080 -->
+    <weapon>
+      <name>Krupp Munitions 3E Firefighting Cannon</name>
+      <spec>Heavy Weapons</spec>
+      <useskill>Firearms</useskill>
+    </weapon>
+    <!-- End Region -->
+  </weapons>
+</chummer>
