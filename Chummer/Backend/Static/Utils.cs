@@ -981,27 +981,11 @@ namespace Chummer
                 func.Invoke();
                 return;
             }
-            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            Program.MySynchronizationContext.Post(x =>
+            Program.MySynchronizationContext.Send(x =>
             {
-                TaskCompletionSource<bool> objCompletionSource = (TaskCompletionSource<bool>)x;
-                try
-                {
-                    objCompletionSource.TrySetResult(DummyFunction());
-
-                    // This is needed because SetResult always needs a return type
-                    bool DummyFunction()
-                    {
-                        func.Invoke();
-                        return true;
-                    }
-                }
-                catch (Exception e)
-                {
-                    objCompletionSource.TrySetException(e);
-                }
-            }, tcs);
-            RunWithoutThreadLock(() => tcs.Task);
+                Action funcToRun = (Action)x;
+                funcToRun.Invoke();
+            }, func);
         }
 
         /// <summary>
@@ -1013,20 +997,13 @@ namespace Chummer
             {
                 return func.Invoke();
             }
-            TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
-            Program.MySynchronizationContext.Post(x =>
+            T objReturn = default;
+            Program.MySynchronizationContext.Send(x =>
             {
-                TaskCompletionSource<T> objCompletionSource = (TaskCompletionSource<T>)x;
-                try
-                {
-                    objCompletionSource.TrySetResult(func());
-                }
-                catch (Exception e)
-                {
-                    objCompletionSource.TrySetException(e);
-                }
-            }, tcs);
-            return RunWithoutThreadLock(() => tcs.Task);
+                Func<T> funcToRun = (Func<T>)x;
+                objReturn = funcToRun.Invoke();
+            }, func);
+            return objReturn;
         }
 
         /// <summary>
@@ -1040,32 +1017,12 @@ namespace Chummer
                 func.Invoke();
                 return;
             }
-            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            CancellationTokenRegistration reg = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
-            Program.MySynchronizationContext.Post(x =>
+            Program.MySynchronizationContext.Send(x =>
             {
-                (TaskCompletionSource<bool> objCompletionSource, CancellationTokenRegistration objRegistration) = (Tuple<TaskCompletionSource<bool>, CancellationTokenRegistration>)x;
-                try
-                {
-                    objCompletionSource.TrySetResult(DummyFunction());
-
-                    // This is needed because SetResult always needs a return type
-                    bool DummyFunction()
-                    {
-                        func.Invoke();
-                        return true;
-                    }
-                }
-                catch (Exception e)
-                {
-                    objCompletionSource.TrySetException(e);
-                }
-                finally
-                {
-                    objRegistration.Dispose();
-                }
-            }, new Tuple<TaskCompletionSource<bool>, CancellationTokenRegistration>(tcs, reg));
-            RunWithoutThreadLock(() => tcs.Task, token);
+                (Action funcToRun, CancellationToken objToken) = (Tuple<Action, CancellationToken>)x;
+                objToken.ThrowIfCancellationRequested();
+                funcToRun.Invoke();
+            }, new Tuple<Action, CancellationToken>(func, token));
         }
 
         /// <summary>
@@ -1078,25 +1035,14 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 return func.Invoke();
             }
-            TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
-            CancellationTokenRegistration reg = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
-            Program.MySynchronizationContext.Post(x =>
+            T objReturn = default;
+            Program.MySynchronizationContext.Send(x =>
             {
-                (TaskCompletionSource<T> objCompletionSource, CancellationTokenRegistration objRegistration) = (Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>)x;
-                try
-                {
-                    objCompletionSource.TrySetResult(func());
-                }
-                catch (Exception e)
-                {
-                    objCompletionSource.TrySetException(e);
-                }
-                finally
-                {
-                    objRegistration.Dispose();
-                }
-            }, new Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>(tcs, reg));
-            return RunWithoutThreadLock(() => tcs.Task, token);
+                (Func<T> funcToRun, CancellationToken objToken) = (Tuple<Func<T>, CancellationToken>)x;
+                objToken.ThrowIfCancellationRequested();
+                objReturn = funcToRun.Invoke();
+            }, new Tuple<Func<T>, CancellationToken>(func, token));
+            return objReturn;
         }
 
         /// <summary>
@@ -1170,10 +1116,9 @@ namespace Chummer
                 return Task.CompletedTask;
             }
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            CancellationTokenRegistration reg = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
             Program.MySynchronizationContext.Post(x =>
             {
-                (TaskCompletionSource<bool> objCompletionSource, CancellationTokenRegistration objRegistration) = (Tuple<TaskCompletionSource<bool>, CancellationTokenRegistration>)x;
+                (TaskCompletionSource<bool> objCompletionSource, CancellationToken objToken) = (Tuple<TaskCompletionSource<bool>, CancellationToken>)x;
                 try
                 {
                     objCompletionSource.TrySetResult(DummyFunction());
@@ -1181,19 +1126,20 @@ namespace Chummer
                     // This is needed because SetResult always needs a return type
                     bool DummyFunction()
                     {
+                        objToken.ThrowIfCancellationRequested();
                         func.Invoke();
                         return true;
                     }
+                }
+                catch (OperationCanceledException)
+                {
+                    objCompletionSource.TrySetCanceled(objToken);
                 }
                 catch (Exception e)
                 {
                     objCompletionSource.TrySetException(e);
                 }
-                finally
-                {
-                    objRegistration.Dispose();
-                }
-            }, new Tuple<TaskCompletionSource<bool>, CancellationTokenRegistration>(tcs, reg));
+            }, new Tuple<TaskCompletionSource<bool>, CancellationToken>(tcs, token));
             return tcs.Task;
         }
 
@@ -1209,23 +1155,23 @@ namespace Chummer
                 return Task.FromResult(objReturn);
             }
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
-            CancellationTokenRegistration reg = token.Register(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
             Program.MySynchronizationContext.Post(x =>
             {
-                (TaskCompletionSource<T> objCompletionSource, CancellationTokenRegistration objRegistration) = (Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>)x;
+                (TaskCompletionSource<T> objCompletionSource, CancellationToken objToken) = (Tuple<TaskCompletionSource<T>, CancellationToken>)x;
                 try
                 {
+                    objToken.ThrowIfCancellationRequested();
                     objCompletionSource.TrySetResult(func());
+                }
+                catch (OperationCanceledException)
+                {
+                    objCompletionSource.TrySetCanceled(objToken);
                 }
                 catch (Exception e)
                 {
                     objCompletionSource.TrySetException(e);
                 }
-                finally
-                {
-                    objRegistration.Dispose();
-                }
-            }, new Tuple<TaskCompletionSource<T>, CancellationTokenRegistration>(tcs, reg));
+            }, new Tuple<TaskCompletionSource<T>, CancellationToken>(tcs, token));
             return tcs.Task;
         }
 

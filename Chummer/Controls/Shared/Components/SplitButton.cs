@@ -119,13 +119,13 @@ namespace Chummer
         {
             set
             {
-                if (value != _showSplit)
-                {
-                    _showSplit = value;
-                    Invalidate();
-
-                    Parent?.PerformLayout();
-                }
+                if (value == _showSplit)
+                    return;
+                _showSplit = value;
+                if (Disposing || IsDisposed)
+                    return;
+                Invalidate();
+                Parent?.PerformLayout();
             }
         }
 
@@ -134,11 +134,12 @@ namespace Chummer
             get => _state;
             set
             {
-                if (!_state.Equals(value))
-                {
-                    _state = value;
-                    Invalidate();
-                }
+                if (_state.Equals(value))
+                    return;
+                _state = value;
+                if (Disposing || IsDisposed)
+                    return;
+                Invalidate();
             }
         }
 
@@ -146,7 +147,7 @@ namespace Chummer
 
         protected override bool IsInputKey(Keys keyData)
         {
-            if (keyData.Equals(Keys.Down) && _showSplit)
+            if (keyData.Equals(Keys.Down) && _showSplit && !Disposing && !IsDisposed)
                 return true;
 
             return base.IsInputKey(keyData);
@@ -154,7 +155,7 @@ namespace Chummer
 
         protected override void OnGotFocus(EventArgs e)
         {
-            if (!_showSplit)
+            if (!_showSplit || Disposing || IsDisposed)
             {
                 base.OnGotFocus(e);
                 return;
@@ -168,7 +169,7 @@ namespace Chummer
 
         protected override void OnKeyDown(KeyEventArgs kevent)
         {
-            if (_showSplit)
+            if (_showSplit && !Disposing && !IsDisposed)
             {
                 switch (kevent.KeyCode)
                 {
@@ -187,20 +188,23 @@ namespace Chummer
 
         protected override void OnKeyUp(KeyEventArgs kevent)
         {
-            switch (kevent.KeyCode)
+            if (!Disposing && !IsDisposed)
             {
-                case Keys.Space:
+                switch (kevent.KeyCode)
                 {
-                    if (MouseButtons == MouseButtons.None)
+                    case Keys.Space:
                     {
-                        State = PushButtonState.Normal;
-                    }
+                        if (MouseButtons == MouseButtons.None)
+                        {
+                            State = PushButtonState.Normal;
+                        }
 
-                    break;
+                        break;
+                    }
+                    case Keys.Apps when MouseButtons == MouseButtons.None && !_isSplitMenuVisible:
+                        ShowContextMenuStrip();
+                        break;
                 }
-                case Keys.Apps when MouseButtons == MouseButtons.None && !_isSplitMenuVisible:
-                    ShowContextMenuStrip();
-                    break;
             }
 
             base.OnKeyUp(kevent);
@@ -208,14 +212,15 @@ namespace Chummer
 
         protected override void OnEnabledChanged(EventArgs e)
         {
-            State = Enabled ? PushButtonState.Normal : PushButtonState.Disabled;
+            if (!Disposing && !IsDisposed)
+                State = Enabled ? PushButtonState.Normal : PushButtonState.Disabled;
 
             base.OnEnabledChanged(e);
         }
 
         protected override void OnLostFocus(EventArgs e)
         {
-            if (!_showSplit)
+            if (!_showSplit || Disposing || IsDisposed)
             {
                 base.OnLostFocus(e);
                 return;
@@ -231,7 +236,7 @@ namespace Chummer
 
         protected override void OnMouseEnter(EventArgs e)
         {
-            if (!_showSplit)
+            if (!_showSplit || Disposing || IsDisposed)
             {
                 base.OnMouseEnter(e);
                 return;
@@ -247,7 +252,7 @@ namespace Chummer
 
         protected override void OnMouseLeave(EventArgs e)
         {
-            if (!_showSplit)
+            if (!_showSplit || Disposing || IsDisposed)
             {
                 base.OnMouseLeave(e);
                 return;
@@ -263,7 +268,7 @@ namespace Chummer
 
         protected override void OnMouseDown(MouseEventArgs mevent)
         {
-            if (!_showSplit)
+            if (!_showSplit || Disposing || IsDisposed)
             {
                 base.OnMouseDown(mevent);
                 return;
@@ -285,7 +290,7 @@ namespace Chummer
 
         protected override void OnMouseUp(MouseEventArgs mevent)
         {
-            if (!_showSplit)
+            if (!_showSplit || Disposing || IsDisposed)
             {
                 base.OnMouseUp(mevent);
                 return;
@@ -311,7 +316,7 @@ namespace Chummer
         {
             base.OnPaint(pevent);
 
-            if (!_showSplit)
+            if (!_showSplit || Disposing || IsDisposed)
                 return;
 
             Graphics g = pevent.Graphics;
@@ -429,7 +434,7 @@ namespace Chummer
             Size preferredSize = base.GetPreferredSize(proposedSize);
 
             //autosize correctly for splitbuttons
-            if (_showSplit)
+            if (_showSplit && !Disposing && !IsDisposed)
             {
                 if (AutoSize)
                     return CalculateButtonAutoSize();
@@ -856,7 +861,7 @@ namespace Chummer
         protected override void WndProc(ref Message m)
         {
             //0x0212 == WM_EXITMENULOOP
-            if (m.Msg == 0x0212)
+            if (m.Msg == 0x0212 && !Disposing && !IsDisposed)
             {
                 //this message is only sent when a ContextMenu is closed (not a ContextMenuStrip)
                 _isSplitMenuVisible = false;

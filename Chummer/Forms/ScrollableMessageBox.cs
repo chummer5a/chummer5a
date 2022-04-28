@@ -33,7 +33,7 @@ namespace Chummer.Forms
         {
             using (ThreadSafeForm<ScrollableMessageBox> frmMessageBox
                    = ThreadSafeForm<ScrollableMessageBox>.Get(() => new ScrollableMessageBox(text, caption, buttons, icon, defButton, options)))
-                return frmMessageBox.ShowDialog();
+                return frmMessageBox.ShowDialogSafe();
         }
 
         public static DialogResult Show(IWin32Window owner, string text, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK,
@@ -43,7 +43,7 @@ namespace Chummer.Forms
             using (ThreadSafeForm<ScrollableMessageBox> frmMessageBox
                    = ThreadSafeForm<ScrollableMessageBox>.Get(
                        () => new ScrollableMessageBox(text, caption, buttons, icon, defButton, options)))
-                return frmMessageBox.ShowDialog(owner);
+                return frmMessageBox.ShowDialogSafe(owner);
         }
 
         private ScrollableMessageBox(string text, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defButton = MessageBoxDefaultButton.Button1, MessageBoxOptions options = 0)
