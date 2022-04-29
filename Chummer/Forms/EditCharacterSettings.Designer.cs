@@ -309,7 +309,7 @@ namespace Chummer
             this.chkExceedPositiveQualities = new Chummer.ColorableCheckBox(this.components);
             this.chkDontDoubleQualityRefunds = new Chummer.ColorableCheckBox(this.components);
             this.chkExceedPositiveQualitiesCostDoubled = new Chummer.ColorableCheckBox(this.components);
-            this.chkExceedNegativeQualitiesLimit = new Chummer.ColorableCheckBox(this.components);
+            this.chkExceedNegativeQualitiesNoBonus = new Chummer.ColorableCheckBox(this.components);
             this.gpbHouseRulesAttributes = new System.Windows.Forms.GroupBox();
             this.tlpHouseRulesAttributes = new Chummer.BufferedTableLayoutPanel(this.components);
             this.chkESSLossReducesMaximumOnly = new Chummer.ColorableCheckBox(this.components);
@@ -4863,7 +4863,7 @@ namespace Chummer
             this.tlpHouseRulesQualities.Controls.Add(this.chkExceedPositiveQualities, 0, 2);
             this.tlpHouseRulesQualities.Controls.Add(this.chkDontDoubleQualityRefunds, 0, 1);
             this.tlpHouseRulesQualities.Controls.Add(this.chkExceedPositiveQualitiesCostDoubled, 0, 3);
-            this.tlpHouseRulesQualities.Controls.Add(this.chkExceedNegativeQualitiesLimit, 0, 5);
+            this.tlpHouseRulesQualities.Controls.Add(this.chkExceedNegativeQualitiesNoBonus, 0, 5);
             this.tlpHouseRulesQualities.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpHouseRulesQualities.Location = new System.Drawing.Point(3, 16);
             this.tlpHouseRulesQualities.Name = "tlpHouseRulesQualities";
@@ -4948,22 +4948,22 @@ namespace Chummer
             this.chkExceedPositiveQualitiesCostDoubled.Text = "Use Career costs for all Positive Quality karma costs in excess of the limit";
             this.chkExceedPositiveQualitiesCostDoubled.UseVisualStyleBackColor = true;
             // 
-            // chkExceedNegativeQualitiesLimit
+            // chkExceedNegativeQualitiesNoBonus
             // 
-            this.chkExceedNegativeQualitiesLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkExceedNegativeQualitiesLimit.AutoSize = true;
-            this.chkExceedNegativeQualitiesLimit.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.chkExceedNegativeQualitiesLimit.DefaultColorScheme = true;
-            this.chkExceedNegativeQualitiesLimit.Enabled = false;
-            this.chkExceedNegativeQualitiesLimit.Location = new System.Drawing.Point(23, 129);
-            this.chkExceedNegativeQualitiesLimit.Margin = new System.Windows.Forms.Padding(23, 4, 3, 4);
-            this.chkExceedNegativeQualitiesLimit.Name = "chkExceedNegativeQualitiesLimit";
-            this.chkExceedNegativeQualitiesLimit.Size = new System.Drawing.Size(503, 17);
-            this.chkExceedNegativeQualitiesLimit.TabIndex = 18;
-            this.chkExceedNegativeQualitiesLimit.Tag = "Checkbox_Options_ExceedNegativeQualitiesLimit";
-            this.chkExceedNegativeQualitiesLimit.Text = "Characters do not gain Karma from taking Negative Qualities in excess of their Ga" +
+            this.chkExceedNegativeQualitiesNoBonus.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkExceedNegativeQualitiesNoBonus.AutoSize = true;
+            this.chkExceedNegativeQualitiesNoBonus.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkExceedNegativeQualitiesNoBonus.DefaultColorScheme = true;
+            this.chkExceedNegativeQualitiesNoBonus.Enabled = false;
+            this.chkExceedNegativeQualitiesNoBonus.Location = new System.Drawing.Point(23, 129);
+            this.chkExceedNegativeQualitiesNoBonus.Margin = new System.Windows.Forms.Padding(23, 4, 3, 4);
+            this.chkExceedNegativeQualitiesNoBonus.Name = "chkExceedNegativeQualitiesNoBonus";
+            this.chkExceedNegativeQualitiesNoBonus.Size = new System.Drawing.Size(503, 17);
+            this.chkExceedNegativeQualitiesNoBonus.TabIndex = 18;
+            this.chkExceedNegativeQualitiesNoBonus.Tag = "Checkbox_Options_ExceedNegativeQualitiesLimit";
+            this.chkExceedNegativeQualitiesNoBonus.Text = "Characters do not gain Karma from taking Negative Qualities in excess of their Ga" +
     "meplay Option\'s limit";
-            this.chkExceedNegativeQualitiesLimit.UseVisualStyleBackColor = true;
+            this.chkExceedNegativeQualitiesNoBonus.UseVisualStyleBackColor = true;
             // 
             // gpbHouseRulesAttributes
             // 
@@ -6272,7 +6272,7 @@ namespace Chummer
         private System.Windows.Forms.TreeView treCustomDataDirectories;
         private System.Windows.Forms.TabPage tabHouseRules;
         private ColorableCheckBox chkIgnoreArt;
-        private ColorableCheckBox chkExceedNegativeQualitiesLimit;
+        private ColorableCheckBox chkExceedNegativeQualitiesNoBonus;
         private ColorableCheckBox chkExceedNegativeQualities;
         private ColorableCheckBox chkExceedPositiveQualitiesCostDoubled;
         private ColorableCheckBox chkExceedPositiveQualities;

@@ -2086,7 +2086,8 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
                                                                         ? strUI
-                                                                        : strUI + strSpace + '(' + objCharacter.CharacterName
+                                                                        : strUI + strSpace + '('
+                                                                          + objCharacter.CharacterName
                                                                           + ')', token: token);
                         if (objCharacter == null
                             || OpenCharacterEditorForms.Any(x => x.CharacterObject == objCharacter))
@@ -2097,24 +2098,25 @@ namespace Chummer
                                 strTooManyHandlesTitle,
                                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                         {
-                            if (Program.OpenCharacters.All(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
+                            if (Program.OpenCharacters.All(
+                                    x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
                                 await Program.OpenCharacters.RemoveAsync(objCharacter);
                             continue;
                         }
 
-                    //Timekeeper.Start("load_event_time");
-                    // Show the character forms.
-                    await this.DoThreadSafeAsync(y =>
-                    {
-                        CharacterShared frmNewCharacter = objCharacter.Created
-                            ? (CharacterShared) new CharacterCareer(objCharacter)
-                            : new CharacterCreate(objCharacter);
-                        frmNewCharacter.MdiParent = y;
-                        frmNewCharacter.Show();
-                        lstNewFormsToProcess.Add(frmNewCharacter);
-                    }, token);
-                    if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
-                                        && File.Exists(objCharacter.FileName))
+                        //Timekeeper.Start("load_event_time");
+                        // Show the character forms.
+                        await this.DoThreadSafeAsync(y =>
+                        {
+                            CharacterShared frmNewCharacter = objCharacter.Created
+                                ? (CharacterShared) new CharacterCareer(objCharacter)
+                                : new CharacterCreate(objCharacter);
+                            frmNewCharacter.MdiParent = y;
+                            frmNewCharacter.Show();
+                            lstNewFormsToProcess.Add(frmNewCharacter);
+                        }, token);
+                        if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
+                                            && File.Exists(objCharacter.FileName))
                             await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, objCharacter.FileName);
                         //Timekeeper.Finish("load_event_time");
                     }

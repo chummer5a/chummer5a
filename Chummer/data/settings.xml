@@ -61,7 +61,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -218,7 +218,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -375,7 +375,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -532,7 +532,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -689,7 +689,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -846,7 +846,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -1003,7 +1003,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -1161,7 +1161,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -1325,7 +1325,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -1483,7 +1483,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -1640,7 +1640,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -1803,7 +1803,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -1967,7 +1967,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -2136,7 +2136,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -2300,7 +2300,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -2496,7 +2496,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -2692,7 +2692,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -2894,7 +2894,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -3090,7 +3090,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -3299,7 +3299,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -3508,7 +3508,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -3722,7 +3722,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -3931,7 +3931,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
-      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>True</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -4095,7 +4095,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
-      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>True</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -4264,7 +4264,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
-      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>True</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -4462,7 +4462,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
-      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>True</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -4660,7 +4660,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
-      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>True</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -4863,7 +4863,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
-      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>True</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -5068,7 +5068,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>True</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
-      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>True</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -5272,7 +5272,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>True</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
-      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>True</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -5476,7 +5476,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>True</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
-      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>True</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -5680,7 +5680,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>True</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
-      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>True</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -5884,7 +5884,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>True</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
-      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>True</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -6088,7 +6088,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>True</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
-      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>True</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>

@@ -720,14 +720,15 @@ namespace Chummer
                     break;
                 case nameof(CharacterSettings.KarmaQuality):
                 case nameof(CharacterSettings.QualityKarmaLimit):
-                    this.OnMultiplePropertyChanged(nameof(PositiveQualityKarma), nameof(NegativeQualityKarma));
+                    this.OnMultiplePropertyChanged(nameof(PositiveQualityLimitKarma), nameof(PositiveQualityKarma),
+                                                   nameof(NegativeQualityLimitKarma), nameof(NegativeQualityKarma));
                     break;
                 case nameof(CharacterSettings.ExceedPositiveQualitiesCostDoubled):
-                    OnPropertyChanged(nameof(PositiveQualityKarma));
+                    this.OnMultiplePropertyChanged(nameof(PositiveQualityLimitKarma), nameof(PositiveQualityKarma));
                     break;
                 case nameof(CharacterSettings.EnemyKarmaQualityLimit):
-                case nameof(CharacterSettings.ExceedNegativeQualitiesLimit):
-                    OnPropertyChanged(nameof(NegativeQualityKarma));
+                case nameof(CharacterSettings.ExceedNegativeQualitiesNoBonus):
+                    this.OnMultiplePropertyChanged(nameof(NegativeQualityLimitKarma), nameof(NegativeQualityKarma));
                     break;
                 case nameof(CharacterSettings.EnableEnemyTracking):
                 case nameof(CharacterSettings.KarmaEnemy):
@@ -846,8 +847,8 @@ namespace Chummer
             {
                 this.OnMultiplePropertyChanged(nameof(NegativeQualityKarma),
                                                nameof(NegativeQualityLimitKarma),
+                                               nameof(PositiveQualityLimitKarma),
                                                nameof(PositiveQualityKarma),
-                                               nameof(PositiveQualityKarmaTotal),
                                                nameof(EnemyKarma));
             }
         }
@@ -9414,8 +9415,8 @@ namespace Chummer
                 _intCachedMetagenicPositiveQualities = int.MinValue;
                 _intCachedNegativeQualities = int.MinValue;
                 _intCachedNegativeQualityLimitKarma = int.MinValue;
+                _intCachedPositiveQualityLimitKarma = int.MinValue;
                 _intCachedPositiveQualities = int.MinValue;
-                _intCachedPositiveQualitiesTotal = int.MinValue;
                 _intCachedRedlinerBonus = int.MinValue;
                 _intCachedRestrictedGear = int.MinValue;
                 _intCachedTotalAcidArmorRating = int.MinValue;
@@ -26563,11 +26564,11 @@ namespace Chummer
                         )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DisplayPositiveQualityKarma),
-                        new DependencyGraphNode<string, Character>(nameof(PositiveQualityKarma),
+                        new DependencyGraphNode<string, Character>(nameof(PositiveQualityLimitKarma),
                             new DependencyGraphNode<string, Character>(nameof(Contacts)),
                             new DependencyGraphNode<string, Character>(nameof(Qualities))
                         ),
-                        new DependencyGraphNode<string, Character>(nameof(PositiveQualityKarmaTotal),
+                        new DependencyGraphNode<string, Character>(nameof(PositiveQualityKarma),
                             new DependencyGraphNode<string, Character>(nameof(Contacts)),
                             new DependencyGraphNode<string, Character>(nameof(Qualities))
                         )
@@ -26802,8 +26803,8 @@ namespace Chummer
                         {
                             _intCachedNegativeQualities = int.MinValue;
                             _intCachedNegativeQualityLimitKarma = int.MinValue;
+                            _intCachedPositiveQualityLimitKarma = int.MinValue;
                             _intCachedPositiveQualities = int.MinValue;
-                            _intCachedPositiveQualitiesTotal = int.MinValue;
                             _intCachedMetagenicNegativeQualities = int.MinValue;
                             _intCachedMetagenicPositiveQualities = int.MinValue;
                         }
@@ -29350,27 +29351,25 @@ namespace Chummer
         #endregion
 
         #region Karma Values
-        private int _intCachedPositiveQualities = int.MinValue;
+        private int _intCachedPositiveQualityLimitKarma = int.MinValue;
         /// <summary>
         /// Total value of positive qualities that count towards the maximum quality limit in create mode.
         /// </summary>
-        public int PositiveQualityKarma
+        public int PositiveQualityLimitKarma
         {
             get
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intCachedPositiveQualities == int.MinValue)
+                    if (_intCachedPositiveQualityLimitKarma == int.MinValue)
                     {
-                        int intNewValue = Qualities
-                            .Where(objQuality =>
-                                objQuality.Type == QualityType.Positive && objQuality.ContributeToBP &&
-                                objQuality.ContributeToLimit)
-                            .Sum(objQuality => objQuality.BP) * Settings.KarmaQuality;
+                        int intNewValue
+                            = Qualities.Sum(
+                                objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToLimit,
+                                objQuality => objQuality.BP) * Settings.KarmaQuality;
                         // Group contacts are counted as positive qualities
-                        intNewValue += Contacts
-                            .Where(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free)
-                            .Sum(x => x.ContactPoints) * Settings.KarmaContact;
+                        intNewValue += Contacts.Sum(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free,
+                                                    x => x.ContactPoints) * Settings.KarmaContact;
 
                         // Deduct the amount for free Qualities.
                         intNewValue -=
@@ -29387,35 +29386,34 @@ namespace Chummer
                             }
                         }
 
-                        _intCachedPositiveQualities = intNewValue;
+                        _intCachedPositiveQualityLimitKarma = intNewValue;
                     }
 
-                    return _intCachedPositiveQualities;
+                    return _intCachedPositiveQualityLimitKarma;
                 }
             }
         }
-        private int _intCachedPositiveQualitiesTotal = int.MinValue;
+        private int _intCachedPositiveQualities = int.MinValue;
         /// <summary>
         /// Total value of ALL positive qualities, including those that don't contribute to the quality limit during character creation.
         /// </summary>
-        public int PositiveQualityKarmaTotal
+        public int PositiveQualityKarma
         {
             get
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intCachedPositiveQualitiesTotal == int.MinValue)
+                    if (_intCachedPositiveQualities == int.MinValue)
                     {
                         // Qualities that count towards the Quality Limit are checked first to support the house rule allowing doubling of qualities over said limit.
-                        int intNewValue = Qualities
-                            .Where(objQuality =>
-                                objQuality.Type == QualityType.Positive && objQuality.ContributeToBP &&
-                                objQuality.ContributeToLimit)
-                            .Sum(objQuality => objQuality.BP) * Settings.KarmaQuality;
+                        int intNewValue
+                            = Qualities.Sum(
+                                  objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP
+                                      && objQuality.ContributeToLimit, objQuality => objQuality.BP)
+                              * Settings.KarmaQuality;
                         // Group contacts are counted as positive qualities
-                        intNewValue += Contacts
-                            .Where(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free)
-                            .Sum(x => x.ContactPoints) * Settings.KarmaContact;
+                        intNewValue += Contacts.Sum(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free,
+                                                    x => x.ContactPoints) * Settings.KarmaContact;
 
                         // Deduct the amount for free Qualities.
                         intNewValue -=
@@ -29423,9 +29421,9 @@ namespace Chummer
                              Settings.KarmaQuality).StandardRound();
 
                         // Factor in any qualities that can be bought with spell points at the end, but before doubled karma costs are calculated.
-                        int intMasteryQualityKarmaUsed = Qualities
-                            .Where(objQuality => objQuality.CanBuyWithSpellPoints)
-                            .Sum(objQuality => objQuality.BP);
+                        int intMasteryQualityKarmaUsed
+                            = Qualities.Sum(objQuality => objQuality.CanBuyWithSpellPoints,
+                                            objQuality => objQuality.BP);
                         if (intMasteryQualityKarmaUsed != 0)
                         {
                             // Each spell costs KarmaSpell.
@@ -29457,16 +29455,14 @@ namespace Chummer
                         }
 
                         // Qualities that don't count towards the cap are added afterwards.
-                        intNewValue += Qualities
-                            .Where(objQuality =>
-                                objQuality.Type == QualityType.Positive && objQuality.ContributeToBP &&
-                                !objQuality.ContributeToLimit)
-                            .Sum(objQuality => objQuality.BP) * Settings.KarmaQuality;
+                        intNewValue += Qualities.Sum(
+                            objQuality => objQuality.Type == QualityType.Positive && objQuality.ContributeToBP
+                                && !objQuality.ContributeToLimit, objQuality => objQuality.BP) * Settings.KarmaQuality;
 
-                        _intCachedPositiveQualitiesTotal = intNewValue;
+                        _intCachedPositiveQualities = intNewValue;
                     }
 
-                    return _intCachedPositiveQualitiesTotal;
+                    return _intCachedPositiveQualities;
                 }
             }
         }
@@ -29477,21 +29473,21 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (PositiveQualityKarma != PositiveQualityKarmaTotal)
+                    if (PositiveQualityLimitKarma != PositiveQualityKarma)
                     {
                         return string.Format(GlobalSettings.CultureInfo, "{0}{2}/{2}{1}{2}({3}){2}{4}",
-                            PositiveQualityKarma,
-                            Settings.QualityKarmaLimit,
-                            LanguageManager.GetString("String_Space"),
-                            PositiveQualityKarmaTotal,
-                            LanguageManager.GetString("String_Karma"));
+                                             PositiveQualityLimitKarma,
+                                             Settings.QualityKarmaLimit,
+                                             LanguageManager.GetString("String_Space"),
+                                             PositiveQualityKarma,
+                                             LanguageManager.GetString("String_Karma"));
                     }
 
                     return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}{3}",
-                        PositiveQualityKarma,
-                        Settings.QualityKarmaLimit,
-                        LanguageManager.GetString("String_Space"),
-                        LanguageManager.GetString("String_Karma"));
+                                         PositiveQualityLimitKarma,
+                                         Settings.QualityKarmaLimit,
+                                         LanguageManager.GetString("String_Space"),
+                                         LanguageManager.GetString("String_Karma"));
                 }
             }
         }
@@ -29505,9 +29501,12 @@ namespace Chummer
                 {
                     if (_intCachedNegativeQualities == int.MinValue)
                     {
-                        int intNewValue = Qualities
-                            .Where(objQuality => objQuality.Type == QualityType.Negative && objQuality.ContributeToBP)
-                            .Sum(objQuality => objQuality.BP) * Settings.KarmaQuality;
+                        // Qualities that count towards the Quality Limit are checked first to support the house rule allowing zeroing of qualities over said limit.
+                        int intNewValue
+                            = Qualities.Sum(
+                                  objQuality => objQuality.Type == QualityType.Negative && objQuality.ContributeToBP
+                                      && objQuality.ContributeToLimit, objQuality => objQuality.BP)
+                              * Settings.KarmaQuality;
                         // Group contacts are counted as positive qualities
                         intNewValue += EnemyKarma;
 
@@ -29517,7 +29516,7 @@ namespace Chummer
                                 .StandardRound();
 
                         // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
-                        if (Settings.ExceedNegativeQualitiesLimit)
+                        if (Settings.ExceedNegativeQualitiesNoBonus)
                         {
                             int intNegativeQualityLimit = -Settings.QualityKarmaLimit;
                             if (intNewValue < intNegativeQualityLimit)
@@ -29525,6 +29524,11 @@ namespace Chummer
                                 intNewValue = intNegativeQualityLimit;
                             }
                         }
+
+                        // Qualities that don't count towards the cap are added afterwards.
+                        intNewValue += Qualities.Sum(
+                            objQuality => objQuality.Type == QualityType.Negative && objQuality.ContributeToBP
+                                && !objQuality.ContributeToLimit, objQuality => objQuality.BP) * Settings.KarmaQuality;
 
                         _intCachedNegativeQualities = -intNewValue;
                     }
@@ -29546,10 +29550,10 @@ namespace Chummer
                 {
                     if (_intCachedNegativeQualityLimitKarma == int.MinValue)
                     {
-                        int intNewValue = Qualities
-                            .Where(objQuality =>
-                                objQuality.Type == QualityType.Negative && objQuality.ContributeToLimit)
-                            .Sum(objQuality => objQuality.BP) * Settings.KarmaQuality;
+                        int intNewValue
+                            = Qualities.Sum(
+                                objQuality => objQuality.Type == QualityType.Negative && objQuality.ContributeToLimit,
+                                objQuality => objQuality.BP) * Settings.KarmaQuality;
                         // Group contacts are counted as positive qualities
                         if (Settings.EnemyKarmaQualityLimit)
                             intNewValue += EnemyKarma;
@@ -29560,7 +29564,7 @@ namespace Chummer
                                 .StandardRound();
 
                         // If the character is only allowed to gain 25 BP from Negative Qualities but allowed to take as many as they'd like, limit their refunded points.
-                        if (Settings.ExceedNegativeQualitiesLimit)
+                        if (Settings.ExceedNegativeQualitiesNoBonus)
                         {
                             int intNegativeQualityLimit = -Settings.QualityKarmaLimit;
                             if (intNewValue < intNegativeQualityLimit)
@@ -29586,18 +29590,18 @@ namespace Chummer
                     if (NegativeQualityLimitKarma != NegativeQualityKarma)
                     {
                         return string.Format(GlobalSettings.CultureInfo, "{0}{2}/{2}{1}{2}({3}){2}{4}",
-                            NegativeQualityLimitKarma,
-                            Settings.QualityKarmaLimit,
-                            LanguageManager.GetString("String_Space"),
-                            NegativeQualityKarma,
-                            LanguageManager.GetString("String_Karma"));
+                                             NegativeQualityLimitKarma,
+                                             Settings.QualityKarmaLimit,
+                                             LanguageManager.GetString("String_Space"),
+                                             NegativeQualityKarma,
+                                             LanguageManager.GetString("String_Karma"));
                     }
 
                     return string.Format(GlobalSettings.CultureInfo, "{0}/{1}{2}{3}",
-                        NegativeQualityKarma,
-                        Settings.QualityKarmaLimit,
-                        LanguageManager.GetString("String_Space"),
-                        LanguageManager.GetString("String_Karma"));
+                                         NegativeQualityLimitKarma,
+                                         Settings.QualityKarmaLimit,
+                                         LanguageManager.GetString("String_Space"),
+                                         LanguageManager.GetString("String_Karma"));
                 }
             }
         }
@@ -29677,9 +29681,9 @@ namespace Chummer
                     if (_intCachedEnemyKarma != int.MinValue)
                         return _intCachedEnemyKarma;
                     if (Settings.EnableEnemyTracking && Settings.KarmaEnemy > 0)
-                        return _intCachedEnemyKarma = Contacts
-                            .Where(x => x.IsEnemy && !x.Free)
-                            .Sum(x => x.Connection + x.Loyalty) * Settings.KarmaEnemy;
+                        return _intCachedEnemyKarma
+                            = Contacts.Sum(x => x.IsEnemy && !x.Free, x => x.Connection + x.Loyalty)
+                              * Settings.KarmaEnemy;
                     return _intCachedEnemyKarma = 0;
                 }
             }

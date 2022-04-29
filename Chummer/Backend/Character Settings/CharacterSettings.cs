@@ -82,7 +82,7 @@ namespace Chummer
         private bool _blnEnforceCapacity = true;
         private bool _blnESSLossReducesMaximumOnly;
         private bool _blnExceedNegativeQualities;
-        private bool _blnExceedNegativeQualitiesLimit;
+        private bool _blnExceedNegativeQualitiesNoBonus;
         private bool _blnExceedPositiveQualities;
         private bool _blnExceedPositiveQualitiesCostDoubled;
         private bool _blnExtendAnyDetectionSpell;
@@ -712,7 +712,7 @@ namespace Chummer
                     hashCode = (hashCode * 397) ^ _blnEnforceCapacity.GetHashCode();
                     hashCode = (hashCode * 397) ^ _blnESSLossReducesMaximumOnly.GetHashCode();
                     hashCode = (hashCode * 397) ^ _blnExceedNegativeQualities.GetHashCode();
-                    hashCode = (hashCode * 397) ^ _blnExceedNegativeQualitiesLimit.GetHashCode();
+                    hashCode = (hashCode * 397) ^ _blnExceedNegativeQualitiesNoBonus.GetHashCode();
                     hashCode = (hashCode * 397) ^ _blnExceedPositiveQualities.GetHashCode();
                     hashCode = (hashCode * 397) ^ _blnExceedPositiveQualitiesCostDoubled.GetHashCode();
                     hashCode = (hashCode * 397) ^ _blnExtendAnyDetectionSpell.GetHashCode();
@@ -1100,9 +1100,9 @@ namespace Chummer
                         objWriter.WriteElementString("exceednegativequalities",
                                                      _blnExceedNegativeQualities.ToString(
                                                          GlobalSettings.InvariantCultureInfo));
-                        // <exceednegativequalitieslimit />
-                        objWriter.WriteElementString("exceednegativequalitieslimit",
-                                                     _blnExceedNegativeQualitiesLimit.ToString(
+                        // <exceednegativequalitiesnobonus />
+                        objWriter.WriteElementString("exceednegativequalitiesnobonus",
+                                                     _blnExceedNegativeQualitiesNoBonus.ToString(
                                                          GlobalSettings.InvariantCultureInfo));
                         // <multiplyrestrictedcost />
                         objWriter.WriteElementString("multiplyrestrictedcost",
@@ -1798,7 +1798,8 @@ namespace Chummer
                 // Allow more than 35 BP in Negative Qualities.
                 objXmlNode.TryGetBoolFieldQuickly("exceednegativequalities", ref _blnExceedNegativeQualities);
                 // Character can still only receive 35 BP from Negative Qualities (though they can still add as many as they'd like).
-                objXmlNode.TryGetBoolFieldQuickly("exceednegativequalitieslimit", ref _blnExceedNegativeQualitiesLimit);
+                if (!objXmlNode.TryGetBoolFieldQuickly("exceednegativequalitiesnobonus", ref _blnExceedNegativeQualitiesNoBonus))
+                    objXmlNode.TryGetBoolFieldQuickly("exceednegativequalitieslimit", ref _blnExceedNegativeQualitiesNoBonus);
                 // Whether or not Restricted items have their cost multiplied.
                 objXmlNode.TryGetBoolFieldQuickly("multiplyrestrictedcost", ref _blnMultiplyRestrictedCost);
                 // Whether or not Forbidden items have their cost multiplied.
@@ -3926,7 +3927,7 @@ namespace Chummer
                         _blnExceedNegativeQualities = value;
                         OnPropertyChanged();
                         if (!value)
-                            ExceedNegativeQualitiesLimit = false;
+                            ExceedNegativeQualitiesNoBonus = false;
                     }
                 }
             }
@@ -3935,22 +3936,22 @@ namespace Chummer
         /// <summary>
         /// If true, the character will not receive additional BP from Negative Qualities past the initial 25
         /// </summary>
-        public bool ExceedNegativeQualitiesLimit
+        public bool ExceedNegativeQualitiesNoBonus
         {
             get
             {
                 using (EnterReadLock.Enter(LockObject))
-                    return _blnExceedNegativeQualitiesLimit;
+                    return _blnExceedNegativeQualitiesNoBonus;
             }
             set
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_blnExceedNegativeQualitiesLimit == value)
+                    if (_blnExceedNegativeQualitiesNoBonus == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        _blnExceedNegativeQualitiesLimit = value;
+                        _blnExceedNegativeQualitiesNoBonus = value;
                         OnPropertyChanged();
                     }
                 }

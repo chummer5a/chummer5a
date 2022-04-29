@@ -152,7 +152,7 @@ namespace Chummer
 
                     if ((!IsEnemy || setNamesOfChangedProperties.Contains(nameof(IsEnemy)))
                         && (IsGroup || setNamesOfChangedProperties.Contains(nameof(IsGroup))))
-                        _objCharacter.OnPropertyChanged(nameof(Character.PositiveQualityKarmaTotal));
+                        _objCharacter.OnPropertyChanged(nameof(Character.PositiveQualityKarma));
                 }
             }
             finally

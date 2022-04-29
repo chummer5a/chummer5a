@@ -4508,7 +4508,7 @@ namespace Chummer
                                     // Check if adding this Quality would put the character over their limit.
                                     else if (!CharacterObjectSettings.ExceedPositiveQualities)
                                     {
-                                        intBP += CharacterObject.PositiveQualityKarma;
+                                        intBP += CharacterObject.PositiveQualityLimitKarma;
                                         if (intBP > intMaxQualityAmount)
                                         {
                                             Program.ShowMessageBox(this,
@@ -7561,7 +7561,7 @@ namespace Chummer
                         // Check if adding this Quality would put the character over their limit.
                         else if (!CharacterObjectSettings.ExceedPositiveQualities)
                         {
-                            intBP += CharacterObject.PositiveQualityKarma;
+                            intBP += CharacterObject.PositiveQualityLimitKarma;
                             if (intBP > intMaxQualityAmount)
                             {
                                 Program.ShowMessageBox(this,
@@ -10168,7 +10168,7 @@ namespace Chummer
                 }
             }
 
-            int intQualityPointsUsed = intLifeModuleQualities - CharacterObject.NegativeQualityKarma + CharacterObject.PositiveQualityKarmaTotal;
+            int intQualityPointsUsed = intLifeModuleQualities - CharacterObject.NegativeQualityKarma + CharacterObject.PositiveQualityKarma;
 
             intKarmaPointsRemain -= intQualityPointsUsed;
             intFreestyleBP += intQualityPointsUsed;
@@ -15095,7 +15095,7 @@ namespace Chummer
                     }
 
                     // if positive points > 25
-                    if (CharacterObject.PositiveQualityKarma > CharacterObjectSettings.QualityKarmaLimit
+                    if (CharacterObject.PositiveQualityLimitKarma > CharacterObjectSettings.QualityKarmaLimit
                         && !CharacterObjectSettings.ExceedPositiveQualities)
                     {
                         sbdMessage.AppendLine().Append('\t').AppendFormat(
