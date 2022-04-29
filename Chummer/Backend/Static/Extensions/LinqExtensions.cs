@@ -729,7 +729,7 @@ namespace Chummer
             }
             return lngReturn;
         }
-        
+
         public static float Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector)
         {
             float fltReturn = 0;
@@ -1085,7 +1085,7 @@ namespace Chummer
                 dblReturn += dblLoop;
             return dblReturn;
         }
-        
+
         public static decimal SumParallel<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector)
         {
             List<Task<decimal>> lstTasks;

@@ -4778,12 +4778,10 @@ namespace Chummer
                                     // Settings with a negative score should not be considered suitable at all
                                     int CalculateCharacterSettingsMatchScore(CharacterSettings objOptionsToCheck)
                                     {
-                                        int intBaseline = Convert
-                                                          .ToDecimal(
-                                                              (intLegacyMaxKarma - objOptionsToCheck.BuildKarma)
-                                                              .RaiseToPower(2)
-                                                              + (decLegacyMaxNuyen - objOptionsToCheck.NuyenMaximumBP)
-                                                              .RaiseToPower(2)).RaiseToPower(0.5m).StandardRound();
+                                        int intBaseline
+                                            = ((intLegacyMaxKarma - objOptionsToCheck.BuildKarma).RaiseToPower(2)
+                                               + (decLegacyMaxNuyen - objOptionsToCheck.NuyenMaximumBP).RaiseToPower(2))
+                                              .RaiseToPower(0.5m).StandardRound();
                                         if (objOptionsToCheck.BuiltInOption)
                                             ++intBaseline;
 
@@ -4831,7 +4829,7 @@ namespace Chummer
                                                     x => x.Name != strLoopCustomDataName))
                                                 intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
                                         }
-                                        
+
                                         using (new FetchSafelyFromPool<HashSet<string>>(
                                                    Utils.StringHashSetPool, out HashSet<string> setDummyBooks))
                                         {
@@ -4849,7 +4847,7 @@ namespace Chummer
 
                                         return intReturn;
                                     }
-                                    
+
                                     if (blnSync)
                                         blnSuccess = SettingsManager.LoadedCharacterSettings.TryGetValue(
                                             _strSettingsKey, out objProspectiveSettings);
@@ -5810,7 +5808,7 @@ namespace Chummer
                                                         {
                                                             lstContacts.Sort(CompareListItems.CompareNames);
                                                         }
-                                                        
+
                                                         if (blnSync)
                                                         {
                                                             // ReSharper disable once MethodHasAsyncOverload
@@ -7637,7 +7635,7 @@ namespace Chummer
 
                                             objQuality.Create(objXmlDwarfQuality, QualitySource.Metatype,
                                                               lstWeapons);
-                                            
+
                                             if (blnSync)
                                             {
                                                 foreach (Weapon objWeapon in lstWeapons)
@@ -15560,7 +15558,7 @@ namespace Chummer
 
                         //1781 Essence is not printing
                         //ESS.Base = Convert.ToInt32(decESS); -- Disabled because this messes up Character Validity, and it really shouldn't be what "Base" of an attribute is supposed to be (it's supposed to be extra levels gained)
-                        
+
                         return _decCachedEssence = decESS;
                     }
                 }
@@ -15605,7 +15603,7 @@ namespace Chummer
 
                         //1781 Essence is not printing
                         //ESS.Base = Convert.ToInt32(decESS); -- Disabled because this messes up Character Validity, and it really shouldn't be what "Base" of an attribute is supposed to be (it's supposed to be extra levels gained)
-                        
+
                         return _decCachedEssence = decESS;
                     }
                     finally

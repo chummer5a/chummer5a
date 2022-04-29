@@ -423,7 +423,7 @@ namespace Chummer
                 objNewSource.Dispose();
                 return;
             }
-            
+
             CancellationToken innerToken = objNewSource.Token;
 
             try
@@ -450,7 +450,7 @@ namespace Chummer
                 {
                     await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken);
                 }
-                
+
                 CharacterCache objSelectedCache = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, _objGenericToken) as CharacterCache;
                 await UpdateCharacter(objSelectedCache, _objGenericToken);
                 await PurgeUnusedCharacterCaches(_objGenericToken);
@@ -490,7 +490,7 @@ namespace Chummer
                 objTemp.Dispose();
             }
             token.ThrowIfCancellationRequested();
-            
+
             try
             {
                 if (_tskMostRecentlyUsedsRefresh?.IsCompleted == false)
@@ -2045,7 +2045,7 @@ namespace Chummer
         {
             int intToolStripWidth = 180;
             int intToolStripHeight = 22;
-            
+
             return this.DoThreadSafeFunc(() =>
             {
                 using (Graphics g = CreateGraphics())

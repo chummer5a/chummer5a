@@ -54,7 +54,7 @@ namespace Chummer
 
         private static readonly Lazy<Process> s_objMyProcess = new Lazy<Process>(Process.GetCurrentProcess);
         internal static readonly Process MyProcess = s_objMyProcess.Value;
-        
+
         internal static SynchronizationContext MySynchronizationContext { get; private set; }
 
         [CLSCompliant(false)]
@@ -217,7 +217,7 @@ namespace Chummer
                     Application.SetCompatibleTextRenderingDefault(false);
 
                     sw.TaskEnd("languagefreestartup");
-                    
+
                     void HandleCrash(object o, UnhandledExceptionEventArgs exa)
                     {
                         if (exa.ExceptionObject is Exception ex)

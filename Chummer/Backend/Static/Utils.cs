@@ -168,7 +168,7 @@ namespace Chummer
                 });
 
         /// <summary>
-        /// Dictionary assigning Windows stock icons' bitmaps to SystemIcons equivalents. Needed where the graphics used in dialog windows in newer versions of windows are different from those in SystemIcons. 
+        /// Dictionary assigning Windows stock icons' bitmaps to SystemIcons equivalents. Needed where the graphics used in dialog windows in newer versions of windows are different from those in SystemIcons.
         /// </summary>
         public static IReadOnlyDictionary<Icon, Bitmap> StockIconBitmapsForSystemIcons => s_dicStockIconBitmapsForSystemIcons.Value;
 

@@ -94,7 +94,7 @@ namespace Chummer
                 if (GlobalSettings.LifeModuleEnabled)
                     lstBuildMethods.Add(new ListItem(CharacterBuildMethod.LifeModule,
                                                      await LanguageManager.GetStringAsync("String_LifeModule")));
-                
+
                 await cboBuildMethod.PopulateWithListItemsAsync(lstBuildMethods);
             }
 

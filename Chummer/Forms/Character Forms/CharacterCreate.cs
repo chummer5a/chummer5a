@@ -46,7 +46,7 @@ namespace Chummer
     {
         private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
-        
+
         private bool _blnReapplyImprovements;
         private bool _blnFreestyle;
         public bool IsReopenQueued { get; private set; }
@@ -6481,7 +6481,7 @@ namespace Chummer
 
                         frmPickCyberware.MyForm.LockGrade();
                         frmPickCyberware.MyForm.ParentVehicle = objVehicle ?? objMod.Parent;
-                        
+
                         if (await frmPickCyberware.ShowDialogSafeAsync(this) == DialogResult.Cancel)
                             break;
                         blnAddAgain = frmPickCyberware.MyForm.AddAgain;
@@ -10718,7 +10718,7 @@ namespace Chummer
                 await lblContactsBP.DoThreadSafeAsync(x => x.Text = strContactPoints, token);
                 await lblContactPoints.DoThreadSafeAsync(x => x.Text = strContactPoints, token);
             }
-            
+
             string strTemp = await BuildAttributes(CharacterObject.AttributeSection.AttributeList);
             token.ThrowIfCancellationRequested();
             await lblAttributesBP.DoThreadSafeAsync(x => x.Text = strTemp, token);
@@ -15042,7 +15042,7 @@ namespace Chummer
 
                     lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.CurrentDisplayName));
                 }
-                
+
                 await cboCyberwareGrade.PopulateWithListItemsAsync(lstCyberwareGrades);
             }
         }
