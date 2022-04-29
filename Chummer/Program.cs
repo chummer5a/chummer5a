@@ -264,11 +264,7 @@ namespace Chummer
 
                     Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
 
-                    if (IsMainThread)
-                    {
-                        using (new DummyForm()) // New Form needs to be created (or Application.Run() called) before Synchronization.Current is set
-                            MySynchronizationContext = SynchronizationContext.Current;
-                    }
+                    CreateSynchronizationContext();
 
                     if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
                     {
@@ -574,6 +570,15 @@ namespace Chummer
                 {
                     GlobalChummerMutex.ReleaseMutex();
                 }
+            }
+        }
+
+        public static void CreateSynchronizationContext()
+        {
+            if (IsMainThread)
+            {
+                using (new DummyForm()) // New Form needs to be created (or Application.Run() called) before Synchronization.Current is set
+                    MySynchronizationContext = SynchronizationContext.Current;
             }
         }
 

@@ -50,6 +50,7 @@ namespace Chummer.Tests
     {
         public ChummerTest()
         {
+            Program.CreateSynchronizationContext();
             string strPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "TestFiles");
             DirectoryInfo objPathInfo = new DirectoryInfo(strPath);//Assuming Test is your Folder
             foreach (DirectoryInfo objOldDir in objPathInfo.GetDirectories("TestRun-*"))
