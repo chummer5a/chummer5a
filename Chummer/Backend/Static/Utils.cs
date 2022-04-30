@@ -674,7 +674,7 @@ namespace Chummer
         public static async ValueTask RestartApplication(string strLanguage = "", string strText = "")
         {
             string strArguments;
-            using (CursorWait.NewAsync())
+            using (await CursorWait.NewAsync())
             {
                 if (string.IsNullOrEmpty(strLanguage))
                     strLanguage = GlobalSettings.Language;

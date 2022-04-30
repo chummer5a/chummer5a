@@ -817,7 +817,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             bool blnDoRestart = true;
-            using (CursorWait.NewAsync(this, token: token))
+            using (await CursorWait.NewAsync(this, token: token))
             {
                 // Copy over the archive from the temp directory.
                 Log.Info("Extracting downloaded archive into application path: " + strZipPath);
