@@ -976,7 +976,7 @@ namespace Chummer
         /// </summary>
         public static void RunOnMainThread(Action func)
         {
-            if (Program.MySynchronizationContext == SynchronizationContext.Current)
+            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
             {
                 func.Invoke();
                 return;
@@ -993,7 +993,7 @@ namespace Chummer
         /// </summary>
         public static T RunOnMainThread<T>(Func<T> func)
         {
-            if (Program.MySynchronizationContext == SynchronizationContext.Current)
+            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
             {
                 return func.Invoke();
             }
@@ -1011,7 +1011,7 @@ namespace Chummer
         /// </summary>
         public static void RunOnMainThread(Action func, CancellationToken token)
         {
-            if (Program.MySynchronizationContext == SynchronizationContext.Current)
+            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
             {
                 token.ThrowIfCancellationRequested();
                 func.Invoke();
@@ -1030,7 +1030,7 @@ namespace Chummer
         /// </summary>
         public static T RunOnMainThread<T>(Func<T> func, CancellationToken token)
         {
-            if (Program.MySynchronizationContext == SynchronizationContext.Current)
+            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
             {
                 token.ThrowIfCancellationRequested();
                 return func.Invoke();
@@ -1050,6 +1050,18 @@ namespace Chummer
         /// </summary>
         public static Task RunOnMainThreadAsync(Action func)
         {
+            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
+            {
+                try
+                {
+                    func.Invoke();
+                }
+                catch (Exception e)
+                {
+                    return Task.FromException(e);
+                }
+                return Task.CompletedTask;
+            }
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             Program.MySynchronizationContext.Post(x =>
             {
@@ -1078,6 +1090,19 @@ namespace Chummer
         /// </summary>
         public static Task<T> RunOnMainThreadAsync<T>(Func<T> func)
         {
+            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
+            {
+                T objReturn;
+                try
+                {
+                    objReturn = func.Invoke();
+                }
+                catch (Exception e)
+                {
+                    return Task.FromException<T>(e);
+                }
+                return Task.FromResult(objReturn);
+            }
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
             Program.MySynchronizationContext.Post(x =>
             {
@@ -1099,6 +1124,20 @@ namespace Chummer
         /// </summary>
         public static Task RunOnMainThreadAsync(Action func, CancellationToken token)
         {
+            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
+            {
+                if (token.IsCancellationRequested)
+                    return Task.FromCanceled(token);
+                try
+                {
+                    func.Invoke();
+                }
+                catch (Exception e)
+                {
+                    return Task.FromException(e);
+                }
+                return Task.CompletedTask;
+            }
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             Program.MySynchronizationContext.Post(x =>
             {
@@ -1132,6 +1171,21 @@ namespace Chummer
         /// </summary>
         public static Task<T> RunOnMainThreadAsync<T>(Func<T> func, CancellationToken token)
         {
+            if (Program.IsMainThread || Program.MySynchronizationContext == SynchronizationContext.Current)
+            {
+                if (token.IsCancellationRequested)
+                    return Task.FromCanceled<T>(token);
+                T objReturn;
+                try
+                {
+                    objReturn = func.Invoke();
+                }
+                catch (Exception e)
+                {
+                    return Task.FromException<T>(e);
+                }
+                return Task.FromResult(objReturn);
+            }
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
             Program.MySynchronizationContext.Post(x =>
             {
