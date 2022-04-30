@@ -2272,7 +2272,7 @@ namespace Chummer
                 {
                     CharacterSheetViewer frmViewer = tupForm.Item1;
                     await frmViewer.SetCharacters(token, tupForm.Item2);
-                    await frmViewer.DoThreadSafeAsync(x => x.Show(this), token);
+                    await frmViewer.DoThreadSafeAsync(x => x.Show(), token);
                 }
                 foreach (Tuple<CharacterSheetViewer, Character> tupForm in lstNewFormsToProcess)
                 {
@@ -2406,7 +2406,7 @@ namespace Chummer
                             {
                                 MdiParent = y
                             };
-                            frmViewer.Show(this);
+                            frmViewer.Show();
                             lstNewFormsToProcess.Add(frmViewer);
                         }, token);
                         if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
