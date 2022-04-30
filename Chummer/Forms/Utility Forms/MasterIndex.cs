@@ -152,11 +152,17 @@ namespace Chummer
         {
             try
             {
-                using (await CursorWait.NewAsync(this, token: _objGenericToken))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken);
+                try
                 {
+                    await SourceString.Blank.SetControlAsync(lblSource, _objGenericToken);
                     await PopulateCharacterSettings(_objGenericToken);
                     await LoadContent(_objGenericToken);
                     _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
             catch (OperationCanceledException)
@@ -194,8 +200,15 @@ namespace Chummer
 
                 try
                 {
-                    using (await CursorWait.NewAsync(this, token: _objGenericToken))
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken);
+                    try
+                    {
                         await LoadContent(_objGenericToken);
+                    }
+                    finally
+                    {
+                        await objCursorWait.DisposeAsync();
+                    }
                 }
                 catch (OperationCanceledException)
                 {
@@ -210,7 +223,8 @@ namespace Chummer
                 return;
             try
             {
-                using (await CursorWait.NewAsync(this, token: _objGenericToken))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken);
+                try
                 {
                     string strSelectedSetting
                         = (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, _objGenericToken) as
@@ -246,6 +260,10 @@ namespace Chummer
 
                         await LoadContent(_objGenericToken);
                     }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
             catch (OperationCanceledException)
@@ -494,32 +512,40 @@ namespace Chummer
                 return;
             try
             {
-                using (await CursorWait.NewAsync(this, token: _objGenericToken))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken);
+                try
                 {
-                    bool blnCustomList = !(await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, _objGenericToken) == 0
-                                           && string.IsNullOrEmpty(
-                                               await cboFile.DoThreadSafeFuncAsync(
-                                                   x => x.SelectedValue?.ToString(), _objGenericToken)));
+                    bool blnCustomList
+                        = !(await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, _objGenericToken) == 0
+                            && string.IsNullOrEmpty(
+                                await cboFile.DoThreadSafeFuncAsync(
+                                    x => x.SelectedValue?.ToString(), _objGenericToken)));
                     List<ListItem> lstFilteredItems = blnCustomList ? Utils.ListItemListPool.Get() : _lstItems;
                     try
                     {
                         if (blnCustomList)
                         {
-                            string strFileFilter = await cboFile.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), _objGenericToken) ?? string.Empty;
-                            string strSearchFilter = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, _objGenericToken);
+                            string strFileFilter
+                                = await cboFile.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(),
+                                                                      _objGenericToken) ?? string.Empty;
+                            string strSearchFilter
+                                = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, _objGenericToken);
                             foreach (ListItem objItem in _lstItems)
                             {
                                 if (!(objItem.Value is MasterIndexEntry objItemEntry))
                                     continue;
-                                if (!string.IsNullOrEmpty(strFileFilter) && !objItemEntry.FileNames.Contains(strFileFilter))
+                                if (!string.IsNullOrEmpty(strFileFilter)
+                                    && !objItemEntry.FileNames.Contains(strFileFilter))
                                     continue;
                                 if (!string.IsNullOrEmpty(strSearchFilter))
                                 {
                                     string strDisplayNameNoFile = objItemEntry.DisplayName;
                                     if (strDisplayNameNoFile.EndsWith(".xml]", StringComparison.OrdinalIgnoreCase))
                                         strDisplayNameNoFile = strDisplayNameNoFile
-                                                               .Substring(0, strDisplayNameNoFile.LastIndexOf('[')).Trim();
-                                    if (strDisplayNameNoFile.IndexOf(strSearchFilter, StringComparison.OrdinalIgnoreCase)
+                                                               .Substring(0, strDisplayNameNoFile.LastIndexOf('['))
+                                                               .Trim();
+                                    if (strDisplayNameNoFile.IndexOf(strSearchFilter,
+                                                                     StringComparison.OrdinalIgnoreCase)
                                         == -1)
                                         continue;
                                 }
@@ -528,7 +554,8 @@ namespace Chummer
                             }
                         }
 
-                        object objOldSelectedValue = await lstItems.DoThreadSafeFuncAsync(x => x.SelectedValue, _objGenericToken);
+                        object objOldSelectedValue
+                            = await lstItems.DoThreadSafeFuncAsync(x => x.SelectedValue, _objGenericToken);
                         _blnSkipRefresh = true;
                         await lstItems.PopulateWithListItemsAsync(lstFilteredItems, _objGenericToken);
                         _blnSkipRefresh = false;
@@ -536,7 +563,8 @@ namespace Chummer
                             await lstItems.DoThreadSafeFuncAsync(
                                 x => x.SelectedIndex
                                     = lstFilteredItems.FindIndex(
-                                        y => objOldSelectedEntry.Equals(y.Value as MasterIndexEntry)), _objGenericToken);
+                                        y => objOldSelectedEntry.Equals(y.Value as MasterIndexEntry)),
+                                _objGenericToken);
                         else
                             await lstItems.DoThreadSafeFuncAsync(x => x.SelectedIndex = -1, _objGenericToken);
                     }
@@ -545,6 +573,10 @@ namespace Chummer
                         if (blnCustomList)
                             Utils.ListItemListPool.Return(lstFilteredItems);
                     }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
             catch (OperationCanceledException)
@@ -560,7 +592,8 @@ namespace Chummer
 
             try
             {
-                using (await CursorWait.NewAsync(this, token: _objGenericToken))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken);
+                try
                 {
                     if (await lstItems.DoThreadSafeFuncAsync(x => x.SelectedValue, _objGenericToken) is
                         MasterIndexEntry objEntry)
@@ -569,7 +602,8 @@ namespace Chummer
                             lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true, _objGenericToken),
                             lblSourceClickReminder.DoThreadSafeAsync(x => x.Visible = true, _objGenericToken),
                             objEntry.DisplaySource.SetControlAsync(lblSource, _objGenericToken));
-                        (bool blnSuccess, Task<string> tskNotes) = await _dicCachedNotes.TryGetValueAsync(objEntry, _objGenericToken);
+                        (bool blnSuccess, Task<string> tskNotes)
+                            = await _dicCachedNotes.TryGetValueAsync(objEntry, _objGenericToken);
                         if (!blnSuccess)
                         {
                             if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -616,6 +650,10 @@ namespace Chummer
                             txtNotes.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken));
                     }
                 }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
             }
             catch (OperationCanceledException)
             {
@@ -654,12 +692,19 @@ namespace Chummer
         {
             try
             {
-                using (await CursorWait.NewAsync(this, token: _objGenericToken))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken);
+                try
                 {
-                    using (ThreadSafeForm<EditCharacterSettings> frmOptions = await ThreadSafeForm<EditCharacterSettings>.GetAsync(
-                               () => new EditCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings), _objGenericToken))
+                    using (ThreadSafeForm<EditCharacterSettings> frmOptions
+                           = await ThreadSafeForm<EditCharacterSettings>.GetAsync(
+                               () => new EditCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings),
+                               _objGenericToken))
                         await frmOptions.ShowDialogSafeAsync(this, _objGenericToken);
                     // Do not repopulate the character settings list because that will happen from frmCharacterSettings where appropriate
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
             catch (OperationCanceledException)
@@ -671,7 +716,8 @@ namespace Chummer
         public async ValueTask ForceRepopulateCharacterSettings(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout(), token);
                 try
@@ -682,6 +728,10 @@ namespace Chummer
                 {
                     await this.DoThreadSafeAsync(x => x.ResumeLayout(), token);
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 

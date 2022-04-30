@@ -148,9 +148,9 @@ namespace Chummer
             this.lblSource.Location = new System.Drawing.Point(53, 32);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
-            this.lblSource.Size = new System.Drawing.Size(49, 13);
+            this.lblSource.Size = new System.Drawing.Size(55, 13);
             this.lblSource.TabIndex = 3;
-            this.lblSource.Text = "SR5 000";
+            this.lblSource.Text = "[SR5 000]";
             this.lblSource.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblSource.ToolTipText = "";
             this.lblSource.Click += new System.EventHandler(this.lblSource_Click);
@@ -159,7 +159,7 @@ namespace Chummer
             // 
             this.lblSourceClickReminder.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSourceClickReminder.AutoSize = true;
-            this.lblSourceClickReminder.Location = new System.Drawing.Point(108, 32);
+            this.lblSourceClickReminder.Location = new System.Drawing.Point(114, 32);
             this.lblSourceClickReminder.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSourceClickReminder.Name = "lblSourceClickReminder";
             this.lblSourceClickReminder.Size = new System.Drawing.Size(142, 13);
@@ -259,7 +259,6 @@ namespace Chummer
             // cmdEditCharacterSetting
             // 
             this.cmdEditCharacterSetting.AutoSize = true;
-            this.cmdEditCharacterSetting.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdEditCharacterSetting.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdEditCharacterSetting.Image = null;
             this.cmdEditCharacterSetting.ImageDpi120 = null;
@@ -268,9 +267,9 @@ namespace Chummer
             this.cmdEditCharacterSetting.ImageDpi288 = null;
             this.cmdEditCharacterSetting.ImageDpi384 = null;
             this.cmdEditCharacterSetting.ImageDpi96 = null;
-            this.cmdEditCharacterSetting.Location = new System.Drawing.Point(706, 3);
+            this.cmdEditCharacterSetting.Location = new System.Drawing.Point(683, 3);
             this.cmdEditCharacterSetting.Name = "cmdEditCharacterSetting";
-            this.cmdEditCharacterSetting.Size = new System.Drawing.Size(57, 23);
+            this.cmdEditCharacterSetting.Size = new System.Drawing.Size(80, 23);
             this.cmdEditCharacterSetting.TabIndex = 20;
             this.cmdEditCharacterSetting.Text = "Modify...";
             this.cmdEditCharacterSetting.ToolTipText = "";
@@ -296,12 +295,12 @@ namespace Chummer
             this.cboCharacterSetting.FormattingEnabled = true;
             this.cboCharacterSetting.Location = new System.Drawing.Point(74, 4);
             this.cboCharacterSetting.Name = "cboCharacterSetting";
-            this.cboCharacterSetting.Size = new System.Drawing.Size(626, 21);
+            this.cboCharacterSetting.Size = new System.Drawing.Size(603, 21);
             this.cboCharacterSetting.TabIndex = 21;
             this.cboCharacterSetting.TooltipText = "";
             this.cboCharacterSetting.SelectedIndexChanged += new System.EventHandler(this.cboCharacterSetting_SelectedIndexChanged);
             // 
-            // frmMasterIndex
+            // MasterIndex
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

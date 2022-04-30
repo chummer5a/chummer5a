@@ -1444,6 +1444,8 @@ namespace Chummer
 
         private async Task DoReopenCharacters(CancellationToken token = default)
         {
+            if (this.IsNullOrDisposed())
+                return;
             if (_blnSkipReopenUntilAllClear)
             {
                 if (await OpenCharacterEditorForms.CountAsync != 0)

@@ -29,7 +29,7 @@ namespace Chummer
     /// https://github.com/StephenCleary/AsyncEx/blob/master/src/Nito.AsyncEx.Tasks/CancellationTokenTaskSource.cs
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class CancellationTokenTaskSource<T> : IDisposable
+    public sealed class CancellationTokenTaskSource<T> : IDisposable
     {
         /// <summary>
         /// The cancellation token registration, if any. This is <c>null</c> if the registration was not necessary.
