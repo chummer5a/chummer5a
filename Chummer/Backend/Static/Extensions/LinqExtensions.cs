@@ -356,23 +356,36 @@ namespace Chummer
                     case 1:
                         return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
                     default:
-                        lstTasks = new List<Task<int>>(objTemp.Count);
+                        lstTasks = new List<Task<int>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
             else
-                lstTasks = new List<Task<int>>();
+                lstTasks = new List<Task<int>>(Utils.MaxParallelBatchSize);
+            int intReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        int[] aintReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (int intLoop in aintReturn)
+                            intReturn += intLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            int[] aintReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            int intReturn = 0;
-            foreach (int intLoop in aintReturn)
+            int[] aintReturnFinal = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (int intLoop in aintReturnFinal)
                 intReturn += intLoop;
             return intReturn;
         }
@@ -387,25 +400,38 @@ namespace Chummer
                     case 0:
                         return 0;
                     case 1:
-                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)).GetAwaiter().GetResult();
+                        return Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)));
                     default:
-                        lstTasks = new List<Task<int>>(objTemp.Count);
+                        lstTasks = new List<Task<int>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
             else
-                lstTasks = new List<Task<int>>();
+                lstTasks = new List<Task<int>>(Utils.MaxParallelBatchSize);
+            int intReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        int[] aintReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (int intLoop in aintReturn)
+                            intReturn += intLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            int[] aintReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            int intReturn = 0;
-            foreach (int intLoop in aintReturn)
+            int[] aintReturnFinal = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (int intLoop in aintReturnFinal)
                 intReturn += intLoop;
             return intReturn;
         }
@@ -422,24 +448,37 @@ namespace Chummer
                     case 1:
                         return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
                     default:
-                        lstTasks = new List<Task<long>>(objTemp.Count);
+                        lstTasks = new List<Task<long>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
             else
-                lstTasks = new List<Task<long>>();
+                lstTasks = new List<Task<long>>(Utils.MaxParallelBatchSize);
+            long lngReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                    for (long i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        long[] alngReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (long longLoop in alngReturn)
+                            lngReturn += longLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            long[] alngReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            long lngReturn = 0;
-            foreach (long lngLoop in alngReturn)
-                lngReturn += lngLoop;
+            long[] alngReturnFinal = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (long longLoop in alngReturnFinal)
+                lngReturn += longLoop;
             return lngReturn;
         }
 
@@ -453,26 +492,39 @@ namespace Chummer
                     case 0:
                         return 0;
                     case 1:
-                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)).GetAwaiter().GetResult();
+                        return Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)));
                     default:
-                        lstTasks = new List<Task<long>>(objTemp.Count);
+                        lstTasks = new List<Task<long>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
             else
-                lstTasks = new List<Task<long>>();
+                lstTasks = new List<Task<long>>(Utils.MaxParallelBatchSize);
+            long lngReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                    for (long i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        long[] alngReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (long longLoop in alngReturn)
+                            lngReturn += longLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            long[] alngReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            long lngReturn = 0;
-            foreach (long lngLoop in alngReturn)
-                lngReturn += lngLoop;
+            long[] alngReturnFinal = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (long longLoop in alngReturnFinal)
+                lngReturn += longLoop;
             return lngReturn;
         }
 
@@ -488,24 +540,37 @@ namespace Chummer
                     case 1:
                         return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
                     default:
-                        lstTasks = new List<Task<float>>(objTemp.Count);
+                        lstTasks = new List<Task<float>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
             else
-                lstTasks = new List<Task<float>>();
+                lstTasks = new List<Task<float>>(Utils.MaxParallelBatchSize);
+            float fltReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                    for (float i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        float[] afltReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (float floatLoop in afltReturn)
+                            fltReturn += floatLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            float[] afltReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            float fltReturn = 0;
-            foreach (float fltLoop in afltReturn)
-                fltReturn += fltLoop;
+            float[] afltReturnFinal = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (float floatLoop in afltReturnFinal)
+                fltReturn += floatLoop;
             return fltReturn;
         }
 
@@ -519,26 +584,39 @@ namespace Chummer
                     case 0:
                         return 0;
                     case 1:
-                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)).GetAwaiter().GetResult();
+                        return Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)));
                     default:
-                        lstTasks = new List<Task<float>>(objTemp.Count);
+                        lstTasks = new List<Task<float>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
             else
-                lstTasks = new List<Task<float>>();
+                lstTasks = new List<Task<float>>(Utils.MaxParallelBatchSize);
+            float fltReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                    for (float i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        float[] afltReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (float floatLoop in afltReturn)
+                            fltReturn += floatLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            float[] afltReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            float fltReturn = 0;
-            foreach (float fltLoop in afltReturn)
-                fltReturn += fltLoop;
+            float[] afltReturnFinal = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (float floatLoop in afltReturnFinal)
+                fltReturn += floatLoop;
             return fltReturn;
         }
 
@@ -554,24 +632,37 @@ namespace Chummer
                     case 1:
                         return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
                     default:
-                        lstTasks = new List<Task<double>>(objTemp.Count);
+                        lstTasks = new List<Task<double>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
             else
-                lstTasks = new List<Task<double>>();
+                lstTasks = new List<Task<double>>(Utils.MaxParallelBatchSize);
+            double dblReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                    for (double i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        double[] adblReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (double doubleLoop in adblReturn)
+                            dblReturn += doubleLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            double[] adblReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            double dblReturn = 0;
-            foreach (double dblLoop in adblReturn)
-                dblReturn += dblLoop;
+            double[] adblReturnFinal = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (double doubleLoop in adblReturnFinal)
+                dblReturn += doubleLoop;
             return dblReturn;
         }
 
@@ -585,26 +676,39 @@ namespace Chummer
                     case 0:
                         return 0;
                     case 1:
-                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)).GetAwaiter().GetResult();
+                        return Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)));
                     default:
-                        lstTasks = new List<Task<double>>(objTemp.Count);
+                        lstTasks = new List<Task<double>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
             else
-                lstTasks = new List<Task<double>>();
+                lstTasks = new List<Task<double>>(Utils.MaxParallelBatchSize);
+            double dblReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                    for (double i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        double[] adblReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (double doubleLoop in adblReturn)
+                            dblReturn += doubleLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            double[] adblReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            double dblReturn = 0;
-            foreach (double dblLoop in adblReturn)
-                dblReturn += dblLoop;
+            double[] adblReturnFinal = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (double doubleLoop in adblReturnFinal)
+                dblReturn += doubleLoop;
             return dblReturn;
         }
 
@@ -620,24 +724,37 @@ namespace Chummer
                     case 1:
                         return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
                     default:
-                        lstTasks = new List<Task<decimal>>(objTemp.Count);
+                        lstTasks = new List<Task<decimal>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
             else
-                lstTasks = new List<Task<decimal>>();
+                lstTasks = new List<Task<decimal>>(Utils.MaxParallelBatchSize);
+            decimal decReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                    for (decimal i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        decimal[] adecReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (decimal decimalLoop in adecReturn)
+                            decReturn += decimalLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            decimal[] adecReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            decimal decReturn = 0;
-            foreach (decimal decLoop in adecReturn)
-                decReturn += decLoop;
+            decimal[] adecReturnFinal = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (decimal decimalLoop in adecReturnFinal)
+                decReturn += decimalLoop;
             return decReturn;
         }
 
@@ -651,26 +768,39 @@ namespace Chummer
                     case 0:
                         return 0;
                     case 1:
-                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)).GetAwaiter().GetResult();
+                        return Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)));
                     default:
-                        lstTasks = new List<Task<decimal>>(objTemp.Count);
+                        lstTasks = new List<Task<decimal>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
             else
-                lstTasks = new List<Task<decimal>>();
+                lstTasks = new List<Task<decimal>>(Utils.MaxParallelBatchSize);
+            decimal decReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                    for (decimal i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent)));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        decimal[] adecReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (decimal decimalLoop in adecReturn)
+                            decReturn += decimalLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            decimal[] adecReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            decimal decReturn = 0;
-            foreach (decimal decLoop in adecReturn)
-                decReturn += decLoop;
+            decimal[] adecReturnFinal = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (decimal decimalLoop in adecReturnFinal)
+                decReturn += decimalLoop;
             return decReturn;
         }
 
@@ -695,8 +825,9 @@ namespace Chummer
             {
                 while (objEnumerator.MoveNext())
                 {
-                    if (funcPredicate(objEnumerator.Current))
-                        intReturn += funcSelector.Invoke(objEnumerator.Current).GetAwaiter().GetResult();
+                    T objCurrent = objEnumerator.Current;
+                    if (funcPredicate(objCurrent))
+                        intReturn += Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objCurrent));
                 }
             }
             return intReturn;
@@ -723,8 +854,9 @@ namespace Chummer
             {
                 while (objEnumerator.MoveNext())
                 {
-                    if (funcPredicate(objEnumerator.Current))
-                        lngReturn += funcSelector.Invoke(objEnumerator.Current).GetAwaiter().GetResult();
+                    T objCurrent = objEnumerator.Current;
+                    if (funcPredicate(objCurrent))
+                        lngReturn += Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objCurrent));
                 }
             }
             return lngReturn;
@@ -751,8 +883,9 @@ namespace Chummer
             {
                 while (objEnumerator.MoveNext())
                 {
-                    if (funcPredicate(objEnumerator.Current))
-                        fltReturn += funcSelector.Invoke(objEnumerator.Current).GetAwaiter().GetResult();
+                    T objCurrent = objEnumerator.Current;
+                    if (funcPredicate(objCurrent))
+                        fltReturn += Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objCurrent));
                 }
             }
             return fltReturn;
@@ -779,8 +912,9 @@ namespace Chummer
             {
                 while (objEnumerator.MoveNext())
                 {
-                    if (funcPredicate(objEnumerator.Current))
-                        dblReturn += funcSelector.Invoke(objEnumerator.Current).GetAwaiter().GetResult();
+                    T objCurrent = objEnumerator.Current;
+                    if (funcPredicate(objCurrent))
+                        dblReturn += Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objCurrent));
                 }
             }
             return dblReturn;
@@ -807,8 +941,9 @@ namespace Chummer
             {
                 while (objEnumerator.MoveNext())
                 {
-                    if (funcPredicate(objEnumerator.Current))
-                        decReturn += funcSelector.Invoke(objEnumerator.Current).GetAwaiter().GetResult();
+                    T objCurrent = objEnumerator.Current;
+                    if (funcPredicate(objCurrent))
+                        decReturn += Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objCurrent));
                 }
             }
             return decReturn;
@@ -833,17 +968,30 @@ namespace Chummer
             }
             else
                 lstTasks = new List<Task<int>>();
+            int intReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        int[] aintReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (int intLoop in aintReturn)
+                            intReturn += intLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            int[] aintReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            int intReturn = 0;
-            foreach (int intLoop in aintReturn)
+            int[] aintFinalReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (int intLoop in aintFinalReturn)
                 intReturn += intLoop;
             return intReturn;
         }
@@ -859,7 +1007,7 @@ namespace Chummer
                         return 0;
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement).GetAwaiter().GetResult() : 0;
+                        return funcPredicate(objFirstElement) ? Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objFirstElement)) : 0;
                     default:
                         lstTasks = new List<Task<int>>(objTemp.Count);
                         break;
@@ -867,17 +1015,30 @@ namespace Chummer
             }
             else
                 lstTasks = new List<Task<int>>();
+            int intReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        int[] aintReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (int intLoop in aintReturn)
+                            intReturn += intLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            int[] aintReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            int intReturn = 0;
-            foreach (int intLoop in aintReturn)
+            int[] aintFinalReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (int intLoop in aintFinalReturn)
                 intReturn += intLoop;
             return intReturn;
         }
@@ -901,18 +1062,31 @@ namespace Chummer
             }
             else
                 lstTasks = new List<Task<long>>();
+            long lngReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                    for (long i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        long[] alngReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (long longLoop in alngReturn)
+                            lngReturn += longLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            long[] alngReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            long lngReturn = 0;
-            foreach (long lngLoop in alngReturn)
-                lngReturn += lngLoop;
+            long[] alngFinalReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (long longLoop in alngFinalReturn)
+                lngReturn += longLoop;
             return lngReturn;
         }
 
@@ -927,7 +1101,7 @@ namespace Chummer
                         return 0;
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement).GetAwaiter().GetResult() : 0;
+                        return funcPredicate(objFirstElement) ? Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objFirstElement)) : 0;
                     default:
                         lstTasks = new List<Task<long>>(objTemp.Count);
                         break;
@@ -935,18 +1109,31 @@ namespace Chummer
             }
             else
                 lstTasks = new List<Task<long>>();
+            long lngReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                    for (long i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        long[] alngReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (long longLoop in alngReturn)
+                            lngReturn += longLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            long[] alngReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            long lngReturn = 0;
-            foreach (long lngLoop in alngReturn)
-                lngReturn += lngLoop;
+            long[] alngFinalReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (long longLoop in alngFinalReturn)
+                lngReturn += longLoop;
             return lngReturn;
         }
 
@@ -969,18 +1156,31 @@ namespace Chummer
             }
             else
                 lstTasks = new List<Task<float>>();
+            float fltReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                    for (float i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        float[] afltReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (float floatLoop in afltReturn)
+                            fltReturn += floatLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            float[] afltReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            float fltReturn = 0;
-            foreach (float fltLoop in afltReturn)
-                fltReturn += fltLoop;
+            float[] afltFinalReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (float floatLoop in afltFinalReturn)
+                fltReturn += floatLoop;
             return fltReturn;
         }
 
@@ -995,7 +1195,7 @@ namespace Chummer
                         return 0;
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement).GetAwaiter().GetResult() : 0;
+                        return funcPredicate(objFirstElement) ? Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objFirstElement)) : 0;
                     default:
                         lstTasks = new List<Task<float>>(objTemp.Count);
                         break;
@@ -1003,18 +1203,31 @@ namespace Chummer
             }
             else
                 lstTasks = new List<Task<float>>();
+            float fltReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                    for (float i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        float[] afltReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (float floatLoop in afltReturn)
+                            fltReturn += floatLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            float[] afltReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            float fltReturn = 0;
-            foreach (float fltLoop in afltReturn)
-                fltReturn += fltLoop;
+            float[] afltFinalReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (float floatLoop in afltFinalReturn)
+                fltReturn += floatLoop;
             return fltReturn;
         }
 
@@ -1037,18 +1250,31 @@ namespace Chummer
             }
             else
                 lstTasks = new List<Task<double>>();
+            double dblReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                    for (double i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        double[] adblReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (double doubleLoop in adblReturn)
+                            dblReturn += doubleLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            double[] adblReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            double dblReturn = 0;
-            foreach (double dblLoop in adblReturn)
-                dblReturn += dblLoop;
+            double[] adblFinalReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (double doubleLoop in adblFinalReturn)
+                dblReturn += doubleLoop;
             return dblReturn;
         }
 
@@ -1063,7 +1289,7 @@ namespace Chummer
                         return 0;
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement).GetAwaiter().GetResult() : 0;
+                        return funcPredicate(objFirstElement) ? Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objFirstElement)) : 0;
                     default:
                         lstTasks = new List<Task<double>>(objTemp.Count);
                         break;
@@ -1071,18 +1297,31 @@ namespace Chummer
             }
             else
                 lstTasks = new List<Task<double>>();
+            double dblReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                    for (double i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        double[] adblReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (double doubleLoop in adblReturn)
+                            dblReturn += doubleLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            double[] adblReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            double dblReturn = 0;
-            foreach (double dblLoop in adblReturn)
-                dblReturn += dblLoop;
+            double[] adblFinalReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (double doubleLoop in adblFinalReturn)
+                dblReturn += doubleLoop;
             return dblReturn;
         }
 
@@ -1105,18 +1344,31 @@ namespace Chummer
             }
             else
                 lstTasks = new List<Task<decimal>>();
+            decimal decReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                    for (decimal i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        decimal[] adecReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (decimal decimalLoop in adecReturn)
+                            decReturn += decimalLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            decimal[] adecReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            decimal decReturn = 0;
-            foreach (decimal decLoop in adecReturn)
-                decReturn += decLoop;
+            decimal[] adecFinalReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (decimal decimalLoop in adecFinalReturn)
+                decReturn += decimalLoop;
             return decReturn;
         }
 
@@ -1131,7 +1383,7 @@ namespace Chummer
                         return 0;
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement).GetAwaiter().GetResult() : 0;
+                        return funcPredicate(objFirstElement) ? Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objFirstElement)) : 0;
                     default:
                         lstTasks = new List<Task<decimal>>(objTemp.Count);
                         break;
@@ -1139,18 +1391,31 @@ namespace Chummer
             }
             else
                 lstTasks = new List<Task<decimal>>();
+            decimal decReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                    for (decimal i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        decimal[] adecReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (decimal decimalLoop in adecReturn)
+                            decReturn += decimalLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            decimal[] adecReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            decimal decReturn = 0;
-            foreach (decimal decLoop in adecReturn)
-                decReturn += decLoop;
+            decimal[] adecFinalReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (decimal decimalLoop in adecFinalReturn)
+                decReturn += decimalLoop;
             return decReturn;
         }
 
@@ -1165,7 +1430,7 @@ namespace Chummer
                         return 0;
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return funcPredicate(objFirstElement).GetAwaiter().GetResult() ? funcSelector.Invoke(objFirstElement) : 0;
+                        return Utils.RunWithoutThreadLock(() => funcPredicate(objFirstElement)) ? funcSelector.Invoke(objFirstElement) : 0;
                     default:
                         lstTasks = new List<Task<int>>(objTemp.Count);
                         break;
@@ -1173,17 +1438,30 @@ namespace Chummer
             }
             else
                 lstTasks = new List<Task<int>>();
+            int intReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        int[] aintReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (int intLoop in aintReturn)
+                            intReturn += intLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            int[] aintReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            int intReturn = 0;
-            foreach (int intLoop in aintReturn)
+            int[] aintFinalReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (int intLoop in aintFinalReturn)
                 intReturn += intLoop;
             return intReturn;
         }
@@ -1199,7 +1477,7 @@ namespace Chummer
                         return 0;
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return funcPredicate(objFirstElement).GetAwaiter().GetResult() ? funcSelector.Invoke(objFirstElement).GetAwaiter().GetResult() : 0;
+                        return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement) ? await funcSelector.Invoke(objFirstElement) : 0);
                     default:
                         lstTasks = new List<Task<int>>(objTemp.Count);
                         break;
@@ -1207,17 +1485,30 @@ namespace Chummer
             }
             else
                 lstTasks = new List<Task<int>>();
+            int intReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        int[] aintReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (int intLoop in aintReturn)
+                            intReturn += intLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            int[] aintReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            int intReturn = 0;
-            foreach (int intLoop in aintReturn)
+            int[] aintFinalReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (int intLoop in aintFinalReturn)
                 intReturn += intLoop;
             return intReturn;
         }
@@ -1233,7 +1524,7 @@ namespace Chummer
                         return 0;
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return funcPredicate(objFirstElement).GetAwaiter().GetResult() ? funcSelector.Invoke(objFirstElement) : 0;
+                        return Utils.RunWithoutThreadLock(() => funcPredicate(objFirstElement)) ? funcSelector.Invoke(objFirstElement) : 0;
                     default:
                         lstTasks = new List<Task<long>>(objTemp.Count);
                         break;
@@ -1241,18 +1532,31 @@ namespace Chummer
             }
             else
                 lstTasks = new List<Task<long>>();
+            long lngReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                    for (long i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        long[] alngReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (long longLoop in alngReturn)
+                            lngReturn += longLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            long[] alngReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            long lngReturn = 0;
-            foreach (long lngLoop in alngReturn)
-                lngReturn += lngLoop;
+            long[] alngFinalReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (long longLoop in alngFinalReturn)
+                lngReturn += longLoop;
             return lngReturn;
         }
 
@@ -1267,7 +1571,7 @@ namespace Chummer
                         return 0;
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return funcPredicate(objFirstElement).GetAwaiter().GetResult() ? funcSelector.Invoke(objFirstElement).GetAwaiter().GetResult() : 0;
+                        return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement) ? await funcSelector.Invoke(objFirstElement) : 0);
                     default:
                         lstTasks = new List<Task<long>>(objTemp.Count);
                         break;
@@ -1275,18 +1579,31 @@ namespace Chummer
             }
             else
                 lstTasks = new List<Task<long>>();
+            long lngReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                    for (long i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        long[] alngReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (long longLoop in alngReturn)
+                            lngReturn += longLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            long[] alngReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            long lngReturn = 0;
-            foreach (long lngLoop in alngReturn)
-                lngReturn += lngLoop;
+            long[] alngFinalReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (long longLoop in alngFinalReturn)
+                lngReturn += longLoop;
             return lngReturn;
         }
 
@@ -1301,7 +1618,7 @@ namespace Chummer
                         return 0;
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return funcPredicate(objFirstElement).GetAwaiter().GetResult() ? funcSelector.Invoke(objFirstElement) : 0;
+                        return Utils.RunWithoutThreadLock(() => funcPredicate(objFirstElement)) ? funcSelector.Invoke(objFirstElement) : 0;
                     default:
                         lstTasks = new List<Task<float>>(objTemp.Count);
                         break;
@@ -1309,18 +1626,31 @@ namespace Chummer
             }
             else
                 lstTasks = new List<Task<float>>();
+            float fltReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                    for (float i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        float[] afltReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (float floatLoop in afltReturn)
+                            fltReturn += floatLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            float[] afltReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            float fltReturn = 0;
-            foreach (float fltLoop in afltReturn)
-                fltReturn += fltLoop;
+            float[] afltFinalReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (float floatLoop in afltFinalReturn)
+                fltReturn += floatLoop;
             return fltReturn;
         }
 
@@ -1335,7 +1665,7 @@ namespace Chummer
                         return 0;
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return funcPredicate(objFirstElement).GetAwaiter().GetResult() ? funcSelector.Invoke(objFirstElement).GetAwaiter().GetResult() : 0;
+                        return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement) ? await funcSelector.Invoke(objFirstElement) : 0);
                     default:
                         lstTasks = new List<Task<float>>(objTemp.Count);
                         break;
@@ -1343,18 +1673,31 @@ namespace Chummer
             }
             else
                 lstTasks = new List<Task<float>>();
+            float fltReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                    for (float i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        float[] afltReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (float floatLoop in afltReturn)
+                            fltReturn += floatLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            float[] afltReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            float fltReturn = 0;
-            foreach (float fltLoop in afltReturn)
-                fltReturn += fltLoop;
+            float[] afltFinalReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (float floatLoop in afltFinalReturn)
+                fltReturn += floatLoop;
             return fltReturn;
         }
 
@@ -1369,7 +1712,7 @@ namespace Chummer
                         return 0;
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return funcPredicate(objFirstElement).GetAwaiter().GetResult() ? funcSelector.Invoke(objFirstElement) : 0;
+                        return Utils.RunWithoutThreadLock(() => funcPredicate(objFirstElement)) ? funcSelector.Invoke(objFirstElement) : 0;
                     default:
                         lstTasks = new List<Task<double>>(objTemp.Count);
                         break;
@@ -1377,18 +1720,31 @@ namespace Chummer
             }
             else
                 lstTasks = new List<Task<double>>();
+            double dblReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                    for (double i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        double[] adblReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (double doubleLoop in adblReturn)
+                            dblReturn += doubleLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            double[] adblReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            double dblReturn = 0;
-            foreach (double dblLoop in adblReturn)
-                dblReturn += dblLoop;
+            double[] adblFinalReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (double doubleLoop in adblFinalReturn)
+                dblReturn += doubleLoop;
             return dblReturn;
         }
 
@@ -1403,7 +1759,7 @@ namespace Chummer
                         return 0;
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return funcPredicate(objFirstElement).GetAwaiter().GetResult() ? funcSelector.Invoke(objFirstElement).GetAwaiter().GetResult() : 0;
+                        return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement) ? await funcSelector.Invoke(objFirstElement) : 0);
                     default:
                         lstTasks = new List<Task<double>>(objTemp.Count);
                         break;
@@ -1411,18 +1767,31 @@ namespace Chummer
             }
             else
                 lstTasks = new List<Task<double>>();
+            double dblReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                    for (double i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        double[] adblReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (double doubleLoop in adblReturn)
+                            dblReturn += doubleLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            double[] adblReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            double dblReturn = 0;
-            foreach (double dblLoop in adblReturn)
-                dblReturn += dblLoop;
+            double[] adblFinalReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (double doubleLoop in adblFinalReturn)
+                dblReturn += doubleLoop;
             return dblReturn;
         }
 
@@ -1437,7 +1806,7 @@ namespace Chummer
                         return 0;
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return funcPredicate(objFirstElement).GetAwaiter().GetResult() ? funcSelector.Invoke(objFirstElement) : 0;
+                        return Utils.RunWithoutThreadLock(() => funcPredicate(objFirstElement)) ? funcSelector.Invoke(objFirstElement) : 0;
                     default:
                         lstTasks = new List<Task<decimal>>(objTemp.Count);
                         break;
@@ -1445,18 +1814,31 @@ namespace Chummer
             }
             else
                 lstTasks = new List<Task<decimal>>();
+            decimal decReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                    for (decimal i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        decimal[] adecReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (decimal decimalLoop in adecReturn)
+                            decReturn += decimalLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            decimal[] adecReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            decimal decReturn = 0;
-            foreach (decimal decLoop in adecReturn)
-                decReturn += decLoop;
+            decimal[] adecFinalReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (decimal decimalLoop in adecFinalReturn)
+                decReturn += decimalLoop;
             return decReturn;
         }
 
@@ -1471,7 +1853,7 @@ namespace Chummer
                         return 0;
                     case 1:
                         T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
-                        return funcPredicate(objFirstElement).GetAwaiter().GetResult() ? funcSelector.Invoke(objFirstElement).GetAwaiter().GetResult() : 0;
+                        return Utils.RunWithoutThreadLock(async () => await funcPredicate(objFirstElement) ? await funcSelector.Invoke(objFirstElement) : 0);
                     default:
                         lstTasks = new List<Task<decimal>>(objTemp.Count);
                         break;
@@ -1479,18 +1861,31 @@ namespace Chummer
             }
             else
                 lstTasks = new List<Task<decimal>>();
+            decimal decReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
-                while (objEnumerator.MoveNext())
+                bool blnMoveNext = objEnumerator.MoveNext();
+                while (blnMoveNext)
                 {
-                    T objCurrent = objEnumerator.Current;
-                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                    for (decimal i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    {
+                        T objCurrent = objEnumerator.Current;
+                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                        blnMoveNext = objEnumerator.MoveNext();
+                    }
+
+                    if (blnMoveNext)
+                    {
+                        decimal[] adecReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+                        foreach (decimal decimalLoop in adecReturn)
+                            decReturn += decimalLoop;
+                        lstTasks.Clear();
+                    }
                 }
             }
-            decimal[] adecReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
-            decimal decReturn = 0;
-            foreach (decimal decLoop in adecReturn)
-                decReturn += decLoop;
+            decimal[] adecFinalReturn = Utils.RunWithoutThreadLock(() => lstTasks.ToArray());
+            foreach (decimal decimalLoop in adecFinalReturn)
+                decReturn += decimalLoop;
             return decReturn;
         }
     }
