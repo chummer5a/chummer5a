@@ -817,166 +817,184 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             bool blnDoRestart = true;
-            // Copy over the archive from the temp directory.
-            Log.Info("Extracting downloaded archive into application path: " + strZipPath);
-            try
+            using (CursorWait.NewAsync(this, token: token))
             {
-                using (ZipArchive archive = ZipFile.Open(strZipPath, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
+                // Copy over the archive from the temp directory.
+                Log.Info("Extracting downloaded archive into application path: " + strZipPath);
+                try
                 {
-                    foreach (ZipArchiveEntry entry in archive.Entries)
+                    using (ZipArchive archive
+                           = ZipFile.Open(strZipPath, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
                     {
-                        token.ThrowIfCancellationRequested();
-                        // Skip directories because they already get handled with Directory.CreateDirectory
-                        if (entry.FullName.Length > 0 && entry.FullName[entry.FullName.Length - 1] == '/')
-                            continue;
-                        string strLoopPath = Path.Combine(_strAppPath, entry.FullName);
-                        try
+                        foreach (ZipArchiveEntry entry in archive.Entries)
                         {
-                            string strLoopDirectory = Path.GetDirectoryName(strLoopPath);
-                            if (!string.IsNullOrEmpty(strLoopDirectory))
-                                Directory.CreateDirectory(strLoopDirectory);
-                            if (File.Exists(strLoopPath))
+                            token.ThrowIfCancellationRequested();
+                            // Skip directories because they already get handled with Directory.CreateDirectory
+                            if (entry.FullName.Length > 0 && entry.FullName[entry.FullName.Length - 1] == '/')
+                                continue;
+                            string strLoopPath = Path.Combine(_strAppPath, entry.FullName);
+                            try
                             {
-                                if (!await Utils.SafeDeleteFileAsync(strLoopPath + ".old", !SilentMode, token: token))
+                                string strLoopDirectory = Path.GetDirectoryName(strLoopPath);
+                                if (!string.IsNullOrEmpty(strLoopDirectory))
+                                    Directory.CreateDirectory(strLoopDirectory);
+                                if (File.Exists(strLoopPath))
                                 {
-                                    blnDoRestart = false;
-                                    break;
+                                    if (!await Utils.SafeDeleteFileAsync(
+                                            strLoopPath + ".old", !SilentMode, token: token))
+                                    {
+                                        blnDoRestart = false;
+                                        break;
+                                    }
+
+                                    File.Move(strLoopPath, strLoopPath + ".old");
                                 }
 
-                                File.Move(strLoopPath, strLoopPath + ".old");
+                                entry.ExtractToFile(strLoopPath, false);
+                            }
+                            catch (IOException)
+                            {
+                                if (!SilentMode)
+                                    Program.ShowMessageBox(
+                                        this,
+                                        string.Format(GlobalSettings.CultureInfo,
+                                                      await LanguageManager.GetStringAsync(
+                                                          "Message_File_Cannot_Be_Accessed"),
+                                                      Path.GetFileName(strLoopPath)));
+                                blnDoRestart = false;
+                                break;
+                            }
+                            catch (NotSupportedException)
+                            {
+                                if (!SilentMode)
+                                    Program.ShowMessageBox(
+                                        this,
+                                        string.Format(GlobalSettings.CultureInfo,
+                                                      await LanguageManager.GetStringAsync(
+                                                          "Message_File_Cannot_Be_Accessed"),
+                                                      Path.GetFileName(strLoopPath)));
+                                blnDoRestart = false;
+                                break;
+                            }
+                            catch (UnauthorizedAccessException)
+                            {
+                                if (!SilentMode)
+                                    Program.ShowMessageBox(
+                                        this,
+                                        await LanguageManager.GetStringAsync(
+                                            "Message_Insufficient_Permissions_Warning"));
+                                blnDoRestart = false;
+                                break;
                             }
 
-                            entry.ExtractToFile(strLoopPath, false);
+                            lstFilesToDelete.Remove(strLoopPath.Replace('/', Path.DirectorySeparatorChar));
                         }
-                        catch (IOException)
-                        {
-                            if (!SilentMode)
-                                Program.ShowMessageBox(
-                                    this,
-                                    string.Format(GlobalSettings.CultureInfo,
-                                                  await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"),
-                                                  Path.GetFileName(strLoopPath)));
-                            blnDoRestart = false;
-                            break;
-                        }
-                        catch (NotSupportedException)
-                        {
-                            if (!SilentMode)
-                                Program.ShowMessageBox(
-                                    this,
-                                    string.Format(GlobalSettings.CultureInfo,
-                                                  await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"),
-                                                  Path.GetFileName(strLoopPath)));
-                            blnDoRestart = false;
-                            break;
-                        }
-                        catch (UnauthorizedAccessException)
-                        {
-                            if (!SilentMode)
-                                Program.ShowMessageBox(
-                                    this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
-                            blnDoRestart = false;
-                            break;
-                        }
-
-                        lstFilesToDelete.Remove(strLoopPath.Replace('/', Path.DirectorySeparatorChar));
                     }
                 }
-            }
-            catch (IOException)
-            {
-                if (!SilentMode)
-                    Program.ShowMessageBox(
-                        this,
-                        string.Format(GlobalSettings.CultureInfo,
-                                      await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"), strZipPath));
-                blnDoRestart = false;
-            }
-            catch (NotSupportedException)
-            {
-                if (!SilentMode)
-                    Program.ShowMessageBox(
-                        this,
-                        string.Format(GlobalSettings.CultureInfo,
-                                      await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"), strZipPath));
-                blnDoRestart = false;
-            }
-            catch (UnauthorizedAccessException)
-            {
-                if (!SilentMode)
-                    Program.ShowMessageBox(
-                        this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
-                blnDoRestart = false;
-            }
-            if (blnDoRestart)
-            {
-                List<string> lstBlocked = new List<string>(lstFilesToDelete.Count);
-                Dictionary<string, Task<bool>> dicTasks = new Dictionary<string, Task<bool>>(Utils.MaxParallelBatchSize);
-                int intCounter = 0;
-                foreach (string strFileToDelete in lstFilesToDelete)
+                catch (IOException)
                 {
-                    dicTasks.Add(strFileToDelete, Utils.SafeDeleteFileAsync(strFileToDelete, token: token));
-                    if (++intCounter != Utils.MaxParallelBatchSize)
-                        continue;
+                    if (!SilentMode)
+                        Program.ShowMessageBox(
+                            this,
+                            string.Format(GlobalSettings.CultureInfo,
+                                          await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"),
+                                          strZipPath));
+                    blnDoRestart = false;
+                }
+                catch (NotSupportedException)
+                {
+                    if (!SilentMode)
+                        Program.ShowMessageBox(
+                            this,
+                            string.Format(GlobalSettings.CultureInfo,
+                                          await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"),
+                                          strZipPath));
+                    blnDoRestart = false;
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    if (!SilentMode)
+                        Program.ShowMessageBox(
+                            this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
+                    blnDoRestart = false;
+                }
+
+                if (blnDoRestart)
+                {
+                    List<string> lstBlocked = new List<string>(lstFilesToDelete.Count);
+                    Dictionary<string, Task<bool>> dicTasks
+                        = new Dictionary<string, Task<bool>>(Utils.MaxParallelBatchSize);
+                    int intCounter = 0;
+                    foreach (string strFileToDelete in lstFilesToDelete)
+                    {
+                        dicTasks.Add(strFileToDelete, Utils.SafeDeleteFileAsync(strFileToDelete, token: token));
+                        if (++intCounter != Utils.MaxParallelBatchSize)
+                            continue;
+                        await Task.WhenAll(dicTasks.Values);
+                        foreach (KeyValuePair<string, Task<bool>> kvpTaskPair in dicTasks)
+                        {
+                            if (!await kvpTaskPair.Value)
+                                lstBlocked.Add(kvpTaskPair.Key);
+                        }
+
+                        dicTasks.Clear();
+                        intCounter = 0;
+                    }
+
                     await Task.WhenAll(dicTasks.Values);
                     foreach (KeyValuePair<string, Task<bool>> kvpTaskPair in dicTasks)
                     {
                         if (!await kvpTaskPair.Value)
                             lstBlocked.Add(kvpTaskPair.Key);
                     }
-                    dicTasks.Clear();
-                    intCounter = 0;
-                }
-                await Task.WhenAll(dicTasks.Values);
-                foreach (KeyValuePair<string, Task<bool>> kvpTaskPair in dicTasks)
-                {
-                    if (!await kvpTaskPair.Value)
-                        lstBlocked.Add(kvpTaskPair.Key);
-                }
 
-                if (lstBlocked.Count > 0)
-                {
-                    Utils.BreakIfDebug();
-                    if (!SilentMode)
+                    if (lstBlocked.Count > 0)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdOutput))
+                        Utils.BreakIfDebug();
+                        if (!SilentMode)
                         {
-                            sbdOutput.Append(await LanguageManager.GetStringAsync("Message_Files_Cannot_Be_Removed"));
-                            foreach (string strFile in lstBlocked)
+                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                          out StringBuilder sbdOutput))
                             {
-                                sbdOutput.AppendLine().Append(strFile);
-                            }
+                                sbdOutput.Append(
+                                    await LanguageManager.GetStringAsync("Message_Files_Cannot_Be_Removed"));
+                                foreach (string strFile in lstBlocked)
+                                {
+                                    sbdOutput.AppendLine().Append(strFile);
+                                }
 
-                            Program.ShowMessageBox(this, sbdOutput.ToString(), null, MessageBoxButtons.OK,
-                                                            MessageBoxIcon.Information);
+                                Program.ShowMessageBox(this, sbdOutput.ToString(), null, MessageBoxButtons.OK,
+                                                       MessageBoxIcon.Information);
+                            }
                         }
                     }
                 }
-                await Utils.RestartApplication();
-            }
-            else
-            {
-                foreach (string strBackupFileName in Directory.GetFiles(_strAppPath, "*.old", SearchOption.AllDirectories))
+                else
                 {
-                    try
+                    foreach (string strBackupFileName in Directory.GetFiles(
+                                 _strAppPath, "*.old", SearchOption.AllDirectories))
                     {
-                        File.Move(strBackupFileName, strBackupFileName.Substring(0, strBackupFileName.Length - 4));
-                    }
-                    catch (IOException)
-                    {
-                        // Swallow this
-                    }
-                    catch (NotSupportedException)
-                    {
-                        // Swallow this
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        // Swallow this
+                        try
+                        {
+                            File.Move(strBackupFileName, strBackupFileName.Substring(0, strBackupFileName.Length - 4));
+                        }
+                        catch (IOException)
+                        {
+                            // Swallow this
+                        }
+                        catch (NotSupportedException)
+                        {
+                            // Swallow this
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            // Swallow this
+                        }
                     }
                 }
             }
+            if (blnDoRestart)
+                await Utils.RestartApplication();
         }
 
         private async ValueTask DownloadUpdates(CancellationToken token = default)

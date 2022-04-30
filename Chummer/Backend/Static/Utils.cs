@@ -673,32 +673,38 @@ namespace Chummer
         /// <param name="strText">Text to display in the prompt to restart. If empty, no prompt is displayed.</param>
         public static async ValueTask RestartApplication(string strLanguage = "", string strText = "")
         {
-            if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalSettings.Language;
-            if (!string.IsNullOrEmpty(strText))
+            string strArguments;
+            using (CursorWait.NewAsync())
             {
-                string text = await LanguageManager.GetStringAsync(strText, strLanguage);
-                string caption = await LanguageManager.GetStringAsync("MessageTitle_Options_CloseForms", strLanguage);
-
-                if (Program.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                    return;
-            }
-            // Need to do this here in case file names are changed while closing forms (because a character who previously did not have a filename was saved when prompted)
-            // Cannot use foreach because saving a character as created removes the current form and adds a new one
-            for (int i = 0; i < Program.MainForm.OpenCharacterEditorForms.Count; ++i)
-            {
-                CharacterShared objOpenCharacterForm = Program.MainForm.OpenCharacterEditorForms[i];
-                if (objOpenCharacterForm.IsDirty)
+                if (string.IsNullOrEmpty(strLanguage))
+                    strLanguage = GlobalSettings.Language;
+                if (!string.IsNullOrEmpty(strText))
                 {
-                    string strCharacterName = objOpenCharacterForm.CharacterObject.CharacterName;
-                    switch (Program.ShowMessageBox(
-                                string.Format(GlobalSettings.CultureInfo,
-                                              await LanguageManager.GetStringAsync(
-                                                  "Message_UnsavedChanges", strLanguage), strCharacterName),
-                                await LanguageManager.GetStringAsync("MessageTitle_UnsavedChanges", strLanguage),
-                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+                    string text = await LanguageManager.GetStringAsync(strText, strLanguage);
+                    string caption
+                        = await LanguageManager.GetStringAsync("MessageTitle_Options_CloseForms", strLanguage);
+
+                    if (Program.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                        != DialogResult.Yes)
+                        return;
+                }
+
+                // Need to do this here in case file names are changed while closing forms (because a character who previously did not have a filename was saved when prompted)
+                // Cannot use foreach because saving a character as created removes the current form and adds a new one
+                for (int i = 0; i < Program.MainForm.OpenCharacterEditorForms.Count; ++i)
+                {
+                    CharacterShared objOpenCharacterForm = Program.MainForm.OpenCharacterEditorForms[i];
+                    if (objOpenCharacterForm.IsDirty)
                     {
-                        case DialogResult.Yes:
+                        string strCharacterName = objOpenCharacterForm.CharacterObject.CharacterName;
+                        switch (Program.ShowMessageBox(
+                                    string.Format(GlobalSettings.CultureInfo,
+                                                  await LanguageManager.GetStringAsync(
+                                                      "Message_UnsavedChanges", strLanguage), strCharacterName),
+                                    await LanguageManager.GetStringAsync("MessageTitle_UnsavedChanges", strLanguage),
+                                    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+                        {
+                            case DialogResult.Yes:
                             {
                                 // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
                                 bool blnResult = await objOpenCharacterForm.SaveCharacter();
@@ -706,35 +712,37 @@ namespace Chummer
                                     return;
                                 // We saved a character as created, which closed the current form and added a new one
                                 // This works regardless of dispose, because dispose would just set the objOpenCharacterForm pointer to null, so OpenCharacterEditorForms would never contain it
-                                if (!await Program.MainForm.OpenCharacterEditorForms.ContainsAsync(objOpenCharacterForm))
+                                if (!await Program.MainForm.OpenCharacterEditorForms
+                                                  .ContainsAsync(objOpenCharacterForm))
                                     --i;
                                 break;
                             }
-                        case DialogResult.Cancel:
-                            return;
+                            case DialogResult.Cancel:
+                                return;
+                        }
                     }
                 }
-            }
-            Log.Info("Restart Chummer");
-            Application.UseWaitCursor = true;
-            // Get the parameters/arguments passed to program if any
-            string strArguments;
-            using (new FetchSafelyFromPool<StringBuilder>(StringBuilderPool, out StringBuilder sbdArguments))
-            {
-                foreach (CharacterShared objOpenCharacterForm in Program.MainForm.OpenCharacterEditorForms)
-                {
-                    sbdArguments.Append('\"').Append(objOpenCharacterForm.CharacterObject.FileName).Append("\" ");
-                }
 
-                if (sbdArguments.Length > 0)
-                    --sbdArguments.Length;
-                // Restart current application, with same arguments/parameters
-                foreach (Form objForm in Program.MainForm.MdiChildren)
+                Log.Info("Restart Chummer");
+                Application.UseWaitCursor = true;
+                // Get the parameters/arguments passed to program if any
+                using (new FetchSafelyFromPool<StringBuilder>(StringBuilderPool, out StringBuilder sbdArguments))
                 {
-                    await objForm.DoThreadSafeAsync(x => x.Close());
-                }
+                    foreach (CharacterShared objOpenCharacterForm in Program.MainForm.OpenCharacterEditorForms)
+                    {
+                        sbdArguments.Append('\"').Append(objOpenCharacterForm.CharacterObject.FileName).Append("\" ");
+                    }
 
-                strArguments = sbdArguments.ToString();
+                    if (sbdArguments.Length > 0)
+                        --sbdArguments.Length;
+                    // Restart current application, with same arguments/parameters
+                    foreach (Form objForm in Program.MainForm.MdiChildren)
+                    {
+                        await objForm.DoThreadSafeAsync(x => x.Close());
+                    }
+
+                    strArguments = sbdArguments.ToString();
+                }
             }
             ProcessStartInfo objStartInfo = new ProcessStartInfo
             {

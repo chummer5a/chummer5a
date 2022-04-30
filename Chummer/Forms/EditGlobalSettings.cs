@@ -135,14 +135,13 @@ namespace Chummer
 
                 await this.DoThreadSafeAsync(x => x.DialogResult = DialogResult.OK);
                 await SaveRegistrySettings();
-
-                if (_blnDirty)
-                    await Utils.RestartApplication(_strSelectedLanguage, "Message_Options_CloseForms");
             }
             finally
             {
                 await objCursorWait.DisposeAsync();
             }
+            if (_blnDirty)
+                await Utils.RestartApplication(_strSelectedLanguage, "Message_Options_CloseForms");
         }
 
         private async void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
