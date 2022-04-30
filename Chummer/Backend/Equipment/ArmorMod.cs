@@ -267,33 +267,39 @@ namespace Chummer.Backend.Equipment
             }
 
             // Add Weapons if applicable.
-            if (objXmlArmorNode.InnerXml.Contains("<addweapon>"))
+            // More than one Weapon can be added, so loop through all occurrences.
+            using (XmlNodeList xmlAddWeaponList = objXmlArmorNode.SelectNodes("addweapon"))
             {
-                XmlDocument objXmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
-
-                // More than one Weapon can be added, so loop through all occurrences.
-                using (XmlNodeList xmlAddWeaponList = objXmlArmorNode.SelectNodes("addweapon"))
+                if (xmlAddWeaponList != null)
                 {
-                    if (xmlAddWeaponList != null)
-                    {
-                        foreach (XmlNode objXmlAddWeapon in xmlAddWeaponList)
-                        {
-                            string strLoopID = objXmlAddWeapon.InnerText;
-                            XmlNode objXmlWeapon = strLoopID.IsGuid()
-                                ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + ']')
-                                : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + ']');
+                    XmlDocument objXmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
 
+                    foreach (XmlNode objXmlAddWeapon in xmlAddWeaponList)
+                    {
+                        string strLoopID = objXmlAddWeapon.InnerText;
+                        XmlNode objXmlWeapon = strLoopID.IsGuid()
+                            ? objXmlWeaponDocument.SelectSingleNode(
+                                "/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + ']')
+                            : objXmlWeaponDocument.SelectSingleNode(
+                                "/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + ']');
+
+                        if (objXmlWeapon != null)
+                        {
                             int intAddWeaponRating = 0;
                             string strLoopRating = objXmlAddWeapon.Attributes["rating"]?.InnerText;
                             if (!string.IsNullOrEmpty(strLoopRating))
                             {
                                 strLoopRating = strLoopRating.CheapReplace("{Rating}",
-                                    () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                                int.TryParse(strLoopRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intAddWeaponRating);
+                                                                           () => Rating.ToString(
+                                                                               GlobalSettings
+                                                                                   .InvariantCultureInfo));
+                                int.TryParse(strLoopRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                             out intAddWeaponRating);
                             }
 
                             Weapon objGearWeapon = new Weapon(_objCharacter);
-                            objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipSelectForms, blnSkipCost, intAddWeaponRating);
+                            objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipSelectForms, blnSkipCost,
+                                                 intAddWeaponRating);
                             objGearWeapon.ParentID = InternalId;
                             objGearWeapon.Cost = "0";
                             if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID))

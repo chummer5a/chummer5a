@@ -620,22 +620,29 @@ namespace Chummer.Backend.Equipment
                     ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + ']')
                     : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + ']');
 
-                int intAddWeaponRating = 0;
-                string strLoopRating = objXmlAddWeapon.SelectSingleNode("@rating")?.Value;
-                if (!string.IsNullOrEmpty(strLoopRating))
+                if (objXmlWeapon != null)
                 {
-                    strLoopRating = strLoopRating.CheapReplace("{Rating}",
-                        () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    int.TryParse(strLoopRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intAddWeaponRating);
+                    int intAddWeaponRating = 0;
+                    string strLoopRating = objXmlAddWeapon.SelectSingleNode("@rating")?.Value;
+                    if (!string.IsNullOrEmpty(strLoopRating))
+                    {
+                        strLoopRating = strLoopRating.CheapReplace("{Rating}",
+                                                                   () => Rating.ToString(
+                                                                       GlobalSettings.InvariantCultureInfo));
+                        int.TryParse(strLoopRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                     out intAddWeaponRating);
+                    }
+
+                    Weapon objGearWeapon = new Weapon(_objCharacter);
+                    objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipSelectForms, blnSkipCost,
+                                         intAddWeaponRating);
+                    objGearWeapon.ParentID = InternalId;
+                    objGearWeapon.Cost = "0";
+                    if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID))
+                        lstWeapons.Add(objGearWeapon);
+                    else
+                        _guiWeaponID = Guid.Empty;
                 }
-                Weapon objGearWeapon = new Weapon(_objCharacter);
-                objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipSelectForms, blnSkipCost, intAddWeaponRating);
-                objGearWeapon.ParentID = InternalId;
-                objGearWeapon.Cost = "0";
-                if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID))
-                    lstWeapons.Add(objGearWeapon);
-                else
-                    _guiWeaponID = Guid.Empty;
             }
         }
 

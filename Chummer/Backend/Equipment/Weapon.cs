@@ -640,20 +640,30 @@ namespace Chummer.Backend.Equipment
                     ? objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + ']')
                     : objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + ']');
 
-                Weapon objSubWeapon = new Weapon(_objCharacter)
+                if (objXmlAddWeapon != null)
                 {
-                    ParentVehicle = ParentVehicle
-                };
-                int intAddWeaponRating = 0;
-                if (objXmlAddWeapon.Attributes["rating"]?.InnerText != null)
-                {
-                    intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"]?.InnerText
-                        .CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo);
+                    Weapon objSubWeapon = new Weapon(_objCharacter)
+                    {
+                        ParentVehicle = ParentVehicle
+                    };
+                    int intAddWeaponRating = 0;
+                    if (objXmlAddWeapon.Attributes["rating"]?.InnerText != null)
+                    {
+                        intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"]?.InnerText
+                                                                            .CheapReplace(
+                                                                                "{Rating}",
+                                                                                () => Rating.ToString(
+                                                                                    GlobalSettings
+                                                                                        .InvariantCultureInfo)),
+                                                             GlobalSettings.InvariantCultureInfo);
+                    }
+
+                    objSubWeapon.Create(objXmlSubWeapon, lstWeapons, blnCreateChildren, blnCreateImprovements,
+                                        blnSkipCost, intAddWeaponRating);
+                    objSubWeapon.ParentID = InternalId;
+                    objSubWeapon.Cost = "0";
+                    lstWeapons.Add(objSubWeapon);
                 }
-                objSubWeapon.Create(objXmlSubWeapon, lstWeapons, blnCreateChildren, blnCreateImprovements, blnSkipCost, intAddWeaponRating);
-                objSubWeapon.ParentID = InternalId;
-                objSubWeapon.Cost = "0";
-                lstWeapons.Add(objSubWeapon);
             }
             foreach (Weapon objLoopWeapon in lstWeapons)
                 objLoopWeapon.ParentVehicle = ParentVehicle;

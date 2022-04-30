@@ -37,6 +37,7 @@ Application Changes:
 - Bonuses affecting skills that have minimum and/or maximum rating requirements now ignore skillsoft-given ratings.
 - Changing Chummer's language immediately causes all open forms to be translated into a new language, even before restarting.
 - Negative qualities that contribute to bonus karma but do not contribute to quality karma limits are no longer affected by the house rule where karma from negative qualities past the quality karma limit is not awarded to characters.
+- Trying to add an armor-, armor mod-, or gear-added weapon that does not exist no longer causes Chummer to crash. Fixes #4785.
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.
