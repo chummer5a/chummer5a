@@ -77,7 +77,6 @@ namespace Chummer
             // cmdExportClose
             // 
             this.cmdExportClose.AutoSize = true;
-            this.cmdExportClose.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdExportClose.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdExportClose.Enabled = false;
             this.cmdExportClose.Location = new System.Drawing.Point(106, 3);
@@ -159,7 +158,6 @@ namespace Chummer
             // cmdExport
             // 
             this.cmdExport.AutoSize = true;
-            this.cmdExport.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdExport.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdExport.Enabled = false;
             this.cmdExport.Location = new System.Drawing.Point(3, 3);

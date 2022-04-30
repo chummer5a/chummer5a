@@ -52,7 +52,6 @@ namespace Chummer
             // cmdSelectCharacter
             // 
             this.cmdSelectCharacter.AutoSize = true;
-            this.cmdSelectCharacter.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSelectCharacter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSelectCharacter.Location = new System.Drawing.Point(3, 3);
             this.cmdSelectCharacter.Name = "cmdSelectCharacter";
@@ -66,7 +65,6 @@ namespace Chummer
             // cmdPrint
             // 
             this.cmdPrint.AutoSize = true;
-            this.cmdPrint.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdPrint.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdPrint.Location = new System.Drawing.Point(3, 61);
             this.cmdPrint.Name = "cmdPrint";
@@ -80,7 +78,6 @@ namespace Chummer
             // cmdDelete
             // 
             this.cmdDelete.AutoSize = true;
-            this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDelete.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDelete.Location = new System.Drawing.Point(3, 32);
             this.cmdDelete.Name = "cmdDelete";

@@ -257,12 +257,11 @@ namespace Chummer.UI.Skills
             // btnResetCustomDisplayAttribute
             // 
             this.btnResetCustomDisplayAttribute.AutoSize = true;
-            this.btnResetCustomDisplayAttribute.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnResetCustomDisplayAttribute.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnResetCustomDisplayAttribute.Location = new System.Drawing.Point(155, 29);
             this.btnResetCustomDisplayAttribute.Margin = new System.Windows.Forms.Padding(0);
             this.btnResetCustomDisplayAttribute.Name = "btnResetCustomDisplayAttribute";
-            this.btnResetCustomDisplayAttribute.Size = new System.Drawing.Size(59, 23);
+            this.btnResetCustomDisplayAttribute.Size = new System.Drawing.Size(80, 23);
             this.btnResetCustomDisplayAttribute.TabIndex = 53;
             this.btnResetCustomDisplayAttribute.Tag = "Button_ResetAll";
             this.btnResetCustomDisplayAttribute.Text = "Reset All";
@@ -455,9 +454,9 @@ namespace Chummer.UI.Skills
             this.cboDisplayFilterKnowledge.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboDisplayFilterKnowledge.FormattingEnabled = true;
             this.cboDisplayFilterKnowledge.IntegralHeight = false;
-            this.cboDisplayFilterKnowledge.Location = new System.Drawing.Point(265, 4);
+            this.cboDisplayFilterKnowledge.Location = new System.Drawing.Point(278, 4);
             this.cboDisplayFilterKnowledge.Name = "cboDisplayFilterKnowledge";
-            this.cboDisplayFilterKnowledge.Size = new System.Drawing.Size(291, 21);
+            this.cboDisplayFilterKnowledge.Size = new System.Drawing.Size(278, 21);
             this.cboDisplayFilterKnowledge.TabIndex = 54;
             this.cboDisplayFilterKnowledge.TooltipText = "";
             this.cboDisplayFilterKnowledge.SelectedIndexChanged += new System.EventHandler(this.cboDisplayFilterKnowledge_SelectedIndexChanged);
@@ -469,21 +468,20 @@ namespace Chummer.UI.Skills
             this.cboSortKnowledge.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSortKnowledge.FormattingEnabled = true;
             this.cboSortKnowledge.IntegralHeight = false;
-            this.cboSortKnowledge.Location = new System.Drawing.Point(67, 4);
+            this.cboSortKnowledge.Location = new System.Drawing.Point(89, 4);
             this.cboSortKnowledge.Name = "cboSortKnowledge";
-            this.cboSortKnowledge.Size = new System.Drawing.Size(192, 21);
+            this.cboSortKnowledge.Size = new System.Drawing.Size(183, 21);
             this.cboSortKnowledge.TabIndex = 55;
             this.cboSortKnowledge.TooltipText = "";
             this.cboSortKnowledge.SelectedIndexChanged += new System.EventHandler(this.cboSortKnowledge_SelectedIndexChanged);
             // 
             // btnKnowledge
             // 
-            this.btnKnowledge.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnKnowledge.AutoSize = true;
-            this.btnKnowledge.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnKnowledge.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnKnowledge.Location = new System.Drawing.Point(3, 3);
             this.btnKnowledge.Name = "btnKnowledge";
-            this.btnKnowledge.Size = new System.Drawing.Size(58, 23);
+            this.btnKnowledge.Size = new System.Drawing.Size(80, 23);
             this.btnKnowledge.TabIndex = 0;
             this.btnKnowledge.Tag = "Button_AddSkill";
             this.btnKnowledge.Text = "&Add Skill";

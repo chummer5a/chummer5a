@@ -107,7 +107,7 @@ namespace Chummer
             this.cboCharacterSetting.FormattingEnabled = true;
             this.cboCharacterSetting.Location = new System.Drawing.Point(74, 4);
             this.cboCharacterSetting.Name = "cboCharacterSetting";
-            this.cboCharacterSetting.Size = new System.Drawing.Size(466, 21);
+            this.cboCharacterSetting.Size = new System.Drawing.Size(443, 21);
             this.cboCharacterSetting.TabIndex = 8;
             this.cboCharacterSetting.TooltipText = "";
             this.cboCharacterSetting.SelectedIndexChanged += new System.EventHandler(this.cboGamePlay_SelectedIndexChanged);
@@ -184,7 +184,6 @@ namespace Chummer
             // cmdEditCharacterSetting
             // 
             this.cmdEditCharacterSetting.AutoSize = true;
-            this.cmdEditCharacterSetting.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdEditCharacterSetting.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdEditCharacterSetting.Image = null;
             this.cmdEditCharacterSetting.ImageDpi120 = null;
@@ -193,9 +192,9 @@ namespace Chummer
             this.cmdEditCharacterSetting.ImageDpi288 = null;
             this.cmdEditCharacterSetting.ImageDpi384 = null;
             this.cmdEditCharacterSetting.ImageDpi96 = null;
-            this.cmdEditCharacterSetting.Location = new System.Drawing.Point(546, 3);
+            this.cmdEditCharacterSetting.Location = new System.Drawing.Point(523, 3);
             this.cmdEditCharacterSetting.Name = "cmdEditCharacterSetting";
-            this.cmdEditCharacterSetting.Size = new System.Drawing.Size(57, 23);
+            this.cmdEditCharacterSetting.Size = new System.Drawing.Size(80, 23);
             this.cmdEditCharacterSetting.TabIndex = 17;
             this.cmdEditCharacterSetting.Text = "Modify...";
             this.cmdEditCharacterSetting.ToolTipText = "";
@@ -445,23 +444,22 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(494, 394);
+            this.tlpButtons.Location = new System.Drawing.Point(434, 394);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
-            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpButtons.Size = new System.Drawing.Size(172, 29);
             this.tlpButtons.TabIndex = 20;
             // 
             // cmdCancel
             // 
             this.cmdCancel.AutoSize = true;
-            this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdCancel.Location = new System.Drawing.Point(3, 3);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(80, 23);
             this.cmdCancel.TabIndex = 7;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -471,11 +469,10 @@ namespace Chummer
             // cmdOK
             // 
             this.cmdOK.AutoSize = true;
-            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(59, 3);
+            this.cmdOK.Location = new System.Drawing.Point(89, 3);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(50, 23);
+            this.cmdOK.Size = new System.Drawing.Size(80, 23);
             this.cmdOK.TabIndex = 6;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";

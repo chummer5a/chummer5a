@@ -76,7 +76,6 @@ namespace Chummer
             // btnColorSelect
             // 
             this.btnColorSelect.AutoSize = true;
-            this.btnColorSelect.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnColorSelect.Dock = System.Windows.Forms.DockStyle.Left;
             this.btnColorSelect.Image = global::Chummer.Properties.Resources.color_wheel;
             this.btnColorSelect.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
@@ -107,23 +106,22 @@ namespace Chummer
             this.tlpButtons.Controls.Add(this.btnOK, 1, 0);
             this.tlpButtons.Controls.Add(this.btnCancel, 0, 0);
             this.tlpButtons.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpButtons.Location = new System.Drawing.Point(512, 292);
+            this.tlpButtons.Location = new System.Drawing.Point(452, 292);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
             this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.Size = new System.Drawing.Size(172, 29);
             this.tlpButtons.TabIndex = 3;
             // 
             // btnOK
             // 
             this.btnOK.AutoSize = true;
-            this.btnOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnOK.Location = new System.Drawing.Point(59, 3);
+            this.btnOK.Location = new System.Drawing.Point(89, 3);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(50, 23);
+            this.btnOK.Size = new System.Drawing.Size(80, 23);
             this.btnOK.TabIndex = 4;
             this.btnOK.Tag = "String_OK";
             this.btnOK.Text = "OK";
@@ -133,12 +131,11 @@ namespace Chummer
             // btnCancel
             // 
             this.btnCancel.AutoSize = true;
-            this.btnCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnCancel.Location = new System.Drawing.Point(3, 3);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(50, 23);
+            this.btnCancel.Size = new System.Drawing.Size(80, 23);
             this.btnCancel.TabIndex = 3;
             this.btnCancel.Tag = "String_Cancel";
             this.btnCancel.Text = "Cancel";
@@ -149,7 +146,7 @@ namespace Chummer
             // 
             this.dlgColor.AnyColor = true;
             // 
-            // frmNotes
+            // EditNotes
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -160,7 +157,7 @@ namespace Chummer
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
-            this.Name = "frmNotes";
+            this.Name = "EditNotes";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

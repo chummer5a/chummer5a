@@ -37,33 +37,33 @@ namespace Chummer
             this.cboType = new Chummer.ElasticComboBox();
             this.lblRange = new System.Windows.Forms.Label();
             this.cboRange = new Chummer.ElasticComboBox();
-            this.chkRestricted = new Chummer.ColorableCheckBox();
-            this.chkVeryRestricted = new Chummer.ColorableCheckBox();
+            this.chkRestricted = new Chummer.ColorableCheckBox(this.components);
+            this.chkVeryRestricted = new Chummer.ColorableCheckBox(this.components);
             this.txtRestriction = new System.Windows.Forms.TextBox();
             this.lblDuration = new System.Windows.Forms.Label();
             this.cboDuration = new Chummer.ElasticComboBox();
             this.lblDVLabel = new System.Windows.Forms.Label();
             this.lblDV = new System.Windows.Forms.Label();
             this.lblSpellOptions = new System.Windows.Forms.Label();
-            this.chkModifier14 = new Chummer.ColorableCheckBox();
-            this.chkModifier13 = new Chummer.ColorableCheckBox();
-            this.chkModifier12 = new Chummer.ColorableCheckBox();
-            this.chkModifier11 = new Chummer.ColorableCheckBox();
-            this.chkModifier10 = new Chummer.ColorableCheckBox();
+            this.chkModifier14 = new Chummer.ColorableCheckBox(this.components);
+            this.chkModifier13 = new Chummer.ColorableCheckBox(this.components);
+            this.chkModifier12 = new Chummer.ColorableCheckBox(this.components);
+            this.chkModifier11 = new Chummer.ColorableCheckBox(this.components);
+            this.chkModifier10 = new Chummer.ColorableCheckBox(this.components);
             this.nudNumberOfEffects = new Chummer.NumericUpDownEx();
-            this.chkModifier9 = new Chummer.ColorableCheckBox();
-            this.chkModifier8 = new Chummer.ColorableCheckBox();
-            this.chkModifier7 = new Chummer.ColorableCheckBox();
-            this.chkModifier6 = new Chummer.ColorableCheckBox();
-            this.chkModifier5 = new Chummer.ColorableCheckBox();
-            this.chkModifier4 = new Chummer.ColorableCheckBox();
-            this.chkModifier3 = new Chummer.ColorableCheckBox();
-            this.chkModifier2 = new Chummer.ColorableCheckBox();
-            this.chkModifier1 = new Chummer.ColorableCheckBox();
+            this.chkModifier9 = new Chummer.ColorableCheckBox(this.components);
+            this.chkModifier8 = new Chummer.ColorableCheckBox(this.components);
+            this.chkModifier7 = new Chummer.ColorableCheckBox(this.components);
+            this.chkModifier6 = new Chummer.ColorableCheckBox(this.components);
+            this.chkModifier5 = new Chummer.ColorableCheckBox(this.components);
+            this.chkModifier4 = new Chummer.ColorableCheckBox(this.components);
+            this.chkModifier3 = new Chummer.ColorableCheckBox(this.components);
+            this.chkModifier2 = new Chummer.ColorableCheckBox(this.components);
+            this.chkModifier1 = new Chummer.ColorableCheckBox(this.components);
             this.lblName = new System.Windows.Forms.Label();
             this.txtName = new System.Windows.Forms.TextBox();
-            this.chkArea = new Chummer.ColorableCheckBox();
-            this.chkLimited = new Chummer.ColorableCheckBox();
+            this.chkArea = new Chummer.ColorableCheckBox(this.components);
+            this.chkLimited = new Chummer.ColorableCheckBox(this.components);
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flpRestrictedTarget = new System.Windows.Forms.FlowLayoutPanel();
             this.flpDV = new System.Windows.Forms.FlowLayoutPanel();
@@ -82,12 +82,11 @@ namespace Chummer
             // cmdCancel
             // 
             this.cmdCancel.AutoSize = true;
-            this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdCancel.Location = new System.Drawing.Point(3, 3);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(80, 23);
             this.cmdCancel.TabIndex = 17;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -97,11 +96,10 @@ namespace Chummer
             // cmdOK
             // 
             this.cmdOK.AutoSize = true;
-            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(59, 3);
+            this.cmdOK.Location = new System.Drawing.Point(89, 3);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(50, 23);
+            this.cmdOK.Size = new System.Drawing.Size(80, 23);
             this.cmdOK.TabIndex = 18;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -190,6 +188,7 @@ namespace Chummer
             // 
             this.chkRestricted.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkRestricted.AutoSize = true;
+            this.chkRestricted.DefaultColorScheme = true;
             this.chkRestricted.Location = new System.Drawing.Point(3, 4);
             this.chkRestricted.Name = "chkRestricted";
             this.chkRestricted.Size = new System.Drawing.Size(108, 17);
@@ -202,6 +201,7 @@ namespace Chummer
             // 
             this.chkVeryRestricted.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkVeryRestricted.AutoSize = true;
+            this.chkVeryRestricted.DefaultColorScheme = true;
             this.chkVeryRestricted.Location = new System.Drawing.Point(117, 4);
             this.chkVeryRestricted.Name = "chkVeryRestricted";
             this.chkVeryRestricted.Size = new System.Drawing.Size(132, 17);
@@ -285,6 +285,7 @@ namespace Chummer
             // chkModifier14
             // 
             this.chkModifier14.AutoSize = true;
+            this.chkModifier14.DefaultColorScheme = true;
             this.chkModifier14.Location = new System.Drawing.Point(3, 305);
             this.chkModifier14.Name = "chkModifier14";
             this.chkModifier14.Size = new System.Drawing.Size(100, 17);
@@ -296,6 +297,7 @@ namespace Chummer
             // chkModifier13
             // 
             this.chkModifier13.AutoSize = true;
+            this.chkModifier13.DefaultColorScheme = true;
             this.chkModifier13.Location = new System.Drawing.Point(3, 282);
             this.chkModifier13.Name = "chkModifier13";
             this.chkModifier13.Size = new System.Drawing.Size(100, 17);
@@ -307,6 +309,7 @@ namespace Chummer
             // chkModifier12
             // 
             this.chkModifier12.AutoSize = true;
+            this.chkModifier12.DefaultColorScheme = true;
             this.chkModifier12.Location = new System.Drawing.Point(3, 259);
             this.chkModifier12.Name = "chkModifier12";
             this.chkModifier12.Size = new System.Drawing.Size(100, 17);
@@ -318,6 +321,7 @@ namespace Chummer
             // chkModifier11
             // 
             this.chkModifier11.AutoSize = true;
+            this.chkModifier11.DefaultColorScheme = true;
             this.chkModifier11.Location = new System.Drawing.Point(3, 236);
             this.chkModifier11.Name = "chkModifier11";
             this.chkModifier11.Size = new System.Drawing.Size(100, 17);
@@ -329,6 +333,7 @@ namespace Chummer
             // chkModifier10
             // 
             this.chkModifier10.AutoSize = true;
+            this.chkModifier10.DefaultColorScheme = true;
             this.chkModifier10.Location = new System.Drawing.Point(3, 213);
             this.chkModifier10.Name = "chkModifier10";
             this.chkModifier10.Size = new System.Drawing.Size(100, 17);
@@ -366,6 +371,7 @@ namespace Chummer
             // chkModifier9
             // 
             this.chkModifier9.AutoSize = true;
+            this.chkModifier9.DefaultColorScheme = true;
             this.chkModifier9.Location = new System.Drawing.Point(3, 190);
             this.chkModifier9.Name = "chkModifier9";
             this.chkModifier9.Size = new System.Drawing.Size(100, 17);
@@ -377,6 +383,7 @@ namespace Chummer
             // chkModifier8
             // 
             this.chkModifier8.AutoSize = true;
+            this.chkModifier8.DefaultColorScheme = true;
             this.chkModifier8.Location = new System.Drawing.Point(3, 167);
             this.chkModifier8.Name = "chkModifier8";
             this.chkModifier8.Size = new System.Drawing.Size(100, 17);
@@ -388,6 +395,7 @@ namespace Chummer
             // chkModifier7
             // 
             this.chkModifier7.AutoSize = true;
+            this.chkModifier7.DefaultColorScheme = true;
             this.chkModifier7.Location = new System.Drawing.Point(3, 144);
             this.chkModifier7.Name = "chkModifier7";
             this.chkModifier7.Size = new System.Drawing.Size(100, 17);
@@ -399,6 +407,7 @@ namespace Chummer
             // chkModifier6
             // 
             this.chkModifier6.AutoSize = true;
+            this.chkModifier6.DefaultColorScheme = true;
             this.chkModifier6.Location = new System.Drawing.Point(3, 121);
             this.chkModifier6.Name = "chkModifier6";
             this.chkModifier6.Size = new System.Drawing.Size(100, 17);
@@ -410,6 +419,7 @@ namespace Chummer
             // chkModifier5
             // 
             this.chkModifier5.AutoSize = true;
+            this.chkModifier5.DefaultColorScheme = true;
             this.chkModifier5.Location = new System.Drawing.Point(3, 98);
             this.chkModifier5.Name = "chkModifier5";
             this.chkModifier5.Size = new System.Drawing.Size(100, 17);
@@ -421,6 +431,7 @@ namespace Chummer
             // chkModifier4
             // 
             this.chkModifier4.AutoSize = true;
+            this.chkModifier4.DefaultColorScheme = true;
             this.chkModifier4.Location = new System.Drawing.Point(3, 75);
             this.chkModifier4.Name = "chkModifier4";
             this.chkModifier4.Size = new System.Drawing.Size(100, 17);
@@ -433,6 +444,7 @@ namespace Chummer
             // 
             this.chkModifier3.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkModifier3.AutoSize = true;
+            this.chkModifier3.DefaultColorScheme = true;
             this.chkModifier3.Location = new System.Drawing.Point(3, 4);
             this.chkModifier3.Name = "chkModifier3";
             this.chkModifier3.Size = new System.Drawing.Size(100, 17);
@@ -444,6 +456,7 @@ namespace Chummer
             // chkModifier2
             // 
             this.chkModifier2.AutoSize = true;
+            this.chkModifier2.DefaultColorScheme = true;
             this.chkModifier2.Location = new System.Drawing.Point(3, 26);
             this.chkModifier2.Name = "chkModifier2";
             this.chkModifier2.Size = new System.Drawing.Size(100, 17);
@@ -455,6 +468,7 @@ namespace Chummer
             // chkModifier1
             // 
             this.chkModifier1.AutoSize = true;
+            this.chkModifier1.DefaultColorScheme = true;
             this.chkModifier1.Location = new System.Drawing.Point(3, 3);
             this.chkModifier1.Name = "chkModifier1";
             this.chkModifier1.Size = new System.Drawing.Size(100, 17);
@@ -489,6 +503,7 @@ namespace Chummer
             // 
             this.chkArea.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkArea.AutoSize = true;
+            this.chkArea.DefaultColorScheme = true;
             this.chkArea.Location = new System.Drawing.Point(299, 85);
             this.chkArea.Name = "chkArea";
             this.chkArea.Size = new System.Drawing.Size(48, 17);
@@ -502,6 +517,7 @@ namespace Chummer
             // 
             this.chkLimited.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkLimited.AutoSize = true;
+            this.chkLimited.DefaultColorScheme = true;
             this.chkLimited.Location = new System.Drawing.Point(299, 31);
             this.chkLimited.Name = "chkLimited";
             this.chkLimited.Size = new System.Drawing.Size(85, 17);
@@ -631,15 +647,15 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(622, 490);
+            this.tlpButtons.Location = new System.Drawing.Point(562, 490);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
-            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpButtons.Size = new System.Drawing.Size(172, 29);
             this.tlpButtons.TabIndex = 25;
             // 
-            // frmCreateSpell
+            // CreateSpell
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -652,7 +668,7 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmCreateSpell";
+            this.Name = "CreateSpell";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

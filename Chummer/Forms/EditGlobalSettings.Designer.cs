@@ -544,6 +544,7 @@ namespace Chummer
             this.cboDefaultMasterIndexSetting.Name = "cboDefaultMasterIndexSetting";
             this.cboDefaultMasterIndexSetting.Size = new System.Drawing.Size(216, 21);
             this.cboDefaultMasterIndexSetting.TabIndex = 85;
+            this.cboDefaultMasterIndexSetting.TooltipText = "";
             this.cboDefaultMasterIndexSetting.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblDefaultMasterIndexSetting
@@ -587,6 +588,7 @@ namespace Chummer
             this.cboDpiScalingMethod.Name = "cboDpiScalingMethod";
             this.cboDpiScalingMethod.Size = new System.Drawing.Size(317, 21);
             this.cboDpiScalingMethod.TabIndex = 1;
+            this.cboDpiScalingMethod.TooltipText = "";
             this.cboDpiScalingMethod.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblDpiScalingMode
@@ -625,7 +627,7 @@ namespace Chummer
             this.chkAutomaticUpdate.Location = new System.Drawing.Point(3, 218);
             this.chkAutomaticUpdate.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkAutomaticUpdate.Name = "chkAutomaticUpdate";
-            this.chkAutomaticUpdate.Size = new System.Drawing.Size(116, 17);
+            this.chkAutomaticUpdate.Size = new System.Drawing.Size(178, 17);
             this.chkAutomaticUpdate.TabIndex = 5;
             this.chkAutomaticUpdate.Tag = "Checkbox_Options_AutomaticUpdates";
             this.chkAutomaticUpdate.Text = "Automatically download updates";
@@ -900,7 +902,6 @@ namespace Chummer
             // cmdVerify
             // 
             this.cmdVerify.AutoSize = true;
-            this.cmdVerify.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdVerify.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdVerify.Enabled = false;
             this.cmdVerify.Location = new System.Drawing.Point(521, 3);
@@ -914,7 +915,6 @@ namespace Chummer
             // cmdVerifyData
             // 
             this.cmdVerifyData.AutoSize = true;
-            this.cmdVerifyData.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdVerifyData.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdVerifyData.Enabled = false;
             this.cmdVerifyData.Location = new System.Drawing.Point(704, 3);
@@ -972,6 +972,7 @@ namespace Chummer
             this.cboUseLoggingApplicationInsights.Name = "cboUseLoggingApplicationInsights";
             this.cboUseLoggingApplicationInsights.Size = new System.Drawing.Size(230, 21);
             this.cboUseLoggingApplicationInsights.TabIndex = 55;
+            this.cboUseLoggingApplicationInsights.TooltipText = "";
             this.cboUseLoggingApplicationInsights.SelectedIndexChanged += new System.EventHandler(this.cboUseLoggingApplicationInsights_SelectedIndexChanged);
             // 
             // cmdUseLoggingHelp
@@ -1233,6 +1234,7 @@ namespace Chummer
             this.cboColorMode.Name = "cboColorMode";
             this.cboColorMode.Size = new System.Drawing.Size(365, 21);
             this.cboColorMode.TabIndex = 1;
+            this.cboColorMode.TooltipText = "";
             this.cboColorMode.SelectedIndexChanged += new System.EventHandler(this.cboColorMode_SelectedIndexChanged);
             // 
             // chkLiveUpdateCleanCharacterFiles
@@ -1308,10 +1310,10 @@ namespace Chummer
             this.chkPreferNightlyBuilds.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkPreferNightlyBuilds, 2);
             this.chkPreferNightlyBuilds.DefaultColorScheme = true;
-            this.chkPreferNightlyBuilds.Location = new System.Drawing.Point(23, 243);
+            this.chkPreferNightlyBuilds.Location = new System.Drawing.Point(3, 243);
             this.chkPreferNightlyBuilds.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkPreferNightlyBuilds.Name = "chkPreferNightlyBuilds";
-            this.chkPreferNightlyBuilds.Size = new System.Drawing.Size(120, 17);
+            this.chkPreferNightlyBuilds.Size = new System.Drawing.Size(192, 17);
             this.chkPreferNightlyBuilds.TabIndex = 25;
             this.chkPreferNightlyBuilds.Tag = "Checkbox_Options_PreferNightlyBuilds";
             this.chkPreferNightlyBuilds.Text = "Prefer Nightly builds when updating";
@@ -1690,6 +1692,7 @@ namespace Chummer
             this.cboDefaultCharacterSetting.Name = "cboDefaultCharacterSetting";
             this.cboDefaultCharacterSetting.Size = new System.Drawing.Size(216, 21);
             this.cboDefaultCharacterSetting.TabIndex = 7;
+            this.cboDefaultCharacterSetting.TooltipText = "";
             this.cboDefaultCharacterSetting.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkStartupFullscreen
@@ -2087,7 +2090,6 @@ namespace Chummer
             // cmdAddCustomDirectory
             // 
             this.cmdAddCustomDirectory.AutoSize = true;
-            this.cmdAddCustomDirectory.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddCustomDirectory.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddCustomDirectory.Location = new System.Drawing.Point(3, 3);
             this.cmdAddCustomDirectory.Name = "cmdAddCustomDirectory";
@@ -2101,7 +2103,6 @@ namespace Chummer
             // cmdRemoveCustomDirectory
             // 
             this.cmdRemoveCustomDirectory.AutoSize = true;
-            this.cmdRemoveCustomDirectory.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRemoveCustomDirectory.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdRemoveCustomDirectory.Location = new System.Drawing.Point(219, 3);
             this.cmdRemoveCustomDirectory.Name = "cmdRemoveCustomDirectory";
@@ -2115,7 +2116,6 @@ namespace Chummer
             // cmdRenameCustomDataDirectory
             // 
             this.cmdRenameCustomDataDirectory.AutoSize = true;
-            this.cmdRenameCustomDataDirectory.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRenameCustomDataDirectory.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdRenameCustomDataDirectory.Location = new System.Drawing.Point(111, 3);
             this.cmdRenameCustomDataDirectory.Name = "cmdRenameCustomDataDirectory";
@@ -2230,23 +2230,22 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(1134, 634);
+            this.tlpButtons.Location = new System.Drawing.Point(1074, 634);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
-            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpButtons.Size = new System.Drawing.Size(172, 29);
             this.tlpButtons.TabIndex = 5;
             // 
             // cmdCancel
             // 
             this.cmdCancel.AutoSize = true;
-            this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdCancel.Location = new System.Drawing.Point(3, 3);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(80, 23);
             this.cmdCancel.TabIndex = 6;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -2256,19 +2255,18 @@ namespace Chummer
             // cmdOK
             // 
             this.cmdOK.AutoSize = true;
-            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(59, 3);
+            this.cmdOK.Location = new System.Drawing.Point(89, 3);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(50, 23);
+            this.cmdOK.Size = new System.Drawing.Size(80, 23);
             this.cmdOK.TabIndex = 5;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
             this.cmdOK.UseVisualStyleBackColor = true;
             this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
             // 
-            // frmGlobalSettings
+            // EditGlobalSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -2280,7 +2278,7 @@ namespace Chummer
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(48, 50);
-            this.Name = "frmGlobalSettings";
+            this.Name = "EditGlobalSettings";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

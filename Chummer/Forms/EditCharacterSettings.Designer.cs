@@ -583,8 +583,8 @@ namespace Chummer
             // 
             // cmdEnableSourcebooks
             // 
-            this.cmdEnableSourcebooks.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdEnableSourcebooks.AutoSize = true;
+            this.cmdEnableSourcebooks.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdEnableSourcebooks.Location = new System.Drawing.Point(3, 558);
             this.cmdEnableSourcebooks.Name = "cmdEnableSourcebooks";
             this.cmdEnableSourcebooks.Size = new System.Drawing.Size(297, 23);
@@ -4743,7 +4743,6 @@ namespace Chummer
             // cmdToTopCustomDirectoryLoadOrder
             // 
             this.cmdToTopCustomDirectoryLoadOrder.AutoSize = true;
-            this.cmdToTopCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdToTopCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdToTopCustomDirectoryLoadOrder.Location = new System.Drawing.Point(253, 3);
             this.cmdToTopCustomDirectoryLoadOrder.Name = "cmdToTopCustomDirectoryLoadOrder";
@@ -4757,7 +4756,6 @@ namespace Chummer
             // cmdToBottomCustomDirectoryLoadOrder
             // 
             this.cmdToBottomCustomDirectoryLoadOrder.AutoSize = true;
-            this.cmdToBottomCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdToBottomCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdToBottomCustomDirectoryLoadOrder.Location = new System.Drawing.Point(503, 3);
             this.cmdToBottomCustomDirectoryLoadOrder.Name = "cmdToBottomCustomDirectoryLoadOrder";
@@ -4771,7 +4769,6 @@ namespace Chummer
             // cmdDecreaseCustomDirectoryLoadOrder
             // 
             this.cmdDecreaseCustomDirectoryLoadOrder.AutoSize = true;
-            this.cmdDecreaseCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDecreaseCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDecreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(378, 3);
             this.cmdDecreaseCustomDirectoryLoadOrder.Name = "cmdDecreaseCustomDirectoryLoadOrder";
@@ -4785,7 +4782,6 @@ namespace Chummer
             // cmdIncreaseCustomDirectoryLoadOrder
             // 
             this.cmdIncreaseCustomDirectoryLoadOrder.AutoSize = true;
-            this.cmdIncreaseCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdIncreaseCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdIncreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(128, 3);
             this.cmdIncreaseCustomDirectoryLoadOrder.Name = "cmdIncreaseCustomDirectoryLoadOrder";
@@ -4799,7 +4795,6 @@ namespace Chummer
             // cmdGlobalOptionsCustomData
             // 
             this.cmdGlobalOptionsCustomData.AutoSize = true;
-            this.cmdGlobalOptionsCustomData.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdGlobalOptionsCustomData.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdGlobalOptionsCustomData.Location = new System.Drawing.Point(3, 3);
             this.cmdGlobalOptionsCustomData.Name = "cmdGlobalOptionsCustomData";
@@ -5836,7 +5831,6 @@ namespace Chummer
             // cmdRename
             // 
             this.cmdRename.AutoSize = true;
-            this.cmdRename.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRename.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdRename.Location = new System.Drawing.Point(102, 0);
             this.cmdRename.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
@@ -5851,7 +5845,6 @@ namespace Chummer
             // cmdDelete
             // 
             this.cmdDelete.AutoSize = true;
-            this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDelete.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDelete.Location = new System.Drawing.Point(201, 0);
             this.cmdDelete.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
@@ -5866,7 +5859,6 @@ namespace Chummer
             // cmdOK
             // 
             this.cmdOK.AutoSize = true;
-            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdOK.Location = new System.Drawing.Point(498, 0);
@@ -5882,7 +5874,6 @@ namespace Chummer
             // cmdRestoreDefaults
             // 
             this.cmdRestoreDefaults.AutoSize = true;
-            this.cmdRestoreDefaults.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRestoreDefaults.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdRestoreDefaults.Location = new System.Drawing.Point(0, 0);
             this.cmdRestoreDefaults.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
@@ -5897,7 +5888,6 @@ namespace Chummer
             // cmdSave
             // 
             this.cmdSave.AutoSize = true;
-            this.cmdSave.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSave.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSave.Enabled = false;
             this.cmdSave.Location = new System.Drawing.Point(399, 0);
@@ -5913,7 +5903,6 @@ namespace Chummer
             // cmdSaveAs
             // 
             this.cmdSaveAs.AutoSize = true;
-            this.cmdSaveAs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSaveAs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSaveAs.Enabled = false;
             this.cmdSaveAs.Location = new System.Drawing.Point(300, 0);

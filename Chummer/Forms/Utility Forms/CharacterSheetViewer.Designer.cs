@@ -44,16 +44,18 @@ namespace Chummer
             this.dlgSaveFile = new System.Windows.Forms.SaveFileDialog();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.webViewer = new System.Windows.Forms.WebBrowser();
-            this.cmdPrint = new SplitButton();
+            this.cmdPrint = new Chummer.SplitButton();
             this.cboXSLT = new Chummer.ElasticComboBox();
             this.cboLanguage = new Chummer.ElasticComboBox();
-            this.cmdSaveAsPdf = new SplitButton();
+            this.cmdSaveAsPdf = new Chummer.SplitButton();
             this.lblCharacterSheet = new System.Windows.Forms.Label();
             this.imgSheetLanguageFlag = new System.Windows.Forms.PictureBox();
+            this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmsSaveButton.SuspendLayout();
             this.cmsPrintButton.SuspendLayout();
             this.tlpMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgSheetLanguageFlag)).BeginInit();
+            this.bufferedTableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmsSaveButton
@@ -123,20 +125,20 @@ namespace Chummer
             // 
             this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMain.ColumnCount = 6;
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnCount = 5;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 22F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpMain.Controls.Add(this.webViewer, 0, 1);
-            this.tlpMain.Controls.Add(this.cmdPrint, 0, 0);
-            this.tlpMain.Controls.Add(this.cboXSLT, 5, 0);
-            this.tlpMain.Controls.Add(this.cboLanguage, 4, 0);
-            this.tlpMain.Controls.Add(this.cmdSaveAsPdf, 1, 0);
-            this.tlpMain.Controls.Add(this.lblCharacterSheet, 2, 0);
-            this.tlpMain.Controls.Add(this.imgSheetLanguageFlag, 3, 0);
+            this.tlpMain.Controls.Add(this.cboXSLT, 4, 0);
+            this.tlpMain.Controls.Add(this.cboLanguage, 3, 0);
+            this.tlpMain.Controls.Add(this.lblCharacterSheet, 1, 0);
+            this.tlpMain.Controls.Add(this.imgSheetLanguageFlag, 2, 0);
+            this.tlpMain.Controls.Add(this.bufferedTableLayoutPanel1, 0, 0);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
@@ -149,7 +151,7 @@ namespace Chummer
             // webViewer
             // 
             this.webViewer.AllowWebBrowserDrop = false;
-            this.tlpMain.SetColumnSpan(this.webViewer, 6);
+            this.tlpMain.SetColumnSpan(this.webViewer, 5);
             this.webViewer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.webViewer.IsWebBrowserContextMenuEnabled = false;
             this.webViewer.Location = new System.Drawing.Point(3, 32);
@@ -164,13 +166,12 @@ namespace Chummer
             // cmdPrint
             // 
             this.cmdPrint.AutoSize = true;
-            this.cmdPrint.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdPrint.ContextMenuStrip = this.cmsPrintButton;
             this.cmdPrint.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdPrint.Enabled = false;
             this.cmdPrint.Location = new System.Drawing.Point(3, 3);
             this.cmdPrint.Name = "cmdPrint";
-            this.cmdPrint.Size = new System.Drawing.Size(56, 23);
+            this.cmdPrint.Size = new System.Drawing.Size(98, 23);
             this.cmdPrint.SplitMenuStrip = this.cmsPrintButton;
             this.cmdPrint.TabIndex = 103;
             this.cmdPrint.Tag = "Menu_FilePrint";
@@ -205,12 +206,11 @@ namespace Chummer
             // cmdSaveAsPdf
             // 
             this.cmdSaveAsPdf.AutoSize = true;
-            this.cmdSaveAsPdf.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSaveAsPdf.ContextMenuStrip = this.cmsSaveButton;
             this.cmdSaveAsPdf.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSaveAsPdf.Enabled = false;
             this.cmdSaveAsPdf.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.cmdSaveAsPdf.Location = new System.Drawing.Point(65, 3);
+            this.cmdSaveAsPdf.Location = new System.Drawing.Point(107, 3);
             this.cmdSaveAsPdf.Name = "cmdSaveAsPdf";
             this.cmdSaveAsPdf.Size = new System.Drawing.Size(98, 23);
             this.cmdSaveAsPdf.SplitMenuStrip = this.cmsSaveButton;
@@ -243,7 +243,24 @@ namespace Chummer
             this.imgSheetLanguageFlag.TabIndex = 105;
             this.imgSheetLanguageFlag.TabStop = false;
             // 
-            // frmViewer
+            // bufferedTableLayoutPanel1
+            // 
+            this.bufferedTableLayoutPanel1.AutoSize = true;
+            this.bufferedTableLayoutPanel1.ColumnCount = 2;
+            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.bufferedTableLayoutPanel1.Controls.Add(this.cmdSaveAsPdf, 1, 0);
+            this.bufferedTableLayoutPanel1.Controls.Add(this.cmdPrint, 0, 0);
+            this.bufferedTableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bufferedTableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.bufferedTableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.bufferedTableLayoutPanel1.Name = "bufferedTableLayoutPanel1";
+            this.bufferedTableLayoutPanel1.RowCount = 1;
+            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(208, 29);
+            this.bufferedTableLayoutPanel1.TabIndex = 106;
+            // 
+            // CharacterSheetViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -252,7 +269,7 @@ namespace Chummer
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(800, 120);
-            this.Name = "frmViewer";
+            this.Name = "CharacterSheetViewer";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_CharacterViewer";
@@ -265,6 +282,8 @@ namespace Chummer
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgSheetLanguageFlag)).EndInit();
+            this.bufferedTableLayoutPanel1.ResumeLayout(false);
+            this.bufferedTableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -285,6 +304,7 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsSaveAsXml;
         internal DpiFriendlyToolStripMenuItem tsSaveAsHtml;
         private DpiFriendlyToolStripMenuItem tsPrintPreview;
+        private BufferedTableLayoutPanel bufferedTableLayoutPanel1;
     }
 
 }

@@ -92,7 +92,6 @@ namespace Chummer
             // cmdSelectFile
             // 
             this.cmdSelectFile.AutoSize = true;
-            this.cmdSelectFile.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSelectFile.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSelectFile.Location = new System.Drawing.Point(3, 3);
             this.cmdSelectFile.Name = "cmdSelectFile";
@@ -106,7 +105,6 @@ namespace Chummer
             // cmdImport
             // 
             this.cmdImport.AutoSize = true;
-            this.cmdImport.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdImport.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdImport.Enabled = false;
             this.cmdImport.Location = new System.Drawing.Point(104, 3);
