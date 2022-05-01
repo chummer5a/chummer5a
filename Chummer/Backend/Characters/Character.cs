@@ -2136,19 +2136,25 @@ namespace Chummer
                         {
                             foreach (XmlNode objXmlQualityItem in xmlQualityList)
                             {
-                                XmlNode objXmlQuality =
-                                    xmlQualityDocumentQualitiesNode.SelectSingleNode("quality[name = " +
-                                        objXmlQualityItem.InnerText.CleanXPath() + ']');
-                                Quality objQuality = new Quality(this);
-                                string strForceValue =
-                                    objXmlQualityItem.Attributes["select"]?.InnerText ?? string.Empty;
-                                QualitySource objSource =
-                                    objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString
-                                        ? QualitySource.MetatypeRemovable
-                                        : QualitySource.Metatype;
-                                objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue);
-                                objQuality.ContributeToLimit = false;
-                                Qualities.Add(objQuality);
+                                string strQuality = objXmlQualityItem.InnerText;
+                                XmlNode objXmlQuality = strQuality.IsGuid()
+                                    ? xmlQualityDocumentQualitiesNode.SelectSingleNode(
+                                        "quality[id = " + strQuality.CleanXPath() + ']')
+                                    : xmlQualityDocumentQualitiesNode.SelectSingleNode(
+                                        "quality[name = " + strQuality.CleanXPath() + ']');
+                                if (objXmlQuality != null)
+                                {
+                                    Quality objQuality = new Quality(this);
+                                    string strForceValue =
+                                        objXmlQualityItem.Attributes["select"]?.InnerText ?? string.Empty;
+                                    QualitySource objSource =
+                                        objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString
+                                            ? QualitySource.MetatypeRemovable
+                                            : QualitySource.Metatype;
+                                    objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue);
+                                    objQuality.ContributeToLimit = false;
+                                    Qualities.Add(objQuality);
+                                }
                             }
                         }
                     }
@@ -2162,24 +2168,30 @@ namespace Chummer
                 {
                     foreach (XmlNode objXmlPower in charNode.SelectNodes("powers/power"))
                     {
-                        XmlNode objXmlCritterPower =
-                            xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = " +
-                                                                               objXmlPower.InnerText.CleanXPath() +
-                                                                               ']');
-                        CritterPower objPower = new CritterPower(this);
-                        string strForcedValue = objXmlPower.Attributes["select"]?.InnerText ?? string.Empty;
-                        int intRating =
-                            CommonFunctions.ExpressionToInt(objXmlPower.Attributes["rating"]?.InnerText, intForce, 0,
-                                0);
+                        string strCritterPower = objXmlPower.InnerText;
+                        XmlNode objXmlCritterPower = strCritterPower.IsGuid()
+                            ? xmlCritterPowerDocumentPowersNode.SelectSingleNode(
+                                "power[id = " + strCritterPower.CleanXPath() + ']')
+                            : xmlCritterPowerDocumentPowersNode.SelectSingleNode(
+                                "power[name = " + strCritterPower.CleanXPath() + ']');
+                        if (objXmlCritterPower != null)
+                        {
+                            CritterPower objPower = new CritterPower(this);
+                            string strForcedValue = objXmlPower.Attributes["select"]?.InnerText ?? string.Empty;
+                            int intRating =
+                                CommonFunctions.ExpressionToInt(objXmlPower.Attributes["rating"]?.InnerText, intForce,
+                                                                0,
+                                                                0);
 
-                        objPower.Create(objXmlCritterPower, intRating, strForcedValue);
-                        objPower.CountTowardsLimit = false;
-                        CritterPowers.Add(objPower);
-                        ImprovementManager.CreateImprovement(this, objPower.InternalId,
-                            Improvement.ImprovementSource.Metatype, string.Empty,
-                            Improvement.ImprovementType.CritterPower,
-                            string.Empty);
-                        ImprovementManager.Commit(this);
+                            objPower.Create(objXmlCritterPower, intRating, strForcedValue);
+                            objPower.CountTowardsLimit = false;
+                            CritterPowers.Add(objPower);
+                            ImprovementManager.CreateImprovement(this, objPower.InternalId,
+                                                                 Improvement.ImprovementSource.Metatype, string.Empty,
+                                                                 Improvement.ImprovementType.CritterPower,
+                                                                 string.Empty);
+                            ImprovementManager.Commit(this);
+                        }
                     }
                 }
 
@@ -2334,8 +2346,12 @@ namespace Chummer
                 XmlDocument xmlComplexFormDocument = LoadData("complexforms.xml");
                 foreach (XmlNode xmlComplexForm in charNode.SelectNodes("complexforms/complexform"))
                 {
-                    XmlNode xmlComplexFormData = xmlComplexFormDocument.SelectSingleNode(
-                        "/chummer/complexforms/complexform[name = " + xmlComplexForm.InnerText.CleanXPath() + ']');
+                    string strComplexForm = xmlComplexForm.InnerText;
+                    XmlNode xmlComplexFormData = strComplexForm.IsGuid()
+                        ? xmlComplexFormDocument.SelectSingleNode(
+                            "/chummer/complexforms/complexform[id = " + strComplexForm.CleanXPath() + ']')
+                        : xmlComplexFormDocument.SelectSingleNode(
+                            "/chummer/complexforms/complexform[name = " + strComplexForm.CleanXPath() + ']');
                     if (xmlComplexFormData == null)
                         continue;
 
@@ -2357,9 +2373,14 @@ namespace Chummer
                 XmlDocument xmlCyberwareDocument = LoadData("cyberware.xml");
                 foreach (XmlNode node in charNode.SelectNodes("cyberwares/cyberware"))
                 {
-                    XmlNode objXmlCyberwareNode =
-                        xmlCyberwareDocument.SelectSingleNode("chummer/cyberwares/cyberware[name = " +
-                                                              node.InnerText.CleanXPath() + ']');
+                    string strCyberware = node.InnerText;
+                    XmlNode objXmlCyberwareNode = strCyberware.IsGuid()
+                        ? xmlCyberwareDocument.SelectSingleNode(
+                            "chummer/cyberwares/cyberware[id = " + strCyberware.CleanXPath() + ']')
+                        : xmlCyberwareDocument.SelectSingleNode(
+                            "chummer/cyberwares/cyberware[name = " + strCyberware.CleanXPath() + ']');
+                    if (objXmlCyberwareNode == null)
+                        continue;
                     Cyberware objWare = new Cyberware(this);
                     string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
                     int intRating =
@@ -2380,9 +2401,14 @@ namespace Chummer
                 XmlDocument xmlBiowareDocument = LoadData("bioware.xml");
                 foreach (XmlNode node in charNode.SelectNodes("biowares/bioware"))
                 {
-                    XmlNode objXmlCyberwareNode =
-                        xmlBiowareDocument.SelectSingleNode("chummer/biowares/bioware[name = " +
-                                                            node.InnerText.CleanXPath() + ']');
+                    string strCyberware = node.InnerText;
+                    XmlNode objXmlCyberwareNode = strCyberware.IsGuid()
+                        ? xmlBiowareDocument.SelectSingleNode(
+                            "chummer/biowares/bioware[id = " + strCyberware.CleanXPath() + ']')
+                        : xmlBiowareDocument.SelectSingleNode(
+                            "chummer/biowares/bioware[name = " + strCyberware.CleanXPath() + ']');
+                    if (objXmlCyberwareNode == null)
+                        continue;
                     Cyberware objWare = new Cyberware(this);
                     string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
                     int intRating =
@@ -2403,9 +2429,12 @@ namespace Chummer
                 XmlDocument xmlAIProgramDocument = LoadData("programs.xml");
                 foreach (XmlNode xmlAIProgram in charNode.SelectNodes("programs/program"))
                 {
-                    XmlNode xmlAIProgramData = xmlAIProgramDocument.SelectSingleNode(
-                        "/chummer/programs/program[name = " +
-                        xmlAIProgram.InnerText.CleanXPath() + ']');
+                    string strAIProgram = xmlAIProgram.InnerText;
+                    XmlNode xmlAIProgramData = strAIProgram.IsGuid()
+                        ? xmlAIProgramDocument.SelectSingleNode(
+                            "/chummer/programs/program[id = " + strAIProgram.CleanXPath() + ']')
+                        : xmlAIProgramDocument.SelectSingleNode(
+                            "/chummer/programs/program[name = " + strAIProgram.CleanXPath() + ']');
                     if (xmlAIProgramData == null)
                         continue;
 
