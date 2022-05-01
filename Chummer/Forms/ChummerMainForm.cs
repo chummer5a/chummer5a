@@ -2234,8 +2234,9 @@ namespace Chummer
                                                                         : strUI + strSpace + '(' + objCharacter.CharacterName
                                                                           + ')', token: token);
                         if (objCharacter == null
-                            || OpenCharacterEditorForms.Any(x => x.CharacterObject == objCharacter))
+                            || OpenCharacterEditorForms.All(x => x.CharacterObject != objCharacter))
                             continue;
+
                         if (Program.MyProcess.HandleCount >= 9500
                             && Program.ShowMessageBox(
                                 string.Format(strTooManyHandles, objCharacter.CharacterName),
