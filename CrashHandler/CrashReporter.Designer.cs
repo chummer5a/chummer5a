@@ -32,7 +32,7 @@ namespace CrashHandler
             this.stpMain = new System.Windows.Forms.StatusStrip();
             this.tslStatusCollectionProgess = new System.Windows.Forms.ToolStripStatusLabel();
             this.cmdClose = new System.Windows.Forms.Button();
-            this.tabUserStory = new System.Windows.Forms.TabControl();
+            this.tabUserStories = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
             this.tlpUserStory = new System.Windows.Forms.TableLayoutPanel();
             this.txtIdSelectable2 = new System.Windows.Forms.TextBox();
@@ -42,19 +42,19 @@ namespace CrashHandler
             this.lblIntroText = new System.Windows.Forms.Label();
             this.pnlDesc = new System.Windows.Forms.Panel();
             this.lblDesc = new System.Windows.Forms.Label();
-            this.yabUserStory = new System.Windows.Forms.TabPage();
-            this.txtUserStory = new System.Windows.Forms.TextBox();
+            this.tabUserStory = new System.Windows.Forms.TabPage();
             this.cmdSubmitIssue = new System.Windows.Forms.Button();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdRestart = new System.Windows.Forms.Button();
             this.lblDescriptionWarning = new System.Windows.Forms.Label();
+            this.rtbUserStory = new System.Windows.Forms.RichTextBox();
             this.stpMain.SuspendLayout();
-            this.tabUserStory.SuspendLayout();
+            this.tabUserStories.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.tlpUserStory.SuspendLayout();
             this.pnlDesc.SuspendLayout();
-            this.yabUserStory.SuspendLayout();
+            this.tabUserStory.SuspendLayout();
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
@@ -89,17 +89,17 @@ namespace CrashHandler
             this.cmdClose.UseVisualStyleBackColor = true;
             this.cmdClose.Click += new System.EventHandler(this.cmdClose_Click);
             // 
-            // tabUserStory
+            // tabUserStories
             // 
-            this.tlpMain.SetColumnSpan(this.tabUserStory, 2);
-            this.tabUserStory.Controls.Add(this.tabGeneral);
-            this.tabUserStory.Controls.Add(this.yabUserStory);
-            this.tabUserStory.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabUserStory.Location = new System.Drawing.Point(3, 3);
-            this.tabUserStory.Name = "tabUserStory";
-            this.tabUserStory.SelectedIndex = 0;
-            this.tabUserStory.Size = new System.Drawing.Size(778, 488);
-            this.tabUserStory.TabIndex = 11;
+            this.tlpMain.SetColumnSpan(this.tabUserStories, 2);
+            this.tabUserStories.Controls.Add(this.tabGeneral);
+            this.tabUserStories.Controls.Add(this.tabUserStory);
+            this.tabUserStories.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabUserStories.Location = new System.Drawing.Point(3, 3);
+            this.tabUserStories.Name = "tabUserStories";
+            this.tabUserStories.SelectedIndex = 0;
+            this.tabUserStories.Size = new System.Drawing.Size(778, 488);
+            this.tabUserStories.TabIndex = 11;
             // 
             // tabGeneral
             // 
@@ -228,28 +228,16 @@ namespace CrashHandler
             this.lblDesc.TabIndex = 16;
             this.lblDesc.Text = "[DESC]";
             // 
-            // yabUserStory
+            // tabUserStory
             // 
-            this.yabUserStory.Controls.Add(this.txtUserStory);
-            this.yabUserStory.Location = new System.Drawing.Point(4, 22);
-            this.yabUserStory.Name = "yabUserStory";
-            this.yabUserStory.Padding = new System.Windows.Forms.Padding(3);
-            this.yabUserStory.Size = new System.Drawing.Size(610, 333);
-            this.yabUserStory.TabIndex = 2;
-            this.yabUserStory.Text = "Error Description";
-            this.yabUserStory.UseVisualStyleBackColor = true;
-            // 
-            // txtUserStory
-            // 
-            this.txtUserStory.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtUserStory.Location = new System.Drawing.Point(3, 3);
-            this.txtUserStory.Multiline = true;
-            this.txtUserStory.Name = "txtUserStory";
-            this.txtUserStory.Size = new System.Drawing.Size(604, 327);
-            this.txtUserStory.TabIndex = 0;
-            this.txtUserStory.Text = "### Expected behaviour\r\n(Enter text here)\r\n\r\n### Actual behaviour\r\n(Enter text he" +
-    "re)\r\n\r\n### Steps to reproduce the behaviour\r\n(Enter text here)";
-            this.txtUserStory.TextChanged += new System.EventHandler(this.txtDesc_TextChanged);
+            this.tabUserStory.Controls.Add(this.rtbUserStory);
+            this.tabUserStory.Location = new System.Drawing.Point(4, 22);
+            this.tabUserStory.Name = "tabUserStory";
+            this.tabUserStory.Padding = new System.Windows.Forms.Padding(3);
+            this.tabUserStory.Size = new System.Drawing.Size(770, 462);
+            this.tabUserStory.TabIndex = 2;
+            this.tabUserStory.Text = "Error Description";
+            this.tabUserStory.UseVisualStyleBackColor = true;
             // 
             // cmdSubmitIssue
             // 
@@ -272,7 +260,7 @@ namespace CrashHandler
             this.tlpMain.ColumnCount = 2;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.Controls.Add(this.tabUserStory, 0, 0);
+            this.tlpMain.Controls.Add(this.tabUserStories, 0, 0);
             this.tlpMain.Controls.Add(this.tlpButtons, 1, 1);
             this.tlpMain.Controls.Add(this.lblDescriptionWarning, 0, 1);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -330,6 +318,18 @@ namespace CrashHandler
             this.lblDescriptionWarning.Text = "Please make sure you have written some useful information in the Error Descriptio" +
     "n before creating an issue on GitHub.";
             // 
+            // rtbUserStory
+            // 
+            this.rtbUserStory.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbUserStory.Location = new System.Drawing.Point(3, 3);
+            this.rtbUserStory.Name = "rtbUserStory";
+            this.rtbUserStory.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.rtbUserStory.Size = new System.Drawing.Size(764, 456);
+            this.rtbUserStory.TabIndex = 1;
+            this.rtbUserStory.Text = "### Expected behaviour\n(Enter text here)\n\n### Actual behaviour\n(Enter text here)\n" +
+    "\n### Steps to reproduce the behaviour\n(Enter text here)\n";
+            this.rtbUserStory.TextChanged += new System.EventHandler(this.rtbUserStory_TextChanged);
+            // 
             // CrashReporter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -347,14 +347,13 @@ namespace CrashHandler
             this.Load += new System.EventHandler(this.frmCrashReporter_Load);
             this.stpMain.ResumeLayout(false);
             this.stpMain.PerformLayout();
-            this.tabUserStory.ResumeLayout(false);
+            this.tabUserStories.ResumeLayout(false);
             this.tabGeneral.ResumeLayout(false);
             this.tlpUserStory.ResumeLayout(false);
             this.tlpUserStory.PerformLayout();
             this.pnlDesc.ResumeLayout(false);
             this.pnlDesc.PerformLayout();
-            this.yabUserStory.ResumeLayout(false);
-            this.yabUserStory.PerformLayout();
+            this.tabUserStory.ResumeLayout(false);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);
@@ -369,11 +368,10 @@ namespace CrashHandler
 		private System.Windows.Forms.StatusStrip stpMain;
 		private System.Windows.Forms.ToolStripStatusLabel tslStatusCollectionProgess;
 		private System.Windows.Forms.Button cmdClose;
-		private System.Windows.Forms.TabControl tabUserStory;
+		private System.Windows.Forms.TabControl tabUserStories;
 		private System.Windows.Forms.TabPage tabGeneral;
 		private System.Windows.Forms.Button cmdSubmitIssue;
-		private System.Windows.Forms.TabPage yabUserStory;
-		private System.Windows.Forms.TextBox txtUserStory;
+		private System.Windows.Forms.TabPage tabUserStory;
 		private System.Windows.Forms.Label lblIntroText;
 		private System.Windows.Forms.LinkLabel lblContents;
 		private System.Windows.Forms.Label lblDetails;
@@ -386,6 +384,7 @@ namespace CrashHandler
         private System.Windows.Forms.TextBox txtIdSelectable2;
         private System.Windows.Forms.Button cmdRestart;
         private System.Windows.Forms.Label lblDescriptionWarning;
+        private System.Windows.Forms.RichTextBox rtbUserStory;
     }
 }
 

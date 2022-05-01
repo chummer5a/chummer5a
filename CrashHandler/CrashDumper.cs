@@ -269,7 +269,9 @@ namespace CrashHandler
             {
                 foreach (string strFilePath in _dicFilePaths.Keys)
                 {
-                    if (!File.Exists(strFilePath))
+                    if ((Path.GetExtension(strFilePath) == ".exe"
+                         && !strFilePath.Contains("Chummer", StringComparison.OrdinalIgnoreCase))
+                        || !File.Exists(strFilePath))
                         continue;
 
                     string strFileName = Path.GetFileName(strFilePath) ?? string.Empty;

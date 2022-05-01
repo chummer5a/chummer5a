@@ -47,10 +47,10 @@ namespace CrashHandler
             Process.Start("explorer.exe", Chummer.Utils.GetStartupPath);
         }
 
-        private void txtDesc_TextChanged(object sender, EventArgs e)
+        private void rtbUserStory_TextChanged(object sender, EventArgs e)
         {
             cmdSubmitIssue.Enabled = lblDescriptionWarning.Visible
-                = txtUserStory.TextLength > 0 && !txtUserStory.Text.Contains("(Enter text here)");
+                = rtbUserStory.TextLength > 0 && !rtbUserStory.Text.Contains("(Enter text here)");
         }
 
         private void cmdClose_Click(object sender, EventArgs e)
@@ -79,7 +79,7 @@ namespace CrashHandler
                                       _objDumper.Attributes["option-upload-logs-set"]
                                       + Environment.NewLine + "Installation ID: " +
                                       _objDumper.Attributes["installation-id"]
-                                      + Environment.NewLine + Environment.NewLine + txtUserStory.Text
+                                      + Environment.NewLine + Environment.NewLine + rtbUserStory.Text
                                       + Environment.NewLine + Environment.NewLine + "### Crash Description"
                                       + Environment.NewLine + _objDumper.Attributes["visible-error-friendly"]
                                       + Environment.NewLine + _objDumper.Attributes["visible-stacktrace"]);
