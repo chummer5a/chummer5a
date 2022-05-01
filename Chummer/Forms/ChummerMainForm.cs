@@ -2092,7 +2092,7 @@ namespace Chummer
                                                                           + objCharacter.CharacterName
                                                                           + ')', token: token);
                         if (objCharacter == null
-                            || OpenCharacterEditorForms.Any(x => x.CharacterObject == objCharacter))
+                            || await OpenCharacterEditorForms.AnyAsync(x => x.CharacterObject == objCharacter, token))
                             continue;
                         if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 8000 : 7500)
                             && Program.ShowMessageBox(
@@ -2234,7 +2234,7 @@ namespace Chummer
                                                                         : strUI + strSpace + '(' + objCharacter.CharacterName
                                                                           + ')', token: token);
                         if (objCharacter == null
-                            || OpenCharacterEditorForms.All(x => x.CharacterObject != objCharacter))
+                            || await OpenCharacterSheetViewers.AnyAsync(x => x.CharacterObjects.Contains(objCharacter), token))
                             continue;
 
                         if (Program.MyProcess.HandleCount >= 9500
@@ -2385,7 +2385,7 @@ namespace Chummer
                                                                         : strUI + strSpace + '(' + objCharacter.CharacterName
                                                                           + ')', token: token);
                         if (objCharacter == null
-                            || OpenCharacterEditorForms.Any(x => x.CharacterObject == objCharacter))
+                            || await OpenCharacterExportForms.AnyAsync(x => x.CharacterObject == objCharacter, token))
                             continue;
                         if (Program.MyProcess.HandleCount >= 9500
                             && Program.ShowMessageBox(

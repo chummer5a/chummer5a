@@ -1202,6 +1202,14 @@ namespace Chummer
                                 x => x.OpenCharacterList(lstCharacters, blnIncludeInMru, token)), token);
         }
 
+        public static Task<bool> SwitchToOpenPrintCharacter(Character objCharacter, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objCharacter == null || MainForm == null)
+                return Task.FromResult(false);
+            return MainForm.SwitchToOpenPrintCharacter(objCharacter, token);
+        }
+
         /// <summary>
         /// Open a character's print form up without necessarily opening them up fully for editing.
         /// </summary>
@@ -1225,6 +1233,14 @@ namespace Chummer
                 return MainForm.OpenCharacterListForPrinting(lstCharacters, blnIncludeInMru, token);
             return Task.Run(() => MainFormOnAssignAsyncActions.Add(
                                 x => x.OpenCharacterListForPrinting(lstCharacters, blnIncludeInMru, token)), token);
+        }
+
+        public static Task<bool> SwitchToOpenExportCharacter(Character objCharacter, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objCharacter == null || MainForm == null)
+                return Task.FromResult(false);
+            return MainForm.SwitchToOpenExportCharacter(objCharacter, token);
         }
 
         /// <summary>

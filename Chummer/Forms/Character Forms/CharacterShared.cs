@@ -8307,14 +8307,16 @@ namespace Chummer
         /// </summary>
         public virtual Task<bool> ConfirmSaveCreatedCharacter(CancellationToken token = default) { return Task.FromResult(true); }
 
-        public Task DoPrint(CancellationToken token = default)
+        public async Task DoPrint(CancellationToken token = default)
         {
-            return Program.OpenCharacterForPrinting(CharacterObject, token: token);
+            if (!await Program.SwitchToOpenPrintCharacter(CharacterObject, token))
+                await Program.OpenCharacterForPrinting(CharacterObject, token: token);
         }
 
-        public Task DoExport(CancellationToken token = default)
+        public async Task DoExport(CancellationToken token = default)
         {
-            return Program.OpenCharacterForExport(CharacterObject, token: token);
+            if (!await Program.SwitchToOpenExportCharacter(CharacterObject, token))
+                await Program.OpenCharacterForExport(CharacterObject, token: token);
         }
 
         /// <summary>
