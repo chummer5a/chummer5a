@@ -31037,6 +31037,176 @@
       <source>SHB3</source>
       <page>207</page>
     </metatype>
+    <metatype>
+      <id>437f4122-d0a7-450f-b33b-fe44a3b1a628</id>
+      <name>Razorcat (small)</name>
+      <category>Toxic Critters</category>
+      <karma>0</karma>
+      <bodmin>4</bodmin>
+      <bodmax>4</bodmax>
+      <bodaug>4</bodaug>
+      <agimin>5</agimin>
+      <agimax>5</agimax>
+      <agiaug>5</agiaug>
+      <reamin>8</reamin>
+      <reamax>8</reamax>
+      <reaaug>8</reaaug>
+      <strmin>2</strmin>
+      <strmax>2</strmax>
+      <straug>2</straug>
+      <chamin>4</chamin>
+      <chamax>4</chamax>
+      <chaaug>4</chaaug>
+      <intmin>5</intmin>
+      <intmax>5</intmax>
+      <intaug>5</intaug>
+      <logmin>2</logmin>
+      <logmax>2</logmax>
+      <logaug>2</logaug>
+      <wilmin>3</wilmin>
+      <wilmax>3</wilmax>
+      <wilaug>3</wilaug>
+      <inimin>12</inimin>
+      <inimax>12</inimax>
+      <iniaug>12</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>9</edgmax>
+      <edgaug>9</edgaug>
+      <magmin>0</magmin>
+      <magmax>6</magmax>
+      <magaug>6</magaug>
+      <resmin>0</resmin>
+      <resmax>6</resmax>
+      <resaug>6</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>6</essmax>
+      <essaug>6</essaug>
+      <walk>2/1/0</walk>
+      <run>6/0/0</run>
+      <sprint>4/1/0</sprint>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>1</min>
+          <max>6</max>
+          <aug>6</aug>
+          <val>6</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power rating="4">Armor</power>
+        <power>Energy Aura</power>
+        <power select="Claw: DV 6P, AP -1">Natural Weapon</power>
+        <power select="Smell">Enhanced Senses</power>
+        <power select="Hearing">Enhanced Senses</power>
+        <power select="Low-light">Enhanced Senses</power>
+        <power select="Toxins">Immunity</power>
+        <power rating="2">Toughness</power>
+      </powers>
+      <optionalpowers />
+      <skills>
+        <skill rating="8">Gymnastics</skill>
+        <skill rating="4">Intimidation</skill>
+        <skill rating="6">Perception</skill>
+        <skill rating="5">Running</skill>
+        <skill rating="6">Sneaking</skill>
+        <skill rating="4">Tracking</skill>
+        <skill rating="5">Unarmed Combat</skill>
+      </skills>
+      <source>HS</source>
+      <page>102</page>
+    </metatype>
+    <metatype>
+      <id>f1918e56-ca4b-4a35-97d6-e96855cc64db</id>
+      <name>Razorcat (large)</name>
+      <category>Toxic Critters</category>
+      <karma>0</karma>
+      <bodmin>7</bodmin>
+      <bodmax>7</bodmax>
+      <bodaug>7</bodaug>
+      <agimin>6</agimin>
+      <agimax>6</agimax>
+      <agiaug>6</agiaug>
+      <reamin>8</reamin>
+      <reamax>8</reamax>
+      <reaaug>8</reaaug>
+      <strmin>6</strmin>
+      <strmax>6</strmax>
+      <straug>6</straug>
+      <chamin>5</chamin>
+      <chamax>5</chamax>
+      <chaaug>5</chaaug>
+      <intmin>6</intmin>
+      <intmax>6</intmax>
+      <intaug>6</intaug>
+      <logmin>2</logmin>
+      <logmax>2</logmax>
+      <logaug>2</logaug>
+      <wilmin>4</wilmin>
+      <wilmax>4</wilmax>
+      <wilaug>4</wilaug>
+      <inimin>12</inimin>
+      <inimax>12</inimax>
+      <iniaug>12</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
+      <magmin>6</magmin>
+      <magmax>6</magmax>
+      <magaug>6</magaug>
+      <resmin>0</resmin>
+      <resmax>6</resmax>
+      <resaug>6</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>6</essmax>
+      <essaug>6</essaug>
+      <walk>2/1/0</walk>
+      <run>6/0/0</run>
+      <sprint>4/1/0</sprint>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>1</min>
+          <max>6</max>
+          <aug>6</aug>
+          <val>6</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power rating="6">Armor</power>
+        <power>Energy Aura</power>
+        <power select="Claw: DV 10P, AP -1">Natural Weapon</power>
+        <power select="Smell">Enhanced Senses</power>
+        <power select="Hearing">Enhanced Senses</power>
+        <power select="Low-light">Enhanced Senses</power>
+        <power select="Toxins">Immunity</power>
+        <power rating="2">Toughness</power>
+      </powers>
+      <optionalpowers />
+      <skills>
+        <skill rating="8">Gymnastics</skill>
+        <skill rating="5">Intimidation</skill>
+        <skill rating="6">Perception</skill>
+        <skill rating="5">Running</skill>
+        <skill rating="6">Sneaking</skill>
+        <skill rating="4">Tracking</skill>
+        <skill rating="8">Unarmed Combat</skill>
+      </skills>
+      <source>HS</source>
+      <page>102</page>
+    </metatype>
     <!-- End Region -->
     <!-- Region Fey -->
     <metatype>
