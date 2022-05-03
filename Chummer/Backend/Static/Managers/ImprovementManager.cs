@@ -1211,11 +1211,8 @@ namespace Chummer
                                     if (decHighest != decimal.MinValue)
                                     {
                                         decLoopValue += decHighest;
-                                        if (lstLoopImprovements == null)
-                                        {
-                                            lstLoopImprovements = new List<Improvement>(1);
-                                        }
-                                        lstLoopImprovements.Add(objHighestImprovement);
+                                        (lstLoopImprovements ?? (lstLoopImprovements = new List<Improvement>(1))).Add(
+                                            objHighestImprovement);
                                     }
                                 }
 
@@ -2145,17 +2142,32 @@ namespace Chummer
                         }
 
                         // Check to see what bonuses the node grants.
-                        foreach (XmlNode bonusNode in nodBonus.ChildNodes)
+                        if (blnSync)
                         {
-                            if (!ProcessBonus(objCharacter, objImprovementSource, ref strSourceName, intRating,
-                                              strFriendlyName,
-                                              bonusNode, strUnique, !blnAddImprovementsToCharacter))
+                            foreach (XmlNode bonusNode in nodBonus.ChildNodes)
                             {
-                                if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    Rollback(objCharacter);
-                                else
-                                    await RollbackAsync(objCharacter);
+                                if (ProcessBonus(objCharacter, objImprovementSource, ref strSourceName, intRating,
+                                                 strFriendlyName,
+                                                 bonusNode, strUnique, !blnAddImprovementsToCharacter))
+                                    continue;
+                                // ReSharper disable once MethodHasAsyncOverload
+                                Rollback(objCharacter);
+                                sbdTrace.AppendLine("Bonus processing unsuccessful, returning.");
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            foreach (XmlNode bonusNode in nodBonus.ChildNodes)
+                            {
+                                bool blnSuccess;
+                                (blnSuccess, strSourceName) = await ProcessBonusAsync(
+                                    objCharacter, objImprovementSource, strSourceName, intRating,
+                                    strFriendlyName,
+                                    bonusNode, strUnique, !blnAddImprovementsToCharacter);
+                                if (blnSuccess)
+                                    continue;
+                                await RollbackAsync(objCharacter);
                                 sbdTrace.AppendLine("Bonus processing unsuccessful, returning.");
                                 return false;
                             }
@@ -3965,16 +3977,14 @@ namespace Chummer
                     // Add the Improvement to the Transaction List.
                     List<Improvement> lstTransactions;
                     List<Improvement> lstTransactionsNew = new List<Improvement>(1);
-                    while (true)
+                    do
                     {
                         bool blnSuccess;
                         (blnSuccess, lstTransactions) = await s_DictionaryTransactions.TryGetValueAsync(objCharacter);
                         if (blnSuccess)
                             break;
                         lstTransactions = lstTransactionsNew;
-                        if (await s_DictionaryTransactions.TryAddAsync(objCharacter, lstTransactions))
-                            break;
-                    }
+                    } while (!await s_DictionaryTransactions.TryAddAsync(objCharacter, lstTransactions));
 
                     lstTransactions.Add(objImprovement);
                 }

@@ -775,7 +775,6 @@ namespace Chummer
                            : LanguageManager.GetString("String_Improvement_SelectSkillGroup")
             }))
             {
-
                 if (!string.IsNullOrEmpty(ForcedValue))
                 {
                     frmPickSkillGroup.MyForm.OnlyGroup = ForcedValue;

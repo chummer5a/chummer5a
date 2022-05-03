@@ -16960,14 +16960,11 @@ namespace Chummer
                     }
                 }
                 // Gear Tab.
-                else if (objSelectedGearTabPage == tabGear)
+                else if (objSelectedGearTabPage == tabGear && await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is IHasInternalId
+                             objSelected)
                 {
-                    if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is IHasInternalId
-                        objSelected)
-                    {
-                        blnPasteEnabled = GlobalSettings.ClipboardContentType == ClipboardContentType.Gear;
-                        blnCopyEnabled = objSelected is Gear;
-                    }
+                    blnPasteEnabled = GlobalSettings.ClipboardContentType == ClipboardContentType.Gear;
+                    blnCopyEnabled = objSelected is Gear;
                 }
             }
             // Cyberware Tab.
@@ -16982,29 +16979,26 @@ namespace Chummer
                 }
             }
             // Vehicles Tab.
-            else if (objSelectedCharacterTab == tabVehicles)
+            else if (objSelectedCharacterTab == tabVehicles && await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is IHasInternalId
+                         objSelected)
             {
-                if (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token) is IHasInternalId
-                    objSelected)
+                switch (GlobalSettings.ClipboardContentType)
                 {
-                    switch (GlobalSettings.ClipboardContentType)
+                    case ClipboardContentType.Vehicle:
+                        blnPasteEnabled = true;
+                        break;
+
+                    case ClipboardContentType.Gear:
+                    case ClipboardContentType.Weapon:
+                    case ClipboardContentType.WeaponAccessory:
                     {
-                        case ClipboardContentType.Vehicle:
-                            blnPasteEnabled = true;
-                            break;
-
-                        case ClipboardContentType.Gear:
-                        case ClipboardContentType.Weapon:
-                        case ClipboardContentType.WeaponAccessory:
-                        {
-                            blnPasteEnabled = objSelected is ICanPaste selected && selected.AllowPasteXml;
-                        }
-                            break;
+                        blnPasteEnabled = objSelected is ICanPaste selected && selected.AllowPasteXml;
                     }
-
-                    // In theory any object that's not a generic string node is valid to copy here. Locations might go screwy?
-                    blnCopyEnabled = true;
+                        break;
                 }
+
+                // In theory any object that's not a generic string node is valid to copy here. Locations might go screwy?
+                blnCopyEnabled = true;
             }
 
             await mnuCreateMenu.DoThreadSafeAsync(() =>

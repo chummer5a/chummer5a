@@ -762,7 +762,7 @@ namespace Chummer.Backend.Skills
                     UpdateIsBroken();
                 }
 
-                Program.MainForm.DoThreadSafe(() =>
+                Utils.RunOnMainThread(() =>
                 {
                     if (PropertyChanged != null)
                     {

@@ -130,7 +130,7 @@ namespace Chummer
                     _intCachedFreeFromImprovement = -1;
                 }
 
-                Program.MainForm.DoThreadSafe(() =>
+                Utils.RunOnMainThread(() =>
                 {
                     if (PropertyChanged != null)
                     {

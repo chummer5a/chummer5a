@@ -353,7 +353,7 @@ namespace Chummer
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            Program.MainForm.DoThreadSafe(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyName)));
+            Utils.RunOnMainThread(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyName)));
             if (strPropertyName == nameof(SelfSustained) || strPropertyName == nameof(LinkedObjectType))
                 _objCharacter.RefreshSustainingPenalties();
         }

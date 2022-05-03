@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -35,17 +36,26 @@ namespace Chummer
 
         private async void SelectDiceHits_Load(object sender, EventArgs e)
         {
-            string strSpace = await LanguageManager.GetStringAsync("String_Space");
-            string strText = await LanguageManager.GetStringAsync("String_DiceHits_HitsOn") + strSpace
-                + Dice.ToString(GlobalSettings.CultureInfo)
-                + await LanguageManager.GetStringAsync("String_D6")
-                + await LanguageManager.GetStringAsync("String_Colon") + strSpace;
-            await lblDice.DoThreadSafeAsync(x => x.Text = strText);
-            await nudDiceResult.DoThreadSafeAsync(x =>
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
-                x.Maximum = Dice * 6;
-                x.Minimum = 6;
-            });
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                string strText = await LanguageManager.GetStringAsync("String_DiceHits_HitsOn") + strSpace
+                    + Dice.ToString(GlobalSettings.CultureInfo)
+                    + await LanguageManager.GetStringAsync("String_D6")
+                    + await LanguageManager.GetStringAsync("String_Colon") + strSpace;
+                await lblDice.DoThreadSafeAsync(x => x.Text = strText);
+                await nudDiceResult.DoThreadSafeAsync(x =>
+                {
+                    x.Maximum = Dice * 6;
+                    x.Minimum = 6;
+                });
+                await DoRoll();
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -60,16 +70,26 @@ namespace Chummer
 
         private async void cmdRoll_Click(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
-                int intResult = 0;
-                for (int i = 0; i < Dice; ++i)
-                {
-                    intResult += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
-                }
-
-                await nudDiceResult.DoThreadSafeAsync(x => x.ValueAsInt = intResult);
+                await DoRoll();
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
+        }
+
+        private async ValueTask DoRoll()
+        {
+            int intResult = 0;
+            for (int i = 0; i < Dice; ++i)
+            {
+                intResult += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
+            }
+
+            await nudDiceResult.DoThreadSafeAsync(x => x.ValueAsInt = intResult);
         }
 
         #endregion Control Events

@@ -1198,7 +1198,7 @@ namespace Chummer
                     RefreshDiscountedAdeptWay(AdeptWayDiscountEnabled);
                 }
 
-                Program.MainForm.DoThreadSafe(() =>
+                Utils.RunOnMainThread(() =>
                 {
                     if (PropertyChanged != null)
                     {

@@ -315,7 +315,7 @@ namespace Chummer
                         RecalculateEnabledCustomDataDirectories();
                     if (setNamesOfChangedProperties.Contains(nameof(Books)))
                         RecalculateBookXPath();
-                    Program.MainForm.DoThreadSafe(() =>
+                    Utils.RunOnMainThread(() =>
                     {
                         if (PropertyChanged != null)
                         {

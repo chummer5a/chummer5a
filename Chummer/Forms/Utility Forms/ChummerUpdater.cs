@@ -707,16 +707,18 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempLatestVersionZipPath))
             {
-                using (await CursorWait.NewAsync(this, token: token))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+                try
                 {
                     await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = false, token);
                     await cmdRestart.DoThreadSafeAsync(x => x.Enabled = false, token);
                     await cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = false, token);
                     if (!(await CreateBackupZip(token)))
                         return;
-                    
+
                     List<string> lstFilesToDelete = new List<string>(byte.MaxValue);
-                    foreach (string strFileToDelete in Directory.EnumerateFiles(_strAppPath, "*", SearchOption.AllDirectories))
+                    foreach (string strFileToDelete in Directory.EnumerateFiles(
+                                 _strAppPath, "*", SearchOption.AllDirectories))
                     {
                         token.ThrowIfCancellationRequested();
                         string strFileName = Path.GetFileName(strFileToDelete);
@@ -766,6 +768,10 @@ namespace Chummer
 
                     await InstallUpdateFromZip(_strTempLatestVersionZipPath, lstFilesToDelete, token);
                 }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
             }
         }
 
@@ -777,16 +783,18 @@ namespace Chummer
                 return;
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempLatestVersionZipPath))
             {
-                using (await CursorWait.NewAsync(this, token: token))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+                try
                 {
                     await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = false, token);
                     await cmdRestart.DoThreadSafeAsync(x => x.Enabled = false, token);
                     await cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = false, token);
                     if (!await CreateBackupZip(token))
                         return;
-                    
+
                     List<string> lstFilesToDelete = new List<string>(byte.MaxValue);
-                    foreach (string strFileToDelete in Directory.EnumerateFiles(_strAppPath, "*", SearchOption.AllDirectories))
+                    foreach (string strFileToDelete in Directory.EnumerateFiles(
+                                 _strAppPath, "*", SearchOption.AllDirectories))
                     {
                         token.ThrowIfCancellationRequested();
                         string strFileName = Path.GetFileName(strFileToDelete);
@@ -810,6 +818,10 @@ namespace Chummer
 
                     await InstallUpdateFromZip(_strTempLatestVersionZipPath, lstFilesToDelete, token);
                 }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
             }
         }
 
@@ -817,7 +829,8 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             bool blnDoRestart = true;
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 // Copy over the archive from the temp directory.
                 Log.Info("Extracting downloaded archive into application path: " + strZipPath);
@@ -993,6 +1006,11 @@ namespace Chummer
                     }
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
+
             if (blnDoRestart)
                 await Utils.RestartApplication();
         }

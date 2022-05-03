@@ -69,16 +69,28 @@ namespace Chummer
 
         private async ValueTask RefreshResultLabel()
         {
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                await lblResult.DoThreadSafeAsync(x => x.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalSettings.CultureInfo) + ')' +
+                await lblResult.DoThreadSafeAsync(x => x.Text = strSpace + '+' + strSpace
+                                                                + Extra.ToString("#,0", GlobalSettings.CultureInfo)
+                                                                + ')' +
                                                                 strSpace + '×'
-                                                                + strSpace + (SelectedLifestyle?.Multiplier ?? 0).ToString(
-                                                                    _objCharacter.Settings.NuyenFormat + LanguageManager.GetString("String_NuyenSymbol"), GlobalSettings.CultureInfo)
+                                                                + strSpace + (SelectedLifestyle?.Multiplier ?? 0)
+                                                                .ToString(
+                                                                    _objCharacter.Settings.NuyenFormat
+                                                                    + LanguageManager.GetString("String_NuyenSymbol"),
+                                                                    GlobalSettings.CultureInfo)
                                                                 + strSpace + '=' + strSpace +
-                                                                StartingNuyen.ToString(_objCharacter.Settings.NuyenFormat + LanguageManager.GetString("String_NuyenSymbol"),
+                                                                StartingNuyen.ToString(
+                                                                    _objCharacter.Settings.NuyenFormat
+                                                                    + LanguageManager.GetString("String_NuyenSymbol"),
                                                                     GlobalSettings.CultureInfo));
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -93,30 +105,40 @@ namespace Chummer
                 return;
             if (await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedIndex) < 0)
                 return;
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
-                _objLifestyle = ((ListItem) await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedItem)).Value as Lifestyle;
+                _objLifestyle
+                    = ((ListItem) await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedItem))
+                    .Value as Lifestyle;
                 string strDice = string.Format(GlobalSettings.CultureInfo,
                                                await LanguageManager.GetStringAsync("Label_LifestyleNuyen_ResultOf"),
                                                SelectedLifestyle?.Dice ?? 0);
                 await lblDice.DoThreadSafeAsync(x => x.Text = strDice);
                 await RefreshCalculation();
                 await cmdRoll.DoThreadSafeAsync(x => x.Enabled = SelectedLifestyle?.Dice > 0);
+                await DoRoll();
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
         private async ValueTask RefreshSelectLifestyle()
         {
             _blnIsSelectLifestyleRefreshing = true;
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 try
                 {
                     Lifestyle objPreferredLifestyle = null;
                     ListItem objPreferredLifestyleItem = default;
-                    Lifestyle objCurrentlySelectedLifestyle = await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedIndex >= 0
-                        ? ((ListItem)x.SelectedItem).Value as Lifestyle
-                        : null);
+                    Lifestyle objCurrentlySelectedLifestyle = await cboSelectLifestyle.DoThreadSafeFuncAsync(
+                        x => x.SelectedIndex >= 0
+                            ? ((ListItem) x.SelectedItem).Value as Lifestyle
+                            : null);
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstLifestyleItems))
                     {
@@ -139,7 +161,7 @@ namespace Chummer
                         }
 
                         lstLifestyleItems.Sort(CompareListItems.CompareNames);
-                        
+
                         await cboSelectLifestyle.PopulateWithListItemsAsync(lstLifestyleItems);
                         await cboSelectLifestyle.DoThreadSafeAsync(x =>
                         {
@@ -154,13 +176,19 @@ namespace Chummer
                 {
                     _blnIsSelectLifestyleRefreshing = false;
                 }
+
                 await RefreshBaseLifestyle();
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
         private async ValueTask RefreshCalculation()
         {
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await nudDiceResult.DoThreadSafeAsync(x =>
                 {
@@ -179,22 +207,36 @@ namespace Chummer
                 });
                 await RefreshResultLabel();
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void cmdRoll_Click(object sender, EventArgs e)
         {
             if (SelectedLifestyle == null)
                 return;
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
-                int intResult = 0;
-                for (int i = 0; i < SelectedLifestyle.Dice; ++i)
-                {
-                    intResult += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
-                }
-
-                await nudDiceResult.DoThreadSafeAsync(x => x.ValueAsInt = intResult);
+                await DoRoll();
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
+        }
+
+        private async ValueTask DoRoll()
+        {
+            int intResult = 0;
+            for (int i = 0; i < SelectedLifestyle.Dice; ++i)
+            {
+                intResult += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
+            }
+
+            await nudDiceResult.DoThreadSafeAsync(x => x.ValueAsInt = intResult);
         }
 
         #endregion Control Events

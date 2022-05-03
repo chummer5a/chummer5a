@@ -553,7 +553,7 @@ namespace Chummer
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            Program.MainForm.DoThreadSafe(() =>
+            Utils.RunOnMainThread(() =>
             {
                 using (EnterReadLock.Enter(LockObject))
                 {

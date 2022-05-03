@@ -378,7 +378,7 @@ namespace Chummer
         {
             if (Interlocked.CompareExchange(ref _intDisposedStatus, 1, 0) != 0)
                 return;
-            
+
             try
             {
                 // Ensure the locks aren't held. If they are, wait for them to be released

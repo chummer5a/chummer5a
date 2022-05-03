@@ -238,7 +238,7 @@ namespace Chummer.Backend.Skills
                 if (setNamesOfChangedProperties.Contains(nameof(KnowledgeSkillPoints)))
                     _intCachedKnowledgePoints = int.MinValue;
 
-                Program.MainForm.DoThreadSafe(() =>
+                Utils.RunOnMainThread(() =>
                 {
                     if (PropertyChanged != null)
                     {

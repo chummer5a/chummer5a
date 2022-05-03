@@ -426,20 +426,20 @@ namespace Chummer
             if (blnUpdateMountComboBoxes)
             {
                 string strDataMounts = xmlAccessory.SelectSingleNode("mount")?.Value;
-                List<string> strMounts = new List<string>(1);
+                List<string> lstMounts = new List<string>(1);
                 if (!string.IsNullOrEmpty(strDataMounts))
                 {
-                    strMounts.AddRange(strDataMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
+                    lstMounts.AddRange(strDataMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
                 }
 
-                strMounts.Add("None");
+                lstMounts.Add("None");
 
                 List<string> strAllowed = new List<string>(_lstAllowedMounts) { "None" };
                 string strSelectedMount = await cboMount.DoThreadSafeFuncAsync(x =>
                 {
                     x.Visible = true;
                     x.Items.Clear();
-                    foreach (string strCurrentMount in strMounts)
+                    foreach (string strCurrentMount in lstMounts)
                     {
                         if (!string.IsNullOrEmpty(strCurrentMount))
                         {
@@ -459,22 +459,19 @@ namespace Chummer
                 });
                 await lblMountLabel.DoThreadSafeAsync(x => x.Visible = true);
 
-                List<string> strExtraMounts = new List<string>(1);
+                List<string> lstExtraMounts = new List<string>(1);
                 string strExtraMount = xmlAccessory.SelectSingleNode("extramount")?.Value;
                 if (!string.IsNullOrEmpty(strExtraMount))
                 {
-                    foreach (string strItem in strExtraMount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
-                    {
-                        strExtraMounts.Add(strItem);
-                    }
+                    lstExtraMounts.AddRange(strExtraMount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
                 }
 
-                strExtraMounts.Add("None");
+                lstExtraMounts.Add("None");
 
                 await cboExtraMount.DoThreadSafeFuncAsync(x =>
                 {
                     x.Items.Clear();
-                    foreach (string strCurrentMount in strExtraMounts)
+                    foreach (string strCurrentMount in lstExtraMounts)
                     {
                         if (!string.IsNullOrEmpty(strCurrentMount))
                         {

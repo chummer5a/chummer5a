@@ -70,11 +70,11 @@ namespace Chummer
             if (this.IsNullOrDisposed())
                 return;
             string strNewText = LanguageManager.GetString("String_Initializing");
-            this.DoThreadSafe(() =>
+            lblLoadingInfo.DoThreadSafe(x => x.Text = strNewText);
+            pgbLoadingProgress.DoThreadSafe(x =>
             {
-                lblLoadingInfo.Text = strNewText;
-                pgbLoadingProgress.Value = 0;
-                pgbLoadingProgress.Maximum = intMaxProgressBarValue + 1;
+                x.Value = 0;
+                x.Maximum = intMaxProgressBarValue + 1;
             });
         }
 
@@ -88,12 +88,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (this.IsNullOrDisposed())
                 return;
-            string strNewText = await LanguageManager.GetStringAsync("String_Initializing");
-            await this.DoThreadSafeAsync(() =>
+            await LanguageManager.GetStringAsync("String_Initializing")
+                                 .ContinueWith(y => lblLoadingInfo.DoThreadSafeAsync(x => x.Text = y.Result, token),
+                                               token).Unwrap();
+            await pgbLoadingProgress.DoThreadSafeAsync(x =>
             {
-                lblLoadingInfo.Text = strNewText;
-                pgbLoadingProgress.Value = 0;
-                pgbLoadingProgress.Maximum = intMaxProgressBarValue + 1;
+                x.Value = 0;
+                x.Maximum = intMaxProgressBarValue + 1;
             }, token);
         }
 
@@ -146,17 +147,17 @@ namespace Chummer
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
-            this.DoThreadSafe(() =>
+            pgbLoadingProgress.DoThreadSafe(x =>
             {
-                int intLoadingMaximum = pgbLoadingProgress.Maximum;
+                int intLoadingMaximum = x.Maximum;
                 if (intLoadingMaximum > 2)
                     strNewText += strSpace + '('
-                                           + (pgbLoadingProgress.Value + 1).ToString(
+                                           + (x.Value + 1).ToString(
                                                GlobalSettings.CultureInfo)
                                            + '/' + (intLoadingMaximum - 1).ToString(GlobalSettings.CultureInfo) + ')';
-                lblLoadingInfo.Text = strNewText;
-                pgbLoadingProgress.PerformStep();
+                x.PerformStep();
             });
+            lblLoadingInfo.DoThreadSafe(x => x.Text = strNewText);
         }
 
         /// <summary>
@@ -210,17 +211,17 @@ namespace Chummer
             }
 
             string strSpace = await LanguageManager.GetStringAsync("String_Space");
-            await this.DoThreadSafeAsync(() =>
+            await pgbLoadingProgress.DoThreadSafeAsync(x =>
             {
-                int intLoadingMaximum = pgbLoadingProgress.Maximum;
+                int intLoadingMaximum = x.Maximum;
                 if (intLoadingMaximum > 2)
                     strNewText += strSpace + '('
-                                           + (pgbLoadingProgress.Value + 1).ToString(
+                                           + (x.Value + 1).ToString(
                                                GlobalSettings.CultureInfo)
                                            + '/' + (intLoadingMaximum - 1).ToString(GlobalSettings.CultureInfo) + ')';
-                lblLoadingInfo.Text = strNewText;
-                pgbLoadingProgress.PerformStep();
+                x.PerformStep();
             }, token);
+            await lblLoadingInfo.DoThreadSafeAsync(x => x.Text = strNewText, token);
         }
     }
 }

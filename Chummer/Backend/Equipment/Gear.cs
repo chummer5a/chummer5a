@@ -4491,7 +4491,7 @@ namespace Chummer.Backend.Equipment
                 if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                     return;
 
-                Program.MainForm.DoThreadSafe(() =>
+                Utils.RunOnMainThread(() =>
                 {
                     if (PropertyChanged != null)
                     {

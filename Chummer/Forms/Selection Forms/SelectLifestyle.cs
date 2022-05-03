@@ -173,7 +173,6 @@ namespace Chummer
                 {
                     foreach (LifestyleQuality objQuality in _objSourceLifestyle.LifestyleQualities)
                     {
-
                         TreeNode objNode = x.FindNode(objQuality.SourceIDString);
                         if (objNode != null)
                             objNode.Checked = true;

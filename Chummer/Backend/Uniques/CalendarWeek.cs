@@ -49,7 +49,7 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            Program.MainForm.DoThreadSafe(() =>
+            Utils.RunOnMainThread(() =>
             {
                 if (PropertyChanged != null)
                 {

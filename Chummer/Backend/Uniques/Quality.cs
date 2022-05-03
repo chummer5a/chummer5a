@@ -1640,7 +1640,7 @@ namespace Chummer
                     RefreshSuppressed();
                 }
 
-                Program.MainForm.DoThreadSafe(() =>
+                Utils.RunOnMainThread(() =>
                 {
                     if (PropertyChanged != null)
                     {

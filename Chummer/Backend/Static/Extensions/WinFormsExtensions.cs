@@ -1559,8 +1559,7 @@ namespace Chummer
         {
             if (objControl == null)
                 return;
-            Control objThreadReferrer = Program.MainForm ?? objControl;
-            objThreadReferrer.DoThreadSafe(() =>
+            Utils.RunOnMainThread(() =>
             {
                 if (!objControl.IsHandleCreated)
                 {
@@ -1583,8 +1582,7 @@ namespace Chummer
         {
             if (objControl == null)
                 return;
-            Control objThreadReferrer = Program.MainForm ?? objControl;
-            objThreadReferrer.DoThreadSafe(() =>
+            Utils.RunOnMainThread(() =>
             {
                 if (!objControl.IsHandleCreated)
                 {
@@ -1608,8 +1606,7 @@ namespace Chummer
         {
             if (objControl == null)
                 return;
-            Control objThreadReferrer = Program.MainForm ?? objControl;
-            objThreadReferrer.DoThreadSafe(() =>
+            Utils.RunOnMainThread(() =>
             {
                 if (!objControl.IsHandleCreated)
                 {
@@ -1632,8 +1629,7 @@ namespace Chummer
         {
             if (objControl == null)
                 return;
-            Control objThreadReferrer = Program.MainForm ?? objControl;
-            objThreadReferrer.DoThreadSafe(() =>
+            Utils.RunOnMainThread(() =>
             {
                 if (!objControl.IsHandleCreated)
                 {

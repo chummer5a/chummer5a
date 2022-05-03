@@ -828,7 +828,7 @@ namespace Chummer
                     break;
             }
 
-            await Program.MainForm.DoThreadSafeAsync(() => SettingsPropertyChanged?.Invoke(sender, e));
+            await Utils.RunOnMainThreadAsync(() => SettingsPropertyChanged?.Invoke(sender, e));
         }
 
         private void AttributeSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -26846,7 +26846,7 @@ namespace Chummer
                             RefreshAstralReputationImprovements();
                     }
 
-                    Program.MainForm.DoThreadSafe(() =>
+                    Utils.RunOnMainThread(() =>
                     {
                         if (PropertyChanged != null)
                         {

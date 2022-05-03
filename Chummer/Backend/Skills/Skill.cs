@@ -2503,7 +2503,7 @@ namespace Chummer.Backend.Skills
                     ResetCachedCyberwareRating();
                 if (setNamesOfChangedProperties.Contains(nameof(CGLSpecializations)))
                     _blnRecalculateCachedSuggestedSpecializations = true;
-                Program.MainForm.DoThreadSafe(() =>
+                Utils.RunOnMainThread(() =>
                 {
                     if (PropertyChanged != null)
                     {
