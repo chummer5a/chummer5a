@@ -315,39 +315,18 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken);
                 try
                 {
+                    string strPdfPrinter = string.Empty;
                     try
                     {
                         // Check to see if we have any "Print to PDF" printers, as they will be a lot more reliable than wkhtmltopdf
-                        string strPdfPrinter = string.Empty;
                         foreach (string strPrinter in PrinterSettings.InstalledPrinters)
                         {
-                            if (strPrinter == "Microsoft Print to PDF" || strPrinter == "Foxit Reader PDF Printer" ||
-                                strPrinter == "Adobe PDF")
+                            if (strPrinter == "Microsoft Print to PDF"
+                                || strPrinter == "Foxit Reader PDF Printer"
+                                || strPrinter == "Adobe PDF")
                             {
                                 strPdfPrinter = strPrinter;
                                 break;
-                            }
-                        }
-
-                        if (!string.IsNullOrEmpty(strPdfPrinter))
-                        {
-                            DialogResult ePdfPrinterDialogResult = Program.ShowMessageBox(this,
-                                string.Format(GlobalSettings.CultureInfo,
-                                              await LanguageManager.GetStringAsync("Message_Viewer_FoundPDFPrinter"),
-                                              strPdfPrinter),
-                                await LanguageManager.GetStringAsync("MessageTitle_Viewer_FoundPDFPrinter"),
-                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
-                            switch (ePdfPrinterDialogResult)
-                            {
-                                case DialogResult.Cancel:
-                                case DialogResult.Yes when await DoPdfPrinterShortcut(strPdfPrinter):
-                                    return;
-
-                                case DialogResult.Yes:
-                                    Program.ShowMessageBox(this,
-                                                           await LanguageManager.GetStringAsync(
-                                                               "Message_Viewer_PDFPrinterError"));
-                                    break;
                             }
                         }
                     }
@@ -355,6 +334,28 @@ namespace Chummer
                     catch (Win32Exception)
                     {
                         //swallow this
+                    }
+
+                    if (!string.IsNullOrEmpty(strPdfPrinter))
+                    {
+                        DialogResult ePdfPrinterDialogResult = Program.ShowMessageBox(this,
+                            string.Format(GlobalSettings.CultureInfo,
+                                          await LanguageManager.GetStringAsync("Message_Viewer_FoundPDFPrinter"),
+                                          strPdfPrinter),
+                            await LanguageManager.GetStringAsync("MessageTitle_Viewer_FoundPDFPrinter"),
+                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+                        switch (ePdfPrinterDialogResult)
+                        {
+                            case DialogResult.Cancel:
+                            case DialogResult.Yes when await DoPdfPrinterShortcut(strPdfPrinter):
+                                return;
+
+                            case DialogResult.Yes:
+                                Program.ShowMessageBox(this,
+                                                       await LanguageManager.GetStringAsync(
+                                                           "Message_Viewer_PDFPrinterError"));
+                                break;
+                        }
                     }
 
                     // Save the generated output as PDF.
