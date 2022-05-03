@@ -2076,7 +2076,6 @@ namespace Chummer
                                                                 y => y.WindowState == FormWindowState.Maximized), token)
                         ? FormWindowState.Maximized
                         : FormWindowState.Normal;
-                List<CharacterShared> lstNewFormsToProcess = new List<CharacterShared>(lstNewCharacters.Count);
                 string strUI = await LanguageManager.GetStringAsync("String_UI");
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 string strTooManyHandles = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
@@ -2114,8 +2113,12 @@ namespace Chummer
                                 ? (CharacterShared) new CharacterCareer(objCharacter)
                                 : new CharacterCreate(objCharacter);
                             frmNewCharacter.MdiParent = y;
+                            if (y.MdiChildren.Length <= 1)
+                                frmNewCharacter.WindowState = wsPreference;
                             frmNewCharacter.Show();
-                            lstNewFormsToProcess.Add(frmNewCharacter);
+                            // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
+                            if (y.MdiChildren.Length > 1)
+                                frmNewCharacter.WindowState = wsPreference;
                         }, token);
                         if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
                                             && File.Exists(objCharacter.FileName))
@@ -2123,10 +2126,6 @@ namespace Chummer
                         //Timekeeper.Finish("load_event_time");
                     }
                 }
-
-                // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
-                foreach (CharacterShared frmNewCharacter in lstNewFormsToProcess)
-                    await frmNewCharacter.DoThreadSafeAsync(x => x.WindowState = wsPreference, token);
             }
             finally
             {
@@ -2273,11 +2272,23 @@ namespace Chummer
                 {
                     CharacterSheetViewer frmViewer = tupForm.Item1;
                     await frmViewer.SetCharacters(token, tupForm.Item2);
-                    await frmViewer.DoThreadSafeAsync(x => x.Show(), token);
-                }
-                foreach (Tuple<CharacterSheetViewer, Character> tupForm in lstNewFormsToProcess)
-                {
-                    await tupForm.Item1.DoThreadSafeAsync(x => x.WindowState = wsPreference, token);
+                    if (await this.DoThreadSafeFuncAsync(y => y.MdiChildren.Length, token) <= 1)
+                    {
+                        await frmViewer.DoThreadSafeAsync(x =>
+                        {
+                            x.WindowState = wsPreference;
+                            // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
+                            x.Show();
+                        }, token);
+                    }
+                    else
+                    {
+                        await frmViewer.DoThreadSafeAsync(x =>
+                        {
+                            x.Show();
+                            x.WindowState = wsPreference;
+                        }, token);
+                    }
                 }
             }
             finally
@@ -2370,7 +2381,6 @@ namespace Chummer
                                                                 y => y.WindowState == FormWindowState.Maximized), token)
                         ? FormWindowState.Maximized
                         : FormWindowState.Normal;
-                List<ExportCharacter> lstNewFormsToProcess = new List<ExportCharacter>(lstNewCharacters.Count);
                 string strUI = await LanguageManager.GetStringAsync("String_UI");
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 string strTooManyHandles = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
@@ -2407,20 +2417,18 @@ namespace Chummer
                             {
                                 MdiParent = y
                             };
+                            if (y.MdiChildren.Length <= 1)
+                                frmViewer.WindowState = wsPreference;
                             frmViewer.Show();
-                            lstNewFormsToProcess.Add(frmViewer);
+                            // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
+                            if (y.MdiChildren.Length > 1)
+                                frmViewer.WindowState = wsPreference;
                         }, token);
                         if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
                                             && File.Exists(objCharacter.FileName))
                             await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, objCharacter.FileName);
                         //Timekeeper.Finish("load_event_time");
                     }
-                }
-
-                // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
-                foreach (ExportCharacter frmViewer in lstNewFormsToProcess)
-                {
-                    await frmViewer.DoThreadSafeAsync(x => x.WindowState = wsPreference, token);
                 }
             }
             finally
