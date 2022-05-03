@@ -25,14 +25,13 @@ using Chummer.Backend.Equipment;
 namespace Chummer
 {
     /// <summary>
-    /// This class allows to read more advanced Values out of an XmlNode
-    /// Such as "FixedValues([523],[42],[421])" or "Rating * 3"
-    ///
-    /// Provided it doesn't contain "FixedValues" the expression is evaluated
+    /// <para>This class allows to read more advanced Values out of an XmlNode
+    /// Such as "FixedValues([523],[42],[421])" or "Rating * 3"</para>
+    /// <para>Provided it doesn't contain "FixedValues" the expression is evaluated
     /// at runtime as a mathematical expression, allowing stuff such as
     /// "Rating * Rating * 4", "Rating * 5 + 2" or "(Rating / 2) * 4000"
     /// Expressions are evaluated in the order of expression NOT as defined
-    /// by mathematics. That means "1 + 0 * 10" evaluates to 10 <i>so far</i>
+    /// by mathematics. That means "1 + 0 * 10" evaluates to 10 <i>so far</i></para>
     /// </summary>
     public sealed class ParameterAttribute
     {
@@ -43,12 +42,7 @@ namespace Chummer
         private readonly Gear _objGear;
         private readonly string _strAttribute;
         private readonly double[] _dblFixedValues;
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="gear"></param>
-        /// <param name="attribute"></param>
+        
         public ParameterAttribute(Gear gear, string attribute)
         {
             _objGear = gear ?? throw new ArgumentNullException(nameof(gear));

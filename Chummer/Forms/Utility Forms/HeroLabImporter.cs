@@ -612,8 +612,8 @@ namespace Chummer
                             (bool blnSuccess, CharacterSettings objDefaultCharacterSettings)
                                 = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
                                     GlobalSettings.DefaultCharacterSetting, token);
-                            if (blnSuccess && objCache.BuildMethod.UsesPriorityTables()
-                                == objDefaultCharacterSettings.BuildMethod.UsesPriorityTables())
+                            bool blnCacheUsesPriorityTables = objCache.BuildMethod.UsesPriorityTables();
+                            if (blnSuccess && blnCacheUsesPriorityTables == objDefaultCharacterSettings.BuildMethod.UsesPriorityTables())
                             {
                                 objCharacter.SettingsKey = objDefaultCharacterSettings.DictionaryKey;
                             }
@@ -628,8 +628,7 @@ namespace Chummer
                                                                              .FirstOrDefault(
                                                                                  x => x.BuiltInOption
                                                                                      && x.BuildMethod.UsesPriorityTables()
-                                                                                     == objCache.BuildMethod
-                                                                                         .UsesPriorityTables())
+                                                                                     == blnCacheUsesPriorityTables)
                                                                              ?.DictionaryKey
                                                            ?? GlobalSettings.DefaultCharacterSetting;
                             }

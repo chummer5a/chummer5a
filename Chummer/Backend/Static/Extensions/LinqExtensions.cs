@@ -967,7 +967,7 @@ namespace Chummer
                 }
             }
             else
-                lstTasks = new List<Task<int>>();
+                lstTasks = new List<Task<int>>(Utils.MaxParallelBatchSize);
             int intReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -1014,7 +1014,7 @@ namespace Chummer
                 }
             }
             else
-                lstTasks = new List<Task<int>>();
+                lstTasks = new List<Task<int>>(Utils.MaxParallelBatchSize);
             int intReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -1061,7 +1061,7 @@ namespace Chummer
                 }
             }
             else
-                lstTasks = new List<Task<long>>();
+                lstTasks = new List<Task<long>>(Utils.MaxParallelBatchSize);
             long lngReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -1108,7 +1108,7 @@ namespace Chummer
                 }
             }
             else
-                lstTasks = new List<Task<long>>();
+                lstTasks = new List<Task<long>>(Utils.MaxParallelBatchSize);
             long lngReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -1155,7 +1155,7 @@ namespace Chummer
                 }
             }
             else
-                lstTasks = new List<Task<float>>();
+                lstTasks = new List<Task<float>>(Utils.MaxParallelBatchSize);
             float fltReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -1202,7 +1202,7 @@ namespace Chummer
                 }
             }
             else
-                lstTasks = new List<Task<float>>();
+                lstTasks = new List<Task<float>>(Utils.MaxParallelBatchSize);
             float fltReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -1249,7 +1249,7 @@ namespace Chummer
                 }
             }
             else
-                lstTasks = new List<Task<double>>();
+                lstTasks = new List<Task<double>>(Utils.MaxParallelBatchSize);
             double dblReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -1296,7 +1296,7 @@ namespace Chummer
                 }
             }
             else
-                lstTasks = new List<Task<double>>();
+                lstTasks = new List<Task<double>>(Utils.MaxParallelBatchSize);
             double dblReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -1343,7 +1343,7 @@ namespace Chummer
                 }
             }
             else
-                lstTasks = new List<Task<decimal>>();
+                lstTasks = new List<Task<decimal>>(Utils.MaxParallelBatchSize);
             decimal decReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -1390,7 +1390,7 @@ namespace Chummer
                 }
             }
             else
-                lstTasks = new List<Task<decimal>>();
+                lstTasks = new List<Task<decimal>>(Utils.MaxParallelBatchSize);
             decimal decReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -1437,7 +1437,7 @@ namespace Chummer
                 }
             }
             else
-                lstTasks = new List<Task<int>>();
+                lstTasks = new List<Task<int>>(Utils.MaxParallelBatchSize);
             int intReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -1484,7 +1484,7 @@ namespace Chummer
                 }
             }
             else
-                lstTasks = new List<Task<int>>();
+                lstTasks = new List<Task<int>>(Utils.MaxParallelBatchSize);
             int intReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -1531,7 +1531,7 @@ namespace Chummer
                 }
             }
             else
-                lstTasks = new List<Task<long>>();
+                lstTasks = new List<Task<long>>(Utils.MaxParallelBatchSize);
             long lngReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -1578,7 +1578,7 @@ namespace Chummer
                 }
             }
             else
-                lstTasks = new List<Task<long>>();
+                lstTasks = new List<Task<long>>(Utils.MaxParallelBatchSize);
             long lngReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -1625,7 +1625,7 @@ namespace Chummer
                 }
             }
             else
-                lstTasks = new List<Task<float>>();
+                lstTasks = new List<Task<float>>(Utils.MaxParallelBatchSize);
             float fltReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -1672,7 +1672,7 @@ namespace Chummer
                 }
             }
             else
-                lstTasks = new List<Task<float>>();
+                lstTasks = new List<Task<float>>(Utils.MaxParallelBatchSize);
             float fltReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -1719,7 +1719,7 @@ namespace Chummer
                 }
             }
             else
-                lstTasks = new List<Task<double>>();
+                lstTasks = new List<Task<double>>(Utils.MaxParallelBatchSize);
             double dblReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -1766,7 +1766,7 @@ namespace Chummer
                 }
             }
             else
-                lstTasks = new List<Task<double>>();
+                lstTasks = new List<Task<double>>(Utils.MaxParallelBatchSize);
             double dblReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -1813,7 +1813,7 @@ namespace Chummer
                 }
             }
             else
-                lstTasks = new List<Task<decimal>>();
+                lstTasks = new List<Task<decimal>>(Utils.MaxParallelBatchSize);
             decimal decReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {
@@ -1860,7 +1860,7 @@ namespace Chummer
                 }
             }
             else
-                lstTasks = new List<Task<decimal>>();
+                lstTasks = new List<Task<decimal>>(Utils.MaxParallelBatchSize);
             decimal decReturn = 0;
             using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
             {

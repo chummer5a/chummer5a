@@ -35,15 +35,19 @@ namespace Chummer
         public ThreadSafeObservableCollectionWithMaxSize(List<T> list, int intMaxSize) : base(list)
         {
             _intMaxSize = intMaxSize;
-            while (Count > _intMaxSize)
-                RemoveAt(Count - 1);
+            for (int intCount = Count; intCount >= _intMaxSize; --intCount)
+            {
+                RemoveAt(intCount - 1);
+            }
         }
 
         public ThreadSafeObservableCollectionWithMaxSize(IEnumerable<T> collection, int intMaxSize) : base(collection)
         {
             _intMaxSize = intMaxSize;
-            while (Count > _intMaxSize)
-                RemoveAt(Count - 1);
+            for (int intCount = Count; intCount >= _intMaxSize; --intCount)
+            {
+                RemoveAt(intCount - 1);
+            }
         }
 
         /// <inheritdoc cref="List{T}.Insert" />
@@ -53,8 +57,10 @@ namespace Chummer
             {
                 if (index >= _intMaxSize)
                     return;
-                while (Count >= _intMaxSize)
-                    RemoveAt(Count - 1);
+                for (int intCount = Count; intCount >= _intMaxSize; --intCount)
+                {
+                    RemoveAt(intCount - 1);
+                }
                 base.Insert(index, item);
             }
         }
@@ -67,11 +73,9 @@ namespace Chummer
             {
                 if (index >= _intMaxSize)
                     return;
-                int intCount = await CountAsync;
-                while (intCount >= _intMaxSize)
+                for (int intCount = await CountAsync; intCount >= _intMaxSize; --intCount)
                 {
                     await RemoveAtAsync(intCount - 1);
-                    intCount = await CountAsync;
                 }
                 await base.InsertAsync(index, item);
             }

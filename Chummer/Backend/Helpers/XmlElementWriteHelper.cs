@@ -53,7 +53,7 @@ namespace Chummer
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return (_objWriter != null ? _objWriter.GetHashCode() : 0);
+            return _objWriter?.GetHashCode() ?? 0;
         }
 
         public static bool operator ==(XmlElementWriteHelper left, XmlElementWriteHelper right)

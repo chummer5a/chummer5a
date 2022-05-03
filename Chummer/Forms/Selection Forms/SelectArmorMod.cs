@@ -460,10 +460,7 @@ namespace Chummer
         {
             await RefreshList();
         }
-
-        /// <summary>
-        ///
-        /// </summary>
+        
         private async ValueTask RefreshList()
         {
             string strFilter = string.Empty;

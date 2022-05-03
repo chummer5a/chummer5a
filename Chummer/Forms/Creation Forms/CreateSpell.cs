@@ -503,29 +503,37 @@ namespace Chummer
         /// </summary>
         private async ValueTask ChangeModifiers()
         {
-            foreach (CheckBox chkCheckbox in await flpModifiers.DoThreadSafeFuncAsync(x => x.Controls.OfType<CheckBox>()))
+            foreach (Control objControl in await flpModifiers.DoThreadSafeFuncAsync(x => x.Controls))
             {
-                await chkCheckbox.DoThreadSafeAsync(x =>
+                switch (objControl)
                 {
-                    x.Enabled = true;
-                    x.Checked = false;
-                    x.Text = string.Empty;
-                    x.Tag = string.Empty;
-                    x.Visible = false;
-                });
-            }
-            foreach (Panel panChild in await flpModifiers.DoThreadSafeFuncAsync(x => x.Controls.OfType<Panel>()))
-            {
-                foreach (CheckBox chkCheckbox in await panChild.DoThreadSafeFuncAsync(x => x.Controls.OfType<CheckBox>()))
-                {
-                    await chkCheckbox.DoThreadSafeAsync(x =>
+                    case ColorableCheckBox chkCheckbox:
                     {
-                        x.Enabled = true;
-                        x.Checked = false;
-                        x.Text = string.Empty;
-                        x.Tag = string.Empty;
-                        x.Visible = false;
-                    });
+                        await chkCheckbox.DoThreadSafeAsync(x =>
+                        {
+                            x.Enabled = true;
+                            x.Checked = false;
+                            x.Text = string.Empty;
+                            x.Tag = string.Empty;
+                            x.Visible = false;
+                        });
+                        break;
+                    }
+                    case Panel panChild:
+                    {
+                        await panChild.DoThreadSafeAsync(x =>
+                        {
+                            foreach (CheckBox chkCheckbox in x.Controls.OfType<CheckBox>())
+                            {
+                                chkCheckbox.Enabled = true;
+                                chkCheckbox.Checked = false;
+                                chkCheckbox.Text = string.Empty;
+                                chkCheckbox.Tag = string.Empty;
+                                chkCheckbox.Visible = false;
+                            }
+                        });
+                        break;
+                    }
                 }
             }
 
@@ -794,18 +802,16 @@ namespace Chummer
                     }
                     case Panel pnlControl:
                     {
-                        foreach (CheckBox chkInnerCheckbox in await pnlControl.DoThreadSafeFuncAsync(x => x.Controls.OfType<CheckBox>()))
+                        await pnlControl.DoThreadSafeAsync(x =>
                         {
-                            await chkInnerCheckbox.DoThreadSafeAsync(x =>
+                            foreach (CheckBox chkInnerCheckbox in x.Controls.OfType<CheckBox>())
                             {
-                                if (!string.IsNullOrEmpty(x.Text))
-                                {
-                                    x.Visible = true;
-                                    x.Text += string.Format(GlobalSettings.CultureInfo, strCheckBoxFormat, x.Tag);
-                                }
-                            });
-                        }
-
+                                if (string.IsNullOrEmpty(chkInnerCheckbox.Text))
+                                    continue;
+                                chkInnerCheckbox.Visible = true;
+                                chkInnerCheckbox.Text += string.Format(GlobalSettings.CultureInfo, strCheckBoxFormat, chkInnerCheckbox.Tag);
+                            }
+                        });
                         break;
                     }
                 }

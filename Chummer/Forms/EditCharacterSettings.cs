@@ -297,13 +297,11 @@ namespace Chummer
                         strSelectedName = string.Empty;
                         break;
                     }
+
                     if (uintAccumulator == uint.MaxValue)
-                    {
                         uintAccumulator = uint.MinValue;
+                    else if (++uintAccumulator == 1)
                         strSeparator += '_';
-                    }
-                    else
-                        ++uintAccumulator;
                 }
             } while (string.IsNullOrWhiteSpace(strSelectedName));
 

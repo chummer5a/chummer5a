@@ -535,21 +535,17 @@ namespace Chummer
         /// <param name="treTree">TreeView to sort.</param>
         private static async ValueTask SortTree(TreeView treTree)
         {
-            List<TreeNode> lstNodes = await treTree.DoThreadSafeFuncAsync(x => x.Nodes.Cast<TreeNode>().ToList());
+            TreeNode[] lstNodes = await treTree.DoThreadSafeFuncAsync(x => x.Nodes.Cast<TreeNode>().ToArray());
             await treTree.DoThreadSafeAsync(x => x.Nodes.Clear());
             try
             {
-                lstNodes.Sort(CompareTreeNodes.CompareText);
+                Array.Sort(lstNodes, CompareTreeNodes.CompareText);
             }
             catch (ArgumentException)
             {
                 // Swallow this
             }
-            await treTree.DoThreadSafeAsync(x =>
-            {
-                foreach (TreeNode objNode in lstNodes)
-                    x.Nodes.Add(objNode);
-            });
+            await treTree.DoThreadSafeAsync(x => x.Nodes.AddRange(lstNodes));
         }
 
         /// <summary>

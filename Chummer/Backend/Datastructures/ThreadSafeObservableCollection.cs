@@ -33,7 +33,7 @@ namespace Chummer
 {
     public class ThreadSafeObservableCollection<T> : IList<T>, IList, IReadOnlyList<T>, INotifyCollectionChanged, INotifyPropertyChanged, IProducerConsumerCollection<T>, IHasLockObject, IAsyncReadOnlyCollection<T>
     {
-        private readonly EnhancedObservableCollection<T> _lstData;
+        protected readonly EnhancedObservableCollection<T> _lstData;
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
         public ThreadSafeObservableCollection()

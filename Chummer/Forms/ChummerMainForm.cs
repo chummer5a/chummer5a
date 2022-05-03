@@ -2659,7 +2659,7 @@ namespace Chummer
                 ShowMe();
             else if (m.Msg == NativeMethods.WM_COPYDATA && _blnAbleToReceiveData)
             {
-                List<Character> lstCharactersToLoad = new List<Character>();
+                List<Character> lstCharactersToLoad = new List<Character>(1);
 
                 using (CursorWait.New(this, true))
                 using (ThreadSafeForm<LoadingBar> frmLoadingBar = Program.CreateAndShowProgressBar())
