@@ -273,5 +273,15 @@ namespace Chummer
             }
             base.Dispose(disposing);
         }
+
+        protected override async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                await _dicTaggedAddedDelegates.DisposeAsync();
+                await _dicTaggedAddedBeforeClearDelegates.DisposeAsync();
+            }
+            await base.DisposeAsync(disposing);
+        }
     }
 }

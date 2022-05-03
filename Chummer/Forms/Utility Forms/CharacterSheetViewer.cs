@@ -523,20 +523,20 @@ namespace Chummer
             {
                 if (UseWaitCursor)
                 {
-                    await Task.WhenAll(this.DoThreadSafeAsync(() =>
+                    await Task.WhenAll(this.DoThreadSafeAsync(x =>
                                        {
-                                           tsPrintPreview.Enabled = false;
-                                           tsSaveAsHtml.Enabled = false;
+                                           x.tsPrintPreview.Enabled = false;
+                                           x.tsSaveAsHtml.Enabled = false;
                                        }, _objGenericToken),
                                        cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, _objGenericToken),
                                        cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, _objGenericToken));
                 }
                 else
                 {
-                    await Task.WhenAll(this.DoThreadSafeAsync(() =>
+                    await Task.WhenAll(this.DoThreadSafeAsync(x =>
                                        {
-                                           tsPrintPreview.Enabled = true;
-                                           tsSaveAsHtml.Enabled = true;
+                                           x.tsPrintPreview.Enabled = true;
+                                           x.tsSaveAsHtml.Enabled = true;
                                        }, _objGenericToken),
                                        cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
                                        cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken));
@@ -673,10 +673,10 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token);
             try
             {
-                await Task.WhenAll(this.DoThreadSafeAsync(() =>
+                await Task.WhenAll(this.DoThreadSafeAsync(x =>
                                    {
-                                       tsPrintPreview.Enabled = false;
-                                       tsSaveAsHtml.Enabled = false;
+                                       x.tsPrintPreview.Enabled = false;
+                                       x.tsSaveAsHtml.Enabled = false;
                                    }, token),
                                    cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token),
                                    cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token));
@@ -689,7 +689,7 @@ namespace Chummer
                                                                         aobjCharacters)
                     : null;
                 token.ThrowIfCancellationRequested();
-                await this.DoThreadSafeAsync(() => tsSaveAsXml.Enabled = _objCharacterXml != null, token);
+                await this.DoThreadSafeAsync(x => x.tsSaveAsXml.Enabled = _objCharacterXml != null, token);
                 token.ThrowIfCancellationRequested();
                 await RefreshSheet(token);
             }
@@ -708,10 +708,10 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
             try
             {
-                await Task.WhenAll(this.DoThreadSafeAsync(() =>
+                await Task.WhenAll(this.DoThreadSafeAsync(x =>
                                    {
-                                       tsPrintPreview.Enabled = false;
-                                       tsSaveAsHtml.Enabled = false;
+                                       x.tsPrintPreview.Enabled = false;
+                                       x.tsSaveAsHtml.Enabled = false;
                                    }, token),
                                    cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token),
                                    cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token));
@@ -831,7 +831,7 @@ namespace Chummer
                         {
                             string strOutput = await objReader.ReadToEndAsync();
                             token.ThrowIfCancellationRequested();
-                            await this.DoThreadSafeAsync(() => UseWaitCursor = true, token);
+                            await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, token);
                             await webViewer.DoThreadSafeAsync(x => x.DocumentText = strOutput, token);
                             token.ThrowIfCancellationRequested();
                         }
@@ -851,10 +851,10 @@ namespace Chummer
                 await this.DoThreadSafeAsync(x => x.UseWaitCursor = false, _objGenericToken);
                 if (_tskOutputGenerator?.IsCompleted == true && _tskRefresher?.IsCompleted == true)
                 {
-                    await Task.WhenAll(this.DoThreadSafeAsync(() =>
+                    await Task.WhenAll(this.DoThreadSafeAsync(x =>
                                        {
-                                           tsPrintPreview.Enabled = true;
-                                           tsSaveAsHtml.Enabled = true;
+                                           x.tsPrintPreview.Enabled = true;
+                                           x.tsSaveAsHtml.Enabled = true;
                                        }, _objGenericToken),
                                        cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
                                        cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken));

@@ -1961,11 +1961,11 @@ namespace Chummer
                 objCursorWait = await CursorWait.NewAsync(this);
                 try
                 {
-                    await this.DoThreadSafeAsync(() =>
+                    await this.DoThreadSafeAsync(x =>
                     {
                         CharacterCreate frmNewCharacter = new CharacterCreate(objCharacter)
                         {
-                            MdiParent = this
+                            MdiParent = x
                         };
                         if (MdiChildren.Length <= 1)
                             frmNewCharacter.WindowState = FormWindowState.Maximized;

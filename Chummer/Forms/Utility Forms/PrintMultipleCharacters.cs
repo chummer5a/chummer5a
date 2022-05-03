@@ -238,7 +238,7 @@ namespace Chummer
                         innerToken.ThrowIfCancellationRequested();
 
                         if (blnLoadSuccessful)
-                            await prgProgress.DoThreadSafeAsync(() => ++prgProgress.Value, innerToken);
+                            await prgProgress.DoThreadSafeAsync(x => ++x.Value, innerToken);
                         return objReturn;
                     }
 

@@ -574,7 +574,7 @@ namespace Chummer
         public void Dispose()
         {
             Dispose(true);
-            //GC.SuppressFinalize(this);
+            GC.SuppressFinalize(this);
         }
 
         protected virtual async ValueTask DisposeAsync(bool disposing)
@@ -586,10 +586,10 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public ValueTask DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
-            return DisposeAsync(true);
-            //GC.SuppressFinalize(this);
+            await DisposeAsync(true);
+            GC.SuppressFinalize(this);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
