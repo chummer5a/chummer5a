@@ -222,7 +222,7 @@ namespace Chummer
                     await objSource.SetControlAsync(lblCritterPowerSource);
 
                     bool blnVisible = await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("rating") != null;
-                    await nudCritterPowerRating.DoThreadSafeAsync(x => x.Visible = blnVisible);
+                    await nudCritterPowerRating.DoThreadSafeAsync(x => { x.Visible = blnVisible; x.Enabled = blnVisible; });
 
                     string strKarma = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("karma"))?.Value
                                       ?? "0";
