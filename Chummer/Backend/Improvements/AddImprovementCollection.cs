@@ -872,52 +872,78 @@ namespace Chummer
                         }
 
                         // Display the Select Attribute window and record which Skill was selected.
-                        using (ThreadSafeForm<SelectAttribute> frmPickAttribute = ThreadSafeForm<SelectAttribute>.Get(() => new SelectAttribute(lstAbbrevs.ToArray())
+                        string strSelected;
+                        switch (lstAbbrevs.Count)
                         {
-                            Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
-                                : LanguageManager.GetString("String_Improvement_SelectAttribute")
-                        }))
-                        {
-                            // Make sure the dialogue window was not canceled.
-                            if (frmPickAttribute.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
-                            {
+                            case 0:
                                 throw new AbortedException();
+                            case 1:
+                                strSelected = lstAbbrevs[0];
+                                break;
+                            default:
+                            {
+                                using (ThreadSafeForm<SelectAttribute> frmPickAttribute
+                                       = ThreadSafeForm<SelectAttribute>.Get(
+                                           () => new SelectAttribute(lstAbbrevs.ToArray())
+                                           {
+                                               Description = !string.IsNullOrEmpty(_strFriendlyName)
+                                                   ? string.Format(GlobalSettings.CultureInfo,
+                                                                   LanguageManager.GetString(
+                                                                       "String_Improvement_SelectAttributeNamed"),
+                                                                   _strFriendlyName)
+                                                   : LanguageManager.GetString("String_Improvement_SelectAttribute")
+                                           }))
+                                {
+                                    // Make sure the dialogue window was not canceled.
+                                    if (frmPickAttribute.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                                    {
+                                        throw new AbortedException();
+                                    }
+
+                                    strSelected = frmPickAttribute.MyForm.SelectedAttribute;
+
+                                    break;
+                                }
                             }
-
-                            if (blnSingleSelected && selectedValues.Count > 0 && !selectedValues.Contains(frmPickAttribute.MyForm.SelectedAttribute))
-                                blnSingleSelected = false;
-                            selectedValues.Add(frmPickAttribute.MyForm.SelectedAttribute);
-
-                            // Record the improvement.
-                            int intMin = 0;
-                            int intAug = 0;
-                            int intMax = 0;
-                            int intAugMax = 0;
-
-                            // Extract the modifiers.
-                            string strTemp = objXmlAttribute["min"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strTemp))
-                                int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intMin);
-                            strTemp = objXmlAttribute["val"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strTemp))
-                                int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intAug);
-                            strTemp = objXmlAttribute["max"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strTemp))
-                                int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intMax);
-                            strTemp = objXmlAttribute["aug"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strTemp))
-                                int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intAugMax);
-
-                            string strAttribute = frmPickAttribute.MyForm.SelectedAttribute;
-
-                            if (objXmlAttribute["affectbase"] != null)
-                                strAttribute += "Base";
-
-                            CreateImprovement(strAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
-                                _strUnique,
-                                0, 1, intMin, intMax, intAug, intAugMax);
                         }
+
+                        if (blnSingleSelected && selectedValues.Count > 0 && !selectedValues.Contains(strSelected))
+                            blnSingleSelected = false;
+                        selectedValues.Add(strSelected);
+
+                        // Record the improvement.
+                        int intMin = 0;
+                        int intAug = 0;
+                        int intMax = 0;
+                        int intAugMax = 0;
+
+                        // Extract the modifiers.
+                        string strTemp = objXmlAttribute["min"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                         out intMin);
+                        strTemp = objXmlAttribute["val"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                         out intAug);
+                        strTemp = objXmlAttribute["max"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                         out intMax);
+                        strTemp = objXmlAttribute["aug"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                         out intAugMax);
+
+                        string strAttribute = strSelected;
+
+                        if (objXmlAttribute["affectbase"] != null)
+                            strAttribute += "Base";
+
+                        CreateImprovement(strAttribute, _objImprovementSource, SourceName,
+                                          Improvement.ImprovementType.Attribute,
+                                          _strUnique,
+                                          0, 1, intMin, intMax, intAug, intAugMax);
                     }
                 }
             }
@@ -1003,54 +1029,73 @@ namespace Chummer
                 lstAbbrevs.RemoveAll(x => x != LimitSelection);
             }
 
-            // Display the Select Attribute window and record which Skill was selected.
-            using (ThreadSafeForm<SelectAttribute> frmPickAttribute = ThreadSafeForm<SelectAttribute>.Get(() => new SelectAttribute(lstAbbrevs.ToArray())
+            string strSelected;
+            switch (lstAbbrevs.Count)
             {
-                Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
-                    : LanguageManager.GetString("String_Improvement_SelectAttribute")
-            }))
-            {
-                trace += Environment.NewLine + "selectattribute = " + bonusNode.OuterXml;
-                Log.Trace(trace);
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickAttribute.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
-                {
+                case 0:
                     throw new AbortedException();
+                case 1:
+                    strSelected = lstAbbrevs[0];
+                    break;
+                default:
+                {
+                    // Display the Select Attribute window and record which Skill was selected.
+                    using (ThreadSafeForm<SelectAttribute> frmPickAttribute = ThreadSafeForm<SelectAttribute>.Get(
+                               () => new SelectAttribute(lstAbbrevs.ToArray())
+                               {
+                                   Description = !string.IsNullOrEmpty(_strFriendlyName)
+                                       ? string.Format(GlobalSettings.CultureInfo,
+                                                       LanguageManager.GetString("String_Improvement_SelectAttributeNamed"),
+                                                       _strFriendlyName)
+                                       : LanguageManager.GetString("String_Improvement_SelectAttribute")
+                               }))
+                    {
+                        trace += Environment.NewLine + "selectattribute = " + bonusNode.OuterXml;
+                        Log.Trace(trace);
+
+                        // Make sure the dialogue window was not canceled.
+                        if (frmPickAttribute.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                        {
+                            throw new AbortedException();
+                        }
+
+                        strSelected = frmPickAttribute.MyForm.SelectedAttribute;
+                    }
+
+                    break;
                 }
-
-                SelectedValue = frmPickAttribute.MyForm.SelectedAttribute;
-
-                // Record the improvement.
-                int intMin = 0;
-                decimal decAug = 0;
-                int intMax = 0;
-                int intAugMax = 0;
-
-                // Extract the modifiers.
-                string strTemp = bonusNode["min"]?.InnerXml;
-                if (!string.IsNullOrEmpty(strTemp))
-                    intMin = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
-                strTemp = bonusNode["val"]?.InnerXml;
-                if (!string.IsNullOrEmpty(strTemp))
-                    decAug = ImprovementManager.ValueToDec(_objCharacter, strTemp, _intRating);
-                strTemp = bonusNode["max"]?.InnerXml;
-                if (!string.IsNullOrEmpty(strTemp))
-                    intMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
-                strTemp = bonusNode["aug"]?.InnerXml;
-                if (!string.IsNullOrEmpty(strTemp))
-                    intAugMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
-
-                string strAttribute = frmPickAttribute.MyForm.SelectedAttribute;
-
-                if (bonusNode["affectbase"] != null)
-                    strAttribute += "Base";
-
-                CreateImprovement(strAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
-                    _strUnique,
-                    0, 1, intMin, intMax, decAug, intAugMax);
             }
+
+            SelectedValue = strSelected;
+
+            // Record the improvement.
+            int intMin = 0;
+            decimal decAug = 0;
+            int intMax = 0;
+            int intAugMax = 0;
+
+            // Extract the modifiers.
+            string strTemp = bonusNode["min"]?.InnerXml;
+            if (!string.IsNullOrEmpty(strTemp))
+                intMin = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
+            strTemp = bonusNode["val"]?.InnerXml;
+            if (!string.IsNullOrEmpty(strTemp))
+                decAug = ImprovementManager.ValueToDec(_objCharacter, strTemp, _intRating);
+            strTemp = bonusNode["max"]?.InnerXml;
+            if (!string.IsNullOrEmpty(strTemp))
+                intMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
+            strTemp = bonusNode["aug"]?.InnerXml;
+            if (!string.IsNullOrEmpty(strTemp))
+                intAugMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
+
+            string strAttribute = strSelected;
+
+            if (bonusNode["affectbase"] != null)
+                strAttribute += "Base";
+
+            CreateImprovement(strAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
+                _strUnique,
+                0, 1, intMin, intMax, decAug, intAugMax);
         }
 
         // Select a Limit.
@@ -2199,8 +2244,8 @@ namespace Chummer
                     lstAbbrevs.Remove("DEP");
 
                 Log.Trace("_strForcedValue = " + ForcedValue + Environment.NewLine
-                     + "_strLimitSelection = " + LimitSelection 
-                    );
+                          + "_strLimitSelection = " + LimitSelection
+                );
 
                 // Check to see if there is only one possible selection because of _strLimitSelection.
                 if (!string.IsNullOrEmpty(ForcedValue))
@@ -2211,28 +2256,47 @@ namespace Chummer
                     lstAbbrevs.RemoveAll(x => x != LimitSelection);
                 }
 
-                using (ThreadSafeForm<SelectAttribute> frmPickAttribute = ThreadSafeForm<SelectAttribute>.Get(() =>
-                           new SelectAttribute(lstAbbrevs.ToArray())
-                           {
-                               Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                   ? string.Format(GlobalSettings.CultureInfo,
-                                       LanguageManager.GetString("String_Improvement_SelectAttributeNamed"),
-                                       _strFriendlyName)
-                                   : LanguageManager.GetString("String_Improvement_SelectAttribute")
-                           }))
+                string strSelected;
+                switch (lstAbbrevs.Count)
                 {
-                    Log.Trace("attributelevel = " + bonusNode.OuterXml);
-
-                    // Make sure the dialogue window was not canceled.
-                    if (frmPickAttribute.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
-                    {
+                    case 0:
                         throw new AbortedException();
-                    }
+                    case 1:
+                        strSelected = lstAbbrevs[0];
+                        break;
+                    default:
+                    {
+                        using (ThreadSafeForm<SelectAttribute> frmPickAttribute = ThreadSafeForm<SelectAttribute>.Get(
+                                   () =>
+                                       new SelectAttribute(lstAbbrevs.ToArray())
+                                       {
+                                           Description = !string.IsNullOrEmpty(_strFriendlyName)
+                                               ? string.Format(GlobalSettings.CultureInfo,
+                                                               LanguageManager.GetString(
+                                                                   "String_Improvement_SelectAttributeNamed"),
+                                                               _strFriendlyName)
+                                               : LanguageManager.GetString("String_Improvement_SelectAttribute")
+                                       }))
+                        {
+                            Log.Trace("attributelevel = " + bonusNode.OuterXml);
 
-                    SelectedValue = frmPickAttribute.MyForm.SelectedAttribute;
+                            // Make sure the dialogue window was not canceled.
+                            if (frmPickAttribute.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                            {
+                                throw new AbortedException();
+                            }
+
+                            strSelected = frmPickAttribute.MyForm.SelectedAttribute;
+                        }
+
+                        break;
+                    }
                 }
 
-                CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.Attributelevel, _strUnique, value);
+                SelectedValue = strSelected;
+
+                CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
+                                  Improvement.ImprovementType.Attributelevel, _strUnique, value);
             }
             else
             {
