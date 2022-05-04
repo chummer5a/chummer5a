@@ -3179,7 +3179,7 @@ namespace Chummer
                             if (lstInternalIdFilter?.Contains(objQuality.InternalId) == false)
                                 continue;
 
-                            XmlNode objNode = await objQuality.GetNodeAsync();
+                            XmlNode objNode = await objQuality.GetNodeAsync(token);
                             if (objNode != null)
                             {
                                 string strSelected = objQuality.Extra;
@@ -3271,7 +3271,7 @@ namespace Chummer
                         // Refresh Martial Art Techniques.
                         foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
                         {
-                            XmlNode objMartialArtNode = await objMartialArt.GetNodeAsync();
+                            XmlNode objMartialArtNode = await objMartialArt.GetNodeAsync(token);
                             if (objMartialArtNode != null)
                             {
                                 // We're only re-apply improvements a list of items, not all of them
@@ -3292,7 +3292,7 @@ namespace Chummer
                             foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques.Where(
                                          x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                             {
-                                XmlNode objNode = await objTechnique.GetNodeAsync();
+                                XmlNode objNode = await objTechnique.GetNodeAsync(token);
                                 if (objNode != null)
                                 {
                                     if (objNode["bonus"] != null)
@@ -3312,7 +3312,7 @@ namespace Chummer
                         foreach (Spell objSpell in CharacterObject.Spells.Where(
                                      x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                         {
-                            XmlNode objNode = await objSpell.GetNodeAsync();
+                            XmlNode objNode = await objSpell.GetNodeAsync(token);
                             if (objNode != null)
                             {
                                 if (objNode["bonus"] != null)
@@ -3343,7 +3343,7 @@ namespace Chummer
                         foreach (Power objPower in CharacterObject.Powers.Where(
                                      x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                         {
-                            XmlNode objNode = await objPower.GetNodeAsync();
+                            XmlNode objNode = await objPower.GetNodeAsync(token);
                             if (objNode != null)
                             {
                                 objPower.Bonus = objNode["bonus"];
@@ -3366,7 +3366,7 @@ namespace Chummer
                         foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms.Where(
                                      x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                         {
-                            XmlNode objNode = await objComplexForm.GetNodeAsync();
+                            XmlNode objNode = await objComplexForm.GetNodeAsync(token);
                             if (objNode != null)
                             {
                                 if (objNode["bonus"] != null)
@@ -3398,7 +3398,7 @@ namespace Chummer
                         foreach (AIProgram objProgram in CharacterObject.AIPrograms.Where(
                                      x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                         {
-                            XmlNode objNode = await objProgram.GetNodeAsync();
+                            XmlNode objNode = await objProgram.GetNodeAsync(token);
                             if (objNode != null)
                             {
                                 if (objNode["bonus"] != null)
@@ -3429,7 +3429,7 @@ namespace Chummer
                         foreach (CritterPower objPower in CharacterObject.CritterPowers.Where(
                                      x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                         {
-                            XmlNode objNode = await objPower.GetNodeAsync();
+                            XmlNode objNode = await objPower.GetNodeAsync(token);
                             if (objNode != null)
                             {
                                 objPower.Bonus = objNode["bonus"];
@@ -3475,7 +3475,7 @@ namespace Chummer
                             // We're only re-apply improvements a list of items, not all of them
                             if (lstInternalIdFilter?.Contains(objMetamagic.InternalId) == false)
                                 continue;
-                            XmlNode objNode = await objMetamagic.GetNodeAsync();
+                            XmlNode objNode = await objMetamagic.GetNodeAsync(token);
                             if (objNode != null)
                             {
                                 objMetamagic.Bonus = objNode["bonus"];
@@ -3500,7 +3500,7 @@ namespace Chummer
                             // We're only re-apply improvements a list of items, not all of them
                             if (lstInternalIdFilter?.Contains(objCyberware.InternalId) != false)
                             {
-                                XmlNode objNode = await objCyberware.GetNodeAsync();
+                                XmlNode objNode = await objCyberware.GetNodeAsync(token);
                                 if (objNode != null)
                                 {
                                     objCyberware.Bonus = objNode["bonus"];
@@ -3622,7 +3622,7 @@ namespace Chummer
                             // We're only re-apply improvements a list of items, not all of them
                             if (lstInternalIdFilter?.Contains(objArmor.InternalId) != false)
                             {
-                                XmlNode objNode = await objArmor.GetNodeAsync();
+                                XmlNode objNode = await objArmor.GetNodeAsync(token);
                                 if (objNode != null)
                                 {
                                     objArmor.Bonus = objNode["bonus"];
@@ -3655,7 +3655,7 @@ namespace Chummer
                                 // We're only re-apply improvements a list of items, not all of them
                                 if (lstInternalIdFilter?.Contains(objMod.InternalId) != false)
                                 {
-                                    XmlNode objChild = await objMod.GetNodeAsync();
+                                    XmlNode objChild = await objMod.GetNodeAsync(token);
 
                                     if (objChild != null)
                                     {
@@ -6334,7 +6334,7 @@ namespace Chummer
                 return;
             }
             token.ThrowIfCancellationRequested();
-            XPathNavigator objQualityNode = await objSelectedQuality.GetNodeXPathAsync();
+            XPathNavigator objQualityNode = await objSelectedQuality.GetNodeXPathAsync(token);
             string strLimitString = objQualityNode != null
                 ? (await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("limit"))?.Value ?? string.Empty
                 : string.Empty;
@@ -17145,7 +17145,7 @@ namespace Chummer
                             if (sbdQualities.Length > 0)
                                 sbdQualities.AppendLine(',');
 
-                            sbdQualities.Append(await CharacterObject.GetObjectNameAsync(objImprovement))
+                            sbdQualities.Append(await CharacterObject.GetObjectNameAsync(objImprovement, token: token))
                                         .Append(await LanguageManager.GetStringAsync("String_Space")).Append('[')
                                         .Append(
                                             objImprovement.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo))

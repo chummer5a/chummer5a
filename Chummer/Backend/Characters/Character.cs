@@ -2764,7 +2764,7 @@ namespace Chummer
 
                             // <name />
                             objWriter.WriteElementString("name", _strName);
-                            SaveMugshots(objWriter);
+                            SaveMugshots(objWriter, token);
 
                             // <gender />
                             objWriter.WriteElementString("gender", _strGender);
@@ -3508,7 +3508,7 @@ namespace Chummer
 
                             // <name />
                             await objWriter.WriteElementStringAsync("name", _strName);
-                            await SaveMugshotsAsync(objWriter);
+                            await SaveMugshotsAsync(objWriter, innerToken);
 
                             // <gender />
                             await objWriter.WriteElementStringAsync("gender", _strGender);
@@ -8627,7 +8627,7 @@ namespace Chummer
                     {
                         foreach (Contact objContact in Contacts)
                         {
-                            await objContact.Print(objWriter, objCulture, strLanguageToPrint);
+                            await objContact.Print(objWriter, objCulture, strLanguageToPrint, token);
                         }
                     }
                     finally
@@ -8649,7 +8649,7 @@ namespace Chummer
                         foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
                                      Improvement.ImprovementType.LimitModifier, "Physical"))
                         {
-                            string strName = await GetObjectNameAsync(objImprovement, strLanguageToPrint);
+                            string strName = await GetObjectNameAsync(objImprovement, strLanguageToPrint, token);
                             if (strName == objImprovement.SourceName)
                                 strName = objImprovement.UniqueName;
                             strName += await LanguageManager.GetStringAsync("String_Colon", strLanguageToPrint) +
@@ -8696,7 +8696,7 @@ namespace Chummer
                         foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
                                      Improvement.ImprovementType.LimitModifier, "Mental"))
                         {
-                            string strName = await GetObjectNameAsync(objImprovement, strLanguageToPrint);
+                            string strName = await GetObjectNameAsync(objImprovement, strLanguageToPrint, token);
                             if (strName == objImprovement.SourceName)
                                 strName = objImprovement.UniqueName;
                             strName += await LanguageManager.GetStringAsync("String_Colon", strLanguageToPrint) +
@@ -8743,7 +8743,7 @@ namespace Chummer
                         foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
                                      Improvement.ImprovementType.LimitModifier, "Social"))
                         {
-                            string strName = await GetObjectNameAsync(objImprovement, strLanguageToPrint);
+                            string strName = await GetObjectNameAsync(objImprovement, strLanguageToPrint, token);
                             if (strName == objImprovement.SourceName)
                                 strName = objImprovement.UniqueName;
                             strName += await LanguageManager.GetStringAsync("String_Colon", strLanguageToPrint) +
@@ -8828,7 +8828,7 @@ namespace Chummer
                     {
                         foreach (Spirit objSpirit in Spirits)
                         {
-                            await objSpirit.Print(objWriter, objCulture, strLanguageToPrint);
+                            await objSpirit.Print(objWriter, objCulture, strLanguageToPrint, token);
                         }
                     }
                     finally

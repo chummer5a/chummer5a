@@ -281,7 +281,7 @@ namespace Chummer
 
             // Remove the mugshots directory when the form closes.
             // ReSharper disable once MethodSupportsCancellation
-            await Utils.SafeDeleteDirectoryAsync(Path.Combine(Utils.GetStartupPath, "mugshots"));
+            await Utils.SafeDeleteDirectoryAsync(Path.Combine(Utils.GetStartupPath, "mugshots"), token: CancellationToken.None);
 
             try
             {

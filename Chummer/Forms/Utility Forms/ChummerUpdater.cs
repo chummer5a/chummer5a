@@ -683,7 +683,7 @@ namespace Chummer
                     catch (OperationCanceledException)
                     {
                         // ReSharper disable once MethodSupportsCancellation
-                        await Utils.SafeDeleteDirectoryAsync(strBackupZipPath);
+                        await Utils.SafeDeleteDirectoryAsync(strBackupZipPath, token: CancellationToken.None);
                         throw;
                     }
                 }
@@ -1022,7 +1022,7 @@ namespace Chummer
             }
 
             if (blnDoRestart)
-                await Utils.RestartApplication();
+                await Utils.RestartApplication(token: token);
         }
 
         private async ValueTask DownloadUpdates(CancellationToken token = default)
