@@ -1,3 +1,22 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -28,7 +47,7 @@ namespace CrashHandler
         private readonly ConcurrentDictionary<string, string> _dicFilePaths;
         private readonly Dictionary<string, string> _lstPretendFilePaths;
         private readonly Dictionary<string, string> _attributes;
-        private readonly short _procId;
+        private readonly int _procId;
         private readonly IntPtr _exceptionPrt;
         private readonly uint _threadId;
         private volatile CrashDumperProgress _eProgress;
@@ -204,19 +223,19 @@ namespace CrashHandler
             bool blnSuccess = false;
             using (FileStream file = File.Create(Path.Combine(WorkingDirectory, CrashDumpName + ".dmp")))
             {
-                MiniDumpExceptionInformation info = new MiniDumpExceptionInformation
+                NativeMethods.MiniDumpExceptionInformation info = new NativeMethods.MiniDumpExceptionInformation
                 {
                     ClientPointers = true,
                     ExceptionPointers = exceptionInfo,
                     ThreadId = threadId
                 };
 
-                const MINIDUMP_TYPE dtype = MINIDUMP_TYPE.MiniDumpWithPrivateReadWriteMemory |
-                                            MINIDUMP_TYPE.MiniDumpWithDataSegs |
-                                            MINIDUMP_TYPE.MiniDumpWithHandleData |
-                                            MINIDUMP_TYPE.MiniDumpWithFullMemoryInfo |
-                                            MINIDUMP_TYPE.MiniDumpWithThreadInfo |
-                                            MINIDUMP_TYPE.MiniDumpWithUnloadedModules;
+                const NativeMethods.MINIDUMP_TYPE dtype = NativeMethods.MINIDUMP_TYPE.MiniDumpWithPrivateReadWriteMemory |
+                                                          NativeMethods.MINIDUMP_TYPE.MiniDumpWithDataSegs |
+                                                          NativeMethods.MINIDUMP_TYPE.MiniDumpWithHandleData |
+                                                          NativeMethods.MINIDUMP_TYPE.MiniDumpWithFullMemoryInfo |
+                                                          NativeMethods.MINIDUMP_TYPE.MiniDumpWithThreadInfo |
+                                                          NativeMethods.MINIDUMP_TYPE.MiniDumpWithUnloadedModules;
 
                 bool extraInfo = !(exceptionInfo == IntPtr.Zero || threadId == 0 || !debugger);
 
@@ -302,7 +321,7 @@ namespace CrashHandler
         }
 
         private static bool Deserialize(string strBase64json,
-            out short shrProcessId,
+            out int intProcessId,
             out ConcurrentDictionary<string, string> dicFiles,
             out Dictionary<string, string> dicPretendFiles,
             out Dictionary<string, string> dicAttributes,
@@ -314,7 +333,7 @@ namespace CrashHandler
             object obj = new JavaScriptSerializer().DeserializeObject(Encoding.UTF8.GetString(tempBytes));
 
             Dictionary<string, object> parts = obj as Dictionary<string, object>;
-            if (parts?["_intProcessId"] is int pid)
+            if (parts?["_uintProcessId"] is int pid)
             {
                 dicFiles = parts["_dicCapturedFiles"] as ConcurrentDictionary<string, string>;
                 dicAttributes =
@@ -324,7 +343,7 @@ namespace CrashHandler
                     ((Dictionary<string, object>) parts["_dicPretendFiles"]).ToDictionary(x => x.Key,
                         y => y.Value.ToString());
 
-                shrProcessId = (short) pid;
+                intProcessId = pid;
                 string s = "0";
                 if (parts.TryGetValue("_ptrExceptionInfo", out object objPart))
                 {
@@ -338,7 +357,7 @@ namespace CrashHandler
                 return true;
             }
 
-            shrProcessId = 0;
+            intProcessId = 0;
             dicFiles = null;
             dicPretendFiles = null;
             dicAttributes = null;
