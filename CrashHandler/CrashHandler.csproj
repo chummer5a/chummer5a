@@ -77,6 +77,7 @@
     <Compile Include="CrashReporter.Designer.cs">
       <DependentUpon>CrashReporter.cs</DependentUpon>
     </Compile>
+    <Compile Include="NativeMethods.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="CrashReporter.resx">
