@@ -29,8 +29,8 @@ namespace CrashHandler
         internal static extern bool MiniDumpWriteDump
         (
             IntPtr hProcess,
-            int ProcessId,
-            IntPtr hFile,
+            uint ProcessId,
+            SafeHandle hFile,
             MINIDUMP_TYPE DumpType,
             ref MiniDumpExceptionInformation ExceptionParam,
             IntPtr UserStreamParam,
@@ -42,8 +42,8 @@ namespace CrashHandler
         internal static extern bool MiniDumpWriteDump
         (
             IntPtr hProcess,
-            int ProcessId,
-            IntPtr hFile,
+            uint ProcessId,
+            SafeHandle hFile,
             MINIDUMP_TYPE DumpType,
             IntPtr ExceptionParam,
             IntPtr UserStreamParam,

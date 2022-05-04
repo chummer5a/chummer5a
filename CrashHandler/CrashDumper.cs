@@ -243,14 +243,11 @@ namespace CrashHandler
                 {
                     if (extraInfo)
                     {
-                        blnSuccess = NativeMethods.MiniDumpWriteDump(process.Handle, _procId,
-                                                                     objHandle?.DangerousGetHandle()
-                                                                     ?? IntPtr.Zero,
-                                                                     dtype, ref info, IntPtr.Zero, IntPtr.Zero);
+                        blnSuccess = NativeMethods.MiniDumpWriteDump(process.Handle, (uint)_procId, objHandle, dtype,
+                                                                     ref info, IntPtr.Zero, IntPtr.Zero);
                     }
-                    else if (NativeMethods.MiniDumpWriteDump(process.Handle, _procId,
-                                                             objHandle?.DangerousGetHandle() ?? IntPtr.Zero,
-                                                             dtype, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero))
+                    else if (NativeMethods.MiniDumpWriteDump(process.Handle, (uint)_procId, objHandle, dtype, IntPtr.Zero,
+                                                             IntPtr.Zero, IntPtr.Zero))
                     {
                         blnSuccess = true;
 
