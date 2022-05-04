@@ -215,7 +215,7 @@ namespace Chummer
         public static Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, Character objCharacter, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return Program.GetFormForDialogAsync(objCharacter).ContinueWith(async x => await frmForm.ShowDialogSafeAsync(await x, token), token).Unwrap();
+            return Program.GetFormForDialogAsync(objCharacter, token).ContinueWith(async x => await frmForm.ShowDialogSafeAsync(await x, token), token).Unwrap();
         }
 
         /// <summary>

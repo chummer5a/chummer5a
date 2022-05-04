@@ -614,7 +614,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (long i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -659,7 +659,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (long i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -704,7 +704,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (float i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -749,7 +749,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (float i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -794,7 +794,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (double i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -839,7 +839,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (double i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -884,7 +884,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (decimal i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -929,7 +929,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (decimal i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -1067,7 +1067,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (long i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -1113,7 +1113,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (long i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -1159,7 +1159,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (float i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -1205,7 +1205,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (float i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -1251,7 +1251,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (double i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -1297,7 +1297,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (double i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -1343,7 +1343,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (decimal i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -1389,7 +1389,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (decimal i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -1527,7 +1527,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (long i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -1573,7 +1573,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (long i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -1619,7 +1619,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (float i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -1665,7 +1665,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (float i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -1711,7 +1711,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (double i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -1757,7 +1757,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (double i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -1803,7 +1803,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (decimal i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
@@ -1849,7 +1849,7 @@ namespace Chummer
                 bool blnMoveNext = objEnumerator.MoveNext();
                 while (blnMoveNext)
                 {
-                    for (decimal i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
+                    for (int i = 0; i < Utils.MaxParallelBatchSize && blnMoveNext; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;

@@ -281,7 +281,9 @@ namespace Chummer.Backend.Equipment
                 _objCharacter?.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
         }
 
+        /// <summary>
         /// Create a Weapon from an XmlNode and return the TreeNodes for it.
+        /// </summary>
         /// <param name="objXmlWeapon">XmlNode to create the object from.</param>
         /// <param name="lstWeapons">List of child Weapons to generate.</param>
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>

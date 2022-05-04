@@ -8121,7 +8121,7 @@ namespace Chummer
                                                                 : await LanguageManager.GetStringAsync(
                                                                     "String_UnnamedCharacter", strLanguageToPrint));
 
-                    await PrintMugshots(objWriter);
+                    await PrintMugshots(objWriter, token);
 
                     // <sex />
                     await objWriter.WriteElementStringAsync("gender",
@@ -10990,7 +10990,6 @@ namespace Chummer
         /// Construct a list of possible places to put a piece of modular cyberware. Names are display names of the given items, values are internalIDs of the given items.
         /// </summary>
         /// <param name="objModularCyberware">Cyberware for which to construct the list.</param>
-        /// <returns></returns>
         public IEnumerable<ListItem> ConstructModularCyberlimbList([NotNull] Cyberware objModularCyberware)
         {
             yield return new ListItem("None", LanguageManager.GetString("String_None"));
@@ -12484,23 +12483,23 @@ namespace Chummer
             }
         }
 
-        public void SaveMugshots(XmlWriter objWriter)
+        public void SaveMugshots(XmlWriter objWriter, CancellationToken token = default)
         {
-            SaveMugshotsCore(true, objWriter).GetAwaiter().GetResult();
+            SaveMugshotsCore(true, objWriter, token).GetAwaiter().GetResult();
         }
 
-        public Task SaveMugshotsAsync(XmlWriter objWriter)
+        public Task SaveMugshotsAsync(XmlWriter objWriter, CancellationToken token = default)
         {
-            return SaveMugshotsCore(false, objWriter);
+            return SaveMugshotsCore(false, objWriter, token);
         }
 
-        public async Task SaveMugshotsCore(bool blnSync, XmlWriter objWriter)
+        public async Task SaveMugshotsCore(bool blnSync, XmlWriter objWriter, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
 
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? EnterReadLock.Enter(LockObject) : await EnterReadLock.EnterAsync(LockObject))
+            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token))
             {
                 if (blnSync)
                 {
@@ -12531,7 +12530,7 @@ namespace Chummer
                         foreach (Image imgMugshot in Mugshots)
                         {
                             await objWriter.WriteElementStringAsync(
-                                "mugshot", await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot));
+                                "mugshot", await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot, token));
                         }
                     }
                     finally
@@ -12586,11 +12585,11 @@ namespace Chummer
             }
         }
 
-        public async ValueTask PrintMugshots(XmlWriter objWriter)
+        public async ValueTask PrintMugshots(XmlWriter objWriter, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 if (Mugshots.Count > 0)
                 {
@@ -12624,7 +12623,7 @@ namespace Chummer
                                                      "file://" + imgMugshotPath.Replace(
                                                          Path.DirectorySeparatorChar, '/'));
                         // <mainmugshotbase64 />
-                        await objWriter.WriteElementStringAsync("mainmugshotbase64", await imgMainMugshot.ToBase64StringAsJpegAsync());
+                        await objWriter.WriteElementStringAsync("mainmugshotbase64", await imgMainMugshot.ToBase64StringAsJpegAsync(token: token));
                     }
 
                     // <othermugshots>
@@ -12646,7 +12645,7 @@ namespace Chummer
                             XmlElementWriteHelper objMugshotElement = await objWriter.StartElementAsync("mugshot");
                             try
                             {
-                                await objWriter.WriteElementStringAsync("stringbase64", await imgMugshot.ToBase64StringAsJpegAsync());
+                                await objWriter.WriteElementStringAsync("stringbase64", await imgMugshot.ToBase64StringAsJpegAsync(token: token));
 
                                 string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath,
                                                                      guiImage.ToString("N", GlobalSettings.InvariantCultureInfo)

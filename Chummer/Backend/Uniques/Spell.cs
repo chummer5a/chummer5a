@@ -78,7 +78,9 @@ namespace Chummer
             _objCharacter = objCharacter;
         }
 
+        /// <summary>
         /// Create a Spell from an XmlNode.
+        /// </summary>
         /// <param name="objXmlSpellNode">XmlNode to create the object from.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
         /// <param name="blnLimited">Whether or not the Spell should be marked as Limited.</param>

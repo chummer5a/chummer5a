@@ -71,9 +71,9 @@ namespace Chummer
         /// </summary>
         /// <param name="xmlMentor">XmlNode to create the object from.</param>
         /// <param name="eMentorType">Whether this is a Mentor or a Paragon.</param>
+        /// <param name="strForceValue">Force a value to be selected for the Mentor Spirit.</param>
         /// <param name="strForceValueChoice1">Name/Text for Choice 1.</param>
         /// <param name="strForceValueChoice2">Name/Text for Choice 2.</param>
-        /// <param name="strForceValue">Force a value to be selected for the Mentor Spirit.</param>
         public void Create(XmlNode xmlMentor, Improvement.ImprovementType eMentorType, string strForceValue = "", string strForceValueChoice1 = "", string strForceValueChoice2 = "")
         {
             _eMentorType = eMentorType;

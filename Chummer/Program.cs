@@ -950,8 +950,8 @@ namespace Chummer
         /// Gets the form to use for creating sub-forms and displaying them as dialogs
         /// </summary>
         /// <param name="objCharacter">If this character's file is open, use their open form as the one we want for showing dialogs.</param>
-        /// <returns></returns>
-        public static Task<Form> GetFormForDialogAsync(Character objCharacter = null)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task<Form> GetFormForDialogAsync(Character objCharacter = null, CancellationToken token = default)
         {
             if (MainForm == null)
                 return Task.FromResult<Form>(null);
@@ -959,11 +959,11 @@ namespace Chummer
             async Task<Form> InnerMethod()
             {
                 return await MainForm.OpenCharacterEditorForms.FirstOrDefaultAsync(
-                           x => ReferenceEquals(x.CharacterObject, objCharacter)) as Form
+                           x => ReferenceEquals(x.CharacterObject, objCharacter), token: token) as Form
                        ?? await MainForm.OpenCharacterSheetViewers.FirstOrDefaultAsync(
-                           x => x.CharacterObjects.Contains(objCharacter)) as Form
+                           x => x.CharacterObjects.Contains(objCharacter), token: token) as Form
                        ?? await MainForm.OpenCharacterExportForms.FirstOrDefaultAsync(
-                               x => ReferenceEquals(x.CharacterObject, objCharacter))
+                               x => ReferenceEquals(x.CharacterObject, objCharacter), token: token)
                            as Form
                        ?? MainForm;
             }

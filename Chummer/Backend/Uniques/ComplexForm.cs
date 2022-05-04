@@ -65,7 +65,9 @@ namespace Chummer
             _objCharacter = objCharacter;
         }
 
+        /// <summary>
         /// Create a Complex Form from an XmlNode.
+        /// </summary>
         /// <param name="objXmlComplexFormNode">XmlNode to create the object from.</param>
         /// <param name="strExtra">Value to forcefully select for any ImprovementManager prompts.</param>
         public void Create(XmlNode objXmlComplexFormNode, string strExtra = "")

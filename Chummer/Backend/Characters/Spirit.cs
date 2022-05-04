@@ -234,13 +234,14 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
             // Translate the Critter name if applicable.
             string strName = Name;
-            XmlNode objXmlCritterNode = await this.GetNodeAsync(strLanguageToPrint);
+            XmlNode objXmlCritterNode = await this.GetNodeAsync(strLanguageToPrint, token: token);
             if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 strName = objXmlCritterNode?["translate"]?.InnerText ?? Name;
@@ -292,8 +293,8 @@ namespace Chummer
                     {
                         //Dump skills, (optional)powers if present to output
 
-                        XPathNavigator xmlSpiritPowersBaseChummerNode = await (await _objLinkedCharacter.LoadDataXPathAsync("spiritpowers.xml", strLanguageToPrint)).SelectSingleNodeAndCacheExpressionAsync("/chummer");
-                        XPathNavigator xmlCritterPowersBaseChummerNode = await (await _objLinkedCharacter.LoadDataXPathAsync("critterpowers.xml", strLanguageToPrint)).SelectSingleNodeAndCacheExpressionAsync("/chummer");
+                        XPathNavigator xmlSpiritPowersBaseChummerNode = await (await _objLinkedCharacter.LoadDataXPathAsync("spiritpowers.xml", strLanguageToPrint, token: token)).SelectSingleNodeAndCacheExpressionAsync("/chummer");
+                        XPathNavigator xmlCritterPowersBaseChummerNode = await (await _objLinkedCharacter.LoadDataXPathAsync("critterpowers.xml", strLanguageToPrint, token: token)).SelectSingleNodeAndCacheExpressionAsync("/chummer");
 
                         XmlNode xmlPowersNode = objXmlCritterNode["powers"];
                         if (xmlPowersNode != null)
@@ -336,7 +337,7 @@ namespace Chummer
                         xmlPowersNode = objXmlCritterNode["skills"];
                         if (xmlPowersNode != null)
                         {
-                            XPathNavigator xmlSkillsDocument = await CharacterObject.LoadDataXPathAsync("skills.xml", strLanguageToPrint);
+                            XPathNavigator xmlSkillsDocument = await CharacterObject.LoadDataXPathAsync("skills.xml", strLanguageToPrint, token: token);
                             // <skills>
                             XmlElementWriteHelper objSkillsElement = await objWriter.StartElementAsync("skills");
                             try
@@ -415,7 +416,7 @@ namespace Chummer
 
                 if (GlobalSettings.PrintNotes)
                     await objWriter.WriteElementStringAsync("notes", Notes);
-                await PrintMugshots(objWriter);
+                await PrintMugshots(objWriter, token);
             }
             finally
             {
@@ -1271,17 +1272,17 @@ namespace Chummer
             }
         }
 
-        public void SaveMugshots(XmlWriter objWriter)
+        public void SaveMugshots(XmlWriter objWriter, CancellationToken token = default)
         {
-            SaveMugshotsCore(true, objWriter).GetAwaiter().GetResult();
+            SaveMugshotsCore(true, objWriter, token).GetAwaiter().GetResult();
         }
 
-        public Task SaveMugshotsAsync(XmlWriter objWriter)
+        public Task SaveMugshotsAsync(XmlWriter objWriter, CancellationToken token = default)
         {
-            return SaveMugshotsCore(false, objWriter);
+            return SaveMugshotsCore(false, objWriter, token);
         }
 
-        public async Task SaveMugshotsCore(bool blnSync, XmlWriter objWriter)
+        public async Task SaveMugshotsCore(bool blnSync, XmlWriter objWriter, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -1296,6 +1297,7 @@ namespace Chummer
                     {
                         // ReSharper disable once MethodHasAsyncOverload
                         objWriter.WriteElementString(
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             "mugshot", GlobalSettings.ImageToBase64StringForStorage(imgMugshot));
                     }
 
@@ -1313,7 +1315,7 @@ namespace Chummer
                     foreach (Image imgMugshot in Mugshots)
                     {
                         await objWriter.WriteElementStringAsync(
-                            "mugshot", await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot));
+                            "mugshot", await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot, token));
                     }
                 }
                 finally
@@ -1350,12 +1352,12 @@ namespace Chummer
             }
         }
 
-        public async ValueTask PrintMugshots(XmlWriter objWriter)
+        public async ValueTask PrintMugshots(XmlWriter objWriter, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
             if (LinkedCharacter != null)
-                await LinkedCharacter.PrintMugshots(objWriter);
+                await LinkedCharacter.PrintMugshots(objWriter, token);
             else if (Mugshots.Count > 0)
             {
                 // Since IE is retarded and can't handle base64 images before IE9, we need to dump the image to a temporary directory and re-write the information.
@@ -1384,7 +1386,7 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("mainmugshotpath",
                         "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
                     // <mainmugshotbase64 />
-                    await objWriter.WriteElementStringAsync("mainmugshotbase64", await imgMainMugshot.ToBase64StringAsJpegAsync());
+                    await objWriter.WriteElementStringAsync("mainmugshotbase64", await imgMainMugshot.ToBase64StringAsJpegAsync(token: token));
                 }
                 // <hasothermugshots>
                 await objWriter.WriteElementStringAsync("hasothermugshots",
@@ -1402,7 +1404,7 @@ namespace Chummer
                         XmlElementWriteHelper objMugshotElement = await objWriter.StartElementAsync("mugshot");
                         try
                         {
-                            await objWriter.WriteElementStringAsync("stringbase64", await imgMugshot.ToBase64StringAsJpegAsync());
+                            await objWriter.WriteElementStringAsync("stringbase64", await imgMugshot.ToBase64StringAsJpegAsync(token: token));
 
                             string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath,
                                                                  guiImage.ToString("N", GlobalSettings.InvariantCultureInfo) +
