@@ -24,6 +24,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -1383,15 +1384,15 @@ namespace Chummer.Backend.Equipment
             _objCharacter.Improvements.AddRange(lstImprovements);
         }
 
-        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
                                             && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
             _objCachedMyXmlNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadData("drugcomponents.xml", strLanguage)
-                    : await _objCharacter.LoadDataAsync("drugcomponents.xml", strLanguage))
+                    ? _objCharacter.LoadData("drugcomponents.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataAsync("drugcomponents.xml", strLanguage, token: token))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/drugcomponents/drugcomponent[name = "
                                         + Name.CleanXPath() + ']'
@@ -1408,15 +1409,15 @@ namespace Chummer.Backend.Equipment
         private string _strCachedXPathNodeLanguage = string.Empty;
         private readonly ThreadSafeObservableCollection<DrugComponent> _lstComponents = new ThreadSafeObservableCollection<DrugComponent>();
 
-        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXPathNode;
             _objCachedMyXPathNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadDataXPath("drugcomponents.xml", strLanguage)
-                    : await _objCharacter.LoadDataXPathAsync("drugcomponents.xml", strLanguage))
+                    ? _objCharacter.LoadDataXPath("drugcomponents.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataXPathAsync("drugcomponents.xml", strLanguage, token: token))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/drugcomponents/drugcomponent[name = "
                                         + Name.CleanXPath() + ']'
@@ -2205,15 +2206,15 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
                                             && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
             _objCachedMyXmlNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadData("drugcomponents.xml", strLanguage)
-                    : await _objCharacter.LoadDataAsync("drugcomponents.xml", strLanguage))
+                    ? _objCharacter.LoadData("drugcomponents.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataAsync("drugcomponents.xml", strLanguage, token: token))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/drugcomponents/drugcomponent[name = "
                                         + Name.CleanXPath() + ']'
@@ -2229,15 +2230,15 @@ namespace Chummer.Backend.Equipment
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXPathNode;
             _objCachedMyXPathNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadDataXPath("drugcomponents.xml", strLanguage)
-                    : await _objCharacter.LoadDataXPathAsync("drugcomponents.xml", strLanguage))
+                    ? _objCharacter.LoadDataXPath("drugcomponents.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataXPathAsync("drugcomponents.xml", strLanguage, token: token))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/drugcomponents/drugcomponent[name = "
                                         + Name.CleanXPath() + ']'

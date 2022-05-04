@@ -57,7 +57,7 @@ namespace Chummer
                         : await LanguageManager.GetStringAsync("String_Attribute" + strAbbrev + "Short");
                     lstAttributes.Add(new ListItem(strAbbrev, strAttributeDisplayName));
                 }
-                
+
                 await cboAttribute.PopulateWithListItemsAsync(lstAttributes);
                 if (lstAttributes.Count >= 1)
                     await cboAttribute.DoThreadSafeAsync(x => x.SelectedIndex = 0);

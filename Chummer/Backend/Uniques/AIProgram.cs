@@ -59,7 +59,9 @@ namespace Chummer
             _objCharacter = objCharacter;
         }
 
+        /// <summary>
         /// Create a Program from an XmlNode.
+        /// </summary>
         /// <param name="objXmlProgramNode">XmlNode to create the object from.</param>
         /// <param name="strExtra">Value to forcefully select for any ImprovementManager prompts.</param>
         /// <param name="boolCanDelete">Can this AI program be deleted on its own (set to false for Improvement-granted programs).</param>
@@ -428,15 +430,15 @@ namespace Chummer
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
                                             && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
             _objCachedMyXmlNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadData("programs.xml", strLanguage)
-                    : await _objCharacter.LoadDataAsync("programs.xml", strLanguage))
+                    ? _objCharacter.LoadData("programs.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataAsync("programs.xml", strLanguage, token: token))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/programs/program[name = "
                                         + Name.CleanXPath() + ']'
@@ -452,15 +454,15 @@ namespace Chummer
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXPathNode;
             _objCachedMyXPathNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadDataXPath("programs.xml", strLanguage)
-                    : await _objCharacter.LoadDataXPathAsync("programs.xml", strLanguage))
+                    ? _objCharacter.LoadDataXPath("programs.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataXPathAsync("programs.xml", strLanguage, token: token))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/programs/program[name = "
                                         + Name.CleanXPath() + ']'

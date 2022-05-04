@@ -243,7 +243,7 @@ namespace Chummer.Backend.Uniques
                 _guiID = Guid.NewGuid();
             }
             xmlNode.TryGetStringFieldQuickly("name", ref _strName);
-            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(this.GetNodeXPath);
+            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
             if (!xmlNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID) && !xmlNode.TryGetGuidFieldQuickly("id", ref _guiSourceID))
             {
                 objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -1049,7 +1049,7 @@ namespace Chummer.Backend.Uniques
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (Type == TraditionType.None)
                 return null;
@@ -1062,15 +1062,15 @@ namespace Chummer.Backend.Uniques
                 case TraditionType.MAG:
                     objDoc = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
-                        ? _objCharacter.LoadData("traditions.xml", strLanguage)
-                        : await _objCharacter.LoadDataAsync("traditions.xml", strLanguage);
+                        ? _objCharacter.LoadData("traditions.xml", strLanguage, token: token)
+                        : await _objCharacter.LoadDataAsync("traditions.xml", strLanguage, token: token);
                     break;
 
                 case TraditionType.RES:
                     objDoc = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
-                        ? _objCharacter.LoadData("traditions.xml", strLanguage)
-                        : await _objCharacter.LoadDataAsync("streams.xml", strLanguage);
+                        ? _objCharacter.LoadData("traditions.xml", strLanguage, token: token)
+                        : await _objCharacter.LoadDataAsync("streams.xml", strLanguage, token: token);
                     break;
             }
             if (objDoc == null)
@@ -1091,7 +1091,7 @@ namespace Chummer.Backend.Uniques
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
@@ -1102,15 +1102,15 @@ namespace Chummer.Backend.Uniques
                 case TraditionType.MAG:
                     objDoc = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
-                        ? _objCharacter.LoadDataXPath("traditions.xml", strLanguage)
-                        : await _objCharacter.LoadDataXPathAsync("traditions.xml", strLanguage);
+                        ? _objCharacter.LoadDataXPath("traditions.xml", strLanguage, token: token)
+                        : await _objCharacter.LoadDataXPathAsync("traditions.xml", strLanguage, token: token);
                     break;
 
                 case TraditionType.RES:
                     objDoc = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
-                        ? _objCharacter.LoadDataXPath("streams.xml", strLanguage)
-                        : await _objCharacter.LoadDataXPathAsync("streams.xml", strLanguage);
+                        ? _objCharacter.LoadDataXPath("streams.xml", strLanguage, token: token)
+                        : await _objCharacter.LoadDataXPathAsync("streams.xml", strLanguage, token: token);
                     break;
             }
             if (objDoc == null)

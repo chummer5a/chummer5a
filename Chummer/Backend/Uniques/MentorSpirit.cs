@@ -256,7 +256,7 @@ namespace Chummer
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
             }
-            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(this.GetNodeXPath);
+            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID) && objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
             {
                 _objCharacter.LoadDataXPath("qualities.xml")
@@ -575,7 +575,7 @@ namespace Chummer
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
                                             && !GlobalSettings.LiveCustomData)
@@ -585,11 +585,11 @@ namespace Chummer
                     ? _objCharacter.LoadData(
                         _eMentorType == Improvement.ImprovementType.MentorSpirit
                             ? "mentors.xml"
-                            : "paragons.xml", strLanguage)
+                            : "paragons.xml", strLanguage, token: token)
                     : await _objCharacter.LoadDataAsync(
                         _eMentorType == Improvement.ImprovementType.MentorSpirit
                             ? "mentors.xml"
-                            : "paragons.xml", strLanguage))
+                            : "paragons.xml", strLanguage, token: token))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/mentors/mentor[name = " + Name.CleanXPath()
                                                                           + ']'
@@ -605,7 +605,7 @@ namespace Chummer
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
@@ -616,12 +616,12 @@ namespace Chummer
                         .LoadDataXPath(
                             _eMentorType == Improvement.ImprovementType.MentorSpirit
                                 ? "mentors.xml"
-                                : "paragons.xml", strLanguage)
+                                : "paragons.xml", strLanguage, token: token)
                     : await _objCharacter
                         .LoadDataXPathAsync(
                             _eMentorType == Improvement.ImprovementType.MentorSpirit
                                 ? "mentors.xml"
-                                : "paragons.xml", strLanguage))
+                                : "paragons.xml", strLanguage, token: token))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/mentors/mentor[name = " + Name.CleanXPath()
                                                                           + ']'

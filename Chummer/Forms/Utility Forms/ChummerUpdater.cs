@@ -674,8 +674,18 @@ namespace Chummer
             {
                 if (!File.Exists(strBackupZipPath))
                 {
-                    using (token.Register(() => Utils.SafeDeleteDirectory(strBackupZipPath)))
-                        ZipFile.CreateFromDirectory(_strAppPath, strBackupZipPath, CompressionLevel.Fastest, true);
+                    try
+                    {
+                        await Task.Run(
+                            () => ZipFile.CreateFromDirectory(_strAppPath, strBackupZipPath, CompressionLevel.Fastest,
+                                                              true), token);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // ReSharper disable once MethodSupportsCancellation
+                        await Utils.SafeDeleteDirectoryAsync(strBackupZipPath);
+                        throw;
+                    }
                 }
             }
             catch (UnauthorizedAccessException)

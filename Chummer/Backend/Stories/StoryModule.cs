@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
@@ -424,15 +425,15 @@ namespace Chummer
 
         public string InternalId => _guiInternalId == Guid.Empty ? string.Empty : _guiInternalId.ToString("D", GlobalSettings.InvariantCultureInfo);
 
-        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
                                             && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
             _objCachedMyXmlNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadData("stories.xml", strLanguage)
-                    : await _objCharacter.LoadDataAsync("stories.xml", strLanguage))
+                    ? _objCharacter.LoadData("stories.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataAsync("stories.xml", strLanguage, token: token))
                 .SelectSingleNode(
                     "/chummer/stories/story[id = " + SourceIDString.CleanXPath()
                                                    + " or id = " + SourceIDString.ToUpperInvariant().CleanXPath()
@@ -444,15 +445,15 @@ namespace Chummer
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXPathNode;
             _objCachedMyXPathNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadDataXPath("stories.xml", strLanguage)
-                    : await _objCharacter.LoadDataXPathAsync("stories.xml", strLanguage))
+                    ? _objCharacter.LoadDataXPath("stories.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataXPathAsync("stories.xml", strLanguage, token: token))
                 .SelectSingleNode(
                     "/chummer/stories/story[id = " + SourceIDString.CleanXPath()
                                                    + " or id = " + SourceIDString.ToUpperInvariant().CleanXPath()

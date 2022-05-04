@@ -2254,7 +2254,7 @@ namespace Chummer
                             {
                                 strBiowareDisabledSource =
                                     await LanguageManager.GetStringAsync("String_Space") + '(' +
-                                    CharacterObject.GetObjectName(objDisablingImprovement) + ')' +
+                                    await CharacterObject.GetObjectNameAsync(objDisablingImprovement) + ')' +
                                     await LanguageManager.GetStringAsync("String_Space");
                             }
 
@@ -2304,7 +2304,7 @@ namespace Chummer
                             {
                                 strCyberwareDisabledSource =
                                     await LanguageManager.GetStringAsync("String_Space") + '(' +
-                                    CharacterObject.GetObjectName(objDisablingImprovement) + ')' +
+                                    await CharacterObject.GetObjectNameAsync(objDisablingImprovement) + ')' +
                                     await LanguageManager.GetStringAsync("String_Space");
                             }
 
@@ -2354,8 +2354,8 @@ namespace Chummer
                             if (objExConImprovement != null)
                             {
                                 strExConString = await LanguageManager.GetStringAsync("String_Space") + '(' +
-                                                 CharacterObject.GetObjectName(objExConImprovement,
-                                                                               GlobalSettings.Language) + ')' +
+                                                 await CharacterObject.GetObjectNameAsync(objExConImprovement,
+                                                     GlobalSettings.Language) + ')' +
                                                  await LanguageManager.GetStringAsync("String_Space");
                             }
 
@@ -17145,7 +17145,7 @@ namespace Chummer
                             if (sbdQualities.Length > 0)
                                 sbdQualities.AppendLine(',');
 
-                            sbdQualities.Append(CharacterObject.GetObjectName(objImprovement))
+                            sbdQualities.Append(await CharacterObject.GetObjectNameAsync(objImprovement))
                                         .Append(await LanguageManager.GetStringAsync("String_Space")).Append('[')
                                         .Append(
                                             objImprovement.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo))

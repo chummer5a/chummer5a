@@ -1265,15 +1265,15 @@ namespace Chummer
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
                                             && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
             _objCachedMyXmlNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? CharacterObject.LoadData("powers.xml", strLanguage)
-                    : await CharacterObject.LoadDataAsync("powers.xml", strLanguage))
+                    ? CharacterObject.LoadData("powers.xml", strLanguage, token: token)
+                    : await CharacterObject.LoadDataAsync("powers.xml", strLanguage, token: token))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/powers/power[name = "
                                         + Name.CleanXPath() + ']'
@@ -1289,15 +1289,15 @@ namespace Chummer
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXPathNode;
             _objCachedMyXPathNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? CharacterObject.LoadDataXPath("powers.xml", strLanguage)
-                    : await CharacterObject.LoadDataXPathAsync("powers.xml", strLanguage))
+                    ? CharacterObject.LoadDataXPath("powers.xml", strLanguage, token: token)
+                    : await CharacterObject.LoadDataXPathAsync("powers.xml", strLanguage, token: token))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/powers/power[name = "
                                         + Name.CleanXPath() + ']'

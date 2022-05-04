@@ -29,6 +29,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -1044,7 +1045,7 @@ namespace Chummer
         private string _strCachedXmlNodeLanguage = string.Empty;
         private Color _objColour;
 
-        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
                                             && !GlobalSettings.LiveCustomData)
@@ -1052,9 +1053,9 @@ namespace Chummer
             _objCachedMyXmlNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? CharacterObject.LoadData(_eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml",
-                                               strLanguage)
+                                               strLanguage, token: token)
                     : await CharacterObject.LoadDataAsync(
-                        _eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage))
+                        _eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage, token: token))
                 .SelectSingleNode("/chummer/spirits/spirit[name = " + Name.CleanXPath() + ']');
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
@@ -1063,7 +1064,7 @@ namespace Chummer
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
@@ -1072,9 +1073,9 @@ namespace Chummer
                     // ReSharper disable once MethodHasAsyncOverload
                     ? CharacterObject.LoadDataXPath(
                         _eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml",
-                        strLanguage)
+                        strLanguage, token: token)
                     : await CharacterObject.LoadDataXPathAsync(
-                        _eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage))
+                        _eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage, token: token))
                 .SelectSingleNode("/chummer/spirits/spirit[name = " + Name.CleanXPath() + ']');
             _strCachedXPathNodeLanguage = strLanguage;
             return _objCachedMyXPathNode;

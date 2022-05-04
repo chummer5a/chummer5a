@@ -565,7 +565,7 @@ namespace Chummer
         {
             return Marshal.PtrToStringAuto(MB_GetString((int)eSystemStringId));
         }
-        
+
         internal enum SHSTOCKICONID : uint
         {
             /// <summary>Document of a type with no associated application.</summary>

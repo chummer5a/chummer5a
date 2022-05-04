@@ -13637,7 +13637,7 @@ namespace Chummer
                             if (sbdQualities.Length > 0)
                                 sbdQualities.AppendLine(',');
 
-                            sbdQualities.Append(CharacterObject.GetObjectName(objImprovement))
+                            sbdQualities.Append(await CharacterObject.GetObjectNameAsync(objImprovement))
                                         .Append(await LanguageManager.GetStringAsync("String_Space")).Append('[')
                                         .Append(
                                             objImprovement.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo))

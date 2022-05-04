@@ -798,8 +798,9 @@ namespace Chummer
 
         #region Methods
 
-        public static async ValueTask SaveOptionsToRegistry()
+        public static async ValueTask SaveOptionsToRegistry(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             try
             {
                 RegistryKey objRegistry = s_ObjBaseChummerKey;
@@ -856,18 +857,22 @@ namespace Chummer
                 //Save the Plugins-Dictionary
                 objRegistry.SetValue("plugins", Newtonsoft.Json.JsonConvert.SerializeObject(PluginsEnabledDic));
 
+                token.ThrowIfCancellationRequested();
                 // Save the SourcebookInfo.
                 using (RegistryKey objSourceRegistry = objRegistry.CreateSubKey("Sourcebook", true))
                 {
                     if (objSourceRegistry != null)
                     {
-                        using (await EnterReadLock.EnterAsync(SourcebookInfos))
+                        using (await EnterReadLock.EnterAsync(SourcebookInfos, token))
                         {
                             foreach (SourcebookInfo objSource in SourcebookInfos.Values)
+                            {
+                                token.ThrowIfCancellationRequested();
                                 objSourceRegistry.SetValue(objSource.Code,
                                                            objSource.Path + '|'
                                                                           + objSource.Offset.ToString(
                                                                               InvariantCultureInfo));
+                            }
                         }
                     }
                 }
@@ -885,6 +890,7 @@ namespace Chummer
                     {
                         foreach (CustomDataDirectoryInfo objCustomDataDirectory in CustomDataDirectoryInfos)
                         {
+                            token.ThrowIfCancellationRequested();
                             using (RegistryKey objLoopKey =
                                    objCustomDataDirectoryRegistry.CreateSubKey(objCustomDataDirectory.Name, true))
                             {
@@ -1131,7 +1137,7 @@ namespace Chummer
         /// </summary>
         public static ColorMode ColorModeSetting => _eColorMode;
 
-        public static Task SetColorModeSettingAsync(ColorMode eNewValue)
+        public static Task SetColorModeSettingAsync(ColorMode eNewValue, CancellationToken token = default)
         {
             if (_eColorMode == eNewValue)
                 return Task.CompletedTask;
@@ -1139,15 +1145,15 @@ namespace Chummer
             switch (eNewValue)
             {
                 case ColorMode.Automatic:
-                    return ColorManager.AutoApplyLightDarkModeAsync();
+                    return ColorManager.AutoApplyLightDarkModeAsync(token);
 
                 case ColorMode.Light:
                     ColorManager.DisableAutoTimer();
-                    return ColorManager.SetIsLightModeAsync(true);
+                    return ColorManager.SetIsLightModeAsync(true, token);
 
                 case ColorMode.Dark:
                     ColorManager.DisableAutoTimer();
-                    return ColorManager.SetIsLightModeAsync(false);
+                    return ColorManager.SetIsLightModeAsync(false, token);
             }
 
             return Task.CompletedTask;
@@ -1267,7 +1273,7 @@ namespace Chummer
             }
         }
 
-        public static async ValueTask SetLanguageAsync(string strValue)
+        public static async ValueTask SetLanguageAsync(string strValue, CancellationToken token = default)
         {
             if (strValue == _strLanguage)
                 return;
@@ -1285,26 +1291,26 @@ namespace Chummer
             CultureInfo.DefaultThreadCurrentUICulture = _objLanguageCultureInfo;
             if (Program.MainForm != null)
             {
-                await Program.MainForm.TranslateWinFormAsync();
+                await Program.MainForm.TranslateWinFormAsync(token: token);
                 foreach (CharacterShared frmLoop in Program.MainForm.OpenCharacterEditorForms)
                 {
-                    await frmLoop.TranslateWinFormAsync();
+                    await frmLoop.TranslateWinFormAsync(token: token);
                 }
                 foreach (CharacterSheetViewer frmLoop in Program.MainForm.OpenCharacterSheetViewers)
                 {
-                    await frmLoop.TranslateWinFormAsync();
+                    await frmLoop.TranslateWinFormAsync(token: token);
                 }
                 foreach (ExportCharacter frmLoop in Program.MainForm.OpenCharacterExportForms)
                 {
-                    await frmLoop.TranslateWinFormAsync();
+                    await frmLoop.TranslateWinFormAsync(token: token);
                 }
                 if (Program.MainForm.PrintMultipleCharactersForm != null)
-                    await Program.MainForm.PrintMultipleCharactersForm.TranslateWinFormAsync();
+                    await Program.MainForm.PrintMultipleCharactersForm.TranslateWinFormAsync(token: token);
                 if (Program.MainForm.CharacterRoster != null)
-                    await Program.MainForm.CharacterRoster.TranslateWinFormAsync();
+                    await Program.MainForm.CharacterRoster.TranslateWinFormAsync(token: token);
                 if (Program.MainForm.MasterIndex != null)
-                    await Program.MainForm.MasterIndex.TranslateWinFormAsync();
-                await Program.MainForm.RefreshAllTabTitlesAsync();
+                    await Program.MainForm.MasterIndex.TranslateWinFormAsync(token: token);
+                await Program.MainForm.RefreshAllTabTitlesAsync(token);
             }
         }
 
@@ -1580,11 +1586,12 @@ namespace Chummer
         /// Converts an image to its Base64 string equivalent with compression settings specified by SavedImageQuality.
         /// </summary>
         /// <param name="objImageToSave">Image whose Base64 string should be created.</param>
-        public static Task<string> ImageToBase64StringForStorageAsync(Image objImageToSave)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task<string> ImageToBase64StringForStorageAsync(Image objImageToSave, CancellationToken token = default)
         {
             return SavedImageQuality == int.MaxValue
-                ? objImageToSave.ToBase64StringAsync()
-                : objImageToSave.ToBase64StringAsJpegAsync(SavedImageQuality);
+                ? objImageToSave.ToBase64StringAsync(token: token)
+                : objImageToSave.ToBase64StringAsJpegAsync(SavedImageQuality, token: token);
         }
 
         /// <summary>

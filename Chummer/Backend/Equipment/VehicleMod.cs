@@ -375,7 +375,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             _objCachedMyXmlNode = null;
             _objCachedMyXPathNode = null;
-            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(this.GetNodeXPath);
+            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -1631,15 +1631,15 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
                                             && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
             XmlDocument objDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
-                ? _objCharacter.LoadData("vehicles.xml", strLanguage)
-                : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage);
+                ? _objCharacter.LoadData("vehicles.xml", strLanguage, token: token)
+                : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage, token: token);
             _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/mods/mod[id = "
                                                           + SourceIDString.CleanXPath() + " or id = "
                                                           + SourceIDString.ToUpperInvariant().CleanXPath()
@@ -1658,15 +1658,15 @@ namespace Chummer.Backend.Equipment
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXPathNode;
             XPathNavigator objDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
-                ? _objCharacter.LoadDataXPath("vehicles.xml", strLanguage)
-                : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage);
+                ? _objCharacter.LoadDataXPath("vehicles.xml", strLanguage, token: token)
+                : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token);
             _objCachedMyXPathNode = objDoc.SelectSingleNode("/chummer/mods/mod[id = "
                                                             + SourceIDString.CleanXPath() + " or id = "
                                                             + SourceIDString.ToUpperInvariant().CleanXPath()

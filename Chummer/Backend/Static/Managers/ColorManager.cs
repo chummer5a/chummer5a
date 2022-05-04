@@ -19,6 +19,7 @@
 
 using System;
 using System.Drawing;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.UI.Skills;
@@ -32,6 +33,7 @@ using ListView = System.Windows.Forms.ListView;
 using SystemColors = System.Drawing.SystemColors;
 using TableCell = Chummer.UI.Table.TableCell;
 using TextBox = System.Windows.Forms.TextBox;
+using Timer = System.Windows.Forms.Timer;
 using TreeNode = System.Windows.Forms.TreeNode;
 using TreeView = System.Windows.Forms.TreeView;
 
@@ -97,11 +99,11 @@ namespace Chummer
             }
         }
 
-        public static async Task AutoApplyLightDarkModeAsync()
+        public static async Task AutoApplyLightDarkModeAsync(CancellationToken token = default)
         {
             if (GlobalSettings.ColorModeSetting == ColorMode.Automatic)
             {
-                await SetIsLightModeAsync(!DoesRegistrySayDarkMode());
+                await SetIsLightModeAsync(!DoesRegistrySayDarkMode(), token);
                 s_TmrDarkModeCheckerTimer.Enabled = true;
             }
         }
@@ -136,7 +138,7 @@ namespace Chummer
             }
         }
 
-        public static Task SetIsLightModeAsync(bool blnNewValue)
+        public static Task SetIsLightModeAsync(bool blnNewValue, CancellationToken token = default)
         {
             if (_blnIsLightMode == blnNewValue)
                 return Task.CompletedTask;
@@ -144,10 +146,10 @@ namespace Chummer
             return Program.MainForm == null ? Task.CompletedTask : Inner();
             async Task Inner()
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm);
+                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm, token: token);
                 try
                 {
-                    await Program.MainForm.UpdateLightDarkModeAsync();
+                    await Program.MainForm.UpdateLightDarkModeAsync(token);
                 }
                 finally
                 {
@@ -180,14 +182,15 @@ namespace Chummer
         /// Returns a version of a color that has its lightness almost inverted (slightly increased lightness from inversion, slight desaturation)
         /// </summary>
         /// <param name="objColor">Color whose lightness and saturation should be adjusted for Dark Mode.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with lightness and saturation adjusted for Dark Mode.</returns>
-        public static async Task<Color> GenerateDarkModeColorAsync(Color objColor)
+        public static async Task<Color> GenerateDarkModeColorAsync(Color objColor, CancellationToken token = default)
         {
-            (bool blnSuccess, Color objDarkModeColor) = await s_DicDarkModeColors.TryGetValueAsync(objColor);
+            (bool blnSuccess, Color objDarkModeColor) = await s_DicDarkModeColors.TryGetValueAsync(objColor, token);
             if (!blnSuccess)
             {
                 objDarkModeColor = GetDarkModeVersion(objColor);
-                await s_DicDarkModeColors.TryAddAsync(objColor, objDarkModeColor);
+                await s_DicDarkModeColors.TryAddAsync(objColor, objDarkModeColor, token);
             }
             return objDarkModeColor;
         }
@@ -211,14 +214,15 @@ namespace Chummer
         /// Returns an inverted version of a color that has gone through GenerateDarkModeColor()
         /// </summary>
         /// <param name="objColor">Color whose Dark Mode conversions for lightness and saturation should be inverted.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with its Dark Mode conversion inverted.</returns>
-        public static async Task<Color> GenerateInverseDarkModeColorAsync(Color objColor)
+        public static async Task<Color> GenerateInverseDarkModeColorAsync(Color objColor, CancellationToken token = default)
         {
-            (bool blnSuccess, Color objInverseDarkModeColor) = await s_DicInverseDarkModeColors.TryGetValueAsync(objColor);
+            (bool blnSuccess, Color objInverseDarkModeColor) = await s_DicInverseDarkModeColors.TryGetValueAsync(objColor, token);
             if (!blnSuccess)
             {
                 objInverseDarkModeColor = InverseGetDarkModeVersion(objColor);
-                await s_DicInverseDarkModeColors.TryAddAsync(objColor, objInverseDarkModeColor);
+                await s_DicInverseDarkModeColors.TryAddAsync(objColor, objInverseDarkModeColor, token);
             }
             return objInverseDarkModeColor;
         }
@@ -237,10 +241,11 @@ namespace Chummer
         /// Returns a version of a color that has is adapted to the current Color mode setting (same color in Light mode, changed one in Dark mode)
         /// </summary>
         /// <param name="objColor">Color as it would be in Light mode</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>New Color object identical to <paramref name="objColor"/>, but potentially adapted to dark mode.</returns>
-        public static Task<Color> GenerateCurrentModeColorAsync(Color objColor)
+        public static Task<Color> GenerateCurrentModeColorAsync(Color objColor, CancellationToken token = default)
         {
-            return IsLightMode ? Task.FromResult(objColor) : GenerateDarkModeColorAsync(objColor);
+            return IsLightMode ? Task.FromResult(objColor) : GenerateDarkModeColorAsync(objColor, token);
         }
 
         /// <summary>
@@ -257,10 +262,11 @@ namespace Chummer
         /// Returns a version of a color that is independent of the current Color mode and can savely be used for storing.
         /// </summary>
         /// <param name="objColor">Color as it is shown in current color mode</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>New Color object identical to <paramref name="objColor"/>, but potentially adapted to light mode.</returns>
-        public static Task<Color> GenerateModeIndependentColorAsync(Color objColor)
+        public static Task<Color> GenerateModeIndependentColorAsync(Color objColor, CancellationToken token = default)
         {
-            return IsLightMode ? Task.FromResult(objColor) : GenerateInverseDarkModeColorAsync(objColor);
+            return IsLightMode ? Task.FromResult(objColor) : GenerateInverseDarkModeColorAsync(objColor, token);
         }
 
         /// <summary>
@@ -292,27 +298,28 @@ namespace Chummer
         /// Returns a version of a color that has its lightness dimmed down in Light mode or brightened in Dark Mode
         /// </summary>
         /// <param name="objColor">Color whose lightness should be dimmed.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with its lightness values dimmed.</returns>
-        public static async Task<Color> GenerateCurrentModeDimmedColorAsync(Color objColor)
+        public static async Task<Color> GenerateCurrentModeDimmedColorAsync(Color objColor, CancellationToken token = default)
         {
             bool blnSuccess;
             Color objRetColor;
             if (IsLightMode)
             {
-                (blnSuccess, objRetColor) = await s_DicDimmedColors.TryGetValueAsync(objColor);
+                (blnSuccess, objRetColor) = await s_DicDimmedColors.TryGetValueAsync(objColor, token);
                 if (!blnSuccess)
                 {
                     objRetColor = GetDimmedVersion(objColor);
-                    await s_DicDimmedColors.TryAddAsync(objColor, objRetColor);
+                    await s_DicDimmedColors.TryAddAsync(objColor, objRetColor, token);
                 }
             }
             else
             {
-                (blnSuccess, objRetColor) = await s_DicBrightenedColors.TryGetValueAsync(objColor);
+                (blnSuccess, objRetColor) = await s_DicBrightenedColors.TryGetValueAsync(objColor, token);
                 if (!blnSuccess)
                 {
                     objRetColor = GetBrightenedVersion(objColor);
-                    await s_DicBrightenedColors.TryAddAsync(objColor, objRetColor);
+                    await s_DicBrightenedColors.TryAddAsync(objColor, objRetColor, token);
                 }
             }
 
@@ -337,10 +344,11 @@ namespace Chummer
         /// If the original color is valid in Dark Mode to begin with, the transforms should end up reproducing it.
         /// </summary>
         /// <param name="objColor">Color to adjust, originally specified within Dark Mode.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>New Color very similar to <paramref name="objColor"/>, but with lightness and saturation values set to within the range allowable in Dark Mode.</returns>
-        private static async Task<Color> TransformToDarkModeValidVersionAsync(Color objColor)
+        private static async Task<Color> TransformToDarkModeValidVersionAsync(Color objColor, CancellationToken token = default)
         {
-            return await GenerateDarkModeColorAsync(await GenerateInverseDarkModeColorAsync(objColor));
+            return await GenerateDarkModeColorAsync(await GenerateInverseDarkModeColorAsync(objColor, token), token);
         }
 
         public static Color WindowText => IsLightMode ? WindowTextLight : WindowTextDark;
@@ -555,14 +563,14 @@ namespace Chummer
             ApplyColorsRecursively(tssItem, blnLightMode);
         }
 
-        public static Task UpdateLightDarkModeAsync(this Control objControl)
+        public static Task UpdateLightDarkModeAsync(this Control objControl, CancellationToken token = default)
         {
-            return ApplyColorsRecursivelyAsync(objControl, IsLightMode);
+            return ApplyColorsRecursivelyAsync(objControl, IsLightMode, token);
         }
 
-        public static Task UpdateLightDarkModeAsync(this Control objControl, bool blnLightMode)
+        public static Task UpdateLightDarkModeAsync(this Control objControl, bool blnLightMode, CancellationToken token = default)
         {
-            return ApplyColorsRecursivelyAsync(objControl, blnLightMode);
+            return ApplyColorsRecursivelyAsync(objControl, blnLightMode, token);
         }
 
         #region Color Inversion Methods
@@ -931,12 +939,12 @@ namespace Chummer
                 ApplyColorsRecursively(nodNodeChild, blnLightMode);
         }
 
-        private static async Task ApplyColorsRecursivelyAsync(Control objControl, bool blnLightMode)
+        private static async Task ApplyColorsRecursivelyAsync(Control objControl, bool blnLightMode, CancellationToken token = default)
         {
             Task ApplyButtonStyle()
             {
                 // Buttons look weird if colored based on anything other than the default color scheme in dark mode
-                return objControl.DoThreadSafeAsync(x => x.ForeColor = SystemColors.ControlText);
+                return objControl.DoThreadSafeAsync(x => x.ForeColor = SystemColors.ControlText, token);
             }
             switch (objControl)
             {
@@ -959,7 +967,7 @@ namespace Chummer
                             objColumn.DefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
                             objColumn.DefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;
                         }
-                    });
+                    }, token);
                     break;
 
                 case SplitContainer objSplitControl:
@@ -969,9 +977,9 @@ namespace Chummer
                             ? SplitterColorLight
                             : SplitterColorDark;
                         x.BackColor = blnLightMode ? SplitterColorLight : SplitterColorDark;
-                    });
-                    await ApplyColorsRecursivelyAsync(await objSplitControl.DoThreadSafeFuncAsync(x => x.Panel1), blnLightMode);
-                    await ApplyColorsRecursivelyAsync(await objSplitControl.DoThreadSafeFuncAsync(x => x.Panel2), blnLightMode);
+                    }, token);
+                    await ApplyColorsRecursivelyAsync(await objSplitControl.DoThreadSafeFuncAsync(x => x.Panel1, token: token), blnLightMode, token);
+                    await ApplyColorsRecursivelyAsync(await objSplitControl.DoThreadSafeFuncAsync(x => x.Panel2, token: token), blnLightMode, token);
                     break;
 
                 case TreeView treControl:
@@ -982,7 +990,7 @@ namespace Chummer
                         x.LineColor = blnLightMode ? WindowTextLight : WindowTextDark;
                         foreach (TreeNode objNode in x.Nodes)
                             ApplyColorsRecursively(objNode, blnLightMode);
-                    });
+                    }, token);
                     break;
 
                 case TextBox txtControl:
@@ -998,7 +1006,7 @@ namespace Chummer
                             x.BackColor = blnLightMode ? ControlLight : ControlDark;
                         else
                             x.BackColor = blnLightMode ? WindowLight : WindowDark;
-                    });
+                    }, token);
                     break;
 
                 case ListView objListView:
@@ -1034,7 +1042,7 @@ namespace Chummer
                                 objItem.BackColor = blnLightMode ? WindowLight : WindowDark;
                             }
                         }
-                    });
+                    }, token);
                     break;
 
                 case ListBox _:
@@ -1044,7 +1052,7 @@ namespace Chummer
                     {
                         x.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
                         x.BackColor = blnLightMode ? WindowLight : WindowDark;
-                    });
+                    }, token);
                     break;
 
                 case GroupBox _:
@@ -1052,7 +1060,7 @@ namespace Chummer
                     {
                         x.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
                         x.BackColor = blnLightMode ? ControlLight : ControlDark;
-                    });
+                    }, token);
                     break;
 
                 case ContactControl _:
@@ -1067,7 +1075,7 @@ namespace Chummer
                     return;
 
                 case CheckBox chkControl:
-                    if (await chkControl.DoThreadSafeFuncAsync(x => x.Appearance == Appearance.Button) || chkControl is DpiFriendlyCheckBoxDisguisedAsButton)
+                    if (await chkControl.DoThreadSafeFuncAsync(x => x.Appearance == Appearance.Button, token) || chkControl is DpiFriendlyCheckBoxDisguisedAsButton)
                     {
                         await ApplyButtonStyle();
                         break;
@@ -1082,13 +1090,13 @@ namespace Chummer
                                 x.ForeColor = ControlTextLight;
                             else
                                 x.ForeColor = x.Enabled ? ControlTextDark : GrayText;
-                        });
+                        }, token);
                         break;
                     }
                     goto default;
 
                 case Button cmdControl:
-                    if (await cmdControl.DoThreadSafeFuncAsync(x => x.FlatStyle) == FlatStyle.Flat)
+                    if (await cmdControl.DoThreadSafeFuncAsync(x => x.FlatStyle, token) == FlatStyle.Flat)
                         goto default;
                     await ApplyButtonStyle();
                     break;
@@ -1099,7 +1107,7 @@ namespace Chummer
                     {
                         x.ForeColor = blnLightMode ? ControlLightestLight : ControlLightestDark;
                         x.BackColor = blnLightMode ? ControlTextLight : ControlTextDark;
-                    });
+                    }, token);
                     return;
 
                 case TableLayoutPanel tlpControl:
@@ -1107,7 +1115,7 @@ namespace Chummer
                     {
                         if (x.BorderStyle != BorderStyle.None)
                             x.BorderStyle = blnLightMode ? BorderStyle.FixedSingle : BorderStyle.Fixed3D;
-                    });
+                    }, token);
                     goto default;
                 case Form frmControl:
                     await frmControl.DoThreadSafeAsync(x =>
@@ -1115,18 +1123,18 @@ namespace Chummer
                         if (x.MainMenuStrip != null)
                             foreach (ToolStripMenuItem tssItem in x.MainMenuStrip.Items)
                                 ApplyColorsRecursively(tssItem, blnLightMode);
-                    });
+                    }, token);
                     goto default;
                 case TabControl objTabControl:
-                    foreach (TabPage tabPage in await objTabControl.DoThreadSafeFuncAsync(x => x.TabPages))
-                        await ApplyColorsRecursivelyAsync(tabPage, blnLightMode);
+                    foreach (TabPage tabPage in await objTabControl.DoThreadSafeFuncAsync(x => x.TabPages, token))
+                        await ApplyColorsRecursivelyAsync(tabPage, blnLightMode, token);
                     goto default;
                 case ToolStrip tssStrip:
                     await tssStrip.DoThreadSafeAsync(x =>
                     {
                         foreach (ToolStripItem tssItem in x.Items)
                             ApplyColorsRecursively(tssItem, blnLightMode);
-                    });
+                    }, token);
                     goto default;
                 default:
                     await objControl.DoThreadSafeAsync(x =>
@@ -1150,13 +1158,13 @@ namespace Chummer
                             else
                                 x.BackColor = blnLightMode ? ControlLight : ControlDark;
                         }
-                    });
+                    }, token);
 
                     break;
             }
 
-            foreach (Control objChild in await objControl.DoThreadSafeFuncAsync(x => x.Controls))
-                await ApplyColorsRecursivelyAsync(objChild, blnLightMode);
+            foreach (Control objChild in await objControl.DoThreadSafeFuncAsync(x => x.Controls, token))
+                await ApplyColorsRecursivelyAsync(objChild, blnLightMode, token);
         }
 
         #endregion Color Inversion Methods

@@ -27,6 +27,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
@@ -622,7 +623,7 @@ namespace Chummer.Backend.Skills
             if (xmlNode.TryGetField("guid", Guid.TryParse, out guiTemp))
                 _guidInternalId = guiTemp;
 
-            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(this.GetNodeXPath);
+            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
             bool blnTemp = false;
             if (xmlNode.TryGetBoolFieldQuickly("requiresgroundmovement", ref blnTemp) || objMyNode.Value?.TryGetBoolFieldQuickly("requiresgroundmovement", ref blnTemp) == true)
                 RequiresGroundMovement = blnTemp;
@@ -2128,15 +2129,15 @@ namespace Chummer.Backend.Skills
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
                                             && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
             _objCachedMyXmlNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? CharacterObject.LoadData("skills.xml", strLanguage)
-                    : await CharacterObject.LoadDataAsync("skills.xml", strLanguage))
+                    ? CharacterObject.LoadData("skills.xml", strLanguage, token: token)
+                    : await CharacterObject.LoadDataAsync("skills.xml", strLanguage, token: token))
                 .SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
                                                 IsKnowledgeSkill
                                                     ? "/chummer/knowledgeskills/skill[id = {0} or id = {1}]"
@@ -2151,15 +2152,15 @@ namespace Chummer.Backend.Skills
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXPathNode;
             _objCachedMyXPathNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? CharacterObject.LoadDataXPath("skills.xml", strLanguage)
-                    : await CharacterObject.LoadDataXPathAsync("skills.xml", strLanguage))
+                    ? CharacterObject.LoadDataXPath("skills.xml", strLanguage, token: token)
+                    : await CharacterObject.LoadDataXPathAsync("skills.xml", strLanguage, token: token))
                 .SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
                                                 IsKnowledgeSkill
                                                     ? "/chummer/knowledgeskills/skill[id = {0} or id = {1}]"

@@ -467,31 +467,31 @@ namespace Chummer
             }
         }
 
-        public XmlNode GetNode(bool blnReturnMetatypeOnly, string strLanguage = "")
+        public XmlNode GetNode(bool blnReturnMetatypeOnly, string strLanguage = "", CancellationToken token = default)
         {
-            return GetNodeCoreAsync(true, blnReturnMetatypeOnly, strLanguage).GetAwaiter().GetResult();
+            return GetNodeCoreAsync(true, blnReturnMetatypeOnly, strLanguage, token).GetAwaiter().GetResult();
         }
 
-        public Task<XmlNode> GetNodeAsync(bool blnReturnMetatypeOnly, string strLanguage = "")
+        public Task<XmlNode> GetNodeAsync(bool blnReturnMetatypeOnly, string strLanguage = "", CancellationToken token = default)
         {
-            return GetNodeCoreAsync(false, blnReturnMetatypeOnly, strLanguage);
+            return GetNodeCoreAsync(false, blnReturnMetatypeOnly, strLanguage, token);
         }
 
-        public Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
+        public Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            return GetNodeCoreAsync(blnSync, false, strLanguage);
+            return GetNodeCoreAsync(blnSync, false, strLanguage, token);
         }
 
-        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, bool blnReturnMetatypeOnly, string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, bool blnReturnMetatypeOnly, string strLanguage, CancellationToken token = default)
         {
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? EnterReadLock.Enter(LockObject) : await EnterReadLock.EnterAsync(LockObject))
+            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token))
             {
                 string strFile = IsCritter ? "critters.xml" : "metatypes.xml";
                 XmlDocument xmlDoc = blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? LoadData(strFile, strLanguage)
-                    : await LoadDataAsync(strFile, strLanguage);
+                    ? LoadData(strFile, strLanguage, token: token)
+                    : await LoadDataAsync(strFile, strLanguage, token: token);
                 XmlNode xmlMetatypeNode = xmlDoc.SelectSingleNode(MetatypeGuid == Guid.Empty
                     ? "/chummer/metatypes/metatype[name = "
                       + Metatype.CleanXPath() + ']'
@@ -525,31 +525,31 @@ namespace Chummer
             }
         }
 
-        public XPathNavigator GetNodeXPath(bool blnReturnMetatypeOnly, string strLanguage = "")
+        public XPathNavigator GetNodeXPath(bool blnReturnMetatypeOnly, string strLanguage = "", CancellationToken token = default)
         {
-            return GetNodeXPathCoreAsync(true, blnReturnMetatypeOnly, strLanguage).GetAwaiter().GetResult();
+            return GetNodeXPathCoreAsync(true, blnReturnMetatypeOnly, strLanguage, token).GetAwaiter().GetResult();
         }
 
-        public Task<XPathNavigator> GetNodeXPathAsync(bool blnReturnMetatypeOnly, string strLanguage = "")
+        public Task<XPathNavigator> GetNodeXPathAsync(bool blnReturnMetatypeOnly, string strLanguage = "", CancellationToken token = default)
         {
-            return GetNodeXPathCoreAsync(false, blnReturnMetatypeOnly, strLanguage);
+            return GetNodeXPathCoreAsync(false, blnReturnMetatypeOnly, strLanguage, token);
         }
 
-        public Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        public Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            return GetNodeXPathCoreAsync(blnSync, false, strLanguage);
+            return GetNodeXPathCoreAsync(blnSync, false, strLanguage, token);
         }
 
-        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, bool blnReturnMetatypeOnly, string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, bool blnReturnMetatypeOnly, string strLanguage, CancellationToken token = default)
         {
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? EnterReadLock.Enter(LockObject) : await EnterReadLock.EnterAsync(LockObject))
+            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token))
             {
                 string strFile = IsCritter ? "critters.xml" : "metatypes.xml";
                 XPathNavigator xmlDoc = blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? LoadDataXPath(strFile, strLanguage)
-                    : await LoadDataXPathAsync(strFile, strLanguage);
+                    ? LoadDataXPath(strFile, strLanguage, token: token)
+                    : await LoadDataXPathAsync(strFile, strLanguage, token: token);
                 XPathNavigator xmlMetatypeNode = xmlDoc.SelectSingleNode(MetatypeGuid == Guid.Empty
                     ? "/chummer/metatypes/metatype[name = " + Metatype.CleanXPath() + ']'
                     : "/chummer/metatypes/metatype[id = " +
@@ -2614,9 +2614,9 @@ namespace Chummer
         /// <summary>
         /// Save the Character to an XML file. Returns true if successful.
         /// </summary>
-        public bool Save(string strFileName = "", bool addToMRU = true, bool callOnSaveCallBack = true)
+        public bool Save(string strFileName = "", bool addToMRU = true, bool callOnSaveCallBack = true, CancellationToken token = default)
         {
-            return SaveCoreAsync(true, strFileName, addToMRU, callOnSaveCallBack).GetAwaiter().GetResult();
+            return SaveCoreAsync(true, strFileName, addToMRU, callOnSaveCallBack, token).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -5160,7 +5160,7 @@ namespace Chummer
                                 if (!xmlCharacterNavigator.TryGetGuidFieldQuickly("metatypeid", ref _guiMetatype)
                                     && !Guid.TryParse(
                                         // ReSharper disable once MethodHasAsyncOverload
-                                        (blnSync ? GetNodeXPath(true) : await GetNodeXPathAsync(true))
+                                        (blnSync ? GetNodeXPath(true, token: token) : await GetNodeXPathAsync(true, token: token))
                                         ?.SelectSingleNode("id")?.Value, out _guiMetatype))
                                 {
                                     return false;
@@ -5192,7 +5192,7 @@ namespace Chummer
                                 if (!string.IsNullOrEmpty(_strMetavariant) && _strMetatype == _strMetavariant)
                                 {
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    _strMetatype = (blnSync ? GetNodeXPath(true) : await GetNodeXPathAsync(true))
+                                    _strMetatype = (blnSync ? GetNodeXPath(true, token: token) : await GetNodeXPathAsync(true, token: token))
                                                    .SelectSingleNode("name")?.Value ?? "Human";
                                 }
 
@@ -5203,7 +5203,7 @@ namespace Chummer
                                     _guiMetavariant
                                         = Guid.Parse(
                                             // ReSharper disable once MethodHasAsyncOverload
-                                            (blnSync ? this.GetNodeXPath() : await this.GetNodeXPathAsync())
+                                            (blnSync ? this.GetNodeXPath(token: token) : await this.GetNodeXPathAsync(token: token))
                                             ?.SelectSingleNode("id")?.Value);
                                 }
 
@@ -5218,7 +5218,7 @@ namespace Chummer
                                 {
                                     XPathNavigator xmlCharNode
                                         // ReSharper disable once MethodHasAsyncOverload
-                                        = blnSync ? this.GetNodeXPath() : await this.GetNodeXPathAsync();
+                                        = blnSync ? this.GetNodeXPath(token: token) : await this.GetNodeXPathAsync(token: token);
                                     if (xmlCharNode != null)
                                     {
                                         _strSource = xmlCharNode.SelectSingleNode("source")?.Value ?? _strSource;
@@ -5676,8 +5676,8 @@ namespace Chummer
                                                 await _lstQualities.AddAsync(objQuality);
                                             if ((blnSync
                                                     // ReSharper disable once MethodHasAsyncOverload
-                                                    ? objQuality.GetNodeXPath()
-                                                    : await objQuality.GetNodeXPathAsync())
+                                                    ? objQuality.GetNodeXPath(token: token)
+                                                    : await objQuality.GetNodeXPathAsync(token: token))
                                                 ?.SelectSingleNode("bonus/addgear/name")
                                                 ?.Value ==
                                                 "Living Persona")
@@ -5705,8 +5705,8 @@ namespace Chummer
                                                         objQuality.InternalId);
                                                 XmlNode objNode = blnSync
                                                     // ReSharper disable once MethodHasAsyncOverload
-                                                    ? objQuality.GetNode()
-                                                    : await objQuality.GetNodeAsync();
+                                                    ? objQuality.GetNode(token: token)
+                                                    : await objQuality.GetNodeAsync(token: token);
                                                 if (objNode != null)
                                                 {
                                                     objQuality.Bonus = objNode["bonus"];
@@ -6470,8 +6470,8 @@ namespace Chummer
                                     {
                                         XmlNode objNode = blnSync
                                             // ReSharper disable once MethodHasAsyncOverload
-                                            ? objCyberware.GetNode()
-                                            : await objCyberware.GetNodeAsync();
+                                            ? objCyberware.GetNode(token: token)
+                                            : await objCyberware.GetNodeAsync(token: token);
                                         if (objNode != null)
                                         {
                                             if (blnSync)
@@ -6575,8 +6575,8 @@ namespace Chummer
                                         {
                                             XmlNode objNode = blnSync
                                                 // ReSharper disable once MethodHasAsyncOverload
-                                                ? objCyberware.GetNode()
-                                                : await objCyberware.GetNodeAsync();
+                                                ? objCyberware.GetNode(token: token)
+                                                : await objCyberware.GetNodeAsync(token: token);
                                             if (objNode != null)
                                             {
                                                 if (blnSync)
@@ -7099,8 +7099,8 @@ namespace Chummer
 
                                     XmlNode objNode = blnSync
                                         // ReSharper disable once MethodHasAsyncOverload
-                                        ? objLivingPersonaQuality.GetNode()
-                                        : await objLivingPersonaQuality.GetNodeAsync();
+                                        ? objLivingPersonaQuality.GetNode(token: token)
+                                        : await objLivingPersonaQuality.GetNodeAsync(token: token);
                                     if (objNode != null)
                                     {
                                         objLivingPersonaQuality.Bonus = objNode["bonus"];
@@ -8649,7 +8649,7 @@ namespace Chummer
                         foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
                                      Improvement.ImprovementType.LimitModifier, "Physical"))
                         {
-                            string strName = GetObjectName(objImprovement, strLanguageToPrint);
+                            string strName = await GetObjectNameAsync(objImprovement, strLanguageToPrint);
                             if (strName == objImprovement.SourceName)
                                 strName = objImprovement.UniqueName;
                             strName += await LanguageManager.GetStringAsync("String_Colon", strLanguageToPrint) +
@@ -8696,7 +8696,7 @@ namespace Chummer
                         foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
                                      Improvement.ImprovementType.LimitModifier, "Mental"))
                         {
-                            string strName = GetObjectName(objImprovement, strLanguageToPrint);
+                            string strName = await GetObjectNameAsync(objImprovement, strLanguageToPrint);
                             if (strName == objImprovement.SourceName)
                                 strName = objImprovement.UniqueName;
                             strName += await LanguageManager.GetStringAsync("String_Colon", strLanguageToPrint) +
@@ -8743,7 +8743,7 @@ namespace Chummer
                         foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
                                      Improvement.ImprovementType.LimitModifier, "Social"))
                         {
-                            string strName = GetObjectName(objImprovement, strLanguageToPrint);
+                            string strName = await GetObjectNameAsync(objImprovement, strLanguageToPrint);
                             if (strName == objImprovement.SourceName)
                                 strName = objImprovement.UniqueName;
                             strName += await LanguageManager.GetStringAsync("String_Colon", strLanguageToPrint) +
@@ -9572,7 +9572,8 @@ namespace Chummer
         /// </summary>
         /// <param name="objImprovement">Improvement to check.</param>
         /// <param name="strLanguage">Language in which to fetch name.</param>
-        public string GetObjectName(Improvement objImprovement, string strLanguage = "")
+        /// <param name="token">Cancellation token to listen to.</param>
+        public string GetObjectName(Improvement objImprovement, string strLanguage = "", CancellationToken token = default)
         {
             if (objImprovement == null)
                 return string.Empty;
@@ -9589,7 +9590,7 @@ namespace Chummer
             }
 
             Improvement.ImprovementSource eSource = objImprovement.ImproveSource;
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 switch (eSource)
                 {
@@ -10068,11 +10069,11 @@ namespace Chummer
                         if (strImprovedSourceName.StartsWith("SEEKER", StringComparison.Ordinal))
                         {
                             if (strImprovedSourceName == "SEEKER_WIL")
-                                return LoadDataXPath("qualities.xml")
+                                return LoadDataXPath("qualities.xml", token: token)
                                        .SelectSingleNode(
                                            "/chummer/qualities/quality[name = \"Cyber-Singularity Seeker\"]/translate")
                                        ?.Value ?? "Cyber-Singularity Seeker";
-                            return LoadDataXPath("qualities.xml")
+                            return LoadDataXPath("qualities.xml", token: token)
                                    .SelectSingleNode("/chummer/qualities/quality[name = \"Redliner\"]/translate")
                                    ?.Value ?? "Redliner";
                         }
@@ -10121,7 +10122,7 @@ namespace Chummer
                     case Improvement.ImprovementSource.AstralReputation:
                         return LanguageManager.GetString("String_AstralReputation", strLanguage);
                     case Improvement.ImprovementSource.CyberadeptDaemon:
-                        return LoadDataXPath("qualities.xml", strLanguage)
+                        return LoadDataXPath("qualities.xml", strLanguage, token: token)
                                .SelectSingleNode(
                                    "/chummer/qualities/quality[name = \"Resonant Stream: Cyberadept\"]/translate")
                                ?.Value ?? "Resonant Stream: Cyberadept";
@@ -10136,6 +10137,587 @@ namespace Chummer
                         {
                             string strTemp = LanguageManager.GetString("String_" + objImprovement.ImproveSource,
                                                                        strLanguage, false);
+                            if (!string.IsNullOrEmpty(strTemp))
+                                strReturn = strTemp;
+                        }
+
+                        return strReturn;
+                }
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Retrieve the name of the Object that created an Improvement.
+        /// </summary>
+        /// <param name="objImprovement">Improvement to check.</param>
+        /// <param name="strLanguage">Language in which to fetch name.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task<string> GetObjectNameAsync(Improvement objImprovement, string strLanguage = "", CancellationToken token = default)
+        {
+            if (objImprovement == null)
+                return string.Empty;
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
+            string strImprovedSourceName = objImprovement.SourceName.TrimEndOnce("Pair");
+            bool blnWireless = false;
+
+            if (strImprovedSourceName.EndsWith("Wireless", StringComparison.Ordinal))
+            {
+                blnWireless = true;
+                strImprovedSourceName = strImprovedSourceName.TrimEndOnce("Wireless", true);
+            }
+
+            Improvement.ImprovementSource eSource = objImprovement.ImproveSource;
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                switch (eSource)
+                {
+                    case Improvement.ImprovementSource.Bioware:
+                    case Improvement.ImprovementSource.Cyberware:
+                        {
+                            Cyberware objCyberware = Cyberware.DeepFirstOrDefault(x => x.Children,
+                                                                                  x => x.InternalId == strImprovedSourceName
+                                                                                      && x.SourceType == eSource);
+                            if (objCyberware != null)
+                            {
+                                string strWareReturn = await objCyberware.DisplayNameShortAsync(strLanguage);
+                                if (objCyberware.Parent != null)
+                                    strWareReturn += strSpace + '(' + await objCyberware.Parent.DisplayNameShortAsync(strLanguage)
+                                                     + ')';
+                                if (blnWireless)
+                                    strWareReturn += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage);
+                                return strWareReturn;
+                            }
+
+                            foreach (Vehicle objVehicle in Vehicles)
+                            {
+                                foreach (VehicleMod objVehicleMod in objVehicle.Mods)
+                                {
+                                    objCyberware = objVehicleMod.Cyberware.DeepFirstOrDefault(x => x.Children,
+                                        x => x.InternalId == strImprovedSourceName);
+                                    if (objCyberware != null)
+                                    {
+                                        string strWareReturn
+                                            = await objCyberware.DisplayNameShortAsync(strLanguage) + strSpace + '('
+                                              + objVehicle.DisplayNameShort(strLanguage) + ','
+                                              + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage);
+                                        if (objCyberware.Parent != null)
+                                            strWareReturn += ',' + strSpace
+                                                                 + await objCyberware.Parent.DisplayNameShortAsync(strLanguage);
+                                        strWareReturn += ')';
+                                        if (blnWireless)
+                                            strWareReturn
+                                                += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage);
+                                        return strWareReturn;
+                                    }
+                                }
+
+                                foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                                {
+                                    foreach (VehicleMod objVehicleMod in objMount.Mods)
+                                    {
+                                        objCyberware = objVehicleMod.Cyberware.DeepFirstOrDefault(x => x.Children,
+                                            x => x.InternalId == strImprovedSourceName);
+                                        if (objCyberware != null)
+                                        {
+                                            string strWareReturn
+                                                = await objCyberware.DisplayNameShortAsync(strLanguage) + strSpace + '('
+                                                  + objVehicle.DisplayNameShort(strLanguage) + ',' + strSpace
+                                                  + objMount.DisplayNameShort(strLanguage) + ','
+                                                  + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage);
+                                            if (objCyberware.Parent != null)
+                                                strWareReturn += ',' + strSpace
+                                                                     + await objCyberware.Parent.DisplayNameShortAsync(strLanguage);
+                                            strWareReturn += ')';
+                                            if (blnWireless)
+                                                strWareReturn += strSpace
+                                                                 + await LanguageManager.GetStringAsync(
+                                                                     "String_Wireless", strLanguage);
+                                            return strWareReturn;
+                                        }
+                                    }
+                                }
+                            }
+
+                            break;
+                        }
+                    case Improvement.ImprovementSource.Gear:
+                        {
+                            Gear objReturnGear =
+                                Gear.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strImprovedSourceName);
+                            if (objReturnGear != null)
+                            {
+                                string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage);
+                                if (objReturnGear.Parent is Gear parent)
+                                    strGearReturn += strSpace + '(' + await parent.DisplayNameShortAsync(strLanguage) + ')';
+                                if (blnWireless)
+                                    strGearReturn += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage);
+                                return strGearReturn;
+                            }
+
+                            objReturnGear
+                                = Weapons.FindWeaponGear(strImprovedSourceName, out WeaponAccessory objGearAccessory);
+
+                            if (objReturnGear != null)
+                            {
+                                string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage);
+                                if (objReturnGear.Parent is Gear parent)
+                                    strGearReturn += strSpace + '(' + await objGearAccessory.Parent.DisplayNameShortAsync(strLanguage)
+                                                     + ','
+                                                     + strSpace
+                                                     + await objGearAccessory.DisplayNameShortAsync(strLanguage) + ',' + strSpace
+                                                     + await parent.DisplayNameShortAsync(strLanguage) + ')';
+                                else
+                                    strGearReturn += strSpace + '(' + await objGearAccessory.Parent.DisplayNameShortAsync(strLanguage)
+                                                     + ','
+                                                     + strSpace + await objGearAccessory.DisplayNameShortAsync(strLanguage) + ')';
+                                if (blnWireless)
+                                    strGearReturn
+                                        += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage);
+                                return strGearReturn;
+                            }
+
+                            objReturnGear
+                                = Armor.FindArmorGear(strImprovedSourceName, out Armor objArmor, out ArmorMod objArmorMod);
+                            if (objReturnGear != null)
+                            {
+                                string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage);
+                                if (objReturnGear.Parent is Gear objParent)
+                                {
+                                    strGearReturn += strSpace + '(' + await objArmor.DisplayNameShortAsync(strLanguage) + ','
+                                                     + strSpace
+                                                     + await objArmorMod.DisplayNameShortAsync(strLanguage) + ',' + strSpace
+                                                     + await objParent.DisplayNameShortAsync(strLanguage) + ')';
+                                }
+                                else if (objArmorMod != null)
+                                    strGearReturn += strSpace + '(' + await objArmor.DisplayNameShortAsync(strLanguage) + ','
+                                                     + strSpace
+                                                     + await objArmorMod.DisplayNameShortAsync(strLanguage) + ')';
+                                else
+                                    strGearReturn += strSpace + '(' + await objArmor.DisplayNameShortAsync(strLanguage) + ')';
+
+                                if (blnWireless)
+                                    strGearReturn += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage);
+                                return strGearReturn;
+                            }
+
+                            objReturnGear
+                                = Cyberware.FindCyberwareGear(strImprovedSourceName, out Cyberware objGearCyberware);
+
+                            if (objReturnGear != null)
+                            {
+                                string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage);
+                                if (objReturnGear.Parent is Gear parent)
+                                    strGearReturn += strSpace + '(' + await objGearCyberware.DisplayNameShortAsync(strLanguage) + ','
+                                                     + strSpace
+                                                     + strSpace + await parent.DisplayNameShortAsync(strLanguage) + ')';
+                                else
+                                    strGearReturn += strSpace + '(' + await objGearCyberware.DisplayNameShortAsync(strLanguage) + ')';
+                                if (blnWireless)
+                                    strGearReturn += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage);
+                                return strGearReturn;
+                            }
+
+                            foreach (Vehicle objVehicle in Vehicles)
+                            {
+                                objReturnGear = objVehicle.GearChildren.DeepFirstOrDefault(x => x.Children,
+                                    x => x.InternalId == strImprovedSourceName);
+                                if (objReturnGear != null)
+                                {
+                                    string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage);
+                                    if (objReturnGear.Parent is Gear parent)
+                                        strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                         + strSpace
+                                                         + strSpace + await parent.DisplayNameShortAsync(strLanguage) + ')';
+                                    else
+                                        strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ')';
+                                    if (blnWireless)
+                                        strGearReturn
+                                            += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage);
+                                    return strGearReturn;
+                                }
+
+                                foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children,
+                                             x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
+                                {
+                                    foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                                    {
+                                        objReturnGear = objAccessory.GearChildren.DeepFirstOrDefault(x => x.Children,
+                                            x => x.InternalId == strImprovedSourceName);
+                                        if (objReturnGear != null)
+                                        {
+                                            string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage);
+                                            if (objReturnGear.Parent is Gear parent)
+                                                strGearReturn
+                                                    += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                       + strSpace
+                                                       + await objWeapon.DisplayNameShortAsync(strLanguage) + ',' + strSpace
+                                                       + await objAccessory.DisplayNameShortAsync(strLanguage) + ','
+                                                       + strSpace + await parent.DisplayNameShortAsync(strLanguage) + ')';
+                                            else
+                                                strGearReturn
+                                                    += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                       + strSpace
+                                                       + await objWeapon.DisplayNameShortAsync(strLanguage) + ',' + strSpace
+                                                       + await objAccessory.DisplayNameShortAsync(strLanguage) + ')';
+                                            if (blnWireless)
+                                                strGearReturn += strSpace
+                                                                 + await LanguageManager.GetStringAsync(
+                                                                     "String_Wireless", strLanguage);
+                                            return strGearReturn;
+                                        }
+                                    }
+                                }
+
+                                foreach (VehicleMod objVehicleMod in objVehicle.Mods)
+                                {
+                                    foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(x => x.Children,
+                                                 x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
+                                    {
+                                        foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                                        {
+                                            objReturnGear = objAccessory.GearChildren.DeepFirstOrDefault(x => x.Children,
+                                                x => x.InternalId == strImprovedSourceName);
+                                            if (objReturnGear != null)
+                                            {
+                                                string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage);
+                                                if (objReturnGear.Parent is Gear parent)
+                                                    strGearReturn
+                                                        += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                           + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage)
+                                                           + ',' + strSpace + await objWeapon.DisplayNameShortAsync(strLanguage) + ','
+                                                           + strSpace + await objAccessory.DisplayNameShortAsync(strLanguage)
+                                                           + ',' + strSpace + await parent.DisplayNameShortAsync(strLanguage) + ')';
+                                                else
+                                                    strGearReturn
+                                                        += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                           + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage)
+                                                           + ',' + strSpace + await objWeapon.DisplayNameShortAsync(strLanguage) + ','
+                                                           + strSpace + await objAccessory.DisplayNameShortAsync(strLanguage) + ')';
+                                                if (blnWireless)
+                                                    strGearReturn += strSpace
+                                                                     + await LanguageManager.GetStringAsync(
+                                                                         "String_Wireless", strLanguage);
+                                                return strGearReturn;
+                                            }
+                                        }
+                                    }
+
+                                    foreach (Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhere(x => x.Children,
+                                                 x => x.GearChildren.Count > 0))
+                                    {
+                                        objReturnGear = objCyberware.GearChildren.DeepFirstOrDefault(x => x.Children,
+                                            x => x.InternalId == strImprovedSourceName);
+                                        if (objReturnGear != null)
+                                        {
+                                            string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage);
+                                            if (objReturnGear.Parent is Gear parent)
+                                                strGearReturn
+                                                    += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                       + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage)
+                                                       + ',' + strSpace + await objCyberware.DisplayNameShortAsync(strLanguage) + ','
+                                                       + strSpace + await parent.DisplayNameShortAsync(strLanguage) + ')';
+                                            else
+                                                strGearReturn
+                                                    += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                       + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage)
+                                                       + ',' + strSpace + await objCyberware.DisplayNameShortAsync(strLanguage) + ')';
+                                            if (blnWireless)
+                                                strGearReturn += strSpace
+                                                                 + await LanguageManager.GetStringAsync(
+                                                                     "String_Wireless", strLanguage);
+                                            return strGearReturn;
+                                        }
+                                    }
+                                }
+
+                                foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                                {
+                                    foreach (VehicleMod objVehicleMod in objMount.Mods)
+                                    {
+                                        foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(x => x.Children,
+                                                     x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
+                                        {
+                                            foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                                            {
+                                                objReturnGear = objAccessory.GearChildren.DeepFirstOrDefault(
+                                                    x => x.Children,
+                                                    x => x.InternalId == strImprovedSourceName);
+                                                if (objReturnGear != null)
+                                                {
+                                                    string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage);
+                                                    if (objReturnGear.Parent is Gear parent)
+                                                        strGearReturn
+                                                            += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage)
+                                                               + ','
+                                                               + strSpace + objMount.DisplayNameShort(strLanguage) + ','
+                                                               + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage)
+                                                               + ',' + strSpace + await objWeapon.DisplayNameShortAsync(strLanguage)
+                                                               + ','
+                                                               + strSpace + await objAccessory.DisplayNameShortAsync(strLanguage)
+                                                               + ',' + strSpace + await parent.DisplayNameShortAsync(strLanguage)
+                                                               + ')';
+                                                    else
+                                                        strGearReturn
+                                                            += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage)
+                                                               + ','
+                                                               + strSpace + objMount.DisplayNameShort(strLanguage) + ','
+                                                               + strSpace + await objVehicleMod.DisplayNameShortAsync(strLanguage)
+                                                               + ',' + strSpace + await objWeapon.DisplayNameShortAsync(strLanguage)
+                                                               + ','
+                                                               + strSpace + await objAccessory.DisplayNameShortAsync(strLanguage)
+                                                               + ')';
+                                                    if (blnWireless)
+                                                        strGearReturn += strSpace
+                                                                         + await LanguageManager.GetStringAsync(
+                                                                             "String_Wireless", strLanguage);
+                                                    return strGearReturn;
+                                                }
+                                            }
+                                        }
+
+                                        foreach (Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhere(
+                                                     x => x.Children,
+                                                     x => x.GearChildren.Count > 0))
+                                        {
+                                            objReturnGear = objCyberware.GearChildren.DeepFirstOrDefault(x => x.Children,
+                                                x => x.InternalId == strImprovedSourceName);
+                                            if (objReturnGear != null)
+                                            {
+                                                string strGearReturn = await objReturnGear.DisplayNameShortAsync(strLanguage);
+                                                if (objReturnGear.Parent is Gear parent)
+                                                    strGearReturn
+                                                        += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                           + strSpace + objMount.DisplayNameShort(strLanguage) + ','
+                                                           + strSpace
+                                                           + await objVehicleMod.DisplayNameShortAsync(strLanguage)
+                                                           + ',' + strSpace + await objCyberware.DisplayNameShortAsync(strLanguage)
+                                                           + ','
+                                                           + strSpace + await parent.DisplayNameShortAsync(strLanguage) + ')';
+                                                else
+                                                    strGearReturn
+                                                        += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ','
+                                                           + strSpace + objMount.DisplayNameShort(strLanguage) + ','
+                                                           + strSpace
+                                                           + await objVehicleMod.DisplayNameShortAsync(strLanguage)
+                                                           + ',' + strSpace + await objCyberware.DisplayNameShortAsync(strLanguage)
+                                                           + ')';
+                                                if (blnWireless)
+                                                    strGearReturn += strSpace
+                                                                     + await LanguageManager.GetStringAsync(
+                                                                         "String_Wireless", strLanguage);
+                                                return strGearReturn;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            break;
+                        }
+                    case Improvement.ImprovementSource.Spell:
+                        foreach (Spell objSpell in Spells)
+                        {
+                            if (objSpell.InternalId == strImprovedSourceName)
+                            {
+                                return await objSpell.DisplayNameShortAsync(strLanguage);
+                            }
+                        }
+
+                        break;
+                    case Improvement.ImprovementSource.Power:
+                        foreach (Power objPower in Powers)
+                        {
+                            if (objPower.InternalId == strImprovedSourceName)
+                            {
+                                return await objPower.DisplayNameShortAsync(strLanguage);
+                            }
+                        }
+
+                        break;
+                    case Improvement.ImprovementSource.CritterPower:
+                        foreach (CritterPower objPower in CritterPowers)
+                        {
+                            if (objPower.InternalId == strImprovedSourceName)
+                            {
+                                return await objPower.DisplayNameShortAsync(strLanguage);
+                            }
+                        }
+
+                        break;
+                    case Improvement.ImprovementSource.Metamagic:
+                        foreach (Metamagic objMetamagic in Metamagics)
+                        {
+                            if (objMetamagic.InternalId == strImprovedSourceName
+                                && objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic)
+                            {
+                                return await objMetamagic.DisplayNameShortAsync(strLanguage);
+                            }
+                        }
+
+                        break;
+                    case Improvement.ImprovementSource.Echo:
+                        foreach (Metamagic objMetamagic in Metamagics)
+                        {
+                            if (objMetamagic.InternalId == strImprovedSourceName
+                                && objMetamagic.SourceType == Improvement.ImprovementSource.Echo)
+                            {
+                                return await objMetamagic.DisplayNameShortAsync(strLanguage);
+                            }
+                        }
+
+                        break;
+                    case Improvement.ImprovementSource.Art:
+                        foreach (Art objArt in Arts)
+                        {
+                            if (objArt.InternalId == strImprovedSourceName)
+                            {
+                                return await objArt.DisplayNameShortAsync(strLanguage);
+                            }
+                        }
+
+                        break;
+                    case Improvement.ImprovementSource.Enhancement:
+                        foreach (Enhancement objEnhancement in Enhancements)
+                        {
+                            if (objEnhancement.InternalId == strImprovedSourceName)
+                            {
+                                return await objEnhancement.DisplayNameShortAsync(strLanguage);
+                            }
+                        }
+
+                        break;
+                    case Improvement.ImprovementSource.Armor:
+                        {
+                            foreach (Armor objArmor in Armor)
+                            {
+                                if (objArmor.InternalId == strImprovedSourceName)
+                                {
+                                    string strReturnArmor = await objArmor.DisplayNameShortAsync(strLanguage);
+                                    if (blnWireless)
+                                        strReturnArmor
+                                            += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage);
+                                    return strReturnArmor;
+                                }
+                            }
+
+                            break;
+                        }
+                    case Improvement.ImprovementSource.ArmorMod:
+                        {
+                            foreach (Armor objArmor in Armor)
+                            {
+                                foreach (ArmorMod objMod in objArmor.ArmorMods)
+                                {
+                                    if (objMod.InternalId == strImprovedSourceName)
+                                    {
+                                        string strReturnArmorMod = await objMod.DisplayNameShortAsync(strLanguage) + strSpace + '('
+                                                                   + await objArmor.DisplayNameShortAsync(strLanguage) + ')';
+                                        if (blnWireless)
+                                            strReturnArmorMod
+                                                += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage);
+                                        return strReturnArmorMod;
+                                    }
+                                }
+                            }
+
+                            break;
+                        }
+                    case Improvement.ImprovementSource.ComplexForm:
+                        foreach (ComplexForm objComplexForm in ComplexForms)
+                        {
+                            if (objComplexForm.InternalId == strImprovedSourceName)
+                            {
+                                return await objComplexForm.DisplayNameShortAsync(strLanguage);
+                            }
+                        }
+
+                        break;
+                    case Improvement.ImprovementSource.AIProgram:
+                        foreach (AIProgram objProgram in AIPrograms)
+                        {
+                            if (objProgram.InternalId == strImprovedSourceName)
+                            {
+                                return await objProgram.DisplayNameShortAsync(strLanguage);
+                            }
+                        }
+
+                        break;
+                    case Improvement.ImprovementSource.Quality:
+                        if (strImprovedSourceName.StartsWith("SEEKER", StringComparison.Ordinal))
+                        {
+                            if (strImprovedSourceName == "SEEKER_WIL")
+                                return (await LoadDataXPathAsync("qualities.xml", token: token))
+                                       .SelectSingleNode(
+                                           "/chummer/qualities/quality[name = \"Cyber-Singularity Seeker\"]/translate")
+                                       ?.Value ?? "Cyber-Singularity Seeker";
+                            return (await LoadDataXPathAsync("qualities.xml", token: token))
+                                   .SelectSingleNode("/chummer/qualities/quality[name = \"Redliner\"]/translate")
+                                   ?.Value ?? "Redliner";
+                        }
+
+                        foreach (Quality objQuality in Qualities)
+                        {
+                            if (objQuality.InternalId == strImprovedSourceName)
+                            {
+                                return await objQuality.DisplayNameShortAsync(strLanguage);
+                            }
+                        }
+
+                        break;
+                    case Improvement.ImprovementSource.MartialArtTechnique:
+                        foreach (MartialArtTechnique objTechnique in MartialArts.SelectMany(x => x.Techniques))
+                        {
+                            if (objTechnique.InternalId == strImprovedSourceName)
+                            {
+                                return await objTechnique.DisplayNameAsync(strLanguage);
+                            }
+                        }
+
+                        break;
+                    case Improvement.ImprovementSource.MentorSpirit:
+                        foreach (MentorSpirit objMentorSpirit in MentorSpirits)
+                        {
+                            if (objMentorSpirit.InternalId == strImprovedSourceName)
+                            {
+                                return await objMentorSpirit.DisplayNameShortAsync(strLanguage);
+                            }
+                        }
+
+                        break;
+                    case Improvement.ImprovementSource.Heritage:
+                        return await LanguageManager.GetStringAsync("String_Priority", strLanguage);
+                    case Improvement.ImprovementSource.Initiation:
+                        return await LanguageManager.GetStringAsync("Tab_Initiation", strLanguage);
+                    case Improvement.ImprovementSource.Submersion:
+                        return await LanguageManager.GetStringAsync("Tab_Submersion", strLanguage);
+                    case Improvement.ImprovementSource.Encumbrance:
+                        return await LanguageManager.GetStringAsync("String_Encumbrance", strLanguage);
+                    case Improvement.ImprovementSource.ArmorEncumbrance:
+                        return await LanguageManager.GetStringAsync("String_ArmorEncumbrance", strLanguage);
+                    case Improvement.ImprovementSource.Tradition:
+                        return await LanguageManager.GetStringAsync("String_Tradition", strLanguage);
+                    case Improvement.ImprovementSource.AstralReputation:
+                        return await LanguageManager.GetStringAsync("String_AstralReputation", strLanguage);
+                    case Improvement.ImprovementSource.CyberadeptDaemon:
+                        return (await LoadDataXPathAsync("qualities.xml", strLanguage, token: token))
+                               .SelectSingleNode(
+                                   "/chummer/qualities/quality[name = \"Resonant Stream: Cyberadept\"]/translate")
+                               ?.Value ?? "Resonant Stream: Cyberadept";
+                    default:
+                        if (objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
+                            return await LanguageManager.GetStringAsync("String_ArmorEncumbrance", strLanguage);
+                        // If this comes from a custom Improvement, use the name the player gave it instead of showing a GUID.
+                        if (!string.IsNullOrEmpty(objImprovement.CustomName))
+                            return objImprovement.CustomName;
+                        string strReturn = strImprovedSourceName;
+                        if (string.IsNullOrEmpty(strReturn) || strReturn.IsGuid())
+                        {
+                            string strTemp = await LanguageManager.GetStringAsync("String_" + objImprovement.ImproveSource,
+                                strLanguage, false);
                             if (!string.IsNullOrEmpty(strTemp))
                                 strReturn = strTemp;
                         }

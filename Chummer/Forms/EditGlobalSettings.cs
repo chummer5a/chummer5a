@@ -1215,8 +1215,8 @@ namespace Chummer
                     _objSelectedCultureInfo = GlobalSettings.SystemCultureInfo;
                 }
             }
-            await GlobalSettings.SetLanguageAsync(_strSelectedLanguage);
-            await GlobalSettings.SetColorModeSettingAsync(_eSelectedColorModeSetting);
+            await GlobalSettings.SetLanguageAsync(_strSelectedLanguage, token);
+            await GlobalSettings.SetColorModeSettingAsync(_eSelectedColorModeSetting, token);
             GlobalSettings.DpiScalingMethodSetting = await cboDpiScalingMethod.DoThreadSafeFuncAsync(x => x.SelectedIndex >= 0
                 ? (DpiScalingMethod) Enum.Parse(typeof(DpiScalingMethod), x.SelectedValue.ToString())
                 : GlobalSettings.DefaultDpiScalingMethod, token);

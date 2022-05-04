@@ -19,6 +19,7 @@
 
 using System;
 using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
@@ -155,7 +156,7 @@ namespace Chummer.Backend.Skills
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
                                             && !GlobalSettings.LiveCustomData)
@@ -165,8 +166,8 @@ namespace Chummer.Backend.Skills
             else
                 _objCachedMyXmlNode = (blnSync
                         // ReSharper disable once MethodHasAsyncOverload
-                        ? Parent.GetNode(strLanguage)
-                        : await Parent.GetNodeAsync(strLanguage))
+                        ? Parent.GetNode(strLanguage, token: token)
+                        : await Parent.GetNodeAsync(strLanguage, token: token))
                     ?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + ']');
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
@@ -175,7 +176,7 @@ namespace Chummer.Backend.Skills
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
@@ -185,8 +186,8 @@ namespace Chummer.Backend.Skills
             else
                 _objCachedMyXPathNode = (blnSync
                         // ReSharper disable once MethodHasAsyncOverload
-                        ? Parent.GetNodeXPath(strLanguage)
-                        : await Parent.GetNodeXPathAsync(strLanguage))
+                        ? Parent.GetNodeXPath(strLanguage, token: token)
+                        : await Parent.GetNodeXPathAsync(strLanguage, token: token))
                     ?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + ']');
             _strCachedXPathNodeLanguage = strLanguage;
             return _objCachedMyXPathNode;

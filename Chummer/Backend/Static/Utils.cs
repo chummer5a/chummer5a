@@ -674,8 +674,10 @@ namespace Chummer
         /// </summary>
         /// <param name="strLanguage">Language in which to display any prompts or warnings. If empty, use Chummer's current language.</param>
         /// <param name="strText">Text to display in the prompt to restart. If empty, no prompt is displayed.</param>
-        public static async ValueTask RestartApplication(string strLanguage = "", string strText = "")
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async ValueTask RestartApplication(string strLanguage = "", string strText = "", CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             if (!string.IsNullOrEmpty(strText))
@@ -683,7 +685,7 @@ namespace Chummer
                 string text = await LanguageManager.GetStringAsync(strText, strLanguage);
                 string caption
                     = await LanguageManager.GetStringAsync("MessageTitle_Options_CloseForms", strLanguage);
-
+                token.ThrowIfCancellationRequested();
                 if (Program.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                     != DialogResult.Yes)
                     return;
@@ -693,6 +695,7 @@ namespace Chummer
             // Cannot use foreach because saving a character as created removes the current form and adds a new one
             for (int i = 0; i < Program.MainForm.OpenCharacterEditorForms.Count; ++i)
             {
+                token.ThrowIfCancellationRequested();
                 CharacterShared objOpenCharacterForm = Program.MainForm.OpenCharacterEditorForms[i];
                 if (objOpenCharacterForm.IsDirty)
                 {
@@ -707,7 +710,7 @@ namespace Chummer
                         case DialogResult.Yes:
                             {
                                 // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
-                                bool blnResult = await objOpenCharacterForm.SaveCharacter();
+                                bool blnResult = await objOpenCharacterForm.SaveCharacter(token: token);
                                 if (!blnResult)
                                     return;
                                 // We saved a character as created, which closed the current form and added a new one
@@ -726,23 +729,31 @@ namespace Chummer
             Log.Info("Restart Chummer");
             Application.UseWaitCursor = true;
             string strArguments;
-            // Get the parameters/arguments passed to program if any
-            using (new FetchSafelyFromPool<StringBuilder>(StringBuilderPool, out StringBuilder sbdArguments))
+            try
             {
-                foreach (CharacterShared objOpenCharacterForm in Program.MainForm.OpenCharacterEditorForms)
+                // Get the parameters/arguments passed to program if any
+                using (new FetchSafelyFromPool<StringBuilder>(StringBuilderPool, out StringBuilder sbdArguments))
                 {
-                    sbdArguments.Append('\"').Append(objOpenCharacterForm.CharacterObject.FileName).Append("\" ");
-                }
+                    foreach (CharacterShared objOpenCharacterForm in Program.MainForm.OpenCharacterEditorForms)
+                    {
+                        sbdArguments.Append('\"').Append(objOpenCharacterForm.CharacterObject.FileName).Append("\" ");
+                    }
 
-                if (sbdArguments.Length > 0)
-                    --sbdArguments.Length;
-                // Restart current application, with same arguments/parameters
-                foreach (Form objForm in Program.MainForm.MdiChildren)
-                {
-                    await objForm.DoThreadSafeAsync(x => x.Close());
-                }
+                    if (sbdArguments.Length > 0)
+                        --sbdArguments.Length;
+                    // Restart current application, with same arguments/parameters
+                    foreach (Form objForm in Program.MainForm.MdiChildren)
+                    {
+                        await objForm.DoThreadSafeAsync(x => x.Close(), token: token);
+                    }
 
-                strArguments = sbdArguments.ToString();
+                    strArguments = sbdArguments.ToString();
+                }
+            }
+            catch (Exception)
+            {
+                Application.UseWaitCursor = false;
+                throw;
             }
             // Sending restart command asynchronously to MySynchronizationContext so that tasks can properly clean up before restart
             Program.MySynchronizationContext.Post(x =>

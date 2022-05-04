@@ -1649,7 +1649,7 @@ namespace Chummer
             });
         }
 
-        public async Task RefreshAllTabTitlesAsync()
+        public async Task RefreshAllTabTitlesAsync(CancellationToken token = default)
         {
             string strSpace = await LanguageManager.GetStringAsync("String_Space");
             string strSheet = await LanguageManager.GetStringAsync("String_Sheet_Blank");
@@ -1679,7 +1679,7 @@ namespace Chummer
                             break;
                     }
                 }
-            });
+            }, token);
         }
 
         private async void mnuToolsDiceRoller_Click(object sender, EventArgs e)

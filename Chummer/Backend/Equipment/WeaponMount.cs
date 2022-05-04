@@ -1125,7 +1125,7 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
-        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             // Because of the weird way in which weapon mounts work with and without Rigger 5.0, instead of hiding built-in mounts from disabled sourcebooks,
             // we instead display them as if they were one of the CRB mounts, but give them a different name
@@ -1141,8 +1141,8 @@ namespace Chummer.Backend.Equipment
                 XmlNode xmlOverrideDataNode
                     = (blnSync
                         // ReSharper disable once MethodHasAsyncOverload
-                        ? _objCharacter.LoadData("vehicles.xml", strLanguage)
-                        : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage))
+                        ? _objCharacter.LoadData("vehicles.xml", strLanguage, token: token)
+                        : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage, token: token))
                     .SelectSingleNode("/chummer/weaponmounts/weaponmount[id = "
                                       + strOverrideId.CleanXPath() + " or id = "
                                       + strOverrideId.ToUpperInvariant()
@@ -1157,8 +1157,8 @@ namespace Chummer.Backend.Equipment
                 return _objCachedMyXmlNode;
             _objCachedMyXmlNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadData("vehicles.xml", strLanguage)
-                    : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage))
+                    ? _objCharacter.LoadData("vehicles.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage, token: token))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/weaponmounts/weaponmount[name = "
                                         + Name.CleanXPath() + ']'
@@ -1174,7 +1174,7 @@ namespace Chummer.Backend.Equipment
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             // Because of the weird way in which weapon mounts work with and without Rigger 5.0, instead of hiding built-in mounts from disabled sourcebooks,
             // we instead display them as if they were one of the CRB mounts, but give them a different name
@@ -1783,15 +1783,15 @@ namespace Chummer.Backend.Equipment
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
                                             && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
             _objCachedMyXmlNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadData("vehicles.xml", strLanguage)
-                    : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage))
+                    ? _objCharacter.LoadData("vehicles.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage, token: token))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/weaponmounts/weaponmount[name = "
                                         + Name.CleanXPath() + ']'
@@ -1807,15 +1807,15 @@ namespace Chummer.Backend.Equipment
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                               && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXPathNode;
             _objCachedMyXPathNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadDataXPath("vehicles.xml", strLanguage)
-                    : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage))
+                    ? _objCharacter.LoadDataXPath("vehicles.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/weaponmounts/weaponmount[name = "
                                         + Name.CleanXPath() + ']'

@@ -44,7 +44,6 @@ namespace Chummer
             _objWriter = objWriter;
         }
 
-
         /// <inheritdoc />
         public void Dispose()
         {
