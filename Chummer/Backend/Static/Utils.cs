@@ -476,12 +476,15 @@ namespace Chummer
             if (!Directory.Exists(strPath))
                 return true;
             if (blnSync)
+            {
                 // ReSharper disable once MethodHasAsyncOverload
-                SafeClearDirectory(strPath, blnShowUnauthorizedAccess: blnShowUnauthorizedAccess,
-                    intTimeout: intTimeout, token: token);
-            else
-                await SafeClearDirectoryAsync(strPath, blnShowUnauthorizedAccess: blnShowUnauthorizedAccess,
-                    intTimeout: intTimeout, token: token);
+                if (!SafeClearDirectory(strPath, blnShowUnauthorizedAccess: blnShowUnauthorizedAccess,
+                                        intTimeout: intTimeout, token: token))
+                    return false;
+            }
+            else if (!await SafeClearDirectoryAsync(strPath, blnShowUnauthorizedAccess: blnShowUnauthorizedAccess,
+                                                    intTimeout: intTimeout, token: token))
+                return false;
             int intWaitInterval = Math.Max(intTimeout / DefaultSleepDuration, DefaultSleepDuration);
             while (Directory.Exists(strPath))
             {

@@ -674,7 +674,7 @@ namespace Chummer
             {
                 if (!File.Exists(strBackupZipPath))
                 {
-                    using (token.Register(() => Utils.SafeDeleteDirectory(strBackupZipPath, token: token)))
+                    using (token.Register(() => Utils.SafeDeleteDirectory(strBackupZipPath)))
                         ZipFile.CreateFromDirectory(_strAppPath, strBackupZipPath, CompressionLevel.Fastest, true);
                 }
             }
