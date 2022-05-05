@@ -9163,6 +9163,44 @@ namespace Chummer
                         await objSustainedObjectsElement.DisposeAsync();
                     }
 
+                    // <otherarmors>
+                    XmlElementWriteHelper objOtherArmorsElement = await objWriter.StartElementAsync("otherarmors");
+                    try
+                    {
+                        foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.Armor))
+                        {
+                            if (objImprovement.ImproveSource == Improvement.ImprovementSource.Armor
+                                || objImprovement.ImproveSource == Improvement.ImprovementSource.ArmorMod)
+                                continue;
+                            // <otherarmor>
+                            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("otherarmor");
+                            try
+                            {
+                                await objWriter.WriteElementStringAsync("guid", objImprovement.InternalId);
+                                await objWriter.WriteElementStringAsync("sourcename", objImprovement.SourceName);
+                                await objWriter.WriteElementStringAsync("objectname", await GetObjectNameAsync(objImprovement, strLanguageToPrint, token));
+                                await objWriter.WriteElementStringAsync("objectname_english", await GetObjectNameAsync(objImprovement, GlobalSettings.DefaultLanguage, token));
+                                await objWriter.WriteElementStringAsync("armor", objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                                await objWriter.WriteElementStringAsync("improvesource", objImprovement.ImproveSource.ToString());
+                                await objWriter.WriteElementStringAsync("enabled", objImprovement.Enabled.ToString(GlobalSettings.InvariantCultureInfo));
+                                await objWriter.WriteElementStringAsync("customname", objImprovement.CustomName);
+                                await objWriter.WriteElementStringAsync("customgroup", objImprovement.CustomGroup);
+                                if (GlobalSettings.PrintNotes)
+                                    await objWriter.WriteElementStringAsync("notes", objImprovement.Notes);
+                            }
+                            finally
+                            {
+                                // </otherarmor>
+                                await objBaseElement.DisposeAsync();
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        // </otherarmors>
+                        await objOtherArmorsElement.DisposeAsync();
+                    }
+
                     // <calendar>
                     XmlElementWriteHelper objCalendarElement = await objWriter.StartElementAsync("calendar");
                     try
