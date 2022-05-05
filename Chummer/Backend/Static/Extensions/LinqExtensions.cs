@@ -348,14 +348,11 @@ namespace Chummer
         public static int Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
         {
             int intReturn = 0;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objCurrent in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (funcPredicate(objEnumerator.Current))
-                        intReturn += funcSelector.Invoke(objEnumerator.Current);
-                }
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent))
+                    intReturn += funcSelector.Invoke(objCurrent);
             }
             return intReturn;
         }
@@ -363,15 +360,11 @@ namespace Chummer
         public static int Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
         {
             int intReturn = 0;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objCurrent in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    if (funcPredicate(objCurrent))
-                        intReturn += Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objCurrent), token);
-                }
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent))
+                    intReturn += Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objCurrent), token);
             }
             return intReturn;
         }
@@ -379,14 +372,11 @@ namespace Chummer
         public static long Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
             long lngReturn = 0;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objCurrent in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (funcPredicate(objEnumerator.Current))
-                        lngReturn += funcSelector.Invoke(objEnumerator.Current);
-                }
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent))
+                    lngReturn += funcSelector.Invoke(objCurrent);
             }
             return lngReturn;
         }
@@ -394,15 +384,11 @@ namespace Chummer
         public static long Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
         {
             long lngReturn = 0;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objCurrent in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    if (funcPredicate(objCurrent))
-                        lngReturn += Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objCurrent), token);
-                }
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent))
+                    lngReturn += Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objCurrent), token);
             }
             return lngReturn;
         }
@@ -410,14 +396,11 @@ namespace Chummer
         public static float Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
         {
             float fltReturn = 0;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objCurrent in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (funcPredicate(objEnumerator.Current))
-                        fltReturn += funcSelector.Invoke(objEnumerator.Current);
-                }
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent))
+                    fltReturn += funcSelector.Invoke(objCurrent);
             }
             return fltReturn;
         }
@@ -425,15 +408,11 @@ namespace Chummer
         public static float Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
         {
             float fltReturn = 0;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objCurrent in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    if (funcPredicate(objCurrent))
-                        fltReturn += Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objCurrent), token);
-                }
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent))
+                    fltReturn += Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objCurrent), token);
             }
             return fltReturn;
         }
@@ -441,14 +420,11 @@ namespace Chummer
         public static double Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
         {
             double dblReturn = 0;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objCurrent in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (funcPredicate(objEnumerator.Current))
-                        dblReturn += funcSelector.Invoke(objEnumerator.Current);
-                }
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent))
+                    dblReturn += funcSelector.Invoke(objCurrent);
             }
             return dblReturn;
         }
@@ -456,15 +432,11 @@ namespace Chummer
         public static double Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
         {
             double dblReturn = 0;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objCurrent in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    if (funcPredicate(objCurrent))
-                        dblReturn += Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objCurrent), token);
-                }
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent))
+                    dblReturn += Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objCurrent), token);
             }
             return dblReturn;
         }
@@ -472,14 +444,11 @@ namespace Chummer
         public static decimal Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
         {
             decimal decReturn = 0;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objCurrent in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (funcPredicate(objEnumerator.Current))
-                        decReturn += funcSelector.Invoke(objEnumerator.Current);
-                }
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent))
+                    decReturn += funcSelector.Invoke(objCurrent);
             }
             return decReturn;
         }
@@ -487,15 +456,11 @@ namespace Chummer
         public static decimal Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
         {
             decimal decReturn = 0;
-            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            foreach (T objCurrent in objEnumerable)
             {
-                while (objEnumerator.MoveNext())
-                {
-                    token.ThrowIfCancellationRequested();
-                    T objCurrent = objEnumerator.Current;
-                    if (funcPredicate(objCurrent))
-                        decReturn += Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objCurrent), token);
-                }
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate(objCurrent))
+                    decReturn += Utils.RunWithoutThreadLock(() => funcSelector.Invoke(objCurrent), token);
             }
             return decReturn;
         }
