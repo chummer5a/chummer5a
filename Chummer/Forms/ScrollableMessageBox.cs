@@ -108,16 +108,16 @@ namespace Chummer.Forms
                     imgIcon.Visible = false;
                     break;
                 case MessageBoxIcon.Error:
-                    imgIcon.Image = Utils.StockIconBitmapsForSystemIcons[SystemIcons.Error];
+                    imgIcon.Image = Utils.GetStockIconBitmapsForSystemIcon(SystemIcons.Error);
                     break;
                 case MessageBoxIcon.Question:
-                    imgIcon.Image = Utils.StockIconBitmapsForSystemIcons[SystemIcons.Question];
+                    imgIcon.Image = Utils.GetStockIconBitmapsForSystemIcon(SystemIcons.Question);
                     break;
                 case MessageBoxIcon.Warning:
-                    imgIcon.Image = Utils.StockIconBitmapsForSystemIcons[SystemIcons.Warning];
+                    imgIcon.Image = Utils.GetStockIconBitmapsForSystemIcon(SystemIcons.Warning);
                     break;
                 case MessageBoxIcon.Information:
-                    imgIcon.Image = Utils.StockIconBitmapsForSystemIcons[SystemIcons.Information];
+                    imgIcon.Image = Utils.GetStockIconBitmapsForSystemIcon(SystemIcons.Information);
                     break;
             }
 

@@ -132,45 +132,160 @@ namespace Chummer
             }
         }
 
-        private static readonly Lazy<Dictionary<Icon, Bitmap>> s_dicSystemIconBitmaps
-            = new Lazy<Dictionary<Icon, Bitmap>>(
-                () =>
-                {
-                    PropertyInfo[] aobjProperties = typeof(SystemIcons).GetProperties();
-                    Dictionary<Icon, Bitmap> dicReturn = new Dictionary<Icon, Bitmap>(aobjProperties.Length);
-                    foreach (PropertyInfo objPropertyInfo in aobjProperties)
-                    {
-                        if (objPropertyInfo.GetValue(typeof(SystemIcons), null) is Icon objIcon)
-                            dicReturn.Add(objIcon, objIcon.ToBitmap());
-                    }
-                    return dicReturn;
-                });
+        private static readonly LockingDictionary<Icon, Bitmap> s_dicCachedIconBitmaps = new LockingDictionary<Icon, Bitmap>(10);
 
         /// <summary>
-        /// Dictionary assigning system icons to singly-initialized instances of their bitmaps.
+        /// Dictionary assigning icons to singly-initialized instances of their bitmaps.
+        /// Mainly intended for SystemIcons.
         /// </summary>
-        public static IReadOnlyDictionary<Icon, Bitmap> SystemIconBitmaps => s_dicSystemIconBitmaps.Value;
-
-        private static readonly Lazy<Dictionary<Icon, Bitmap>> s_dicStockIconBitmapsForSystemIcons
-            = new Lazy<Dictionary<Icon, Bitmap>>(
-                () => new Dictionary<Icon, Bitmap>(typeof(SystemIcons).GetProperties().Length)
+        public static Bitmap GetCachedIconBitmap(Icon objIcon)
+        {
+            if (s_dicCachedIconBitmaps.TryGetValue(objIcon, out Bitmap bmpReturn))
+                return bmpReturn;
+            using (s_dicCachedIconBitmaps.LockObject.EnterWriteLock())
+            {
+                if (!s_dicCachedIconBitmaps.TryGetValue(objIcon, out bmpReturn))
                 {
-                    {SystemIcons.Application, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_APPLICATION).ToBitmap()},
-                    {SystemIcons.Asterisk, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_INFO).ToBitmap()},
-                    {SystemIcons.Error, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_ERROR).ToBitmap()},
-                    {SystemIcons.Exclamation, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_WARNING).ToBitmap()},
-                    {SystemIcons.Hand, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_ERROR).ToBitmap()},
-                    {SystemIcons.Information, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_INFO).ToBitmap()},
-                    {SystemIcons.Question, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_HELP).ToBitmap()},
-                    {SystemIcons.Shield, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_SHIELD).ToBitmap()},
-                    {SystemIcons.Warning, NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_WARNING).ToBitmap()},
-                    {SystemIcons.WinLogo, SystemIcons.WinLogo.ToBitmap()}
-                });
+                    bmpReturn = objIcon.ToBitmap();
+                    s_dicCachedIconBitmaps.Add(objIcon, bmpReturn);
+                }
+            }
+            return bmpReturn;
+        }
 
         /// <summary>
-        /// Dictionary assigning Windows stock icons' bitmaps to SystemIcons equivalents. Needed where the graphics used in dialog windows in newer versions of windows are different from those in SystemIcons.
+        /// Dictionary assigning icons to singly-initialized instances of their bitmaps.
+        /// Mainly intended for SystemIcons.
         /// </summary>
-        public static IReadOnlyDictionary<Icon, Bitmap> StockIconBitmapsForSystemIcons => s_dicStockIconBitmapsForSystemIcons.Value;
+        public static async Task<Bitmap> GetCachedIconBitmapAsync(Icon objIcon, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            (bool blnSuccess, Bitmap bmpReturn) = await s_dicCachedIconBitmaps.TryGetValueAsync(objIcon, token);
+            if (blnSuccess)
+                return bmpReturn;
+            IAsyncDisposable objLocker = await s_dicCachedIconBitmaps.LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                (blnSuccess, bmpReturn) = await s_dicCachedIconBitmaps.TryGetValueAsync(objIcon, token);
+                if (!blnSuccess)
+                {
+                    bmpReturn = objIcon.ToBitmap();
+                    await s_dicCachedIconBitmaps.AddAsync(objIcon, bmpReturn, token);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+            return bmpReturn;
+        }
+
+        private static readonly LockingDictionary<Icon, Bitmap> s_dicStockIconBitmapsForSystemIcons = new LockingDictionary<Icon, Bitmap>(10);
+
+        /// <summary>
+        /// Dictionary assigning Windows stock icons' bitmaps to SystemIcons equivalents.
+        /// Needed where the graphics used in dialog windows in newer versions of windows are different from those in SystemIcons.
+        /// </summary>
+        public static Bitmap GetStockIconBitmapsForSystemIcon(Icon objIcon)
+        {
+            if (s_dicStockIconBitmapsForSystemIcons.TryGetValue(objIcon, out Bitmap bmpReturn))
+                return bmpReturn;
+            using (s_dicStockIconBitmapsForSystemIcons.LockObject.EnterWriteLock())
+            {
+                if (s_dicStockIconBitmapsForSystemIcons.TryGetValue(objIcon, out bmpReturn))
+                    return bmpReturn;
+                if (objIcon == SystemIcons.Application)
+                {
+                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_APPLICATION).ToBitmap();
+                }
+                else if (objIcon == SystemIcons.Asterisk || objIcon == SystemIcons.Information)
+                {
+                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_INFO).ToBitmap();
+                }
+                else if (objIcon == SystemIcons.Error || objIcon == SystemIcons.Hand)
+                {
+                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_ERROR).ToBitmap();
+                }
+                else if (objIcon == SystemIcons.Exclamation || objIcon == SystemIcons.Warning)
+                {
+                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_WARNING).ToBitmap();
+                }
+                else if (objIcon == SystemIcons.Question)
+                {
+                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_HELP).ToBitmap();
+                }
+                else if (objIcon == SystemIcons.Shield)
+                {
+                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_SHIELD).ToBitmap();
+                }
+                else if (objIcon == SystemIcons.WinLogo)
+                {
+                    bmpReturn = SystemIcons.WinLogo.ToBitmap();
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException(nameof(objIcon));
+                }
+                s_dicStockIconBitmapsForSystemIcons.Add(objIcon, bmpReturn);
+            }
+            return bmpReturn;
+        }
+
+        /// <summary>
+        /// Dictionary assigning Windows stock icons' bitmaps to SystemIcons equivalents.
+        /// Needed where the graphics used in dialog windows in newer versions of windows are different from those in SystemIcons.
+        /// </summary>
+        public static async Task<Bitmap> GetStockIconBitmapsForSystemIconAsync(Icon objIcon, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            (bool blnSuccess, Bitmap bmpReturn) = await s_dicCachedIconBitmaps.TryGetValueAsync(objIcon, token);
+            if (blnSuccess)
+                return bmpReturn;
+            IAsyncDisposable objLocker = await s_dicCachedIconBitmaps.LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                if (s_dicStockIconBitmapsForSystemIcons.TryGetValue(objIcon, out bmpReturn))
+                    return bmpReturn;
+                if (objIcon == SystemIcons.Application)
+                {
+                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_APPLICATION).ToBitmap();
+                }
+                else if (objIcon == SystemIcons.Asterisk || objIcon == SystemIcons.Information)
+                {
+                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_INFO).ToBitmap();
+                }
+                else if (objIcon == SystemIcons.Error || objIcon == SystemIcons.Hand)
+                {
+                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_ERROR).ToBitmap();
+                }
+                else if (objIcon == SystemIcons.Exclamation || objIcon == SystemIcons.Warning)
+                {
+                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_WARNING).ToBitmap();
+                }
+                else if (objIcon == SystemIcons.Question)
+                {
+                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_HELP).ToBitmap();
+                }
+                else if (objIcon == SystemIcons.Shield)
+                {
+                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_SHIELD).ToBitmap();
+                }
+                else if (objIcon == SystemIcons.WinLogo)
+                {
+                    bmpReturn = SystemIcons.WinLogo.ToBitmap();
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException(nameof(objIcon));
+                }
+                await s_dicStockIconBitmapsForSystemIcons.AddAsync(objIcon, bmpReturn, token);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+            return bmpReturn;
+        }
 
         /// <summary>
         /// Maximum amount of tasks to run in parallel, useful to use with batching to avoid overloading the task scheduler.
