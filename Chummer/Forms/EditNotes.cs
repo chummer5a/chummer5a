@@ -153,7 +153,7 @@ namespace Chummer
         private async ValueTask UpdateColorRepresentation(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            Color objColor = await ColorManager.GenerateCurrentModeColorAsync(_colNotes);
+            Color objColor = await ColorManager.GenerateCurrentModeColorAsync(_colNotes, token);
             await txtNotes.DoThreadSafeAsync(x => x.ForeColor = objColor, token);
         }
     }

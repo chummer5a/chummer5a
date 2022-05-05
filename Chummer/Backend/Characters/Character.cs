@@ -12513,6 +12513,7 @@ namespace Chummer
                         {
                             // ReSharper disable once MethodHasAsyncOverload
                             objWriter.WriteElementString(
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 "mugshot", GlobalSettings.ImageToBase64StringForStorage(imgMugshot));
                         }
                     }

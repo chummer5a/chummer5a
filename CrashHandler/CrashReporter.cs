@@ -19,13 +19,18 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 using System.Windows.Forms;
 using Chummer;
+using NLog;
 
 namespace CrashHandler
 {
     public sealed partial class CrashReporter : Form
     {
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+
         private delegate void ChangeDesc(CrashDumperProgress progress, string desc);
 
         private readonly CrashDumper _objDumper;
@@ -64,7 +69,7 @@ namespace CrashHandler
 
         private void lblContents_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("explorer.exe", Chummer.Utils.GetStartupPath);
+            Process.Start("explorer.exe", Utils.GetStartupPath);
         }
 
         private void rtbUserStory_TextChanged(object sender, EventArgs e)
@@ -79,11 +84,52 @@ namespace CrashHandler
             Application.Exit();
         }
 
-        private async void cmdRestart_Click(object sender, EventArgs e)
+        private void cmdRestart_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Application.UseWaitCursor = true;
+            string strArguments = string.Empty;
+            // Get the parameters/arguments passed to program if any
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdArguments))
+            {
+                try
+                {
+                    foreach (CharacterShared objOpenCharacterForm in Chummer.Program.MainForm
+                                                                            .OpenCharacterEditorForms)
+                    {
+                        try
+                        {
+                            sbdArguments.Append('\"').Append(objOpenCharacterForm.CharacterObject.FileName)
+                                    .Append("\" ");
+                        }
+                        catch (Exception ex)
+                        {
+                            // Swallow any exceptions
+                            Log.Info(ex);
+                            Utils.BreakIfDebug();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Swallow any exceptions
+                    Log.Info(ex);
+                    Utils.BreakIfDebug();
+                }
+
+                if (sbdArguments.Length > 0)
+                {
+                    --sbdArguments.Length;
+                    strArguments = sbdArguments.ToString();
+                }
+            }
+            ProcessStartInfo objStartInfo = new ProcessStartInfo
+            {
+                FileName = Utils.GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName,
+                Arguments = strArguments
+            };
             Application.Exit();
-            await Chummer.Utils.RestartApplication();
+            objStartInfo.Start();
         }
 
         private void cmdSubmitIssue_Click(object sender, EventArgs e)

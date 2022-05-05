@@ -318,7 +318,7 @@ namespace Chummer
                             || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
                             continue;
                         XPathNavigator xmlRestrictionNode
-                            = (await objQuality.GetNodeXPathAsync())?.SelectSingleNode("required");
+                            = (await objQuality.GetNodeXPathAsync(token: token))?.SelectSingleNode("required");
                         if (xmlRestrictionNode != null &&
                             (xmlRestrictionNode.SelectSingleNode(".//metatype") != null
                              || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
@@ -327,7 +327,7 @@ namespace Chummer
                         }
                         else
                         {
-                            xmlRestrictionNode = (await objQuality.GetNodeXPathAsync())?.SelectSingleNode("forbidden");
+                            xmlRestrictionNode = (await objQuality.GetNodeXPathAsync(token: token))?.SelectSingleNode("forbidden");
                             if (xmlRestrictionNode != null &&
                                 (xmlRestrictionNode.SelectSingleNode(".//metatype") != null
                                  || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
@@ -346,7 +346,7 @@ namespace Chummer
                                              : string.Empty);
                     foreach (Quality objQuality in lstQualitiesToCheck)
                     {
-                        if ((await objQuality.GetNodeXPathAsync())?.RequirementsMet(_objCharacter) == false)
+                        if ((await objQuality.GetNodeXPathAsync(token: token))?.RequirementsMet(_objCharacter) == false)
                             objQuality.DeleteQuality();
                     }
                 }
@@ -960,7 +960,7 @@ namespace Chummer
                               "D", GlobalSettings.InvariantCultureInfo);
                     if (strOldSelected == Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo))
                     {
-                        XPathNavigator objOldMetatypeNode = await _objCharacter.GetNodeXPathAsync(true);
+                        XPathNavigator objOldMetatypeNode = await _objCharacter.GetNodeXPathAsync(true, token: token);
                         if (objOldMetatypeNode != null)
                             strOldSelected = (await objOldMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("id"))
                                              ?.Value

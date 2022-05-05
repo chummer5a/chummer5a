@@ -1190,8 +1190,8 @@ namespace Chummer.Backend.Equipment
                 XPathNavigator xmlOverrideDataNode
                     = (blnSync
                         // ReSharper disable once MethodHasAsyncOverload
-                        ? _objCharacter.LoadDataXPath("vehicles.xml", strLanguage)
-                        : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage))
+                        ? _objCharacter.LoadDataXPath("vehicles.xml", strLanguage, token: token)
+                        : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token))
                     .SelectSingleNode("/chummer/weaponmounts/weaponmount[id = "
                                       + strOverrideId.CleanXPath() + " or id = "
                                       + strOverrideId.ToUpperInvariant()
@@ -1206,8 +1206,8 @@ namespace Chummer.Backend.Equipment
                 return _objCachedMyXPathNode;
             _objCachedMyXPathNode = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadDataXPath("vehicles.xml", strLanguage)
-                    : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage))
+                    ? _objCharacter.LoadDataXPath("vehicles.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/weaponmounts/weaponmount[name = "
                                         + Name.CleanXPath() + ']'
