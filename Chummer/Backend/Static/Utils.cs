@@ -771,6 +771,7 @@ namespace Chummer
         /// <summary>
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
+        [Obsolete("Avoid if possible and use RunOnMainThread instead, which not only guarantees STA mode, but also guarantees that the thread will never be destroyed over the lifetime of the program.")]
         public static Task StartStaTask(Action func)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
@@ -800,6 +801,7 @@ namespace Chummer
         /// <summary>
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
+        [Obsolete("Avoid if possible and use RunOnMainThread instead, which not only guarantees STA mode, but also guarantees that the thread will never be destroyed over the lifetime of the program.")]
         public static Task<T> StartStaTask<T>(Func<T> func)
         {
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
@@ -822,6 +824,7 @@ namespace Chummer
         /// <summary>
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
+        [Obsolete("Avoid if possible and use RunOnMainThread instead, which not only guarantees STA mode, but also guarantees that the thread will never be destroyed over the lifetime of the program.")]
         public static Task StartStaTask(Task func)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
@@ -851,6 +854,7 @@ namespace Chummer
         /// <summary>
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
+        [Obsolete("Avoid if possible and use RunOnMainThread instead, which not only guarantees STA mode, but also guarantees that the thread will never be destroyed over the lifetime of the program.")]
         public static Task<T> StartStaTask<T>(Task<T> func)
         {
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
@@ -874,6 +878,7 @@ namespace Chummer
         /// <summary>
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
+        [Obsolete("Avoid if possible and use RunOnMainThread instead, which not only guarantees STA mode, but also guarantees that the thread will never be destroyed over the lifetime of the program.")]
         public static Task StartStaTask(Action func, CancellationToken token)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
@@ -908,6 +913,7 @@ namespace Chummer
         /// <summary>
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
+        [Obsolete("Avoid if possible and use RunOnMainThread instead, which not only guarantees STA mode, but also guarantees that the thread will never be destroyed over the lifetime of the program.")]
         public static Task<T> StartStaTask<T>(Func<T> func, CancellationToken token)
         {
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
@@ -935,6 +941,7 @@ namespace Chummer
         /// <summary>
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
+        [Obsolete("Avoid if possible and use RunOnMainThread instead, which not only guarantees STA mode, but also guarantees that the thread will never be destroyed over the lifetime of the program.")]
         public static Task StartStaTask(Task func, CancellationToken token)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
@@ -969,6 +976,7 @@ namespace Chummer
         /// <summary>
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
+        [Obsolete("Avoid if possible and use RunOnMainThread instead, which not only guarantees STA mode, but also guarantees that the thread will never be destroyed over the lifetime of the program.")]
         public static Task<T> StartStaTask<T>(Task<T> func, CancellationToken token)
         {
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
