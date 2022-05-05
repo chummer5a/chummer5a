@@ -1311,11 +1311,22 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SafeSleep(int intDurationMilliseconds, bool blnForceDoEvents = false)
         {
-            for (; intDurationMilliseconds > 0; intDurationMilliseconds -= DefaultSleepDuration)
+            if (!EverDoEvents)
             {
                 Thread.Sleep(intDurationMilliseconds);
-                if (EverDoEvents)
-                    DoEventsSafe(blnForceDoEvents);
+                return;
+            }
+
+            int i = intDurationMilliseconds;
+            for (; i >= DefaultSleepDuration; i -= DefaultSleepDuration)
+            {
+                Thread.Sleep(DefaultSleepDuration);
+                DoEventsSafe(blnForceDoEvents);
+            }
+            if (i > 0)
+            {
+                Thread.Sleep(i);
+                DoEventsSafe(blnForceDoEvents);
             }
         }
 
@@ -1341,10 +1352,21 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SafeSleep(int intDurationMilliseconds, CancellationToken token, bool blnForceDoEvents = false)
         {
-            for (; intDurationMilliseconds > 0; intDurationMilliseconds -= DefaultSleepDuration)
+            int i = intDurationMilliseconds;
+            for (; i >= DefaultSleepDuration; i -= DefaultSleepDuration)
             {
                 token.ThrowIfCancellationRequested();
-                Thread.Sleep(intDurationMilliseconds);
+                Thread.Sleep(DefaultSleepDuration);
+                if (EverDoEvents)
+                {
+                    token.ThrowIfCancellationRequested();
+                    DoEventsSafe(blnForceDoEvents);
+                }
+            }
+            if (i > 0)
+            {
+                token.ThrowIfCancellationRequested();
+                Thread.Sleep(i);
                 if (EverDoEvents)
                 {
                     token.ThrowIfCancellationRequested();
