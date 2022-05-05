@@ -98,7 +98,9 @@ namespace Chummer.Backend.Uniques
             _objCachedSourceDetail = default;
         }
 
+        /// <summary>
         /// Create a Tradition from an XmlNode.
+        /// </summary>
         /// <param name="xmlTraditionNode">XmlNode to create the object from.</param>
         /// <param name="blnIsTechnomancerTradition">Whether or not this tradition is for a technomancer.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>

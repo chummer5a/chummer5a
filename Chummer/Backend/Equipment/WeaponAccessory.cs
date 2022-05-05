@@ -146,7 +146,9 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
         /// Create a Weapon Accessory from an XmlNode and return the TreeNodes for it.
+        /// </summary>
         /// <param name="objXmlAccessory">XmlNode to create the object from.</param>
         /// <param name="strMount">Mount slot that the Weapon Accessory will consume.</param>
         /// <param name="intRating">Rating of the Weapon Accessory.</param>

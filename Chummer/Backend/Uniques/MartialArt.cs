@@ -151,7 +151,9 @@ namespace Chummer
             }
         }
 
+        /// <summary>
         /// Create a Martial Art from an XmlNode.
+        /// </summary>
         /// <param name="objXmlArtNode">XmlNode to create the object from.</param>
         public void Create(XmlNode objXmlArtNode)
         {

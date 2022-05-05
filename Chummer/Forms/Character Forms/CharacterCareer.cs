@@ -2254,7 +2254,7 @@ namespace Chummer
                             {
                                 strBiowareDisabledSource =
                                     await LanguageManager.GetStringAsync("String_Space") + '(' +
-                                    await CharacterObject.GetObjectNameAsync(objDisablingImprovement) + ')' +
+                                    await CharacterObject.GetObjectNameAsync(objDisablingImprovement, token: GenericToken) + ')' +
                                     await LanguageManager.GetStringAsync("String_Space");
                             }
 
@@ -2304,7 +2304,7 @@ namespace Chummer
                             {
                                 strCyberwareDisabledSource =
                                     await LanguageManager.GetStringAsync("String_Space") + '(' +
-                                    await CharacterObject.GetObjectNameAsync(objDisablingImprovement) + ')' +
+                                    await CharacterObject.GetObjectNameAsync(objDisablingImprovement, token: GenericToken) + ')' +
                                     await LanguageManager.GetStringAsync("String_Space");
                             }
 
@@ -2354,8 +2354,7 @@ namespace Chummer
                             if (objExConImprovement != null)
                             {
                                 strExConString = await LanguageManager.GetStringAsync("String_Space") + '(' +
-                                                 await CharacterObject.GetObjectNameAsync(objExConImprovement,
-                                                     GlobalSettings.Language) + ')' +
+                                                 await CharacterObject.GetObjectNameAsync(objExConImprovement, token: GenericToken) + ')' +
                                                  await LanguageManager.GetStringAsync("String_Space");
                             }
 
@@ -3791,18 +3790,19 @@ namespace Chummer
             }
 
             string strFileName;
-            // Prompt the user to select a save file to possess.
-            using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog()))
-            {
-                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
-                    + await LanguageManager.GetStringAsync("DialogFilter_All");
-                if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)) != DialogResult.OK)
-                    return;
-                strFileName = dlgOpenFile.FileName;
-            }
 
             try
             {
+                // Prompt the user to select a save file to possess.
+                using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog(), GenericToken))
+                {
+                    dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
+                        + await LanguageManager.GetStringAsync("DialogFilter_All");
+                    if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), GenericToken) != DialogResult.OK)
+                        return;
+                    strFileName = dlgOpenFile.FileName;
+                }
+
                 string strOpenFile = string.Empty;
                 using (await CursorWait.NewAsync(this, token: GenericToken))
                 {
@@ -3966,7 +3966,7 @@ namespace Chummer
 
                         // Now that everything is done, save the merged character and open them.
                         dlgSaveFile.FileName = strShowFileName;
-                        if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x)) != DialogResult.OK)
+                        if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), GenericToken) != DialogResult.OK)
                             return;
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
                         {

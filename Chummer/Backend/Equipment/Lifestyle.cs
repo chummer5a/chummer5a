@@ -158,7 +158,9 @@ namespace Chummer.Backend.Equipment
             LifestyleQualities.BeforeClearCollectionChanged += LifestyleQualitiesOnBeforeClearCollectionChanged;
         }
 
+        /// <summary>
         /// Create a Lifestyle from an XmlNode and return the TreeNodes for it.
+        /// </summary>
         /// <param name="objXmlLifestyle">XmlNode to create the object from.</param>
         public void Create(XmlNode objXmlLifestyle)
         {

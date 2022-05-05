@@ -136,7 +136,9 @@ namespace Chummer.Backend.Equipment
                 this.RefreshMatrixAttributeArray(_objCharacter);
         }
 
+        /// <summary>
         /// Create a Vehicle from an XmlNode.
+        /// </summary>
         /// <param name="objXmlVehicle">XmlNode of the Vehicle to create.</param>
         /// <param name="blnSkipSelectForms">Whether or not to skip forms that are created for bonuses.</param>
         /// <param name="blnCreateChildren">Whether or not child items should be created.</param>

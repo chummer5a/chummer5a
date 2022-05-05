@@ -291,10 +291,10 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="EnhancedObservableCollection{T}.CopyTo(T[],int)" />
-        public void CopyTo(T[] array, int index)
+        public void CopyTo(T[] array, int arrayIndex)
         {
             using (EnterReadLock.Enter(LockObject))
-                _lstData.CopyTo(array, index);
+                _lstData.CopyTo(array, arrayIndex);
         }
 
         public async ValueTask CopyToAsync(T[] array, int index)

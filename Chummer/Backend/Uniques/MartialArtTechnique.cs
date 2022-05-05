@@ -55,7 +55,9 @@ namespace Chummer
             _objCharacter = objCharacter;
         }
 
+        /// <summary>
         /// Create a Martial Art Technique from an XmlNode.
+        /// </summary>
         /// <param name="xmlTechniqueDataNode">XmlNode to create the object from.</param>
         public void Create(XmlNode xmlTechniqueDataNode)
         {

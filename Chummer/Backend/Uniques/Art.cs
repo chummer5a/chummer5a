@@ -59,7 +59,9 @@ namespace Chummer
             _objCharacter = objCharacter;
         }
 
+        /// <summary>
         /// Create an Art from an XmlNode.
+        /// </summary>
         /// <param name="objXmlArtNode">XmlNode to create the object from.</param>
         /// <param name="objSource">Source of the Improvement.</param>
         public void Create(XmlNode objXmlArtNode, Improvement.ImprovementSource objSource)
