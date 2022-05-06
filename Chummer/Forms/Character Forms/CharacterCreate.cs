@@ -10956,52 +10956,57 @@ namespace Chummer
             try
             {
                 Task tskAutosave = Task.CompletedTask;
-                if (AutosaveStopWatch.Elapsed.Minutes >= 5 && IsDirty)
+                using (await EnterReadLock.EnterAsync(CharacterObject, token))
                 {
-                    tskAutosave = AutoSaveCharacter(token);
-                }
-                using (await CursorWait.NewAsync(this, true, token))
-                {
-                    // TODO: DataBind these wherever possible
+                    if (AutosaveStopWatch.Elapsed.Minutes >= 5 && IsDirty)
+                    {
+                        tskAutosave = AutoSaveCharacter(token);
+                    }
 
-                    // Calculate the number of Build Points remaining.
-                    await CalculateBP(true, token);
-                    await CalculateNuyen(token);
-                    if (CharacterObject.Metatype == "Free Spirit" && !CharacterObject.IsCritter ||
-                        CharacterObject.MetatypeCategory.EndsWith("Spirits", StringComparison.Ordinal))
+                    using (await CursorWait.NewAsync(this, true, token))
                     {
-                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
-                        await lblCritterPowerPoints.DoThreadSafeAsync(x =>
+                        // TODO: DataBind these wherever possible
+
+                        // Calculate the number of Build Points remaining.
+                        await CalculateBP(true, token);
+                        await CalculateNuyen(token);
+                        if (CharacterObject.Metatype == "Free Spirit" && !CharacterObject.IsCritter ||
+                            CharacterObject.MetatypeCategory.EndsWith("Spirits", StringComparison.Ordinal))
                         {
-                            x.Visible = true;
-                            x.Text = CharacterObject.CalculateFreeSpiritPowerPoints();
-                        }, token);
-                    }
-                    else if (CharacterObject.IsFreeSprite)
-                    {
-                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
-                        await lblCritterPowerPoints.DoThreadSafeAsync(x =>
+                            await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                            await lblCritterPowerPoints.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = CharacterObject.CalculateFreeSpiritPowerPoints();
+                            }, token);
+                        }
+                        else if (CharacterObject.IsFreeSprite)
                         {
-                            x.Visible = true;
-                            x.Text = CharacterObject.CalculateFreeSpritePowerPoints();
-                        }, token);
+                            await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                            await lblCritterPowerPoints.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = CharacterObject.CalculateFreeSpritePowerPoints();
+                            }, token);
+                        }
+                        else
+                        {
+                            await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblCritterPowerPoints.DoThreadSafeAsync(x => x.Visible = false, token);
+                        }
+
+                        await Task.WhenAll(RefreshSelectedQuality(token), RefreshSelectedCyberware(token),
+                                           RefreshSelectedArmor(token),
+                                           RefreshSelectedGear(token), RefreshSelectedDrug(token),
+                                           RefreshSelectedLifestyle(token),
+                                           RefreshSelectedVehicle(token), RefreshSelectedWeapon(token),
+                                           RefreshSelectedSpell(token),
+                                           RefreshSelectedComplexForm(token), RefreshSelectedCritterPower(token),
+                                           RefreshSelectedAIProgram(token), RefreshSelectedMetamagic(token),
+                                           RefreshSelectedMartialArt(token), UpdateInitiationCost(token),
+                                           UpdateSkillRelatedInfo(token));
+                        await tskAutosave;
                     }
-                    else
-                    {
-                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = false, token);
-                        await lblCritterPowerPoints.DoThreadSafeAsync(x => x.Visible = false, token);
-                    }
-                    await Task.WhenAll(RefreshSelectedQuality(token), RefreshSelectedCyberware(token),
-                                       RefreshSelectedArmor(token),
-                                       RefreshSelectedGear(token), RefreshSelectedDrug(token),
-                                       RefreshSelectedLifestyle(token),
-                                       RefreshSelectedVehicle(token), RefreshSelectedWeapon(token),
-                                       RefreshSelectedSpell(token),
-                                       RefreshSelectedComplexForm(token), RefreshSelectedCritterPower(token),
-                                       RefreshSelectedAIProgram(token), RefreshSelectedMetamagic(token),
-                                       RefreshSelectedMartialArt(token), UpdateInitiationCost(token),
-                                       UpdateSkillRelatedInfo(token));
-                    await tskAutosave;
                 }
             }
             finally

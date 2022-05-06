@@ -8096,24 +8096,47 @@ namespace Chummer
                     return;
                 }
 
-                try
+                Task tskOriginalTask = Interlocked.Exchange(ref _tskUpdateCharacterInfo, null);
+                if (tskOriginalTask != null)
                 {
-                    if (_tskUpdateCharacterInfo?.IsCompleted == false)
-                        await _tskUpdateCharacterInfo;
-                }
-                catch (OperationCanceledException)
-                {
-                    //swallow this
-                }
-                catch
-                {
-                    Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objNewSource);
-                    objNewSource.Dispose();
-                    throw;
+                    try
+                    {
+                        await tskOriginalTask;
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
+                    catch
+                    {
+                        Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null,
+                                                    objNewSource);
+                        objNewSource.Dispose();
+                        throw;
+                    }
                 }
 
                 CancellationToken objToken = objNewSource.Token;
-                _tskUpdateCharacterInfo = Task.Run(() => DoUpdateCharacterInfo(objToken), objToken);
+                Task tskNewTask = Task.Run(() => DoUpdateCharacterInfo(objToken), objToken);
+                if (Interlocked.CompareExchange(ref _tskUpdateCharacterInfo, tskNewTask, null) != null)
+                {
+                    objNewSource.Cancel(false);
+                    try
+                    {
+                        await tskNewTask;
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
+                    catch
+                    {
+                        Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null,
+                                                    objNewSource);
+                        objNewSource.Dispose();
+                        throw;
+                    }
+                }
             }
             finally
             {
