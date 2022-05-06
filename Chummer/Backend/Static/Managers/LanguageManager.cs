@@ -1116,10 +1116,13 @@ namespace Chummer
         public static string TranslateExtra(string strExtra, string strIntoLanguage = "", Character objCharacter = null,
             string strPreferFile = "")
         {
-            // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
-            // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
-            // TODO: Do this overhaul.
-            return Utils.RunWithoutThreadLock(() => TranslateExtraCoreAsync(true, strExtra, strIntoLanguage, objCharacter, strPreferFile));
+            return string.IsNullOrWhiteSpace(strExtra)
+                ? string.Empty
+                // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
+                // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
+                // TODO: Do this overhaul.
+                : Utils.RunWithoutThreadLock(
+                    () => TranslateExtraCoreAsync(true, strExtra, strIntoLanguage, objCharacter, strPreferFile));
         }
 
         /// <summary>
@@ -1134,7 +1137,9 @@ namespace Chummer
                                                              Character objCharacter = null,
                                                              string strPreferFile = "")
         {
-            return TranslateExtraCoreAsync(false, strExtra, strIntoLanguage, objCharacter, strPreferFile);
+            return string.IsNullOrWhiteSpace(strExtra)
+                ? Task.FromResult(string.Empty)
+                : TranslateExtraCoreAsync(false, strExtra, strIntoLanguage, objCharacter, strPreferFile);
         }
 
         /// <summary>
@@ -1454,10 +1459,13 @@ namespace Chummer
         public static string ReverseTranslateExtra(string strExtra, string strFromLanguage = "",
             Character objCharacter = null, string strPreferFile = "")
         {
-            // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
-            // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
-            // TODO: Do this overhaul.
-            return Utils.RunWithoutThreadLock(() => ReverseTranslateExtraCoreAsync(true, strExtra, strFromLanguage, objCharacter, strPreferFile));
+            return string.IsNullOrWhiteSpace(strExtra)
+                ? string.Empty
+                // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
+                // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
+                // TODO: Do this overhaul.
+                : Utils.RunWithoutThreadLock(
+                    () => ReverseTranslateExtraCoreAsync(true, strExtra, strFromLanguage, objCharacter, strPreferFile));
         }
 
         /// <summary>
@@ -1472,7 +1480,9 @@ namespace Chummer
                                                                     Character objCharacter = null,
                                                                     string strPreferFile = "")
         {
-            return ReverseTranslateExtraCoreAsync(false, strExtra, strFromLanguage, objCharacter, strPreferFile);
+            return string.IsNullOrWhiteSpace(strExtra)
+                ? Task.FromResult(string.Empty)
+                : ReverseTranslateExtraCoreAsync(false, strExtra, strFromLanguage, objCharacter, strPreferFile);
         }
 
         /// <summary>
