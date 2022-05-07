@@ -63,7 +63,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
+                await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodesAsync(PluginHandler.MyPluginHandlerInstance);
             }
             catch (Exception exception)
             {

@@ -687,7 +687,7 @@ namespace Chummer.Plugins
                                                                    (key, oldValue) => node);
                         }
 
-                        await MainForm.CharacterRoster.RefreshPluginNodes(this);
+                        await MainForm.CharacterRoster.RefreshPluginNodesAsync(this);
                         await MainForm.DoThreadSafeAsync(x =>
                         {
                             x.CharacterRoster.treCharacterList.SelectedNode =
@@ -962,7 +962,7 @@ namespace Chummer.Plugins
                         {
                             await MyTreeNodes2Add.AddOrUpdateAsync(node.Name, node, (key, oldValue) => node);
                         }
-                        await MainForm.CharacterRoster.RefreshPluginNodes(this);
+                        await MainForm.CharacterRoster.RefreshPluginNodesAsync(this);
                         MainForm.CharacterRoster.BringToFront();
                     }
                 }
@@ -997,7 +997,7 @@ namespace Chummer.Plugins
                                 SINner res = await client.PutSINerInGroupAsync(Guid.Empty, sinnerid, null);
                                 object response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
                                 if (response != null)
-                                    await MainForm.CharacterRoster.RefreshPluginNodes(this);
+                                    await MainForm.CharacterRoster.RefreshPluginNodesAsync(this);
                             }
                             catch (Exception exception)
                             {
@@ -1024,7 +1024,7 @@ namespace Chummer.Plugins
                         object response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
                         if (response != null)
                         {
-                            await MainForm.CharacterRoster.RefreshPluginNodes(this);
+                            await MainForm.CharacterRoster.RefreshPluginNodesAsync(this);
                         }
                     }
                     catch (Exception exception)
@@ -1066,7 +1066,7 @@ namespace Chummer.Plugins
                                 object response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
                                 if (response != null)
                                 {
-                                    await MainForm.CharacterRoster.RefreshPluginNodes(this);
+                                    await MainForm.CharacterRoster.RefreshPluginNodesAsync(this);
                                 }
                             
                             }
@@ -1077,7 +1077,7 @@ namespace Chummer.Plugins
                                     object response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
                                     if (response != null)
                                     {
-                                        await MainForm.CharacterRoster.RefreshPluginNodes(this);
+                                        await MainForm.CharacterRoster.RefreshPluginNodesAsync(this);
                                     }
                                 }
                                 else
@@ -1107,7 +1107,7 @@ namespace Chummer.Plugins
                         object response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
                         if (response != null)
                         {
-                            await MainForm.CharacterRoster.RefreshPluginNodes(this);
+                            await MainForm.CharacterRoster.RefreshPluginNodesAsync(this);
                         }
                     }
                     catch (Exception exception)
@@ -1456,7 +1456,7 @@ namespace Chummer.Plugins
             }
             finally
             {
-                await MainForm.CharacterRoster.RefreshPluginNodes(this);
+                await MainForm.CharacterRoster.RefreshPluginNodesAsync(this);
             }
             return true;
         }

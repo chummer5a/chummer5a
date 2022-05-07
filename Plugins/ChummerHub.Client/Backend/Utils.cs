@@ -1053,7 +1053,7 @@ namespace ChummerHub.Client.Backend
                             }
 
                             objCache.ErrorText = "deleted!";
-                            await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
+                            await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodesAsync(PluginHandler.MyPluginHandlerInstance);
                         }
                     }
                 }
@@ -1088,7 +1088,7 @@ namespace ChummerHub.Client.Backend
                         if (result.CallSuccess)
                         {
                             objCache.ErrorText = "deleted!";
-                            await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
+                            await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodesAsync(PluginHandler.MyPluginHandlerInstance);
                         }
                     }
                 }
@@ -1352,7 +1352,7 @@ namespace ChummerHub.Client.Backend
                                 }
                                 using (await CursorWait.NewAsync(PluginHandler.MainForm, true))
                                 {
-                                    await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
+                                    await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodesAsync(PluginHandler.MyPluginHandlerInstance);
                                 }
                             }
                         }

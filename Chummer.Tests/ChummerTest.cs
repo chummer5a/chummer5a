@@ -176,12 +176,12 @@ namespace Chummer.Tests
                             lstCachingTasks.Add(Task.Run(() => CacheCommonFile(strLoopFile, frmLoadingBar.MyForm)));
                             if (++intCounter != Utils.MaxParallelBatchSize)
                                 continue;
-                            Utils.RunWithoutThreadLock(() => Task.WhenAll(lstCachingTasks));
+                            Utils.RunWithoutThreadLock(() => lstCachingTasks.ToArray());
                             lstCachingTasks.Clear();
                             intCounter = 0;
                         }
 
-                        Utils.RunWithoutThreadLock(() => Task.WhenAll(lstCachingTasks));
+                        Utils.RunWithoutThreadLock(() => lstCachingTasks.ToArray());
 
                         async Task CacheCommonFile(string strFile, LoadingBar frmLoadingBarInner)
                         {

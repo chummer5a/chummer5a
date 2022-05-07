@@ -303,7 +303,7 @@ namespace ChummerHub.Client.UI
                                 Log.Info(msg);
                                 Program.ShowMessageBox(msg, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 await ProcessGroupSearchVisible();
-                                await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
+                                await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodesAsync(PluginHandler.MyPluginHandlerInstance);
                             }
                         }).Unwrap();
                     }
@@ -580,7 +580,7 @@ namespace ChummerHub.Client.UI
                 {
                     await PluginHandler.MyTreeNodes2Add.AddOrUpdateAsync(node.Name, node, (key, oldValue) => node);
                 }
-                await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
+                await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodesAsync(PluginHandler.MyPluginHandlerInstance);
                 await PluginHandler.MainForm.CharacterRoster.DoThreadSafeAsync(x => x.BringToFront());
                 await MyParentForm.DoThreadSafeAsync(x => x.Close());
             }

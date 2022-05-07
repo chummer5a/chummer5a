@@ -283,7 +283,7 @@ namespace Chummer
                     {
                         await Task.WhenAll(_tskMostRecentlyUsedsRefresh, _tskWatchFolderRefresh,
                                            Task.WhenAll(
-                                               Program.PluginLoader.MyActivePlugins.Select(RefreshPluginNodes)));
+                                               Program.PluginLoader.MyActivePlugins.Select(RefreshPluginNodesAsync)));
                     }
                     catch (OperationCanceledException)
                     {
@@ -1197,20 +1197,17 @@ namespace Chummer
             }, token);
         }
 
-        public Task RefreshPluginNodes(IPlugin objPluginToRefresh)
+        public Task RefreshPluginNodesAsync(IPlugin objPluginToRefresh)
         {
             if (objPluginToRefresh == null)
                 throw new ArgumentNullException(nameof(objPluginToRefresh));
-            return RefreshPluginNodesInner(objPluginToRefresh, _objGenericToken); // Split up this way so that the parameter check happens synchronously
-        }
+            return RefreshPluginNodesInner(_objGenericToken); // Split up this way so that the parameter check happens synchronously
 
-        private async Task RefreshPluginNodesInner([NotNull] IPlugin objPluginToRefresh, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            int intNodeOffset = Program.PluginLoader.MyActivePlugins.IndexOf(objPluginToRefresh);
-            if (intNodeOffset >= 0)
+            async Task RefreshPluginNodesInner(CancellationToken token = default)
             {
-                await Task.Run(async () =>
+                token.ThrowIfCancellationRequested();
+                int intNodeOffset = Program.PluginLoader.MyActivePlugins.IndexOf(objPluginToRefresh);
+                if (intNodeOffset >= 0)
                 {
                     Log.Info("Starting new Task to get CharacterRosterTreeNodes for plugin:" + objPluginToRefresh);
                     List<TreeNode> lstNodes =
@@ -1246,7 +1243,8 @@ namespace Chummer
                                         TreeNode objRecentNode = treList.FindNode("Recent", false);
                                         TreeNode objWatchNode = treList.FindNode("Watch", false);
                                         token.ThrowIfCancellationRequested();
-                                        if (objFavoriteNode != null && objRecentNode != null && objWatchNode != null)
+                                        if (objFavoriteNode != null && objRecentNode != null
+                                                                    && objWatchNode != null)
                                             treList.Nodes.Insert(i + intNodeOffset + 3, node);
                                         else if (objFavoriteNode != null || objRecentNode != null
                                                                          || objWatchNode != null)
@@ -1286,11 +1284,11 @@ namespace Chummer
 
                     Log.Info("Task to get and add CharacterRosterTreeNodes for plugin " + objPluginToRefresh
                              + " finished.");
-                }, token);
-            }
-            else
-            {
-                Utils.BreakIfDebug();
+                }
+                else
+                {
+                    Utils.BreakIfDebug();
+                }
             }
         }
 

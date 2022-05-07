@@ -1565,6 +1565,28 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar for synchronously waiting for code to complete while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="funcToRun">Code to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(Action<CancellationToken> funcToRun, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!EverDoEvents)
+            {
+                funcToRun.Invoke(token);
+                return;
+            }
+            Task objTask = Task.Run(() => funcToRun(token), token);
+            while (!objTask.IsCompleted)
+                SafeSleep(token);
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+        }
+
+        /// <summary>
         /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
         /// </summary>
@@ -1599,6 +1621,28 @@ namespace Chummer
                 return funcToRun.Invoke();
             }
             Task<T> objTask = Task.Run(funcToRun, token);
+            while (!objTask.IsCompleted)
+                SafeSleep(token);
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+            return objTask.Result;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for code to complete while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="funcToRun">Code to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T RunWithoutThreadLock<T>(Func<CancellationToken, T> funcToRun, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!EverDoEvents)
+            {
+                return funcToRun.Invoke(token);
+            }
+            Task<T> objTask = Task.Run(() => funcToRun(token), token);
             while (!objTask.IsCompleted)
                 SafeSleep(token);
             if (objTask.Exception != null)
@@ -1681,6 +1725,33 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar for synchronously waiting for code to complete while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="funcToRun">Code to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T RunWithoutThreadLock<T>(Func<CancellationToken, Task<T>> funcToRun, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!EverDoEvents)
+            {
+                Task<T> objSyncTask = funcToRun.Invoke(token);
+                if (objSyncTask.Status == TaskStatus.Created)
+                    objSyncTask.RunSynchronously();
+                if (objSyncTask.Exception != null)
+                    throw objSyncTask.Exception;
+                return objSyncTask.Result;
+            }
+            Task<T> objTask = Task.Run(() => funcToRun(token), token);
+            while (!objTask.IsCompleted)
+                SafeSleep(token);
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+            return objTask.Result;
+        }
+
+        /// <summary>
         /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
         /// </summary>
@@ -1691,6 +1762,65 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             Task<T>[] atskToRun = afuncToRun.Invoke();
+            int intLength = atskToRun.Length;
+            T[] aobjReturn = new T[intLength];
+            if (!EverDoEvents)
+            {
+                Parallel.For(0, intLength, i =>
+                {
+                    Task<T> objSyncTask = atskToRun[i];
+                    if (objSyncTask.Status == TaskStatus.Created)
+                        objSyncTask.RunSynchronously();
+                    if (objSyncTask.Exception != null)
+                        throw objSyncTask.Exception;
+                    aobjReturn[i] = objSyncTask.Result;
+                });
+                return aobjReturn;
+            }
+            Task<T>[] aobjTasks = new Task<T>[MaxParallelBatchSize];
+            int intCounter = 0;
+            int intOffset = 0;
+            for (int i = 0; i < intLength; ++i)
+            {
+                int intLocalI = i;
+                aobjTasks[intCounter++] = Task.Run(() => atskToRun[intLocalI], token);
+                if (intCounter != MaxParallelBatchSize)
+                    continue;
+                Task<T[]> tskLoop = Task.Run(() => Task.WhenAll(aobjTasks), token);
+                while (!tskLoop.IsCompleted)
+                    SafeSleep(token);
+                if (tskLoop.Exception != null)
+                    throw tskLoop.Exception;
+                for (int j = 0; j < MaxParallelBatchSize; ++j)
+                    aobjReturn[i] = aobjTasks[j].Result;
+                intOffset += MaxParallelBatchSize;
+                intCounter = 0;
+            }
+            int intFinalBatchSize = intLength % MaxParallelBatchSize;
+            if (intFinalBatchSize != 0)
+            {
+                Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks), token);
+                while (!objTask.IsCompleted)
+                    SafeSleep(token);
+                if (objTask.Exception != null)
+                    throw objTask.Exception;
+                for (int j = 0; j < intFinalBatchSize; ++j)
+                    aobjReturn[intOffset + j] = aobjTasks[j].Result;
+            }
+            return aobjReturn;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T[] RunWithoutThreadLock<T>(Func<CancellationToken, Task<T>[]> afuncToRun, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            Task<T>[] atskToRun = afuncToRun.Invoke(token);
             int intLength = atskToRun.Length;
             T[] aobjReturn = new T[intLength];
             if (!EverDoEvents)
@@ -1821,6 +1951,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar for synchronously waiting for code to complete while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="funcToRun">Code to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(Func<CancellationToken, Task> funcToRun, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!EverDoEvents)
+            {
+                Task objSyncTask = funcToRun.Invoke(token);
+                if (objSyncTask.Status == TaskStatus.Created)
+                    objSyncTask.RunSynchronously();
+                if (objSyncTask.Exception != null)
+                    throw objSyncTask.Exception;
+                return;
+            }
+            Task objTask = Task.Run(() => funcToRun.Invoke(token), token);
+            while (!objTask.IsCompleted)
+                SafeSleep(token);
+            if (objTask.Exception != null)
+                throw objTask.Exception;
+        }
+
+        /// <summary>
         /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
         /// </summary>
@@ -1845,6 +2001,53 @@ namespace Chummer
                 return;
             }
             atskToRun = afuncToRun.Invoke();
+            List<Task> lstTasks = new List<Task>(MaxParallelBatchSize);
+            int intCounter = 0;
+            foreach (Task tskLoop in atskToRun)
+            {
+                lstTasks.Add(Task.Run(() => tskLoop, token));
+                if (++intCounter != MaxParallelBatchSize)
+                    continue;
+                Task tskBatchLoop = Task.Run(() => Task.WhenAll(lstTasks), token);
+                while (!tskBatchLoop.IsCompleted)
+                    SafeSleep(token);
+                if (tskBatchLoop.Exception != null)
+                    throw tskBatchLoop.Exception;
+                lstTasks.Clear();
+                intCounter = 0;
+            }
+            Task tskBatchFinal = Task.Run(() => Task.WhenAll(lstTasks), token);
+            while (!tskBatchFinal.IsCompleted)
+                SafeSleep(token);
+            if (tskBatchFinal.Exception != null)
+                throw tskBatchFinal.Exception;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(Func<CancellationToken, Task[]> afuncToRun, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            Task[] atskToRun;
+            if (!EverDoEvents)
+            {
+                atskToRun = afuncToRun.Invoke(token);
+                Parallel.For(0, atskToRun.Length, i =>
+                {
+                    Task objSyncTask = atskToRun[i];
+                    if (objSyncTask.Status == TaskStatus.Created)
+                        objSyncTask.RunSynchronously();
+                    if (objSyncTask.Exception != null)
+                        throw objSyncTask.Exception;
+                });
+                return;
+            }
+            atskToRun = afuncToRun.Invoke(token);
             List<Task> lstTasks = new List<Task>(MaxParallelBatchSize);
             int intCounter = 0;
             foreach (Task tskLoop in atskToRun)

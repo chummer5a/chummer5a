@@ -334,7 +334,7 @@ namespace ChummerHub.Client.UI
                     //also, since we are logged in in now, refresh the frmCharacterRoster!
                     if (PluginHandler.MainForm != null)
                         Chummer.Utils.RunWithoutThreadLock(
-                            () => PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(
+                            () => PluginHandler.MainForm.CharacterRoster.RefreshPluginNodesAsync(
                                 PluginHandler.MyPluginHandlerInstance));
                     bLogin.DoThreadSafe(x => x.Text = "Logout");
                     BindingSource bs = new BindingSource
@@ -374,7 +374,7 @@ namespace ChummerHub.Client.UI
                     await lUsername.DoThreadSafeAsync(x => x.Text = mail);
                     //also, since we are logged in in now, refresh the frmCharacterRoster!
                     if (PluginHandler.MainForm != null)
-                        await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
+                        await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodesAsync(PluginHandler.MyPluginHandlerInstance);
                     await bLogin.DoThreadSafeAsync(x => x.Text = "Logout");
                     BindingSource bs = new BindingSource
                     {
