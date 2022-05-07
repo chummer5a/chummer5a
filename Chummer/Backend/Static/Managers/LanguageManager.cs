@@ -1118,11 +1118,14 @@ namespace Chummer
         {
             return string.IsNullOrWhiteSpace(strExtra)
                 ? string.Empty
-                // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
-                // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
-                // TODO: Do this overhaul.
-                : Utils.RunWithoutThreadLock(
-                    () => TranslateExtraCoreAsync(true, strExtra, strIntoLanguage, objCharacter, strPreferFile));
+                : TranslateExtraCoreAsync(true, strExtra, strIntoLanguage, objCharacter, strPreferFile).GetAwaiter().GetResult();
+            /*
+            // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
+            // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
+            // TODO: Do this overhaul.
+            : Utils.RunWithoutThreadLock(
+                () => TranslateExtraCoreAsync(true, strExtra, strIntoLanguage, objCharacter, strPreferFile));
+            */
         }
 
         /// <summary>
@@ -1461,11 +1464,14 @@ namespace Chummer
         {
             return string.IsNullOrWhiteSpace(strExtra)
                 ? string.Empty
-                // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
-                // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
-                // TODO: Do this overhaul.
-                : Utils.RunWithoutThreadLock(
-                    () => ReverseTranslateExtraCoreAsync(true, strExtra, strFromLanguage, objCharacter, strPreferFile));
+                : ReverseTranslateExtraCoreAsync(true, strExtra, strFromLanguage, objCharacter, strPreferFile).GetAwaiter().GetResult();
+            /*
+            // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
+            // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
+            // TODO: Do this overhaul.
+            : Utils.RunWithoutThreadLock(
+                () => ReverseTranslateExtraCoreAsync(true, strExtra, strFromLanguage, objCharacter, strPreferFile));
+            */
         }
 
         /// <summary>
