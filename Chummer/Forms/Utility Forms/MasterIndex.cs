@@ -197,7 +197,6 @@ namespace Chummer
             if (e.PropertyName == nameof(CharacterSettings.Books)
                 || e.PropertyName == nameof(CharacterSettings.EnabledCustomDataDirectoryPaths))
             {
-
                 try
                 {
                     CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken);

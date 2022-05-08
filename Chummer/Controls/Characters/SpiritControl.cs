@@ -170,15 +170,24 @@ namespace Chummer
                 Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(_objSpirit.LinkedCharacter)
                     ? _objSpirit.LinkedCharacter
                     : null;
-                using (await CursorWait.NewAsync(ParentForm))
+                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm);
+                try
                 {
                     if (objOpenCharacter == null)
                     {
-                        using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(_objSpirit.LinkedCharacter.FileName, Character.NumLoadingSections))
-                            objOpenCharacter = await Program.LoadCharacterAsync(_objSpirit.LinkedCharacter.FileName, frmLoadingBar: frmLoadingBar.MyForm);
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(
+                                   _objSpirit.LinkedCharacter.FileName, Character.NumLoadingSections))
+                            objOpenCharacter = await Program.LoadCharacterAsync(
+                                _objSpirit.LinkedCharacter.FileName, frmLoadingBar: frmLoadingBar.MyForm);
                     }
+
                     if (!await Program.SwitchToOpenCharacter(objOpenCharacter))
                         await Program.OpenCharacter(objOpenCharacter);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
             else
@@ -543,7 +552,8 @@ namespace Chummer
                 return;
             }
 
-            using (await CursorWait.NewAsync(ParentForm))
+            CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm);
+            try
             {
                 // The Critter should use the same settings file as the character.
                 Character objCharacter = new Character
@@ -582,7 +592,7 @@ namespace Chummer
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
                     {
                         await frmLoadingBar.MyForm.PerformStepAsync(objCharacter.CharacterName,
-                                                             LoadingBar.ProgressBarTextPatterns.Saving);
+                                                                    LoadingBar.ProgressBarTextPatterns.Saving);
                         if (!await objCharacter.SaveAsync())
                             return;
                     }
@@ -600,6 +610,10 @@ namespace Chummer
                     await objCharacter
                         .DisposeAsync(); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 

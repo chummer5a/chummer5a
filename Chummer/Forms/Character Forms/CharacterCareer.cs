@@ -3789,10 +3789,9 @@ namespace Chummer
                 return;
             }
 
-            string strFileName;
-
             try
             {
+                string strFileName;
                 // Prompt the user to select a save file to possess.
                 using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog(), GenericToken))
                 {
@@ -3804,7 +3803,8 @@ namespace Chummer
                 }
 
                 string strOpenFile = string.Empty;
-                using (await CursorWait.NewAsync(this, token: GenericToken))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                try
                 {
                     Character objMerge = new Character {FileName = CharacterObject.FileName};
                     try
@@ -3834,7 +3834,8 @@ namespace Chummer
                                     Program.ShowMessageBox(this,
                                                            await LanguageManager.GetStringAsync(
                                                                "Message_VesselInCareerMode"),
-                                                           await LanguageManager.GetStringAsync("MessageTitle_Possession"),
+                                                           await LanguageManager.GetStringAsync(
+                                                               "MessageTitle_Possession"),
                                                            MessageBoxButtons.OK,
                                                            MessageBoxIcon.Error);
                                     return;
@@ -3872,7 +3873,8 @@ namespace Chummer
 
                                 if (!blnHasImmunity)
                                 {
-                                    XmlDocument objPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml", token: GenericToken);
+                                    XmlDocument objPowerDoc
+                                        = await CharacterObject.LoadDataAsync("critterpowers.xml", token: GenericToken);
                                     XmlNode objPower
                                         = objPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
@@ -3895,12 +3897,14 @@ namespace Chummer
                             */
 
                                 await frmLoadingBar.MyForm.PerformStepAsync(
-                                    await LanguageManager.GetStringAsync("String_SelectPACKSKit_Lifestyles"), token: GenericToken);
+                                    await LanguageManager.GetStringAsync("String_SelectPACKSKit_Lifestyles"),
+                                    token: GenericToken);
                                 // Copy any Lifestyles the Vessel has.
                                 foreach (Lifestyle objLifestyle in objVessel.Lifestyles)
                                     await objMerge.Lifestyles.AddAsync(objLifestyle);
 
-                                await frmLoadingBar.MyForm.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Armor"), token: GenericToken);
+                                await frmLoadingBar.MyForm.PerformStepAsync(
+                                    await LanguageManager.GetStringAsync("Tab_Armor"), token: GenericToken);
                                 // Copy any Armor the Vessel has.
                                 foreach (Armor objArmor in objVessel.Armor)
                                 {
@@ -3908,7 +3912,8 @@ namespace Chummer
                                     CopyArmorImprovements(objVessel, objMerge, objArmor);
                                 }
 
-                                await frmLoadingBar.MyForm.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Gear"), token: GenericToken);
+                                await frmLoadingBar.MyForm.PerformStepAsync(
+                                    await LanguageManager.GetStringAsync("Tab_Gear"), token: GenericToken);
                                 // Copy any Gear the Vessel has.
                                 foreach (Gear objGear in objVessel.Gear)
                                 {
@@ -3916,7 +3921,8 @@ namespace Chummer
                                     CopyGearImprovements(objVessel, objMerge, objGear);
                                 }
 
-                                await frmLoadingBar.MyForm.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Cyberware"), token: GenericToken);
+                                await frmLoadingBar.MyForm.PerformStepAsync(
+                                    await LanguageManager.GetStringAsync("Tab_Cyberware"), token: GenericToken);
                                 // Copy any Cyberware/Bioware the Vessel has.
                                 foreach (Cyberware objCyberware in objVessel.Cyberware)
                                 {
@@ -3924,17 +3930,20 @@ namespace Chummer
                                     CopyCyberwareImprovements(objVessel, objMerge, objCyberware);
                                 }
 
-                                await frmLoadingBar.MyForm.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Weapons"), token: GenericToken);
+                                await frmLoadingBar.MyForm.PerformStepAsync(
+                                    await LanguageManager.GetStringAsync("Tab_Weapons"), token: GenericToken);
                                 // Copy any Weapons the Vessel has.
                                 foreach (Weapon objWeapon in objVessel.Weapons)
                                     await objMerge.Weapons.AddAsync(objWeapon);
 
-                                await frmLoadingBar.MyForm.PerformStepAsync(await LanguageManager.GetStringAsync("Tab_Vehicles"), token: GenericToken);
+                                await frmLoadingBar.MyForm.PerformStepAsync(
+                                    await LanguageManager.GetStringAsync("Tab_Vehicles"), token: GenericToken);
                                 // Copy and Vehicles the Vessel has.
                                 foreach (Vehicle objVehicle in objVessel.Vehicles)
                                     await objMerge.Vehicles.AddAsync(objVehicle);
 
-                                await frmLoadingBar.MyForm.PerformStepAsync(await LanguageManager.GetStringAsync("String_Settings"), token: GenericToken);
+                                await frmLoadingBar.MyForm.PerformStepAsync(
+                                    await LanguageManager.GetStringAsync("String_Settings"), token: GenericToken);
                                 // Copy the character info.
                                 objMerge.Gender = objVessel.Gender;
                                 objMerge.Age = objVessel.Age;
@@ -3966,12 +3975,237 @@ namespace Chummer
 
                         // Now that everything is done, save the merged character and open them.
                         dlgSaveFile.FileName = strShowFileName;
-                        if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), GenericToken) != DialogResult.OK)
+                        if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), GenericToken)
+                            != DialogResult.OK)
                             return;
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
                         {
                             await frmLoadingBar.MyForm.PerformStepAsync(objMerge.CharacterName,
-                                                                 LoadingBar.ProgressBarTextPatterns.Saving, token: GenericToken);
+                                                                        LoadingBar.ProgressBarTextPatterns.Saving,
+                                                                        token: GenericToken);
+                            objMerge.FileName = dlgSaveFile.FileName;
+                            if (await objMerge.SaveAsync(token: GenericToken))
+                            {
+                                // Get the name of the file and destroy the references to the Vessel and the merged character.
+                                strOpenFile = objMerge.FileName;
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        await objMerge
+                            .DisposeAsync(); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
+                    }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
+
+                if (!string.IsNullOrEmpty(strOpenFile))
+                {
+                    objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                    try
+                    {
+                        Character objOpenCharacter;
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(strOpenFile, Character.NumLoadingSections))
+                            objOpenCharacter
+                                = await Program.LoadCharacterAsync(strOpenFile, frmLoadingBar: frmLoadingBar.MyForm,
+                                                                   token: GenericToken);
+                        await Program.OpenCharacter(objOpenCharacter, token: GenericToken);
+                    }
+                    finally
+                    {
+                        await objCursorWait.DisposeAsync();
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void mnuSpecialPossessInanimate_Click(object sender, EventArgs e)
+        {
+            // Make sure the Spirit has been saved first.
+            if (IsDirty && Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_PossessionSave"),
+                                                  await LanguageManager.GetStringAsync("MessageTitle_Possession"),
+                                                  MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                return;
+
+            if (Utils.IsUnitTest)
+            {
+                Utils.BreakIfDebug();
+                return;
+            }
+
+            try
+            {
+                string strSelectedVessel;
+                // Prompt the user to select an inanimate Vessel.
+                XPathNavigator xmlVesselsNavigator = await CharacterObject.LoadDataXPathAsync("vessels.xml", token: GenericToken);
+                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatype))
+                {
+                    foreach (XPathNavigator xmlMetatype in await xmlVesselsNavigator.SelectAndCacheExpressionAsync(
+                                 "/chummer/metatypes/metatype"))
+                    {
+                        string strName = (await xmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
+                        if (!string.IsNullOrEmpty(strName))
+                        {
+                            ListItem objItem
+                                = new ListItem(
+                                    strName, (await xmlMetatype.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? strName);
+                            lstMetatype.Add(objItem);
+                        }
+                    }
+
+                    using (ThreadSafeForm<SelectItem> frmSelectVessel = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), GenericToken))
+                    {
+                        frmSelectVessel.MyForm.SetGeneralItemsMode(lstMetatype);
+
+                        if (await frmSelectVessel.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
+                            return;
+
+                        strSelectedVessel = frmSelectVessel.MyForm.SelectedItem;
+                    }
+                }
+
+                // Get the Node for the selected Vessel.
+                XmlDocument xmlVessels = await CharacterObject.LoadDataAsync("vessels.xml", token: GenericToken);
+                XmlNode objSelected = xmlVessels.SelectSingleNode("/chummer/metatypes/metatype[name = " + strSelectedVessel.CleanXPath() + ']');
+                if (objSelected == null)
+                    return;
+
+                string strOpenFile = string.Empty;
+                using (await CursorWait.NewAsync(this, token: GenericToken))
+                {
+                    // Load the Spirit's save file into a new Merge character.
+                    Character objMerge = new Character {FileName = CharacterObject.FileName};
+                    try
+                    {
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(objMerge.FileName, Character.NumLoadingSections + 1))
+                        {
+                            await objMerge.LoadAsync(frmLoadingBar.MyForm, token: GenericToken);
+                            await frmLoadingBar.MyForm.PerformStepAsync(await LanguageManager.GetStringAsync("String_UI"));
+                            objMerge.Possessed = true;
+                            objMerge.Alias = strSelectedVessel + await LanguageManager.GetStringAsync("String_Space") + '('
+                                             + await LanguageManager.GetStringAsync("String_Possessed") + ')';
+
+                            int intHalfMAGRoundedUp = CharacterObject.MAG.TotalValue.DivAwayFromZero(2);
+                            await ImprovementManager.CreateImprovementAsync(
+                                objMerge, "BOD", Improvement.ImprovementSource.Metatype, "Possession",
+                                Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
+                                intHalfMAGRoundedUp, intHalfMAGRoundedUp);
+                            await ImprovementManager.CreateImprovementAsync(
+                                objMerge, "AGI", Improvement.ImprovementSource.Metatype, "Possession",
+                                Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
+                                intHalfMAGRoundedUp, intHalfMAGRoundedUp);
+                            await ImprovementManager.CreateImprovementAsync(
+                                objMerge, "STR", Improvement.ImprovementSource.Metatype, "Possession",
+                                Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
+                                intHalfMAGRoundedUp, intHalfMAGRoundedUp);
+                            await ImprovementManager.CreateImprovementAsync(
+                                objMerge, "REA", Improvement.ImprovementSource.Metatype, "Possession",
+                                Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
+                                intHalfMAGRoundedUp, intHalfMAGRoundedUp);
+                            await ImprovementManager.CreateImprovementAsync(
+                                objMerge, "INT", Improvement.ImprovementSource.Metatype, "Possession",
+                                Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1,
+                                CharacterObject.INT.MetatypeMinimum,
+                                CharacterObject.INT.MetatypeMaximum, 0, CharacterObject.INT.MetatypeAugmentedMaximum);
+                            await ImprovementManager.CreateImprovementAsync(
+                                objMerge, "WIL", Improvement.ImprovementSource.Metatype, "Possession",
+                                Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1,
+                                CharacterObject.WIL.MetatypeMinimum,
+                                CharacterObject.WIL.MetatypeMaximum, 0, CharacterObject.WIL.MetatypeAugmentedMaximum);
+                            await ImprovementManager.CreateImprovementAsync(
+                                objMerge, "LOG", Improvement.ImprovementSource.Metatype, "Possession",
+                                Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1,
+                                CharacterObject.LOG.MetatypeMinimum,
+                                CharacterObject.LOG.MetatypeMaximum, 0, CharacterObject.LOG.MetatypeAugmentedMaximum);
+                            await ImprovementManager.CreateImprovementAsync(
+                                objMerge, "CHA", Improvement.ImprovementSource.Metatype, "Possession",
+                                Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1,
+                                CharacterObject.CHA.MetatypeMinimum,
+                                CharacterObject.CHA.MetatypeMaximum, 0, CharacterObject.CHA.MetatypeAugmentedMaximum);
+                            await ImprovementManager.CommitAsync(objMerge);
+                            XmlDocument xmlPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml");
+
+                            // Update the Movement if the Vessel has one.
+                            string strMovement = objSelected["movement"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strMovement))
+                                objMerge.Movement = strMovement;
+
+                            // Add any additional Critter Powers the Vessel grants.
+                            XmlNode xmlPowersNode = objSelected["powers"];
+                            if (xmlPowersNode != null)
+                            {
+                                using (XmlNodeList xmlPowerList = xmlPowersNode.SelectNodes("power"))
+                                {
+                                    if (xmlPowerList?.Count > 0)
+                                    {
+                                        foreach (XmlNode objXmlPower in xmlPowerList)
+                                        {
+                                            XmlNode objXmlCritterPower
+                                                = xmlPowerDoc.SelectSingleNode(
+                                                    "/chummer/powers/power[name = " + objXmlPower.InnerText.CleanXPath()
+                                                    + ']');
+                                            CritterPower objPower = new CritterPower(objMerge);
+                                            string strSelect = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
+                                            int intRating = Convert.ToInt32(objXmlPower.Attributes?["rating"]?.InnerText,
+                                                                            GlobalSettings.InvariantCultureInfo);
+
+                                            objPower.Create(objXmlCritterPower, intRating, strSelect);
+
+                                            await objMerge.CritterPowers.AddAsync(objPower);
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
+                            if (!objMerge.CritterPowers.Any(objCritterPower =>
+                                                                objCritterPower.Name == "Immunity"
+                                                                && objCritterPower.Extra == "Normal Weapons"))
+                            {
+                                XmlNode objPower
+                                    = xmlPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
+
+                                CritterPower objCritterPower = new CritterPower(objMerge);
+                                objCritterPower.Create(objPower, 0, "Normal Weapons");
+                                await objMerge.CritterPowers.AddAsync(objCritterPower);
+                            }
+
+                            // Add any Improvements the Vessel grants.
+                            if (objSelected["bonus"] != null)
+                            {
+                                await ImprovementManager.CreateImprovementsAsync(
+                                    objMerge, Improvement.ImprovementSource.Metatype, strSelectedVessel,
+                                    objSelected["bonus"], 1, strSelectedVessel);
+                            }
+                        }
+
+                        // Now that everything is done, save the merged character and open them.
+                        string strShowFileName = objMerge.FileName
+                                                         .SplitNoAlloc(Path.DirectorySeparatorChar,
+                                                                       StringSplitOptions.RemoveEmptyEntries)
+                                                         .LastOrDefault();
+
+                        if (string.IsNullOrEmpty(strShowFileName))
+                            strShowFileName = objMerge.CharacterName;
+                        strShowFileName = strShowFileName.TrimEndOnce(".chum5");
+
+                        strShowFileName += await LanguageManager.GetStringAsync("String_Space") + '('
+                            + await LanguageManager.GetStringAsync("String_Possessed") + ')';
+                        dlgSaveFile.FileName = strShowFileName;
+                        if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x)) != DialogResult.OK)
+                            return;
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
+                        {
+                            await frmLoadingBar.MyForm.PerformStepAsync(objMerge.CharacterName,
+                                                                        LoadingBar.ProgressBarTextPatterns.Saving, token: GenericToken);
                             objMerge.FileName = dlgSaveFile.FileName;
                             if (await objMerge.SaveAsync(token: GenericToken))
                             {
@@ -4001,208 +4235,6 @@ namespace Chummer
             catch (OperationCanceledException)
             {
                 //swallow this
-            }
-        }
-
-        private async void mnuSpecialPossessInanimate_Click(object sender, EventArgs e)
-        {
-            // Make sure the Spirit has been saved first.
-            if (IsDirty && Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_PossessionSave"), await LanguageManager.GetStringAsync("MessageTitle_Possession"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                return;
-
-            if (Utils.IsUnitTest)
-            {
-                Utils.BreakIfDebug();
-                return;
-            }
-
-            string strSelectedVessel;
-            // Prompt the user to select an inanimate Vessel.
-            XPathNavigator xmlVesselsNavigator = await CharacterObject.LoadDataXPathAsync("vessels.xml");
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatype))
-            {
-                foreach (XPathNavigator xmlMetatype in await xmlVesselsNavigator.SelectAndCacheExpressionAsync(
-                             "/chummer/metatypes/metatype"))
-                {
-                    string strName = (await xmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
-                    if (!string.IsNullOrEmpty(strName))
-                    {
-                        ListItem objItem
-                            = new ListItem(
-                                strName, (await xmlMetatype.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? strName);
-                        lstMetatype.Add(objItem);
-                    }
-                }
-
-                using (ThreadSafeForm<SelectItem> frmSelectVessel = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem()))
-                {
-                    frmSelectVessel.MyForm.SetGeneralItemsMode(lstMetatype);
-
-                    if (await frmSelectVessel.ShowDialogSafeAsync(this) == DialogResult.Cancel)
-                        return;
-
-                    strSelectedVessel = frmSelectVessel.MyForm.SelectedItem;
-                }
-            }
-
-            // Get the Node for the selected Vessel.
-            XmlDocument xmlVessels = await CharacterObject.LoadDataAsync("vessels.xml");
-            XmlNode objSelected = xmlVessels.SelectSingleNode("/chummer/metatypes/metatype[name = " + strSelectedVessel.CleanXPath() + ']');
-            if (objSelected == null)
-                return;
-
-            string strOpenFile = string.Empty;
-            using (await CursorWait.NewAsync(this))
-            {
-                // Load the Spirit's save file into a new Merge character.
-                Character objMerge = new Character {FileName = CharacterObject.FileName};
-                try
-                {
-                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(objMerge.FileName, Character.NumLoadingSections + 1))
-                    {
-                        await objMerge.LoadAsync(frmLoadingBar.MyForm);
-                        await frmLoadingBar.MyForm.PerformStepAsync(await LanguageManager.GetStringAsync("String_UI"));
-                        objMerge.Possessed = true;
-                        objMerge.Alias = strSelectedVessel + await LanguageManager.GetStringAsync("String_Space") + '('
-                                         + await LanguageManager.GetStringAsync("String_Possessed") + ')';
-
-                        int intHalfMAGRoundedUp = CharacterObject.MAG.TotalValue.DivAwayFromZero(2);
-                        await ImprovementManager.CreateImprovementAsync(
-                            objMerge, "BOD", Improvement.ImprovementSource.Metatype, "Possession",
-                            Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
-                            intHalfMAGRoundedUp, intHalfMAGRoundedUp);
-                        await ImprovementManager.CreateImprovementAsync(
-                            objMerge, "AGI", Improvement.ImprovementSource.Metatype, "Possession",
-                            Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
-                            intHalfMAGRoundedUp, intHalfMAGRoundedUp);
-                        await ImprovementManager.CreateImprovementAsync(
-                            objMerge, "STR", Improvement.ImprovementSource.Metatype, "Possession",
-                            Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
-                            intHalfMAGRoundedUp, intHalfMAGRoundedUp);
-                        await ImprovementManager.CreateImprovementAsync(
-                            objMerge, "REA", Improvement.ImprovementSource.Metatype, "Possession",
-                            Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
-                            intHalfMAGRoundedUp, intHalfMAGRoundedUp);
-                        await ImprovementManager.CreateImprovementAsync(
-                            objMerge, "INT", Improvement.ImprovementSource.Metatype, "Possession",
-                            Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1,
-                            CharacterObject.INT.MetatypeMinimum,
-                            CharacterObject.INT.MetatypeMaximum, 0, CharacterObject.INT.MetatypeAugmentedMaximum);
-                        await ImprovementManager.CreateImprovementAsync(
-                            objMerge, "WIL", Improvement.ImprovementSource.Metatype, "Possession",
-                            Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1,
-                            CharacterObject.WIL.MetatypeMinimum,
-                            CharacterObject.WIL.MetatypeMaximum, 0, CharacterObject.WIL.MetatypeAugmentedMaximum);
-                        await ImprovementManager.CreateImprovementAsync(
-                            objMerge, "LOG", Improvement.ImprovementSource.Metatype, "Possession",
-                            Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1,
-                            CharacterObject.LOG.MetatypeMinimum,
-                            CharacterObject.LOG.MetatypeMaximum, 0, CharacterObject.LOG.MetatypeAugmentedMaximum);
-                        await ImprovementManager.CreateImprovementAsync(
-                            objMerge, "CHA", Improvement.ImprovementSource.Metatype, "Possession",
-                            Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1,
-                            CharacterObject.CHA.MetatypeMinimum,
-                            CharacterObject.CHA.MetatypeMaximum, 0, CharacterObject.CHA.MetatypeAugmentedMaximum);
-                        await ImprovementManager.CommitAsync(objMerge);
-                        XmlDocument xmlPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml");
-
-                        // Update the Movement if the Vessel has one.
-                        string strMovement = objSelected["movement"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strMovement))
-                            objMerge.Movement = strMovement;
-
-                        // Add any additional Critter Powers the Vessel grants.
-                        XmlNode xmlPowersNode = objSelected["powers"];
-                        if (xmlPowersNode != null)
-                        {
-                            using (XmlNodeList xmlPowerList = xmlPowersNode.SelectNodes("power"))
-                            {
-                                if (xmlPowerList?.Count > 0)
-                                {
-                                    foreach (XmlNode objXmlPower in xmlPowerList)
-                                    {
-                                        XmlNode objXmlCritterPower
-                                            = xmlPowerDoc.SelectSingleNode(
-                                                "/chummer/powers/power[name = " + objXmlPower.InnerText.CleanXPath()
-                                                + ']');
-                                        CritterPower objPower = new CritterPower(objMerge);
-                                        string strSelect = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
-                                        int intRating = Convert.ToInt32(objXmlPower.Attributes?["rating"]?.InnerText,
-                                                                        GlobalSettings.InvariantCultureInfo);
-
-                                        objPower.Create(objXmlCritterPower, intRating, strSelect);
-
-                                        await objMerge.CritterPowers.AddAsync(objPower);
-                                    }
-                                }
-                            }
-                        }
-
-                        // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
-                        if (!objMerge.CritterPowers.Any(objCritterPower =>
-                                                            objCritterPower.Name == "Immunity"
-                                                            && objCritterPower.Extra == "Normal Weapons"))
-                        {
-                            XmlNode objPower
-                                = xmlPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
-
-                            CritterPower objCritterPower = new CritterPower(objMerge);
-                            objCritterPower.Create(objPower, 0, "Normal Weapons");
-                            await objMerge.CritterPowers.AddAsync(objCritterPower);
-                        }
-
-                        // Add any Improvements the Vessel grants.
-                        if (objSelected["bonus"] != null)
-                        {
-                            await ImprovementManager.CreateImprovementsAsync(
-                                objMerge, Improvement.ImprovementSource.Metatype, strSelectedVessel,
-                                objSelected["bonus"], 1, strSelectedVessel);
-                        }
-                    }
-
-                    // Now that everything is done, save the merged character and open them.
-                    string strShowFileName = objMerge.FileName
-                                                     .SplitNoAlloc(Path.DirectorySeparatorChar,
-                                                                   StringSplitOptions.RemoveEmptyEntries)
-                                                     .LastOrDefault();
-
-                    if (string.IsNullOrEmpty(strShowFileName))
-                        strShowFileName = objMerge.CharacterName;
-                    strShowFileName = strShowFileName.TrimEndOnce(".chum5");
-
-                    strShowFileName += await LanguageManager.GetStringAsync("String_Space") + '('
-                        + await LanguageManager.GetStringAsync("String_Possessed") + ')';
-                    dlgSaveFile.FileName = strShowFileName;
-                    if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x)) != DialogResult.OK)
-                        return;
-                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
-                    {
-                        await frmLoadingBar.MyForm.PerformStepAsync(objMerge.CharacterName,
-                                                             LoadingBar.ProgressBarTextPatterns.Saving);
-                        objMerge.FileName = dlgSaveFile.FileName;
-                        if (await objMerge.SaveAsync())
-                        {
-                            // Get the name of the file and destroy the references to the Vessel and the merged character.
-                            strOpenFile = objMerge.FileName;
-                        }
-                    }
-                }
-                finally
-                {
-                    await objMerge
-                        .DisposeAsync(); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
-                }
-            }
-
-            if (!string.IsNullOrEmpty(strOpenFile))
-            {
-                using (await CursorWait.NewAsync(this))
-                {
-                    Character objOpenCharacter;
-                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strOpenFile, Character.NumLoadingSections))
-                        objOpenCharacter = await Program.LoadCharacterAsync(strOpenFile, frmLoadingBar: frmLoadingBar.MyForm);
-                    await Program.OpenCharacter(objOpenCharacter, token: GenericToken);
-                }
             }
         }
 
@@ -4777,16 +4809,16 @@ namespace Chummer
             RemoveSelectedObject(treGear.SelectedNode?.Tag);
         }
 
-        private async ValueTask<bool> AddVehicle(Location objLocation = null)
+        private async ValueTask<bool> AddVehicle(Location objLocation = null, CancellationToken token = default)
         {
-            using (ThreadSafeForm<SelectVehicle> frmPickVehicle = await ThreadSafeForm<SelectVehicle>.GetAsync(() => new SelectVehicle(CharacterObject)))
+            using (ThreadSafeForm<SelectVehicle> frmPickVehicle = await ThreadSafeForm<SelectVehicle>.GetAsync(() => new SelectVehicle(CharacterObject), token))
             {
                 // Make sure the dialogue window was not canceled.
-                if (await frmPickVehicle.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                if (await frmPickVehicle.ShowDialogSafeAsync(this, token) == DialogResult.Cancel)
                     return false;
 
                 // Open the Vehicles XML file and locate the selected piece.
-                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("vehicles.xml");
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("vehicles.xml", token: token);
 
                 XmlNode objXmlVehicle = objXmlDocument.SelectSingleNode("/chummer/vehicles/vehicle[id = " + frmPickVehicle.MyForm.SelectedVehicle.CleanXPath() + ']');
                 Vehicle objVehicle = new Vehicle(CharacterObject);
@@ -4867,12 +4899,12 @@ namespace Chummer
             await DoDeleteVehicle();
         }
 
-        private async ValueTask DoDeleteVehicle()
+        private async ValueTask DoDeleteVehicle(CancellationToken token = default)
         {
-            if (!await cmdDeleteVehicle.DoThreadSafeFuncAsync(x => x.Enabled))
+            if (!await cmdDeleteVehicle.DoThreadSafeFuncAsync(x => x.Enabled, token))
                 return;
             // Delete the selected Vehicle.
-            TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode);
+            TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode, token);
             // Delete the selected Vehicle.
             if (objSelectedNode == null)
             {
@@ -4890,9 +4922,9 @@ namespace Chummer
                                    Minimum = 0,
                                    Maximum = 1000000,
                                    Description = strRetrofit
-                               }))
+                               }, token))
                         {
-                            if (await frmModPercent.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                            if (await frmModPercent.ShowDialogSafeAsync(this, token) == DialogResult.Cancel)
                                 return;
 
                             decimal decPercentage = frmModPercent.MyForm.SelectedValue;
@@ -4905,7 +4937,7 @@ namespace Chummer
                             // Create a Vehicle Mod for the Retrofit.
                             VehicleMod objRetrofit = new VehicleMod(CharacterObject);
 
-                            XmlDocument objVehiclesDoc = await CharacterObject.LoadDataAsync("vehicles.xml");
+                            XmlDocument objVehiclesDoc = await CharacterObject.LoadDataAsync("vehicles.xml", token: token);
                             XmlNode objXmlNode = objVehiclesDoc.SelectSingleNode("/chummer/mods/mod[name = \"Retrofit\"]");
                             objRetrofit.Create(objXmlNode, 0, objMod.Parent);
                             objRetrofit.Cost = decCost.ToString(GlobalSettings.InvariantCultureInfo);

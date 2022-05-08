@@ -301,15 +301,24 @@ namespace Chummer
                 Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(_objContact.LinkedCharacter)
                     ? _objContact.LinkedCharacter
                     : null;
-                using (await CursorWait.NewAsync(ParentForm))
+                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm);
+                try
                 {
                     if (objOpenCharacter == null)
                     {
-                        using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(_objContact.LinkedCharacter.FileName, Character.NumLoadingSections))
-                            objOpenCharacter = await Program.LoadCharacterAsync(_objContact.LinkedCharacter.FileName, frmLoadingBar: frmLoadingBar.MyForm);
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(
+                                   _objContact.LinkedCharacter.FileName, Character.NumLoadingSections))
+                            objOpenCharacter = await Program.LoadCharacterAsync(
+                                _objContact.LinkedCharacter.FileName, frmLoadingBar: frmLoadingBar.MyForm);
                     }
+
                     if (!await Program.SwitchToOpenCharacter(objOpenCharacter))
                         await Program.OpenCharacter(objOpenCharacter);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
             else

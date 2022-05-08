@@ -64,7 +64,8 @@ namespace Chummer
 
         private async void SelectMetatypeKarma_Load(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -109,7 +110,7 @@ namespace Chummer
                         lstCategories.Sort(CompareListItems.CompareNames);
                         lstCategories.Insert(
                             0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
-                        
+
                         await cboCategory.PopulateWithListItemsAsync(lstCategories);
                         // Attempt to select the default Metahuman Category. If it could not be found, select the first item in the list instead.
                         await cboCategory.DoThreadSafeAsync(x =>
@@ -145,7 +146,7 @@ namespace Chummer
                                                                            x => y.Equals(
                                                                                x.Value.ToString(),
                                                                                StringComparison.OrdinalIgnoreCase)));
-                        
+
                         await cboPossessionMethod.PopulateWithListItemsAsync(lstMethods);
                     }
 
@@ -160,6 +161,10 @@ namespace Chummer
                     await this.DoThreadSafeAsync(x => x.ResumeLayout());
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         #endregion Form Events
@@ -170,7 +175,8 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -181,6 +187,10 @@ namespace Chummer
                 {
                     await this.DoThreadSafeAsync(x => x.ResumeLayout());
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -193,9 +203,14 @@ namespace Chummer
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await MetatypeSelected();
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -203,7 +218,8 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -214,6 +230,10 @@ namespace Chummer
                 {
                     await this.DoThreadSafeAsync(x => x.ResumeLayout());
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -234,7 +254,8 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -246,16 +267,25 @@ namespace Chummer
                     await this.DoThreadSafeAsync(x => x.ResumeLayout());
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void chkPossessionBased_CheckedChanged(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await chkPossessionBased.DoThreadSafeFuncAsync(x => x.Checked)
                                         .ContinueWith(
                                             y => cboPossessionMethod.DoThreadSafeAsync(x => x.Enabled = y.Result))
                                         .Unwrap();
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -1027,7 +1057,8 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -1038,6 +1069,10 @@ namespace Chummer
                 {
                     await this.DoThreadSafeAsync(x => x.ResumeLayout());
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
     }

@@ -86,7 +86,8 @@ namespace Chummer
 
         private async void cmdEditCharacterOption_Click(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 object objOldSelected = await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue);
                 using (ThreadSafeForm<EditCharacterSettings> frmOptions
@@ -132,11 +133,16 @@ namespace Chummer
                     await this.DoThreadSafeAsync(x => x.ResumeLayout());
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void SelectBuildMethod_Load(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -187,7 +193,8 @@ namespace Chummer
                         }
                     }
 
-                    await chkIgnoreRules.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_SelectKarma_IgnoreRules"));
+                    await chkIgnoreRules.SetToolTipAsync(
+                        await LanguageManager.GetStringAsync("Tip_SelectKarma_IgnoreRules"));
                     await ProcessGameplayIndexChanged();
                 }
                 finally
@@ -195,11 +202,16 @@ namespace Chummer
                     await this.DoThreadSafeAsync(x => x.ResumeLayout());
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void cboGamePlay_SelectedIndexChanged(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -210,6 +222,10 @@ namespace Chummer
                 {
                     await this.DoThreadSafeAsync(x => x.ResumeLayout());
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 

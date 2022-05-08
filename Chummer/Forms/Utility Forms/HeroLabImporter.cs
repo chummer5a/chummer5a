@@ -55,7 +55,8 @@ namespace Chummer
             // Prompt the user to select a save file to possess.
             if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)) != DialogResult.OK)
                 return;
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 string strSelectedFile = dlgOpenFile.FileName;
                 TreeNode objNode = await CacheCharacters(strSelectedFile);
@@ -68,6 +69,10 @@ namespace Chummer
                         x.SelectedNode = objNode.Nodes.Count > 0 ? objNode.Nodes[0] : objNode;
                     });
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -584,7 +589,8 @@ namespace Chummer
             string strCharacterId = objCache.CharacterId;
             if (string.IsNullOrEmpty(strFile) || string.IsNullOrEmpty(strCharacterId))
                 return;
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 bool blnLoaded = false;
                 Character objCharacter = new Character();
@@ -613,7 +619,8 @@ namespace Chummer
                                 = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
                                     GlobalSettings.DefaultCharacterSetting, token);
                             bool blnCacheUsesPriorityTables = objCache.BuildMethod.UsesPriorityTables();
-                            if (blnSuccess && blnCacheUsesPriorityTables == objDefaultCharacterSettings.BuildMethod.UsesPriorityTables())
+                            if (blnSuccess && blnCacheUsesPriorityTables
+                                == objDefaultCharacterSettings.BuildMethod.UsesPriorityTables())
                             {
                                 objCharacter.SettingsKey = objDefaultCharacterSettings.DictionaryKey;
                             }
@@ -622,20 +629,24 @@ namespace Chummer
                                 objCharacter.SettingsKey = SettingsManager.LoadedCharacterSettings.Values
                                                                           .FirstOrDefault(
                                                                               x => x.BuiltInOption
-                                                                                  && x.BuildMethod == objCache.BuildMethod)
+                                                                                  && x.BuildMethod
+                                                                                  == objCache.BuildMethod)
                                                                           ?.DictionaryKey
                                                            ?? SettingsManager.LoadedCharacterSettings.Values
                                                                              .FirstOrDefault(
                                                                                  x => x.BuiltInOption
-                                                                                     && x.BuildMethod.UsesPriorityTables()
+                                                                                     && x.BuildMethod
+                                                                                         .UsesPriorityTables()
                                                                                      == blnCacheUsesPriorityTables)
                                                                              ?.DictionaryKey
                                                            ?? GlobalSettings.DefaultCharacterSetting;
                             }
                         }
                     }
-                    
-                    using (ThreadSafeForm<SelectBuildMethod> frmPickBP = await ThreadSafeForm<SelectBuildMethod>.GetAsync(() => new SelectBuildMethod(objCharacter, true), token))
+
+                    using (ThreadSafeForm<SelectBuildMethod> frmPickBP
+                           = await ThreadSafeForm<SelectBuildMethod>.GetAsync(
+                               () => new SelectBuildMethod(objCharacter, true), token))
                     {
                         if (await frmPickBP.ShowDialogSafeAsync(this, token) != DialogResult.OK)
                             return;
@@ -655,6 +666,10 @@ namespace Chummer
                     if (!blnLoaded)
                         await Program.OpenCharacters.RemoveAsync(objCharacter);
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
 
             await this.DoThreadSafeAsync(x => x.Close(), token);

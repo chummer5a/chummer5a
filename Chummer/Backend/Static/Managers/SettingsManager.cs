@@ -55,9 +55,9 @@ namespace Chummer
             s_ObjSettingsFolderWatcher.Renamed += ObjSettingsFolderWatcherOnChanged;
         }
 
-        private static async void ObjSettingsFolderWatcherOnChanged(object sender, FileSystemEventArgs e)
+        private static void ObjSettingsFolderWatcherOnChanged(object sender, FileSystemEventArgs e)
         {
-            using (await CursorWait.NewAsync())
+            using (CursorWait.New())
             {
                 switch (e.ChangeType)
                 {
@@ -425,7 +425,7 @@ namespace Chummer
                 if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(x => x.Name != strLoopCustomDataName))
                     intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
             }
-            
+
             using (new FetchSafelyFromPool<HashSet<string>>(
                        Utils.StringHashSetPool, out HashSet<string> setDummyBooks))
             {

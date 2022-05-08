@@ -204,7 +204,8 @@ namespace Chummer
         private async Task DoPrint(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this, true, token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token);
+            try
             {
                 try
                 {
@@ -222,7 +223,8 @@ namespace Chummer
                     Task<Character>[] tskLoadingTasks = new Task<Character>[intNodesCount];
                     for (int i = 0; i < tskLoadingTasks.Length; ++i)
                     {
-                        string strLoopFile = await treCharacters.DoThreadSafeFuncAsync(x => x.Nodes[i].Tag.ToString(), token);
+                        string strLoopFile
+                            = await treCharacters.DoThreadSafeFuncAsync(x => x.Nodes[i].Tag.ToString(), token);
                         tskLoadingTasks[i]
                             = Task.Run(() => InnerLoad(strLoopFile, token), token);
                     }
@@ -232,8 +234,10 @@ namespace Chummer
                         innerToken.ThrowIfCancellationRequested();
 
                         Character objReturn;
-                        using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strLoopFile, Character.NumLoadingSections))
-                            objReturn = await Program.LoadCharacterAsync(strLoopFile, string.Empty, false, false, frmLoadingBar.MyForm, innerToken);
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(strLoopFile, Character.NumLoadingSections))
+                            objReturn = await Program.LoadCharacterAsync(
+                                strLoopFile, string.Empty, false, false, frmLoadingBar.MyForm, innerToken);
                         bool blnLoadSuccessful = objReturn != null;
                         innerToken.ThrowIfCancellationRequested();
 
@@ -269,6 +273,10 @@ namespace Chummer
                     await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, token),
                                        prgProgress.DoThreadSafeAsync(x => x.Value = 0, token));
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 

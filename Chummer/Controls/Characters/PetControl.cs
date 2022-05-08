@@ -121,15 +121,24 @@ namespace Chummer
                 Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(_objContact.LinkedCharacter)
                     ? _objContact.LinkedCharacter
                     : null;
-                using (await CursorWait.NewAsync(ParentForm))
+                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm);
+                try
                 {
                     if (objOpenCharacter == null)
                     {
-                        using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(_objContact.LinkedCharacter.FileName, Character.NumLoadingSections))
-                            objOpenCharacter = await Program.LoadCharacterAsync(_objContact.LinkedCharacter.FileName, frmLoadingBar: frmLoadingBar.MyForm);
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(
+                                   _objContact.LinkedCharacter.FileName, Character.NumLoadingSections))
+                            objOpenCharacter = await Program.LoadCharacterAsync(
+                                _objContact.LinkedCharacter.FileName, frmLoadingBar: frmLoadingBar.MyForm);
                     }
+
                     if (!await Program.SwitchToOpenCharacter(objOpenCharacter))
                         await Program.OpenCharacter(objOpenCharacter);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
             else
@@ -174,7 +183,8 @@ namespace Chummer
 
                 if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)) != DialogResult.OK)
                     return;
-                using (await CursorWait.NewAsync(ParentForm))
+                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm);
+                try
                 {
                     _objContact.FileName = dlgOpenFile.FileName;
                     string strText = await LanguageManager.GetStringAsync("Tip_Contact_OpenFile");
@@ -187,6 +197,10 @@ namespace Chummer
                     _objContact.RelativeFileName = "../" + uriRelative;
 
                     ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
         }

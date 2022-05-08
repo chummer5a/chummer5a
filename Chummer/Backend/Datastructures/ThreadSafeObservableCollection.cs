@@ -66,7 +66,7 @@ namespace Chummer
 
         /// <inheritdoc />
         public bool IsSynchronized => true;
-        
+
         public bool IsReadOnly => false;
 
         /// <inheritdoc />
@@ -210,7 +210,6 @@ namespace Chummer
                 await objLocker.DisposeAsync();
             }
         }
-
 
         public void Insert(int index, object value)
         {
@@ -383,7 +382,6 @@ namespace Chummer
                 return _lstData.IndexOf(item);
         }
 
-
         /// <inheritdoc cref="List{T}.Sort()" />
         public void Sort()
         {
@@ -548,7 +546,6 @@ namespace Chummer
 
         /// <inheritdoc />
         public virtual event PropertyChangedEventHandler PropertyChanged;
-
 
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)

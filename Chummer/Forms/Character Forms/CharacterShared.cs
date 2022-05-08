@@ -287,7 +287,8 @@ namespace Chummer
         protected async Task AutoSaveCharacter(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this, true, token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token);
+            try
             {
                 try
                 {
@@ -331,6 +332,10 @@ namespace Chummer
                     AutosaveStopWatch.Restart();
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         /// <summary>
@@ -346,7 +351,8 @@ namespace Chummer
             TreeNode objSelectedNode = await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken);
             if (objSelectedNode == null || objSelectedNode.Level == 0)
                 return;
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 string strGuid = (objSelectedNode.Tag as IHasInternalId)?.InternalId ?? string.Empty;
                 if (string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())
@@ -360,7 +366,8 @@ namespace Chummer
                 }
 
                 using (ThreadSafeForm<SelectLimitModifier> frmPickLimitModifier =
-                       await ThreadSafeForm<SelectLimitModifier>.GetAsync(() => new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"), token))
+                       await ThreadSafeForm<SelectLimitModifier>.GetAsync(
+                           () => new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"), token))
                 {
                     if (await frmPickLimitModifier.ShowDialogSafeAsync(this, token) == DialogResult.Cancel)
                         return;
@@ -369,12 +376,17 @@ namespace Chummer
                     await CharacterObject.LimitModifiers.RemoveAsync(objLimitModifier);
                     // Create the new limit modifier.
                     LimitModifier objNewLimitModifier = new LimitModifier(CharacterObject, strGuid);
-                    objNewLimitModifier.Create(frmPickLimitModifier.MyForm.SelectedName, frmPickLimitModifier.MyForm.SelectedBonus,
+                    objNewLimitModifier.Create(frmPickLimitModifier.MyForm.SelectedName,
+                                               frmPickLimitModifier.MyForm.SelectedBonus,
                                                frmPickLimitModifier.MyForm.SelectedLimitType,
                                                frmPickLimitModifier.MyForm.SelectedCondition, true);
 
                     await CharacterObject.LimitModifiers.AddAsync(objNewLimitModifier);
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -388,29 +400,37 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!(treNode?.Tag is IHasNotes objNotes))
                 return;
-            using (await CursorWait.NewAsync(this, token: token))
-            using (ThreadSafeForm<EditNotes> frmItemNotes =
-                   await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor), token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
-                if (await frmItemNotes.ShowDialogSafeAsync(this, token) != DialogResult.OK)
-                    return;
-                objNotes.Notes = frmItemNotes.MyForm.Notes;
-                objNotes.NotesColor = frmItemNotes.MyForm.NotesColor;
-                await SetDirty(true);
-                TreeView objTreeView = treNode.TreeView;
-                if (objTreeView != null)
+                using (ThreadSafeForm<EditNotes> frmItemNotes =
+                       await ThreadSafeForm<EditNotes>.GetAsync(
+                           () => new EditNotes(objNotes.Notes, objNotes.NotesColor), token))
                 {
-                    await objTreeView.DoThreadSafeAsync(() =>
+                    if (await frmItemNotes.ShowDialogSafeAsync(this, token) != DialogResult.OK)
+                        return;
+                    objNotes.Notes = frmItemNotes.MyForm.Notes;
+                    objNotes.NotesColor = frmItemNotes.MyForm.NotesColor;
+                    await SetDirty(true);
+                    TreeView objTreeView = treNode.TreeView;
+                    if (objTreeView != null)
+                    {
+                        await objTreeView.DoThreadSafeAsync(() =>
+                        {
+                            treNode.ForeColor = objNotes.PreferredColor;
+                            treNode.ToolTipText = objNotes.Notes.WordWrap();
+                        }, token);
+                    }
+                    else
                     {
                         treNode.ForeColor = objNotes.PreferredColor;
                         treNode.ToolTipText = objNotes.Notes.WordWrap();
-                    }, token);
+                    }
                 }
-                else
-                {
-                    treNode.ForeColor = objNotes.PreferredColor;
-                    treNode.ToolTipText = objNotes.Notes.WordWrap();
-                }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -420,7 +440,8 @@ namespace Chummer
         {
             if (pnlAttributes == null)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -628,6 +649,10 @@ namespace Chummer
                         }
                     }
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -7304,7 +7329,8 @@ namespace Chummer
 
         protected async ValueTask AddContactsFromFile(CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 XPathDocument xmlDoc;
                 // Displays an OpenFileDialog so the user can select the XML to read.
@@ -7346,6 +7372,10 @@ namespace Chummer
                     await CharacterObject.Contacts.AddAsync(objContact);
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         #endregion Additional Relationships Tab Control Events
@@ -7354,7 +7384,8 @@ namespace Chummer
         {
             if (panSpirits == null && panSprites == null)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -7382,7 +7413,8 @@ namespace Chummer
                             else if (panSprites == null)
                                 continue;
 
-                            SpiritControl objSpiritControl = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit), GenericToken);
+                            SpiritControl objSpiritControl
+                                = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit), GenericToken);
 
                             // Attach an EventHandler for the ServicesOwedChanged Event.
                             objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
@@ -7393,13 +7425,15 @@ namespace Chummer
                             if (blnIsSpirit)
                             {
                                 ++intSpirits;
-                                await objSpiritControl.DoThreadSafeAsync(x => x.Top = intSpirits * x.Height, GenericToken);
+                                await objSpiritControl.DoThreadSafeAsync(
+                                    x => x.Top = intSpirits * x.Height, GenericToken);
                                 await panSpirits.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), GenericToken);
                             }
                             else
                             {
                                 ++intSprites;
-                                await objSpiritControl.DoThreadSafeAsync(x => x.Top = intSprites * x.Height, GenericToken);
+                                await objSpiritControl.DoThreadSafeAsync(
+                                    x => x.Top = intSprites * x.Height, GenericToken);
                                 await panSprites.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), GenericToken);
                             }
                         }
@@ -7417,208 +7451,251 @@ namespace Chummer
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
+                        {
+                            int intSpirits = panSpirits != null
+                                ? await panSpirits.DoThreadSafeFuncAsync(x => x.Controls.Count, GenericToken)
+                                : 0;
+                            int intSprites = panSprites != null
+                                ? await panSprites.DoThreadSafeFuncAsync(x => x.Controls.Count, GenericToken)
+                                : 0;
+                            foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                int intSpirits = panSpirits != null ? await panSpirits.DoThreadSafeFuncAsync(x => x.Controls.Count, GenericToken) : 0;
-                                int intSprites = panSprites != null ? await panSprites.DoThreadSafeFuncAsync(x => x.Controls.Count, GenericToken) : 0;
-                                foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.NewItems)
+                                bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
+                                if (blnIsSpirit)
                                 {
-                                    bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
-                                    if (blnIsSpirit)
-                                    {
-                                        if (panSpirits == null)
-                                            continue;
-                                    }
-                                    else if (panSprites == null)
+                                    if (panSpirits == null)
                                         continue;
+                                }
+                                else if (panSprites == null)
+                                    continue;
 
-                                    SpiritControl objSpiritControl = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit), GenericToken);
+                                SpiritControl objSpiritControl
+                                    = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit),
+                                                                       GenericToken);
 
-                                    // Attach an EventHandler for the ServicesOwedChanged Event.
-                                    objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                    objSpiritControl.DeleteSpirit += DeleteSpirit;
+                                // Attach an EventHandler for the ServicesOwedChanged Event.
+                                objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                objSpiritControl.DeleteSpirit += DeleteSpirit;
 
-                                    await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
+                                await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
 
-                                    if (blnIsSpirit)
-                                    {
-                                        await objSpiritControl.DoThreadSafeAsync(x => x.Top = intSpirits * x.Height, GenericToken);
-                                        await panSpirits.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), GenericToken);
-                                        ++intSpirits;
-                                    }
-                                    else
-                                    {
-                                        await objSpiritControl.DoThreadSafeAsync(x => x.Top = intSprites * x.Height, GenericToken);
-                                        await panSprites.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), GenericToken);
-                                        ++intSprites;
-                                    }
+                                if (blnIsSpirit)
+                                {
+                                    await objSpiritControl.DoThreadSafeAsync(
+                                        x => x.Top = intSpirits * x.Height, GenericToken);
+                                    await panSpirits.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl),
+                                                                       GenericToken);
+                                    ++intSpirits;
+                                }
+                                else
+                                {
+                                    await objSpiritControl.DoThreadSafeAsync(
+                                        x => x.Top = intSprites * x.Height, GenericToken);
+                                    await panSprites.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl),
+                                                                       GenericToken);
+                                    ++intSprites;
                                 }
                             }
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.OldItems)
+                                int intMoveUpAmount = 0;
+                                if (objSpirit.EntityType == SpiritType.Spirit)
                                 {
-                                    int intMoveUpAmount = 0;
-                                    if (objSpirit.EntityType == SpiritType.Spirit)
+                                    if (panSpirits == null)
+                                        continue;
+                                    int intSpirits
+                                        = await panSpirits.DoThreadSafeFuncAsync(x => x.Controls.Count, GenericToken);
+                                    for (int i = 0; i < intSpirits; ++i)
                                     {
-                                        if (panSpirits == null)
-                                            continue;
-                                        int intSpirits = await panSpirits.DoThreadSafeFuncAsync(x => x.Controls.Count, GenericToken);
-                                        for (int i = 0; i < intSpirits; ++i)
+                                        Control objLoopControl
+                                            = await panSpirits.DoThreadSafeFuncAsync(x => x.Controls[i], GenericToken);
+                                        if (objLoopControl is SpiritControl objSpiritControl &&
+                                            objSpiritControl.SpiritObject == objSpirit)
                                         {
-                                            Control objLoopControl = await panSpirits.DoThreadSafeFuncAsync(x => x.Controls[i], GenericToken);
-                                            if (objLoopControl is SpiritControl objSpiritControl &&
-                                                objSpiritControl.SpiritObject == objSpirit)
+                                            intMoveUpAmount
+                                                = await objSpiritControl.DoThreadSafeFuncAsync(
+                                                    x => x.Height, GenericToken);
+                                            await panSpirits.DoThreadSafeAsync(
+                                                x => x.Controls.RemoveAt(i), GenericToken);
+                                            await objSpiritControl.DoThreadSafeAsync(x =>
                                             {
-                                                intMoveUpAmount = await objSpiritControl.DoThreadSafeFuncAsync(x => x.Height, GenericToken);
-                                                await panSpirits.DoThreadSafeAsync(x => x.Controls.RemoveAt(i), GenericToken);
-                                                await objSpiritControl.DoThreadSafeAsync(x =>
-                                                {
-                                                    x.ContactDetailChanged
-                                                        -= MakeDirtyWithCharacterUpdate;
-                                                    x.DeleteSpirit -= DeleteSpirit;
-                                                    x.Dispose();
-                                                }, GenericToken);
-                                                --i;
-                                                --intSpirits;
-                                            }
-                                            else if (intMoveUpAmount != 0)
-                                            {
-                                                await objLoopControl.DoThreadSafeAsync(x => x.Top -= intMoveUpAmount, GenericToken);
-                                            }
+                                                x.ContactDetailChanged
+                                                    -= MakeDirtyWithCharacterUpdate;
+                                                x.DeleteSpirit -= DeleteSpirit;
+                                                x.Dispose();
+                                            }, GenericToken);
+                                            --i;
+                                            --intSpirits;
+                                        }
+                                        else if (intMoveUpAmount != 0)
+                                        {
+                                            await objLoopControl.DoThreadSafeAsync(
+                                                x => x.Top -= intMoveUpAmount, GenericToken);
                                         }
                                     }
-                                    else if (panSprites != null)
+                                }
+                                else if (panSprites != null)
+                                {
+                                    int intSprites = panSprites.Controls.Count;
+                                    for (int i = 0; i < intSprites; ++i)
                                     {
-                                        int intSprites = panSprites.Controls.Count;
-                                        for (int i = 0; i < intSprites; ++i)
+                                        Control objLoopControl = panSprites.Controls[i];
+                                        if (objLoopControl is SpiritControl objSpiritControl &&
+                                            objSpiritControl.SpiritObject == objSpirit)
                                         {
-                                            Control objLoopControl = panSprites.Controls[i];
-                                            if (objLoopControl is SpiritControl objSpiritControl &&
-                                                objSpiritControl.SpiritObject == objSpirit)
+                                            intMoveUpAmount
+                                                = await objSpiritControl.DoThreadSafeFuncAsync(
+                                                    x => x.Height, GenericToken);
+                                            await panSprites.DoThreadSafeAsync(
+                                                x => x.Controls.RemoveAt(i), GenericToken);
+                                            await objSpiritControl.DoThreadSafeAsync(x =>
                                             {
-                                                intMoveUpAmount = await objSpiritControl.DoThreadSafeFuncAsync(x => x.Height, GenericToken);
-                                                await panSprites.DoThreadSafeAsync(x => x.Controls.RemoveAt(i), GenericToken);
-                                                await objSpiritControl.DoThreadSafeAsync(x =>
-                                                {
-                                                    x.ContactDetailChanged
-                                                        -= MakeDirtyWithCharacterUpdate;
-                                                    x.DeleteSpirit -= DeleteSpirit;
-                                                    x.Dispose();
-                                                }, GenericToken);
-                                                --i;
-                                                --intSprites;
-                                            }
-                                            else if (intMoveUpAmount != 0)
-                                            {
-                                                await objLoopControl.DoThreadSafeAsync(x => x.Top -= intMoveUpAmount, GenericToken);
-                                            }
+                                                x.ContactDetailChanged
+                                                    -= MakeDirtyWithCharacterUpdate;
+                                                x.DeleteSpirit -= DeleteSpirit;
+                                                x.Dispose();
+                                            }, GenericToken);
+                                            --i;
+                                            --intSprites;
+                                        }
+                                        else if (intMoveUpAmount != 0)
+                                        {
+                                            await objLoopControl.DoThreadSafeAsync(
+                                                x => x.Top -= intMoveUpAmount, GenericToken);
                                         }
                                     }
                                 }
                             }
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Replace:
+                        {
+                            int intSpirits = panSpirits != null
+                                ? await panSpirits.DoThreadSafeFuncAsync(x => x.Controls.Count, GenericToken)
+                                : 0;
+                            int intSprites = panSprites != null
+                                ? await panSprites.DoThreadSafeFuncAsync(x => x.Controls.Count, GenericToken)
+                                : 0;
+                            foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                int intSpirits = panSpirits != null ? await panSpirits.DoThreadSafeFuncAsync(x => x.Controls.Count, GenericToken) : 0;
-                                int intSprites = panSprites != null ? await panSprites.DoThreadSafeFuncAsync(x => x.Controls.Count, GenericToken) : 0;
-                                foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.OldItems)
+                                int intMoveUpAmount = 0;
+                                if (objSpirit.EntityType == SpiritType.Spirit)
                                 {
-                                    int intMoveUpAmount = 0;
-                                    if (objSpirit.EntityType == SpiritType.Spirit)
+                                    if (panSpirits == null)
+                                        continue;
+                                    for (int i = 0; i < intSpirits; ++i)
                                     {
-                                        if (panSpirits == null)
-                                            continue;
-                                        for (int i = 0; i < intSpirits; ++i)
+                                        Control objLoopControl
+                                            = await panSpirits.DoThreadSafeFuncAsync(x => x.Controls[i], GenericToken);
+                                        if (objLoopControl is SpiritControl objSpiritControl &&
+                                            objSpiritControl.SpiritObject == objSpirit)
                                         {
-                                            Control objLoopControl = await panSpirits.DoThreadSafeFuncAsync(x => x.Controls[i], GenericToken);
-                                            if (objLoopControl is SpiritControl objSpiritControl &&
-                                                objSpiritControl.SpiritObject == objSpirit)
+                                            intMoveUpAmount
+                                                = await objSpiritControl.DoThreadSafeFuncAsync(
+                                                    x => x.Height, GenericToken);
+                                            await panSpirits.DoThreadSafeAsync(
+                                                x => x.Controls.RemoveAt(i), GenericToken);
+                                            await objSpiritControl.DoThreadSafeAsync(x =>
                                             {
-                                                intMoveUpAmount = await objSpiritControl.DoThreadSafeFuncAsync(x => x.Height, GenericToken);
-                                                await panSpirits.DoThreadSafeAsync(x => x.Controls.RemoveAt(i), GenericToken);
-                                                await objSpiritControl.DoThreadSafeAsync(x =>
-                                                {
-                                                    x.ContactDetailChanged
-                                                        -= MakeDirtyWithCharacterUpdate;
-                                                    x.DeleteSpirit -= DeleteSpirit;
-                                                    x.Dispose();
-                                                }, GenericToken);
-                                                --i;
-                                                --intSpirits;
-                                            }
-                                            else if (intMoveUpAmount != 0)
-                                            {
-                                                await objLoopControl.DoThreadSafeAsync(x => x.Top -= intMoveUpAmount, GenericToken);
-                                            }
+                                                x.ContactDetailChanged
+                                                    -= MakeDirtyWithCharacterUpdate;
+                                                x.DeleteSpirit -= DeleteSpirit;
+                                                x.Dispose();
+                                            }, GenericToken);
+                                            --i;
+                                            --intSpirits;
                                         }
-                                    }
-                                    else if (panSprites != null)
-                                    {
-                                        for (int i = 0; i < intSprites; ++i)
+                                        else if (intMoveUpAmount != 0)
                                         {
-                                            Control objLoopControl = panSprites.Controls[i];
-                                            if (objLoopControl is SpiritControl objSpiritControl &&
-                                                objSpiritControl.SpiritObject == objSpirit)
-                                            {
-                                                intMoveUpAmount = await objSpiritControl.DoThreadSafeFuncAsync(x => x.Height, GenericToken);
-                                                await panSprites.DoThreadSafeAsync(x => x.Controls.RemoveAt(i), GenericToken);
-                                                await objSpiritControl.DoThreadSafeAsync(x =>
-                                                {
-                                                    x.ContactDetailChanged
-                                                        -= MakeDirtyWithCharacterUpdate;
-                                                    x.DeleteSpirit -= DeleteSpirit;
-                                                    x.Dispose();
-                                                }, GenericToken);
-                                                --i;
-                                                --intSprites;
-                                            }
-                                            else if (intMoveUpAmount != 0)
-                                            {
-                                                await objLoopControl.DoThreadSafeAsync(x => x.Top -= intMoveUpAmount, GenericToken);
-                                            }
+                                            await objLoopControl.DoThreadSafeAsync(
+                                                x => x.Top -= intMoveUpAmount, GenericToken);
                                         }
                                     }
                                 }
-
-                                foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.NewItems)
+                                else if (panSprites != null)
                                 {
-                                    bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
-                                    if (blnIsSpirit)
+                                    for (int i = 0; i < intSprites; ++i)
                                     {
-                                        if (panSpirits == null)
-                                            continue;
-                                    }
-                                    else if (panSprites == null)
-                                        continue;
-
-                                    SpiritControl objSpiritControl = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit), GenericToken);
-
-                                    // Attach an EventHandler for the ServicesOwedChanged Event.
-                                    objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                    objSpiritControl.DeleteSpirit += DeleteSpirit;
-
-                                    await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
-
-                                    if (blnIsSpirit)
-                                    {
-                                        await objSpiritControl.DoThreadSafeAsync(x => x.Top = intSpirits * x.Height, GenericToken);
-                                        await panSpirits.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), GenericToken);
-                                        ++intSpirits;
-                                    }
-                                    else
-                                    {
-                                        await objSpiritControl.DoThreadSafeAsync(x => x.Top = intSprites * x.Height, GenericToken);
-                                        await panSprites.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl), GenericToken);
-                                        ++intSprites;
+                                        Control objLoopControl = panSprites.Controls[i];
+                                        if (objLoopControl is SpiritControl objSpiritControl &&
+                                            objSpiritControl.SpiritObject == objSpirit)
+                                        {
+                                            intMoveUpAmount
+                                                = await objSpiritControl.DoThreadSafeFuncAsync(
+                                                    x => x.Height, GenericToken);
+                                            await panSprites.DoThreadSafeAsync(
+                                                x => x.Controls.RemoveAt(i), GenericToken);
+                                            await objSpiritControl.DoThreadSafeAsync(x =>
+                                            {
+                                                x.ContactDetailChanged
+                                                    -= MakeDirtyWithCharacterUpdate;
+                                                x.DeleteSpirit -= DeleteSpirit;
+                                                x.Dispose();
+                                            }, GenericToken);
+                                            --i;
+                                            --intSprites;
+                                        }
+                                        else if (intMoveUpAmount != 0)
+                                        {
+                                            await objLoopControl.DoThreadSafeAsync(
+                                                x => x.Top -= intMoveUpAmount, GenericToken);
+                                        }
                                     }
                                 }
                             }
+
+                            foreach (Spirit objSpirit in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
+                                if (blnIsSpirit)
+                                {
+                                    if (panSpirits == null)
+                                        continue;
+                                }
+                                else if (panSprites == null)
+                                    continue;
+
+                                SpiritControl objSpiritControl
+                                    = await this.DoThreadSafeFuncAsync(() => new SpiritControl(objSpirit),
+                                                                       GenericToken);
+
+                                // Attach an EventHandler for the ServicesOwedChanged Event.
+                                objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                objSpiritControl.DeleteSpirit += DeleteSpirit;
+
+                                await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
+
+                                if (blnIsSpirit)
+                                {
+                                    await objSpiritControl.DoThreadSafeAsync(
+                                        x => x.Top = intSpirits * x.Height, GenericToken);
+                                    await panSpirits.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl),
+                                                                       GenericToken);
+                                    ++intSpirits;
+                                }
+                                else
+                                {
+                                    await objSpiritControl.DoThreadSafeAsync(
+                                        x => x.Top = intSprites * x.Height, GenericToken);
+                                    await panSprites.DoThreadSafeAsync(x => x.Controls.Add(objSpiritControl),
+                                                                       GenericToken);
+                                    ++intSprites;
+                                }
+                            }
+                        }
                             break;
                     }
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -7698,7 +7775,8 @@ namespace Chummer
         protected async ValueTask<bool> AddMugshot(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog(), token))
                 {
@@ -7760,6 +7838,10 @@ namespace Chummer
                 }
 
                 return true;
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -8242,7 +8324,8 @@ namespace Chummer
         /// </summary>
         public virtual async ValueTask<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false, CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 // If the Character does not have a file name, trigger the Save As menu item instead.
                 if (string.IsNullOrEmpty(CharacterObject.FileName))
@@ -8262,7 +8345,7 @@ namespace Chummer
                 using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
                 {
                     await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
-                                                         LoadingBar.ProgressBarTextPatterns.Saving, token);
+                                                                LoadingBar.ProgressBarTextPatterns.Saving, token);
                     if (_objCharacterFileWatcher != null)
                         _objCharacterFileWatcher.Changed -= LiveUpdateFromCharacterFile;
                     try
@@ -8282,6 +8365,10 @@ namespace Chummer
 
                 return true;
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         /// <summary>
@@ -8289,7 +8376,8 @@ namespace Chummer
         /// </summary>
         public virtual async ValueTask<bool> SaveCharacterAs(bool blnDoCreated = false, CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 // If the Created is checked, make sure the user wants to actually save this character.
                 if (blnDoCreated && !await ConfirmSaveCreatedCharacter(token))
@@ -8317,6 +8405,10 @@ namespace Chummer
                 if (!blnReturn)
                     CharacterObject.FileName = strOldFileName;
                 return blnReturn;
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -8379,14 +8471,17 @@ namespace Chummer
         public async ValueTask PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: token);
                 bool blnAddAgain;
 
                 do
                 {
-                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objSelectedVehicle), token))
+                    using (ThreadSafeForm<SelectGear> frmPickGear
+                           = await ThreadSafeForm<SelectGear>.GetAsync(
+                               () => new SelectGear(CharacterObject, 0, 1, objSelectedVehicle), token))
                     {
                         if (await frmPickGear.ShowDialogSafeAsync(this, token) == DialogResult.Cancel)
                             break;
@@ -8394,7 +8489,8 @@ namespace Chummer
 
                         // Open the Gear XML file and locate the selected piece.
                         XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = " +
-                                                                             frmPickGear.MyForm.SelectedGear.CleanXPath()
+                                                                             frmPickGear.MyForm.SelectedGear
+                                                                                 .CleanXPath()
                                                                              + ']');
 
                         // Create the new piece of Gear.
@@ -8502,6 +8598,10 @@ namespace Chummer
 
                     await SetDirty(true);
                 } while (blnAddAgain);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 

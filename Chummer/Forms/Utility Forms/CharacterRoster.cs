@@ -30,7 +30,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.Xml.XPath;
+#if DEBUG
 using Chummer.Annotations;
+#endif
 using Chummer.Plugins;
 using Newtonsoft.Json;
 using NLog;
@@ -1225,6 +1227,7 @@ namespace Chummer
                                  .FirstOrDefault(y => y.Text == strNodeText && y.Tag == objNodeTag), token);
                             try
                             {
+                                int i1 = i;
                                 await treCharacterList.DoThreadSafeAsync(treList =>
                                 {
                                     token.ThrowIfCancellationRequested();
@@ -1245,19 +1248,19 @@ namespace Chummer
                                         token.ThrowIfCancellationRequested();
                                         if (objFavoriteNode != null && objRecentNode != null
                                                                     && objWatchNode != null)
-                                            treList.Nodes.Insert(i + intNodeOffset + 3, node);
+                                            treList.Nodes.Insert(i1 + intNodeOffset + 3, node);
                                         else if (objFavoriteNode != null || objRecentNode != null
                                                                          || objWatchNode != null)
                                         {
                                             if ((objFavoriteNode != null && objRecentNode != null) ||
                                                 (objFavoriteNode != null && objWatchNode != null) ||
                                                 (objRecentNode != null && objWatchNode != null))
-                                                treList.Nodes.Insert(i + intNodeOffset + 2, node);
+                                                treList.Nodes.Insert(i1 + intNodeOffset + 2, node);
                                             else
-                                                treList.Nodes.Insert(i + intNodeOffset + 1, node);
+                                                treList.Nodes.Insert(i1 + intNodeOffset + 1, node);
                                         }
                                         else
-                                            treList.Nodes.Insert(i + intNodeOffset, node);
+                                            treList.Nodes.Insert(i1 + intNodeOffset, node);
                                     }
 
                                     node.Expand();
