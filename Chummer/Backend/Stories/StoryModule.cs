@@ -156,17 +156,17 @@ namespace Chummer
                    (_dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : '<' + strKey + '>');
         }
 
-        public ValueTask<string> TestRunToGeneratePersistents(CultureInfo objCulture, string strLanguage)
+        public ValueTask<string> TestRunToGeneratePersistents(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            return ResolveMacros(DisplayText(DefaultKey, strLanguage), objCulture, strLanguage, true);
+            return ResolveMacros(DisplayText(DefaultKey, strLanguage), objCulture, strLanguage, true, token);
         }
 
-        public async ValueTask<string> PrintModule(CultureInfo objCulture, string strLanguage)
+        public async ValueTask<string> PrintModule(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            return (await ResolveMacros(DisplayText(DefaultKey, strLanguage), objCulture, strLanguage)).NormalizeWhiteSpace();
+            return (await ResolveMacros(DisplayText(DefaultKey, strLanguage), objCulture, strLanguage, token: token)).NormalizeWhiteSpace();
         }
 
-        public async ValueTask<string> ResolveMacros(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents = false)
+        public async ValueTask<string> ResolveMacros(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents = false, CancellationToken token = default)
         {
             string strReturn = strInput;
             // Boolean in tuple is set to true if substring is a macro in need of processing, otherwise it's set to false
@@ -243,7 +243,7 @@ namespace Chummer
                 if (blnContainsMacros)
                 {
                     lstOutputStrings[i] = await ProcessSingleMacro(strContent, objCulture, strLanguage,
-                        blnGeneratePersistents);
+                        blnGeneratePersistents, token);
                 }
                 else
                 {
@@ -253,10 +253,10 @@ namespace Chummer
             return string.Concat(lstOutputStrings);
         }
 
-        public async ValueTask<string> ProcessSingleMacro(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents)
+        public async ValueTask<string> ProcessSingleMacro(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents, CancellationToken token = default)
         {
             // Process Macros nested inside of single macro
-            strInput = await ResolveMacros(strInput, objCulture, strLanguage, blnGeneratePersistents);
+            strInput = await ResolveMacros(strInput, objCulture, strLanguage, blnGeneratePersistents, token);
 
             int intPipeIndex = strInput.IndexOf('|');
             string strFunction = intPipeIndex == -1 ? strInput : strInput.Substring(0, intPipeIndex);
@@ -405,19 +405,19 @@ namespace Chummer
             if (blnGeneratePersistents)
             {
                 (bool blnSuccess, StoryModule objInnerModule)
-                    = await ParentStory.PersistentModules.TryGetValueAsync(strFunction);
+                    = await ParentStory.PersistentModules.TryGetValueAsync(strFunction, token);
                 if (blnSuccess)
-                    return await ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage);
+                    return await ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage, token: token);
                 StoryModule objPersistentStoryModule = ParentStory.GeneratePersistentModule(strFunction);
                 if (objPersistentStoryModule != null)
-                    return await ResolveMacros(objPersistentStoryModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage);
+                    return await ResolveMacros(objPersistentStoryModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage, token: token);
             }
             else
             {
                 (bool blnSuccess, StoryModule objInnerModule)
-                    = await ParentStory.PersistentModules.TryGetValueAsync(strFunction);
+                    = await ParentStory.PersistentModules.TryGetValueAsync(strFunction, token);
                 if (blnSuccess)
-                    return await ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage);
+                    return await ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage, token: token);
             }
 
             return await LanguageManager.GetStringAsync("String_Error", strLanguage);

@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.XPath;
 
@@ -152,7 +153,7 @@ namespace Chummer
             return null;
         }
 
-        public async ValueTask GeneratePersistentsAsync(CultureInfo objCulture, string strLanguage)
+        public async ValueTask GeneratePersistentsAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             List<string> lstPersistentKeysToRemove = new List<string>(_dicPersistentModules.Count);
             foreach (KeyValuePair<string, StoryModule> objPersistentModule in _dicPersistentModules)
@@ -162,17 +163,17 @@ namespace Chummer
             }
 
             foreach (string strKey in lstPersistentKeysToRemove)
-                await _dicPersistentModules.RemoveAsync(strKey);
+                await _dicPersistentModules.RemoveAsync(strKey, token);
 
             foreach (StoryModule objModule in Modules)
                 await objModule.TestRunToGeneratePersistents(objCulture, strLanguage);
             _blnNeedToRegeneratePersistents = false;
         }
 
-        public async ValueTask<string> PrintStory(CultureInfo objCulture, string strLanguage)
+        public async ValueTask<string> PrintStory(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             if (_blnNeedToRegeneratePersistents)
-                await GeneratePersistentsAsync(objCulture, strLanguage);
+                await GeneratePersistentsAsync(objCulture, strLanguage, token);
             string[] strModuleOutputStrings = new string[Modules.Count];
             for (int i = 0; i < Modules.Count; ++i)
             {

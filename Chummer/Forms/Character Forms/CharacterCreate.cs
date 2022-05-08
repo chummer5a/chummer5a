@@ -15066,7 +15066,8 @@ namespace Chummer
                                                           out StringBuilder sbdMessage))
             {
                 sbdMessage.Append(await LanguageManager.GetStringAsync("Message_InvalidBeginning"));
-                using (await CursorWait.NewAsync(this, token: token))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+                try
                 {
                     // Check if the character has more than 1 Martial Art, not counting qualities. TODO: Make the OTP check an optional rule. Make the Martial Arts limit an optional rule.
                     int intMartialArts = CharacterObject.MartialArts.Count(objArt => !objArt.IsQuality);
@@ -15301,7 +15302,8 @@ namespace Chummer
                                   .AppendFormat(GlobalSettings.CultureInfo,
                                                 await LanguageManager.GetStringAsync("Message_InvalidNuyenExcess"),
                                                 (-decNuyen).ToString(CharacterObjectSettings.NuyenFormat,
-                                                                     GlobalSettings.CultureInfo)).Append(await LanguageManager.GetStringAsync("String_NuyenSymbol"));
+                                                                     GlobalSettings.CultureInfo))
+                                  .Append(await LanguageManager.GetStringAsync("String_NuyenSymbol"));
                     }
 
                     if (CharacterObject.StolenNuyen < 0)
@@ -15312,7 +15314,8 @@ namespace Chummer
                                                                               "Message_InvalidStolenNuyenExcess"),
                                                                           (-CharacterObject.StolenNuyen).ToString(
                                                                               CharacterObjectSettings.NuyenFormat,
-                                                                              GlobalSettings.CultureInfo)).Append(await LanguageManager.GetStringAsync("String_NuyenSymbol"));
+                                                                              GlobalSettings.CultureInfo))
+                                  .Append(await LanguageManager.GetStringAsync("String_NuyenSymbol"));
                     }
 
                     // Check if the character's Essence is above 0.
@@ -15385,7 +15388,7 @@ namespace Chummer
                     int intLanguageLimit = 1 + (await ImprovementManager
                             .ValueOfAsync(CharacterObject,
                                           Improvement.ImprovementType.NativeLanguageLimit))
-                                               .StandardRound();
+                        .StandardRound();
 
                     if (intLanguages != intLanguageLimit)
                     {
@@ -15815,6 +15818,10 @@ namespace Chummer
                         blnValid = false;
                     }
                 }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
 
                 if (!blnValid && sbdMessage.Length > (await LanguageManager.GetStringAsync("Message_InvalidBeginning")).Length)
                     Program.ShowMessageBox(this, sbdMessage.ToString(),
@@ -15890,15 +15897,21 @@ namespace Chummer
 
                     strNewName = Path.Combine(Utils.GetStartupPath, "saves", "backup", strNewName);
 
-                    using (await CursorWait.NewAsync(this, token: token))
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+                    try
                     {
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
                         {
                             await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
-                                                                LoadingBar.ProgressBarTextPatterns.Saving, token);
+                                                                        LoadingBar.ProgressBarTextPatterns.Saving,
+                                                                        token);
                             if (!await CharacterObject.SaveAsync(strNewName, token: token))
                                 return false;
                         }
+                    }
+                    finally
+                    {
+                        await objCursorWait.DisposeAsync();
                     }
                 }
 
@@ -17476,15 +17489,22 @@ namespace Chummer
 
         private async void btnCreateBackstory_Click(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
+            try
             {
-                if (_objStoryBuilder == null)
+                using (await CursorWait.NewAsync(this, true, token: GenericToken))
                 {
-                    _objStoryBuilder = new StoryBuilder(CharacterObject);
-                    await btnCreateBackstory.DoThreadSafeAsync(x => x.Enabled = false);
-                }
+                    if (_objStoryBuilder == null)
+                    {
+                        _objStoryBuilder = new StoryBuilder(CharacterObject);
+                        await btnCreateBackstory.DoThreadSafeAsync(x => x.Enabled = false, token: GenericToken);
+                    }
 
-                CharacterObject.Background = await _objStoryBuilder.GetStory(GlobalSettings.Language);
+                    CharacterObject.Background = await _objStoryBuilder.GetStory(token: GenericToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 

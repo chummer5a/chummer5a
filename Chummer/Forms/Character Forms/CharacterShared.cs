@@ -675,7 +675,8 @@ namespace Chummer
             TreeNode objManipulationNode = null;
             TreeNode objRitualsNode = null;
             TreeNode objEnchantmentsNode = null;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -697,7 +698,8 @@ namespace Chummer
                     {
                         if (objSpell.Grade > 0 && treMetamagic != null)
                         {
-                            await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objSpell)?.Remove(), GenericToken);
+                            await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objSpell)?.Remove(),
+                                                                 GenericToken);
                         }
 
                         await AddToTree(objSpell, false);
@@ -705,7 +707,8 @@ namespace Chummer
 
                     await treSpells.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), GenericToken);
                     if (treMetamagic != null)
-                        await treMetamagic.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedMetamagicId), GenericToken);
+                        await treMetamagic.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedMetamagicId),
+                                                             GenericToken);
                 }
                 else
                 {
@@ -722,78 +725,84 @@ namespace Chummer
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (Spell objSpell in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                foreach (Spell objSpell in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(objSpell);
-                                }
-
-                                break;
+                                await AddToTree(objSpell);
                             }
+
+                            break;
+                        }
                         case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (Spell objSpell in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                foreach (Spell objSpell in notifyCollectionChangedEventArgs.OldItems)
+                                await treSpells.DoThreadSafeAsync(x =>
                                 {
-                                    await treSpells.DoThreadSafeAsync(x =>
+                                    TreeNode objNode = x.FindNodeByTag(objSpell);
+                                    if (objNode != null)
                                     {
-                                        TreeNode objNode = x.FindNodeByTag(objSpell);
-                                        if (objNode != null)
-                                        {
-                                            TreeNode objParent = objNode.Parent;
-                                            objNode.Remove();
-                                            if (objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                                objParent.Remove();
-                                        }
-                                    }, GenericToken);
-
-                                    if (objSpell.Grade > 0 && treMetamagic != null)
-                                    {
-                                        await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objSpell)?.Remove(), GenericToken);
-                                    }
-                                }
-
-                                break;
-                            }
-                        case NotifyCollectionChangedAction.Replace:
-                            {
-                                List<TreeNode> lstOldParents =
-                                    new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
-                                foreach (Spell objSpell in notifyCollectionChangedEventArgs.OldItems)
-                                {
-                                    await treSpells.DoThreadSafeAsync(x =>
-                                    {
-                                        TreeNode objNode = x.FindNodeByTag(objSpell);
-                                        if (objNode != null)
-                                        {
-                                            lstOldParents.Add(objNode.Parent);
-                                            objNode.Remove();
-                                        }
-                                    }, GenericToken);
-
-                                    if (objSpell.Grade > 0 && treMetamagic != null)
-                                    {
-                                        await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objSpell)?.Remove(), GenericToken);
-                                    }
-                                }
-
-                                foreach (Spell objSpell in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(objSpell);
-                                }
-
-                                await treSpells.DoThreadSafeAsync(() =>
-                                {
-                                    foreach (TreeNode objOldParent in lstOldParents)
-                                    {
-                                        if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                            objOldParent.Remove();
+                                        TreeNode objParent = objNode.Parent;
+                                        objNode.Remove();
+                                        if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                            objParent.Remove();
                                     }
                                 }, GenericToken);
 
-                                break;
+                                if (objSpell.Grade > 0 && treMetamagic != null)
+                                {
+                                    await treMetamagic.DoThreadSafeAsync(
+                                        x => x.FindNodeByTag(objSpell)?.Remove(), GenericToken);
+                                }
                             }
+
+                            break;
+                        }
+                        case NotifyCollectionChangedAction.Replace:
+                        {
+                            List<TreeNode> lstOldParents =
+                                new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
+                            foreach (Spell objSpell in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                await treSpells.DoThreadSafeAsync(x =>
+                                {
+                                    TreeNode objNode = x.FindNodeByTag(objSpell);
+                                    if (objNode != null)
+                                    {
+                                        lstOldParents.Add(objNode.Parent);
+                                        objNode.Remove();
+                                    }
+                                }, GenericToken);
+
+                                if (objSpell.Grade > 0 && treMetamagic != null)
+                                {
+                                    await treMetamagic.DoThreadSafeAsync(
+                                        x => x.FindNodeByTag(objSpell)?.Remove(), GenericToken);
+                                }
+                            }
+
+                            foreach (Spell objSpell in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                await AddToTree(objSpell);
+                            }
+
+                            await treSpells.DoThreadSafeAsync(() =>
+                            {
+                                foreach (TreeNode objOldParent in lstOldParents)
+                                {
+                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                        objOldParent.Remove();
+                                }
+                            }, GenericToken);
+
+                            break;
+                        }
                     }
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
 
             async ValueTask AddToTree(Spell objSpell, bool blnSingleAdd = true)
@@ -1002,13 +1011,15 @@ namespace Chummer
             if (treAIPrograms == null)
                 return;
             TreeNode objParentNode = null;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     string strSelectedId =
-                        (await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
+                        (await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as
+                            IHasInternalId)?.InternalId ?? string.Empty;
 
                     await treAIPrograms.DoThreadSafeAsync(x => x.Nodes.Clear(), GenericToken);
 
@@ -1022,18 +1033,20 @@ namespace Chummer
                 }
                 else
                 {
-                    objParentNode = await treAIPrograms.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedAIPrograms", false), GenericToken);
+                    objParentNode
+                        = await treAIPrograms.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedAIPrograms", false),
+                                                                    GenericToken);
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(objAIProgram);
-                                }
-
-                                break;
+                                await AddToTree(objAIProgram);
                             }
+
+                            break;
+                        }
                         case NotifyCollectionChangedAction.Remove:
                         {
                             await treAIPrograms.DoThreadSafeAsync(x =>
@@ -1054,40 +1067,44 @@ namespace Chummer
                             break;
                         }
                         case NotifyCollectionChangedAction.Replace:
+                        {
+                            List<TreeNode> lstOldParents =
+                                new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
+                            await treAIPrograms.DoThreadSafeAsync(x =>
                             {
-                                List<TreeNode> lstOldParents =
-                                    new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
-                                await treAIPrograms.DoThreadSafeAsync(x =>
+                                foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.OldItems)
                                 {
-                                    foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.OldItems)
+                                    TreeNode objNode = x.FindNodeByTag(objAIProgram);
+                                    if (objNode != null)
                                     {
-                                        TreeNode objNode = x.FindNodeByTag(objAIProgram);
-                                        if (objNode != null)
-                                        {
-                                            lstOldParents.Add(objNode.Parent);
-                                            objNode.Remove();
-                                        }
+                                        lstOldParents.Add(objNode.Parent);
+                                        objNode.Remove();
                                     }
-                                }, GenericToken);
-
-                                foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(objAIProgram);
                                 }
+                            }, GenericToken);
 
-                                await treAIPrograms.DoThreadSafeAsync(() =>
-                                {
-                                    foreach (TreeNode objOldParent in lstOldParents)
-                                    {
-                                        if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                            objOldParent.Remove();
-                                    }
-                                }, GenericToken);
-
-                                break;
+                            foreach (AIProgram objAIProgram in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                await AddToTree(objAIProgram);
                             }
+
+                            await treAIPrograms.DoThreadSafeAsync(() =>
+                            {
+                                foreach (TreeNode objOldParent in lstOldParents)
+                                {
+                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                        objOldParent.Remove();
+                                }
+                            }, GenericToken);
+
+                            break;
+                        }
                     }
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
 
             async ValueTask AddToTree(AIProgram objAIProgram, bool blnSingleAdd = true)
@@ -1142,15 +1159,20 @@ namespace Chummer
             if (treComplexForms == null)
                 return;
             TreeNode objParentNode = null;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     string strSelectedId =
-                        (await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
+                        (await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as
+                            IHasInternalId)?.InternalId ?? string.Empty;
                     string strSelectedMetamagicId =
-                        treMetamagic != null ? (await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty : string.Empty;
+                        treMetamagic != null
+                            ? (await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as
+                                IHasInternalId)?.InternalId ?? string.Empty
+                            : string.Empty;
 
                     await treComplexForms.DoThreadSafeAsync(x => x.Nodes.Clear(), GenericToken);
 
@@ -1159,30 +1181,35 @@ namespace Chummer
                     {
                         if (objComplexForm.Grade > 0 && treMetamagic != null)
                         {
-                            await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objComplexForm)?.Remove(), GenericToken);
+                            await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objComplexForm)?.Remove(),
+                                                                 GenericToken);
                         }
 
                         await AddToTree(objComplexForm, false);
                     }
 
-                    await treComplexForms.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), GenericToken);
+                    await treComplexForms.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId),
+                                                            GenericToken);
                     if (treMetamagic != null)
-                        await treMetamagic.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedMetamagicId), GenericToken);
+                        await treMetamagic.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedMetamagicId),
+                                                             GenericToken);
                 }
                 else
                 {
-                    objParentNode = await treComplexForms.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedAdvancedComplexForms", false), GenericToken);
+                    objParentNode
+                        = await treComplexForms.DoThreadSafeFuncAsync(
+                            x => x.FindNode("Node_SelectedAdvancedComplexForms", false), GenericToken);
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(objComplexForm);
-                                }
-
-                                break;
+                                await AddToTree(objComplexForm);
                             }
+
+                            break;
+                        }
                         case NotifyCollectionChangedAction.Remove:
                         {
                             foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.OldItems)
@@ -1201,52 +1228,58 @@ namespace Chummer
 
                                 if (objComplexForm.Grade > 0 && treMetamagic != null)
                                 {
-                                    await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objComplexForm)?.Remove(), GenericToken);
+                                    await treMetamagic.DoThreadSafeAsync(
+                                        x => x.FindNodeByTag(objComplexForm)?.Remove(), GenericToken);
                                 }
                             }
 
                             break;
                         }
                         case NotifyCollectionChangedAction.Replace:
+                        {
+                            List<TreeNode> lstOldParents =
+                                new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
+                            foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                List<TreeNode> lstOldParents =
-                                    new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
-                                foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.OldItems)
+                                await treComplexForms.DoThreadSafeAsync(x =>
                                 {
-                                    await treComplexForms.DoThreadSafeAsync(x =>
+                                    TreeNode objNode = x.FindNodeByTag(objComplexForm);
+                                    if (objNode != null)
                                     {
-                                        TreeNode objNode = x.FindNodeByTag(objComplexForm);
-                                        if (objNode != null)
-                                        {
-                                            lstOldParents.Add(objNode.Parent);
-                                            objNode.Remove();
-                                        }
-                                    }, GenericToken);
-
-                                    if (objComplexForm.Grade > 0 && treMetamagic != null)
-                                    {
-                                        await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objComplexForm)?.Remove(), GenericToken);
-                                    }
-                                }
-
-                                foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(objComplexForm);
-                                }
-
-                                await treComplexForms.DoThreadSafeAsync(() =>
-                                {
-                                    foreach (TreeNode objOldParent in lstOldParents)
-                                    {
-                                        if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                            objOldParent.Remove();
+                                        lstOldParents.Add(objNode.Parent);
+                                        objNode.Remove();
                                     }
                                 }, GenericToken);
 
-                                break;
+                                if (objComplexForm.Grade > 0 && treMetamagic != null)
+                                {
+                                    await treMetamagic.DoThreadSafeAsync(
+                                        x => x.FindNodeByTag(objComplexForm)?.Remove(), GenericToken);
+                                }
                             }
+
+                            foreach (ComplexForm objComplexForm in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                await AddToTree(objComplexForm);
+                            }
+
+                            await treComplexForms.DoThreadSafeAsync(() =>
+                            {
+                                foreach (TreeNode objOldParent in lstOldParents)
+                                {
+                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                        objOldParent.Remove();
+                                }
+                            }, GenericToken);
+
+                            break;
+                        }
                     }
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
 
             async ValueTask AddToTree(ComplexForm objComplexForm, bool blnSingleAdd = true)
@@ -1329,7 +1362,8 @@ namespace Chummer
         {
             if (treMetamagic == null)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -1378,14 +1412,14 @@ namespace Chummer
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
+                        {
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                                foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(objGrade, intNewIndex);
-                                    ++intNewIndex;
-                                }
+                                await AddToTree(objGrade, intNewIndex);
+                                ++intNewIndex;
                             }
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Remove:
@@ -1401,44 +1435,48 @@ namespace Chummer
                             break;
 
                         case NotifyCollectionChangedAction.Replace:
+                        {
+                            await treMetamagic.DoThreadSafeAsync(x =>
                             {
-                                await treMetamagic.DoThreadSafeAsync(x =>
+                                foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
                                 {
-                                    foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
-                                    {
-                                        x.FindNodeByTag(objGrade)?.Remove();
-                                    }
-                                }, GenericToken);
-
-                                int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                                foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(objGrade, intNewIndex);
-                                    ++intNewIndex;
+                                    x.FindNodeByTag(objGrade)?.Remove();
                                 }
+                            }, GenericToken);
+
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                await AddToTree(objGrade, intNewIndex);
+                                ++intNewIndex;
                             }
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Move:
+                        {
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            await treMetamagic.DoThreadSafeAsync(x =>
                             {
-                                int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                                await treMetamagic.DoThreadSafeAsync(x =>
+                                foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
                                 {
-                                    foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
+                                    TreeNode nodGrade = x.FindNodeByTag(objGrade);
+                                    if (nodGrade != null)
                                     {
-                                        TreeNode nodGrade = x.FindNodeByTag(objGrade);
-                                        if (nodGrade != null)
-                                        {
-                                            nodGrade.Remove();
-                                            x.Nodes.Insert(intNewIndex, nodGrade);
-                                            ++intNewIndex;
-                                        }
+                                        nodGrade.Remove();
+                                        x.Nodes.Insert(intNewIndex, nodGrade);
+                                        ++intNewIndex;
                                     }
-                                }, GenericToken);
-                            }
+                                }
+                            }, GenericToken);
+                        }
                             break;
                     }
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
 
             Task AddToTree(InitiationGrade objInitiationGrade, int intIndex = -1)
@@ -1577,17 +1615,18 @@ namespace Chummer
         {
             if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
+                    {
+                        foreach (Art objArt in notifyCollectionChangedEventArgs.NewItems)
                         {
-                            foreach (Art objArt in notifyCollectionChangedEventArgs.NewItems)
-                            {
-                                await AddToTree(objArt);
-                            }
+                            await AddToTree(objArt);
                         }
+                    }
                         break;
 
                     case NotifyCollectionChangedAction.Remove:
@@ -1603,28 +1642,32 @@ namespace Chummer
                         break;
 
                     case NotifyCollectionChangedAction.Replace:
+                    {
+                        await treMetamagic.DoThreadSafeAsync(x =>
                         {
-                            await treMetamagic.DoThreadSafeAsync(x =>
+                            foreach (Art objArt in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                foreach (Art objArt in notifyCollectionChangedEventArgs.OldItems)
-                                {
-                                    x.FindNodeByTag(objArt)?.Remove();
-                                }
-                            }, GenericToken);
-
-                            foreach (Art objArt in notifyCollectionChangedEventArgs.NewItems)
-                            {
-                                await AddToTree(objArt);
+                                x.FindNodeByTag(objArt)?.Remove();
                             }
+                        }, GenericToken);
+
+                        foreach (Art objArt in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            await AddToTree(objArt);
                         }
+                    }
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
-                        {
-                            await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
-                        }
+                    {
+                        await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                    }
                         break;
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
 
             async ValueTask AddToTree(Art objArt, bool blnSingleAdd = true)
@@ -1668,17 +1711,18 @@ namespace Chummer
             if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
+                    {
+                        foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.NewItems)
                         {
-                            foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.NewItems)
-                            {
-                                await AddToTree(objEnhancement);
-                            }
+                            await AddToTree(objEnhancement);
                         }
+                    }
                         break;
 
                     case NotifyCollectionChangedAction.Remove:
@@ -1694,28 +1738,32 @@ namespace Chummer
                         break;
 
                     case NotifyCollectionChangedAction.Replace:
+                    {
+                        await treMetamagic.DoThreadSafeAsync(x =>
                         {
-                            await treMetamagic.DoThreadSafeAsync(x =>
+                            foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.OldItems)
-                                {
-                                    x.FindNodeByTag(objEnhancement)?.Remove();
-                                }
-                            }, GenericToken);
-
-                            foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.NewItems)
-                            {
-                                await AddToTree(objEnhancement);
+                                x.FindNodeByTag(objEnhancement)?.Remove();
                             }
+                        }, GenericToken);
+
+                        foreach (Enhancement objEnhancement in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            await AddToTree(objEnhancement);
                         }
+                    }
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
-                        {
-                            await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
-                        }
+                    {
+                        await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                    }
                         break;
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
 
             async ValueTask AddToTree(Enhancement objEnhancement, bool blnSingleAdd = true)
@@ -1756,26 +1804,29 @@ namespace Chummer
 
         protected async ValueTask RefreshPowerCollectionListChanged(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, ListChangedEventArgs e = null)
         {
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 switch (e?.ListChangedType)
                 {
                     case ListChangedType.ItemAdded:
-                        {
-                            await CharacterObject.Powers[e.NewIndex].Enhancements
-                                                 .AddTaggedCollectionChangedAsync(treMetamagic, MakeDirtyWithCharacterUpdate);
-                            await CharacterObject.Powers[e.NewIndex].Enhancements
-                                                 .AddTaggedCollectionChangedAsync(treMetamagic, FuncDelegateToAdd);
-                            async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                                await RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes,
-                                                                   y);
-                        }
+                    {
+                        await CharacterObject.Powers[e.NewIndex].Enhancements
+                                             .AddTaggedCollectionChangedAsync(
+                                                 treMetamagic, MakeDirtyWithCharacterUpdate);
+                        await CharacterObject.Powers[e.NewIndex].Enhancements
+                                             .AddTaggedCollectionChangedAsync(treMetamagic, FuncDelegateToAdd);
+
+                        async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                            await RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes,
+                                                               y);
+                    }
                         break;
 
                     case ListChangedType.Reset:
-                        {
-                            await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
-                        }
+                    {
+                        await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                    }
                         break;
 
                     case ListChangedType.ItemDeleted:
@@ -1787,19 +1838,25 @@ namespace Chummer
                     case ListChangedType.PropertyDescriptorChanged:
                         return;
                     case null:
+                    {
+                        foreach (Power objPower in CharacterObject.Powers)
                         {
-                            foreach (Power objPower in CharacterObject.Powers)
-                            {
-                                await objPower.Enhancements.AddTaggedCollectionChangedAsync(treMetamagic,
-                                    MakeDirtyWithCharacterUpdate);
-                                await objPower.Enhancements.AddTaggedCollectionChangedAsync(treMetamagic, FuncDelegateToAdd);
-                                async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                                    await RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes,
-                                                                       y);
-                            }
+                            await objPower.Enhancements.AddTaggedCollectionChangedAsync(treMetamagic,
+                                MakeDirtyWithCharacterUpdate);
+                            await objPower.Enhancements.AddTaggedCollectionChangedAsync(
+                                treMetamagic, FuncDelegateToAdd);
+
+                            async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                await RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes,
+                                                                   y);
                         }
+                    }
                         break;
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
 
             await RequestCharacterUpdate();
@@ -1809,12 +1866,17 @@ namespace Chummer
 
         protected async ValueTask RefreshPowerCollectionBeforeRemove(TreeView treMetamagic, RemovingOldEventArgs removingOldEventArgs)
         {
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 if (removingOldEventArgs?.OldObject is Power objPower)
                 {
                     await objPower.Enhancements.RemoveTaggedCollectionChangedAsync(treMetamagic);
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -1822,17 +1884,18 @@ namespace Chummer
         {
             if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
+                    {
+                        foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.NewItems)
                         {
-                            foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.NewItems)
-                            {
-                                await AddToTree(objMetamagic);
-                            }
+                            await AddToTree(objMetamagic);
                         }
+                    }
                         break;
 
                     case NotifyCollectionChangedAction.Remove:
@@ -1848,28 +1911,32 @@ namespace Chummer
                         break;
 
                     case NotifyCollectionChangedAction.Replace:
+                    {
+                        await treMetamagic.DoThreadSafeAsync(x =>
                         {
-                            await treMetamagic.DoThreadSafeAsync(x =>
+                            foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.OldItems)
-                                {
-                                    x.FindNodeByTag(objMetamagic)?.Remove();
-                                }
-                            }, GenericToken);
-
-                            foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.NewItems)
-                            {
-                                await AddToTree(objMetamagic);
+                                x.FindNodeByTag(objMetamagic)?.Remove();
                             }
+                        }, GenericToken);
+
+                        foreach (Metamagic objMetamagic in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            await AddToTree(objMetamagic);
                         }
+                    }
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
-                        {
-                            await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
-                        }
+                    {
+                        await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                    }
                         break;
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
 
             async ValueTask AddToTree(Metamagic objMetamagic, bool blnSingleAdd = true)
@@ -1947,12 +2014,15 @@ namespace Chummer
                 return;
             TreeNode objPowersNode = null;
             TreeNode objWeaknessesNode = null;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
-                if (notifyCollectionChangedEventArgs == null || notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (notifyCollectionChangedEventArgs == null
+                    || notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     string strSelectedId
-                        = (await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)
+                        = (await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as
+                              IHasInternalId)
                           ?.InternalId ??
                           string.Empty;
                     await treCritterPowers.DoThreadSafeAsync(x => x.Nodes.Clear(), GenericToken);
@@ -1962,7 +2032,8 @@ namespace Chummer
                         await AddToTree(objPower, false);
                     }
 
-                    await treCritterPowers.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), GenericToken);
+                    await treCritterPowers.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId),
+                                                             GenericToken);
                 }
                 else
                 {
@@ -1974,14 +2045,14 @@ namespace Chummer
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (CritterPower objPower in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                foreach (CritterPower objPower in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(objPower);
-                                }
-
-                                break;
+                                await AddToTree(objPower);
                             }
+
+                            break;
+                        }
                         case NotifyCollectionChangedAction.Remove:
                         {
                             await treCritterPowers.DoThreadSafeAsync(x =>
@@ -2002,40 +2073,44 @@ namespace Chummer
                             break;
                         }
                         case NotifyCollectionChangedAction.Replace:
+                        {
+                            List<TreeNode> lstOldParents =
+                                new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
+                            await treCritterPowers.DoThreadSafeAsync(x =>
                             {
-                                List<TreeNode> lstOldParents =
-                                    new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
-                                await treCritterPowers.DoThreadSafeAsync(x =>
+                                foreach (CritterPower objPower in notifyCollectionChangedEventArgs.OldItems)
                                 {
-                                    foreach (CritterPower objPower in notifyCollectionChangedEventArgs.OldItems)
+                                    TreeNode objNode = x.FindNode(objPower.InternalId);
+                                    if (objNode != null)
                                     {
-                                        TreeNode objNode = x.FindNode(objPower.InternalId);
-                                        if (objNode != null)
-                                        {
-                                            lstOldParents.Add(objNode.Parent);
-                                            objNode.Remove();
-                                        }
+                                        lstOldParents.Add(objNode.Parent);
+                                        objNode.Remove();
                                     }
-                                }, GenericToken);
-
-                                foreach (CritterPower objPower in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(objPower);
                                 }
+                            }, GenericToken);
 
-                                await treCritterPowers.DoThreadSafeAsync(() =>
-                                {
-                                    foreach (TreeNode objOldParent in lstOldParents)
-                                    {
-                                        if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                            objOldParent.Remove();
-                                    }
-                                }, GenericToken);
-
-                                break;
+                            foreach (CritterPower objPower in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                await AddToTree(objPower);
                             }
+
+                            await treCritterPowers.DoThreadSafeAsync(() =>
+                            {
+                                foreach (TreeNode objOldParent in lstOldParents)
+                                {
+                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                        objOldParent.Remove();
+                                }
+                            }, GenericToken);
+
+                            break;
+                        }
                     }
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
 
             async ValueTask AddToTree(CritterPower objPower, bool blnSingleAdd = true)
@@ -2123,13 +2198,15 @@ namespace Chummer
             TreeNode objNegativeQualityRoot = null;
             TreeNode objLifeModuleRoot = null;
 
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
                     string strSelectedNode =
-                        (await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
+                        (await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as
+                            IHasInternalId)?.InternalId ?? string.Empty;
 
                     // Create the root nodes.
                     foreach (Quality objQuality in CharacterObject.Qualities)
@@ -2151,7 +2228,8 @@ namespace Chummer
                         foreach (Quality objQuality in CharacterObject.Qualities)
                         {
                             if (!setQualitiesToPrint.Remove(objQuality.SourceIDString + '|' +
-                                                            await objQuality.GetSourceNameAsync(GlobalSettings.Language) + '|' +
+                                                            await objQuality.GetSourceNameAsync(GlobalSettings.Language)
+                                                            + '|' +
                                                             objQuality.Extra))
                                 continue;
 
@@ -2159,7 +2237,8 @@ namespace Chummer
                         }
                     }
 
-                    await treQualities.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedNode), GenericToken);
+                    await treQualities.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedNode),
+                                                         GenericToken);
                 }
                 else
                 {
@@ -2173,94 +2252,100 @@ namespace Chummer
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (Quality objQuality in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                foreach (Quality objQuality in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    if (objQuality.Levels > 1)
-                                        blnDoNameRefresh = true;
-                                    else
-                                        await AddToTree(objQuality);
-                                }
-
-                                break;
+                                if (objQuality.Levels > 1)
+                                    blnDoNameRefresh = true;
+                                else
+                                    await AddToTree(objQuality);
                             }
+
+                            break;
+                        }
                         case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (Quality objQuality in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                foreach (Quality objQuality in notifyCollectionChangedEventArgs.OldItems)
+                                if (objQuality.Levels > 0)
+                                    blnDoNameRefresh = true;
+                                else
                                 {
-                                    if (objQuality.Levels > 0)
-                                        blnDoNameRefresh = true;
-                                    else
+                                    await treQualities.DoThreadSafeAsync(x =>
                                     {
-                                        await treQualities.DoThreadSafeAsync(x =>
-                                        {
-                                            TreeNode objNode = x.FindNodeByTag(objQuality);
-                                            if (objNode != null)
-                                            {
-                                                TreeNode objParent = objNode.Parent;
-                                                objNode.Remove();
-                                                objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
-                                                if (objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                                    objParent.Remove();
-                                            }
-                                        }, GenericToken);
-                                    }
-                                }
-
-                                break;
-                            }
-                        case NotifyCollectionChangedAction.Replace:
-                            {
-                                List<TreeNode> lstOldParents =
-                                    new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
-                                foreach (Quality objQuality in notifyCollectionChangedEventArgs.OldItems)
-                                {
-                                    if (objQuality.Levels > 0)
-                                        blnDoNameRefresh = true;
-                                    else
-                                    {
-                                        TreeNode objNode = await treQualities.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objQuality), GenericToken);
+                                        TreeNode objNode = x.FindNodeByTag(objQuality);
                                         if (objNode != null)
                                         {
-                                            await treQualities.DoThreadSafeAsync(() =>
-                                            {
-                                                if (objNode.Parent != null)
-                                                    lstOldParents.Add(objNode.Parent);
-                                                objNode.Remove();
-                                                objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
-                                            }, GenericToken);
+                                            TreeNode objParent = objNode.Parent;
+                                            objNode.Remove();
+                                            objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
+                                            if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                                objParent.Remove();
                                         }
-                                        else
-                                        {
-                                            await RefreshQualityNames(treQualities, GenericToken);
-                                        }
-                                    }
+                                    }, GenericToken);
                                 }
-
-                                foreach (Quality objQuality in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    if (objQuality.Levels > 1)
-                                        blnDoNameRefresh = true;
-                                    else
-                                        await AddToTree(objQuality);
-                                }
-
-                                await treQualities.DoThreadSafeAsync(() =>
-                                {
-                                    foreach (TreeNode objOldParent in lstOldParents)
-                                    {
-                                        if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                            objOldParent.Remove();
-                                    }
-                                }, GenericToken);
-
-                                break;
                             }
+
+                            break;
+                        }
+                        case NotifyCollectionChangedAction.Replace:
+                        {
+                            List<TreeNode> lstOldParents =
+                                new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
+                            foreach (Quality objQuality in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                if (objQuality.Levels > 0)
+                                    blnDoNameRefresh = true;
+                                else
+                                {
+                                    TreeNode objNode
+                                        = await treQualities.DoThreadSafeFuncAsync(
+                                            x => x.FindNodeByTag(objQuality), GenericToken);
+                                    if (objNode != null)
+                                    {
+                                        await treQualities.DoThreadSafeAsync(() =>
+                                        {
+                                            if (objNode.Parent != null)
+                                                lstOldParents.Add(objNode.Parent);
+                                            objNode.Remove();
+                                            objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
+                                        }, GenericToken);
+                                    }
+                                    else
+                                    {
+                                        await RefreshQualityNames(treQualities, GenericToken);
+                                    }
+                                }
+                            }
+
+                            foreach (Quality objQuality in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                if (objQuality.Levels > 1)
+                                    blnDoNameRefresh = true;
+                                else
+                                    await AddToTree(objQuality);
+                            }
+
+                            await treQualities.DoThreadSafeAsync(() =>
+                            {
+                                foreach (TreeNode objOldParent in lstOldParents)
+                                {
+                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                        objOldParent.Remove();
+                                }
+                            }, GenericToken);
+
+                            break;
+                        }
                     }
 
                     if (blnDoNameRefresh)
                         await RefreshQualityNames(treQualities, GenericToken);
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
 
             async ValueTask AddToTree(Quality objQuality, bool blnSingleAdd = true)
@@ -2400,7 +2485,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (treQualities == null || await treQualities.DoThreadSafeFuncAsync(x => x.GetNodeCount(false), token) <= 0)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 await treQualities.DoThreadSafeAsync(x =>
                 {
@@ -2416,6 +2502,10 @@ namespace Chummer
                     x.SortCustomAlphabetically(objSelectedNode?.Tag);
                 }, token);
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         #endregion Refresh Treeviews and Panels
@@ -2428,7 +2518,8 @@ namespace Chummer
         {
             if (objNodeList == null || objNodeList.Count <= 0)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 foreach (XPathNavigator objNode in objNodeList)
                 {
@@ -2436,10 +2527,15 @@ namespace Chummer
                     if (objQuality != null)
                     {
                         objQuality.DeleteQuality();
-                        await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.CritterPower,
-                                                                         objQuality.InternalId);
+                        await ImprovementManager.RemoveImprovementsAsync(
+                            CharacterObject, Improvement.ImprovementSource.CritterPower,
+                            objQuality.InternalId);
                     }
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -2450,14 +2546,22 @@ namespace Chummer
             if (treArmor == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
-                string strSelectedId = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId
+                    = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)
+                    ?.InternalId ?? string.Empty;
 
-                TreeNode nodRoot = await treArmor.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedArmor", false), GenericToken);
+                TreeNode nodRoot
+                    = await treArmor.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedArmor", false), GenericToken);
                 await RefreshLocation(treArmor, nodRoot, cmsArmorLocation, notifyCollectionChangedEventArgs,
-                                strSelectedId,
-                                "Node_SelectedArmor");
+                                      strSelectedId,
+                                      "Node_SelectedArmor");
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -2482,14 +2586,24 @@ namespace Chummer
             if (treVehicles == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
-                string strSelectedId = (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId
+                    = (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
+                                                               GenericToken) as IHasInternalId)?.InternalId
+                      ?? string.Empty;
 
-                TreeNode nodRoot = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedVehicles", false), GenericToken);
+                TreeNode nodRoot
+                    = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedVehicles", false),
+                                                              GenericToken);
                 await RefreshLocation(treVehicles, nodRoot, cmsVehicleLocation, notifyCollectionChangedEventArgs,
                                       strSelectedId,
                                       "Node_SelectedVehicles");
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -2498,14 +2612,23 @@ namespace Chummer
             if (treVehicles == null || objVehicle == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
-                string strSelectedId = (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId
+                    = (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
+                                                               GenericToken) as IHasInternalId)?.InternalId
+                      ?? string.Empty;
 
-                TreeNode nodRoot = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objVehicle), GenericToken);
+                TreeNode nodRoot
+                    = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objVehicle), GenericToken);
                 await RefreshLocation(treVehicles, nodRoot, cmsVehicleLocation, funcOffset,
                                       notifyCollectionChangedEventArgs,
                                       strSelectedId, "Node_SelectedVehicles", false);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -2514,14 +2637,23 @@ namespace Chummer
             if (treWeapons == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
-                string strSelectedId = (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId
+                    = (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)
+                    ?.InternalId ?? string.Empty;
 
-                TreeNode nodRoot = await treWeapons.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedWeapons", false), GenericToken);
+                TreeNode nodRoot
+                    = await treWeapons.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedWeapons", false),
+                                                             GenericToken);
                 await RefreshLocation(treWeapons, nodRoot, cmsWeaponLocation, notifyCollectionChangedEventArgs,
                                       strSelectedId,
                                       "Node_SelectedWeapons");
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -2530,157 +2662,177 @@ namespace Chummer
             if (treImprovements == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 string strSelectedId =
-                    (await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
+                    (await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as
+                        IHasInternalId)?.InternalId ?? string.Empty;
 
-                TreeNode nodRoot = await treImprovements.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedImprovements", false), GenericToken);
+                TreeNode nodRoot
+                    = await treImprovements.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedImprovements", false),
+                                                                  GenericToken);
 
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
+                    {
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        foreach (string strLocation in notifyCollectionChangedEventArgs.NewItems)
                         {
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (string strLocation in notifyCollectionChangedEventArgs.NewItems)
+                            TreeNode objLocation = new TreeNode
                             {
-                                TreeNode objLocation = new TreeNode
-                                {
-                                    Tag = strLocation,
-                                    Text = strLocation,
-                                    ContextMenuStrip = cmsImprovementLocation
-                                };
-                                await treImprovements.DoThreadSafeAsync(x => x.Nodes.Insert(intNewIndex, objLocation), GenericToken);
-                                ++intNewIndex;
-                            }
+                                Tag = strLocation,
+                                Text = strLocation,
+                                ContextMenuStrip = cmsImprovementLocation
+                            };
+                            await treImprovements.DoThreadSafeAsync(x => x.Nodes.Insert(intNewIndex, objLocation),
+                                                                    GenericToken);
+                            ++intNewIndex;
                         }
+                    }
                         break;
 
                     case NotifyCollectionChangedAction.Remove:
+                    {
+                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
+                            TreeNode objNode
+                                = await treImprovements.DoThreadSafeFuncAsync(
+                                    x => x.FindNodeByTag(strLocation, false), GenericToken);
+                            if (objNode != null)
                             {
-                                TreeNode objNode = await treImprovements.DoThreadSafeFuncAsync(x => x.FindNodeByTag(strLocation, false), GenericToken);
-                                if (objNode != null)
+                                await treImprovements.DoThreadSafeAsync(() => objNode.Remove(), GenericToken);
+                                if (objNode.Nodes.Count > 0)
                                 {
-                                    await treImprovements.DoThreadSafeAsync(() => objNode.Remove(), GenericToken);
-                                    if (objNode.Nodes.Count > 0)
+                                    if (nodRoot == null)
                                     {
-                                        if (nodRoot == null)
+                                        nodRoot = new TreeNode
                                         {
-                                            nodRoot = new TreeNode
-                                            {
-                                                Tag = "Node_SelectedImprovements",
-                                                Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements")
-                                            };
-                                            await treImprovements.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), GenericToken);
-                                        }
-
-                                        await treImprovements.DoThreadSafeAsync(() =>
-                                        {
-                                            for (int i = objNode.Nodes.Count - 1; i >= 0; --i)
-                                            {
-                                                TreeNode nodImprovement = objNode.Nodes[i];
-                                                nodImprovement.Remove();
-                                                nodRoot.Nodes.Add(nodImprovement);
-                                            }
-                                        }, GenericToken);
+                                            Tag = "Node_SelectedImprovements",
+                                            Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements")
+                                        };
+                                        await treImprovements.DoThreadSafeAsync(
+                                            x => x.Nodes.Insert(0, nodRoot), GenericToken);
                                     }
+
+                                    await treImprovements.DoThreadSafeAsync(() =>
+                                    {
+                                        for (int i = objNode.Nodes.Count - 1; i >= 0; --i)
+                                        {
+                                            TreeNode nodImprovement = objNode.Nodes[i];
+                                            nodImprovement.Remove();
+                                            nodRoot.Nodes.Add(nodImprovement);
+                                        }
+                                    }, GenericToken);
                                 }
                             }
                         }
+                    }
                         break;
 
                     case NotifyCollectionChangedAction.Replace:
+                    {
+                        int intNewItemsIndex = 0;
+                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            int intNewItemsIndex = 0;
-                            foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
+                            TreeNode objNode
+                                = await treImprovements.DoThreadSafeFuncAsync(
+                                    x => x.FindNodeByTag(strLocation, false), GenericToken);
+                            if (objNode != null)
                             {
-                                TreeNode objNode = await treImprovements.DoThreadSafeFuncAsync(x => x.FindNodeByTag(strLocation, false), GenericToken);
-                                if (objNode != null)
-                                {
-                                    if (notifyCollectionChangedEventArgs
+                                if (notifyCollectionChangedEventArgs
                                         .NewItems[intNewItemsIndex] is string objNewLocation)
+                                {
+                                    await treImprovements.DoThreadSafeAsync(() =>
                                     {
-                                        await treImprovements.DoThreadSafeAsync(() =>
-                                        {
-                                            objNode.Tag = objNewLocation;
-                                            objNode.Text = objNewLocation;
-                                        }, GenericToken);
-                                    }
-
-                                    ++intNewItemsIndex;
+                                        objNode.Tag = objNewLocation;
+                                        objNode.Text = objNewLocation;
+                                    }, GenericToken);
                                 }
+
+                                ++intNewItemsIndex;
                             }
                         }
+                    }
                         break;
 
                     case NotifyCollectionChangedAction.Move:
+                    {
+                        List<Tuple<string, TreeNode>> lstMoveNodes =
+                            new List<Tuple<string, TreeNode>>(notifyCollectionChangedEventArgs.OldItems.Count);
+                        foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            List<Tuple<string, TreeNode>> lstMoveNodes =
-                                new List<Tuple<string, TreeNode>>(notifyCollectionChangedEventArgs.OldItems.Count);
-                            foreach (string strLocation in notifyCollectionChangedEventArgs.OldItems)
+                            TreeNode objLocation
+                                = await treImprovements.DoThreadSafeFuncAsync(
+                                    x => x.FindNode(strLocation, false), GenericToken);
+                            if (objLocation != null)
                             {
-                                TreeNode objLocation = await treImprovements.DoThreadSafeFuncAsync(x => x.FindNode(strLocation, false), GenericToken);
-                                if (objLocation != null)
-                                {
-                                    lstMoveNodes.Add(new Tuple<string, TreeNode>(strLocation, objLocation));
-                                    objLocation.Remove();
-                                }
-                            }
-
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (string strLocation in notifyCollectionChangedEventArgs.NewItems)
-                            {
-                                Tuple<string, TreeNode> objLocationTuple =
-                                    lstMoveNodes.Find(x => x.Item1 == strLocation);
-                                if (objLocationTuple != null)
-                                {
-                                    await treImprovements.DoThreadSafeAsync(x => x.Nodes.Insert(intNewIndex, objLocationTuple.Item2), GenericToken);
-                                    ++intNewIndex;
-                                    lstMoveNodes.Remove(objLocationTuple);
-                                }
+                                lstMoveNodes.Add(new Tuple<string, TreeNode>(strLocation, objLocation));
+                                objLocation.Remove();
                             }
                         }
+
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        foreach (string strLocation in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            Tuple<string, TreeNode> objLocationTuple =
+                                lstMoveNodes.Find(x => x.Item1 == strLocation);
+                            if (objLocationTuple != null)
+                            {
+                                await treImprovements.DoThreadSafeAsync(
+                                    x => x.Nodes.Insert(intNewIndex, objLocationTuple.Item2), GenericToken);
+                                ++intNewIndex;
+                                lstMoveNodes.Remove(objLocationTuple);
+                            }
+                        }
+                    }
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
+                    {
+                        foreach (string strLocation in CharacterObject.ImprovementGroups)
                         {
-                            foreach (string strLocation in CharacterObject.ImprovementGroups)
+                            TreeNode objLocation
+                                = await treImprovements.DoThreadSafeFuncAsync(
+                                    x => x.FindNode(strLocation, false), GenericToken);
+                            if (objLocation != null)
                             {
-                                TreeNode objLocation = await treImprovements.DoThreadSafeFuncAsync(x => x.FindNode(strLocation, false), GenericToken);
-                                if (objLocation != null)
+                                await treImprovements.DoThreadSafeAsync(() => objLocation.Remove(), GenericToken);
+                                if (objLocation.Nodes.Count > 0)
                                 {
-                                    await treImprovements.DoThreadSafeAsync(() => objLocation.Remove(), GenericToken);
-                                    if (objLocation.Nodes.Count > 0)
+                                    if (nodRoot == null)
                                     {
-                                        if (nodRoot == null)
+                                        nodRoot = new TreeNode
                                         {
-                                            nodRoot = new TreeNode
-                                            {
-                                                Tag = "Node_SelectedImprovements",
-                                                Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements")
-                                            };
-                                            await treImprovements.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), GenericToken);
-                                        }
-
-                                        await treImprovements.DoThreadSafeAsync(() =>
-                                        {
-                                            for (int i = objLocation.Nodes.Count - 1; i >= 0; --i)
-                                            {
-                                                TreeNode nodImprovement = objLocation.Nodes[i];
-                                                nodImprovement.Remove();
-                                                nodRoot.Nodes.Add(nodImprovement);
-                                            }
-                                        }, GenericToken);
+                                            Tag = "Node_SelectedImprovements",
+                                            Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements")
+                                        };
+                                        await treImprovements.DoThreadSafeAsync(
+                                            x => x.Nodes.Insert(0, nodRoot), GenericToken);
                                     }
+
+                                    await treImprovements.DoThreadSafeAsync(() =>
+                                    {
+                                        for (int i = objLocation.Nodes.Count - 1; i >= 0; --i)
+                                        {
+                                            TreeNode nodImprovement = objLocation.Nodes[i];
+                                            nodImprovement.Remove();
+                                            nodRoot.Nodes.Add(nodImprovement);
+                                        }
+                                    }, GenericToken);
                                 }
                             }
                         }
+                    }
                         break;
                 }
 
                 await treImprovements.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), GenericToken);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -2695,169 +2847,183 @@ namespace Chummer
             NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, string strSelectedId, string strNodeName,
             bool rootSibling = true)
         {
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
+                    {
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        if (funcOffset != null)
+                            intNewIndex += funcOffset.Invoke();
+                        await treSelected.DoThreadSafeAsync(x =>
                         {
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            if (funcOffset != null)
-                                intNewIndex += funcOffset.Invoke();
-                            await treSelected.DoThreadSafeAsync(x =>
+                            foreach (Location objLocation in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                foreach (Location objLocation in notifyCollectionChangedEventArgs.NewItems)
+                                if (rootSibling)
                                 {
-                                    if (rootSibling)
-                                    {
-                                        x.Nodes.Insert(intNewIndex, objLocation.CreateTreeNode(cmsLocation));
-                                    }
-                                    else
-                                    {
-                                        nodRoot.Nodes.Insert(intNewIndex, objLocation.CreateTreeNode(cmsLocation));
-                                    }
-
-                                    ++intNewIndex;
+                                    x.Nodes.Insert(intNewIndex, objLocation.CreateTreeNode(cmsLocation));
                                 }
-                            }, GenericToken);
-                        }
+                                else
+                                {
+                                    nodRoot.Nodes.Insert(intNewIndex, objLocation.CreateTreeNode(cmsLocation));
+                                }
+
+                                ++intNewIndex;
+                            }
+                        }, GenericToken);
+                    }
                         break;
 
                     case NotifyCollectionChangedAction.Remove:
+                    {
+                        foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
+                            TreeNode nodLocation
+                                = await treSelected.DoThreadSafeFuncAsync(
+                                    x => x.FindNodeByTag(objLocation, false), GenericToken);
+                            if (nodLocation == null)
+                                continue;
+                            if (nodLocation.Nodes.Count > 0)
                             {
-                                TreeNode nodLocation = await treSelected.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objLocation, false), GenericToken);
-                                if (nodLocation == null)
-                                    continue;
-                                if (nodLocation.Nodes.Count > 0)
+                                if (nodRoot == null)
                                 {
-                                    if (nodRoot == null)
+                                    nodRoot = new TreeNode
                                     {
-                                        nodRoot = new TreeNode
-                                        {
-                                            Tag = strNodeName,
-                                            Text = await LanguageManager.GetStringAsync(strNodeName)
-                                        };
-                                        await treSelected.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), GenericToken);
-                                    }
-
-                                    await treSelected.DoThreadSafeAsync(() =>
-                                    {
-                                        for (int i = nodLocation.Nodes.Count - 1; i >= 0; --i)
-                                        {
-                                            TreeNode nodWeapon = nodLocation.Nodes[i];
-                                            nodWeapon.Remove();
-                                            nodRoot.Nodes.Add(nodWeapon);
-                                        }
-                                    }, GenericToken);
+                                        Tag = strNodeName,
+                                        Text = await LanguageManager.GetStringAsync(strNodeName)
+                                    };
+                                    await treSelected.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), GenericToken);
                                 }
 
-                                await treSelected.DoThreadSafeAsync(() => nodLocation.Remove(), GenericToken);
+                                await treSelected.DoThreadSafeAsync(() =>
+                                {
+                                    for (int i = nodLocation.Nodes.Count - 1; i >= 0; --i)
+                                    {
+                                        TreeNode nodWeapon = nodLocation.Nodes[i];
+                                        nodWeapon.Remove();
+                                        nodRoot.Nodes.Add(nodWeapon);
+                                    }
+                                }, GenericToken);
                             }
+
+                            await treSelected.DoThreadSafeAsync(() => nodLocation.Remove(), GenericToken);
                         }
+                    }
                         break;
 
                     case NotifyCollectionChangedAction.Replace:
+                    {
+                        int intNewItemsIndex = 0;
+                        foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            int intNewItemsIndex = 0;
-                            foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
+                            TreeNode objNode
+                                = await treSelected.DoThreadSafeFuncAsync(
+                                    x => x.FindNodeByTag(objLocation, false), GenericToken);
+                            if (objNode != null)
                             {
-                                TreeNode objNode = await treSelected.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objLocation, false), GenericToken);
-                                if (objNode != null)
+                                if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is Location
+                                    objNewLocation)
                                 {
-                                    if (notifyCollectionChangedEventArgs.NewItems[intNewItemsIndex] is Location
-                                        objNewLocation)
-                                    {
-                                        await treSelected.DoThreadSafeAsync(() =>
-                                        {
-                                            objNode.Tag = objNewLocation;
-                                            objNode.Text = objNewLocation.DisplayName();
-                                        }, GenericToken);
-                                    }
-
-                                    ++intNewItemsIndex;
-                                }
-                            }
-                        }
-                        break;
-
-                    case NotifyCollectionChangedAction.Move:
-                        {
-                            List<Tuple<Location, TreeNode>> lstMoveNodes =
-                                new List<Tuple<Location, TreeNode>>(notifyCollectionChangedEventArgs.OldItems.Count);
-                            foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
-                            {
-                                TreeNode objNode = await treSelected.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objLocation, false), GenericToken);
-                                if (objNode != null)
-                                {
-                                    lstMoveNodes.Add(new Tuple<Location, TreeNode>(objLocation, objNode));
-                                    objLocation.Remove(false);
-                                }
-                            }
-
-                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                            foreach (Location objLocation in notifyCollectionChangedEventArgs.NewItems)
-                            {
-                                Tuple<Location, TreeNode> objLocationTuple =
-                                    lstMoveNodes.Find(x => x.Item1 == objLocation);
-                                if (objLocationTuple != null)
-                                {
-                                    await treSelected.DoThreadSafeAsync(x => x.Nodes.Insert(intNewIndex, objLocationTuple.Item2), GenericToken);
-                                    ++intNewIndex;
-                                    lstMoveNodes.Remove(objLocationTuple);
-                                }
-                            }
-                        }
-                        break;
-
-                    case NotifyCollectionChangedAction.Reset:
-                        {
-                            List<Location> lstLocations = new List<Location>(
-                                CharacterObject.ArmorLocations.Count + CharacterObject.WeaponLocations.Count
-                                                                   + CharacterObject.GearLocations.Count
-                                                                   + CharacterObject.VehicleLocations.Count
-                                                                   + CharacterObject.Vehicles.Count);
-                            lstLocations.AddRange(CharacterObject.ArmorLocations);
-                            lstLocations.AddRange(CharacterObject.WeaponLocations);
-                            lstLocations.AddRange(CharacterObject.GearLocations);
-                            lstLocations.AddRange(CharacterObject.VehicleLocations);
-                            lstLocations.AddRange(CharacterObject.Vehicles.SelectMany(x => x.Locations));
-                            foreach (Location objLocation in lstLocations)
-                            {
-                                TreeNode nodLocation = await treSelected.DoThreadSafeFuncAsync(x => x.FindNode(objLocation.InternalId, false), GenericToken);
-                                if (nodLocation == null)
-                                    continue;
-                                if (nodLocation.Nodes.Count > 0)
-                                {
-                                    if (nodRoot == null)
-                                    {
-                                        nodRoot = new TreeNode
-                                        {
-                                            Tag = strNodeName,
-                                            Text = await LanguageManager.GetStringAsync(strNodeName)
-                                        };
-                                        await treSelected.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), GenericToken);
-                                    }
-
                                     await treSelected.DoThreadSafeAsync(() =>
                                     {
-                                        for (int i = nodLocation.Nodes.Count - 1; i >= 0; --i)
-                                        {
-                                            TreeNode nodWeapon = nodLocation.Nodes[i];
-                                            nodWeapon.Remove();
-                                            nodRoot.Nodes.Add(nodWeapon);
-                                        }
+                                        objNode.Tag = objNewLocation;
+                                        objNode.Text = objNewLocation.DisplayName();
                                     }, GenericToken);
                                 }
 
+                                ++intNewItemsIndex;
+                            }
+                        }
+                    }
+                        break;
+
+                    case NotifyCollectionChangedAction.Move:
+                    {
+                        List<Tuple<Location, TreeNode>> lstMoveNodes =
+                            new List<Tuple<Location, TreeNode>>(notifyCollectionChangedEventArgs.OldItems.Count);
+                        foreach (Location objLocation in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            TreeNode objNode
+                                = await treSelected.DoThreadSafeFuncAsync(
+                                    x => x.FindNodeByTag(objLocation, false), GenericToken);
+                            if (objNode != null)
+                            {
+                                lstMoveNodes.Add(new Tuple<Location, TreeNode>(objLocation, objNode));
                                 objLocation.Remove(false);
                             }
                         }
+
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        foreach (Location objLocation in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            Tuple<Location, TreeNode> objLocationTuple =
+                                lstMoveNodes.Find(x => x.Item1 == objLocation);
+                            if (objLocationTuple != null)
+                            {
+                                await treSelected.DoThreadSafeAsync(
+                                    x => x.Nodes.Insert(intNewIndex, objLocationTuple.Item2), GenericToken);
+                                ++intNewIndex;
+                                lstMoveNodes.Remove(objLocationTuple);
+                            }
+                        }
+                    }
+                        break;
+
+                    case NotifyCollectionChangedAction.Reset:
+                    {
+                        List<Location> lstLocations = new List<Location>(
+                            CharacterObject.ArmorLocations.Count + CharacterObject.WeaponLocations.Count
+                                                                 + CharacterObject.GearLocations.Count
+                                                                 + CharacterObject.VehicleLocations.Count
+                                                                 + CharacterObject.Vehicles.Count);
+                        lstLocations.AddRange(CharacterObject.ArmorLocations);
+                        lstLocations.AddRange(CharacterObject.WeaponLocations);
+                        lstLocations.AddRange(CharacterObject.GearLocations);
+                        lstLocations.AddRange(CharacterObject.VehicleLocations);
+                        lstLocations.AddRange(CharacterObject.Vehicles.SelectMany(x => x.Locations));
+                        foreach (Location objLocation in lstLocations)
+                        {
+                            TreeNode nodLocation
+                                = await treSelected.DoThreadSafeFuncAsync(
+                                    x => x.FindNode(objLocation.InternalId, false), GenericToken);
+                            if (nodLocation == null)
+                                continue;
+                            if (nodLocation.Nodes.Count > 0)
+                            {
+                                if (nodRoot == null)
+                                {
+                                    nodRoot = new TreeNode
+                                    {
+                                        Tag = strNodeName,
+                                        Text = await LanguageManager.GetStringAsync(strNodeName)
+                                    };
+                                    await treSelected.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), GenericToken);
+                                }
+
+                                await treSelected.DoThreadSafeAsync(() =>
+                                {
+                                    for (int i = nodLocation.Nodes.Count - 1; i >= 0; --i)
+                                    {
+                                        TreeNode nodWeapon = nodLocation.Nodes[i];
+                                        nodWeapon.Remove();
+                                        nodRoot.Nodes.Add(nodWeapon);
+                                    }
+                                }, GenericToken);
+                            }
+
+                            objLocation.Remove(false);
+                        }
+                    }
                         break;
                 }
 
                 await treSelected.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), GenericToken);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -2867,9 +3033,12 @@ namespace Chummer
         {
             if (treWeapons == null)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
-                string strSelectedId = (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId
+                    = (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)
+                    ?.InternalId ?? string.Empty;
 
                 TreeNode nodRoot = null;
 
@@ -2892,11 +3061,13 @@ namespace Chummer
                         foreach (Weapon objWeapon in CharacterObject.Weapons)
                         {
                             await AddToTree(objWeapon, -1, false);
-                            objWeapon.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon, cmsWeaponAccessory,
-                                                                            cmsWeaponAccessoryGear, MakeDirtyWithCharacterUpdate);
+                            objWeapon.SetupChildrenWeaponsCollectionChanged(
+                                true, treWeapons, cmsWeapon, cmsWeaponAccessory,
+                                cmsWeaponAccessoryGear, MakeDirtyWithCharacterUpdate);
                         }
 
-                        await treWeapons.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), GenericToken);
+                        await treWeapons.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId),
+                                                           GenericToken);
                     }
                     finally
                     {
@@ -2905,68 +3076,71 @@ namespace Chummer
                 }
                 else
                 {
-                    nodRoot = await treWeapons.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedWeapons", false), GenericToken);
+                    nodRoot = await treWeapons.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedWeapons", false),
+                                                                     GenericToken);
 
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
+                        {
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                                foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(objWeapon, intNewIndex);
-                                    ++intNewIndex;
-                                    objWeapon.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon,
-                                        cmsWeaponAccessory, cmsWeaponAccessoryGear, MakeDirtyWithCharacterUpdate);
-                                }
+                                await AddToTree(objWeapon, intNewIndex);
+                                ++intNewIndex;
+                                objWeapon.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon,
+                                    cmsWeaponAccessory, cmsWeaponAccessoryGear, MakeDirtyWithCharacterUpdate);
                             }
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.OldItems)
-                                {
-                                    objWeapon.SetupChildrenWeaponsCollectionChanged(false, treWeapons);
-                                    await treWeapons.DoThreadSafeAsync(x => x.FindNode(objWeapon.InternalId)?.Remove(), GenericToken);
-                                }
-
-                                await treWeapons.DoThreadSafeAsync(() =>
-                                {
-                                    if (nodRoot != null && nodRoot.Nodes.Count == 0)
-                                    {
-                                        nodRoot.Remove();
-                                    }
-                                }, GenericToken);
+                                objWeapon.SetupChildrenWeaponsCollectionChanged(false, treWeapons);
+                                await treWeapons.DoThreadSafeAsync(x => x.FindNode(objWeapon.InternalId)?.Remove(),
+                                                                   GenericToken);
                             }
+
+                            await treWeapons.DoThreadSafeAsync(() =>
+                            {
+                                if (nodRoot != null && nodRoot.Nodes.Count == 0)
+                                {
+                                    nodRoot.Remove();
+                                }
+                            }, GenericToken);
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.OldItems)
-                                {
-                                    objWeapon.SetupChildrenWeaponsCollectionChanged(false, treWeapons);
-                                    await treWeapons.DoThreadSafeAsync(x => x.FindNode(objWeapon.InternalId)?.Remove(), GenericToken);
-                                }
-
-                                int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                                foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(objWeapon, intNewIndex);
-                                    ++intNewIndex;
-                                    objWeapon.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon,
-                                        cmsWeaponAccessory, cmsWeaponAccessoryGear, MakeDirtyWithCharacterUpdate);
-                                }
-
-                                await treWeapons.DoThreadSafeAsync(x =>
-                                {
-                                    if (nodRoot != null && nodRoot.Nodes.Count == 0)
-                                    {
-                                        nodRoot.Remove();
-                                    }
-
-                                    x.SelectedNode = x.FindNode(strSelectedId);
-                                }, GenericToken);
+                                objWeapon.SetupChildrenWeaponsCollectionChanged(false, treWeapons);
+                                await treWeapons.DoThreadSafeAsync(x => x.FindNode(objWeapon.InternalId)?.Remove(),
+                                                                   GenericToken);
                             }
+
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                await AddToTree(objWeapon, intNewIndex);
+                                ++intNewIndex;
+                                objWeapon.SetupChildrenWeaponsCollectionChanged(true, treWeapons, cmsWeapon,
+                                    cmsWeaponAccessory, cmsWeaponAccessoryGear, MakeDirtyWithCharacterUpdate);
+                            }
+
+                            await treWeapons.DoThreadSafeAsync(x =>
+                            {
+                                if (nodRoot != null && nodRoot.Nodes.Count == 0)
+                                {
+                                    nodRoot.Remove();
+                                }
+
+                                x.SelectedNode = x.FindNode(strSelectedId);
+                            }, GenericToken);
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Move:
@@ -3008,7 +3182,8 @@ namespace Chummer
                     TreeNode nodParent = null;
                     if (objWeapon.Location != null)
                     {
-                        nodParent = await treWeapons.DoThreadSafeFuncAsync(x => x.FindNode(objWeapon.Location.InternalId, false), GenericToken);
+                        nodParent = await treWeapons.DoThreadSafeFuncAsync(
+                            x => x.FindNode(objWeapon.Location.InternalId, false), GenericToken);
                     }
 
                     if (nodParent == null)
@@ -3041,15 +3216,22 @@ namespace Chummer
                     }, GenericToken);
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         protected async ValueTask RefreshArmor(TreeView treArmor, ContextMenuStrip cmsArmorLocation, ContextMenuStrip cmsArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (treArmor == null)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
-                string strSelectedId = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId
+                    = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)
+                    ?.InternalId ?? string.Empty;
 
                 TreeNode nodRoot = null;
 
@@ -3076,7 +3258,8 @@ namespace Chummer
                             await AddToTree(objArmor, -1, false);
 
                             async void FuncArmorModsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                                    await RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y);
+                                await RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y);
+
                             async void FuncArmorGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await objArmor.RefreshChildrenGears(
                                     treArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y,
@@ -3118,7 +3301,8 @@ namespace Chummer
                 }
                 else
                 {
-                    nodRoot = await treArmor.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedArmor", false), GenericToken);
+                    nodRoot = await treArmor.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedArmor", false),
+                                                                   GenericToken);
 
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
@@ -3131,6 +3315,7 @@ namespace Chummer
 
                                 async void FuncArmorModsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y);
+
                                 async void FuncArmorGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objArmor.RefreshChildrenGears(
                                         treArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y,
@@ -3161,6 +3346,7 @@ namespace Chummer
                                         objGear.SetupChildrenGearsCollectionChanged(
                                             true, treArmor, cmsArmorGear, MakeDirtyWithCharacterUpdate);
                                 }
+
                                 ++intNewIndex;
                             }
 
@@ -3181,7 +3367,8 @@ namespace Chummer
                                         objGear.SetupChildrenGearsCollectionChanged(false, treArmor);
                                 }
 
-                                await treArmor.DoThreadSafeAsync(x => x.FindNode(objArmor.InternalId)?.Remove(), GenericToken);
+                                await treArmor.DoThreadSafeAsync(x => x.FindNode(objArmor.InternalId)?.Remove(),
+                                                                 GenericToken);
                             }
 
                             await treArmor.DoThreadSafeAsync(() =>
@@ -3209,7 +3396,8 @@ namespace Chummer
                                         objGear.SetupChildrenGearsCollectionChanged(false, treArmor);
                                 }
 
-                                await treArmor.DoThreadSafeAsync(x => x.FindNode(objArmor.InternalId)?.Remove(), GenericToken);
+                                await treArmor.DoThreadSafeAsync(x => x.FindNode(objArmor.InternalId)?.Remove(),
+                                                                 GenericToken);
                             }
 
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
@@ -3219,6 +3407,7 @@ namespace Chummer
 
                                 async void FuncArmorModsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y);
+
                                 async void FuncArmorGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await objArmor.RefreshChildrenGears(
                                         treArmor, cmsArmorGear, () => objArmor.ArmorMods.Count, y,
@@ -3249,6 +3438,7 @@ namespace Chummer
                                         objGear.SetupChildrenGearsCollectionChanged(
                                             true, treArmor, cmsArmorGear, MakeDirtyWithCharacterUpdate);
                                 }
+
                                 ++intNewIndex;
                             }
 
@@ -3302,7 +3492,8 @@ namespace Chummer
                     TreeNode nodParent = null;
                     if (objArmor.Location != null)
                     {
-                        nodParent = await treArmor.DoThreadSafeFuncAsync(x => x.FindNode(objArmor.Location.InternalId, false), GenericToken);
+                        nodParent = await treArmor.DoThreadSafeFuncAsync(
+                            x => x.FindNode(objArmor.Location.InternalId, false), GenericToken);
                     }
 
                     if (nodParent == null)
@@ -3335,6 +3526,10 @@ namespace Chummer
                     }, GenericToken);
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         protected async ValueTask RefreshArmorMods(TreeView treArmor, Armor objArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -3344,7 +3539,8 @@ namespace Chummer
             TreeNode nodArmor = await treArmor.DoThreadSafeFuncAsync(x => x.FindNode(objArmor.InternalId), GenericToken);
             if (nodArmor == null)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
@@ -3378,7 +3574,8 @@ namespace Chummer
                             await objArmorMod.GearChildren.RemoveTaggedCollectionChangedAsync(treArmor);
                             foreach (Gear objGear in objArmorMod.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(false, treArmor);
-                            await treArmor.DoThreadSafeAsync(() => nodArmor.FindNode(objArmorMod.InternalId)?.Remove(), GenericToken);
+                            await treArmor.DoThreadSafeAsync(() => nodArmor.FindNode(objArmorMod.InternalId)?.Remove(),
+                                                             GenericToken);
                         }
 
                         break;
@@ -3386,14 +3583,16 @@ namespace Chummer
                     case NotifyCollectionChangedAction.Replace:
                     {
                         string strSelectedId
-                            = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)
+                            = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as
+                                IHasInternalId)
                             ?.InternalId ?? string.Empty;
                         foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.OldItems)
                         {
                             await objArmorMod.GearChildren.RemoveTaggedCollectionChangedAsync(treArmor);
                             foreach (Gear objGear in objArmorMod.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(false, treArmor);
-                            await treArmor.DoThreadSafeAsync(() => nodArmor.FindNode(objArmorMod.InternalId)?.Remove(), GenericToken);
+                            await treArmor.DoThreadSafeAsync(() => nodArmor.FindNode(objArmorMod.InternalId)?.Remove(),
+                                                             GenericToken);
                         }
 
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
@@ -3421,7 +3620,8 @@ namespace Chummer
                     case NotifyCollectionChangedAction.Move:
                     {
                         string strSelectedId
-                            = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)
+                            = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as
+                                IHasInternalId)
                             ?.InternalId ?? string.Empty;
                         await treArmor.DoThreadSafeAsync(() =>
                         {
@@ -3477,15 +3677,22 @@ namespace Chummer
                     }, GenericToken);
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         protected async ValueTask RefreshGears(TreeView treGear, ContextMenuStrip cmsGearLocation, ContextMenuStrip cmsGear, bool blnCommlinksOnly, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (treGear == null)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
-                string strSelectedId = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId
+                    = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)
+                    ?.InternalId ?? string.Empty;
 
                 TreeNode nodRoot = null;
 
@@ -3500,14 +3707,16 @@ namespace Chummer
                         // Start by populating Locations.
                         foreach (Location objLocation in CharacterObject.GearLocations)
                         {
-                            await treGear.DoThreadSafeAsync(x => x.Nodes.Add(objLocation.CreateTreeNode(cmsGearLocation)), GenericToken);
+                            await treGear.DoThreadSafeAsync(
+                                x => x.Nodes.Add(objLocation.CreateTreeNode(cmsGearLocation)), GenericToken);
                         }
 
                         // Add Gear.
                         foreach (Gear objGear in CharacterObject.Gear)
                         {
                             await AddToTree(objGear, -1, false);
-                            objGear.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear, MakeDirtyWithCharacterUpdate);
+                            objGear.SetupChildrenGearsCollectionChanged(
+                                true, treGear, cmsGear, MakeDirtyWithCharacterUpdate);
                         }
 
                         await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), GenericToken);
@@ -3519,56 +3728,62 @@ namespace Chummer
                 }
                 else
                 {
-                    nodRoot = await treGear.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedGear", false), GenericToken);
+                    nodRoot = await treGear.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedGear", false),
+                                                                  GenericToken);
 
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
+                        {
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                                foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(objGear, intNewIndex);
-                                    objGear.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear, MakeDirtyWithCharacterUpdate);
-                                    ++intNewIndex;
-                                }
+                                await AddToTree(objGear, intNewIndex);
+                                objGear.SetupChildrenGearsCollectionChanged(
+                                    true, treGear, cmsGear, MakeDirtyWithCharacterUpdate);
+                                ++intNewIndex;
                             }
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
-                                {
-                                    objGear.SetupChildrenGearsCollectionChanged(false, treGear);
-                                    await treGear.DoThreadSafeAsync(x => x.FindNodeByTag(objGear)?.Remove(), GenericToken);
-                                }
+                                objGear.SetupChildrenGearsCollectionChanged(false, treGear);
+                                await treGear.DoThreadSafeAsync(x => x.FindNodeByTag(objGear)?.Remove(), GenericToken);
                             }
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
-                                {
-                                    objGear.SetupChildrenGearsCollectionChanged(false, treGear);
-                                    await treGear.DoThreadSafeAsync(x => x.FindNodeByTag(objGear)?.Remove(), GenericToken);
-                                }
-
-                                int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                                foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(objGear, intNewIndex);
-
-                                    async void FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                                        await objGear.RefreshChildrenGears(treGear, cmsGear, null, y, MakeDirtyWithCharacterUpdate);
-
-                                    await objGear.Children.AddTaggedCollectionChangedAsync(treGear, MakeDirtyWithCharacterUpdate);
-                                    await objGear.Children.AddTaggedCollectionChangedAsync(treGear, FuncGearToAdd);
-                                    objGear.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear, MakeDirtyWithCharacterUpdate);
-                                    ++intNewIndex;
-                                }
-
-                                await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), GenericToken);
+                                objGear.SetupChildrenGearsCollectionChanged(false, treGear);
+                                await treGear.DoThreadSafeAsync(x => x.FindNodeByTag(objGear)?.Remove(), GenericToken);
                             }
+
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                await AddToTree(objGear, intNewIndex);
+
+                                async void FuncGearToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                    await objGear.RefreshChildrenGears(treGear, cmsGear, null, y,
+                                                                       MakeDirtyWithCharacterUpdate);
+
+                                await objGear.Children.AddTaggedCollectionChangedAsync(
+                                    treGear, MakeDirtyWithCharacterUpdate);
+                                await objGear.Children.AddTaggedCollectionChangedAsync(treGear, FuncGearToAdd);
+                                objGear.SetupChildrenGearsCollectionChanged(
+                                    true, treGear, cmsGear, MakeDirtyWithCharacterUpdate);
+                                ++intNewIndex;
+                            }
+
+                            await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId),
+                                                            GenericToken);
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Move:
@@ -3581,14 +3796,15 @@ namespace Chummer
                                 }
                             }, GenericToken);
 
-                                int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                                foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(objGear, intNewIndex);
-                                    ++intNewIndex;
-                                }
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                await AddToTree(objGear, intNewIndex);
+                                ++intNewIndex;
+                            }
 
-                                await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), GenericToken);
+                            await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId),
+                                                            GenericToken);
                         }
                             break;
                     }
@@ -3605,7 +3821,8 @@ namespace Chummer
                     TreeNode nodParent = null;
                     if (objGear.Location != null)
                     {
-                        nodParent = await treGear.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objGear.Location, false), GenericToken);
+                        nodParent = await treGear.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objGear.Location, false),
+                                                                        GenericToken);
                     }
 
                     if (nodParent == null)
@@ -3638,15 +3855,22 @@ namespace Chummer
                     }, GenericToken);
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         protected async ValueTask RefreshDrugs(TreeView treGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (treGear == null)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
-                string strSelectedId = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId
+                    = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)
+                    ?.InternalId ?? string.Empty;
 
                 TreeNode nodRoot = null;
 
@@ -3673,19 +3897,20 @@ namespace Chummer
                 }
                 else
                 {
-                    nodRoot = await treGear.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedDrugs", false), GenericToken);
+                    nodRoot = await treGear.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedDrugs", false),
+                                                                  GenericToken);
 
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
+                        {
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (Drug d in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                                foreach (Drug d in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(d, intNewIndex);
-                                    ++intNewIndex;
-                                }
+                                await AddToTree(d, intNewIndex);
+                                ++intNewIndex;
                             }
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Remove:
@@ -3702,24 +3927,25 @@ namespace Chummer
 
                         case NotifyCollectionChangedAction.Replace:
                         case NotifyCollectionChangedAction.Move:
+                        {
+                            await treGear.DoThreadSafeAsync(x =>
                             {
-                                await treGear.DoThreadSafeAsync(x =>
+                                foreach (Drug d in notifyCollectionChangedEventArgs.OldItems)
                                 {
-                                    foreach (Drug d in notifyCollectionChangedEventArgs.OldItems)
-                                    {
-                                        x.FindNodeByTag(d)?.Remove();
-                                    }
-                                }, GenericToken);
-
-                                int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
-                                foreach (Drug d in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(d, intNewIndex);
-                                    ++intNewIndex;
+                                    x.FindNodeByTag(d)?.Remove();
                                 }
+                            }, GenericToken);
 
-                                await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), GenericToken);
+                            int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                            foreach (Drug d in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                await AddToTree(d, intNewIndex);
+                                ++intNewIndex;
                             }
+
+                            await treGear.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId),
+                                                            GenericToken);
+                        }
                             break;
                     }
                 }
@@ -3754,6 +3980,10 @@ namespace Chummer
                     }, GenericToken);
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         protected async ValueTask RefreshCyberware(TreeView treCyberware, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
@@ -3767,9 +3997,12 @@ namespace Chummer
             TreeNode objHoleNode = null;
             TreeNode objAntiHoleNode = null;
 
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
-                string strSelectedId = (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId
+                    = (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as
+                        IHasInternalId)?.InternalId ?? string.Empty;
 
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -3786,7 +4019,8 @@ namespace Chummer
                                 cmsCyberwareGear, MakeDirtyWithCharacterUpdate);
                         }
 
-                        await treCyberware.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), GenericToken);
+                        await treCyberware.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId),
+                                                             GenericToken);
                     }
                     finally
                     {
@@ -3800,81 +4034,85 @@ namespace Chummer
                         objCyberwareRoot = x.FindNode("Node_SelectedCyberware", false);
                         objBiowareRoot = x.FindNode("Node_SelectedBioware", false);
                         objModularRoot = x.FindNode("Node_UnequippedModularCyberware", false);
-                        objHoleNode = x.FindNode(Cyberware.EssenceHoleGUID.ToString("D", GlobalSettings.InvariantCultureInfo), false);
-                        objAntiHoleNode = x.FindNode(Cyberware.EssenceAntiHoleGUID.ToString("D", GlobalSettings.InvariantCultureInfo), false);
+                        objHoleNode = x.FindNode(
+                            Cyberware.EssenceHoleGUID.ToString("D", GlobalSettings.InvariantCultureInfo), false);
+                        objAntiHoleNode
+                            = x.FindNode(
+                                Cyberware.EssenceAntiHoleGUID.ToString("D", GlobalSettings.InvariantCultureInfo),
+                                false);
                     }, GenericToken);
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(objCyberware);
-                                    objCyberware.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware,
-                                        cmsCyberwareGear, MakeDirtyWithCharacterUpdate);
-                                }
+                                await AddToTree(objCyberware);
+                                objCyberware.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware,
+                                    cmsCyberwareGear, MakeDirtyWithCharacterUpdate);
                             }
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
+                                objCyberware.SetupChildrenCyberwareCollectionChanged(false, treCyberware);
+                                await treCyberware.DoThreadSafeAsync(x =>
                                 {
-                                    objCyberware.SetupChildrenCyberwareCollectionChanged(false, treCyberware);
-                                    await treCyberware.DoThreadSafeAsync(x =>
+                                    TreeNode objNode = x.FindNodeByTag(objCyberware);
+                                    if (objNode != null)
                                     {
-                                        TreeNode objNode = x.FindNodeByTag(objCyberware);
-                                        if (objNode != null)
-                                        {
-                                            TreeNode objParent = objNode.Parent;
-                                            objNode.Remove();
-                                            if (objParent != null && objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                                objParent.Remove();
-                                        }
-                                    }, GenericToken);
-                                }
+                                        TreeNode objParent = objNode.Parent;
+                                        objNode.Remove();
+                                        if (objParent != null && objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                            objParent.Remove();
+                                    }
+                                }, GenericToken);
                             }
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Replace:
+                        {
+                            List<TreeNode> lstOldParentNodes =
+                                new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
+
+                            foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                List<TreeNode> lstOldParentNodes =
-                                    new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
-
-                                foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
-                                {
-                                    objCyberware.SetupChildrenCyberwareCollectionChanged(false, treCyberware);
-                                    await treCyberware.DoThreadSafeAsync(x =>
-                                    {
-                                        TreeNode objNode = x.FindNodeByTag(objCyberware);
-                                        if (objNode != null)
-                                        {
-                                            TreeNode objParent = objNode.Parent;
-                                            objNode.Remove();
-                                            if (objParent != null && objParent.Level == 0)
-                                                lstOldParentNodes.Add(objParent);
-                                        }
-                                    }, GenericToken);
-                                }
-
-                                foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(objCyberware);
-                                    objCyberware.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware,
-                                        cmsCyberwareGear, MakeDirtyWithCharacterUpdate);
-                                }
-
+                                objCyberware.SetupChildrenCyberwareCollectionChanged(false, treCyberware);
                                 await treCyberware.DoThreadSafeAsync(x =>
                                 {
-                                    foreach (TreeNode objOldParent in lstOldParentNodes)
+                                    TreeNode objNode = x.FindNodeByTag(objCyberware);
+                                    if (objNode != null)
                                     {
-                                        if (objOldParent.Nodes.Count == 0)
-                                            objOldParent.Remove();
+                                        TreeNode objParent = objNode.Parent;
+                                        objNode.Remove();
+                                        if (objParent != null && objParent.Level == 0)
+                                            lstOldParentNodes.Add(objParent);
                                     }
-
-                                    x.SelectedNode = x.FindNode(strSelectedId);
                                 }, GenericToken);
                             }
+
+                            foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                await AddToTree(objCyberware);
+                                objCyberware.SetupChildrenCyberwareCollectionChanged(true, treCyberware, cmsCyberware,
+                                    cmsCyberwareGear, MakeDirtyWithCharacterUpdate);
+                            }
+
+                            await treCyberware.DoThreadSafeAsync(x =>
+                            {
+                                foreach (TreeNode objOldParent in lstOldParentNodes)
+                                {
+                                    if (objOldParent.Nodes.Count == 0)
+                                        objOldParent.Remove();
+                                }
+
+                                x.SelectedNode = x.FindNode(strSelectedId);
+                            }, GenericToken);
+                        }
                             break;
                     }
                 }
@@ -3923,68 +4161,68 @@ namespace Chummer
                     switch (objCyberware.SourceType)
                     {
                         case Improvement.ImprovementSource.Cyberware when objCyberware.IsModularCurrentlyEquipped:
+                        {
+                            if (objCyberwareRoot == null)
                             {
-                                if (objCyberwareRoot == null)
+                                objCyberwareRoot = new TreeNode
                                 {
-                                    objCyberwareRoot = new TreeNode
-                                    {
-                                        Tag = "Node_SelectedCyberware",
-                                        Text = await LanguageManager.GetStringAsync("Node_SelectedCyberware")
-                                    };
-                                    await treCyberware.DoThreadSafeAsync(x =>
-                                    {
-                                        // ReSharper disable once AssignNullToNotNullAttribute
-                                        x.Nodes.Insert(0, objCyberwareRoot);
-                                        objCyberwareRoot.Expand();
-                                    }, GenericToken);
-                                }
-
-                                nodParent = objCyberwareRoot;
-                                break;
+                                    Tag = "Node_SelectedCyberware",
+                                    Text = await LanguageManager.GetStringAsync("Node_SelectedCyberware")
+                                };
+                                await treCyberware.DoThreadSafeAsync(x =>
+                                {
+                                    // ReSharper disable once AssignNullToNotNullAttribute
+                                    x.Nodes.Insert(0, objCyberwareRoot);
+                                    objCyberwareRoot.Expand();
+                                }, GenericToken);
                             }
+
+                            nodParent = objCyberwareRoot;
+                            break;
+                        }
                         case Improvement.ImprovementSource.Cyberware:
+                        {
+                            if (objModularRoot == null)
                             {
-                                if (objModularRoot == null)
+                                objModularRoot = new TreeNode
                                 {
-                                    objModularRoot = new TreeNode
-                                    {
-                                        Tag = "Node_UnequippedModularCyberware",
-                                        Text = await LanguageManager.GetStringAsync("Node_UnequippedModularCyberware")
-                                    };
-                                    int intIndex = 0;
-                                    if (objBiowareRoot != null || objCyberwareRoot != null)
-                                        intIndex = objBiowareRoot != null && objCyberwareRoot != null ? 2 : 1;
-                                    await treCyberware.DoThreadSafeAsync(x =>
-                                    {
-                                        // ReSharper disable once AssignNullToNotNullAttribute
-                                        x.Nodes.Insert(intIndex, objModularRoot);
-                                        objModularRoot.Expand();
-                                    }, GenericToken);
-                                }
-
-                                nodParent = objModularRoot;
-                                break;
+                                    Tag = "Node_UnequippedModularCyberware",
+                                    Text = await LanguageManager.GetStringAsync("Node_UnequippedModularCyberware")
+                                };
+                                int intIndex = 0;
+                                if (objBiowareRoot != null || objCyberwareRoot != null)
+                                    intIndex = objBiowareRoot != null && objCyberwareRoot != null ? 2 : 1;
+                                await treCyberware.DoThreadSafeAsync(x =>
+                                {
+                                    // ReSharper disable once AssignNullToNotNullAttribute
+                                    x.Nodes.Insert(intIndex, objModularRoot);
+                                    objModularRoot.Expand();
+                                }, GenericToken);
                             }
+
+                            nodParent = objModularRoot;
+                            break;
+                        }
                         case Improvement.ImprovementSource.Bioware:
+                        {
+                            if (objBiowareRoot == null)
                             {
-                                if (objBiowareRoot == null)
+                                objBiowareRoot = new TreeNode
                                 {
-                                    objBiowareRoot = new TreeNode
-                                    {
-                                        Tag = "Node_SelectedBioware",
-                                        Text = await LanguageManager.GetStringAsync("Node_SelectedBioware")
-                                    };
-                                    await treCyberware.DoThreadSafeAsync(x =>
-                                    {
-                                        // ReSharper disable once AssignNullToNotNullAttribute
-                                        x.Nodes.Insert(objCyberwareRoot == null ? 0 : 1, objBiowareRoot);
-                                        objBiowareRoot.Expand();
-                                    }, GenericToken);
-                                }
-
-                                nodParent = objBiowareRoot;
-                                break;
+                                    Tag = "Node_SelectedBioware",
+                                    Text = await LanguageManager.GetStringAsync("Node_SelectedBioware")
+                                };
+                                await treCyberware.DoThreadSafeAsync(x =>
+                                {
+                                    // ReSharper disable once AssignNullToNotNullAttribute
+                                    x.Nodes.Insert(objCyberwareRoot == null ? 0 : 1, objBiowareRoot);
+                                    objBiowareRoot.Expand();
+                                }, GenericToken);
                             }
+
+                            nodParent = objBiowareRoot;
+                            break;
+                        }
                     }
 
                     if (nodParent != null)
@@ -4014,15 +4252,23 @@ namespace Chummer
                     }
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         protected async ValueTask RefreshVehicles(TreeView treVehicles, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (treVehicles == null)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
-                string strSelectedId = (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId
+                    = (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
+                                                               GenericToken) as IHasInternalId)?.InternalId
+                      ?? string.Empty;
 
                 TreeNode nodRoot = null;
 
@@ -4049,10 +4295,10 @@ namespace Chummer
                             await AddToTree(objVehicle, -1, false);
 
                             async void FuncVehicleModsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                                        await objVehicle.RefreshVehicleMods(
-                                            treVehicles, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon,
-                                            cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y,
-                                            MakeDirtyWithCharacterUpdate);
+                                await objVehicle.RefreshVehicleMods(
+                                    treVehicles, cmsVehicle, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon,
+                                    cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y,
+                                    MakeDirtyWithCharacterUpdate);
 
                             async void
                                 FuncVehicleWeaponMountsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
@@ -4069,12 +4315,17 @@ namespace Chummer
                                     () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
                                     y, MakeDirtyWithCharacterUpdate);
 
-                            await objVehicle.Mods.AddTaggedCollectionChangedAsync(treVehicles, MakeDirtyWithCharacterUpdate);
+                            await objVehicle.Mods.AddTaggedCollectionChangedAsync(
+                                treVehicles, MakeDirtyWithCharacterUpdate);
                             await objVehicle.Mods.AddTaggedCollectionChangedAsync(treVehicles, FuncVehicleModsToAdd);
-                            await objVehicle.WeaponMounts.AddTaggedCollectionChangedAsync(treVehicles, MakeDirtyWithCharacterUpdate);
-                            await objVehicle.WeaponMounts.AddTaggedCollectionChangedAsync(treVehicles, FuncVehicleWeaponMountsToAdd);
-                            await objVehicle.Weapons.AddTaggedCollectionChangedAsync(treVehicles, MakeDirtyWithCharacterUpdate);
-                            await objVehicle.Weapons.AddTaggedCollectionChangedAsync(treVehicles, FuncVehicleWeaponsToAdd);
+                            await objVehicle.WeaponMounts.AddTaggedCollectionChangedAsync(
+                                treVehicles, MakeDirtyWithCharacterUpdate);
+                            await objVehicle.WeaponMounts.AddTaggedCollectionChangedAsync(
+                                treVehicles, FuncVehicleWeaponMountsToAdd);
+                            await objVehicle.Weapons.AddTaggedCollectionChangedAsync(
+                                treVehicles, MakeDirtyWithCharacterUpdate);
+                            await objVehicle.Weapons.AddTaggedCollectionChangedAsync(
+                                treVehicles, FuncVehicleWeaponsToAdd);
                             foreach (VehicleMod objMod in objVehicle.Mods)
                             {
                                 async void FuncVehicleModCyberwareToAdd(
@@ -4090,13 +4341,17 @@ namespace Chummer
                                         cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y,
                                         MakeDirtyWithCharacterUpdate);
 
-                                await objMod.Cyberware.AddTaggedCollectionChangedAsync(treVehicles, MakeDirtyWithCharacterUpdate);
-                                await objMod.Cyberware.AddTaggedCollectionChangedAsync(treVehicles, FuncVehicleModCyberwareToAdd);
+                                await objMod.Cyberware.AddTaggedCollectionChangedAsync(
+                                    treVehicles, MakeDirtyWithCharacterUpdate);
+                                await objMod.Cyberware.AddTaggedCollectionChangedAsync(
+                                    treVehicles, FuncVehicleModCyberwareToAdd);
                                 foreach (Cyberware objCyberware in objMod.Cyberware)
                                     objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles,
                                         cmsCyberware, cmsCyberwareGear, MakeDirtyWithCharacterUpdate);
-                                await objMod.Weapons.AddTaggedCollectionChangedAsync(treVehicles, MakeDirtyWithCharacterUpdate);
-                                await objMod.Weapons.AddTaggedCollectionChangedAsync(treVehicles, FuncVehicleModWeaponsToAdd);
+                                await objMod.Weapons.AddTaggedCollectionChangedAsync(
+                                    treVehicles, MakeDirtyWithCharacterUpdate);
+                                await objMod.Weapons.AddTaggedCollectionChangedAsync(
+                                    treVehicles, FuncVehicleModWeaponsToAdd);
                                 foreach (Weapon objWeapon in objMod.Weapons)
                                     objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
                                         cmsVehicleWeapon, cmsVehicleWeaponAccessory,
@@ -4120,10 +4375,14 @@ namespace Chummer
                                         cmsVehicleWeaponAccessoryGear, () => objMount.Mods.Count, y,
                                         MakeDirtyWithCharacterUpdate);
 
-                                await objMount.Mods.AddTaggedCollectionChangedAsync(treVehicles, MakeDirtyWithCharacterUpdate);
-                                await objMount.Mods.AddTaggedCollectionChangedAsync(treVehicles, FuncWeaponMountVehicleModToAdd);
-                                await objMount.Weapons.AddTaggedCollectionChangedAsync(treVehicles, MakeDirtyWithCharacterUpdate);
-                                await objMount.Weapons.AddTaggedCollectionChangedAsync(treVehicles, FuncWeaponMountWeaponsToAdd);
+                                await objMount.Mods.AddTaggedCollectionChangedAsync(
+                                    treVehicles, MakeDirtyWithCharacterUpdate);
+                                await objMount.Mods.AddTaggedCollectionChangedAsync(
+                                    treVehicles, FuncWeaponMountVehicleModToAdd);
+                                await objMount.Weapons.AddTaggedCollectionChangedAsync(
+                                    treVehicles, MakeDirtyWithCharacterUpdate);
+                                await objMount.Weapons.AddTaggedCollectionChangedAsync(
+                                    treVehicles, FuncWeaponMountWeaponsToAdd);
                                 foreach (Weapon objWeapon in objMount.Weapons)
                                     objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
                                         cmsVehicleWeapon, cmsVehicleWeaponAccessory,
@@ -4143,13 +4402,17 @@ namespace Chummer
                                             cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y,
                                             MakeDirtyWithCharacterUpdate);
 
-                                    await objMod.Cyberware.AddTaggedCollectionChangedAsync(treVehicles, MakeDirtyWithCharacterUpdate);
-                                    await objMod.Cyberware.AddTaggedCollectionChangedAsync(treVehicles, FuncWeaponMountVehicleModCyberwareToAdd);
+                                    await objMod.Cyberware.AddTaggedCollectionChangedAsync(
+                                        treVehicles, MakeDirtyWithCharacterUpdate);
+                                    await objMod.Cyberware.AddTaggedCollectionChangedAsync(
+                                        treVehicles, FuncWeaponMountVehicleModCyberwareToAdd);
                                     foreach (Cyberware objCyberware in objMod.Cyberware)
                                         objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles,
                                             cmsCyberware, cmsCyberwareGear, MakeDirtyWithCharacterUpdate);
-                                    await objMod.Weapons.AddTaggedCollectionChangedAsync(treVehicles, MakeDirtyWithCharacterUpdate);
-                                    await objMod.Weapons.AddTaggedCollectionChangedAsync(treVehicles, FuncWeaponMountVehicleModWeaponsToAdd);
+                                    await objMod.Weapons.AddTaggedCollectionChangedAsync(
+                                        treVehicles, MakeDirtyWithCharacterUpdate);
+                                    await objMod.Weapons.AddTaggedCollectionChangedAsync(
+                                        treVehicles, FuncWeaponMountVehicleModWeaponsToAdd);
                                     foreach (Weapon objWeapon in objMod.Weapons)
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles,
                                             cmsVehicleWeapon, cmsVehicleWeaponAccessory,
@@ -4169,6 +4432,7 @@ namespace Chummer
                                     () => objVehicle.Mods.Count + objVehicle.Weapons.Count
                                                                 + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
                                     y, MakeDirtyWithCharacterUpdate);
+
                             async void FuncVehicleLocationsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
                                                                 () => objVehicle.Mods.Count + objVehicle.Weapons.Count
@@ -4176,15 +4440,21 @@ namespace Chummer
                                                                     + objVehicle.GearChildren.Count(
                                                                         z => z.Location == null), y);
 
-                            await objVehicle.GearChildren.AddTaggedCollectionChangedAsync(treVehicles, MakeDirtyWithCharacterUpdate);
-                            await objVehicle.GearChildren.AddTaggedCollectionChangedAsync(treVehicles, FuncVehicleGearToAdd);
+                            await objVehicle.GearChildren.AddTaggedCollectionChangedAsync(
+                                treVehicles, MakeDirtyWithCharacterUpdate);
+                            await objVehicle.GearChildren.AddTaggedCollectionChangedAsync(
+                                treVehicles, FuncVehicleGearToAdd);
                             foreach (Gear objGear in objVehicle.GearChildren)
-                                objGear.SetupChildrenGearsCollectionChanged(true, treVehicles, cmsVehicleGear, MakeDirtyWithCharacterUpdate);
-                            await objVehicle.Locations.AddTaggedCollectionChangedAsync(treVehicles, MakeDirtyWithCharacterUpdate);
-                            await objVehicle.Locations.AddTaggedCollectionChangedAsync(treVehicles, FuncVehicleLocationsToAdd);
+                                objGear.SetupChildrenGearsCollectionChanged(
+                                    true, treVehicles, cmsVehicleGear, MakeDirtyWithCharacterUpdate);
+                            await objVehicle.Locations.AddTaggedCollectionChangedAsync(
+                                treVehicles, MakeDirtyWithCharacterUpdate);
+                            await objVehicle.Locations.AddTaggedCollectionChangedAsync(
+                                treVehicles, FuncVehicleLocationsToAdd);
                         }
 
-                        await treVehicles.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), GenericToken);
+                        await treVehicles.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId),
+                                                            GenericToken);
                     }
                     finally
                     {
@@ -4193,7 +4463,8 @@ namespace Chummer
                 }
                 else
                 {
-                    nodRoot = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedVehicles", false), GenericToken);
+                    nodRoot = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedVehicles", false),
+                                                                      GenericToken);
 
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
@@ -4648,7 +4919,8 @@ namespace Chummer
                                 ++intNewIndex;
                             }
 
-                            await treVehicles.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), GenericToken);
+                            await treVehicles.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId),
+                                                                GenericToken);
                             break;
                         }
                     }
@@ -4657,15 +4929,18 @@ namespace Chummer
                 async ValueTask AddToTree(Vehicle objVehicle, int intIndex = -1, bool blnSingleAdd = true)
                 {
                     TreeNode objNode = objVehicle.CreateTreeNode(cmsVehicle, cmsVehicleLocation, cmsVehicleWeapon,
-                        cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear, cmsVehicleWeaponMount,
-                        cmsCyberware, cmsCyberwareGear);
+                                                                 cmsVehicleWeaponAccessory,
+                                                                 cmsVehicleWeaponAccessoryGear, cmsVehicleGear,
+                                                                 cmsVehicleWeaponMount,
+                                                                 cmsCyberware, cmsCyberwareGear);
                     if (objNode == null)
                         return;
 
                     TreeNode nodParent = null;
                     if (objVehicle.Location != null)
                     {
-                        nodParent = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objVehicle.Location, false), GenericToken);
+                        nodParent = await treVehicles.DoThreadSafeFuncAsync(
+                            x => x.FindNodeByTag(objVehicle.Location, false), GenericToken);
                     }
 
                     if (nodParent == null)
@@ -4695,15 +4970,22 @@ namespace Chummer
                     }, GenericToken);
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         public async ValueTask RefreshFociFromGear(TreeView treFoci, ContextMenuStrip cmsFocus, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (treFoci == null)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
-                string strSelectedId = (await treFoci.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId
+                    = (await treFoci.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)
+                    ?.InternalId ?? string.Empty;
 
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -4775,12 +5057,16 @@ namespace Chummer
                                                     await ImprovementManager.CreateImprovementsAsync(CharacterObject,
                                                         Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
                                                         objFociGear.Bonus, objFociGear.Rating,
-                                                        await objFociGear.DisplayNameShortAsync(GlobalSettings.Language));
+                                                        await objFociGear.DisplayNameShortAsync(
+                                                            GlobalSettings.Language));
                                                     if (objFociGear.WirelessOn)
-                                                        await ImprovementManager.CreateImprovementsAsync(CharacterObject,
-                                                            Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
+                                                        await ImprovementManager.CreateImprovementsAsync(
+                                                            CharacterObject,
+                                                            Improvement.ImprovementSource.StackedFocus,
+                                                            objStack.InternalId,
                                                             objFociGear.WirelessBonus, objFociGear.Rating,
-                                                            await objFociGear.DisplayNameShortAsync(GlobalSettings.Language));
+                                                            await objFociGear.DisplayNameShortAsync(
+                                                                GlobalSettings.Language));
                                                 }
                                             }
 
@@ -4804,293 +5090,309 @@ namespace Chummer
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
+                        {
+                            bool blnWarned = false;
+                            int intMaxFocusTotal = CharacterObject.MAG.TotalValue * 5;
+                            if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                                intMaxFocusTotal = Math.Min(intMaxFocusTotal, CharacterObject.MAGAdept.TotalValue * 5);
+
+                            HashSet<Gear> setNewGears = new HashSet<Gear>();
+                            foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                                setNewGears.Add(objGear);
+
+                            int intFociTotal = CharacterObject.Foci.Where(x => !setNewGears.Contains(x.GearObject))
+                                                              .Sum(x => x.Rating);
+
+                            foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                bool blnWarned = false;
-                                int intMaxFocusTotal = CharacterObject.MAG.TotalValue * 5;
-                                if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                                    intMaxFocusTotal = Math.Min(intMaxFocusTotal, CharacterObject.MAGAdept.TotalValue * 5);
-
-                                HashSet<Gear> setNewGears = new HashSet<Gear>();
-                                foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
-                                    setNewGears.Add(objGear);
-
-                                int intFociTotal = CharacterObject.Foci.Where(x => !setNewGears.Contains(x.GearObject))
-                                    .Sum(x => x.Rating);
-
-                                foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                                switch (objGear.Category)
                                 {
-                                    switch (objGear.Category)
+                                    case "Foci":
+                                    case "Metamagic Foci":
                                     {
-                                        case "Foci":
-                                        case "Metamagic Foci":
+                                        TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
+                                        if (objNode == null)
+                                            continue;
+                                        objNode.Text = await objNode.Text.CheapReplaceAsync(
+                                            await LanguageManager.GetStringAsync("String_Rating"),
+                                            () => LanguageManager.GetStringAsync("String_Force"));
+                                        for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
+                                        {
+                                            if (i < CharacterObject.Foci.Count)
                                             {
-                                                TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
-                                                if (objNode == null)
-                                                    continue;
-                                                objNode.Text = await objNode.Text.CheapReplaceAsync(
-                                                    await LanguageManager.GetStringAsync("String_Rating"),
-                                                    () => LanguageManager.GetStringAsync("String_Force"));
-                                                for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
+                                                Focus objFocus = CharacterObject.Foci[i];
+                                                if (objFocus.GearObject == objGear)
                                                 {
-                                                    if (i < CharacterObject.Foci.Count)
+                                                    intFociTotal += objFocus.Rating;
+                                                    // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
+                                                    if (intFociTotal > intMaxFocusTotal && !CharacterObject.IgnoreRules)
                                                     {
-                                                        Focus objFocus = CharacterObject.Foci[i];
-                                                        if (objFocus.GearObject == objGear)
+                                                        // Mark the Gear a Bonded.
+                                                        objGear.Bonded = false;
+                                                        await CharacterObject.Foci.RemoveAtAsync(i);
+                                                        objNode.Checked = false;
+                                                        if (!blnWarned)
                                                         {
-                                                            intFociTotal += objFocus.Rating;
-                                                            // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
-                                                            if (intFociTotal > intMaxFocusTotal && !CharacterObject.IgnoreRules)
-                                                            {
-                                                                // Mark the Gear a Bonded.
-                                                                objGear.Bonded = false;
-                                                                await CharacterObject.Foci.RemoveAtAsync(i);
-                                                                objNode.Checked = false;
-                                                                if (!blnWarned)
-                                                                {
-                                                                    Program.ShowMessageBox(this,
-                                                                        await LanguageManager.GetStringAsync("Message_FocusMaximumForce"),
-                                                                        await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum"),
-                                                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                                                    blnWarned = true;
-                                                                    break;
-                                                                }
-                                                            }
-                                                            else
-                                                                objNode.Checked = true;
+                                                            Program.ShowMessageBox(this,
+                                                                await LanguageManager.GetStringAsync(
+                                                                    "Message_FocusMaximumForce"),
+                                                                await LanguageManager.GetStringAsync(
+                                                                    "MessageTitle_FocusMaximum"),
+                                                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                                            blnWarned = true;
+                                                            break;
                                                         }
                                                     }
-                                                }
-
-                                                await AddToTree(objNode);
-                                            }
-                                            break;
-
-                                        case "Stacked Focus":
-                                            {
-                                                foreach (StackedFocus objStack in CharacterObject.StackedFoci)
-                                                {
-                                                    if (objStack.GearId == objGear.InternalId)
-                                                    {
-                                                        await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                                            Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
-
-                                                        if (objStack.Bonded)
-                                                        {
-                                                            foreach (Gear objFociGear in objStack.Gear)
-                                                            {
-                                                                if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                                                    ImprovementManager.ForcedValue = objFociGear.Extra;
-                                                                await ImprovementManager.CreateImprovementsAsync(CharacterObject,
-                                                                    Improvement.ImprovementSource.StackedFocus,
-                                                                    objStack.InternalId, objFociGear.Bonus, objFociGear.Rating,
-                                                                    await objFociGear.DisplayNameShortAsync(GlobalSettings.Language));
-                                                                if (objFociGear.WirelessOn)
-                                                                    await ImprovementManager.CreateImprovementsAsync(CharacterObject,
-                                                                        Improvement.ImprovementSource.StackedFocus,
-                                                                        objStack.InternalId, objFociGear.WirelessBonus,
-                                                                        objFociGear.Rating,
-                                                                        await objFociGear.DisplayNameShortAsync(GlobalSettings.Language));
-                                                            }
-                                                        }
-
-                                                        await AddToTree(objStack.CreateTreeNode(objGear, cmsFocus));
-                                                    }
+                                                    else
+                                                        objNode.Checked = true;
                                                 }
                                             }
-                                            break;
+                                        }
+
+                                        await AddToTree(objNode);
                                     }
+                                        break;
+
+                                    case "Stacked Focus":
+                                    {
+                                        foreach (StackedFocus objStack in CharacterObject.StackedFoci)
+                                        {
+                                            if (objStack.GearId == objGear.InternalId)
+                                            {
+                                                await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
+                                                    Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+
+                                                if (objStack.Bonded)
+                                                {
+                                                    foreach (Gear objFociGear in objStack.Gear)
+                                                    {
+                                                        if (!string.IsNullOrEmpty(objFociGear.Extra))
+                                                            ImprovementManager.ForcedValue = objFociGear.Extra;
+                                                        await ImprovementManager.CreateImprovementsAsync(
+                                                            CharacterObject,
+                                                            Improvement.ImprovementSource.StackedFocus,
+                                                            objStack.InternalId, objFociGear.Bonus, objFociGear.Rating,
+                                                            await objFociGear.DisplayNameShortAsync(
+                                                                GlobalSettings.Language));
+                                                        if (objFociGear.WirelessOn)
+                                                            await ImprovementManager.CreateImprovementsAsync(
+                                                                CharacterObject,
+                                                                Improvement.ImprovementSource.StackedFocus,
+                                                                objStack.InternalId, objFociGear.WirelessBonus,
+                                                                objFociGear.Rating,
+                                                                await objFociGear.DisplayNameShortAsync(
+                                                                    GlobalSettings.Language));
+                                                    }
+                                                }
+
+                                                await AddToTree(objStack.CreateTreeNode(objGear, cmsFocus));
+                                            }
+                                        }
+                                    }
+                                        break;
                                 }
                             }
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
+                                switch (objGear.Category)
                                 {
-                                    switch (objGear.Category)
+                                    case "Foci":
+                                    case "Metamagic Foci":
                                     {
-                                        case "Foci":
-                                        case "Metamagic Foci":
+                                        for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
+                                        {
+                                            if (i < CharacterObject.Foci.Count)
                                             {
-                                                for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
+                                                Focus objFocus = CharacterObject.Foci[i];
+                                                if (objFocus.GearObject == objGear)
                                                 {
-                                                    if (i < CharacterObject.Foci.Count)
-                                                    {
-                                                        Focus objFocus = CharacterObject.Foci[i];
-                                                        if (objFocus.GearObject == objGear)
-                                                        {
-                                                            await CharacterObject.Foci.RemoveAtAsync(i);
-                                                        }
-                                                    }
-                                                }
-
-                                                await treFoci.DoThreadSafeAsync(x => x.FindNodeByTag(objGear)?.Remove(), GenericToken);
-                                            }
-                                            break;
-
-                                        case "Stacked Focus":
-                                            {
-                                                for (int i = CharacterObject.StackedFoci.Count - 1; i >= 0; --i)
-                                                {
-                                                    if (i < CharacterObject.StackedFoci.Count)
-                                                    {
-                                                        StackedFocus objStack = CharacterObject.StackedFoci[i];
-                                                        if (objStack.GearId == objGear.InternalId)
-                                                        {
-                                                            await CharacterObject.StackedFoci.RemoveAtAsync(i);
-                                                            await treFoci.DoThreadSafeAsync(x => x.FindNodeByTag(objStack)?.Remove(), GenericToken);
-                                                            objStack.Dispose();
-                                                        }
-                                                    }
+                                                    await CharacterObject.Foci.RemoveAtAsync(i);
                                                 }
                                             }
-                                            break;
+                                        }
+
+                                        await treFoci.DoThreadSafeAsync(x => x.FindNodeByTag(objGear)?.Remove(),
+                                                                        GenericToken);
                                     }
+                                        break;
+
+                                    case "Stacked Focus":
+                                    {
+                                        for (int i = CharacterObject.StackedFoci.Count - 1; i >= 0; --i)
+                                        {
+                                            if (i < CharacterObject.StackedFoci.Count)
+                                            {
+                                                StackedFocus objStack = CharacterObject.StackedFoci[i];
+                                                if (objStack.GearId == objGear.InternalId)
+                                                {
+                                                    await CharacterObject.StackedFoci.RemoveAtAsync(i);
+                                                    await treFoci.DoThreadSafeAsync(
+                                                        x => x.FindNodeByTag(objStack)?.Remove(), GenericToken);
+                                                    objStack.Dispose();
+                                                }
+                                            }
+                                        }
+                                    }
+                                        break;
                                 }
                             }
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
+                                switch (objGear.Category)
                                 {
-                                    switch (objGear.Category)
+                                    case "Foci":
+                                    case "Metamagic Foci":
                                     {
-                                        case "Foci":
-                                        case "Metamagic Foci":
+                                        for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
+                                        {
+                                            if (i < CharacterObject.Foci.Count)
                                             {
-                                                for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
+                                                Focus objFocus = CharacterObject.Foci[i];
+                                                if (objFocus.GearObject == objGear)
                                                 {
-                                                    if (i < CharacterObject.Foci.Count)
-                                                    {
-                                                        Focus objFocus = CharacterObject.Foci[i];
-                                                        if (objFocus.GearObject == objGear)
-                                                        {
-                                                            await CharacterObject.Foci.RemoveAtAsync(i);
-                                                        }
-                                                    }
-                                                }
-
-                                                await treFoci.DoThreadSafeAsync(x => x.FindNodeByTag(objGear)?.Remove(), GenericToken);
-                                            }
-                                            break;
-
-                                        case "Stacked Focus":
-                                            {
-                                                for (int i = CharacterObject.StackedFoci.Count - 1; i >= 0; --i)
-                                                {
-                                                    if (i < CharacterObject.StackedFoci.Count)
-                                                    {
-                                                        StackedFocus objStack = CharacterObject.StackedFoci[i];
-                                                        if (objStack.GearId == objGear.InternalId)
-                                                        {
-                                                            await CharacterObject.StackedFoci.RemoveAtAsync(i);
-                                                            await treFoci.DoThreadSafeAsync(x => x.FindNodeByTag(objStack)?.Remove(), GenericToken);
-                                                            objStack.Dispose();
-                                                        }
-                                                    }
+                                                    await CharacterObject.Foci.RemoveAtAsync(i);
                                                 }
                                             }
-                                            break;
+                                        }
+
+                                        await treFoci.DoThreadSafeAsync(x => x.FindNodeByTag(objGear)?.Remove(),
+                                                                        GenericToken);
                                     }
-                                }
+                                        break;
 
-                                bool blnWarned = false;
-                                int intMaxFocusTotal = CharacterObject.MAG.TotalValue * 5;
-                                if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                                    intMaxFocusTotal = Math.Min(intMaxFocusTotal, CharacterObject.MAGAdept.TotalValue * 5);
-
-                                HashSet<Gear> setNewGears = new HashSet<Gear>();
-                                foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
-                                    setNewGears.Add(objGear);
-
-                                int intFociTotal = CharacterObject.Foci.Where(x => !setNewGears.Contains(x.GearObject))
-                                    .Sum(x => x.Rating);
-
-                                foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    switch (objGear.Category)
+                                    case "Stacked Focus":
                                     {
-                                        case "Foci":
-                                        case "Metamagic Foci":
+                                        for (int i = CharacterObject.StackedFoci.Count - 1; i >= 0; --i)
+                                        {
+                                            if (i < CharacterObject.StackedFoci.Count)
                                             {
-                                                TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
-                                                if (objNode == null)
-                                                    continue;
-                                                objNode.Text = await objNode.Text.CheapReplaceAsync(
-                                                    await LanguageManager.GetStringAsync("String_Rating"),
-                                                    () => LanguageManager.GetString("String_Force"));
-                                                for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
+                                                StackedFocus objStack = CharacterObject.StackedFoci[i];
+                                                if (objStack.GearId == objGear.InternalId)
                                                 {
-                                                    if (i < CharacterObject.Foci.Count)
-                                                    {
-                                                        Focus objFocus = CharacterObject.Foci[i];
-                                                        if (objFocus.GearObject == objGear)
-                                                        {
-                                                            intFociTotal += objFocus.Rating;
-                                                            // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
-                                                            if (intFociTotal > intMaxFocusTotal && !CharacterObject.IgnoreRules)
-                                                            {
-                                                                // Mark the Gear a Bonded.
-                                                                objGear.Bonded = false;
-                                                                await CharacterObject.Foci.RemoveAtAsync(i);
-                                                                objNode.Checked = false;
-                                                                if (!blnWarned)
-                                                                {
-                                                                    Program.ShowMessageBox(this,
-                                                                        await LanguageManager.GetStringAsync("Message_FocusMaximumForce"),
-                                                                        await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum"),
-                                                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                                                    blnWarned = true;
-                                                                    break;
-                                                                }
-                                                            }
-                                                            else
-                                                                objNode.Checked = true;
-                                                        }
-                                                    }
-                                                }
-
-                                                await AddToTree(objNode);
-                                            }
-                                            break;
-
-                                        case "Stacked Focus":
-                                            {
-                                                foreach (StackedFocus objStack in CharacterObject.StackedFoci)
-                                                {
-                                                    if (objStack.GearId == objGear.InternalId)
-                                                    {
-                                                        await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                                            Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
-
-                                                        if (objStack.Bonded)
-                                                        {
-                                                            foreach (Gear objFociGear in objStack.Gear)
-                                                            {
-                                                                if (!string.IsNullOrEmpty(objFociGear.Extra))
-                                                                    ImprovementManager.ForcedValue = objFociGear.Extra;
-                                                                await ImprovementManager.CreateImprovementsAsync(CharacterObject,
-                                                                    Improvement.ImprovementSource.StackedFocus,
-                                                                    objStack.InternalId, objFociGear.Bonus, objFociGear.Rating,
-                                                                    await objFociGear.DisplayNameShortAsync(GlobalSettings.Language));
-                                                                if (objFociGear.WirelessOn)
-                                                                    await ImprovementManager.CreateImprovementsAsync(CharacterObject,
-                                                                        Improvement.ImprovementSource.StackedFocus,
-                                                                        objStack.InternalId, objFociGear.WirelessBonus,
-                                                                        objFociGear.Rating,
-                                                                        await objFociGear.DisplayNameShortAsync(GlobalSettings.Language));
-                                                            }
-                                                        }
-
-                                                        await AddToTree(objStack.CreateTreeNode(objGear, cmsFocus));
-                                                    }
+                                                    await CharacterObject.StackedFoci.RemoveAtAsync(i);
+                                                    await treFoci.DoThreadSafeAsync(
+                                                        x => x.FindNodeByTag(objStack)?.Remove(), GenericToken);
+                                                    objStack.Dispose();
                                                 }
                                             }
-                                            break;
+                                        }
                                     }
+                                        break;
                                 }
                             }
+
+                            bool blnWarned = false;
+                            int intMaxFocusTotal = CharacterObject.MAG.TotalValue * 5;
+                            if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                                intMaxFocusTotal = Math.Min(intMaxFocusTotal, CharacterObject.MAGAdept.TotalValue * 5);
+
+                            HashSet<Gear> setNewGears = new HashSet<Gear>();
+                            foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                                setNewGears.Add(objGear);
+
+                            int intFociTotal = CharacterObject.Foci.Where(x => !setNewGears.Contains(x.GearObject))
+                                                              .Sum(x => x.Rating);
+
+                            foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                switch (objGear.Category)
+                                {
+                                    case "Foci":
+                                    case "Metamagic Foci":
+                                    {
+                                        TreeNode objNode = objGear.CreateTreeNode(cmsFocus);
+                                        if (objNode == null)
+                                            continue;
+                                        objNode.Text = await objNode.Text.CheapReplaceAsync(
+                                            await LanguageManager.GetStringAsync("String_Rating"),
+                                            () => LanguageManager.GetString("String_Force"));
+                                        for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
+                                        {
+                                            if (i < CharacterObject.Foci.Count)
+                                            {
+                                                Focus objFocus = CharacterObject.Foci[i];
+                                                if (objFocus.GearObject == objGear)
+                                                {
+                                                    intFociTotal += objFocus.Rating;
+                                                    // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
+                                                    if (intFociTotal > intMaxFocusTotal && !CharacterObject.IgnoreRules)
+                                                    {
+                                                        // Mark the Gear a Bonded.
+                                                        objGear.Bonded = false;
+                                                        await CharacterObject.Foci.RemoveAtAsync(i);
+                                                        objNode.Checked = false;
+                                                        if (!blnWarned)
+                                                        {
+                                                            Program.ShowMessageBox(this,
+                                                                await LanguageManager.GetStringAsync(
+                                                                    "Message_FocusMaximumForce"),
+                                                                await LanguageManager.GetStringAsync(
+                                                                    "MessageTitle_FocusMaximum"),
+                                                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                                            blnWarned = true;
+                                                            break;
+                                                        }
+                                                    }
+                                                    else
+                                                        objNode.Checked = true;
+                                                }
+                                            }
+                                        }
+
+                                        await AddToTree(objNode);
+                                    }
+                                        break;
+
+                                    case "Stacked Focus":
+                                    {
+                                        foreach (StackedFocus objStack in CharacterObject.StackedFoci)
+                                        {
+                                            if (objStack.GearId == objGear.InternalId)
+                                            {
+                                                await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
+                                                    Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+
+                                                if (objStack.Bonded)
+                                                {
+                                                    foreach (Gear objFociGear in objStack.Gear)
+                                                    {
+                                                        if (!string.IsNullOrEmpty(objFociGear.Extra))
+                                                            ImprovementManager.ForcedValue = objFociGear.Extra;
+                                                        await ImprovementManager.CreateImprovementsAsync(
+                                                            CharacterObject,
+                                                            Improvement.ImprovementSource.StackedFocus,
+                                                            objStack.InternalId, objFociGear.Bonus, objFociGear.Rating,
+                                                            await objFociGear.DisplayNameShortAsync(
+                                                                GlobalSettings.Language));
+                                                        if (objFociGear.WirelessOn)
+                                                            await ImprovementManager.CreateImprovementsAsync(
+                                                                CharacterObject,
+                                                                Improvement.ImprovementSource.StackedFocus,
+                                                                objStack.InternalId, objFociGear.WirelessBonus,
+                                                                objFociGear.Rating,
+                                                                await objFociGear.DisplayNameShortAsync(
+                                                                    GlobalSettings.Language));
+                                                    }
+                                                }
+
+                                                await AddToTree(objStack.CreateTreeNode(objGear, cmsFocus));
+                                            }
+                                        }
+                                    }
+                                        break;
+                                }
+                            }
+                        }
                             break;
                     }
                 }
@@ -5120,15 +5422,22 @@ namespace Chummer
                     }, GenericToken);
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         protected async ValueTask RefreshMartialArts(TreeView treMartialArts, ContextMenuStrip cmsMartialArts, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (treMartialArts == null)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
-                string strSelectedId = (await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId
+                    = (await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as
+                        IHasInternalId)?.InternalId ?? string.Empty;
 
                 TreeNode objMartialArtsParentNode = null;
                 TreeNode objQualityNode = null;
@@ -5144,13 +5453,17 @@ namespace Chummer
                         foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
                         {
                             await AddToTree(objMartialArt, false);
-                            await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(treMartialArts, MakeDirtyWithCharacterUpdate);
-                            await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(treMartialArts, FuncDelegateToAdd);
+                            await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(
+                                treMartialArts, MakeDirtyWithCharacterUpdate);
+                            await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(
+                                treMartialArts, FuncDelegateToAdd);
+
                             async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y);
                         }
 
-                        await treMartialArts.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), GenericToken);
+                        await treMartialArts.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId),
+                                                               GenericToken);
                     }
                     finally
                     {
@@ -5159,21 +5472,28 @@ namespace Chummer
                 }
                 else
                 {
-                    objMartialArtsParentNode = await treMartialArts.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedMartialArts", false), GenericToken);
-                    objQualityNode = await treMartialArts.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedQualities", false), GenericToken);
+                    objMartialArtsParentNode
+                        = await treMartialArts.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedMartialArts", false),
+                                                                     GenericToken);
+                    objQualityNode
+                        = await treMartialArts.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedQualities", false),
+                                                                     GenericToken);
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(objMartialArt);
-                                    await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(treMartialArts, MakeDirtyWithCharacterUpdate);
-                                    await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(treMartialArts, FuncDelegateToAdd);
-                                    async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                                        await RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y);
-                                }
+                                await AddToTree(objMartialArt);
+                                await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(
+                                    treMartialArts, MakeDirtyWithCharacterUpdate);
+                                await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(
+                                    treMartialArts, FuncDelegateToAdd);
+
+                                async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                    await RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y);
                             }
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Remove:
@@ -5193,44 +5513,48 @@ namespace Chummer
                                     }
                                 }, GenericToken);
                             }
+
                             break;
                         }
                         case NotifyCollectionChangedAction.Replace:
+                        {
+                            List<TreeNode> lstOldParents =
+                                new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
+                            foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                List<TreeNode> lstOldParents =
-                                    new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
-                                foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.OldItems)
+                                await objMartialArt.Techniques.RemoveTaggedCollectionChangedAsync(treMartialArts);
+                                await treMartialArts.DoThreadSafeAsync(x =>
                                 {
-                                    await objMartialArt.Techniques.RemoveTaggedCollectionChangedAsync(treMartialArts);
-                                    await treMartialArts.DoThreadSafeAsync(x =>
+                                    TreeNode objNode = x.FindNodeByTag(objMartialArt);
+                                    if (objNode != null)
                                     {
-                                        TreeNode objNode = x.FindNodeByTag(objMartialArt);
-                                        if (objNode != null)
-                                        {
-                                            lstOldParents.Add(objNode.Parent);
-                                            objNode.Remove();
-                                        }
-                                    }, GenericToken);
-                                }
-
-                                foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    await AddToTree(objMartialArt);
-                                    await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(treMartialArts, MakeDirtyWithCharacterUpdate);
-                                    await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(treMartialArts, FuncDelegateToAdd);
-                                    async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
-                                        await RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y);
-                                }
-
-                                await treMartialArts.DoThreadSafeAsync(() =>
-                                {
-                                    foreach (TreeNode objOldParent in lstOldParents)
-                                    {
-                                        if (objOldParent.Nodes.Count == 0)
-                                            objOldParent.Remove();
+                                        lstOldParents.Add(objNode.Parent);
+                                        objNode.Remove();
                                     }
                                 }, GenericToken);
                             }
+
+                            foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                await AddToTree(objMartialArt);
+                                await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(
+                                    treMartialArts, MakeDirtyWithCharacterUpdate);
+                                await objMartialArt.Techniques.AddTaggedCollectionChangedAsync(
+                                    treMartialArts, FuncDelegateToAdd);
+
+                                async void FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y) =>
+                                    await RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y);
+                            }
+
+                            await treMartialArts.DoThreadSafeAsync(() =>
+                            {
+                                foreach (TreeNode objOldParent in lstOldParents)
+                                {
+                                    if (objOldParent.Nodes.Count == 0)
+                                        objOldParent.Remove();
+                                }
+                            }, GenericToken);
+                        }
                             break;
                     }
                 }
@@ -5308,6 +5632,10 @@ namespace Chummer
                     }, GenericToken);
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         protected async ValueTask RefreshMartialArtTechniques(TreeView treMartialArts, MartialArt objMartialArt, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -5317,7 +5645,8 @@ namespace Chummer
             TreeNode nodMartialArt = await treMartialArts.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objMartialArt), GenericToken);
             if (nodMartialArt == null)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
@@ -5409,6 +5738,10 @@ namespace Chummer
                     nodMartialArt.Expand();
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         /// <summary>
@@ -5418,10 +5751,12 @@ namespace Chummer
         {
             if (treImprovements == null)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 string strSelectedId =
-                    (await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag as IHasInternalId, GenericToken))?.InternalId ?? string.Empty;
+                    (await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag as IHasInternalId,
+                                                                 GenericToken))?.InternalId ?? string.Empty;
 
                 TreeNode objRoot;
 
@@ -5462,7 +5797,8 @@ namespace Chummer
                         }
 
                         // Sort the list of Custom Improvements in alphabetical order based on their Custom Name within each Group.
-                        await treImprovements.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), GenericToken);
+                        await treImprovements.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId),
+                                                                GenericToken);
                     }
                     finally
                     {
@@ -5471,7 +5807,8 @@ namespace Chummer
                 }
                 else
                 {
-                    objRoot = await treImprovements.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedImprovements", false), GenericToken);
+                    objRoot = await treImprovements.DoThreadSafeFuncAsync(
+                        x => x.FindNode("Node_SelectedImprovements", false), GenericToken);
                     TreeNode[] aobjLimitNodes = new TreeNode[4];
                     if (treLimit != null)
                         await treLimit.DoThreadSafeAsync(x =>
@@ -5485,19 +5822,19 @@ namespace Chummer
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                foreach (Improvement objImprovement in notifyCollectionChangedEventArgs.NewItems)
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
+                                    objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
                                 {
-                                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Custom ||
-                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
-                                    {
-                                        await AddToTree(objImprovement);
-                                        await AddToLimitTree(objImprovement);
-                                    }
+                                    await AddToTree(objImprovement);
+                                    await AddToLimitTree(objImprovement);
                                 }
-
-                                break;
                             }
+
+                            break;
+                        }
                         case NotifyCollectionChangedAction.Remove:
                         {
                             await treImprovements.DoThreadSafeAsync(x =>
@@ -5596,19 +5933,19 @@ namespace Chummer
                         switch (objImprovement.ImproveType)
                         {
                             case Improvement.ImprovementType.LimitModifier:
-                                intTargetLimit = (int)Enum.Parse(typeof(LimitType), objImprovement.ImprovedName);
+                                intTargetLimit = (int) Enum.Parse(typeof(LimitType), objImprovement.ImprovedName);
                                 break;
 
                             case Improvement.ImprovementType.PhysicalLimit:
-                                intTargetLimit = (int)LimitType.Physical;
+                                intTargetLimit = (int) LimitType.Physical;
                                 break;
 
                             case Improvement.ImprovementType.MentalLimit:
-                                intTargetLimit = (int)LimitType.Mental;
+                                intTargetLimit = (int) LimitType.Mental;
                                 break;
 
                             case Improvement.ImprovementType.SocialLimit:
-                                intTargetLimit = (int)LimitType.Social;
+                                intTargetLimit = (int) LimitType.Social;
                                 break;
                         }
 
@@ -5625,7 +5962,8 @@ namespace Chummer
                                             Tag = "Node_Physical",
                                             Text = await LanguageManager.GetStringAsync("Node_Physical")
                                         };
-                                        await treLimit.DoThreadSafeAsync(x => x.Nodes.Insert(0, objParentNode), GenericToken);
+                                        await treLimit.DoThreadSafeAsync(
+                                            x => x.Nodes.Insert(0, objParentNode), GenericToken);
                                         break;
 
                                     case 1:
@@ -5634,7 +5972,9 @@ namespace Chummer
                                             Tag = "Node_Mental",
                                             Text = await LanguageManager.GetStringAsync("Node_Mental")
                                         };
-                                        await treLimit.DoThreadSafeAsync(x => x.Nodes.Insert(aobjLimitNodes[0] == null ? 0 : 1, objParentNode), GenericToken);
+                                        await treLimit.DoThreadSafeAsync(
+                                            x => x.Nodes.Insert(aobjLimitNodes[0] == null ? 0 : 1, objParentNode),
+                                            GenericToken);
                                         break;
 
                                     case 2:
@@ -5663,13 +6003,15 @@ namespace Chummer
                                     await treLimit.DoThreadSafeAsync(() => objParentNode.Expand(), GenericToken);
                             }
 
-                            string strName = objImprovement.UniqueName + await LanguageManager.GetStringAsync("String_Colon") +
+                            string strName = objImprovement.UniqueName
+                                             + await LanguageManager.GetStringAsync("String_Colon") +
                                              await LanguageManager.GetStringAsync("String_Space");
                             if (objImprovement.Value > 0)
                                 strName += '+';
                             strName += objImprovement.Value.ToString(GlobalSettings.CultureInfo);
                             if (!string.IsNullOrEmpty(objImprovement.Condition))
-                                strName += ',' + await LanguageManager.GetStringAsync("String_Space") + objImprovement.Condition;
+                                strName += ',' + await LanguageManager.GetStringAsync("String_Space")
+                                               + objImprovement.Condition;
                             if (objParentNode?.Nodes.ContainsKey(strName) == false)
                             {
                                 TreeNode objNode = new TreeNode
@@ -5779,6 +6121,10 @@ namespace Chummer
                     }, GenericToken);
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         protected async ValueTask RefreshLifestyles(TreeView treLifestyles, ContextMenuStrip cmsBasicLifestyle,
@@ -5786,9 +6132,12 @@ namespace Chummer
         {
             if (treLifestyles == null)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
-                string strSelectedId = (await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId
+                    = (await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as
+                        IHasInternalId)?.InternalId ?? string.Empty;
                 TreeNode objParentNode = null;
 
                 if (e == null || e.Action == NotifyCollectionChangedAction.Reset)
@@ -5805,7 +6154,8 @@ namespace Chummer
                                 await AddToTree(objLifestyle, false);
                             }
 
-                            await treLifestyles.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), GenericToken);
+                            await treLifestyles.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId),
+                                                                  GenericToken);
                         }
                     }
                     finally
@@ -5815,18 +6165,20 @@ namespace Chummer
                 }
                 else
                 {
-                    objParentNode = await treLifestyles.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedLifestyles", false), GenericToken);
+                    objParentNode
+                        = await treLifestyles.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedLifestyles", false),
+                                                                    GenericToken);
                     switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (Lifestyle objLifestyle in e.NewItems)
                             {
-                                foreach (Lifestyle objLifestyle in e.NewItems)
-                                {
-                                    await AddToTree(objLifestyle);
-                                }
-
-                                break;
+                                await AddToTree(objLifestyle);
                             }
+
+                            break;
+                        }
                         case NotifyCollectionChangedAction.Remove:
                         {
                             await treLifestyles.DoThreadSafeAsync(x =>
@@ -5927,6 +6279,10 @@ namespace Chummer
                     }, GenericToken);
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         /// <summary>
@@ -5936,7 +6292,8 @@ namespace Chummer
         {
             if (lstCalendar == null)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 if (listChangedEventArgs == null || listChangedEventArgs.ListChangedType == ListChangedType.Reset)
                 {
@@ -5978,98 +6335,108 @@ namespace Chummer
                     switch (listChangedEventArgs.ListChangedType)
                     {
                         case ListChangedType.ItemAdded:
+                        {
+                            int intInsertIndex = listChangedEventArgs.NewIndex;
+                            CalendarWeek objWeek = CharacterObject.Calendar[intInsertIndex];
+
+                            ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
                             {
-                                int intInsertIndex = listChangedEventArgs.NewIndex;
-                                CalendarWeek objWeek = CharacterObject.Calendar[intInsertIndex];
+                                Text = objWeek.Notes,
+                                ForeColor = objWeek.PreferredColor
+                            };
+                            ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
+                            {
+                                Text = objWeek.InternalId,
+                                ForeColor = objWeek.PreferredColor
+                            };
 
-                                ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
-                                {
-                                    Text = objWeek.Notes,
-                                    ForeColor = objWeek.PreferredColor
-                                };
-                                ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
-                                {
-                                    Text = objWeek.InternalId,
-                                    ForeColor = objWeek.PreferredColor
-                                };
+                            ListViewItem objItem = new ListViewItem
+                            {
+                                Text = objWeek.CurrentDisplayName,
+                                ForeColor = objWeek.PreferredColor
+                            };
+                            objItem.SubItems.Add(objNoteItem);
+                            objItem.SubItems.Add(objInternalIdItem);
 
-                                ListViewItem objItem = new ListViewItem
-                                {
-                                    Text = objWeek.CurrentDisplayName,
-                                    ForeColor = objWeek.PreferredColor
-                                };
-                                objItem.SubItems.Add(objNoteItem);
-                                objItem.SubItems.Add(objInternalIdItem);
-
-                                await lstCalendar.DoThreadSafeAsync(x => x.Items.Insert(intInsertIndex, objItem), GenericToken);
-                            }
+                            await lstCalendar.DoThreadSafeAsync(x => x.Items.Insert(intInsertIndex, objItem),
+                                                                GenericToken);
+                        }
                             break;
 
                         case ListChangedType.ItemDeleted:
-                            {
-                                await lstCalendar.DoThreadSafeAsync(x => x.Items.RemoveAt(listChangedEventArgs.NewIndex), GenericToken);
-                            }
+                        {
+                            await lstCalendar.DoThreadSafeAsync(x => x.Items.RemoveAt(listChangedEventArgs.NewIndex),
+                                                                GenericToken);
+                        }
                             break;
 
                         case ListChangedType.ItemChanged:
+                        {
+                            await lstCalendar.DoThreadSafeAsync(x => x.Items.RemoveAt(listChangedEventArgs.NewIndex),
+                                                                GenericToken);
+                            int intInsertIndex = listChangedEventArgs.NewIndex;
+                            CalendarWeek objWeek = CharacterObject.Calendar[intInsertIndex];
+
+                            ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
                             {
-                                await lstCalendar.DoThreadSafeAsync(x => x.Items.RemoveAt(listChangedEventArgs.NewIndex), GenericToken);
-                                int intInsertIndex = listChangedEventArgs.NewIndex;
-                                CalendarWeek objWeek = CharacterObject.Calendar[intInsertIndex];
+                                Text = objWeek.Notes,
+                                ForeColor = objWeek.PreferredColor
+                            };
+                            ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
+                            {
+                                Text = objWeek.InternalId,
+                                ForeColor = objWeek.PreferredColor
+                            };
 
-                                ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
-                                {
-                                    Text = objWeek.Notes,
-                                    ForeColor = objWeek.PreferredColor
-                                };
-                                ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
-                                {
-                                    Text = objWeek.InternalId,
-                                    ForeColor = objWeek.PreferredColor
-                                };
+                            ListViewItem objItem = new ListViewItem
+                            {
+                                Text = objWeek.CurrentDisplayName,
+                                ForeColor = objWeek.PreferredColor
+                            };
+                            objItem.SubItems.Add(objNoteItem);
+                            objItem.SubItems.Add(objInternalIdItem);
 
-                                ListViewItem objItem = new ListViewItem
-                                {
-                                    Text = objWeek.CurrentDisplayName,
-                                    ForeColor = objWeek.PreferredColor
-                                };
-                                objItem.SubItems.Add(objNoteItem);
-                                objItem.SubItems.Add(objInternalIdItem);
-
-                                await lstCalendar.DoThreadSafeAsync(x => x.Items.Insert(intInsertIndex, objItem), GenericToken);
-                            }
+                            await lstCalendar.DoThreadSafeAsync(x => x.Items.Insert(intInsertIndex, objItem),
+                                                                GenericToken);
+                        }
                             break;
 
                         case ListChangedType.ItemMoved:
+                        {
+                            await lstCalendar.DoThreadSafeAsync(x => x.Items.RemoveAt(listChangedEventArgs.OldIndex),
+                                                                GenericToken);
+                            int intInsertIndex = listChangedEventArgs.NewIndex;
+                            CalendarWeek objWeek = CharacterObject.Calendar[intInsertIndex];
+
+                            ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
                             {
-                                await lstCalendar.DoThreadSafeAsync(x => x.Items.RemoveAt(listChangedEventArgs.OldIndex), GenericToken);
-                                int intInsertIndex = listChangedEventArgs.NewIndex;
-                                CalendarWeek objWeek = CharacterObject.Calendar[intInsertIndex];
+                                Text = objWeek.Notes,
+                                ForeColor = objWeek.PreferredColor
+                            };
+                            ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
+                            {
+                                Text = objWeek.InternalId,
+                                ForeColor = objWeek.PreferredColor
+                            };
 
-                                ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
-                                {
-                                    Text = objWeek.Notes,
-                                    ForeColor = objWeek.PreferredColor
-                                };
-                                ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
-                                {
-                                    Text = objWeek.InternalId,
-                                    ForeColor = objWeek.PreferredColor
-                                };
+                            ListViewItem objItem = new ListViewItem
+                            {
+                                Text = objWeek.CurrentDisplayName,
+                                ForeColor = objWeek.PreferredColor
+                            };
+                            objItem.SubItems.Add(objNoteItem);
+                            objItem.SubItems.Add(objInternalIdItem);
 
-                                ListViewItem objItem = new ListViewItem
-                                {
-                                    Text = objWeek.CurrentDisplayName,
-                                    ForeColor = objWeek.PreferredColor
-                                };
-                                objItem.SubItems.Add(objNoteItem);
-                                objItem.SubItems.Add(objInternalIdItem);
-
-                                await lstCalendar.DoThreadSafeAsync(x => x.Items.Insert(intInsertIndex, objItem), GenericToken);
-                            }
+                            await lstCalendar.DoThreadSafeAsync(x => x.Items.Insert(intInsertIndex, objItem),
+                                                                GenericToken);
+                        }
                             break;
                     }
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -6077,7 +6444,8 @@ namespace Chummer
         {
             if (panContacts == null && panEnemies == null && panPets == null)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -6101,54 +6469,54 @@ namespace Chummer
                             switch (objContact.EntityType)
                             {
                                 case ContactType.Contact:
+                                {
+                                    if (panContacts == null)
+                                        break;
+                                    await this.DoThreadSafeAsync(() =>
                                     {
-                                        if (panContacts == null)
-                                            break;
-                                        await this.DoThreadSafeAsync(() =>
-                                        {
-                                            ContactControl objContactControl = new ContactControl(objContact);
-                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                            objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                            objContactControl.DeleteContact += DeleteContact;
-                                            objContactControl.MouseDown += DragContactControl;
+                                        ContactControl objContactControl = new ContactControl(objContact);
+                                        // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                        objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                        objContactControl.DeleteContact += DeleteContact;
+                                        objContactControl.MouseDown += DragContactControl;
 
-                                            panContacts.Controls.Add(objContactControl);
-                                        }, GenericToken);
-                                    }
+                                        panContacts.Controls.Add(objContactControl);
+                                    }, GenericToken);
+                                }
                                     break;
 
                                 case ContactType.Enemy:
+                                {
+                                    if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
+                                        break;
+                                    await this.DoThreadSafeAsync(() =>
                                     {
-                                        if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
-                                            break;
-                                        await this.DoThreadSafeAsync(() =>
-                                        {
-                                            ContactControl objContactControl = new ContactControl(objContact);
-                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                            objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                            objContactControl.DeleteContact += DeleteEnemy;
-                                            objContactControl.MouseDown += DragContactControl;
+                                        ContactControl objContactControl = new ContactControl(objContact);
+                                        // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                        objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                        objContactControl.DeleteContact += DeleteEnemy;
+                                        objContactControl.MouseDown += DragContactControl;
 
-                                            panEnemies.Controls.Add(objContactControl);
-                                        }, GenericToken);
-                                    }
+                                        panEnemies.Controls.Add(objContactControl);
+                                    }, GenericToken);
+                                }
                                     break;
 
                                 case ContactType.Pet:
+                                {
+                                    if (panPets == null)
+                                        break;
+                                    await this.DoThreadSafeAsync(() =>
                                     {
-                                        if (panPets == null)
-                                            break;
-                                        await this.DoThreadSafeAsync(() =>
-                                        {
-                                            PetControl objContactControl = new PetControl(objContact);
-                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                            objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                            objContactControl.DeleteContact += DeletePet;
-                                            objContactControl.MouseDown += DragContactControl;
+                                        PetControl objContactControl = new PetControl(objContact);
+                                        // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                        objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                        objContactControl.DeleteContact += DeletePet;
+                                        objContactControl.MouseDown += DragContactControl;
 
-                                            panPets.Controls.Add(objContactControl);
-                                        }, GenericToken);
-                                    }
+                                        panPets.Controls.Add(objContactControl);
+                                    }, GenericToken);
+                                }
                                     break;
                             }
                         }
@@ -6168,276 +6536,282 @@ namespace Chummer
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (Contact objContact in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                foreach (Contact objContact in notifyCollectionChangedEventArgs.NewItems)
+                                switch (objContact.EntityType)
                                 {
-                                    switch (objContact.EntityType)
+                                    case ContactType.Contact:
                                     {
-                                        case ContactType.Contact:
-                                            {
-                                                if (panContacts == null)
-                                                    break;
-                                                await panContacts.DoThreadSafeAsync(x =>
-                                                {
-                                                    ContactControl objContactControl = new ContactControl(objContact);
-                                                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                    objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                                    objContactControl.DeleteContact += DeleteContact;
-                                                    objContactControl.MouseDown += DragContactControl;
-
-                                                    x.Controls.Add(objContactControl);
-                                                }, GenericToken);
-                                            }
+                                        if (panContacts == null)
                                             break;
+                                        await panContacts.DoThreadSafeAsync(x =>
+                                        {
+                                            ContactControl objContactControl = new ContactControl(objContact);
+                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                            objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                            objContactControl.DeleteContact += DeleteContact;
+                                            objContactControl.MouseDown += DragContactControl;
 
-                                        case ContactType.Enemy:
-                                            {
-                                                if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
-                                                    break;
-                                                await panEnemies.DoThreadSafeAsync(x =>
-                                                {
-                                                    ContactControl objContactControl = new ContactControl(objContact);
-                                                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                    objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                                    objContactControl.DeleteContact += DeleteEnemy;
-                                                    objContactControl.MouseDown += DragContactControl;
-
-                                                    x.Controls.Add(objContactControl);
-                                                }, GenericToken);
-                                            }
-                                            break;
-
-                                        case ContactType.Pet:
-                                            {
-                                                if (panPets == null)
-                                                    break;
-                                                await panPets.DoThreadSafeAsync(x =>
-                                                {
-                                                    PetControl objContactControl = new PetControl(objContact);
-                                                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                    objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                                    objContactControl.DeleteContact += DeletePet;
-                                                    objContactControl.MouseDown += DragContactControl;
-
-                                                    x.Controls.Add(objContactControl);
-                                                }, GenericToken);
-                                            }
-                                            break;
+                                            x.Controls.Add(objContactControl);
+                                        }, GenericToken);
                                     }
+                                        break;
+
+                                    case ContactType.Enemy:
+                                    {
+                                        if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
+                                            break;
+                                        await panEnemies.DoThreadSafeAsync(x =>
+                                        {
+                                            ContactControl objContactControl = new ContactControl(objContact);
+                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                            objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                            objContactControl.DeleteContact += DeleteEnemy;
+                                            objContactControl.MouseDown += DragContactControl;
+
+                                            x.Controls.Add(objContactControl);
+                                        }, GenericToken);
+                                    }
+                                        break;
+
+                                    case ContactType.Pet:
+                                    {
+                                        if (panPets == null)
+                                            break;
+                                        await panPets.DoThreadSafeAsync(x =>
+                                        {
+                                            PetControl objContactControl = new PetControl(objContact);
+                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                            objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                            objContactControl.DeleteContact += DeletePet;
+                                            objContactControl.MouseDown += DragContactControl;
+
+                                            x.Controls.Add(objContactControl);
+                                        }, GenericToken);
+                                    }
+                                        break;
                                 }
                             }
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (Contact objContact in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                foreach (Contact objContact in notifyCollectionChangedEventArgs.OldItems)
+                                switch (objContact.EntityType)
                                 {
-                                    switch (objContact.EntityType)
+                                    case ContactType.Contact:
                                     {
-                                        case ContactType.Contact:
-                                            {
-                                                if (panContacts == null)
-                                                    break;
-                                                await panContacts.DoThreadSafeAsync(x =>
-                                                {
-                                                    for (int i = x.Controls.Count - 1; i >= 0; i--)
-                                                    {
-                                                        if (x.Controls[i] is ContactControl objContactControl &&
-                                                            objContactControl.ContactObject == objContact)
-                                                        {
-                                                            x.Controls.RemoveAt(i);
-                                                            objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                            objContactControl.DeleteContact -= DeleteContact;
-                                                            objContactControl.MouseDown -= DragContactControl;
-                                                            objContactControl.Dispose();
-                                                        }
-                                                    }
-                                                }, GenericToken);
-                                            }
+                                        if (panContacts == null)
                                             break;
-
-                                        case ContactType.Enemy:
+                                        await panContacts.DoThreadSafeAsync(x =>
+                                        {
+                                            for (int i = x.Controls.Count - 1; i >= 0; i--)
                                             {
-                                                if (panEnemies == null)
-                                                    break;
-                                                await panEnemies.DoThreadSafeAsync(x =>
+                                                if (x.Controls[i] is ContactControl objContactControl &&
+                                                    objContactControl.ContactObject == objContact)
                                                 {
-                                                    for (int i = x.Controls.Count - 1; i >= 0; i--)
-                                                    {
-                                                        if (x.Controls[i] is ContactControl objContactControl
-                                                            && objContactControl.ContactObject == objContact)
-                                                        {
-                                                            x.Controls.RemoveAt(i);
-                                                            objContactControl.ContactDetailChanged
-                                                                -= MakeDirtyWithCharacterUpdate;
-                                                            objContactControl.DeleteContact -= DeleteEnemy;
-                                                            objContactControl.Dispose();
-                                                        }
-                                                    }
-                                                }, GenericToken);
+                                                    x.Controls.RemoveAt(i);
+                                                    objContactControl.ContactDetailChanged
+                                                        -= MakeDirtyWithCharacterUpdate;
+                                                    objContactControl.DeleteContact -= DeleteContact;
+                                                    objContactControl.MouseDown -= DragContactControl;
+                                                    objContactControl.Dispose();
+                                                }
                                             }
-                                            break;
-
-                                        case ContactType.Pet:
-                                            {
-                                                if (panPets == null)
-                                                    break;
-                                                await panPets.DoThreadSafeAsync(x =>
-                                                {
-                                                    for (int i = x.Controls.Count - 1; i >= 0; i--)
-                                                    {
-                                                        if (x.Controls[i] is PetControl objPetControl &&
-                                                            objPetControl.ContactObject == objContact)
-                                                        {
-                                                            x.Controls.RemoveAt(i);
-                                                            objPetControl.ContactDetailChanged
-                                                                -= MakeDirtyWithCharacterUpdate;
-                                                            objPetControl.DeleteContact -= DeletePet;
-                                                            objPetControl.Dispose();
-                                                        }
-                                                    }
-                                                }, GenericToken);
-                                            }
-                                            break;
+                                        }, GenericToken);
                                     }
+                                        break;
+
+                                    case ContactType.Enemy:
+                                    {
+                                        if (panEnemies == null)
+                                            break;
+                                        await panEnemies.DoThreadSafeAsync(x =>
+                                        {
+                                            for (int i = x.Controls.Count - 1; i >= 0; i--)
+                                            {
+                                                if (x.Controls[i] is ContactControl objContactControl
+                                                    && objContactControl.ContactObject == objContact)
+                                                {
+                                                    x.Controls.RemoveAt(i);
+                                                    objContactControl.ContactDetailChanged
+                                                        -= MakeDirtyWithCharacterUpdate;
+                                                    objContactControl.DeleteContact -= DeleteEnemy;
+                                                    objContactControl.Dispose();
+                                                }
+                                            }
+                                        }, GenericToken);
+                                    }
+                                        break;
+
+                                    case ContactType.Pet:
+                                    {
+                                        if (panPets == null)
+                                            break;
+                                        await panPets.DoThreadSafeAsync(x =>
+                                        {
+                                            for (int i = x.Controls.Count - 1; i >= 0; i--)
+                                            {
+                                                if (x.Controls[i] is PetControl objPetControl &&
+                                                    objPetControl.ContactObject == objContact)
+                                                {
+                                                    x.Controls.RemoveAt(i);
+                                                    objPetControl.ContactDetailChanged
+                                                        -= MakeDirtyWithCharacterUpdate;
+                                                    objPetControl.DeleteContact -= DeletePet;
+                                                    objPetControl.Dispose();
+                                                }
+                                            }
+                                        }, GenericToken);
+                                    }
+                                        break;
                                 }
                             }
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (Contact objContact in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                foreach (Contact objContact in notifyCollectionChangedEventArgs.OldItems)
+                                switch (objContact.EntityType)
                                 {
-                                    switch (objContact.EntityType)
+                                    case ContactType.Contact:
                                     {
-                                        case ContactType.Contact:
-                                            {
-                                                if (panContacts == null)
-                                                    break;
-                                                await panContacts.DoThreadSafeAsync(x =>
-                                                {
-                                                    for (int i = x.Controls.Count - 1; i >= 0; i--)
-                                                    {
-                                                        if (x.Controls[i] is ContactControl objContactControl &&
-                                                            objContactControl.ContactObject == objContact)
-                                                        {
-                                                            x.Controls.RemoveAt(i);
-                                                            objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                                                            objContactControl.DeleteContact -= DeleteContact;
-                                                            objContactControl.MouseDown -= DragContactControl;
-                                                            objContactControl.Dispose();
-                                                        }
-                                                    }
-                                                }, GenericToken);
-                                            }
+                                        if (panContacts == null)
                                             break;
-
-                                        case ContactType.Enemy:
+                                        await panContacts.DoThreadSafeAsync(x =>
+                                        {
+                                            for (int i = x.Controls.Count - 1; i >= 0; i--)
                                             {
-                                                if (panEnemies == null)
-                                                    break;
-                                                await panEnemies.DoThreadSafeAsync(x =>
+                                                if (x.Controls[i] is ContactControl objContactControl &&
+                                                    objContactControl.ContactObject == objContact)
                                                 {
-                                                    for (int i = x.Controls.Count - 1; i >= 0; i--)
-                                                    {
-                                                        if (x.Controls[i] is ContactControl objContactControl
-                                                            && objContactControl.ContactObject == objContact)
-                                                        {
-                                                            x.Controls.RemoveAt(i);
-                                                            objContactControl.ContactDetailChanged
-                                                                -= MakeDirtyWithCharacterUpdate;
-                                                            objContactControl.DeleteContact -= DeleteEnemy;
-                                                            objContactControl.Dispose();
-                                                        }
-                                                    }
-                                                }, GenericToken);
+                                                    x.Controls.RemoveAt(i);
+                                                    objContactControl.ContactDetailChanged
+                                                        -= MakeDirtyWithCharacterUpdate;
+                                                    objContactControl.DeleteContact -= DeleteContact;
+                                                    objContactControl.MouseDown -= DragContactControl;
+                                                    objContactControl.Dispose();
+                                                }
                                             }
-                                            break;
-
-                                        case ContactType.Pet:
-                                            {
-                                                if (panPets == null)
-                                                    break;
-                                                await panPets.DoThreadSafeAsync(x =>
-                                                {
-                                                    for (int i = x.Controls.Count - 1; i >= 0; i--)
-                                                    {
-                                                        if (x.Controls[i] is PetControl objPetControl &&
-                                                            objPetControl.ContactObject == objContact)
-                                                        {
-                                                            x.Controls.RemoveAt(i);
-                                                            objPetControl.ContactDetailChanged
-                                                                -= MakeDirtyWithCharacterUpdate;
-                                                            objPetControl.DeleteContact -= DeletePet;
-                                                            objPetControl.Dispose();
-                                                        }
-                                                    }
-                                                }, GenericToken);
-                                            }
-                                            break;
+                                        }, GenericToken);
                                     }
-                                }
+                                        break;
 
-                                foreach (Contact objContact in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    switch (objContact.EntityType)
+                                    case ContactType.Enemy:
                                     {
-                                        case ContactType.Contact:
-                                            {
-                                                if (panContacts == null)
-                                                    break;
-                                                await panContacts.DoThreadSafeAsync(x =>
-                                                {
-                                                    ContactControl objContactControl = new ContactControl(objContact);
-                                                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                    objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                                    objContactControl.DeleteContact += DeleteContact;
-                                                    objContactControl.MouseDown += DragContactControl;
-
-                                                    x.Controls.Add(objContactControl);
-                                                }, GenericToken);
-                                            }
+                                        if (panEnemies == null)
                                             break;
-
-                                        case ContactType.Enemy:
+                                        await panEnemies.DoThreadSafeAsync(x =>
+                                        {
+                                            for (int i = x.Controls.Count - 1; i >= 0; i--)
                                             {
-                                                if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
-                                                    break;
-                                                await panEnemies.DoThreadSafeAsync(x =>
+                                                if (x.Controls[i] is ContactControl objContactControl
+                                                    && objContactControl.ContactObject == objContact)
                                                 {
-                                                    ContactControl objContactControl = new ContactControl(objContact);
-                                                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                    objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                                    objContactControl.DeleteContact += DeleteEnemy;
-                                                    objContactControl.MouseDown += DragContactControl;
-
-                                                    x.Controls.Add(objContactControl);
-                                                }, GenericToken);
+                                                    x.Controls.RemoveAt(i);
+                                                    objContactControl.ContactDetailChanged
+                                                        -= MakeDirtyWithCharacterUpdate;
+                                                    objContactControl.DeleteContact -= DeleteEnemy;
+                                                    objContactControl.Dispose();
+                                                }
                                             }
-                                            break;
-
-                                        case ContactType.Pet:
-                                            {
-                                                if (panPets == null)
-                                                    break;
-                                                await panPets.DoThreadSafeAsync(x =>
-                                                {
-                                                    PetControl objContactControl = new PetControl(objContact);
-                                                    // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
-                                                    objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
-                                                    objContactControl.DeleteContact += DeletePet;
-                                                    objContactControl.MouseDown += DragContactControl;
-
-                                                    x.Controls.Add(objContactControl);
-                                                }, GenericToken);
-                                            }
-                                            break;
+                                        }, GenericToken);
                                     }
+                                        break;
+
+                                    case ContactType.Pet:
+                                    {
+                                        if (panPets == null)
+                                            break;
+                                        await panPets.DoThreadSafeAsync(x =>
+                                        {
+                                            for (int i = x.Controls.Count - 1; i >= 0; i--)
+                                            {
+                                                if (x.Controls[i] is PetControl objPetControl &&
+                                                    objPetControl.ContactObject == objContact)
+                                                {
+                                                    x.Controls.RemoveAt(i);
+                                                    objPetControl.ContactDetailChanged
+                                                        -= MakeDirtyWithCharacterUpdate;
+                                                    objPetControl.DeleteContact -= DeletePet;
+                                                    objPetControl.Dispose();
+                                                }
+                                            }
+                                        }, GenericToken);
+                                    }
+                                        break;
                                 }
                             }
+
+                            foreach (Contact objContact in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                switch (objContact.EntityType)
+                                {
+                                    case ContactType.Contact:
+                                    {
+                                        if (panContacts == null)
+                                            break;
+                                        await panContacts.DoThreadSafeAsync(x =>
+                                        {
+                                            ContactControl objContactControl = new ContactControl(objContact);
+                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                            objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                            objContactControl.DeleteContact += DeleteContact;
+                                            objContactControl.MouseDown += DragContactControl;
+
+                                            x.Controls.Add(objContactControl);
+                                        }, GenericToken);
+                                    }
+                                        break;
+
+                                    case ContactType.Enemy:
+                                    {
+                                        if (panEnemies == null || !CharacterObjectSettings.EnableEnemyTracking)
+                                            break;
+                                        await panEnemies.DoThreadSafeAsync(x =>
+                                        {
+                                            ContactControl objContactControl = new ContactControl(objContact);
+                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                            objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                            objContactControl.DeleteContact += DeleteEnemy;
+                                            objContactControl.MouseDown += DragContactControl;
+
+                                            x.Controls.Add(objContactControl);
+                                        }, GenericToken);
+                                    }
+                                        break;
+
+                                    case ContactType.Pet:
+                                    {
+                                        if (panPets == null)
+                                            break;
+                                        await panPets.DoThreadSafeAsync(x =>
+                                        {
+                                            PetControl objContactControl = new PetControl(objContact);
+                                            // Attach an EventHandler for the ConnectionRatingChanged, LoyaltyRatingChanged, DeleteContact, FileNameChanged Events and OtherCostChanged
+                                            objContactControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
+                                            objContactControl.DeleteContact += DeletePet;
+                                            objContactControl.MouseDown += DragContactControl;
+
+                                            x.Controls.Add(objContactControl);
+                                        }, GenericToken);
+                                    }
+                                        break;
+                                }
+                            }
+                        }
                             break;
                     }
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -6455,10 +6829,12 @@ namespace Chummer
             if (pnlSustainedSpells == null && pnlSustainedComplexForms == null && pnlSustainedCritterPowers == null)
                 return;
 
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 Panel DetermineRefreshingPanel(SustainedObject objSustained, Panel flpSustainedSpellsParam,
-                                               Panel flpSustainedComplexFormsParam, Panel flpSustainedCritterPowersParam)
+                                               Panel flpSustainedComplexFormsParam,
+                                               Panel flpSustainedCritterPowersParam)
                 {
                     // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
                     switch (objSustained.LinkedObjectType)
@@ -6516,7 +6892,8 @@ namespace Chummer
                     foreach (SustainedObject objSustained in CharacterObject.SustainedCollection)
                     {
                         Panel refreshingPanel = DetermineRefreshingPanel(objSustained, pnlSustainedSpells,
-                            pnlSustainedComplexForms, pnlSustainedCritterPowers);
+                                                                         pnlSustainedComplexForms,
+                                                                         pnlSustainedCritterPowers);
 
                         if (refreshingPanel == null)
                             continue;
@@ -6561,228 +6938,232 @@ namespace Chummer
                     switch (notifyCollectionChangedEventArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
+                        {
+                            foreach (SustainedObject objSustained in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                foreach (SustainedObject objSustained in notifyCollectionChangedEventArgs.NewItems)
+                                Panel refreshingPanel = DetermineRefreshingPanel(objSustained, pnlSustainedSpells,
+                                    pnlSustainedComplexForms, pnlSustainedCritterPowers);
+
+                                if (refreshingPanel == null)
+                                    continue;
+
+                                await refreshingPanel.DoThreadSafeAsync(x =>
                                 {
-                                    Panel refreshingPanel = DetermineRefreshingPanel(objSustained, pnlSustainedSpells,
-                                        pnlSustainedComplexForms, pnlSustainedCritterPowers);
-
-                                    if (refreshingPanel == null)
-                                        continue;
-
-                                    await refreshingPanel.DoThreadSafeAsync(x =>
+                                    x.Visible = true;
+                                    switch (objSustained.LinkedObjectType)
                                     {
-                                        x.Visible = true;
-                                        switch (objSustained.LinkedObjectType)
-                                        {
-                                            case Improvement.ImprovementSource.Spell:
-                                                chkPsycheActiveMagician.DoThreadSafe(y =>
-                                                {
-                                                    if (y != null)
-                                                        y.Visible = true;
-                                                });
-                                                break;
+                                        case Improvement.ImprovementSource.Spell:
+                                            chkPsycheActiveMagician.DoThreadSafe(y =>
+                                            {
+                                                if (y != null)
+                                                    y.Visible = true;
+                                            });
+                                            break;
 
-                                            case Improvement.ImprovementSource.ComplexForm:
-                                                chkPsycheActiveTechnomancer.DoThreadSafe(y =>
-                                                {
-                                                    if (y != null)
-                                                        y.Visible = true;
-                                                });
-                                                break;
-                                        }
+                                        case Improvement.ImprovementSource.ComplexForm:
+                                            chkPsycheActiveTechnomancer.DoThreadSafe(y =>
+                                            {
+                                                if (y != null)
+                                                    y.Visible = true;
+                                            });
+                                            break;
+                                    }
 
-                                        int intSustainedObjects = x.Controls.Count;
+                                    int intSustainedObjects = x.Controls.Count;
 
-                                        SustainedObjectControl objSustainedObjectControl
-                                            = new SustainedObjectControl(objSustained);
+                                    SustainedObjectControl objSustainedObjectControl
+                                        = new SustainedObjectControl(objSustained);
 
-                                        objSustainedObjectControl.SustainedObjectDetailChanged
-                                            += MakeDirtyWithCharacterUpdate;
-                                        objSustainedObjectControl.UnsustainObject += DeleteSustainedObject;
+                                    objSustainedObjectControl.SustainedObjectDetailChanged
+                                        += MakeDirtyWithCharacterUpdate;
+                                    objSustainedObjectControl.UnsustainObject += DeleteSustainedObject;
 
-                                        objSustainedObjectControl.Top
-                                            = intSustainedObjects * objSustainedObjectControl.Height;
+                                    objSustainedObjectControl.Top
+                                        = intSustainedObjects * objSustainedObjectControl.Height;
 
-                                        x.Controls.Add(objSustainedObjectControl);
-                                    }, GenericToken);
-                                }
+                                    x.Controls.Add(objSustainedObjectControl);
+                                }, GenericToken);
                             }
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Remove:
+                        {
+                            foreach (SustainedObject objSustained in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                foreach (SustainedObject objSustained in notifyCollectionChangedEventArgs.OldItems)
+                                Panel refreshingPanel = DetermineRefreshingPanel(objSustained, pnlSustainedSpells,
+                                    pnlSustainedComplexForms, pnlSustainedCritterPowers);
+
+                                if (refreshingPanel == null)
+                                    continue;
+
+                                int intMoveUpAmount = 0;
+                                await refreshingPanel.DoThreadSafeAsync(x =>
                                 {
-                                    Panel refreshingPanel = DetermineRefreshingPanel(objSustained, pnlSustainedSpells,
-                                        pnlSustainedComplexForms, pnlSustainedCritterPowers);
+                                    int intSustainedObjects = x.Controls.Count;
 
-                                    if (refreshingPanel == null)
-                                        continue;
-
-                                    int intMoveUpAmount = 0;
-                                    await refreshingPanel.DoThreadSafeAsync(x =>
+                                    for (int i = 0; i < intSustainedObjects; ++i)
                                     {
-                                        int intSustainedObjects = x.Controls.Count;
-
-                                        for (int i = 0; i < intSustainedObjects; ++i)
+                                        Control objLoopControl = x.Controls[i];
+                                        if (objLoopControl is SustainedObjectControl objSustainedSpellControl &&
+                                            objSustainedSpellControl.LinkedSustainedObject == objSustained)
                                         {
-                                            Control objLoopControl = x.Controls[i];
-                                            if (objLoopControl is SustainedObjectControl objSustainedSpellControl &&
-                                                objSustainedSpellControl.LinkedSustainedObject == objSustained)
-                                            {
-                                                intMoveUpAmount = objSustainedSpellControl.Height;
+                                            intMoveUpAmount = objSustainedSpellControl.Height;
 
-                                                x.Controls.RemoveAt(i);
+                                            x.Controls.RemoveAt(i);
 
-                                                objSustainedSpellControl.SustainedObjectDetailChanged -=
-                                                    MakeDirtyWithCharacterUpdate;
-                                                objSustainedSpellControl.UnsustainObject -= DeleteSustainedObject;
-                                                objSustainedSpellControl.Dispose();
-                                                --i;
-                                                --intSustainedObjects;
-                                            }
-                                            else if (intMoveUpAmount != 0)
-                                            {
-                                                objLoopControl.Top -= intMoveUpAmount;
-                                            }
+                                            objSustainedSpellControl.SustainedObjectDetailChanged -=
+                                                MakeDirtyWithCharacterUpdate;
+                                            objSustainedSpellControl.UnsustainObject -= DeleteSustainedObject;
+                                            objSustainedSpellControl.Dispose();
+                                            --i;
+                                            --intSustainedObjects;
                                         }
-
-                                        if (intSustainedObjects == 0)
+                                        else if (intMoveUpAmount != 0)
                                         {
-                                            x.Visible = false;
-                                            if (x == pnlSustainedSpells)
-                                            {
-                                                chkPsycheActiveMagician.DoThreadSafe(y =>
-                                                {
-                                                    if (y != null)
-                                                        y.Visible = false;
-                                                });
-                                            }
-                                            else if (x == pnlSustainedComplexForms)
-                                            {
-                                                chkPsycheActiveTechnomancer.DoThreadSafe(y =>
-                                                {
-                                                    if (y != null)
-                                                        y.Visible = false;
-                                                });
-                                            }
+                                            objLoopControl.Top -= intMoveUpAmount;
                                         }
-                                    }, GenericToken);
-                                }
+                                    }
+
+                                    if (intSustainedObjects == 0)
+                                    {
+                                        x.Visible = false;
+                                        if (x == pnlSustainedSpells)
+                                        {
+                                            chkPsycheActiveMagician.DoThreadSafe(y =>
+                                            {
+                                                if (y != null)
+                                                    y.Visible = false;
+                                            });
+                                        }
+                                        else if (x == pnlSustainedComplexForms)
+                                        {
+                                            chkPsycheActiveTechnomancer.DoThreadSafe(y =>
+                                            {
+                                                if (y != null)
+                                                    y.Visible = false;
+                                            });
+                                        }
+                                    }
+                                }, GenericToken);
                             }
+                        }
                             break;
 
                         case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (SustainedObject objSustained in notifyCollectionChangedEventArgs.OldItems)
                             {
-                                foreach (SustainedObject objSustained in notifyCollectionChangedEventArgs.OldItems)
+                                Panel refreshingPanel = DetermineRefreshingPanel(objSustained, pnlSustainedSpells,
+                                    pnlSustainedComplexForms, pnlSustainedCritterPowers);
+
+                                if (refreshingPanel == null)
+                                    continue;
+
+                                int intMoveUpAmount = 0;
+                                await refreshingPanel.DoThreadSafeAsync(x =>
                                 {
-                                    Panel refreshingPanel = DetermineRefreshingPanel(objSustained, pnlSustainedSpells,
-                                        pnlSustainedComplexForms, pnlSustainedCritterPowers);
+                                    int intSustainedObjects = x.Controls.Count;
 
-                                    if (refreshingPanel == null)
-                                        continue;
-
-                                    int intMoveUpAmount = 0;
-                                    await refreshingPanel.DoThreadSafeAsync(x =>
+                                    for (int i = 0; i < intSustainedObjects; ++i)
                                     {
-                                        int intSustainedObjects = x.Controls.Count;
-
-                                        for (int i = 0; i < intSustainedObjects; ++i)
+                                        Control objLoopControl = x.Controls[i];
+                                        if (objLoopControl is SustainedObjectControl objSustainedSpellControl &&
+                                            objSustainedSpellControl.LinkedSustainedObject == objSustained)
                                         {
-                                            Control objLoopControl = x.Controls[i];
-                                            if (objLoopControl is SustainedObjectControl objSustainedSpellControl &&
-                                                objSustainedSpellControl.LinkedSustainedObject == objSustained)
-                                            {
-                                                intMoveUpAmount = objSustainedSpellControl.Height;
+                                            intMoveUpAmount = objSustainedSpellControl.Height;
 
-                                                x.Controls.RemoveAt(i);
+                                            x.Controls.RemoveAt(i);
 
-                                                objSustainedSpellControl.SustainedObjectDetailChanged -=
-                                                    MakeDirtyWithCharacterUpdate;
-                                                objSustainedSpellControl.UnsustainObject -= DeleteSustainedObject;
-                                                objSustainedSpellControl.Dispose();
-                                                --i;
-                                                --intSustainedObjects;
-                                            }
-                                            else if (intMoveUpAmount != 0)
-                                            {
-                                                objLoopControl.Top -= intMoveUpAmount;
-                                            }
+                                            objSustainedSpellControl.SustainedObjectDetailChanged -=
+                                                MakeDirtyWithCharacterUpdate;
+                                            objSustainedSpellControl.UnsustainObject -= DeleteSustainedObject;
+                                            objSustainedSpellControl.Dispose();
+                                            --i;
+                                            --intSustainedObjects;
                                         }
-
-                                        if (intSustainedObjects == 0)
+                                        else if (intMoveUpAmount != 0)
                                         {
-                                            x.Visible = false;
-                                            if (x == pnlSustainedSpells)
-                                            {
-                                                chkPsycheActiveMagician.DoThreadSafe(y =>
-                                                {
-                                                    if (y != null)
-                                                        y.Visible = false;
-                                                });
-                                            }
-                                            else if (x == pnlSustainedComplexForms)
-                                            {
-                                                chkPsycheActiveTechnomancer.DoThreadSafe(y =>
-                                                {
-                                                    if (y != null)
-                                                        y.Visible = false;
-                                                });
-                                            }
+                                            objLoopControl.Top -= intMoveUpAmount;
                                         }
-                                    }, GenericToken);
-                                }
+                                    }
 
-                                foreach (SustainedObject objSustained in notifyCollectionChangedEventArgs.NewItems)
-                                {
-                                    Panel refreshingPanel = DetermineRefreshingPanel(objSustained, pnlSustainedSpells,
-                                        pnlSustainedComplexForms, pnlSustainedCritterPowers);
-
-                                    if (refreshingPanel == null)
-                                        continue;
-
-                                    await refreshingPanel.DoThreadSafeAsync(x =>
+                                    if (intSustainedObjects == 0)
                                     {
-                                        x.Visible = true;
-                                        switch (objSustained.LinkedObjectType)
+                                        x.Visible = false;
+                                        if (x == pnlSustainedSpells)
                                         {
-                                            case Improvement.ImprovementSource.Spell:
-                                                chkPsycheActiveMagician.DoThreadSafe(y =>
-                                                {
-                                                    if (y != null)
-                                                        y.Visible = true;
-                                                });
-                                                break;
-
-                                            case Improvement.ImprovementSource.ComplexForm:
-                                                chkPsycheActiveTechnomancer.DoThreadSafe(y =>
-                                                {
-                                                    if (y != null)
-                                                        y.Visible = true;
-                                                });
-                                                break;
+                                            chkPsycheActiveMagician.DoThreadSafe(y =>
+                                            {
+                                                if (y != null)
+                                                    y.Visible = false;
+                                            });
                                         }
-
-                                        int intSustainedObjects = x.Controls.Count;
-
-                                        SustainedObjectControl objSustainedObjectControl
-                                            = new SustainedObjectControl(objSustained);
-
-                                        objSustainedObjectControl.SustainedObjectDetailChanged
-                                            += MakeDirtyWithCharacterUpdate;
-                                        objSustainedObjectControl.UnsustainObject += DeleteSustainedObject;
-
-                                        objSustainedObjectControl.Top
-                                            = intSustainedObjects * objSustainedObjectControl.Height;
-
-                                        x.Controls.Add(objSustainedObjectControl);
-                                    }, GenericToken);
-                                }
+                                        else if (x == pnlSustainedComplexForms)
+                                        {
+                                            chkPsycheActiveTechnomancer.DoThreadSafe(y =>
+                                            {
+                                                if (y != null)
+                                                    y.Visible = false;
+                                            });
+                                        }
+                                    }
+                                }, GenericToken);
                             }
+
+                            foreach (SustainedObject objSustained in notifyCollectionChangedEventArgs.NewItems)
+                            {
+                                Panel refreshingPanel = DetermineRefreshingPanel(objSustained, pnlSustainedSpells,
+                                    pnlSustainedComplexForms, pnlSustainedCritterPowers);
+
+                                if (refreshingPanel == null)
+                                    continue;
+
+                                await refreshingPanel.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    switch (objSustained.LinkedObjectType)
+                                    {
+                                        case Improvement.ImprovementSource.Spell:
+                                            chkPsycheActiveMagician.DoThreadSafe(y =>
+                                            {
+                                                if (y != null)
+                                                    y.Visible = true;
+                                            });
+                                            break;
+
+                                        case Improvement.ImprovementSource.ComplexForm:
+                                            chkPsycheActiveTechnomancer.DoThreadSafe(y =>
+                                            {
+                                                if (y != null)
+                                                    y.Visible = true;
+                                            });
+                                            break;
+                                    }
+
+                                    int intSustainedObjects = x.Controls.Count;
+
+                                    SustainedObjectControl objSustainedObjectControl
+                                        = new SustainedObjectControl(objSustained);
+
+                                    objSustainedObjectControl.SustainedObjectDetailChanged
+                                        += MakeDirtyWithCharacterUpdate;
+                                    objSustainedObjectControl.UnsustainObject += DeleteSustainedObject;
+
+                                    objSustainedObjectControl.Top
+                                        = intSustainedObjects * objSustainedObjectControl.Height;
+
+                                    x.Controls.Add(objSustainedObjectControl);
+                                }, GenericToken);
+                            }
+                        }
                             break;
                     }
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -6816,7 +7197,8 @@ namespace Chummer
 
             if (lstNodes == null)
                 return;
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 List<ICanSort> lstSorted = treOwningTree != null
                     ? await treOwningTree.DoThreadSafeFuncAsync(
@@ -6826,7 +7208,7 @@ namespace Chummer
                 // Anything that can't be sorted gets sent to the front of the list, so subtract that number from our new
                 // sorting index and make sure we're still inside the array
                 intNewIndex = Math.Min(lstSorted.Count - 1,
-                    Math.Max(0, intNewIndex + lstSorted.Count - lstNodes.Count));
+                                       Math.Max(0, intNewIndex + lstSorted.Count - lstNodes.Count));
 
                 lstSorted.Remove(objSortable);
                 lstSorted.Insert(intNewIndex, objSortable);
@@ -6842,6 +7224,10 @@ namespace Chummer
                     await treOwningTree.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
 
                 await SetDirty(true);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 

@@ -109,7 +109,8 @@ namespace Chummer
 
         private async void SelectMetatypePriority_Load(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -339,7 +340,7 @@ namespace Chummer
                                                                            x => y.Equals(
                                                                                x.Value.ToString(),
                                                                                StringComparison.OrdinalIgnoreCase)));
-                        
+
                         await cboPossessionMethod.PopulateWithListItemsAsync(lstMethods);
                     }
 
@@ -349,6 +350,10 @@ namespace Chummer
                 {
                     await this.DoThreadSafeAsync(x => x.ResumeLayout());
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -360,7 +365,8 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -379,19 +385,29 @@ namespace Chummer
                     await this.DoThreadSafeAsync(x => x.ResumeLayout());
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await MetatypeSelected();
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
         private async void cboTalents_SelectedIndexChanged(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -402,6 +418,10 @@ namespace Chummer
                 {
                     await this.DoThreadSafeAsync(x => x.ResumeLayout());
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -638,7 +658,8 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -655,6 +676,10 @@ namespace Chummer
                     await this.DoThreadSafeAsync(x => x.ResumeLayout());
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -667,7 +692,8 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -683,13 +709,18 @@ namespace Chummer
                     await this.DoThreadSafeAsync(x => x.ResumeLayout());
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void cboHeritage_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -715,13 +746,18 @@ namespace Chummer
                     await this.DoThreadSafeAsync(x => x.ResumeLayout());
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void cboTalent_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -744,13 +780,18 @@ namespace Chummer
                     await this.DoThreadSafeAsync(x => x.ResumeLayout());
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void cboAttributes_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -771,13 +812,18 @@ namespace Chummer
                     await this.DoThreadSafeAsync(x => x.ResumeLayout());
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void cboSkills_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -798,13 +844,18 @@ namespace Chummer
                     await this.DoThreadSafeAsync(x => x.ResumeLayout());
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void cboResources_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
@@ -825,16 +876,25 @@ namespace Chummer
                     await this.DoThreadSafeAsync(x => x.ResumeLayout());
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void chkPossessionBased_CheckedChanged(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await chkPossessionBased.DoThreadSafeFuncAsync(x => x.Checked)
                                         .ContinueWith(
                                             y => cboPossessionMethod.DoThreadSafeAsync(x => x.Enabled = y.Result))
                                         .Unwrap();
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 

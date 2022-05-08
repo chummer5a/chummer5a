@@ -1196,7 +1196,6 @@ namespace Chummer
             return lngReturn;
         }
 
-
         public static async Task<long> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
             return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector, token);
@@ -1826,7 +1825,6 @@ namespace Chummer
                 lngReturn += await tskLoop;
             return lngReturn;
         }
-
 
         public static async Task<long> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {

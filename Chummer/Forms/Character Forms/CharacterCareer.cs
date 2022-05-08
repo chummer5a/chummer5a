@@ -19973,10 +19973,23 @@ namespace Chummer
 
         private async void cboAttributeCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
+            try
             {
-                CharacterObject.AttributeSection.AttributeCategory
-                    = AttributeSection.ConvertAttributeCategory(await cboAttributeCategory.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()));
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                try
+                {
+                    CharacterObject.AttributeSection.AttributeCategory
+                        = AttributeSection.ConvertAttributeCategory(
+                            await cboAttributeCategory.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken));
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -20286,10 +20299,26 @@ namespace Chummer
 
         private async void mnuSpecialChangeOptions_Click(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this))
-            using (ThreadSafeForm<SelectBuildMethod> frmPickBP = await ThreadSafeForm<SelectBuildMethod>.GetAsync(() => new SelectBuildMethod(CharacterObject, true)))
+            try
             {
-                await frmPickBP.ShowDialogSafeAsync(this);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                try
+                {
+                    using (ThreadSafeForm<SelectBuildMethod> frmPickBP
+                           = await ThreadSafeForm<SelectBuildMethod>.GetAsync(
+                               () => new SelectBuildMethod(CharacterObject, true), GenericToken))
+                    {
+                        await frmPickBP.ShowDialogSafeAsync(this, GenericToken);
+                    }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
     }

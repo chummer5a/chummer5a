@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
@@ -38,11 +39,15 @@ namespace Chummer
             _dicPersistence.TryAdd("metavariant", _objCharacter.Metavariant.ToLowerInvariant());
         }
 
-        public async ValueTask<string> GetStory(string strLanguage)
+        public async ValueTask<string> GetStory(string strLanguage = "", CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrWhiteSpace(strLanguage))
+                strLanguage = GlobalSettings.Language;
+
             //Little bit of data required for following steps
-            XmlDocument xmlDoc = await _objCharacter.LoadDataAsync("lifemodules.xml", strLanguage);
-            XPathNavigator xdoc = await _objCharacter.LoadDataXPathAsync("lifemodules.xml", strLanguage);
+            XmlDocument xmlDoc = await _objCharacter.LoadDataAsync("lifemodules.xml", strLanguage, token: token);
+            XPathNavigator xdoc = await _objCharacter.LoadDataXPathAsync("lifemodules.xml", strLanguage, token: token);
 
             //Generate list of all life modules (xml, we don't save required data to quality) this character has
             List<XmlNode> modules = new List<XmlNode>(10);
@@ -84,9 +89,9 @@ namespace Chummer
                                                                   out StringBuilder sbdTemp))
                     {
                         return (await Write(sbdTemp, modules[intLocal]["story"]?.InnerText ?? string.Empty, 5,
-                                                xmlBaseMacrosNode)).ToString();
+                                                xmlBaseMacrosNode, token)).ToString();
                     }
-                });
+                }, token);
             }
 
             await Task.WhenAll(atskStoryTasks);
@@ -98,8 +103,9 @@ namespace Chummer
             return string.Join(Environment.NewLine + Environment.NewLine, story);
         }
 
-        private async Task<StringBuilder> Write(StringBuilder story, string innerText, int levels, XPathNavigator xmlBaseMacrosNode)
+        private async Task<StringBuilder> Write(StringBuilder story, string innerText, int levels, XPathNavigator xmlBaseMacrosNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (levels <= 0)
                 return story;
             int startingLength = story.Length;
@@ -107,7 +113,7 @@ namespace Chummer
             IEnumerable<string> words;
             if (innerText.StartsWith('$') && innerText.IndexOf(' ') < 0)
             {
-                words = (await Macro(innerText, xmlBaseMacrosNode)).SplitNoAlloc(' ', '\n', '\r', '\t');
+                words = (await Macro(innerText, xmlBaseMacrosNode, token)).SplitNoAlloc(' ', '\n', '\r', '\t');
             }
             else
             {
@@ -118,6 +124,7 @@ namespace Chummer
             {
                 if (string.IsNullOrWhiteSpace(word))
                     continue;
+                token.ThrowIfCancellationRequested();
                 string trim = word.Trim();
 
                 if (trim.StartsWith('$'))
@@ -129,7 +136,7 @@ namespace Chummer
                     else
                     {
                         //if (story.Length > 0 && story[story.Length - 1] == ' ') story.Length--;
-                        await Write(story, trim, --levels, xmlBaseMacrosNode);
+                        await Write(story, trim, --levels, xmlBaseMacrosNode, token);
                     }
                     mfix = true;
                 }
@@ -150,8 +157,9 @@ namespace Chummer
             return story;
         }
 
-        public async ValueTask<string> Macro(string innerText, XPathNavigator xmlBaseMacrosNode)
+        public async ValueTask<string> Macro(string innerText, XPathNavigator xmlBaseMacrosNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(innerText))
                 return string.Empty;
             string endString = innerText.ToLowerInvariant().Substring(1).TrimEnd(',', '.');
@@ -195,7 +203,7 @@ namespace Chummer
                 if (xmlUserMacroFirstChild != null)
                 {
                     //Already defined, no need to do anything fancy
-                    (bool blnSuccess, string strSelectedNodeName) = await _dicPersistence.TryGetValueAsync(macroPool);
+                    (bool blnSuccess, string strSelectedNodeName) = await _dicPersistence.TryGetValueAsync(macroPool, token);
                     if (!blnSuccess)
                     {
                         switch (xmlUserMacroFirstChild.Name)
@@ -211,6 +219,7 @@ namespace Chummer
                                         int i = 0;
                                         foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
                                         {
+                                            token.ThrowIfCancellationRequested();
                                             if (i == intUseIndex)
                                             {
                                                 strSelectedNodeName = xmlLoopNode.Name;
@@ -234,6 +243,7 @@ namespace Chummer
                                         int i = 0;
                                         foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
                                         {
+                                            token.ThrowIfCancellationRequested();
                                             if (i == intUseIndex)
                                             {
                                                 strSelectedNodeName = xmlLoopNode.Name;
@@ -242,8 +252,8 @@ namespace Chummer
                                             ++i;
                                         }
 
-                                        if (!await _dicPersistence.TryAddAsync(macroPool, strSelectedNodeName))
-                                            strSelectedNodeName = (await _dicPersistence.TryGetValueAsync(macroPool)).Item2;
+                                        if (!await _dicPersistence.TryAddAsync(macroPool, strSelectedNodeName, token))
+                                            strSelectedNodeName = (await _dicPersistence.TryGetValueAsync(macroPool, token)).Item2;
                                     }
 
                                     break;
