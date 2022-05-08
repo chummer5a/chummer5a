@@ -30,9 +30,9 @@ using System.Xml.XPath;
 namespace Chummer
 {
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class StoryModule : IHasName, IHasInternalId, IHasXmlDataNode
+    public class StoryModule : IHasName, IHasInternalId, IHasXmlDataNode, IDisposable, IAsyncDisposable
     {
-        private readonly Dictionary<string, string> _dicEnglishTexts = new Dictionary<string, string>();
+        private readonly LockingDictionary<string, string> _dicEnglishTexts = new LockingDictionary<string, string>();
         private readonly Guid _guiInternalId;
         private string _strName;
         private Guid _guiSourceID;
@@ -91,6 +91,52 @@ namespace Chummer
 
                 if (string.IsNullOrEmpty(_strDefaultTextKey))
                     _strDefaultTextKey = _dicEnglishTexts.Keys.FirstOrDefault();
+            }
+        }
+
+        public async Task CreateAsync(XmlNode xmlStoryModuleDataNode, CancellationToken token = default)
+        {
+            xmlStoryModuleDataNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
+            xmlStoryModuleDataNode.TryGetStringFieldQuickly("name", ref _strName);
+
+            XmlNode xmlTextsNode = xmlStoryModuleDataNode.SelectSingleNode("texts");
+            if (xmlTextsNode != null)
+            {
+                using (XmlNodeList xmlChildrenList = xmlStoryModuleDataNode.SelectNodes("*"))
+                {
+                    if (xmlChildrenList != null)
+                    {
+                        foreach (XmlNode xmlText in xmlChildrenList)
+                        {
+                            await _dicEnglishTexts.AddAsync(xmlText.Name, xmlText.Value, token);
+                            if (xmlText.SelectSingleNode("@default")?.Value == bool.TrueString)
+                                _strDefaultTextKey = xmlText.Name;
+                        }
+
+                        if (string.IsNullOrEmpty(_strDefaultTextKey))
+                            _strDefaultTextKey = (await _dicEnglishTexts.FirstOrDefaultAsync(token: token)).Key;
+                    }
+                }
+            }
+        }
+
+        public async Task CreateAsync(XPathNavigator xmlStoryModuleDataNode, CancellationToken token = default)
+        {
+            xmlStoryModuleDataNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
+            xmlStoryModuleDataNode.TryGetStringFieldQuickly("name", ref _strName);
+
+            XPathNavigator xmlTextsNode = await xmlStoryModuleDataNode.SelectSingleNodeAndCacheExpressionAsync("texts");
+            if (xmlTextsNode != null)
+            {
+                foreach (XPathNavigator xmlText in xmlStoryModuleDataNode.SelectChildren(XPathNodeType.Element))
+                {
+                    await _dicEnglishTexts.AddAsync(xmlText.Name, xmlText.Value, token);
+                    if (xmlText.SelectSingleNode("@default")?.Value == bool.TrueString)
+                        _strDefaultTextKey = xmlText.Name;
+                }
+
+                if (string.IsNullOrEmpty(_strDefaultTextKey))
+                    _strDefaultTextKey = (await _dicEnglishTexts.FirstOrDefaultAsync(token: token)).Key;
             }
         }
 
@@ -156,14 +202,30 @@ namespace Chummer
                    (_dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : '<' + strKey + '>');
         }
 
-        public ValueTask<string> TestRunToGeneratePersistents(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async ValueTask<string> DisplayTextAsync(string strKey, string strLanguage, CancellationToken token = default)
         {
-            return ResolveMacros(DisplayText(DefaultKey, strLanguage), objCulture, strLanguage, true, token);
+            string strReturn;
+            if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            {
+                strReturn = (await this.GetNodeXPathAsync(strLanguage, token: token))
+                            ?.SelectSingleNode("alttexts/" + strKey)?.Value;
+                if (string.IsNullOrWhiteSpace(strReturn))
+                    return strReturn;
+            }
+
+            bool blnSuccess;
+            (blnSuccess, strReturn) = await _dicEnglishTexts.TryGetValueAsync(strKey, token);
+            return blnSuccess ? strReturn : '<' + strKey + '>';
+        }
+
+        public async ValueTask<string> TestRunToGeneratePersistents(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        {
+            return await ResolveMacros(await DisplayTextAsync(DefaultKey, strLanguage, token), objCulture, strLanguage, true, token);
         }
 
         public async ValueTask<string> PrintModule(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            return (await ResolveMacros(DisplayText(DefaultKey, strLanguage), objCulture, strLanguage, token: token)).NormalizeWhiteSpace();
+            return (await ResolveMacros(await DisplayTextAsync(DefaultKey, strLanguage, token), objCulture, strLanguage, token: token)).NormalizeWhiteSpace();
         }
 
         public async ValueTask<string> ResolveMacros(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents = false, CancellationToken token = default)
@@ -355,8 +417,8 @@ namespace Chummer
                     }
                 case "$XPath":
                     {
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strArguments, out bool blnIsSuccess);
-                        return blnIsSuccess ? objProcess.ToString() : await LanguageManager.GetStringAsync("String_Unknown", strLanguage);
+                        (bool blnSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strArguments, token);
+                        return blnSuccess ? objProcess.ToString() : await LanguageManager.GetStringAsync("String_Unknown", strLanguage);
                     }
                 case "$Index":
                     {
@@ -407,17 +469,17 @@ namespace Chummer
                 (bool blnSuccess, StoryModule objInnerModule)
                     = await ParentStory.PersistentModules.TryGetValueAsync(strFunction, token);
                 if (blnSuccess)
-                    return await ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage, token: token);
-                StoryModule objPersistentStoryModule = ParentStory.GeneratePersistentModule(strFunction);
+                    return await ResolveMacros(await objInnerModule.DisplayTextAsync(strArguments, strLanguage, token), objCulture, strLanguage, token: token);
+                StoryModule objPersistentStoryModule = await ParentStory.GeneratePersistentModule(strFunction, token);
                 if (objPersistentStoryModule != null)
-                    return await ResolveMacros(objPersistentStoryModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage, token: token);
+                    return await ResolveMacros(await objPersistentStoryModule.DisplayTextAsync(strArguments, strLanguage, token), objCulture, strLanguage, token: token);
             }
             else
             {
                 (bool blnSuccess, StoryModule objInnerModule)
                     = await ParentStory.PersistentModules.TryGetValueAsync(strFunction, token);
                 if (blnSuccess)
-                    return await ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage, token: token);
+                    return await ResolveMacros(await objInnerModule.DisplayTextAsync(strArguments, strLanguage, token), objCulture, strLanguage, token: token);
             }
 
             return await LanguageManager.GetStringAsync("String_Error", strLanguage);
@@ -460,6 +522,18 @@ namespace Chummer
                                                    + ']');
             _strCachedXPathNodeLanguage = strLanguage;
             return _objCachedMyXPathNode;
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _dicEnglishTexts.Dispose();
+        }
+
+        /// <inheritdoc />
+        public ValueTask DisposeAsync()
+        {
+            return _dicEnglishTexts.DisposeAsync();
         }
     }
 }
