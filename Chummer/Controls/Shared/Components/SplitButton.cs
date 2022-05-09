@@ -437,7 +437,7 @@ namespace Chummer
             if (_showSplit && !Disposing && !IsDisposed)
             {
                 if (AutoSize)
-                    return CalculateButtonAutoSize();
+                    return CalculateButtonAutoSize(preferredSize);
 
                 if (!string.IsNullOrEmpty(Text) && TextRenderer.MeasureText(Text, Font).Width + SplitSectionWidth > preferredSize.Width)
                     return preferredSize + new Size(SplitSectionWidth + BorderSize * 2, 0);
@@ -446,48 +446,57 @@ namespace Chummer
             return preferredSize;
         }
 
-        private Size CalculateButtonAutoSize()
+        private Size CalculateButtonAutoSize(Size sizeInitial = default)
         {
-            Size ret_size = Size.Empty;
-            Size text_size = TextRenderer.MeasureText(Text, Font);
-            Size image_size = Image?.Size ?? Size.Empty;
+            Size sizeReturn = Size.Empty;
+            Size sizeText = TextRenderer.MeasureText(Text, Font, sizeInitial);
 
             // Pad the text size
-            if (Text.Length != 0)
+            bool blnHasText = Text.Length != 0;
+            if (blnHasText)
             {
-                text_size.Height += 4;
-                text_size.Width += 4;
+                sizeText.Height += 4;
+                sizeText.Width += 4;
             }
-
-            switch (TextImageRelation)
+            if (Image != null)
             {
-                case TextImageRelation.Overlay:
-                    ret_size.Height = Math.Max(Text.Length == 0 ? 0 : text_size.Height, image_size.Height);
-                    ret_size.Width = Math.Max(text_size.Width, image_size.Width);
-                    break;
+                Size sizeImage = Image.Size;
+                switch (TextImageRelation)
+                {
+                    case TextImageRelation.Overlay:
+                        sizeReturn.Height = Math.Max(blnHasText ? sizeText.Height : 0, sizeImage.Height);
+                        sizeReturn.Width = Math.Max(sizeText.Width, sizeImage.Width);
+                        break;
 
-                case TextImageRelation.ImageAboveText:
-                case TextImageRelation.TextAboveImage:
-                    ret_size.Height = text_size.Height + image_size.Height;
-                    ret_size.Width = Math.Max(text_size.Width, image_size.Width);
-                    break;
+                    case TextImageRelation.ImageAboveText:
+                    case TextImageRelation.TextAboveImage:
+                        sizeReturn.Height = sizeText.Height + sizeImage.Height;
+                        sizeReturn.Width = Math.Max(sizeText.Width, sizeImage.Width);
+                        break;
 
-                case TextImageRelation.ImageBeforeText:
-                case TextImageRelation.TextBeforeImage:
-                    ret_size.Height = Math.Max(text_size.Height, image_size.Height);
-                    ret_size.Width = text_size.Width + image_size.Width;
-                    break;
+                    case TextImageRelation.ImageBeforeText:
+                    case TextImageRelation.TextBeforeImage:
+                        sizeReturn.Height = Math.Max(sizeText.Height, sizeImage.Height);
+                        sizeReturn.Width = sizeText.Width + sizeImage.Width;
+                        break;
+                }
             }
+            else
+                sizeReturn = sizeText;
 
             // Pad the result
-            ret_size.Height += (Padding.Vertical + 6);
-            ret_size.Width += (Padding.Horizontal + 6);
+            sizeReturn.Height += 2 * Padding.Vertical + 6;
+            sizeReturn.Width += 2 * Padding.Horizontal + 6;
 
             //pad the splitButton arrow region
             if (_showSplit)
-                ret_size.Width += SplitSectionWidth;
+                sizeReturn.Width += SplitSectionWidth;
 
-            return ret_size;
+            // Make sure we are not smaller than the base class' preferred size
+            sizeReturn.Height = Math.Max(sizeInitial.Height, sizeReturn.Height);
+            sizeReturn.Width = Math.Max(sizeInitial.Width, sizeReturn.Width);
+
+            return sizeReturn;
         }
 
         #region Button Layout Calculations
