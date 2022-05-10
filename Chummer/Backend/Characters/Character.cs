@@ -6371,38 +6371,6 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Weapons"));
-                                else
-                                    await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Tab_Weapons"), token: token);
-                            }
-
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverload
-                                       ? Timekeeper.StartSyncron("load_char_weapons", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_weapons", loadActivity))
-                            {
-                                // Weapons.
-                                objXmlNodeList = objXmlCharacter.SelectNodes("weapons/weapon");
-                                foreach (XmlNode objXmlWeapon in objXmlNodeList)
-                                {
-                                    Weapon objWeapon = new Weapon(this);
-                                    objWeapon.Load(objXmlWeapon);
-                                    if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
-                                        _lstWeapons.Add(objWeapon);
-                                    else
-                                        await _lstWeapons.AddAsync(objWeapon);
-                                }
-
-                                //Timekeeper.Finish("load_char_weapons");
-                            }
-
-                            if (frmLoadingForm != null)
-                            {
-                                if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Drugs"));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
@@ -7241,6 +7209,38 @@ namespace Chummer
                                 }
 
                                 //Timekeeper.Finish("load_char_car");
+                            }
+
+                            if (frmLoadingForm != null)
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Weapons"));
+                                else
+                                    await frmLoadingForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync("Tab_Weapons"), token: token);
+                            }
+
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_weapons", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_weapons", loadActivity))
+                            {
+                                // Weapons.
+                                objXmlNodeList = objXmlCharacter.SelectNodes("weapons/weapon");
+                                foreach (XmlNode objXmlWeapon in objXmlNodeList)
+                                {
+                                    Weapon objWeapon = new Weapon(this);
+                                    objWeapon.Load(objXmlWeapon);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstWeapons.Add(objWeapon);
+                                    else
+                                        await _lstWeapons.AddAsync(objWeapon);
+                                }
+
+                                //Timekeeper.Finish("load_char_weapons");
                             }
 
                             if (frmLoadingForm != null)

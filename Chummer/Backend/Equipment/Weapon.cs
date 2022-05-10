@@ -716,12 +716,17 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("accuracy", _strAccuracy);
 
-            objWriter.WriteStartElement("clips");
-            foreach (Clip clip in _lstAmmo)
+            objWriter.WriteElementString("activeammoslot", _intActiveAmmoSlot.ToString(GlobalSettings.InvariantCultureInfo));
+            if (_lstAmmo.Count != 0)
             {
-                clip.Save(objWriter);
+                objWriter.WriteStartElement("clips");
+                foreach (Clip clip in _lstAmmo)
+                {
+                    clip.Save(objWriter);
+                }
+
+                objWriter.WriteEndElement();
             }
-            objWriter.WriteEndElement();
 
             objWriter.WriteElementString("conceal", _intConceal.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("avail", _strAvail);
@@ -1032,6 +1037,7 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
+                objNode.TryGetInt32FieldQuickly("activeammoslot", ref _intActiveAmmoSlot);
                 _lstAmmo.Clear();
                 if (objNode["clips"] != null)
                 {
@@ -7126,9 +7132,12 @@ namespace Chummer.Backend.Equipment
             {
                 if (node != null)
                 {
-                    string strAmmoGuid = node["id"]?.InnerText;
-                    string strCount = node["count"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strAmmoGuid) && !string.IsNullOrEmpty(strCount) && Guid.TryParse(strAmmoGuid, out Guid guiClipId) && int.TryParse(strCount, out int intCount))
+                    string strAmmoGuid = string.Empty;
+                    int intCount = 0;
+                    if (node.TryGetStringFieldQuickly("id", ref strAmmoGuid)
+                        && !string.IsNullOrEmpty(strAmmoGuid)
+                        && node.TryGetInt32FieldQuickly("count", ref intCount)
+                        && Guid.TryParse(strAmmoGuid, out Guid guiClipId))
                     {
                         Gear objGear = null;
                         if (guiClipId != Guid.Empty)
@@ -7137,7 +7146,11 @@ namespace Chummer.Backend.Equipment
                                 ? objWeapon.ParentVehicle.FindVehicleGear(strAmmoGuid)
                                 : objWeapon._objCharacter.Gear.DeepFindById(strAmmoGuid);
                         }
-                        return new Clip(objGear, intCount);
+                        Clip objReturn = new Clip(objGear, intCount);
+                        string strTemp = string.Empty;
+                        if (node.TryGetStringFieldQuickly("location", ref strTemp))
+                            objReturn.AmmoLocation = strTemp;
+                        return objReturn;
                     }
                 }
                 return null;
@@ -7150,16 +7163,11 @@ namespace Chummer.Backend.Equipment
                     writer.WriteStartElement("clip");
                     writer.WriteElementString("count", Ammo.ToString(GlobalSettings.InvariantCultureInfo));
                     writer.WriteElementString("location", AmmoLocation);
-                    if (AmmoGear != null)
-                    {
-                        writer.WriteElementString("id", AmmoGear.InternalId);
-                        writer.WriteStartElement("ammotype");
-                        writer.WriteElementString("DV", AmmoGear.WeaponBonusDamage(GlobalSettings.DefaultLanguage));
-                        writer.WriteElementString("BonusRange", AmmoGear.WeaponBonusRange.ToString(GlobalSettings.InvariantCultureInfo));
-                        writer.WriteEndElement();
-                    }
-                    else
-                        writer.WriteElementString("id", Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo));
+                    writer.WriteElementString(
+                        "id",
+                        AmmoGear != null
+                            ? AmmoGear.InternalId
+                            : Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo));
                     writer.WriteEndElement();
                 }
             }
