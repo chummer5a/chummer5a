@@ -9264,9 +9264,11 @@ namespace Chummer
         {
             if (IsLoading || IsRefreshing || IsDisposed)
                 return;
+            SkipUpdate = true;
             try
             {
-                string strSelectedId = await cboTradition.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), GenericToken);
+                string strSelectedId
+                    = await cboTradition.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), GenericToken);
                 if (string.IsNullOrEmpty(strSelectedId))
                     return;
 
@@ -9298,7 +9300,8 @@ namespace Chummer
                         await SetDirty(true);
                     }
 
-                    await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID, GenericToken);
+                    await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID,
+                                                         GenericToken);
                 }
                 else if (strSelectedId == Tradition.CustomMagicalTraditionGuid)
                 {
@@ -9345,7 +9348,8 @@ namespace Chummer
                     else
                     {
                         CharacterObject.MagicTradition.ResetTradition();
-                        await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID, GenericToken);
+                        await cboTradition.DoThreadSafeAsync(
+                            x => x.SelectedValue = CharacterObject.MagicTradition.SourceID, GenericToken);
                     }
                 }
                 else if (CharacterObject.MagicTradition.Create(xmlTradition))
@@ -9393,15 +9397,23 @@ namespace Chummer
                 else
                 {
                     CharacterObject.MagicTradition.ResetTradition();
-                    await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID, GenericToken);
+                    await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID,
+                                                         GenericToken);
                 }
 
-                await cboDrain.DoThreadSafeAsync(x => x.Visible = (!CharacterObject.AdeptEnabled || CharacterObject.MagicianEnabled) &&
-                                                                  CharacterObject.MagicTradition.CanChooseDrainAttribute, GenericToken);
+                await cboDrain.DoThreadSafeAsync(x => x.Visible
+                                                     = (!CharacterObject.AdeptEnabled
+                                                        || CharacterObject.MagicianEnabled) &&
+                                                       CharacterObject.MagicTradition.CanChooseDrainAttribute,
+                                                 GenericToken);
             }
             catch (OperationCanceledException)
             {
                 //swallow this
+            }
+            finally
+            {
+                SkipUpdate = false;
             }
         }
 

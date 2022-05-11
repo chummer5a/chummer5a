@@ -12843,78 +12843,132 @@ namespace Chummer
             if (IsLoading || IsRefreshing || IsDisposed)
                 return;
 
-            string strSelectedId = await cboTradition.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString());
-            if (string.IsNullOrEmpty(strSelectedId))
-                return;
-
-            XmlNode xmlTradition = (await CharacterObject.LoadDataAsync("traditions.xml"))
-                .SelectSingleNode("/chummer/traditions/tradition[id = " + strSelectedId.CleanXPath()
-                                                                        + ']');
-            
-            if (xmlTradition == null)
+            SkipUpdate = true;
+            try
             {
-                await lblTraditionName.DoThreadSafeAsync(x => x.Visible = false);
-                await txtTraditionName.DoThreadSafeAsync(x => x.Visible = false);
-                await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible = false);
-                await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible = false);
-                await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible = false);
-                await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible = false);
-                await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible = false);
-                await lblTraditionSource.DoThreadSafeAsync(x => x.Visible = false);
-                await lblTraditionSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
-                await cboSpiritCombat.DoThreadSafeAsync(x => x.Visible = false);
-                await cboSpiritDetection.DoThreadSafeAsync(x => x.Visible = false);
-                await cboSpiritHealth.DoThreadSafeAsync(x => x.Visible = false);
-                await cboSpiritIllusion.DoThreadSafeAsync(x => x.Visible = false);
-                await cboSpiritManipulation.DoThreadSafeAsync(x => x.Visible = false);
+                string strSelectedId
+                    = await cboTradition.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), GenericToken);
+                if (string.IsNullOrEmpty(strSelectedId))
+                    return;
 
-                if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
+                XmlNode xmlTradition = (await CharacterObject.LoadDataAsync("traditions.xml", token: GenericToken))
+                    .SelectSingleNode("/chummer/traditions/tradition[id = " + strSelectedId.CleanXPath()
+                                                                            + ']');
+
+                if (xmlTradition == null)
                 {
-                    CharacterObject.MagicTradition.ResetTradition();
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
+                    await lblTraditionName.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await txtTraditionName.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await lblTraditionSource.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await lblTraditionSourceLabel.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await cboSpiritCombat.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await cboSpiritDetection.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await cboSpiritHealth.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await cboSpiritIllusion.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await cboSpiritManipulation.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+
+                    if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
+                    {
+                        CharacterObject.MagicTradition.ResetTradition();
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+
+                    await cboTradition.DoThreadSafeAsync(
+                        x => x.SelectedValue = CharacterObject.MagicTradition.SourceID, GenericToken);
                 }
-
-                await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID);
-            }
-            else if (strSelectedId == Tradition.CustomMagicalTraditionGuid)
-            {
-                if (CharacterObject.MagicTradition.Create(xmlTradition))
+                else if (strSelectedId == Tradition.CustomMagicalTraditionGuid)
                 {
-                    await lblTraditionName.DoThreadSafeAsync(x => x.Visible = true);
-                    await txtTraditionName.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblTraditionSource.DoThreadSafeAsync(x => x.Visible = false);
-                    await lblTraditionSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    if (CharacterObject.MagicTradition.Create(xmlTradition))
+                    {
+                        await lblTraditionName.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                        await txtTraditionName.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                        await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                        await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                        await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                        await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                        await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                        await lblTraditionSource.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                        await lblTraditionSourceLabel.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                        await cboSpiritCombat.DoThreadSafeAsync(x =>
+                        {
+                            x.Enabled = true;
+                            x.Visible = true;
+                        }, GenericToken);
+                        await cboSpiritDetection.DoThreadSafeAsync(x =>
+                        {
+                            x.Enabled = true;
+                            x.Visible = true;
+                        }, GenericToken);
+                        await cboSpiritHealth.DoThreadSafeAsync(x =>
+                        {
+                            x.Enabled = true;
+                            x.Visible = true;
+                        }, GenericToken);
+                        await cboSpiritIllusion.DoThreadSafeAsync(x =>
+                        {
+                            x.Enabled = true;
+                            x.Visible = true;
+                        }, GenericToken);
+                        await cboSpiritManipulation.DoThreadSafeAsync(x =>
+                        {
+                            x.Enabled = true;
+                            x.Visible = true;
+                        }, GenericToken);
+
+                        await RequestCharacterUpdate();
+                        await SetDirty(true);
+                    }
+                    else
+                    {
+                        CharacterObject.MagicTradition.ResetTradition();
+                        await cboTradition.DoThreadSafeAsync(
+                            x => x.SelectedValue = CharacterObject.MagicTradition.SourceID, GenericToken);
+                    }
+                }
+                else if (CharacterObject.MagicTradition.Create(xmlTradition))
+                {
+                    await lblTraditionName.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await txtTraditionName.DoThreadSafeAsync(x => x.Visible = false, GenericToken);
+                    await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                    await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                    await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                    await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                    await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
                     await cboSpiritCombat.DoThreadSafeAsync(x =>
                     {
-                        x.Enabled = true;
+                        x.Enabled = false;
                         x.Visible = true;
-                    });
+                    }, GenericToken);
                     await cboSpiritDetection.DoThreadSafeAsync(x =>
                     {
-                        x.Enabled = true;
+                        x.Enabled = false;
                         x.Visible = true;
-                    });
+                    }, GenericToken);
                     await cboSpiritHealth.DoThreadSafeAsync(x =>
                     {
-                        x.Enabled = true;
+                        x.Enabled = false;
                         x.Visible = true;
-                    });
+                    }, GenericToken);
                     await cboSpiritIllusion.DoThreadSafeAsync(x =>
                     {
-                        x.Enabled = true;
+                        x.Enabled = false;
                         x.Visible = true;
-                    });
+                    }, GenericToken);
                     await cboSpiritManipulation.DoThreadSafeAsync(x =>
                     {
-                        x.Enabled = true;
+                        x.Enabled = false;
                         x.Visible = true;
-                    });
+                    }, GenericToken);
+
+                    await lblTraditionSource.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblTraditionSourceLabel.DoThreadSafeAsync(x => x.Visible = true, GenericToken);
+                    await CharacterObject.MagicTradition.SetSourceDetailAsync(lblTraditionSource, GenericToken);
 
                     await RequestCharacterUpdate();
                     await SetDirty(true);
@@ -12922,59 +12976,23 @@ namespace Chummer
                 else
                 {
                     CharacterObject.MagicTradition.ResetTradition();
-                    await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID);
+                    await cboTradition.DoThreadSafeAsync(
+                        x => x.SelectedValue = CharacterObject.MagicTradition.SourceID, GenericToken);
                 }
+
+                await cboDrain.DoThreadSafeAsync(x => x.Visible
+                                                     = (!CharacterObject.AdeptEnabled
+                                                        || CharacterObject.MagicianEnabled) &&
+                                                       CharacterObject.MagicTradition.CanChooseDrainAttribute, GenericToken);
             }
-            else if (CharacterObject.MagicTradition.Create(xmlTradition))
+            catch (OperationCanceledException)
             {
-                await lblTraditionName.DoThreadSafeAsync(x => x.Visible = false);
-                await txtTraditionName.DoThreadSafeAsync(x => x.Visible = false);
-                await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible = true);
-                await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible = true);
-                await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible = true);
-                await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible = true);
-                await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible = true);
-                await cboSpiritCombat.DoThreadSafeAsync(x =>
-                {
-                    x.Enabled = false;
-                    x.Visible = true;
-                });
-                await cboSpiritDetection.DoThreadSafeAsync(x =>
-                {
-                    x.Enabled = false;
-                    x.Visible = true;
-                });
-                await cboSpiritHealth.DoThreadSafeAsync(x =>
-                {
-                    x.Enabled = false;
-                    x.Visible = true;
-                });
-                await cboSpiritIllusion.DoThreadSafeAsync(x =>
-                {
-                    x.Enabled = false;
-                    x.Visible = true;
-                });
-                await cboSpiritManipulation.DoThreadSafeAsync(x =>
-                {
-                    x.Enabled = false;
-                    x.Visible = true;
-                });
-
-                await lblTraditionSource.DoThreadSafeAsync(x => x.Visible = true);
-                await lblTraditionSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
-                await CharacterObject.MagicTradition.SetSourceDetailAsync(lblTraditionSource);
-
-                await RequestCharacterUpdate();
-                await SetDirty(true);
+                //swallow this
             }
-            else
+            finally
             {
-                CharacterObject.MagicTradition.ResetTradition();
-                await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID);
+                SkipUpdate = false;
             }
-
-            await cboDrain.DoThreadSafeAsync(x => x.Visible = (!CharacterObject.AdeptEnabled || CharacterObject.MagicianEnabled) &&
-                                                              CharacterObject.MagicTradition.CanChooseDrainAttribute);
         }
 
         #endregion Additional Spells and Spirits Tab Control Events
