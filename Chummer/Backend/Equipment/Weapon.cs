@@ -717,7 +717,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("accuracy", _strAccuracy);
 
             objWriter.WriteElementString("activeammoslot", _intActiveAmmoSlot.ToString(GlobalSettings.InvariantCultureInfo));
-            if (_lstAmmo.Count != 0)
+            if (_lstAmmo.Any(x => x.AmmoGear != null || x.Ammo != 0))
             {
                 objWriter.WriteStartElement("clips");
                 foreach (Clip clip in _lstAmmo)
