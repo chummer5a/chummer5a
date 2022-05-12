@@ -35,9 +35,9 @@ namespace Chummer
         {
             if (container == null)
                 throw new ArgumentNullException(nameof(container));
-            container.Add(this);
             InitializeComponent();
             DoubleBuffered = true;
+            container.Add(this);
         }
     }
 }
