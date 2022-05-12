@@ -19,7 +19,7 @@
   https://github.com/chummer5a/chummer5a
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://www.w3.org/2001/XMLSchema critterpowers.xsd">
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema critterpowers.xsd">
 
   <categories>
     <category whitelist="true">Drake</category>
@@ -31,6 +31,7 @@
     <category>Paranormal</category>
     <category whitelist="true">Toxic Critter Powers</category>
     <category>Weakness</category>
+    <category>Chimeric Modification</category>
   </categories>
   <powers>
 	<!-- Skills as optional powers (hidden from normal view, only accessible through bonuses) -->
@@ -3252,7 +3253,6 @@
     <!-- End Region -->
     <!-- Region Dark Terrors -->
     <!-- Region Shedim Powers -->
-
     <power>
       <id>6414b273-897d-451a-839a-4d530f1baaab</id>
       <name>Anchored Resident</name>
@@ -3897,6 +3897,220 @@
       <duration />
       <source>KC</source>
       <page>168</page>
+    </power>
+    <!-- End Region -->
+    <!-- Region Chimeric Modifications -->
+    <power>
+      <id>24d6d5c2-8459-4f9e-8a76-dd9a07a49f9c</id>
+      <name>Attribute Enhancement (Body)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <rating>True</rating>
+      <bonus>
+        <specificattribute>
+          <name>BOD</name>
+          <val>Rating</val>
+        </specificattribute>
+      </bonus>
+      <source>HS</source>
+      <page>166</page>
+    </power>
+    <power>
+      <id>78be96f2-43e5-444a-b255-0e7528813b4a</id>
+      <name>Attribute Enhancement (Agility)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <rating>True</rating>
+      <bonus>
+        <specificattribute>
+          <name>AGI</name>
+          <val>Rating</val>
+        </specificattribute>
+      </bonus>
+      <source>HS</source>
+      <page>166</page>
+    </power>
+    <power>
+      <id>95240c3e-99c1-43d9-adf0-6a83b792091b</id>
+      <name>Attribute Enhancement (Reaction)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <rating>True</rating>
+      <bonus>
+        <specificattribute>
+          <name>REA</name>
+          <val>Rating</val>
+        </specificattribute>
+      </bonus>
+      <source>HS</source>
+      <page>166</page>
+    </power>
+    <power>
+      <id>26ad4ce7-439b-48d1-a870-bb1e2b2a54ad</id>
+      <name>Attribute Enhancement (Strength)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <rating>True</rating>
+      <bonus>
+        <specificattribute>
+          <name>STR</name>
+          <val>Rating</val>
+        </specificattribute>
+      </bonus>
+      <source>HS</source>
+      <page>166</page>
+    </power>
+    <power>
+      <id>81aab9fb-30ef-4c91-b296-b85dc2860fee</id>
+      <name>Attribute Enhancement (Charisma)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <rating>True</rating>
+      <bonus>
+        <specificattribute>
+          <name>CHA</name>
+          <val>Rating</val>
+        </specificattribute>
+      </bonus>
+      <source>HS</source>
+      <page>166</page>
+    </power>
+    <power>
+      <id>cf88125a-c129-4e77-8813-cc4d2368e077</id>
+      <name>Attribute Enhancement (Intuition)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <rating>True</rating>
+      <bonus>
+        <specificattribute>
+          <name>INT</name>
+          <val>Rating</val>
+        </specificattribute>
+      </bonus>
+      <source>HS</source>
+      <page>166</page>
+    </power>
+    <power>
+      <id>7af7bc12-b671-4dbf-bfb7-fb58e9ee28a4</id>
+      <name>Attribute Enhancement (Logic)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <rating>True</rating>
+      <bonus>
+        <specificattribute>
+          <name>LOG</name>
+          <val>Rating</val>
+        </specificattribute>
+      </bonus>
+      <source>HS</source>
+      <page>166</page>
+    </power>
+    <power>
+      <id>95307494-6a99-4b66-aaaf-a417fa607632</id>
+      <name>Attribute Enhancement (Willpower)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <rating>True</rating>
+      <bonus>
+        <specificattribute>
+          <name>WIL</name>
+          <val>Rating</val>
+        </specificattribute>
+      </bonus>
+      <source>HS</source>
+      <page>166</page>
+    </power>
+    <power>
+      <id>3d4dec14-3a44-41b6-9f78-1d6bd42e15fe</id>
+      <name>Thicker Skin</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <rating>True</rating>
+      <bonus>
+        <armor>Rating</armor>
+      </bonus>
+      <source>HS</source>
+      <page>173</page>
+    </power>
+    <power>
+      <id>510fc5a4-d475-4a31-b1f5-484bf96eeff1</id>
+      <name>Skill Enhancement</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <bonus>
+        <selectskill>
+          <val>2</val>
+          <applytorating>True</applytorating>
+        </selectskill>
+      </bonus>
+      <source>HS</source>
+      <page>173</page>
+    </power>
+    <power>
+      <id>d0f88641-ff0f-448f-93d3-0d67068939c2</id>
+      <name>Celerity</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <bonus>
+        <walkmultiplier>
+          <category>Ground</category>
+          <percent>100</percent>
+        </walkmultiplier>
+        <runmultiplier>
+          <category>Ground</category>
+          <percent>100</percent>
+        </runmultiplier>
+        <sprintbonus>
+          <category>Ground</category>
+          <val>100</val>
+        </sprintbonus>
+      </bonus>
+      <source>HS</source>
+      <page>171</page>
+    </power>
+    <power>
+      <id>221bd655-f6a4-4b41-9f53-c147fff93e40</id>
+      <name>Wall Climbing</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>173</page>
     </power>
     <!-- End Region -->
   </powers>
