@@ -255,6 +255,10 @@
       <text>Round</text>
     </string>
     <string>
+      <key>Label_Loaded</key>
+      <text>Loaded: {0}</text>
+    </string>
+    <string>
       <key>Label_Vehicles</key>
       <text>Vehicles</text>
     </string>

@@ -3231,7 +3231,7 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(GearName))
                 strReturn += strSpace + "(\"" + GearName + "\")";
             if (LoadedIntoClip != null)
-                strReturn += strSpace + '(' + LoadedIntoClip.DisplayWeaponName(objCulture, strLanguage) + ')';
+                strReturn += strSpace + '(' + string.Format(objCulture, LanguageManager.GetString("Label_Loaded"), LoadedIntoClip.DisplayWeaponName(objCulture, strLanguage)) + ')';
             return strReturn;
         }
 
@@ -3254,7 +3254,7 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(GearName))
                 strReturn += strSpace + "(\"" + GearName + "\")";
             if (LoadedIntoClip != null)
-                strReturn += strSpace + '(' + await LoadedIntoClip.DisplayWeaponNameAsync(objCulture, strLanguage) + ')';
+                strReturn += strSpace + '(' + string.Format(objCulture, await LanguageManager.GetStringAsync("Label_Loaded"), await LoadedIntoClip.DisplayWeaponNameAsync(objCulture, strLanguage)) + ')'; ;
             return strReturn;
         }
 

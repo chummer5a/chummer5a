@@ -73,6 +73,7 @@ Changed/New Strings:
 - Message_KarmaNuyenExchange
 - String_NuyenSymbol
 - Button_Unload
+- Label_Loaded
 
 Removed Strings:
 - Message_UnderLanguageLimit
