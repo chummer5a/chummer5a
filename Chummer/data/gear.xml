@@ -1438,6 +1438,7 @@
       <avail>12F</avail>
       <addweapon>Rocket: Fragmentation</addweapon>
       <cost>2000</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>d5136e8b-bf34-401d-967d-c52f8cc175c1</id>
@@ -1509,7 +1510,7 @@
       <avail>16F</avail>
       <cost>20</cost>
       <costfor>10</costfor>
-      <ammoforweapontype>supermach</ammoforweapontype>
+      <ammoforweapontype noextra="True">supermach</ammoforweapontype>
     </gear>
     <gear>
       <id>78babb62-e0f1-4561-9e2d-05b0b5fbb2ad</id>
@@ -1520,7 +1521,7 @@
       <page>16</page>
       <avail>0</avail>
       <cost>0</cost>
-      <ammoforweapontype>firefighting cannons</ammoforweapontype>
+      <ammoforweapontype noextra="True">firefighting cannons</ammoforweapontype>
     </gear>
     <gear>
       <id>767ecc1c-1f47-4684-b36f-0bbe0868ceac</id>
@@ -1535,7 +1536,7 @@
       <weaponbonus>
         <damage>-1</damage>
       </weaponbonus>
-      <ammoforweapontype>firefighting cannons</ammoforweapontype>
+      <ammoforweapontype noextra="True">firefighting cannons</ammoforweapontype>
     </gear>
 	<gear>
       <id>d71ea9c1-9b5f-428e-b849-7d665eb31c5e</id>
@@ -1551,7 +1552,7 @@
         <damagereplace>6P</damagereplace>
 		<damagetype>Acid</damagetype>
       </weaponbonus>
-      <ammoforweapontype>slingshot</ammoforweapontype>
+      <ammoforweapontype noextra="True">slingshot</ammoforweapontype>
     </gear>
 	<gear>
       <id>e20f021b-1d00-4443-a481-d417114e067e</id>
@@ -1566,7 +1567,7 @@
       <weaponbonus>
         <damagereplace>0S</damagereplace>
       </weaponbonus>
-      <ammoforweapontype>slingshot</ammoforweapontype>
+      <ammoforweapontype noextra="True">slingshot</ammoforweapontype>
     </gear>
 	<gear>
       <id>5ece577b-7c15-4f2c-9f4b-cd325154cf9c</id>
@@ -1581,7 +1582,7 @@
       <weaponbonus>
         <damagereplace>As Narcoject</damagereplace>
       </weaponbonus>
-      <ammoforweapontype>slingshot</ammoforweapontype>
+      <ammoforweapontype noextra="True">slingshot</ammoforweapontype>
     </gear>
 	<gear>
       <id>d82e68e5-08d1-4f27-af45-de54ad1dcd72</id>
@@ -1597,7 +1598,7 @@
         <damagereplace>As Drug/Toxin</damagereplace>
 		<userange>Light Pistol</userange>
       </weaponbonus>
-      <ammoforweapontype>slingshot</ammoforweapontype>
+      <ammoforweapontype noextra="True">slingshot</ammoforweapontype>
     </gear>
 
     <!-- Region Kill Code-->
