@@ -18312,7 +18312,7 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strQuantity))
                             strQuantity = 1.ToString(GlobalSettings.CultureInfo);
                         await lblVehicleGearQty.DoThreadSafeAsync(x => x.Text = strQuantity, token);
-                        await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent, token);
+                        await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Visible = !objGear.IncludedInParent, token);
                         await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objGear.DisplayTotalAvail, token);
                         await lblVehicleCost.DoThreadSafeAsync(x => x.Text
                                                                    = objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
@@ -18329,7 +18329,7 @@ namespace Chummer
                             x.Visible = true;
                             x.Text = strText;
                         }, token);
-                        await cmdVehicleMoveToInventory.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent && objGear.LoadedIntoClip == null, token);
+                        await cmdVehicleMoveToInventory.DoThreadSafeAsync(x => x.Visible = !objGear.IncludedInParent && objGear.LoadedIntoClip == null, token);
                         await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false, token);
                         await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x => x.Visible = false, token);
                         await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false, token);
