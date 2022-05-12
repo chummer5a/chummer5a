@@ -107,6 +107,7 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
         private bool _blnStolen;
         private bool _blnIsFlechetteAmmo;
+        private Clip _objLoadedIntoClip; // Set on loading in weapon clips
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -836,6 +837,7 @@ namespace Chummer.Backend.Equipment
             _strGearName = objGear.GearName;
             _strForcedValue = objGear._strForcedValue;
             _blnIsFlechetteAmmo = objGear._blnIsFlechetteAmmo;
+            _objLoadedIntoClip = null;
 
             foreach (Gear objGearChild in objGear.Children)
             {
@@ -1802,11 +1804,10 @@ namespace Chummer.Backend.Equipment
             get => _decQty;
             set
             {
-                if (_decQty != value)
-                {
-                    _decQty = value;
-                    OnPropertyChanged();
-                }
+                if (_decQty == value)
+                    return;
+                _decQty = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1955,6 +1956,21 @@ namespace Chummer.Backend.Equipment
         {
             get => _strAmmoForWeaponType;
             set => _strAmmoForWeaponType = value;
+        }
+
+        public Clip LoadedIntoClip
+        {
+            get => _objLoadedIntoClip;
+            set
+            {
+                if (_objLoadedIntoClip == value)
+                    return;
+                if (_objLoadedIntoClip != null)
+                    _objLoadedIntoClip.AmmoGear = null;
+                _objLoadedIntoClip = value;
+                if (_objLoadedIntoClip != null)
+                    _objLoadedIntoClip.AmmoGear = this;
+            }
         }
 
         /// <summary>
@@ -3214,6 +3230,8 @@ namespace Chummer.Backend.Equipment
                 strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
             if (!string.IsNullOrEmpty(GearName))
                 strReturn += strSpace + "(\"" + GearName + "\")";
+            if (LoadedIntoClip != null)
+                strReturn += strSpace + '(' + LoadedIntoClip.DisplayWeaponName(objCulture, strLanguage) + ')';
             return strReturn;
         }
 
@@ -3235,6 +3253,8 @@ namespace Chummer.Backend.Equipment
                 strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage) + ')';
             if (!string.IsNullOrEmpty(GearName))
                 strReturn += strSpace + "(\"" + GearName + "\")";
+            if (LoadedIntoClip != null)
+                strReturn += strSpace + '(' + await LoadedIntoClip.DisplayWeaponNameAsync(objCulture, strLanguage) + ')';
             return strReturn;
         }
 
@@ -3678,30 +3698,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
-                objWeapon.ClearGearFromClips(this);
-            foreach (Vehicle objVehicle in _objCharacter.Vehicles)
-            {
-                foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.Children))
-                    objWeapon.ClearGearFromClips(this);
-
-                foreach (VehicleMod objMod in objVehicle.Mods)
-                {
-                    foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children))
-                        objWeapon.ClearGearFromClips(this);
-                }
-
-                foreach (WeaponMount objMount in objVehicle.WeaponMounts)
-                {
-                    foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendants(x => x.Children))
-                        objWeapon.ClearGearFromClips(this);
-                    foreach (VehicleMod objMod in objMount.Mods)
-                    {
-                        foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children))
-                            objWeapon.ClearGearFromClips(this);
-                    }
-                }
-            }
+            LoadedIntoClip = null;
 
             decimal decReturn = 0;
             // Remove any children the Gear may have.

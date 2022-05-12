@@ -1373,6 +1373,8 @@ namespace Chummer
             this.tsVehicleWeaponMountAddUnderbarrel = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsWeaponMountLocation = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsVehicleWeaponMountNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.cmdUnloadWeapon = new System.Windows.Forms.Button();
+            this.cmdUnloadVehicleWeapon = new System.Windows.Forms.Button();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -14948,7 +14950,7 @@ namespace Chummer
             this.tlpWeaponsCareer.Controls.Add(this.lblWeaponAmmoRemainingLabel, 2, 0);
             this.tlpWeaponsCareer.Controls.Add(this.lblWeaponAmmoTypeLabel, 0, 0);
             this.tlpWeaponsCareer.Controls.Add(this.lblWeaponAmmoRemaining, 3, 0);
-            this.tlpWeaponsCareer.Controls.Add(this.flpWeaponsCareerButtons, 2, 1);
+            this.tlpWeaponsCareer.Controls.Add(this.flpWeaponsCareerButtons, 1, 1);
             this.tlpWeaponsCareer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpWeaponsCareer.Location = new System.Drawing.Point(0, 137);
             this.tlpWeaponsCareer.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
@@ -15011,16 +15013,16 @@ namespace Chummer
             // 
             this.flpWeaponsCareerButtons.AutoSize = true;
             this.flpWeaponsCareerButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpWeaponsCareer.SetColumnSpan(this.flpWeaponsCareerButtons, 2);
+            this.tlpWeaponsCareer.SetColumnSpan(this.flpWeaponsCareerButtons, 3);
             this.flpWeaponsCareerButtons.Controls.Add(this.cmdFireWeapon);
             this.flpWeaponsCareerButtons.Controls.Add(this.cmdReloadWeapon);
+            this.flpWeaponsCareerButtons.Controls.Add(this.cmdUnloadWeapon);
             this.flpWeaponsCareerButtons.Controls.Add(this.cmdWeaponBuyAmmo);
-            this.flpWeaponsCareerButtons.Location = new System.Drawing.Point(239, 27);
+            this.flpWeaponsCareerButtons.Location = new System.Drawing.Point(82, 27);
             this.flpWeaponsCareerButtons.Margin = new System.Windows.Forms.Padding(0);
             this.flpWeaponsCareerButtons.Name = "flpWeaponsCareerButtons";
-            this.flpWeaponsCareerButtons.Size = new System.Drawing.Size(202, 30);
+            this.flpWeaponsCareerButtons.Size = new System.Drawing.Size(288, 30);
             this.flpWeaponsCareerButtons.TabIndex = 107;
-            this.flpWeaponsCareerButtons.WrapContents = false;
             // 
             // cmdFireWeapon
             // 
@@ -15062,7 +15064,7 @@ namespace Chummer
             this.cmdWeaponBuyAmmo.ImageDpi288 = null;
             this.cmdWeaponBuyAmmo.ImageDpi384 = null;
             this.cmdWeaponBuyAmmo.ImageDpi96 = global::Chummer.Properties.Resources.basket_add;
-            this.cmdWeaponBuyAmmo.Location = new System.Drawing.Point(175, 3);
+            this.cmdWeaponBuyAmmo.Location = new System.Drawing.Point(261, 3);
             this.cmdWeaponBuyAmmo.Name = "cmdWeaponBuyAmmo";
             this.cmdWeaponBuyAmmo.Padding = new System.Windows.Forms.Padding(1);
             this.cmdWeaponBuyAmmo.Size = new System.Drawing.Size(24, 24);
@@ -17636,7 +17638,7 @@ namespace Chummer
             this.gpbVehiclesWeapon.Dock = System.Windows.Forms.DockStyle.Top;
             this.gpbVehiclesWeapon.Location = new System.Drawing.Point(3, 308);
             this.gpbVehiclesWeapon.Name = "gpbVehiclesWeapon";
-            this.gpbVehiclesWeapon.Size = new System.Drawing.Size(516, 212);
+            this.gpbVehiclesWeapon.Size = new System.Drawing.Size(516, 270);
             this.gpbVehiclesWeapon.TabIndex = 0;
             this.gpbVehiclesWeapon.TabStop = false;
             this.gpbVehiclesWeapon.Tag = "String_Weapon";
@@ -17654,7 +17656,7 @@ namespace Chummer
             this.flpVehiclesWeapon.Location = new System.Drawing.Point(3, 16);
             this.flpVehiclesWeapon.Margin = new System.Windows.Forms.Padding(0);
             this.flpVehiclesWeapon.Name = "flpVehiclesWeapon";
-            this.flpVehiclesWeapon.Size = new System.Drawing.Size(510, 193);
+            this.flpVehiclesWeapon.Size = new System.Drawing.Size(510, 251);
             this.flpVehiclesWeapon.TabIndex = 0;
             this.flpVehiclesWeapon.WrapContents = false;
             // 
@@ -18082,7 +18084,7 @@ namespace Chummer
             this.tlpVehiclesWeaponCareer.RowCount = 2;
             this.tlpVehiclesWeaponCareer.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesWeaponCareer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpVehiclesWeaponCareer.Size = new System.Drawing.Size(494, 56);
+            this.tlpVehiclesWeaponCareer.Size = new System.Drawing.Size(494, 114);
             this.tlpVehiclesWeaponCareer.TabIndex = 249;
             // 
             // lblVehicleWeaponAmmoRemainingLabel
@@ -18136,7 +18138,7 @@ namespace Chummer
             // 
             this.lblFiringModeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblFiringModeLabel.AutoSize = true;
-            this.lblFiringModeLabel.Location = new System.Drawing.Point(14, 35);
+            this.lblFiringModeLabel.Location = new System.Drawing.Point(14, 64);
             this.lblFiringModeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblFiringModeLabel.Name = "lblFiringModeLabel";
             this.lblFiringModeLabel.Size = new System.Drawing.Size(65, 13);
@@ -18149,7 +18151,7 @@ namespace Chummer
             this.cboVehicleWeaponFiringMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboVehicleWeaponFiringMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboVehicleWeaponFiringMode.FormattingEnabled = true;
-            this.cboVehicleWeaponFiringMode.Location = new System.Drawing.Point(85, 31);
+            this.cboVehicleWeaponFiringMode.Location = new System.Drawing.Point(85, 60);
             this.cboVehicleWeaponFiringMode.Name = "cboVehicleWeaponFiringMode";
             this.cboVehicleWeaponFiringMode.Size = new System.Drawing.Size(151, 21);
             this.cboVehicleWeaponFiringMode.TabIndex = 248;
@@ -18164,12 +18166,12 @@ namespace Chummer
             this.tlpVehiclesWeaponCareer.SetColumnSpan(this.flpVehiclesWeaponCareerButtons, 2);
             this.flpVehiclesWeaponCareerButtons.Controls.Add(this.cmdFireVehicleWeapon);
             this.flpVehiclesWeaponCareerButtons.Controls.Add(this.cmdReloadVehicleWeapon);
-            this.flpVehiclesWeaponCareerButtons.Location = new System.Drawing.Point(239, 27);
+            this.flpVehiclesWeaponCareerButtons.Controls.Add(this.cmdUnloadVehicleWeapon);
+            this.flpVehiclesWeaponCareerButtons.Location = new System.Drawing.Point(239, 41);
             this.flpVehiclesWeaponCareerButtons.Margin = new System.Windows.Forms.Padding(0);
             this.flpVehiclesWeaponCareerButtons.Name = "flpVehiclesWeaponCareerButtons";
-            this.flpVehiclesWeaponCareerButtons.Size = new System.Drawing.Size(172, 29);
+            this.flpVehiclesWeaponCareerButtons.Size = new System.Drawing.Size(172, 58);
             this.flpVehiclesWeaponCareerButtons.TabIndex = 249;
-            this.flpVehiclesWeaponCareerButtons.WrapContents = false;
             // 
             // cmdFireVehicleWeapon
             // 
@@ -18205,7 +18207,7 @@ namespace Chummer
             this.gpbVehiclesMatrix.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbVehiclesMatrix.Controls.Add(this.tlpVehiclesMatrix);
             this.gpbVehiclesMatrix.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gpbVehiclesMatrix.Location = new System.Drawing.Point(3, 526);
+            this.gpbVehiclesMatrix.Location = new System.Drawing.Point(3, 584);
             this.gpbVehiclesMatrix.Name = "gpbVehiclesMatrix";
             this.gpbVehiclesMatrix.Size = new System.Drawing.Size(516, 96);
             this.gpbVehiclesMatrix.TabIndex = 251;
@@ -18419,7 +18421,7 @@ namespace Chummer
             this.panVehicleCM.Controls.Add(this.tabVehiclePhysicalCM);
             this.panVehicleCM.Controls.Add(this.tabVehicleMatrixCM);
             this.panVehicleCM.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panVehicleCM.Location = new System.Drawing.Point(3, 628);
+            this.panVehicleCM.Location = new System.Drawing.Point(3, 686);
             this.panVehicleCM.Name = "panVehicleCM";
             this.panVehicleCM.SelectedIndex = 0;
             this.panVehicleCM.Size = new System.Drawing.Size(516, 113);
@@ -22085,6 +22087,32 @@ namespace Chummer
             this.tsVehicleWeaponMountNotes.Text = "&Notes";
             this.tsVehicleWeaponMountNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
             // 
+            // cmdUnloadWeapon
+            // 
+            this.cmdUnloadWeapon.AutoSize = true;
+            this.cmdUnloadWeapon.Dock = System.Windows.Forms.DockStyle.Left;
+            this.cmdUnloadWeapon.Location = new System.Drawing.Point(175, 3);
+            this.cmdUnloadWeapon.Name = "cmdUnloadWeapon";
+            this.cmdUnloadWeapon.Size = new System.Drawing.Size(80, 24);
+            this.cmdUnloadWeapon.TabIndex = 108;
+            this.cmdUnloadWeapon.Tag = "Button_Unload";
+            this.cmdUnloadWeapon.Text = "Unload";
+            this.cmdUnloadWeapon.UseVisualStyleBackColor = true;
+            this.cmdUnloadWeapon.Click += new System.EventHandler(this.cmdUnloadWeapon_Click);
+            // 
+            // cmdUnloadVehicleWeapon
+            // 
+            this.cmdUnloadVehicleWeapon.AutoSize = true;
+            this.cmdUnloadVehicleWeapon.Dock = System.Windows.Forms.DockStyle.Left;
+            this.cmdUnloadVehicleWeapon.Location = new System.Drawing.Point(3, 32);
+            this.cmdUnloadVehicleWeapon.Name = "cmdUnloadVehicleWeapon";
+            this.cmdUnloadVehicleWeapon.Size = new System.Drawing.Size(80, 23);
+            this.cmdUnloadVehicleWeapon.TabIndex = 85;
+            this.cmdUnloadVehicleWeapon.Tag = "Button_Unload";
+            this.cmdUnloadVehicleWeapon.Text = "Unload";
+            this.cmdUnloadVehicleWeapon.UseVisualStyleBackColor = true;
+            this.cmdUnloadVehicleWeapon.Click += new System.EventHandler(this.cmdUnloadVehicleWeapon_Click);
+            // 
             // CharacterCareer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -23918,5 +23946,7 @@ namespace Chummer
         private NumericUpDownEx nudLiftCarryHits;
         private BufferedTableLayoutPanel tlpArmorLocationButtons;
         private BufferedTableLayoutPanel tlpVehiclesButtons;
+        private Button cmdUnloadWeapon;
+        private Button cmdUnloadVehicleWeapon;
     }
 }

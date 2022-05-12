@@ -5831,6 +5831,41 @@ namespace Chummer
                         await CharacterObject.Weapons.AddAsync(objWeapon);
 
                         objWeapon.ParentVehicle = null;
+
+                        List<Gear> lstGearToMove = new List<Gear>();
+                        foreach (Clip objClip in objWeapon.Clips)
+                        {
+                            if (objClip.AmmoGear != null)
+                            {
+                                lstGearToMove.Add(objClip.AmmoGear);
+                            }
+                        }
+                        foreach (Clip objClip in objWeapon.Children.GetAllDescendants(x => x.Children).SelectMany(x => x.Clips))
+                        {
+                            if (objClip.AmmoGear != null)
+                            {
+                                lstGearToMove.Add(objClip.AmmoGear);
+                            }
+                        }
+                        foreach (Gear objGear in lstGearToMove)
+                        {
+                            switch (objGear.Parent)
+                            {
+                                case IHasGear objHasChildren:
+                                    await objHasChildren.GearChildren.RemoveAsync(objGear);
+                                    break;
+
+                                case IHasChildren<Gear> objHasChildren:
+                                    await objHasChildren.Children.RemoveAsync(objGear);
+                                    break;
+
+                                default:
+                                    continue;
+                            }
+
+                            await CharacterObject.Gear.AddAsync(objGear);
+                        }
+
                         break;
                     }
                 case Gear objSelectedGear:
@@ -11521,7 +11556,16 @@ namespace Chummer
             if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Weapon objWeapon))
                 return;
             await objWeapon.Reload(CharacterObject.Gear, treGear);
-            await lblWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo));
+
+            await RequestCharacterUpdate();
+            await SetDirty(true);
+        }
+
+        private async void cmdUnloadWeapon_Click(object sender, EventArgs e)
+        {
+            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Weapon objWeapon))
+                return;
+            objWeapon.AmmoLoaded = null;
 
             await RequestCharacterUpdate();
             await SetDirty(true);
@@ -11842,6 +11886,48 @@ namespace Chummer
             {
                 objWeapon.ParentVehicleMod = objMod;
                 await objMod.Weapons.AddAsync(objWeapon);
+            }
+
+            List<Gear> lstGearToMove = new List<Gear>();
+            foreach (Clip objClip in objWeapon.Clips)
+            {
+                if (objClip.AmmoGear != null)
+                {
+                    lstGearToMove.Add(objClip.AmmoGear);
+                }
+            }
+            foreach (Clip objClip in objWeapon.Children.GetAllDescendants(x => x.Children).SelectMany(x => x.Clips))
+            {
+                if (objClip.AmmoGear != null)
+                {
+                    lstGearToMove.Add(objClip.AmmoGear);
+                }
+            }
+            foreach (Gear objGear in lstGearToMove)
+            {
+                switch (objGear.Parent)
+                {
+                    case IHasGear objHasChildren:
+                        await objHasChildren.GearChildren.RemoveAsync(objGear);
+                        break;
+
+                    case IHasChildren<Gear> objHasChildren:
+                        await objHasChildren.Children.RemoveAsync(objGear);
+                        break;
+
+                    default:
+                        await CharacterObject.Gear.RemoveAsync(objGear);
+                        continue;
+                }
+
+                if (objWeaponMount != null)
+                {
+                    await objWeaponMount.Parent.GearChildren.AddAsync(objGear);
+                }
+                else
+                {
+                    await objMod.Parent.GearChildren.AddAsync(objGear);
+                }
             }
         }
 
@@ -12518,7 +12604,16 @@ namespace Chummer
             if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Weapon objWeapon))
                 return;
             await objWeapon.Reload(objWeapon.ParentVehicle.GearChildren, treVehicles);
-            await lblVehicleWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo));
+
+            await RequestCharacterUpdate();
+            await SetDirty(true);
+        }
+
+        private async void cmdUnloadVehicleWeapon_Click(object sender, EventArgs e)
+        {
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Weapon objWeapon))
+                return;
+            objWeapon.AmmoLoaded = null;
 
             await RequestCharacterUpdate();
             await SetDirty(true);
@@ -15076,6 +15171,7 @@ namespace Chummer
                             await tlpWeaponsCareer.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), token);
                             await cmdFireWeapon.DoThreadSafeAsync(x => x.Enabled = objWeapon.AmmoRemaining != 0, token);
+                            await cmdUnloadWeapon.DoThreadSafeAsync(x => x.Enabled = objWeapon.RequireAmmo && objWeapon.AmmoLoaded != null && objWeapon.AmmoRemaining != 0, token);
                             token.ThrowIfCancellationRequested();
                             string strSingleShotText
                                 = objWeapon.AllowSingleShot || (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
@@ -15164,23 +15260,23 @@ namespace Chummer
                             using (new FetchSafelyFromPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstAmmo))
                             {
-                                int intCurrentSlot = objWeapon.ActiveAmmoSlot;
-                                for (int i = 1; i <= objWeapon.AmmoSlots; i++)
+                                int intSlot = 0;
+                                foreach (Clip objClip in objWeapon.Clips)
                                 {
+                                    ++intSlot;
                                     token.ThrowIfCancellationRequested();
-                                    objWeapon.ActiveAmmoSlot = i;
                                     string strAmmoName;
                                     if (objWeapon.RequireAmmo)
                                     {
-                                        Gear objGear = objWeapon.AmmoLoaded;
+                                        Gear objGear = objClip.AmmoGear;
                                         strAmmoName = objGear?.CurrentDisplayNameShort ??
-                                                      await LanguageManager.GetStringAsync(objWeapon.AmmoRemaining > 0
+                                                      await LanguageManager.GetStringAsync(objClip.Ammo > 0
                                                           ? "String_ExternalSource"
                                                           : "String_Empty");
                                         if (objWeapon.AmmoSlots > 1)
                                             strAmmoName += strSpace + '(' + string.Format(GlobalSettings.CultureInfo
                                                 , await LanguageManager.GetStringAsync("String_SlotNumber")
-                                                , i.ToString(GlobalSettings.CultureInfo)) + ')';
+                                                , intSlot.ToString(GlobalSettings.CultureInfo)) + ')';
 
                                         string strPlugins = string.Empty;
                                         if (objGear?.Children.Count > 0)
@@ -15207,15 +15303,14 @@ namespace Chummer
                                             strAmmoName += strSpace + '[' + strPlugins + ']';
                                     }
                                     else
-                                        strAmmoName = await LanguageManager.GetStringAsync(objWeapon.AmmoRemaining > 0
+                                        strAmmoName = await LanguageManager.GetStringAsync(objClip.Ammo > 0
                                             ? "String_MountInternal"
                                             : "String_Empty");
                                     token.ThrowIfCancellationRequested();
-                                    lstAmmo.Add(new ListItem(i.ToString(GlobalSettings.InvariantCultureInfo),
+                                    lstAmmo.Add(new ListItem(intSlot.ToString(GlobalSettings.InvariantCultureInfo),
                                                              strAmmoName));
                                 }
                                 token.ThrowIfCancellationRequested();
-                                objWeapon.ActiveAmmoSlot = intCurrentSlot;
                                 await cboWeaponAmmo.PopulateWithListItemsAsync(lstAmmo, token);
                                 await cboWeaponAmmo.DoThreadSafeAsync(x =>
                                 {
@@ -16155,7 +16250,7 @@ namespace Chummer
                     await cmdGearMoveToVehicle.DoThreadSafeAsync(x =>
                     {
                         x.Visible = true;
-                        x.Enabled = !objGear.IncludedInParent && CharacterObject.Vehicles.Count > 0;
+                        x.Enabled = !objGear.IncludedInParent && objGear.LoadedIntoClip == null && CharacterObject.Vehicles.Count > 0;
                     }, token);
                     await lblGearAvail.DoThreadSafeAsync(x => x.Text = objGear.DisplayTotalAvail, token);
                     try
@@ -17764,6 +17859,7 @@ namespace Chummer
                             await lblVehicleWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text
                                 = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo), token);
                             await cmdFireVehicleWeapon.DoThreadSafeAsync(x => x.Enabled = objWeapon.AmmoRemaining != 0, token);
+                            await cmdUnloadVehicleWeapon.DoThreadSafeAsync(x => x.Enabled = objWeapon.RequireAmmo && objWeapon.AmmoLoaded != null && objWeapon.AmmoRemaining != 0, token);
                             await cboVehicleWeaponFiringMode.DoThreadSafeAsync(x => x.SelectedValue = objWeapon.FireMode, token);
                             string strSingleShotText
                                 = objWeapon.AllowSingleShot || (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
@@ -18233,7 +18329,7 @@ namespace Chummer
                             x.Visible = true;
                             x.Text = strText;
                         }, token);
-                        await cmdVehicleMoveToInventory.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent, token);
+                        await cmdVehicleMoveToInventory.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent && objGear.LoadedIntoClip == null, token);
                         await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false, token);
                         await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x => x.Visible = false, token);
                         await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false, token);

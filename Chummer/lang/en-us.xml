@@ -5280,6 +5280,10 @@
       <text>Reload</text>
     </string>
     <string>
+      <key>Button_Unload</key>
+      <text>Unload</text>
+    </string>
+    <string>
       <key>Tip_BuyAmmo</key>
       <text>Buy additional Ammo for this Weapon</text>
     </string>

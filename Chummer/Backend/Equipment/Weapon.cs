@@ -884,7 +884,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
             
-            Clip objInternalClip = new Clip(null, intAmmoCount);
+            Clip objInternalClip = new Clip(_objCharacter, this, null, intAmmoCount);
             _lstAmmo.Add(objInternalClip);
         }
 
@@ -1024,7 +1024,7 @@ namespace Chummer.Backend.Equipment
 
                     foreach (XmlNode node in clipNode.ChildNodes)
                     {
-                        Clip objLoopClip = Clip.Load(node, this);
+                        Clip objLoopClip = Clip.Load(node, _objCharacter, this);
                         if (objLoopClip != null)
                             _lstAmmo.Add(objLoopClip);
                     }
@@ -1045,7 +1045,7 @@ namespace Chummer.Backend.Equipment
 
                     foreach (XmlNode node in clipNode.ChildNodes)
                     {
-                        Clip objLoopClip = Clip.Load(node, this);
+                        Clip objLoopClip = Clip.Load(node, _objCharacter, this);
                         if (objLoopClip != null)
                             _lstAmmo.Add(objLoopClip);
                     }
@@ -1062,7 +1062,7 @@ namespace Chummer.Backend.Equipment
                             Gear objGear = ParentVehicle != null
                                 ? ParentVehicle.FindVehicleGear(guid.ToString("D", GlobalSettings.InvariantCultureInfo))
                                 : _objCharacter.Gear.DeepFindById(guid.ToString("D", GlobalSettings.InvariantCultureInfo));
-                            _lstAmmo.Add(new Clip(objGear, ammo));
+                            _lstAmmo.Add(new Clip(_objCharacter, this, objGear, ammo));
                         }
                     }
                 }
@@ -1429,7 +1429,7 @@ namespace Chummer.Backend.Equipment
 
                         foreach (Gear objAmmoGear in GetAmmoReloadable(lstGearToSearch))
                         {
-                            Clip objClip = new Clip(objAmmoGear, objAmmoGear.Quantity.ToInt32())
+                            Clip objClip = new Clip(_objCharacter, this, objAmmoGear, objAmmoGear.Quantity.ToInt32())
                             {
                                 AmmoLocation = objAmmoGear.Location != null
                                     ? objAmmoGear.Location.Name
@@ -1548,6 +1548,11 @@ namespace Chummer.Backend.Equipment
         /// Children as Underbarrel Weapon.
         /// </summary>
         public TaggedObservableCollection<Weapon> Children => UnderbarrelWeapons;
+
+        /// <summary>
+        /// Magazines used for holding and tracking ammo.
+        /// </summary>
+        public IReadOnlyList<Clip> Clips => _lstAmmo;
 
         /// <summary>
         /// Internal identifier which will be used to identify this Weapon.
@@ -6437,7 +6442,8 @@ namespace Chummer.Backend.Equipment
             {
                 if (await frmReloadWeapon.ShowDialogSafeAsync(_objCharacter) != DialogResult.OK)
                     return;
-                
+
+                Gear objCurrentlyLoadedAmmo = AmmoLoaded;
                 Gear objSelectedAmmo;
                 decimal decQty = frmReloadWeapon.MyForm.SelectedCount;
                 // If an External Source is not being used, consume ammo.
@@ -6473,7 +6479,55 @@ namespace Chummer.Backend.Equipment
                         });
                     }
 
-                    if (decQty > objSelectedAmmo.Quantity)
+                    if (objSelectedAmmo.IsIdenticalToOtherGear(objCurrentlyLoadedAmmo))
+                    {
+                        // Just top up the currently loaded ammo
+                        decimal decTopUp = decQty - objCurrentlyLoadedAmmo.Quantity;
+                        if (decTopUp > objSelectedAmmo.Quantity)
+                        {
+                            // We need more ammo for a full top-up than the quantity of gear, so just merge the gears and delete the old gear.
+                            objCurrentlyLoadedAmmo.Quantity += objSelectedAmmo.Quantity;
+                            objSelectedAmmo.DeleteGear();
+                            GetClip(_intActiveAmmoSlot).Ammo = objCurrentlyLoadedAmmo.Quantity.ToInt32(); // Bypass AmmoRemaining so as not to alter the gear quantity
+                        }
+                        else
+                        {
+                            objCurrentlyLoadedAmmo.Quantity = decQty;
+                            objSelectedAmmo.Quantity -= decQty;
+                            await treGearView.DoThreadSafeAsync(x =>
+                            {
+                                // Refresh the Gear tree.
+                                TreeNode objSelectedNode = x.FindNode(objCurrentlyLoadedAmmo.InternalId);
+                                if (objSelectedNode != null)
+                                    objSelectedNode.Text = objCurrentlyLoadedAmmo.CurrentDisplayName;
+                                objSelectedNode = x.FindNode(objSelectedAmmo.InternalId);
+                                if (objSelectedNode != null)
+                                    objSelectedNode.Text = objSelectedAmmo.CurrentDisplayName;
+                            });
+                            GetClip(_intActiveAmmoSlot).Ammo = decQty.ToInt32(); // Bypass AmmoRemaining so as not to alter the gear quantity
+                        }
+
+                        return;
+                    }
+
+                    if (objSelectedAmmo.Quantity > decQty)
+                    {
+                        // Duplicate the ammo into a new entry where we can directly deduct from the quantity as we fire
+                        Gear objNewSelectedAmmo = new Gear(_objCharacter);
+                        objNewSelectedAmmo.Copy(objSelectedAmmo);
+                        objNewSelectedAmmo.Quantity = decQty.ToInt32();
+                        lstGears.Add(objNewSelectedAmmo);
+                        objSelectedAmmo.Quantity -= decQty.ToInt32();
+                        await treGearView.DoThreadSafeAsync(x =>
+                        {
+                            // Refresh the Gear tree.
+                            TreeNode objSelectedNode = x.FindNode(objSelectedAmmo.InternalId);
+                            if (objSelectedNode != null)
+                                objSelectedNode.Text = objSelectedAmmo.CurrentDisplayName;
+                        });
+                        objSelectedAmmo = objNewSelectedAmmo;
+                    }
+                    else if (decQty > objSelectedAmmo.Quantity)
                     {
                         decQty = objSelectedAmmo.Quantity;
                     }
@@ -6490,8 +6544,18 @@ namespace Chummer.Backend.Equipment
                 {
                     objSelectedAmmo = objExternalSource;
                 }
-                
+
                 AmmoLoaded = objSelectedAmmo;
+                if (objCurrentlyLoadedAmmo != objSelectedAmmo && objCurrentlyLoadedAmmo != null)
+                {
+                    await treGearView.DoThreadSafeAsync(x =>
+                    {
+                        // Refresh the Gear tree.
+                        TreeNode objSelectedNode = x.FindNode(objCurrentlyLoadedAmmo.InternalId);
+                        if (objSelectedNode != null)
+                            objSelectedNode.Text = objCurrentlyLoadedAmmo.CurrentDisplayName;
+                    });
+                }
                 GetClip(_intActiveAmmoSlot).Ammo = decQty.ToInt32(); // Bypass AmmoRemaining so as not to alter the gear quantity
             }
         }
@@ -6505,6 +6569,7 @@ namespace Chummer.Backend.Equipment
             {
                 foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
                     x.Quantity > 0
+                    && x.LoadedIntoClip == null
                     && Name == x.Name
                     && (string.IsNullOrEmpty(x.Extra) || x.Extra == AmmoCategory)))
                 {
@@ -6517,6 +6582,7 @@ namespace Chummer.Backend.Equipment
                 {
                     foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
                                                                     x.Quantity > 0
+                                                                    && x.LoadedIntoClip == null
                                                                     && x.IsFlechetteAmmo
                                                                     && x.AmmoForWeaponType.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(WeaponType)
                                                                     && (string.IsNullOrEmpty(x.Extra)
@@ -6530,6 +6596,7 @@ namespace Chummer.Backend.Equipment
                 {
                     foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
                                                                     x.Quantity > 0
+                                                                    && x.LoadedIntoClip == null
                                                                     && x.AmmoForWeaponType.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(WeaponType)
                                                                     && (string.IsNullOrEmpty(x.Extra)
                                                                         || x.Extra == AmmoCategory
@@ -6543,6 +6610,7 @@ namespace Chummer.Backend.Equipment
             {
                 foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
                     x.Quantity > 0
+                    && x.LoadedIntoClip == null
                     && x.IsFlechetteAmmo
                     && x.AmmoForWeaponType.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(WeaponType)
                     && (string.IsNullOrEmpty(x.Extra)
@@ -6555,6 +6623,7 @@ namespace Chummer.Backend.Equipment
             {
                 foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
                     x.Quantity > 0
+                    && x.LoadedIntoClip == null
                     && x.AmmoForWeaponType.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(WeaponType)
                     && (string.IsNullOrEmpty(x.Extra)
                         || x.Extra == AmmoCategory)))
@@ -6929,22 +6998,10 @@ namespace Chummer.Backend.Equipment
 
             for (int i = _lstAmmo.Count; i <= clip; i++)
             {
-                _lstAmmo.Add(new Clip(null, 0));
+                _lstAmmo.Add(new Clip(_objCharacter, this, null, 0));
             }
 
             return _lstAmmo[clip];
-        }
-
-        public void ClearGearFromClips(Gear objGear)
-        {
-            foreach (Clip objClip in _lstAmmo)
-            {
-                if (objClip.AmmoGear == objGear)
-                {
-                    objClip.AmmoGear = null;
-                    objClip.Ammo = 0;
-                }
-            }
         }
 
         private IHasMatrixAttributes GetMatrixAttributesOverride
@@ -7093,117 +7150,6 @@ namespace Chummer.Backend.Equipment
             }
 
             return intReturn;
-        }
-
-        private sealed class Clip
-        {
-            private Gear _objAmmoGear;
-
-            internal int Ammo { get; set; }
-
-            public string DisplayAmmoName(string strLanguage = "")
-            {
-                return AmmoGear?.DisplayNameShort(strLanguage)
-                       ?? LanguageManager.GetString("String_MountInternal", strLanguage);
-            }
-
-            public Task<string> DisplayAmmoNameAsync(string strLanguage = "")
-            {
-                return AmmoGear != null
-                    ? AmmoGear.DisplayNameShortAsync(strLanguage)
-                    : LanguageManager.GetStringAsync("String_MountInternal", strLanguage);
-            }
-
-            public Gear AmmoGear
-            {
-                get => _objAmmoGear;
-                set
-                {
-                    if (_objAmmoGear == value)
-                        return;
-                    _objAmmoGear = value;
-                    Ammo = Math.Min(Ammo, value.Quantity.ToInt32());
-                }
-            }
-
-            public string AmmoLocation { get; set; }
-
-            internal static Clip Load(XmlNode node, Weapon objWeapon)
-            {
-                if (node != null)
-                {
-                    string strAmmoGuid = string.Empty;
-                    int intCount = 0;
-                    if (node.TryGetStringFieldQuickly("id", ref strAmmoGuid)
-                        && !string.IsNullOrEmpty(strAmmoGuid)
-                        && node.TryGetInt32FieldQuickly("count", ref intCount)
-                        && Guid.TryParse(strAmmoGuid, out Guid guiClipId))
-                    {
-                        Gear objGear = null;
-                        if (guiClipId != Guid.Empty)
-                        {
-                            objGear = objWeapon.ParentVehicle != null
-                                ? objWeapon.ParentVehicle.FindVehicleGear(strAmmoGuid)
-                                : objWeapon._objCharacter.Gear.DeepFindById(strAmmoGuid);
-                        }
-                        Clip objReturn = new Clip(objGear, intCount);
-                        string strTemp = string.Empty;
-                        if (node.TryGetStringFieldQuickly("location", ref strTemp))
-                            objReturn.AmmoLocation = strTemp;
-                        return objReturn;
-                    }
-                }
-                return null;
-            }
-
-            internal void Save(XmlWriter writer)
-            {
-                if (AmmoGear != null || Ammo != 0) //Don't save empty clips, we are recreating them anyway. Save those kb
-                {
-                    writer.WriteStartElement("clip");
-                    writer.WriteElementString("count", Ammo.ToString(GlobalSettings.InvariantCultureInfo));
-                    writer.WriteElementString("location", AmmoLocation);
-                    writer.WriteElementString(
-                        "id",
-                        AmmoGear != null
-                            ? AmmoGear.InternalId
-                            : Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo));
-                    writer.WriteEndElement();
-                }
-            }
-
-            internal async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
-            {
-                if (AmmoGear != null || Ammo != 0) //Don't save empty clips, we are recreating them anyway. Save those kb
-                {
-                    await objWriter.WriteStartElementAsync("clip");
-                    await objWriter.WriteElementStringAsync("name", await DisplayAmmoNameAsync(strLanguageToPrint));
-                    await objWriter.WriteElementStringAsync("count", Ammo.ToString(objCulture));
-                    await objWriter.WriteElementStringAsync("location", AmmoLocation);
-                    if (AmmoGear != null)
-                    {
-                        await objWriter.WriteElementStringAsync("id", AmmoGear.InternalId);
-                        await objWriter.WriteStartElementAsync("ammotype");
-
-                        await AmmoGear.PrintWeaponBonusEntries(objWriter, objCulture, strLanguageToPrint, true);
-                        // Here for Legacy reasons
-                        await objWriter.WriteElementStringAsync("DV", await AmmoGear.WeaponBonusDamageAsync(strLanguageToPrint));
-                        await objWriter.WriteElementStringAsync("BonusRange", AmmoGear.WeaponBonusRange.ToString(objCulture));
-
-                        await objWriter.WriteEndElementAsync();
-                    }
-                    else
-                        await objWriter.WriteElementStringAsync("id", Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo));
-                    await objWriter.WriteEndElementAsync();
-                }
-            }
-
-            internal Clip(Gear objGear, int intAmmoCount)
-            {
-                AmmoGear = objGear;
-                Ammo = intAmmoCount;
-                AmmoLocation = "loaded";
-            }
         }
 
         public bool Remove(bool blnConfirmDelete = true)
