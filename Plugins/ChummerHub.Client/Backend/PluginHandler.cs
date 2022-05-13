@@ -244,8 +244,8 @@ namespace Chummer.Plugins
                     newFavorite.TranslateToolStripItemsRecursively();
                     cmsRoster.Items.Add(newFavorite);
                 }
-
-                foreach (DpiFriendlyToolStripMenuItem item in cmsRoster.Items)
+                var workItems = cmsRoster.Items.OfType<DpiFriendlyToolStripMenuItem>().ToArray();
+                foreach (DpiFriendlyToolStripMenuItem item in workItems)
                 {
                     switch (item.Name)
                     {
