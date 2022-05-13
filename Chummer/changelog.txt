@@ -57,6 +57,7 @@ Data Changes:
 - Mentor spirit dice pool bonuses that apply to skills only under specific circumstances now have those bonuses show up under those circumstances in Chummer (e.g. a bonus to summoning Spirits of Man now shows up to Summoning specializations for Spirits of Man). Existing characters with mentor spirits that would have these bonuses are unaffected unless improvements are reapplied.
 - Updated bonuses when using Delnar Skills Remake to account for cases where old skills have become new skill specializations.
 - Added the Delnar Skills Remake (Lite) custom dataset for the Lite version of Delnar's Active Skills Remake.
+- Added more quips and tips to Chummy.
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups
