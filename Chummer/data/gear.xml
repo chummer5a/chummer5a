@@ -2461,7 +2461,7 @@
         <usegear>
           <name>Camera, Micro</name>
           <category>Vision Devices</category>
-          <capacity>0</capacity>
+          <capacity>[0]</capacity>
         </usegear>
         <usegear>
           <name>RFID Tag Scanner</name>
@@ -2482,7 +2482,7 @@
         <usegear>
           <name>Earbuds</name>
           <category>Audio Devices</category>
-          <capacity>0</capacity>
+          <capacity>[0]</capacity>
           <rating>1</rating>
           <maxrating>1</maxrating>
         </usegear>
@@ -7295,7 +7295,7 @@
         <usegear>
           <name>Vision Magnification</name>
           <category>Vision Enhancements</category>
-          <capacity>0</capacity>
+          <capacity>[0]</capacity>
         </usegear>
       </gears>
       <addoncategory>Vision Enhancements</addoncategory>
@@ -7316,7 +7316,7 @@
         <usegear>
           <name>Vision Magnification</name>
           <category>Vision Enhancements</category>
-          <capacity>0</capacity>
+          <capacity>[0]</capacity>
         </usegear>
       </gears>
     </gear>
@@ -8255,7 +8255,7 @@
         <usegear>
           <name>Image Link</name>
           <category>Vision Enhancements</category>
-          <capacity>0</capacity>
+          <capacity>[0]</capacity>
         </usegear>
       </gears>
       <addoncategory>Vision Enhancements</addoncategory>
@@ -8276,7 +8276,7 @@
         <usegear>
           <name>Image Link</name>
           <category>Vision Enhancements</category>
-          <capacity>0</capacity>
+          <capacity>[0]</capacity>
         </usegear>
       </gears>
       <addoncategory>Vision Enhancements</addoncategory>
@@ -17406,13 +17406,13 @@
           <name>Camera</name>
           <category>Vision Devices</category>
           <rating>2</rating>
-          <capacity>2</capacity>
+          <capacity>2/[2]</capacity>
         </usegear>
         <usegear>
           <name>Microphone, Omni-Directional</name>
           <category>Audio Devices</category>
           <rating>2</rating>
-          <capacity>2</capacity>
+          <capacity>2/[2]</capacity>
         </usegear>
       </gears>
     </gear>
@@ -19004,7 +19004,7 @@
         <usegear>
           <name>Vision Magnification</name>
           <category>Vision Enhancements</category>
-          <capacity>0</capacity>
+          <capacity>[0]</capacity>
         </usegear>
       </gears>
       <addoncategory>Vision Enhancements</addoncategory>
@@ -19024,7 +19024,7 @@
         <usegear>
           <name>Vision Magnification</name>
           <category>Vision Enhancements</category>
-          <capacity>0</capacity>
+          <capacity>[0]</capacity>
         </usegear>
       </gears>
     </gear>

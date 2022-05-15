@@ -40,6 +40,7 @@ Application Changes:
 - Trying to add an armor-, armor mod-, or gear-added weapon that does not exist no longer causes Chummer to crash. Fixes #4785.
 - Sources of armor other than equippable armor and armor mods now get exported explicitly under the otherarmors node.
 - Ammo can now be unloaded from weapons without reloading them explicitly.
+- Implemented logic to allow child objects of gear to be capacity providers rather than just consumers.
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.
@@ -58,6 +59,7 @@ Data Changes:
 - Updated bonuses when using Delnar Skills Remake to account for cases where old skills have become new skill specializations.
 - Added the Delnar Skills Remake (Lite) custom dataset for the Lite version of Delnar's Active Skills Remake.
 - Added more quips and tips to Chummy.
+- Fixed the sensor collar not being able to add sensor functions to its camera or microphone.
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups

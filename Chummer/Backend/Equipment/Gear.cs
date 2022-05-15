@@ -692,7 +692,7 @@ namespace Chummer.Backend.Equipment
 
             // Change the Capacity of the child if necessary.
             if (xmlChildNode["capacity"] != null)
-                objChild.Capacity = '[' + xmlChildNode["capacity"].InnerText + ']';
+                objChild.Capacity = xmlChildNode["capacity"].InnerText;
 
             objChild.CreateChildren(xmlChildNode, blnAddChildImprovements, blnSkipSelectForms);
         }
@@ -755,6 +755,11 @@ namespace Chummer.Backend.Equipment
                                                    GlobalSettings.InvariantCultureInfo);
                 string strMaxRating = lstGearAttributes?["maxrating"]?.InnerText ?? string.Empty;
                 Create(xmlGearDataNode, intRating, lstWeapons, strForceValue, blnAddImprovements, true, blnSkipSelectForms);
+
+
+                // Change the Capacity of the child if necessary.
+                if (xmlGearNode["capacity"] != null)
+                    Capacity = xmlGearNode["capacity"].InnerText;
 
                 if (!blnConsumeCapacity)
                 {

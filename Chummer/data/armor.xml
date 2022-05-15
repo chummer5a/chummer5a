@@ -2656,8 +2656,18 @@
       <avail>2</avail>
       <cost>200</cost>
       <gears>
-        <usegear>Camera</usegear>
-        <usegear>Microphone, Omni-Directional</usegear>
+        <usegear>
+          <name>Camera</name>
+          <category>Vision Devices</category>
+          <rating>2</rating>
+          <capacity>2/[0]</capacity>
+        </usegear>
+        <usegear>
+          <name>Microphone, Omni-Directional</name>
+          <category>Audio Devices</category>
+          <rating>2</rating>
+          <capacity>2/[0]</capacity>
+        </usegear>
       </gears>
       <source>HS</source>
       <page>185</page>
