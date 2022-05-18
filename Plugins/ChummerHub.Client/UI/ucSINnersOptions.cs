@@ -155,6 +155,9 @@ namespace ChummerHub.Client.UI
             string sinnerurl = client.BaseUrl;
             Settings.Default.SINnerUrls.Clear();
             Settings.Default.Save();
+#if DEBUG
+            Settings.Default.SINnerUrls.Add("https://localhost:64939/");
+#endif
             Settings.Default.SINnerUrls.Add("https://chummer-stable.azurewebsites.net/");
             Settings.Default.SINnerUrls.Add("https://chummer-beta.azurewebsites.net/");
             Settings.Default.Save();

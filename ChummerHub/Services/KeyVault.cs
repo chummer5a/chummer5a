@@ -30,6 +30,11 @@ using System.Net.Http.Headers;
 using System.Security.Authentication;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure.Extensions.AspNetCore.Configuration.Secrets; // v1.2.1
+using System.Net.Http;
+using System.Security.Authentication;
+using System.Net;
+using Azure.Core.Pipeline;
 
 namespace ChummerHub.Services
 {
@@ -56,11 +61,7 @@ namespace ChummerHub.Services
                 if (client == null)
                 {
                     //client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
-                    //var webProxy = new WebProxy(new Uri("{proxy_url}"))
-                    //{
-                    //    Credentials = CredentialCache.DefaultNetworkCredentials
-                    //};
-                    
+
                     var httpClient = new HttpClient(new HttpClientHandler
                     {
                         DefaultProxyCredentials = CredentialCache.DefaultCredentials,
@@ -72,11 +73,6 @@ namespace ChummerHub.Services
                         Transport = new HttpClientTransport(httpClient)
                     };
 
-                    // `Azure.Security.KeyVault.Secrets` package version < 4.3.0 does not have the tenant discovery feature, therefore you will have to set this i nthe options. 
-                    /*var defaultAzureCredentialOptions = new DefaultAzureCredentialOptions()
-                    {
-                        VisualStudioTenantId = "",
-                    };*/
 
                     client = new SecretClient(
                         new Uri(keyVaultUrl),
@@ -88,6 +84,7 @@ namespace ChummerHub.Services
 
                     //var output = builder.Configuration
                     //    .GetSection("ApplicationInsights:InstrumentationKey").Value;
+
                 }
                 KeyVaultSecret keySecret = client.GetSecret(secretName);
                 return keySecret.Value;
