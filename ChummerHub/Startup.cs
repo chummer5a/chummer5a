@@ -106,8 +106,13 @@ namespace ChummerHub
         {
             MyServices = services;
 
+
             ConnectionStringToMasterSqlDb = Configuration.GetConnectionString("MasterSqlConnection");
             ConnectionStringSinnersDb = Configuration.GetConnectionString("DefaultConnection");
+            //var keys = new KeyVault(_logger);
+
+            //ConnectionStringToMasterSqlDb = keys.GetSecret("MasterSqlConnection");
+            //ConnectionStringSinnersDb = keys.GetSecret("DefaultConnection");
 
             services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
@@ -182,7 +187,8 @@ namespace ChummerHub
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection"),
+                    //Configuration.GetConnectionString("DefaultConnection"),
+                    ConnectionStringSinnersDb,
                     builder =>
                     {
                         //builder.EnableRetryOnFailure(5);
@@ -528,7 +534,7 @@ namespace ChummerHub
                     }
                     catch(SqlException e)
                     {
-                        if(!e.Message?.Contains("already exists") == true)
+                        if(e.Message?.Contains("already exists") == false && (e.Message?.Contains("is already an object") == false))
                         {
                             throw;
                         }
@@ -557,9 +563,9 @@ namespace ChummerHub
                 }
                 catch(SqlException e)
                 {
-                    if (!e.Message.Contains("already exists") == true)
+                    if (e.Message.Contains("already exists") == false && (e.Message.Contains("is already an object") == false))
                         throw;
-                    logger.LogWarning(e, e.Message);
+                    //logger.LogWarning(e, e.Message);
                 }
                 catch (Exception e)
                 {
@@ -582,7 +588,13 @@ namespace ChummerHub
                 // Set password with the Secret Manager tool.
                 // dotnet user-secrets set SeedUserPW <pw>
                 var testUserPw = config["SeedUserPW"];
+                if (String.IsNullOrEmpty(testUserPw))
+                {
+                    var keys = new KeyVault(logger);
+                    testUserPw = keys.GetSecret("SeedUserPW");
+                }
                 try
+
                 {
                     var env = services.GetService<IHostEnvironment>();
                     SeedData.Initialize(services, testUserPw, env).Wait();

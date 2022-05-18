@@ -3,12 +3,6 @@
     "secrets2": {
       "type": "secrets.user"
     },
-    "appConfig1": {
-      "secretStore": "LocalSecretsFile",
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.AppConfiguration/configurationStores/sinnerconfiguration",
-      "type": "appConfig.azure",
-      "connectionId": "AppConfig"
-    },
     "secrets1": {
       "secretStore": null,
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.KeyVault/vaults/SinnersVault",
@@ -44,6 +38,12 @@
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/sinnersdbserver/databases/SINners_DB_Beta_5",
       "type": "mssql.azure",
       "connectionId": "ConnectionStrings:DefaultConnection"
+    },
+    "appConfig1": {
+      "secretStore": "LocalSecretsFile",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.AppConfiguration/configurationStores/sinnerconfiguration",
+      "type": "appConfig.azure",
+      "connectionId": "AppConfig"
     }
   }
 }

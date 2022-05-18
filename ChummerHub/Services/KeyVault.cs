@@ -16,16 +16,28 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Azure.Core.Pipeline;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Security.Authentication;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ChummerHub.Services
 {
+    public class MyKeyVaultCredential : DefaultAzureCredential
+    {
+       
+    }
+
     public class KeyVault
     {
         private readonly ILogger _logger;
@@ -42,7 +54,41 @@ namespace ChummerHub.Services
             try
             {
                 if (client == null)
-                    client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
+                {
+                    //client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
+                    //var webProxy = new WebProxy(new Uri("{proxy_url}"))
+                    //{
+                    //    Credentials = CredentialCache.DefaultNetworkCredentials
+                    //};
+                    
+                    var httpClient = new HttpClient(new HttpClientHandler
+                    {
+                        DefaultProxyCredentials = CredentialCache.DefaultCredentials,
+                        SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls
+                    });
+
+                    var secretClientOptions = new SecretClientOptions
+                    {
+                        Transport = new HttpClientTransport(httpClient)
+                    };
+
+                    // `Azure.Security.KeyVault.Secrets` package version < 4.3.0 does not have the tenant discovery feature, therefore you will have to set this i nthe options. 
+                    /*var defaultAzureCredentialOptions = new DefaultAzureCredentialOptions()
+                    {
+                        VisualStudioTenantId = "",
+                    };*/
+
+                    client = new SecretClient(
+                        new Uri(keyVaultUrl),
+                        new DefaultAzureCredential(/*defaultAzureCredentialOptions*/),
+                        secretClientOptions);
+
+                    //builder.Configuration
+                    //    .AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
+
+                    //var output = builder.Configuration
+                    //    .GetSection("ApplicationInsights:InstrumentationKey").Value;
+                }
                 KeyVaultSecret keySecret = client.GetSecret(secretName);
                 return keySecret.Value;
 

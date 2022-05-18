@@ -16,10 +16,6 @@
       "type": "appInsights",
       "connectionId": "APPINSIGHTS_CONNECTIONSTRING"
     },
-    "appConfig1": {
-      "type": "appConfig",
-      "connectionId": "AppConfig"
-    },
     "secrets2": {
       "type": "secrets",
       "connectionId": "VaultUri"
@@ -31,6 +27,10 @@
     "mssql2": {
       "type": "mssql",
       "connectionId": "MasterSqlConnection"
+    },
+    "appConfig1": {
+      "type": "appConfig",
+      "connectionId": "AppConfig"
     }
   }
 }
