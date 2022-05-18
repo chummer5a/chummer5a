@@ -23,6 +23,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure.Extensions.AspNetCore.Configuration.Secrets; // v1.2.1
+using System.Net.Http;
+using System.Security.Authentication;
+using System.Net;
+using Azure.Core.Pipeline;
 
 namespace ChummerHub.Services
 {
@@ -42,7 +47,22 @@ namespace ChummerHub.Services
             try
             {
                 if (client == null)
-                    client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
+                {
+                    //client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
+                    var httpClient = new HttpClient(new HttpClientHandler
+                    {
+                        DefaultProxyCredentials = CredentialCache.DefaultCredentials,
+                        SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls
+                    });
+                    var secretClientOptions = new SecretClientOptions
+                    {
+                        Transport = new HttpClientTransport(httpClient)
+                    };
+                    client = new SecretClient(
+                                new Uri(keyVaultUrl),
+                                new DefaultAzureCredential(/*defaultAzureCredentialOptions*/),
+                                secretClientOptions);
+                }
                 KeyVaultSecret keySecret = client.GetSecret(secretName);
                 return keySecret.Value;
 

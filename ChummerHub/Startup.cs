@@ -528,7 +528,7 @@ namespace ChummerHub
                     }
                     catch(SqlException e)
                     {
-                        if(!e.Message?.Contains("already exists") == true)
+                        if(e.Message?.Contains("already exists") == false && e.Message.Contains("is already an object") == false)
                         {
                             throw;
                         }
@@ -557,9 +557,9 @@ namespace ChummerHub
                 }
                 catch(SqlException e)
                 {
-                    if (!e.Message.Contains("already exists") == true)
+                    if (e.Message.Contains("already exists") == false && e.Message.Contains("is already an object") == false)
                         throw;
-                    logger.LogWarning(e, e.Message);
+                    //logger.LogWarning(e, e.Message);
                 }
                 catch (Exception e)
                 {
