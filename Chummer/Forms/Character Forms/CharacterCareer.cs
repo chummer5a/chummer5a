@@ -11565,7 +11565,7 @@ namespace Chummer
         {
             if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Weapon objWeapon))
                 return;
-            objWeapon.AmmoLoaded = null;
+            await objWeapon.Unload(CharacterObject.Gear, treGear);
 
             await RequestCharacterUpdate();
             await SetDirty(true);

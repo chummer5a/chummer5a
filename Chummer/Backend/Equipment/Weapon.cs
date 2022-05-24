@@ -6560,6 +6560,35 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public async ValueTask Unload(ICollection<Gear> lstGears, TreeView treGearView)
+        {
+            Gear objAmmo = AmmoLoaded;
+            AmmoLoaded = null;
+            Gear objMergeGear = lstGears.FirstOrDefault(x =>
+                x.InternalId != objAmmo.InternalId && x.IsIdenticalToOtherGear(objAmmo, true));
+            if (objMergeGear != null)
+            {
+                objMergeGear.Quantity += objAmmo.Quantity;
+                objAmmo.DeleteGear();
+                await treGearView.DoThreadSafeAsync(x =>
+                {
+                    // Refresh the Gear tree.
+                    TreeNode objSelectedNode = x.FindNode(objMergeGear.InternalId);
+                    if (objSelectedNode != null) objSelectedNode.Text = objMergeGear.CurrentDisplayName;
+                });
+            }
+            else
+            {
+                // No existing ammunition on that 
+                await treGearView.DoThreadSafeAsync(x =>
+                {
+                    // Refresh the Gear tree.
+                    TreeNode objSelectedNode = x.FindNode(objAmmo.InternalId);
+                    if (objSelectedNode != null) objSelectedNode.Text = objAmmo.CurrentDisplayName;
+                });
+            }
+        }
+
         public IEnumerable<Gear> GetAmmoReloadable(IEnumerable<Gear> lstGears)
         {
             if (!RequireAmmo)
