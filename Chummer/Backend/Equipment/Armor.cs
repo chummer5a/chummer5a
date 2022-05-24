@@ -177,40 +177,42 @@ namespace Chummer.Backend.Equipment
                     break;
             }
 
+            // Short-circuits this in case we are adding mods to an armor that is not on the character (happens when browsing for new armor to add)
+            if (_objCharacter?.Armor.Contains(this) != true)
+                return;
+
             using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
                        out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
             {
                 try
                 {
-                    if (_objCharacter != null)
+                    if (blnDoEquippedArmorRefresh)
                     {
-                        if (blnDoEquippedArmorRefresh)
+                        if (!dicChangedProperties.TryGetValue(_objCharacter,
+                                                              out HashSet<string> setChangedProperties))
                         {
-                            if (!dicChangedProperties.TryGetValue(_objCharacter,
-                                                                  out HashSet<string> setChangedProperties))
-                            {
-                                setChangedProperties = Utils.StringHashSetPool.Get();
-                                dicChangedProperties.Add(_objCharacter, setChangedProperties);
-                            }
-
-                            setChangedProperties.Add(nameof(Character.TotalCarriedWeight));
-                            setChangedProperties.Add(nameof(Character.GetArmorRating));
+                            setChangedProperties = Utils.StringHashSetPool.Get();
+                            dicChangedProperties.Add(_objCharacter, setChangedProperties);
                         }
-                        if (blnDoArmorEncumbranceRefresh)
-                        {
-                            if (!dicChangedProperties.TryGetValue(_objCharacter,
-                                                                  out HashSet<string> setChangedProperties))
-                            {
-                                setChangedProperties = Utils.StringHashSetPool.Get();
-                                dicChangedProperties.Add(_objCharacter, setChangedProperties);
-                            }
 
-                            setChangedProperties.Add(nameof(Character.ArmorEncumbrance));
-                        }
+                        setChangedProperties.Add(nameof(Character.TotalCarriedWeight));
+                        setChangedProperties.Add(nameof(Character.GetArmorRating));
                     }
 
-                    if (lstImprovementSourcesToProcess.Count > 0 && _objCharacter?.IsLoading == false)
+                    if (blnDoArmorEncumbranceRefresh)
+                    {
+                        if (!dicChangedProperties.TryGetValue(_objCharacter,
+                                                              out HashSet<string> setChangedProperties))
+                        {
+                            setChangedProperties = Utils.StringHashSetPool.Get();
+                            dicChangedProperties.Add(_objCharacter, setChangedProperties);
+                        }
+
+                        setChangedProperties.Add(nameof(Character.ArmorEncumbrance));
+                    }
+
+                    if (lstImprovementSourcesToProcess.Count > 0 && _objCharacter.IsLoading == false)
                     {
                         foreach (ArmorMod objItem in lstImprovementSourcesToProcess)
                         {
@@ -223,7 +225,7 @@ namespace Chummer.Backend.Equipment
                                     && objImprovement.Enabled)
                                 {
                                     foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
-                                                 string strPropertyToUpdate) in objImprovement
+                                              string strPropertyToUpdate) in objImprovement
                                                  .GetRelevantPropertyChangers())
                                     {
                                         if (dicChangedProperties.TryGetValue(
@@ -241,7 +243,8 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
+                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in
+                             dicChangedProperties)
                     {
                         kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
                     }
