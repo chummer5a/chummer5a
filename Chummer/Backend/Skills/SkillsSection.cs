@@ -1078,11 +1078,6 @@ namespace Chummer.Backend.Skills
                 _blnSkillsInitialized = false;
             }
         }
-
-        /// <summary>
-        /// Maximum Skill Rating.
-        /// </summary>
-        public int MaxSkillRating { get; set; } = 0;
         
         private bool _blnSkillsInitialized;
         private readonly ReaderWriterLockSlim _objSkillsInitializerLock = new ReaderWriterLockSlim();
@@ -1106,42 +1101,45 @@ namespace Chummer.Backend.Skills
                             _objSkillsInitializerLock.EnterWriteLock();
                             try
                             {
-                                XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
-                                using (XmlNodeList xmlSkillList = xmlSkillsDocument
-                                           .SelectNodes("/chummer/skills/skill[not(exotic) and ("
-                                                        + _objCharacter.Settings.BookXPath() + ')'
-                                                        + SkillFilter(FilterOption.NonSpecial) + ']'))
+                                if (!_blnSkillsInitialized && _objCharacter.SkillsSection == this) // repeat check to avoid redoing calculations if another thread read Skills before first one acquired write lock
                                 {
-                                    if (xmlSkillList?.Count > 0)
+                                    XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
+                                    using (XmlNodeList xmlSkillList = xmlSkillsDocument
+                                               .SelectNodes("/chummer/skills/skill[not(exotic) and ("
+                                                            + _objCharacter.Settings.BookXPath() + ')'
+                                                            + SkillFilter(FilterOption.NonSpecial) + ']'))
                                     {
-                                        foreach (XmlNode xmlSkill in xmlSkillList)
+                                        if (xmlSkillList?.Count > 0)
                                         {
-                                            bool blnIsKnowledgeSkill
-                                                = xmlSkillsDocument
-                                                  .SelectSingleNode("/chummer/categories/category[. = "
-                                                                    + xmlSkill["category"]?.InnerText.CleanXPath()
-                                                                    + "]/@type")
-                                                  ?.Value
-                                                  != "active";
-                                            Skill objSkill = Skill.FromData(xmlSkill, _objCharacter,
-                                                                            blnIsKnowledgeSkill);
-                                            if (objSkill.SkillId != Guid.Empty && !objSkill.IsExoticSkill)
+                                            foreach (XmlNode xmlSkill in xmlSkillList)
                                             {
-                                                Skill objExistingSkill
-                                                    = _lstSkills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
-                                                if (objExistingSkill != null)
+                                                bool blnIsKnowledgeSkill
+                                                    = xmlSkillsDocument
+                                                      .SelectSingleNode("/chummer/categories/category[. = "
+                                                                        + xmlSkill["category"]?.InnerText.CleanXPath()
+                                                                        + "]/@type")
+                                                      ?.Value
+                                                      != "active";
+                                                Skill objSkill = Skill.FromData(xmlSkill, _objCharacter,
+                                                    blnIsKnowledgeSkill);
+                                                if (objSkill.SkillId != Guid.Empty && !objSkill.IsExoticSkill)
                                                 {
-                                                    MergeSkills(objExistingSkill, objSkill);
-                                                    continue;
+                                                    Skill objExistingSkill
+                                                        = _lstSkills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
+                                                    if (objExistingSkill != null)
+                                                    {
+                                                        MergeSkills(objExistingSkill, objSkill);
+                                                        continue;
+                                                    }
                                                 }
-                                            }
 
-                                            _lstSkills.AddWithSort(objSkill, CompareSkills, MergeSkills);
+                                                _lstSkills.AddWithSort(objSkill, CompareSkills, MergeSkills);
+                                            }
                                         }
                                     }
-                                }
 
-                                _blnSkillsInitialized = true;
+                                    _blnSkillsInitialized = true;
+                                }
                             }
                             finally
                             {
