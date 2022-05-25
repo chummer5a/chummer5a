@@ -109,7 +109,7 @@ namespace ChummerHub
 
             ConnectionStringToMasterSqlDb = Configuration.GetConnectionString("MasterSqlConnection");
             ConnectionStringSinnersDb = Configuration.GetConnectionString("DefaultConnection");
-            //var keys = new KeyVault(_logger);
+            var keys = new KeyVault(_logger);
 
             //ConnectionStringToMasterSqlDb = keys.GetSecret("MasterSqlConnection");
             //ConnectionStringSinnersDb = keys.GetSecret("DefaultConnection");
