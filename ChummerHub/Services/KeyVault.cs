@@ -35,6 +35,7 @@ using System.Net.Http;
 using System.Security.Authentication;
 using System.Net;
 using Azure.Core.Pipeline;
+using System.Diagnostics;
 
 namespace ChummerHub.Services
 {
@@ -73,10 +74,17 @@ namespace ChummerHub.Services
                         Transport = new HttpClientTransport(httpClient)
                     };
 
-
+                    var azureOptions = new DefaultAzureCredentialOptions()
+                    {
+                        Transport = new HttpClientTransport(httpClient)
+                    };
+                    if (Debugger.IsAttached)
+                    {
+                        azureOptions.ExcludeInteractiveBrowserCredential = false;
+                    }
                     client = new SecretClient(
                         new Uri(keyVaultUrl),
-                        new DefaultAzureCredential(/*defaultAzureCredentialOptions*/),
+                        new DefaultAzureCredential(azureOptions),
                         secretClientOptions);
 
                     //builder.Configuration
