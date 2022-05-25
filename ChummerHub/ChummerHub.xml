@@ -215,6 +215,9 @@
             </summary>
             <param name="telemetry"></param>
         </member>
+        <member name="M:ChummerHub.Services.ClaimsPrincipalFactory.GenerateClaimsAsync(Microsoft.AspNetCore.Identity.ApplicationUser)">
+            <inheritdoc/>
+        </member>
         <member name="T:ChummerHub.Services.GoogleDrive.GoogleIDataStore">
             <summary>
             Handles internal token storage, bypassing filesystem

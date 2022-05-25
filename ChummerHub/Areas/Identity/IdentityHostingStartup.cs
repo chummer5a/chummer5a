@@ -31,6 +31,7 @@ namespace ChummerHub.Areas.Identity
         {
             builder.ConfigureServices((context, services) =>
             {
+                
             });
         }
     }

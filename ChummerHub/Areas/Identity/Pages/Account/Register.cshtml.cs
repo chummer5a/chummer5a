@@ -30,9 +30,7 @@ using Microsoft.Extensions.Logging;
 namespace ChummerHub.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel'
     public class RegisterModel : PageModel
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel'
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -61,29 +59,21 @@ namespace ChummerHub.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel.Email'
             public string Email { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel.Email'
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel.Password'
             public string Password { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel.Password'
 
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel.ConfirmPassword'
             public string ConfirmPassword { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel.ConfirmPassword'
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.OnGet(string)'
         public void OnGet(string returnUrl = null)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.OnGet(string)'
         {
             ReturnUrl = returnUrl;
         }
