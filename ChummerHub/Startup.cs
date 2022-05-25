@@ -144,7 +144,7 @@ namespace ChummerHub
             Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions aiOptions
                 = new Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions();
             // Disables adaptive sampling.
-            aiOptions.EnableAdaptiveSampling = true;
+            aiOptions.EnableAdaptiveSampling = false;
 
             // Disables QuickPulse (Live Metrics stream).
             aiOptions.EnableQuickPulseMetricStream = true;
@@ -196,18 +196,38 @@ namespace ChummerHub
                 options.EnableDetailedErrors();
             });
 
+            
+
+
+            //services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+            //{
+
+            //})
+            //  .AddRoleManager<RoleManager<ApplicationRole>>()
+            //  .AddRoles<ApplicationRole>()
+            //  .AddEntityFrameworkStores<ApplicationDbContext>()
+            //  .AddDefaultTokenProviders()
+            //  .AddSignInManager();
+
+      
+
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
+                    .AddEntityFrameworkStores<ApplicationDbContext>()
+                    .AddDefaultTokenProviders()
+                    .AddRoles<ApplicationRole>()
+                    .AddRoleManager<RoleManager<ApplicationRole>>()
+                    .AddSignInManager()
+                    .AddClaimsPrincipalFactory<ClaimsPrincipalFactory>()
+                    .AddDefaultUI();
+
+            services.AddIdentityServer(options =>
+            {
+                options.Authentication.CookieLifetime = TimeSpan.MaxValue;
+                options.Authentication.CookieSlidingExpiration = false;
+            });
+
             services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
 
-
-            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
-            {
-
-            })
-              .AddRoleManager<RoleManager<ApplicationRole>>()
-              .AddRoles<ApplicationRole>()
-              .AddEntityFrameworkStores<ApplicationDbContext>()
-              .AddDefaultTokenProviders()
-              .AddSignInManager();
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
