@@ -16,6 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using Duende.IdentityServer;
+using Duende.IdentityServer.Models;
+using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -26,6 +29,82 @@ namespace ChummerHub
     public class Config
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Config'
     {
+        public static IEnumerable<IdentityResource> IdentityResources =>
+            new List<IdentityResource>
+            {
+                new IdentityResources.OpenId(),
+                new IdentityResources.Profile(),
+                 new IdentityResource()
+                {
+                    Name = "verification",
+                    UserClaims = new List<string>
+                    {
+                        JwtClaimTypes.Email,
+                        JwtClaimTypes.EmailVerified
+                    }
+                }
+            };
+
+        public static IEnumerable<ApiScope> ApiScopes =>
+        new List<ApiScope>
+        {
+            new ApiScope("ChummerHubV1", "ChummerHub API")
+        };
+
+        public static IEnumerable<Client> Clients =>
+       new List<Client>
+       {
+            new Client
+            {
+                ClientId = "Chummer5a",
+
+                // no interactive user, use the clientid/secret for authentication
+                AllowedGrantTypes = GrantTypes.DeviceFlow,
+
+                // secret for authentication
+                ClientSecrets =
+                {
+                    new Secret("secret".Sha256())
+                },
+
+                // where to redirect to after login
+                RedirectUris = { "https://localhost:5002/signin-oidc" },
+
+                // where to redirect to after logout
+                PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
+
+                AllowOfflineAccess = true,
+
+                // scopes that client has access to
+                AllowedScopes =
+                {
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile,
+                    "ChummerHubV1"
+                }
+            },
+            new Client
+            {
+                ClientId = "web",
+                ClientSecrets = { new Secret("secret".Sha256()) },
+
+                AllowedGrantTypes = GrantTypes.Code,
+
+                // where to redirect after login
+                RedirectUris = { "https://localhost:5002/signin-oidc" },
+
+                // where to redirect after logout
+                PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
+
+                AllowedScopes = new List<string>
+                {
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile,
+                    "verification"
+                }
+            }
+       };
+
         internal static List<ApplicationUser> GetAdminUsers()
         {
             var a = new ApplicationUser()
