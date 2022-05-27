@@ -50,6 +50,8 @@ using Newtonsoft.Json.Converters;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Hosting;
 
+
+
 namespace ChummerHub
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup'
@@ -224,7 +226,11 @@ namespace ChummerHub
             {
                 options.Authentication.CookieLifetime = TimeSpan.MaxValue;
                 options.Authentication.CookieSlidingExpiration = false;
-            });
+            }).AddInMemoryIdentityResources(Config.IdentityResources)
+              .AddInMemoryApiScopes(Config.ApiScopes)
+              .AddInMemoryClients(Config.Clients)
+              .AddAspNetIdentity<ApplicationUser>();
+            ;
 
             services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
 
@@ -274,6 +280,7 @@ namespace ChummerHub
             services.AddAuthentication(options =>
             {
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = "oidc";
             })
                 //.AddFacebook(facebookOptions =>
                 //{
@@ -301,8 +308,21 @@ namespace ChummerHub
                     //using Microsoft.AspNetCore.Authentication.Cookies;
                     options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                     options.SlidingExpiration = false;
-                })
-                ;
+                }).AddOpenIdConnect("oidc", options =>
+                {
+                    options.Authority = "https://localhost:5001";
+
+                    options.ClientId = "web";
+                    options.ClientSecret = "secret";
+                    options.ResponseType = "code";
+
+                    options.Scope.Clear();
+                    options.Scope.Add("openid");
+                    options.Scope.Add("profile");
+
+                    options.SaveTokens = true;
+                });
+            ;
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -505,9 +525,9 @@ namespace ChummerHub
             }
             app.UseRouting();
             //app.UseCookiePolicy();
-
+            app.UseIdentityServer();
             app.UseAuthentication();
-
+            app.UseAuthorization();
 
             app.UseMvc(routes =>
             {
@@ -551,6 +571,28 @@ namespace ChummerHub
                     try
                     {
                         dbContext.Database.EnsureCreated();
+                        try
+                        {
+                            using (var dbContextTransaction = dbContext.Database.BeginTransaction())
+                            {
+                                dbContext.Database.ExecuteSqlRaw(
+                                    @"CREATE VIEW View_SINnerUserRights AS 
+        SELECT        dbo.SINners.Alias, dbo.UserRights.EMail, dbo.SINners.Id, dbo.UserRights.CanEdit, dbo.SINners.GoogleDriveFileId, dbo.SINners.MyGroupId, dbo.SINners.LastChange
+                         
+FROM            dbo.SINners INNER JOIN
+                         dbo.SINnerMetaData ON dbo.SINners.SINnerMetaDataId = dbo.SINnerMetaData.Id INNER JOIN
+                         dbo.SINnerVisibility ON dbo.SINnerMetaData.VisibilityId = dbo.SINnerVisibility.Id INNER JOIN
+                         dbo.UserRights ON dbo.SINnerVisibility.Id = dbo.UserRights.SINnerVisibilityId"
+                                );
+                                dbContextTransaction.Commit();
+                            }
+                        }
+
+                        catch (SqlException e)
+                        {
+                            if (!e.Message.StartsWith("There is already an object"))
+                                throw;
+                        }
                     }
                     catch(SqlException e)
                     {

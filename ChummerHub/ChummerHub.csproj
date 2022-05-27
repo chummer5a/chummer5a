@@ -67,6 +67,7 @@
     <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
     <PackageReference Include="Azure.Identity" Version="1.6.0" />
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.3.0" />
+    <PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="6.1.0" />
     <PackageReference Include="Duende.IdentityServer.EntityFramework" Version="6.1.0" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.57.0.2684" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
@@ -110,6 +111,8 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.1" />
   
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
+  
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.5" />
   
     <PackageReference Include="NuGet.CommandLine" Version="6.1.0">
       <PrivateAssets>all</PrivateAssets>
@@ -158,14 +161,9 @@
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Web.dll</HintPath>
     </Reference-->
   
-    <Compile Remove="Areas\Identity\Services\**" />
-  
     <Compile Remove="Properties\PublishProfiles\**" />
-    <Content Remove="Areas\Identity\Services\**" />
     <Content Remove="Properties\PublishProfiles\**" />
-    <EmbeddedResource Remove="Areas\Identity\Services\**" />
     <EmbeddedResource Remove="Properties\PublishProfiles\**" />
-    <None Remove="Areas\Identity\Services\**" />
     <None Remove="Properties\PublishProfiles\**" />
     <_WebToolingArtifacts Remove="Properties\PublishProfiles\**" />
   </ItemGroup>

@@ -30,6 +30,7 @@ using Microsoft.Extensions.Hosting;
 using Duende.IdentityServer.EntityFramework.Interfaces;
 using System.Threading.Tasks;
 using Duende.IdentityServer.EntityFramework.Entities;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace ChummerHub.Data
 {
@@ -143,26 +144,7 @@ namespace ChummerHub.Data
                 .HasIndex(b => b.TagValueFloat);
             builder.Entity<ApplicationUserFavoriteGroup>()
                 .HasIndex(b => b.FavoriteGuid);
-            try
-            {
-                using (var dbContextTransaction = Database.BeginTransaction())
-                {
-                    Database.ExecuteSqlRaw(
-                        @"CREATE VIEW View_SINnerUserRights AS 
-        SELECT        dbo.SINners.Alias, dbo.UserRights.EMail, dbo.SINners.Id, dbo.UserRights.CanEdit, dbo.SINners.GoogleDriveFileId, dbo.SINners.MyGroupId, dbo.SINners.LastChange
-                         
-FROM            dbo.SINners INNER JOIN
-                         dbo.SINnerMetaData ON dbo.SINners.SINnerMetaDataId = dbo.SINnerMetaData.Id INNER JOIN
-                         dbo.SINnerVisibility ON dbo.SINnerMetaData.VisibilityId = dbo.SINnerVisibility.Id INNER JOIN
-                         dbo.UserRights ON dbo.SINnerVisibility.Id = dbo.UserRights.SINnerVisibilityId"
-                    );
-                    dbContextTransaction.Commit();
-                }
-            }
-            catch (Exception e)
-            {
-                System.Diagnostics.Trace.TraceInformation(e.Message);
-            }
+            
         }
 
         public Task<int> SaveChangesAsync()
@@ -194,5 +176,17 @@ FROM            dbo.SINners INNER JOIN
         //public DbSet<PersistedGrant> PersistedGrants { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         //public DbSet<DeviceFlowCodes> DeviceFlowCodes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         //public DbSet<Key> Keys { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    }
+
+    public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
+    {
+        public ApplicationDbContext CreateDbContext(string[] args)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            string constring = "Server=(localdb)\\mssqllocaldb;Database=SINners_DB;Trusted_Connection=True;MultipleActiveResultSets=true";
+            optionsBuilder.UseSqlServer(constring);
+            
+            return new ApplicationDbContext();
+        }
     }
 }
