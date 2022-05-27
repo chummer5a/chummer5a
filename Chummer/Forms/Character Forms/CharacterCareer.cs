@@ -11917,7 +11917,7 @@ namespace Chummer
 
                     default:
                         await CharacterObject.Gear.RemoveAsync(objGear);
-                        continue;
+                        break;
                 }
 
                 if (objWeaponMount != null)
@@ -12613,7 +12613,7 @@ namespace Chummer
         {
             if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Weapon objWeapon))
                 return;
-            objWeapon.AmmoLoaded = null;
+            await objWeapon.Unload(objWeapon.ParentVehicle.GearChildren, treGear);
 
             await RequestCharacterUpdate();
             await SetDirty(true);
@@ -15273,7 +15273,7 @@ namespace Chummer
                                                       await LanguageManager.GetStringAsync(objClip.Ammo > 0
                                                           ? "String_ExternalSource"
                                                           : "String_Empty");
-                                        if (objWeapon.AmmoSlots > 1)
+                                        if (objWeapon.Clips.Count > 1)
                                             strAmmoName += strSpace + '(' + string.Format(GlobalSettings.CultureInfo
                                                 , await LanguageManager.GetStringAsync("String_SlotNumber")
                                                 , intSlot.ToString(GlobalSettings.CultureInfo)) + ')';
@@ -17947,53 +17947,57 @@ namespace Chummer
                             using (new FetchSafelyFromPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstAmmo))
                             {
-                                int intCurrentSlot = objWeapon.ActiveAmmoSlot;
-
-                                for (int i = 1; i <= objWeapon.AmmoSlots; i++)
+                                int intSlot = 0;
+                                foreach (Clip objClip in objWeapon.Clips)
                                 {
+                                    ++intSlot;
                                     token.ThrowIfCancellationRequested();
-                                    objWeapon.ActiveAmmoSlot = i;
-                                    Gear objVehicleGear = objWeapon.AmmoLoaded;
-                                    string strAmmoName = objVehicleGear?.CurrentDisplayNameShort
-                                                         ?? await LanguageManager.GetStringAsync(
-                                                             objWeapon.AmmoRemaining == 0
-                                                                 ? "String_Empty"
-                                                                 : "String_ExternalSource");
-                                    if (objWeapon.AmmoSlots > 1)
-                                        strAmmoName += strSpace + '('
-                                                                + string.Format(
-                                                                    GlobalSettings.CultureInfo,
-                                                                    await LanguageManager.GetStringAsync(
-                                                                        "String_SlotNumber"),
-                                                                    i.ToString(GlobalSettings.CultureInfo)) + ')';
-
-                                    using (new FetchSafelyFromPool<StringBuilder>(
-                                               Utils.StringBuilderPool, out StringBuilder sbdPlugins))
+                                    string strAmmoName;
+                                    if (objWeapon.RequireAmmo)
                                     {
-                                        foreach (Gear objCurrentAmmo in objWeapon.ParentVehicle.GearChildren)
+                                        Gear objGear = objClip.AmmoGear;
+                                        strAmmoName = objGear?.CurrentDisplayNameShort ??
+                                                        await LanguageManager.GetStringAsync(objClip.Ammo > 0
+                                                            ? "String_ExternalSource"
+                                                            : "String_Empty");
+                                        if (objWeapon.Clips.Count > 1)
+                                            strAmmoName += strSpace + '(' + string.Format(GlobalSettings.CultureInfo
+                                                , await LanguageManager.GetStringAsync("String_SlotNumber")
+                                                , intSlot.ToString(GlobalSettings.CultureInfo)) + ')';
+
+                                        string strPlugins = string.Empty;
+                                        if (objGear?.Children.Count > 0)
                                         {
-                                            if (objCurrentAmmo != objWeapon.AmmoLoaded)
-                                                continue;
-                                            foreach (Gear objChild in objCurrentAmmo.Children)
+                                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                        out StringBuilder sbdPlugins))
                                             {
-                                                sbdPlugins.Append(objChild.CurrentDisplayNameShort)
-                                                          .Append(',').Append(strSpace);
+                                                foreach (Gear objChild in objGear.Children)
+                                                {
+                                                    sbdPlugins.Append(objChild.CurrentDisplayNameShort).Append(',')
+                                                                .Append(strSpace);
+                                                }
+
+                                                strPlugins = sbdPlugins.ToString();
                                             }
                                         }
 
                                         // Remove the trailing comma.
-                                        if (sbdPlugins.Length > 0)
-                                        {
-                                            sbdPlugins.Length -= 1 + strSpace.Length;
-                                            strAmmoName += strSpace + '[' + sbdPlugins + ']';
-                                        }
+                                        if (!string.IsNullOrEmpty(strPlugins))
+                                            strPlugins = strPlugins.Substring(
+                                                0, strPlugins.Length - 1 - strSpace.Length);
+
+                                        if (!string.IsNullOrEmpty(strPlugins))
+                                            strAmmoName += strSpace + '[' + strPlugins + ']';
                                     }
+                                    else
+                                        strAmmoName = await LanguageManager.GetStringAsync(objClip.Ammo > 0
+                                            ? "String_MountInternal"
+                                            : "String_Empty");
                                     token.ThrowIfCancellationRequested();
-                                    lstAmmo.Add(new ListItem(i.ToString(GlobalSettings.InvariantCultureInfo),
-                                                             strAmmoName));
-                                }
+                                    lstAmmo.Add(new ListItem(intSlot.ToString(GlobalSettings.InvariantCultureInfo),
+                                                                strAmmoName));
+                                    }
                                 token.ThrowIfCancellationRequested();
-                                objWeapon.ActiveAmmoSlot = intCurrentSlot;
                                 await cboVehicleWeaponAmmo.PopulateWithListItemsAsync(lstAmmo, token);
                                 await cboVehicleWeaponAmmo.DoThreadSafeAsync(x =>
                                 {
