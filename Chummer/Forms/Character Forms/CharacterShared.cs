@@ -3683,7 +3683,7 @@ namespace Chummer
             }
         }
 
-        protected async ValueTask RefreshGears(TreeView treGear, ContextMenuStrip cmsGearLocation, ContextMenuStrip cmsGear, bool blnCommlinksOnly, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        protected async ValueTask RefreshGears(TreeView treGear, ContextMenuStrip cmsGearLocation, ContextMenuStrip cmsGear, bool blnCommlinksOnly, bool blnHideLoadedAmmo, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (treGear == null)
                 return;
@@ -3813,6 +3813,9 @@ namespace Chummer
                 async ValueTask AddToTree(Gear objGear, int intIndex = -1, bool blnSingleAdd = true)
                 {
                     if (blnCommlinksOnly && !objGear.IsCommlink)
+                        return;
+
+                    if (blnHideLoadedAmmo && objGear.LoadedIntoClip != null)
                         return;
 
                     TreeNode objNode = objGear.CreateTreeNode(cmsGear);

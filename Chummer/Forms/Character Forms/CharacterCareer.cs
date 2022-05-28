@@ -350,7 +350,9 @@ namespace Chummer
                                     await RefreshContacts(panContacts, panEnemies, panPets);
 
                                     await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
-                                    await RefreshGears(treGear, cmsGearLocation, cmsGear, await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken));
+                                    await RefreshGears(treGear, cmsGearLocation, cmsGear,
+                                        await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken),
+                                        await chkHideLoadedAmmo.DoThreadSafeFuncAsync(x => x.Checked, GenericToken));
                                     await RefreshFociFromGear(treFoci, null);
                                     await RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
                                     await RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
@@ -1476,7 +1478,10 @@ namespace Chummer
         {
             try
             {
-                await RefreshGears(treGear, cmsGearLocation, cmsGear, await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken), e);
+                await RefreshGears(treGear, cmsGearLocation, cmsGear,
+                    await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken),
+                    await chkHideLoadedAmmo.DoThreadSafeFuncAsync(x => x.Checked, GenericToken),
+                    e);
                 await RefreshFociFromGear(treFoci, null, e);
             }
             catch (OperationCanceledException)
@@ -2570,7 +2575,9 @@ namespace Chummer
                                                        chkPsycheActiveTechnomancer);
 
                                 await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
-                                await RefreshGears(treGear, cmsGearLocation, cmsGear, await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken));
+                                await RefreshGears(treGear, cmsGearLocation, cmsGear,
+                                    await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken),
+                                    await chkHideLoadedAmmo.DoThreadSafeFuncAsync(x => x.Checked, GenericToken));
                                 await RefreshFociFromGear(treFoci, null);
                                 await RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
                                 await RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
@@ -11955,9 +11962,21 @@ namespace Chummer
 
         private async void chkCommlinks_CheckedChanged(object sender, EventArgs e)
         {
+            await FilterCheckboxChanged();
+        }
+
+        private async void chkHideLoadedAmmo_CheckedChanged(object sender, EventArgs e)
+        {
+            await FilterCheckboxChanged();
+        }
+
+        private async ValueTask FilterCheckboxChanged()
+        {
             try
             {
-                await RefreshGears(treGear, cmsGearLocation, cmsGear, await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken));
+                bool commlinksOnly = await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
+                bool hideLoadedAmmo = await chkHideLoadedAmmo.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
+                await RefreshGears(treGear, cmsGearLocation, cmsGear, commlinksOnly, hideLoadedAmmo);
             }
             catch (OperationCanceledException)
             {
