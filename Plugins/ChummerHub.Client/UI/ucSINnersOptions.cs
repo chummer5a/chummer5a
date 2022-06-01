@@ -27,11 +27,17 @@ using Chummer.Plugins;
 using ChummerHub.Client.Backend;
 using ChummerHub.Client.Properties;
 using Microsoft.Rest;
-using Newtonsoft.Json;
+//using Newtonsoft.Json;
 using ChummerHub.Client.Sinners;
 using GroupControls;
 using NLog;
 using Utils = ChummerHub.Client.Backend.Utils;
+using ChummerHub.Client.OidcClient;
+using IdentityModel.OidcClient;
+using System.Net.Http;
+using System.Text.Json;
+using Newtonsoft.Json;
+using System.Web;
 
 //using Nemiro.OAuth;
 //using Nemiro.OAuth.LoginForms;
@@ -216,7 +222,7 @@ namespace ChummerHub.Client.UI
                     IList<string> roles = GetRolesStatus(this);
                     UpdateDisplay();
                     if (roles.Count == 0)
-                        ShowWebBrowser();
+                        await SignIn();
                     // ReSharper restore MethodHasAsyncOverload
                 }
                 else
@@ -224,7 +230,7 @@ namespace ChummerHub.Client.UI
                     IList<string> roles = await GetRolesStatusAsync(this);
                     await UpdateDisplayAsync();
                     if (roles.Count == 0)
-                        await ShowWebBrowserAsync();
+                        await SignIn();
                 }
             }
             else
@@ -288,21 +294,6 @@ namespace ChummerHub.Client.UI
             OptionsUpdate();
         }
 
-
-        //[DllImport("user32.dll")]
-        //public static extern int SendMessage(IntPtr hWnd,
-        //    uint Msg, int wParam, int lParam);
-
-        //// Make the button display the UAC shield.
-        //public static void AddShieldToButton(Button btn)
-        //{
-        //    const Int32 BCM_SETSHIELD = 0x160C;
-
-        //    // Give the button the flat style and make it
-        //    // display the UAC shield.
-        //    btn.FlatStyle = System.Windows.Forms.FlatStyle.System;
-        //    SendMessage(btn.Handle, BCM_SETSHIELD, 0, 1);
-        //}
 
         ~ucSINnersOptions()
         {
@@ -505,9 +496,126 @@ namespace ChummerHub.Client.UI
             {
                 Settings.Default.SINnerUrl = cbSINnerUrl.SelectedItem?.ToString();
                 Settings.Default.Save();
-                await ShowWebBrowserAsync();
+                await SignIn();
+                //await ShowWebBrowserAsync();
             }
         }
+
+
+        static string _authority = "https://demo.duendesoftware.com";
+        static string _api = "https://demo.duendesoftware.com/api/test";
+
+        static IdentityModel.OidcClient.OidcClient _oidcClient;
+        static HttpClient _apiClient = new HttpClient { BaseAddress = new Uri(_api) };
+
+        private static async Task SignIn()
+        {
+            // create a redirect URI using an available port on the loopback address.
+            // requires the OP to allow random ports on 127.0.0.1 - otherwise set a static port
+            var browser = new SystemBrowser();
+            string redirectUri = string.Format($"http://127.0.0.1:{browser.Port}");
+
+            var options = new OidcClientOptions
+            {
+                Authority = _authority,
+                ClientId = "interactive.public",
+                RedirectUri = redirectUri,
+                Scope = "openid profile api offline_access",
+                FilterClaims = false,
+
+                Browser = browser,
+                IdentityTokenValidator = new IdentityModel.OidcClient.JwtHandlerIdentityTokenValidator(),
+                RefreshTokenInnerHttpHandler = new HttpClientHandler()
+            };
+
+            _oidcClient = new IdentityModel.OidcClient.OidcClient(options);
+            var result = await _oidcClient.LoginAsync(new LoginRequest());
+
+            _apiClient = new HttpClient(result.RefreshTokenHandler)
+            {
+                BaseAddress = new Uri(_api)
+            };
+
+            ShowResult(result);
+            await NextSteps(result);
+        }
+
+        private static void ShowResult(LoginResult result)
+        {
+            if (result.IsError)
+            {
+                Console.WriteLine("\n\nError:\n{0}", result.Error);
+                return;
+            }
+
+            Console.WriteLine("\n\nClaims:");
+            foreach (var claim in result.User.Claims)
+            {
+                Console.WriteLine("{0}: {1}", claim.Type, claim.Value);
+            }
+
+            var values = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(result.TokenResponse.Raw);
+
+            Console.WriteLine($"token response...");
+            foreach (var item in values)
+            {
+                Console.WriteLine($"{item.Key}: {item.Value}");
+            }
+        }
+
+        private static async Task NextSteps(LoginResult result)
+        {
+            var currentAccessToken = result.AccessToken;
+            var currentRefreshToken = result.RefreshToken;
+
+            var menu = "  x...exit  c...call api   ";
+            if (currentRefreshToken != null) menu += "r...refresh token   ";
+
+            while (true)
+            {
+                Console.WriteLine("\n\n");
+
+                Console.Write(menu);
+                var key = Console.ReadKey();
+
+                if (key.Key == ConsoleKey.X) return;
+                if (key.Key == ConsoleKey.C) await CallApi();
+                if (key.Key == ConsoleKey.R)
+                {
+                    var refreshResult = await _oidcClient.RefreshTokenAsync(currentRefreshToken);
+                    if (refreshResult.IsError)
+                    {
+                        Console.WriteLine($"Error: {refreshResult.Error}");
+                    }
+                    else
+                    {
+                        currentRefreshToken = refreshResult.RefreshToken;
+                        currentAccessToken = refreshResult.AccessToken;
+
+                        Console.WriteLine("\n\n");
+                        Console.WriteLine($"access token:   {currentAccessToken}");
+                        Console.WriteLine($"refresh token:  {currentRefreshToken ?? "none"}");
+                    }
+                }
+            }
+        }
+
+        private static async Task CallApi()
+        {
+            var response = await _apiClient.GetAsync("");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+                Console.WriteLine("\n\n");
+                Console.WriteLine(json.RootElement);
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.ReasonPhrase}");
+            }
+        }
+
 
         private frmWebBrowser frmWebBrowser;
 

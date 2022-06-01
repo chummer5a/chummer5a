@@ -305,6 +305,7 @@ namespace Chummer.Plugins
                         }
                         Program.ChummerTelemetryClient.Flush();
                         string msg = $"Plugins (at least not all of them) could not be loaded. Logs are uploaded to the ChummerDevs. Maybe ping one of the Devs on Discord and provide your Installation-id: {Properties.Settings.Default.UploadClientId}";
+                        msg += Environment.NewLine + "Exception: " + Environment.NewLine + Environment.NewLine + e.ToString() + Environment.NewLine;
                         Log.Info(e, msg);
                     }
                     else
