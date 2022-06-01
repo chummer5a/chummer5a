@@ -555,10 +555,6 @@
       <text>Only show Commlinks</text>
     </string>
     <string>
-      <key>Checkbox_HideAmmo</key>
-      <text>Hide loaded ammo</text>
-    </string>
-    <string>
       <key>Checkbox_ActiveCommlink</key>
       <text>Active Commlink</text>
     </string>

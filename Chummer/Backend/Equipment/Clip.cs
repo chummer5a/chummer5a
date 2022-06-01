@@ -28,24 +28,16 @@ namespace Chummer.Backend.Equipment
     {
         private readonly Character _objCharacter;
         private readonly Weapon _objWeapon;
-        // can be null for the internal clip
-        private readonly WeaponAccessory _objAccessory;
         private Gear _objAmmoGear;
 
-        internal Clip(Character objCharacter, WeaponAccessory objAccessory, Weapon objWeapon, Gear objGear, int intAmmoCount)
+        internal Clip(Character objCharacter, Weapon objWeapon, Gear objGear, int intAmmoCount)
         {
             _objCharacter = objCharacter;
             _objWeapon = objWeapon;
-            _objAccessory = objAccessory;
             AmmoGear = objGear;
             Ammo = intAmmoCount;
             AmmoLocation = "loaded";
         }
-
-        /// <summary>
-        /// The GUID of the weapon accessory this clip is owned by. GUID of the weapon if it's not owned by an accessory.
-        /// </summary>
-        internal string OwnedBy => _objAccessory?.InternalId ?? _objWeapon?.InternalId;
 
         internal int Ammo { get; set; }
 
@@ -119,7 +111,7 @@ namespace Chummer.Backend.Equipment
 
         public string AmmoLocation { get; set; }
 
-        internal static Clip Load(XmlNode node, Character objCharacter, Weapon objWeapon, WeaponAccessory objOwnerAccessory)
+        internal static Clip Load(XmlNode node, Character objCharacter, Weapon objWeapon)
         {
             if (node == null)
                 return null;
@@ -137,7 +129,7 @@ namespace Chummer.Backend.Equipment
                         ? objWeapon.ParentVehicle.FindVehicleGear(strAmmoGuid)
                         : objCharacter.Gear.DeepFindById(strAmmoGuid);
                 }
-                Clip objReturn = new Clip(objCharacter, objOwnerAccessory, objWeapon, objGear, intCount);
+                Clip objReturn = new Clip(objCharacter, objWeapon, objGear, intCount);
                 string strTemp = string.Empty;
                 if (node.TryGetStringFieldQuickly("location", ref strTemp))
                     objReturn.AmmoLocation = strTemp;
