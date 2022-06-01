@@ -180,6 +180,10 @@ namespace Chummer.Backend.Equipment
                         {
                             blnRecreateInternalClip = true;
                         }
+                        if (objNewItem.AmmoSlots > 0)
+                        {
+                            AddAmmoSlots(objNewItem);
+                        }
                     }
                     break;
 
@@ -192,6 +196,10 @@ namespace Chummer.Backend.Equipment
                                                          !string.IsNullOrWhiteSpace(objOldItem.AmmoBonus)))
                         {
                             blnRecreateInternalClip = true;
+                        }
+                        if (objOldItem.AmmoSlots > 0)
+                        {
+                            RemoveAmmoSlots(objOldItem);
                         }
                     }
                     break;
@@ -206,6 +214,10 @@ namespace Chummer.Backend.Equipment
                         {
                             blnRecreateInternalClip = true;
                         }
+                        if (objOldItem.AmmoSlots > 0)
+                        {
+                            RemoveAmmoSlots(objOldItem);
+                        }
                     }
                     foreach (WeaponAccessory objNewItem in e.NewItems)
                     {
@@ -215,6 +227,10 @@ namespace Chummer.Backend.Equipment
                                                          !string.IsNullOrWhiteSpace(objNewItem.AmmoBonus)))
                         {
                             blnRecreateInternalClip = true;
+                        }
+                        if (objNewItem.AmmoSlots > 0)
+                        {
+                            AddAmmoSlots(objNewItem);
                         }
                     }
                     break;
@@ -884,7 +900,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
             
-            Clip objInternalClip = new Clip(_objCharacter, this, null, intAmmoCount);
+            Clip objInternalClip = new Clip(_objCharacter, null, this, null, intAmmoCount);
             _lstAmmo.Add(objInternalClip);
         }
 
@@ -1009,75 +1025,6 @@ namespace Chummer.Backend.Equipment
                                  ?? _objCharacter.LoadDataXPath("weapons.xml").SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@type")?.Value
                                  ?? Category.ToLowerInvariant();
 
-            if (blnCopy)
-            {
-                _lstAmmo.Clear();
-                _intActiveAmmoSlot = 1;
-            }
-            else if (!RequireAmmo)
-            {
-                if (objNode["clips"] != null)
-                {
-                    _lstAmmo.Clear();
-                    _intActiveAmmoSlot = 1;
-                    XmlNode clipNode = objNode["clips"];
-
-                    foreach (XmlNode node in clipNode.ChildNodes)
-                    {
-                        Clip objLoopClip = Clip.Load(node, _objCharacter, this);
-                        if (objLoopClip != null)
-                            _lstAmmo.Add(objLoopClip);
-                    }
-                }
-                // Legacy for items that were saved before internal clip tracking for weapons that don't need ammo was implemented
-                else
-                {
-                    RecreateInternalClip();
-                }
-            }
-            else
-            {
-                objNode.TryGetInt32FieldQuickly("activeammoslot", ref _intActiveAmmoSlot);
-                _lstAmmo.Clear();
-                if (objNode["clips"] != null)
-                {
-                    XmlNode clipNode = objNode["clips"];
-
-                    foreach (XmlNode node in clipNode.ChildNodes)
-                    {
-                        Clip objLoopClip = Clip.Load(node, _objCharacter, this);
-                        if (objLoopClip != null)
-                            _lstAmmo.Add(objLoopClip);
-                    }
-                }
-                else //Load old clips
-                {
-                    foreach (string s in s_OldClipValues)
-                    {
-                        int ammo = 0;
-                        if (objNode.TryGetInt32FieldQuickly("ammoremaining" + s, ref ammo) &&
-                            objNode.TryGetField("ammoloaded" + s, Guid.TryParse, out Guid guid) &&
-                            ammo > 0 && guid != Guid.Empty)
-                        {
-                            Gear objGear = ParentVehicle != null
-                                ? ParentVehicle.FindVehicleGear(guid.ToString("D", GlobalSettings.InvariantCultureInfo))
-                                : _objCharacter.Gear.DeepFindById(guid.ToString("D", GlobalSettings.InvariantCultureInfo));
-                            _lstAmmo.Add(new Clip(_objCharacter, this, objGear, ammo));
-                        }
-                    }
-                }
-            }
-
-            _nodWirelessBonus = objNode["wirelessbonus"];
-            objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn);
-
-            //#1544 Ammunition not loading or available.
-            if (_strUseSkill == "Throwing Weapons"
-                && _strAmmo != "1")
-            {
-                _strAmmo = "1";
-            }
-
             XmlNode xmlAccessoriesNode = objNode["accessories"];
             if (xmlAccessoriesNode != null)
             {
@@ -1094,6 +1041,109 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                 }
+            }
+
+            if (blnCopy)
+            {
+                _lstAmmo.Clear();
+                _intActiveAmmoSlot = 1;
+                List<WeaponAccessory> adoptables = GetClipProvidingAccessories();
+                foreach (WeaponAccessory adoptable in adoptables)
+                    _lstAmmo.Add(new Clip(_objCharacter, adoptable, this, null, 0));
+            }
+            else if (!RequireAmmo)
+            {
+                if (objNode["clips"] != null)
+                {
+                    _lstAmmo.Clear();
+                    _intActiveAmmoSlot = 1;
+                    XmlNode clipNode = objNode["clips"];
+
+                    foreach (XmlNode node in clipNode.ChildNodes)
+                    {
+                        Clip objLoopClip = Clip.Load(node, _objCharacter, this, null);
+                        if (objLoopClip != null)
+                            _lstAmmo.Add(objLoopClip);
+                    }
+                }
+                // Legacy for items that were saved before internal clip tracking for weapons that don't need ammo was implemented
+                else
+                {
+                    RecreateInternalClip();
+                }
+            }
+            else
+            {
+                objNode.TryGetInt32FieldQuickly("activeammoslot", ref _intActiveAmmoSlot);
+                _lstAmmo.Clear();
+                List<WeaponAccessory> adoptables = GetClipProvidingAccessories();
+                adoptables.Reverse(); // we'll be pulling from the end to make removing less costly
+                if (objNode["clips"] != null)
+                {
+                    XmlNode clipNode = objNode["clips"];
+
+                    foreach (XmlNode node in clipNode.ChildNodes)
+                    {
+                        WeaponAccessory owner = null;
+                        if (adoptables.Count > 0)
+                        {
+                            // if false, that means we have more filled clips than we have ammo slots, and the null default passes through
+                            // this shouldn't happen but it's not the end of the world
+                            // just default to the weapon owning it, it'll fix itself on reload with empty slots
+                            owner = adoptables[adoptables.Count - 1];
+                        }
+                        Clip objLoopClip = Clip.Load(node, _objCharacter, this, owner);
+                        if (objLoopClip != null)
+                        {
+                            if (adoptables.Count > 0)
+                            {
+                                // if .Load fails, don't remove an adoptable
+                                adoptables.RemoveAt(adoptables.Count - 1);
+                            }
+                            _lstAmmo.Add(objLoopClip);
+                        }
+                    }
+                }
+                else //Load old clips
+                {
+                    foreach (string s in s_OldClipValues)
+                    {
+                        int ammo = 0;
+                        if (objNode.TryGetInt32FieldQuickly("ammoremaining" + s, ref ammo) &&
+                            objNode.TryGetField("ammoloaded" + s, Guid.TryParse, out Guid guid) &&
+                            ammo > 0 && guid != Guid.Empty)
+                        {
+                            WeaponAccessory owner = null;
+                            if (adoptables.Count > 0)
+                            {
+                                // if false, that means we have more filled clips than we have ammo slots, and the null default passes through
+                                // just default to the weapon owning it, it'll fix itself on reload with empty slots
+                                owner = adoptables[adoptables.Count - 1];
+                                adoptables.RemoveAt(adoptables.Count - 1);
+                            }
+                            Gear objGear = ParentVehicle != null
+                                ? ParentVehicle.FindVehicleGear(guid.ToString("D", GlobalSettings.InvariantCultureInfo))
+                                : _objCharacter.Gear.DeepFindById(guid.ToString("D", GlobalSettings.InvariantCultureInfo));
+                            _lstAmmo.Add(new Clip(_objCharacter, owner, this, objGear, ammo));
+                        }
+                    }
+                }
+                if (adoptables.Count > 0)
+                {
+                    // still have clip providing objects - create empty clips
+                    for (int i = adoptables.Count - 1; i >= 0; i--)
+                        _lstAmmo.Add(new Clip(_objCharacter, adoptables[i], this, null, 0));
+                }
+            }
+
+            _nodWirelessBonus = objNode["wirelessbonus"];
+            objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn);
+
+            //#1544 Ammunition not loading or available.
+            if (_strUseSkill == "Throwing Weapons"
+                && _strAmmo != "1")
+            {
+                _strAmmo = "1";
             }
 
             XmlNode xmlUnderbarrelNode = objNode["underbarrel"];
@@ -1429,7 +1479,7 @@ namespace Chummer.Backend.Equipment
 
                         foreach (Gear objAmmoGear in GetAmmoReloadable(lstGearToSearch))
                         {
-                            Clip objClip = new Clip(_objCharacter, this, objAmmoGear, objAmmoGear.Quantity.ToInt32())
+                            Clip objClip = new Clip(_objCharacter, null, this, objAmmoGear, objAmmoGear.Quantity.ToInt32())
                             {
                                 AmmoLocation = objAmmoGear.Location != null
                                     ? objAmmoGear.Location.Name
@@ -1963,17 +2013,6 @@ namespace Chummer.Backend.Equipment
         {
             get => _intActiveAmmoSlot;
             set => _intActiveAmmoSlot = value;
-        }
-
-        /// <summary>
-        /// Number of Ammo slots the Weapon has.
-        /// </summary>
-        public int AmmoSlots
-        {
-            get
-            {
-                return _intAmmoSlots + WeaponAccessories.Sum(objAccessory => objAccessory.AmmoSlots);
-            }
         }
 
         /// <summary>
@@ -6193,6 +6232,9 @@ namespace Chummer.Backend.Equipment
                     _objCharacter.Weapons.Remove(this);
             }
 
+            // unload any clips before we die
+            UnloadAll();
+
             decimal decReturn = 0;
             // Remove any children the Gear may have.
             foreach (Weapon objChild in Children)
@@ -6562,32 +6604,37 @@ namespace Chummer.Backend.Equipment
 
         public async ValueTask Unload(ICollection<Gear> lstGears, TreeView treGearView)
         {
-            Gear objAmmo = AmmoLoaded;
-            AmmoLoaded = null;
+            Clip objClip = GetClip(ActiveAmmoSlot);
+            Gear objAmmo = Unload(lstGears, objClip);
+            if (objAmmo == null)
+                return;
+            await treGearView.DoThreadSafeAsync(x =>
+            {
+                // Refresh the Gear tree.
+                TreeNode objSelectedNode = x.FindNode(objAmmo.InternalId);
+                if (objSelectedNode != null) objSelectedNode.Text = objAmmo.CurrentDisplayName;
+            });
+        }
+
+        /// <returns>Returns the gear with the unloaded ammo</returns>
+        private static Gear Unload(ICollection<Gear> lstGears, Clip clipToUnload)
+        {
+            Gear objAmmo = clipToUnload.AmmoGear;
+            if (objAmmo == null)
+                return null;
+            clipToUnload.AmmoGear = null;
             Gear objMergeGear = lstGears.FirstOrDefault(x =>
                 x.InternalId != objAmmo.InternalId && x.IsIdenticalToOtherGear(objAmmo, true));
             if (objMergeGear != null)
             {
                 objMergeGear.Quantity += objAmmo.Quantity;
                 objAmmo.DeleteGear();
-                await treGearView.DoThreadSafeAsync(x =>
-                {
-                    // Refresh the Gear tree.
-                    TreeNode objSelectedNode = x.FindNode(objMergeGear.InternalId);
-                    if (objSelectedNode != null) objSelectedNode.Text = objMergeGear.CurrentDisplayName;
-                });
+                return objMergeGear;
             }
-            else
-            {
-                // No existing ammunition on that 
-                await treGearView.DoThreadSafeAsync(x =>
-                {
-                    // Refresh the Gear tree.
-                    TreeNode objSelectedNode = x.FindNode(objAmmo.InternalId);
-                    if (objSelectedNode != null) objSelectedNode.Text = objAmmo.CurrentDisplayName;
-                });
-            }
+            return objAmmo;
         }
+
+        
 
         public IEnumerable<Gear> GetAmmoReloadable(IEnumerable<Gear> lstGears)
         {
@@ -7018,20 +7065,68 @@ namespace Chummer.Backend.Equipment
 
         #endregion Hero Lab Importing
 
-        #endregion Methods
+        private List<WeaponAccessory> GetClipProvidingAccessories()
+        {
+            List<WeaponAccessory> weaponAccessories = new List<WeaponAccessory>();
+            for (int i = 0; i < _intAmmoSlots; i++)
+                weaponAccessories.Add(null);
+            // null represents a clip owned by the weapon itself
+            foreach (WeaponAccessory accessory in WeaponAccessories)
+            {
+                for (int i = 0; i < accessory.AmmoSlots; i++)
+                {
+                    weaponAccessories.Add(accessory);
+                }
+            }
+            return weaponAccessories;
+        }
+
+        private void AddAmmoSlots(WeaponAccessory accessory)
+        {
+            for (int i = 0; i < accessory.AmmoSlots; i++)
+                _lstAmmo.Add(new Clip(_objCharacter, accessory, this, null, 0));
+        }
+
+        private void RemoveAmmoSlots(WeaponAccessory accessory)
+        {
+            for (int i = _lstAmmo.Count - 1; i >= 0; i--)
+            {
+                Clip clip = _lstAmmo[i];
+                if (clip.OwnedBy == accessory.InternalId)
+                {
+                    ICollection<Gear> gears = ParentVehicle != null
+                        ? ParentVehicle.GearChildren
+                        : _objCharacter.Gear;
+                    if (ActiveAmmoSlot == i + 1)
+                        ActiveAmmoSlot = 1;
+                    Unload(gears, clip);
+                    _lstAmmo.RemoveAt(i);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Unload every clip.
+        /// </summary>
+        public void UnloadAll()
+        {
+            ICollection<Gear> gears = ParentVehicle != null
+                        ? ParentVehicle.GearChildren
+                        : _objCharacter.Gear;
+            foreach (Clip clip in Clips)
+            {
+                Unload(gears, clip);
+            }
+        }
 
         private Clip GetClip(int clip)
         {
             //1 indexed due legacy
             clip--;
-
-            for (int i = _lstAmmo.Count; i <= clip; i++)
-            {
-                _lstAmmo.Add(new Clip(_objCharacter, this, null, 0));
-            }
-
             return _lstAmmo[clip];
         }
+
+        #endregion Methods
 
         private IHasMatrixAttributes GetMatrixAttributesOverride
         {

@@ -766,6 +766,7 @@ namespace Chummer
             this.cmdDeleteGear = new Chummer.SplitButton();
             this.chkCommlinks = new Chummer.ColorableCheckBox(this.components);
             this.cmdAddGear = new Chummer.SplitButton();
+            this.chkHideLoadedAmmo = new Chummer.ColorableCheckBox(this.components);
             this.tabArmor = new System.Windows.Forms.TabPage();
             this.tlpArmor = new Chummer.BufferedTableLayoutPanel(this.components);
             this.treArmor = new System.Windows.Forms.TreeView();
@@ -12610,22 +12611,24 @@ namespace Chummer
             // 
             this.tlpGearButtons.AutoSize = true;
             this.tlpGearButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpGearButtons.ColumnCount = 4;
+            this.tlpGearButtons.ColumnCount = 5;
             this.tlpGear.SetColumnSpan(this.tlpGearButtons, 2);
             this.tlpGearButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tlpGearButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tlpGearButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tlpGearButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpGearButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpGearButtons.Controls.Add(this.cmdAddLocation, 2, 0);
             this.tlpGearButtons.Controls.Add(this.cmdDeleteGear, 1, 0);
             this.tlpGearButtons.Controls.Add(this.chkCommlinks, 3, 0);
             this.tlpGearButtons.Controls.Add(this.cmdAddGear, 0, 0);
+            this.tlpGearButtons.Controls.Add(this.chkHideLoadedAmmo, 4, 0);
             this.tlpGearButtons.Location = new System.Drawing.Point(0, 0);
             this.tlpGearButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpGearButtons.Name = "tlpGearButtons";
             this.tlpGearButtons.RowCount = 1;
             this.tlpGearButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpGearButtons.Size = new System.Drawing.Size(392, 29);
+            this.tlpGearButtons.Size = new System.Drawing.Size(512, 29);
             this.tlpGearButtons.TabIndex = 207;
             // 
             // cmdAddLocation
@@ -12684,6 +12687,22 @@ namespace Chummer
             this.cmdAddGear.Text = "&Add Gear";
             this.cmdAddGear.UseVisualStyleBackColor = true;
             this.cmdAddGear.Click += new System.EventHandler(this.cmdAddGear_Click);
+            // 
+            // chkHideLoadedAmmo
+            // 
+            this.chkHideLoadedAmmo.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkHideLoadedAmmo.AutoSize = true;
+            this.chkHideLoadedAmmo.DefaultColorScheme = true;
+            this.chkHideLoadedAmmo.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.chkHideLoadedAmmo.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ControlDark;
+            this.chkHideLoadedAmmo.Location = new System.Drawing.Point(395, 6);
+            this.chkHideLoadedAmmo.Name = "chkHideLoadedAmmo";
+            this.chkHideLoadedAmmo.Size = new System.Drawing.Size(114, 17);
+            this.chkHideLoadedAmmo.TabIndex = 118;
+            this.chkHideLoadedAmmo.Tag = "Checkbox_HideAmmo";
+            this.chkHideLoadedAmmo.Text = "Hide loaded ammo";
+            this.chkHideLoadedAmmo.UseVisualStyleBackColor = true;
+            this.chkHideLoadedAmmo.CheckedChanged += new System.EventHandler(this.chkHideLoadedAmmo_CheckedChanged);
             // 
             // tabArmor
             // 
@@ -23948,5 +23967,6 @@ namespace Chummer
         private BufferedTableLayoutPanel tlpVehiclesButtons;
         private Button cmdUnloadWeapon;
         private Button cmdUnloadVehicleWeapon;
+        private ColorableCheckBox chkHideLoadedAmmo;
     }
 }
