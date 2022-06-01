@@ -58,6 +58,9 @@
     <Reference Include="GroupControls, Version=1.9.0.0, Culture=neutral, PublicKeyToken=3726d9da21b6ac8f, processorArchitecture=MSIL">
       <HintPath>..\..\packages\GroupControls.1.9.0\lib\net45\GroupControls.dll</HintPath>
     </Reference>
+    <Reference Include="IdentityModel, Version=6.0.0.0, Culture=neutral, PublicKeyToken=e7877f4675df049f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IdentityModel.6.0.0\lib\net472\IdentityModel.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.ApplicationInsights, Version=2.20.0.103, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.ApplicationInsights.2.20.0\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
     </Reference>
@@ -68,6 +71,18 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Extensions.ObjectPool, Version=6.0.5.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Extensions.ObjectPool.6.0.5\lib\net461\Microsoft.Extensions.ObjectPool.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Abstractions, Version=6.18.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.Abstractions.6.18.0\lib\net472\Microsoft.IdentityModel.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.JsonWebTokens, Version=6.18.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.JsonWebTokens.6.18.0\lib\net472\Microsoft.IdentityModel.JsonWebTokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Logging, Version=6.18.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.Logging.6.18.0\lib\net472\Microsoft.IdentityModel.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens, Version=6.18.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.Tokens.6.18.0\lib\net472\Microsoft.IdentityModel.Tokens.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.Rest.ClientRuntime.2.3.24\lib\net461\Microsoft.Rest.ClientRuntime.dll</HintPath>
@@ -166,10 +181,17 @@
     <Reference Include="System.Text.Encodings.Web, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Text.Encodings.Web.6.0.0\lib\net461\System.Text.Encodings.Web.dll</HintPath>
     </Reference>
+    <Reference Include="System.Text.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Text.Json.6.0.0\lib\net461\System.Text.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
@@ -195,6 +217,49 @@
     <Compile Include="Model\SINnerVisibility.cs" />
     <Compile Include="Model\SINSearchGroupResult.cs" />
     <Compile Include="Model\Tag.cs" />
+    <Compile Include="OidcClient\IdentityTokenValidator\JwtHandlerIdentityTokenValidator.cs" />
+    <Compile Include="OidcClient\Oidc\AssemblyAttributes.cs" />
+    <Compile Include="OidcClient\Oidc\AuthorizeClient.cs" />
+    <Compile Include="OidcClient\Oidc\AuthorizeState.cs" />
+    <Compile Include="OidcClient\Oidc\Browser\BrowserOptions.cs" />
+    <Compile Include="OidcClient\Oidc\Browser\BrowserResult.cs" />
+    <Compile Include="OidcClient\Oidc\Browser\BrowserResultType.cs" />
+    <Compile Include="OidcClient\Oidc\Browser\DisplayMode.cs" />
+    <Compile Include="OidcClient\Oidc\Browser\IBrowser.cs" />
+    <Compile Include="OidcClient\Oidc\CryptoHelper.cs" />
+    <Compile Include="OidcClient\Oidc\IIdentityTokenValidator.cs" />
+    <Compile Include="OidcClient\Oidc\Infrastructure\LoggingExtensions.cs" />
+    <Compile Include="OidcClient\Oidc\Infrastructure\LogSerializer.cs" />
+    <Compile Include="OidcClient\Oidc\Infrastructure\OidcClientOptionsExtensions.cs" />
+    <Compile Include="OidcClient\Oidc\Infrastructure\StringExtensions.cs" />
+    <Compile Include="OidcClient\Oidc\NoValidationIdentityTokenValidator.cs" />
+    <Compile Include="OidcClient\Oidc\OidcClient.cs" />
+    <Compile Include="OidcClient\Oidc\OidcClientOptions.cs" />
+    <Compile Include="OidcClient\Oidc\Policy.cs" />
+    <Compile Include="OidcClient\Oidc\ProviderInformation.cs" />
+    <Compile Include="OidcClient\Oidc\RefreshTokenDelegatingHandler.cs" />
+    <Compile Include="OidcClient\Oidc\Requests\AuthorizeRequest.cs" />
+    <Compile Include="OidcClient\Oidc\Requests\LoginRequest.cs" />
+    <Compile Include="OidcClient\Oidc\Requests\LogoutRequest.cs" />
+    <Compile Include="OidcClient\Oidc\ResponseProcessor.cs" />
+    <Compile Include="OidcClient\Oidc\Results\AuthorizeResult.cs" />
+    <Compile Include="OidcClient\Oidc\Results\IdentityTokenValidationResult.cs" />
+    <Compile Include="OidcClient\Oidc\Results\LoginResult.cs" />
+    <Compile Include="OidcClient\Oidc\Results\LogoutResult.cs" />
+    <Compile Include="OidcClient\Oidc\Results\RefreshTokenResult.cs" />
+    <Compile Include="OidcClient\Oidc\Results\ResponseValidationResult.cs" />
+    <Compile Include="OidcClient\Oidc\Results\Result.cs" />
+    <Compile Include="OidcClient\Oidc\Results\TokenResponseValidationResult.cs" />
+    <Compile Include="OidcClient\Oidc\Results\UserInfoResult.cs" />
+    <Compile Include="OidcClient\Oidc\TokenRefreshedEventArgs.cs" />
+    <Compile Include="OidcClient\SimpleHttpServer\HttpBuilder.cs" />
+    <Compile Include="OidcClient\SimpleHttpServer\HttpProcessor.cs" />
+    <Compile Include="OidcClient\SimpleHttpServer\HttpServer.cs" />
+    <Compile Include="OidcClient\SimpleHttpServer\Models\HttpRequest.cs" />
+    <Compile Include="OidcClient\SimpleHttpServer\Models\HttpResponse.cs" />
+    <Compile Include="OidcClient\SimpleHttpServer\Models\Route.cs" />
+    <Compile Include="OidcClient\SimpleHttpServer\RouteHandlers\FileSystemRouteHandler.cs" />
+    <Compile Include="OidcClient\SystemBrowser.cs" />
     <Compile Include="OpenAPIs\swagger.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -406,6 +471,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="changelog.txt" />
+    <Content Include="OidcClient\SimpleHttpServer\Resources\Pages\404.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OidcClient\SimpleHttpServer\Resources\Pages\500.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="plugin.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -415,35 +486,19 @@
     <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll" />
     <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.NetAnalyzers.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>echo Statement 1: copy "$(TargetDir)$(TargetName).*" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)$(TargetName).*" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 2: copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
-        copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
-        echo Statement 3: copy "$(TargetDir)Newtonsoft.Json.*" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)Newtonsoft.Json.*" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 4: copy "$(TargetDir)Microsoft.Rest.ClientRuntime.*" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)Microsoft.Rest.ClientRuntime.*" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 5: copy "$(TargetDir)NLog.*" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)NLog.*" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 6: copy "$(TargetDir)System.Text.Encodings.Web.*" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)System.Text.Encodings.Web.*" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 7: copy "$(TargetDir)System.Composition.*" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)System.Composition.*" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 8: copy "$(TargetDir)System.Diagnostics.DiagnosticSource.*" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)System.Diagnostics.DiagnosticSource.*" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 9: copy "$(TargetDir)Microsoft.ApplicationInsights.*" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)Microsoft.ApplicationInsights.*" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 10: copy "$(TargetDir)GroupControls.*" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)GroupControls.*" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 11: copy "$(TargetDir)System.Memory.*" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)System.Memory.*" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 12: copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 13: copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
-        copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
-</PostBuildEvent>
+    <PostBuildEvent>
+      echo Statement 1: copy "$(TargetDir)*.dll" "$(TargetDir)Plugins\SINners\" /Y
+      copy "$(TargetDir)*.dll" "$(TargetDir)Plugins\SINners\" /Y
+      echo Statement 2: copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SINners\" /Y
+      copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SINners\" /Y
+      echo Statement 3: copy "$(TargetDir)*.dll.config" "$(TargetDir)Plugins\SINners\" /Y
+      copy "$(TargetDir)*.dll.config" "$(TargetDir)Plugins\SINners\" /Y
+      echo Statement 13: copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
+      copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>echo Statement 1: mkdir "$(TargetDir)Plugins\SINners\"
@@ -458,6 +513,8 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props'))" />
     <Error Condition="!Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets'))" />
+    <Error Condition="!Exists('..\..\packages\System.Text.Json.6.0.0\build\System.Text.Json.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\System.Text.Json.6.0.0\build\System.Text.Json.targets'))" />
   </Target>
   <Import Project="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets" Condition="Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" />
+  <Import Project="..\..\packages\System.Text.Json.6.0.0\build\System.Text.Json.targets" Condition="Exists('..\..\packages\System.Text.Json.6.0.0\build\System.Text.Json.targets')" />
 </Project>
