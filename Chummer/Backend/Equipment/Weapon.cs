@@ -647,6 +647,9 @@ namespace Chummer.Backend.Equipment
             if (blnCreateImprovements)
                 RefreshWirelessBonuses();
 
+            // create a weapon's initial clips
+            CreateClips();
+
             // Add Subweapons (not underbarrels) if applicable.
             if (lstWeapons == null)
                 return;
@@ -836,10 +839,13 @@ namespace Chummer.Backend.Equipment
             if (RequireAmmo || string.IsNullOrWhiteSpace(Ammo))
                 return;
 
-            int intAmmoCount = -1;
-            Clip objCurrentClip = GetClip(_intActiveAmmoSlot);
-            if (objCurrentClip != null)
-                intAmmoCount = objCurrentClip.Ammo;
+            int intAmmoCount = 0;
+            if (_lstAmmo.Any())
+            {
+                Clip objCurrentClip = GetClip(_intActiveAmmoSlot);
+                if (objCurrentClip != null)
+                    intAmmoCount = objCurrentClip.Ammo;
+            }
 
             _lstAmmo.Clear();
             _intActiveAmmoSlot = 1;
@@ -874,34 +880,30 @@ namespace Chummer.Backend.Equipment
                 lstCount.Add(strAmmo);
             }
 
-            if (intAmmoCount >= 0)
+            foreach (string strAmmo in lstCount)
             {
-                // We had some existing ammo, so re-use them, but make sure it is not greater than the new ammo capacity we have
-                foreach (string strAmmo in lstCount)
+                if (int.TryParse(strAmmo, NumberStyles.Any, GlobalSettings.InvariantCultureInfo
+                    , out int intNewAmmoCount))
                 {
-                    if (int.TryParse(strAmmo, NumberStyles.Any, GlobalSettings.InvariantCultureInfo
-                        , out int intNewAmmoCount))
-                    {
-                        if (intAmmoCount > intNewAmmoCount)
-                            intAmmoCount = intNewAmmoCount;
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                foreach (string strAmmo in lstCount)
-                {
-                    if (int.TryParse(strAmmo, NumberStyles.Any, GlobalSettings.InvariantCultureInfo
-                        , out intAmmoCount))
-                    {
-                        break;
-                    }
+                    if (intAmmoCount > intNewAmmoCount)
+                        intAmmoCount = intNewAmmoCount;
+                    break;
                 }
             }
             
             Clip objInternalClip = new Clip(_objCharacter, null, this, null, intAmmoCount);
             _lstAmmo.Add(objInternalClip);
+        }
+
+        /// <summary>
+        /// Create a weapon's initial clips. Should only be called while the ammo list is empty.
+        /// </summary>
+        private void CreateClips()
+        {
+            Debug.Assert(_lstAmmo.Count == 0);
+            List<WeaponAccessory> adoptables = GetClipProvidingAccessories();
+            foreach (WeaponAccessory adoptable in adoptables)
+                _lstAmmo.Add(new Clip(_objCharacter, adoptable, this, null, 0));
         }
 
         /// <summary>
@@ -1047,9 +1049,7 @@ namespace Chummer.Backend.Equipment
             {
                 _lstAmmo.Clear();
                 _intActiveAmmoSlot = 1;
-                List<WeaponAccessory> adoptables = GetClipProvidingAccessories();
-                foreach (WeaponAccessory adoptable in adoptables)
-                    _lstAmmo.Add(new Clip(_objCharacter, adoptable, this, null, 0));
+                CreateClips();
             }
             else if (!RequireAmmo)
             {
@@ -1058,13 +1058,7 @@ namespace Chummer.Backend.Equipment
                     _lstAmmo.Clear();
                     _intActiveAmmoSlot = 1;
                     XmlNode clipNode = objNode["clips"];
-
-                    foreach (XmlNode node in clipNode.ChildNodes)
-                    {
-                        Clip objLoopClip = Clip.Load(node, _objCharacter, this, null);
-                        if (objLoopClip != null)
-                            _lstAmmo.Add(objLoopClip);
-                    }
+                    AddClipNodes(clipNode);
                 }
                 // Legacy for items that were saved before internal clip tracking for weapons that don't need ammo was implemented
                 else
@@ -1076,36 +1070,15 @@ namespace Chummer.Backend.Equipment
             {
                 objNode.TryGetInt32FieldQuickly("activeammoslot", ref _intActiveAmmoSlot);
                 _lstAmmo.Clear();
-                List<WeaponAccessory> adoptables = GetClipProvidingAccessories();
-                adoptables.Reverse(); // we'll be pulling from the end to make removing less costly
                 if (objNode["clips"] != null)
                 {
                     XmlNode clipNode = objNode["clips"];
-
-                    foreach (XmlNode node in clipNode.ChildNodes)
-                    {
-                        WeaponAccessory owner = null;
-                        if (adoptables.Count > 0)
-                        {
-                            // if false, that means we have more filled clips than we have ammo slots, and the null default passes through
-                            // this shouldn't happen but it's not the end of the world
-                            // just default to the weapon owning it, it'll fix itself on reload with empty slots
-                            owner = adoptables[adoptables.Count - 1];
-                        }
-                        Clip objLoopClip = Clip.Load(node, _objCharacter, this, owner);
-                        if (objLoopClip != null)
-                        {
-                            if (adoptables.Count > 0)
-                            {
-                                // if .Load fails, don't remove an adoptable
-                                adoptables.RemoveAt(adoptables.Count - 1);
-                            }
-                            _lstAmmo.Add(objLoopClip);
-                        }
-                    }
+                    AddClipNodes(clipNode);
                 }
                 else //Load old clips
                 {
+                    List<WeaponAccessory> adoptables = GetClipProvidingAccessories();
+                    adoptables.Reverse(); // we'll be pulling from the end to make removing less costly
                     foreach (string s in s_OldClipValues)
                     {
                         int ammo = 0;
@@ -1127,12 +1100,12 @@ namespace Chummer.Backend.Equipment
                             _lstAmmo.Add(new Clip(_objCharacter, owner, this, objGear, ammo));
                         }
                     }
-                }
-                if (adoptables.Count > 0)
-                {
-                    // still have clip providing objects - create empty clips
-                    for (int i = adoptables.Count - 1; i >= 0; i--)
-                        _lstAmmo.Add(new Clip(_objCharacter, adoptables[i], this, null, 0));
+                    if (adoptables.Count > 0)
+                    {
+                        // still have clip providing objects - create empty clips
+                        for (int i = adoptables.Count - 1; i >= 0; i--)
+                            _lstAmmo.Add(new Clip(_objCharacter, adoptables[i], this, null, 0));
+                    }
                 }
             }
 
@@ -1281,6 +1254,39 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
                 objMyNode.Value?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
+        }
+
+        private void AddClipNodes(XmlNode clipNode)
+        {
+            List<WeaponAccessory> adoptables = GetClipProvidingAccessories();
+            adoptables.Reverse(); // we'll be pulling from the end to make removing less costly
+            foreach (XmlNode node in clipNode.ChildNodes)
+            {
+                WeaponAccessory owner = null;
+                if (adoptables.Count > 0)
+                {
+                    // if false, that means we have more filled clips than we have ammo slots, and the null default passes through
+                    // this shouldn't happen but it's not the end of the world
+                    // just default to the weapon owning it, it'll fix itself on reload with empty slots
+                    owner = adoptables[adoptables.Count - 1];
+                }
+                Clip objLoopClip = Clip.Load(node, _objCharacter, this, owner);
+                if (objLoopClip != null)
+                {
+                    if (adoptables.Count > 0)
+                    {
+                        // if .Load fails, don't remove an adoptable
+                        adoptables.RemoveAt(adoptables.Count - 1);
+                    }
+                    _lstAmmo.Add(objLoopClip);
+                }
+            }
+            if (adoptables.Count > 0)
+            {
+                // still have clip providing objects - create empty clips
+                for (int i = adoptables.Count - 1; i >= 0; i--)
+                    _lstAmmo.Add(new Clip(_objCharacter, adoptables[i], this, null, 0));
+            }
         }
 
         /// <summary>
