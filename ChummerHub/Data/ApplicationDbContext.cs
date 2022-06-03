@@ -147,10 +147,11 @@ namespace ChummerHub.Data
             
         }
 
-        public Task<int> SaveChangesAsync()
-        {
-            throw new NotImplementedException();
-        }
+        //public Task<int> SaveChangesAsync()
+        //{
+        //    base.SaveChangesAsync()
+        //    throw new NotImplementedException();
+        //}
 
         #region models
         public DbSet<Models.V1.SINner> SINners { get; set; }

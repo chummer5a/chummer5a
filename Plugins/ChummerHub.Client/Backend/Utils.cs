@@ -79,6 +79,30 @@ namespace ChummerHub.Client.Backend
         {
         }
 
+        public static bool UrlIsValid(string url)
+        {
+            Stream sStream;
+            HttpWebRequest urlReq;
+            HttpWebResponse urlRes;
+
+            try
+            {
+                urlReq = (HttpWebRequest)WebRequest.Create(url);
+                urlRes = (HttpWebResponse)urlReq.GetResponse();
+                sStream = urlRes.GetResponseStream();
+
+                string read = new StreamReader(sStream).ReadToEnd();
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                //Url not valid
+                return false;
+            }
+
+        }
+
         public static bool IsUnitTest => MyUtils.IsUnitTest;
 
         private static CookieContainer _AuthorizationCookieContainer;
@@ -349,20 +373,18 @@ namespace ChummerHub.Client.Backend
                 Settings.Default.Save();
                 if (Debugger.IsAttached)
                 {
-                    Settings.Default.SINnerUrl = "https://chummer-beta.azurewebsites.net";
-                    //try
-                    //{
-                    //    string local = "http://localhost:5000/";
-                    //    var request = WebRequest.Create(new Uri(local));
-                    //    WebResponse response = request.GetResponse();
-                    //    Settings.Default.SINnerUrl = local;
-                    //    Log.Info("Connected to " + local + ".");
-                    //}
-                    //catch (Exception)
-                    //{
-
-
-                    //}
+                    if (StaticUtils.UrlIsValid("https://localhost:64939"))
+                    {
+                        Settings.Default.SINnerUrl = "https://localhost:64939";
+                    }
+                    else if (StaticUtils.UrlIsValid("https://chummer-beta.azurewebsites.net"))
+                    {
+                        Settings.Default.SINnerUrl = "https://chummer-beta.azurewebsites.net";
+                    }
+                    else
+                    {
+                        Settings.Default.SINnerUrl = "https://demo.duendesoftware.com";
+                    }
                 }
                 Log.Info("Connected to " + Settings.Default.SINnerUrl + ".");
 

@@ -49,8 +49,14 @@ using Swashbuckle.AspNetCore.Filters;
 using Newtonsoft.Json.Converters;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Hosting;
-
-
+using System.Diagnostics.Tracing;
+using System.Diagnostics;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Threading.Tasks;
+using ChummerHub.Services.JwT;
+using System.Text;
 
 namespace ChummerHub
 {
@@ -93,8 +99,24 @@ namespace ChummerHub
             AppSettings = System.Configuration.ConfigurationManager.AppSettings;
             if (_gdrive == null)
                 _gdrive = new DriveHandler(logger, configuration);
-           
+
+            //Microsoft.IdentityModel.Logging.IdentityModelEventSource.Logger.LogLevel = System.Diagnostics.Tracing.EventLevel.Verbose;
+            //Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
+            //Microsoft.IdentityModel.Logging.IdentityModelEventSource.Logger
+            //var listener = new EventListener();
+            //listener.EnableEvents(Microsoft.IdentityModel.Logging.IdentityModelEventSource.Logger, EventLevel.LogAlways);
+            //listener.EventWritten += Listener_EventWritten;
+            //Microsoft.IdentityModel.Logging.IdentityModelEventSource.Logger.WriteVerbose("A test message.");
+
         }
+
+        //private void Listener_EventWritten(object sender, EventWrittenEventArgs e)
+        //{
+        //    foreach (object payload in e.Payload)
+        //    {
+        //        Debug.WriteLine($"[{e.EventName}] {e.Message} | {payload}");
+        //    }
+        //}
 
         public IConfiguration Configuration { get; }
         public static System.Collections.Specialized.NameValueCollection AppSettings { get; set; }
@@ -108,6 +130,7 @@ namespace ChummerHub
         {
             MyServices = services;
 
+            //services.AddSingleton<Diagnostics>();
 
             ConnectionStringToMasterSqlDb = Configuration.GetConnectionString("MasterSqlConnection");
             ConnectionStringSinnersDb = Configuration.GetConnectionString("DefaultConnection");
@@ -198,21 +221,7 @@ namespace ChummerHub
                 options.EnableDetailedErrors();
             });
 
-            
-
-
-            //services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
-            //{
-
-            //})
-            //  .AddRoleManager<RoleManager<ApplicationRole>>()
-            //  .AddRoles<ApplicationRole>()
-            //  .AddEntityFrameworkStores<ApplicationDbContext>()
-            //  .AddDefaultTokenProviders()
-            //  .AddSignInManager();
-
-      
-
+     
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()
                     .AddDefaultTokenProviders()
@@ -238,14 +247,7 @@ namespace ChummerHub
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
 
-            //// Add application services.
-            //services.AddTransient<IEmailSender, EmailSender>();
-
-            ////services.AddSingleton<IEmailSender, EmailSender>();
-            //services.Configure<AuthMessageSenderOptions>(Configuration);
-
-
-
+        
             services.AddMvc(options =>
             {
                 var policy = new AuthorizationPolicyBuilder()
@@ -275,13 +277,55 @@ namespace ChummerHub
             services.AddSwaggerGenNewtonsoftSupport();
 
 
-
+            
 
             services.AddAuthentication(options =>
             {
+                //options.DefaultAuthenticateScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
+                //options.DefaultChallengeScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                // CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = "oidc";
+            }).AddJwtBearer(x =>
+            {
+                x.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = context =>
+                    {
+
+                        var userService = context.HttpContext.RequestServices.GetRequiredService<UserService>();
+                        var userId = Guid.Parse(context.Principal.Identity.Name);
+                        var user = userService.GetById(userId);
+                        if (user == null)
+                        {
+                            // return unauthorized if user no longer exists
+                            context.Fail("Unauthorized");
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("secret")),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
             })
+
+
+
+//                .AddJwtBearer(options =>
+//            {
+//                options.Authority = "https://localhost:64939"; // this was in correct
+//#if DEBUG                
+//                options.Authority = "https://localhost:64939"; // this was in correct
+//#endif
+//                //options.Audience = ....
+//            })
                 //.AddFacebook(facebookOptions =>
                 //{
                 //    facebookOptions.AppId = Configuration["Authentication.Facebook.AppId"];
@@ -324,6 +368,7 @@ namespace ChummerHub
                 });
             ;
 
+          
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -396,33 +441,29 @@ namespace ChummerHub
 
             services.AddSwaggerExamples();
 
+            // Include 'SecurityScheme' to use JWT Authentication
+            var jwtSecurityScheme = new OpenApiSecurityScheme
+            {
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+                Name = "JWT Authentication",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
+
+                Reference = new OpenApiReference
+                {
+                    Id = JwtBearerDefaults.AuthenticationScheme,
+                    Type = ReferenceType.SecurityScheme
+                }
+            };
+
             services.AddSwaggerGen(options =>
             {
-                //options.AddSecurityDefinition("Bearer",
-                //    new ApiKeyScheme {
-                //        In = "header",
-                //        Description = "Please enter JWT with Bearer into field",
-                //        Name = "Authorization",
-                //        Type = "apiKey" });
-                //options.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>
-                //{
-                //    { "Bearer", Enumerable.Empty<string>() },
-                //});
-                // resolve the IApiVersionDescriptionProvider service
-                // note: that we have to build a temporary service provider here because one has not been created yet
                 options.UseAllOfToExtendReferenceSchemas();
                 
                 AddSwaggerApiVersionDescriptions(services, options);
-                
-                
-
-                //options.OperationFilter<FileUploadOperation>();
-
-                // add a custom operation filter which sets default values
-                //options.OperationFilter<SwaggerDefaultValues>();
-
-                //options.DescribeAllEnumsAsStrings();
-
+              
                 options.ExampleFilters();
 
                 options.OperationFilter<AddResponseHeadersFilter>();
@@ -433,15 +474,12 @@ namespace ChummerHub
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
 
-                //options.MapType<FileResult>(() => new Schema
-                //{
-                //    Type = "file",
-                //});
-                //options.MapType<FileStreamResult>(() => new Schema
-                //{
-                //    Type = "file",
-                //});
+                options.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
 
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    { jwtSecurityScheme, Array.Empty<string>() }
+                });
             });
             services.AddAzureAppConfiguration();
 

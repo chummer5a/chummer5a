@@ -22,6 +22,7 @@ using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace ChummerHub
 {
@@ -68,10 +69,10 @@ namespace ChummerHub
                 },
 
                 // where to redirect to after login
-                RedirectUris = { "https://localhost:5002/signin-oidc" },
+                RedirectUris = { "https://localhost:64939/signin-oidc" },
 
                 // where to redirect to after logout
-                PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
+                PostLogoutRedirectUris = { "https://localhost:63939/signout-callback-oidc" },
 
                 AllowOfflineAccess = true,
 
@@ -85,21 +86,24 @@ namespace ChummerHub
             },
             new Client
             {
-                ClientId = "web",
+                ClientId = "interactive.public",
                 ClientSecrets = { new Secret("secret".Sha256()) },
 
-                AllowedGrantTypes = GrantTypes.Code,
+                AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
+                
 
                 // where to redirect after login
-                RedirectUris = { "https://localhost:5002/signin-oidc" },
+                //RedirectUris = { "https://localhost:64939/signin-oidc" },
 
                 // where to redirect after logout
-                PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
+                //PostLogoutRedirectUris = { "https://localhost:64939/signout-callback-oidc" },
 
                 AllowedScopes = new List<string>
                 {
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
+                    IdentityServerConstants.StandardScopes.OfflineAccess,
+                    "api",
                     "verification"
                 }
             }
