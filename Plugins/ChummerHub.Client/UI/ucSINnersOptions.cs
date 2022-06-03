@@ -38,6 +38,8 @@ using System.Net.Http;
 using System.Text.Json;
 using Newtonsoft.Json;
 using System.Web;
+using System.Diagnostics;
+using System.Net;
 
 //using Nemiro.OAuth;
 //using Nemiro.OAuth.LoginForms;
@@ -501,9 +503,26 @@ namespace ChummerHub.Client.UI
             }
         }
 
+        
 
-        static string _authority = "https://demo.duendesoftware.com";
-        static string _api = "https://demo.duendesoftware.com/api/test";
+
+        private static string _authority
+        {
+            get
+            {
+                return StaticUtils.GetClient().BaseUrl;
+            }
+        }
+
+        private static string _api
+        {
+            get
+            {
+                if (StaticUtils.UrlIsValid(_authority))// + "/api/test"))
+                    return _authority;// + "/api/test";
+                return "https://demo.duendesoftware.com/api/test";
+            }
+        }
 
         static IdentityModel.OidcClient.OidcClient _oidcClient;
         static HttpClient _apiClient = new HttpClient { BaseAddress = new Uri(_api) };
@@ -520,7 +539,7 @@ namespace ChummerHub.Client.UI
                 Authority = _authority,
                 ClientId = "interactive.public",
                 RedirectUri = redirectUri,
-                Scope = "openid profile api offline_access",
+                Scope = "openid profile api offline_access verification",
                 FilterClaims = false,
 
                 Browser = browser,
