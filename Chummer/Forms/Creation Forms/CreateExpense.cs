@@ -176,6 +176,8 @@ namespace Chummer
         public bool KarmaNuyenExchange { get; set; }
         public string KarmaNuyenExchangeString { get; set; }
 
+        public bool IsInEditMode { get; set; }
+
         #endregion Properties
 
         #region Methods
@@ -222,8 +224,11 @@ namespace Chummer
 
         private async void CreateExpanse_Load(object sender, EventArgs e)
         {
-            string strText = await LanguageManager.GetStringAsync("String_ExpenseDefault");
-            await txtDescription.DoThreadSafeAsync(x => x.Text = strText);
+            if (!IsInEditMode)
+            {
+                string strText = await LanguageManager.GetStringAsync("String_ExpenseDefault");
+                await txtDescription.DoThreadSafeAsync(x => x.Text = strText);
+            }
             await chkKarmaNuyenExchange.DoThreadSafeAsync(x =>
             {
                 x.Visible = !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);

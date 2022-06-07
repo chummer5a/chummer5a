@@ -13532,7 +13532,8 @@ namespace Chummer
                            Amount = objExpense.Amount,
                            Refund = objExpense.Refund,
                            SelectedDate = objExpense.Date,
-                           ForceCareerVisible = objExpense.ForceCareerVisible
+                           ForceCareerVisible = objExpense.ForceCareerVisible,
+                           IsInEditMode = true
                        }))
             {
                 frmEditExpense.MyForm.LockFields(blnAllowEdit);
@@ -13590,7 +13591,8 @@ namespace Chummer
                            Amount = objExpense.Amount,
                            Refund = objExpense.Refund,
                            SelectedDate = objExpense.Date,
-                           ForceCareerVisible = objExpense.ForceCareerVisible
+                           ForceCareerVisible = objExpense.ForceCareerVisible,
+                           IsInEditMode = true
                        }))
             {
                 frmEditExpense.MyForm.LockFields(blnAllowEdit);
