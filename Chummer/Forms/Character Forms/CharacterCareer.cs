@@ -16360,6 +16360,14 @@ namespace Chummer
                     await treGear.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName, token);
                     await ProcessEquipmentConditionMonitorBoxDisplays(panGearMatrixCM, objGear.MatrixCM,
                                                                       objGear.MatrixCMFilled, token);
+                    if (objGear.LoadedIntoClip != null)
+                    {
+                        await cmdGearIncreaseQty.DoThreadSafeAsync(x => x.Enabled = false);
+                        await cmdGearReduceQty.DoThreadSafeAsync(x => x.Enabled = false);
+                        await cmdGearMergeQty.DoThreadSafeAsync(x => x.Enabled = false);
+                        await cmdGearSplitQty.DoThreadSafeAsync(x => x.Enabled = false);
+                        await cmdGearMoveToVehicle.DoThreadSafeAsync(x => x.Enabled = false);
+                    }
                 }
                 else
                 {
