@@ -15057,6 +15057,10 @@ namespace Chummer
                         && !CharacterObject.IgnoreRules)
                         continue;
 
+                    if (!(await objWareGrade.GetNodeXPathAsync()).RequirementsMet(CharacterObject))
+                    {
+                        continue;
+                    }
                     lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.CurrentDisplayName));
                 }
 

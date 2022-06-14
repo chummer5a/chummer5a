@@ -1595,6 +1595,11 @@ namespace Chummer
                                 continue;
                         }
 
+                        if (!(await objWareGrade.GetNodeXPathAsync()).RequirementsMet(_objCharacter))
+                        {
+                            continue;
+                        }
+
                         if (!blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules
                             && _objCharacter.Settings.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
                         {

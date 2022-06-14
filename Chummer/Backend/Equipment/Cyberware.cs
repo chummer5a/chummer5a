@@ -5395,6 +5395,10 @@ namespace Chummer.Backend.Equipment
             {
                 sbdBannedItems.AppendLine().Append("\t\t").Append(CurrentDisplayName);
             }
+            if (!_objGrade.GetNodeXPath().RequirementsMet(_objCharacter))
+            {
+                sbdBannedItems.AppendLine().Append("\t\t").Append(CurrentDisplayName);
+            }
             foreach (Cyberware objChild in Children)
             {
                 objChild.CheckBannedGrades(sbdBannedItems);
