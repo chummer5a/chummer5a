@@ -17,6 +17,12 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using Chummer.Backend.Attributes;
+using Chummer.Backend.Equipment;
+using Chummer.Backend.Skills;
+using Chummer.Backend.Uniques;
+using Microsoft.ApplicationInsights;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -32,12 +38,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using Chummer.Backend.Attributes;
-using Chummer.Backend.Equipment;
-using Chummer.Backend.Skills;
-using Chummer.Backend.Uniques;
-using Microsoft.ApplicationInsights;
-using NLog;
 
 namespace Chummer
 {
@@ -14249,33 +14249,47 @@ namespace Chummer
                             }, token);
                         }
                         token.ThrowIfCancellationRequested();
-                        // gpbVehiclesWeapon
-                        await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = true, token);
-                        await lblVehicleWeaponDamage.DoThreadSafeAsync(x =>
-                        {
-                            x.Text = objWeapon.DisplayDamage;
-                            x.Visible = true;
-                        }, token);
-                        await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true, token);
-                        await lblVehicleWeaponAP.DoThreadSafeAsync(x =>
-                        {
-                            x.Text = objWeapon.DisplayTotalAP;
-                            x.Visible = true;
-                        }, token);
-                        await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token);
-                        await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x =>
-                        {
-                            x.Text = objWeapon.DisplayAccuracy;
-                            x.Visible = true;
-                        }, token);
-                        await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true, token);
-                        await lblVehicleWeaponDicePool.DoThreadSafeAsync(x =>
-                        {
-                            x.Text = objWeapon.DicePool.ToString(GlobalSettings
-                                                                     .CultureInfo);
-                            x.Visible = true;
-                        }, token);
-                        await lblVehicleWeaponDicePool.SetToolTipAsync(objWeapon.DicePoolTooltip, token);
+                            // gpbVehiclesWeapon
+                            await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                            await lblVehicleWeaponDamage.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = objWeapon.DisplayDamage;
+                                x.Visible = true;
+                            }, token);
+                            await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                            await lblVehicleWeaponAP.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = objWeapon.DisplayTotalAP;
+                                x.Visible = true;
+                            }, token);
+                            await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                            await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = objWeapon.DisplayAccuracy;
+                                x.Visible = true;
+                            }, token);
+                            await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                            await lblVehicleWeaponDicePool.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = objWeapon.DicePool.ToString(GlobalSettings
+                                    .CultureInfo);
+                                x.Visible = true;
+                            }, token);
+                            await lblVehicleWeaponDicePool.SetToolTipAsync(objWeapon.DicePoolTooltip, token);
+                            await lblVehicleWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                            await lblVehicleWeaponRC.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = objWeapon.DisplayTotalRC.ToString(GlobalSettings
+                                    .CultureInfo);
+                                x.Visible = true;
+                            }, token);
+                            await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                            await lblVehicleWeaponReach.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = objWeapon.TotalReach.ToString(GlobalSettings
+                                    .CultureInfo);
+                                x.Visible = true;
+                            }, token);
                         if (objWeapon.RangeType == "Ranged")
                         {
                             await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true, token);
@@ -14290,7 +14304,7 @@ namespace Chummer
                                 x.Visible = true;
                                 x.Text = objWeapon.DisplayMode;
                             }, token);
-                            await cboVehicleWeaponFiringMode.DoThreadSafeAsync(x => x.SelectedValue = objWeapon.FireMode, token);
+                                await cboVehicleWeaponFiringMode.DoThreadSafeAsync(x => x.SelectedValue = objWeapon.FireMode, token);
                             await tlpVehiclesWeaponRanges.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblVehicleWeaponRangeMain.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayRange, token);
                             await lblVehicleWeaponRangeAlternate.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayAlternateRange, token);
@@ -14308,7 +14322,9 @@ namespace Chummer
                             await lblVehicleWeaponAlternateRangeMedium.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternatemedium"], token);
                             await lblVehicleWeaponAlternateRangeLong.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternatelong"], token);
                             await lblVehicleWeaponAlternateRangeExtreme.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternateextreme"], token);
-                        }
+                            await lblVehicleWeaponReach.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            }
                         else
                         {
                             if (objWeapon.Ammo != "0")
@@ -14367,7 +14383,7 @@ namespace Chummer
                         await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false, token);
                         await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = true, token);
                         await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false, token);
-                        token.ThrowIfCancellationRequested();
+                            token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objAccessory.IncludedInWeapon, token);
                         token.ThrowIfCancellationRequested();
@@ -14393,6 +14409,39 @@ namespace Chummer
                             await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token);
                             await nudVehicleRating.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
+
+                        if (!string.IsNullOrEmpty(objAccessory.RC))
+                        {
+                            await lblVehicleWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                            await lblVehicleWeaponRC.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = objAccessory.RC.ToString(GlobalSettings
+                                    .CultureInfo);
+                                x.Visible = true;
+                            }, token);
+                        }
+                        else
+                        {
+                            await lblVehicleWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleWeaponRC.DoThreadSafeAsync(x      => x.Visible = false, token);
+                        }
+
+                        if (objAccessory.Parent.RangeType == "Melee")
+                        {
+                            await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                            await lblVehicleWeaponReach.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = objAccessory.Reach.ToString(GlobalSettings
+                                    .CultureInfo);
+                                x.Visible = true;
+                            }, token);
+                        }
+                        else
+                        {
+                            await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleWeaponReach.DoThreadSafeAsync(x => x.Visible = false, token);
+                        }
+
                         token.ThrowIfCancellationRequested();
                         await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false, token);
                         await nudVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false, token);
@@ -14481,75 +14530,75 @@ namespace Chummer
                         await lblVehicleWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false, token);
                         await lblVehicleWeaponMode.DoThreadSafeAsync(x => x.Visible = false, token);
                         await cboVehicleWeaponFiringMode.DoThreadSafeAsync(x => x.Visible = false, token);
-                        if (string.IsNullOrEmpty(objAccessory.Damage))
-                        {
-                            await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = false, token);
-                            await lblVehicleWeaponDamage.DoThreadSafeAsync(x => x.Visible = false, token);
-                        }
-                        else
-                        {
-                            await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objAccessory.Damage), token);
-                            await lblVehicleWeaponDamage.DoThreadSafeAsync(x =>
+                            if (string.IsNullOrEmpty(objAccessory.Damage))
                             {
-                                x.Visible = !string.IsNullOrEmpty(objAccessory
-                                                                      .Damage);
-                                x.Text = Convert
-                                         .ToInt32(objAccessory.Damage,
-                                                  GlobalSettings.InvariantCultureInfo)
-                                         .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
-                            }, token);
-                        }
-                        token.ThrowIfCancellationRequested();
-                        if (string.IsNullOrEmpty(objAccessory.AP))
-                        {
-                            await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = false, token);
-                            await lblVehicleWeaponAP.DoThreadSafeAsync(x => x.Visible = false, token);
-                        }
-                        else
-                        {
-                            await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true, token);
-                            await lblVehicleWeaponAP.DoThreadSafeAsync(x =>
+                                await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await lblVehicleWeaponDamage.DoThreadSafeAsync(x => x.Visible = false, token);
+                            }
+                            else
                             {
-                                x.Visible = true;
-                                x.Text = Convert
-                                         .ToInt32(objAccessory.AP, GlobalSettings.InvariantCultureInfo)
-                                         .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
-                            }, token);
-                        }
-                        token.ThrowIfCancellationRequested();
-                        if (objAccessory.Accuracy == 0)
-                        {
-                            await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = false, token);
-                            await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x => x.Visible = false, token);
-                        }
-                        else
-                        {
-                            await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token);
-                            await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x =>
+                                await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objAccessory.Damage), token);
+                                await lblVehicleWeaponDamage.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = !string.IsNullOrEmpty(objAccessory
+                                                                          .Damage);
+                                    x.Text = Convert
+                                             .ToInt32(objAccessory.Damage,
+                                                      GlobalSettings.InvariantCultureInfo)
+                                             .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                }, token);
+                            }
+                            token.ThrowIfCancellationRequested();
+                            if (string.IsNullOrEmpty(objAccessory.AP))
                             {
-                                x.Visible = true;
-                                x.Text
-                                    = objAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
-                            }, token);
-                        }
-                        if (objAccessory.DicePool == 0)
-                        {
-                            await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = false, token);
-                            await lblVehicleWeaponDicePool.DoThreadSafeAsync(x => x.Visible = false, token);
-                        }
-                        else
-                        {
-                            await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true, token);
-                            await lblVehicleWeaponDicePool.DoThreadSafeAsync(x =>
+                                await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await lblVehicleWeaponAP.DoThreadSafeAsync(x => x.Visible = false, token);
+                            }
+                            else
                             {
-                                x.Visible = true;
-                                x.Text
-                                    = objAccessory.DicePool.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
-                            }, token);
-                            await lblVehicleWeaponDicePool.SetToolTipAsync(string.Empty, token);
-                        }
-                        token.ThrowIfCancellationRequested();
-                        if (objAccessory.TotalAmmoBonus != 0
+                                await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                                await lblVehicleWeaponAP.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text = Convert
+                                             .ToInt32(objAccessory.AP, GlobalSettings.InvariantCultureInfo)
+                                             .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                }, token);
+                            }
+                            token.ThrowIfCancellationRequested();
+                            if (objAccessory.Accuracy == 0)
+                            {
+                                await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x => x.Visible = false, token);
+                            }
+                            else
+                            {
+                                await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                                await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text
+                                        = objAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                }, token);
+                            }
+                            if (objAccessory.DicePool == 0)
+                            {
+                                await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await lblVehicleWeaponDicePool.DoThreadSafeAsync(x => x.Visible = false, token);
+                            }
+                            else
+                            {
+                                await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                                await lblVehicleWeaponDicePool.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text
+                                        = objAccessory.DicePool.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                }, token);
+                                await lblVehicleWeaponDicePool.SetToolTipAsync(string.Empty, token);
+                            }
+                            token.ThrowIfCancellationRequested();
+                            if (objAccessory.TotalAmmoBonus != 0
                             || (!string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity)
                                 && objAccessory.ModifyAmmoCapacity != "0"))
                         {

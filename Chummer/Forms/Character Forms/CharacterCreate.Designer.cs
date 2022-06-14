@@ -872,6 +872,7 @@ namespace Chummer
             this.cboVehicleWeaponFiringMode = new Chummer.ElasticComboBox();
             this.lblFiringModeLabel = new System.Windows.Forms.Label();
             this.lblVehicleWeaponMode = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponRCLabel = new System.Windows.Forms.Label();
             this.tlpVehiclesWeaponRanges = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblVehicleWeaponAlternateRangeExtreme = new System.Windows.Forms.Label();
             this.lblVehicleWeaponRangeExtreme = new System.Windows.Forms.Label();
@@ -1070,6 +1071,9 @@ namespace Chummer
             this.tsGearAllowRenameName = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsGearAllowRenameNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsGearAllowRenameExtra = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.lblVehicleWeaponReachLabel = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponRC = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponReach = new System.Windows.Forms.Label();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -11209,7 +11213,7 @@ namespace Chummer
             this.tabLifestyle.Location = new System.Drawing.Point(4, 22);
             this.tabLifestyle.Name = "tabLifestyle";
             this.tabLifestyle.Padding = new System.Windows.Forms.Padding(3);
-            this.tabLifestyle.Size = new System.Drawing.Size(969, 605);
+            this.tabLifestyle.Size = new System.Drawing.Size(184, 48);
             this.tabLifestyle.TabIndex = 0;
             this.tabLifestyle.Tag = "Tab_Lifestyle";
             this.tabLifestyle.Text = "Lifestyles";
@@ -11231,7 +11235,7 @@ namespace Chummer
             this.tlpLifestyleDetails.RowCount = 2;
             this.tlpLifestyleDetails.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpLifestyleDetails.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpLifestyleDetails.Size = new System.Drawing.Size(963, 599);
+            this.tlpLifestyleDetails.Size = new System.Drawing.Size(815, 587);
             this.tlpLifestyleDetails.TabIndex = 104;
             // 
             // treLifestyles
@@ -11734,7 +11738,7 @@ namespace Chummer
             this.tlpVehiclesCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesCommon.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpVehiclesCommon.Size = new System.Drawing.Size(495, 205);
+            this.tlpVehiclesCommon.Size = new System.Drawing.Size(620, 205);
             this.tlpVehiclesCommon.TabIndex = 0;
             // 
             // lblVehicleNameLabel
@@ -11753,7 +11757,7 @@ namespace Chummer
             // 
             this.lblVehicleAvailLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleAvailLabel.AutoSize = true;
-            this.lblVehicleAvailLabel.Location = new System.Drawing.Point(260, 6);
+            this.lblVehicleAvailLabel.Location = new System.Drawing.Point(322, 6);
             this.lblVehicleAvailLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleAvailLabel.Name = "lblVehicleAvailLabel";
             this.lblVehicleAvailLabel.Size = new System.Drawing.Size(33, 13);
@@ -11765,7 +11769,7 @@ namespace Chummer
             // 
             this.lblVehicleCostLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleCostLabel.AutoSize = true;
-            this.lblVehicleCostLabel.Location = new System.Drawing.Point(262, 31);
+            this.lblVehicleCostLabel.Location = new System.Drawing.Point(324, 31);
             this.lblVehicleCostLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleCostLabel.Name = "lblVehicleCostLabel";
             this.lblVehicleCostLabel.Size = new System.Drawing.Size(31, 13);
@@ -11777,7 +11781,7 @@ namespace Chummer
             // 
             this.lblVehicleAvail.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblVehicleAvail.AutoSize = true;
-            this.lblVehicleAvail.Location = new System.Drawing.Point(299, 6);
+            this.lblVehicleAvail.Location = new System.Drawing.Point(361, 6);
             this.lblVehicleAvail.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleAvail.Name = "lblVehicleAvail";
             this.lblVehicleAvail.Size = new System.Drawing.Size(36, 13);
@@ -11788,7 +11792,7 @@ namespace Chummer
             // 
             this.lblVehicleSlots.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblVehicleSlots.AutoSize = true;
-            this.lblVehicleSlots.Location = new System.Drawing.Point(299, 56);
+            this.lblVehicleSlots.Location = new System.Drawing.Point(361, 56);
             this.lblVehicleSlots.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSlots.Name = "lblVehicleSlots";
             this.lblVehicleSlots.Size = new System.Drawing.Size(36, 13);
@@ -11800,7 +11804,7 @@ namespace Chummer
             // 
             this.lblVehicleCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblVehicleCost.AutoSize = true;
-            this.lblVehicleCost.Location = new System.Drawing.Point(299, 31);
+            this.lblVehicleCost.Location = new System.Drawing.Point(361, 31);
             this.lblVehicleCost.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleCost.Name = "lblVehicleCost";
             this.lblVehicleCost.Size = new System.Drawing.Size(34, 13);
@@ -11824,7 +11828,7 @@ namespace Chummer
             // 
             this.lblVehicleSlotsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleSlotsLabel.AutoSize = true;
-            this.lblVehicleSlotsLabel.Location = new System.Drawing.Point(260, 56);
+            this.lblVehicleSlotsLabel.Location = new System.Drawing.Point(322, 56);
             this.lblVehicleSlotsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSlotsLabel.Name = "lblVehicleSlotsLabel";
             this.lblVehicleSlotsLabel.Size = new System.Drawing.Size(33, 13);
@@ -11951,7 +11955,7 @@ namespace Chummer
             this.cmdVehicleCyberwareChangeMount.AutoSize = true;
             this.cmdVehicleCyberwareChangeMount.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpVehiclesCommon.SetColumnSpan(this.cmdVehicleCyberwareChangeMount, 2);
-            this.cmdVehicleCyberwareChangeMount.Location = new System.Drawing.Point(260, 79);
+            this.cmdVehicleCyberwareChangeMount.Location = new System.Drawing.Point(322, 79);
             this.cmdVehicleCyberwareChangeMount.Name = "cmdVehicleCyberwareChangeMount";
             this.cmdVehicleCyberwareChangeMount.Size = new System.Drawing.Size(143, 23);
             this.cmdVehicleCyberwareChangeMount.TabIndex = 241;
@@ -11970,11 +11974,11 @@ namespace Chummer
             this.flpVehiclesCommonCheckBoxes.Controls.Add(this.chkVehicleIncludedInWeapon);
             this.flpVehiclesCommonCheckBoxes.Controls.Add(this.chkVehicleStolen);
             this.flpVehiclesCommonCheckBoxes.Controls.Add(this.chkVehicleBlackMarketDiscount);
-            this.flpVehiclesCommonCheckBoxes.Location = new System.Drawing.Point(257, 105);
+            this.flpVehiclesCommonCheckBoxes.Location = new System.Drawing.Point(319, 105);
             this.flpVehiclesCommonCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
             this.flpVehiclesCommonCheckBoxes.Name = "flpVehiclesCommonCheckBoxes";
             this.tlpVehiclesCommon.SetRowSpan(this.flpVehiclesCommonCheckBoxes, 2);
-            this.flpVehiclesCommonCheckBoxes.Size = new System.Drawing.Size(231, 50);
+            this.flpVehiclesCommonCheckBoxes.Size = new System.Drawing.Size(266, 50);
             this.flpVehiclesCommonCheckBoxes.TabIndex = 242;
             // 
             // chkVehicleWeaponAccessoryInstalled
@@ -12014,7 +12018,7 @@ namespace Chummer
             this.chkVehicleStolen.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkVehicleStolen.AutoSize = true;
             this.chkVehicleStolen.DefaultColorScheme = true;
-            this.chkVehicleStolen.Location = new System.Drawing.Point(3, 29);
+            this.chkVehicleStolen.Location = new System.Drawing.Point(207, 4);
             this.chkVehicleStolen.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkVehicleStolen.Name = "chkVehicleStolen";
             this.chkVehicleStolen.Size = new System.Drawing.Size(56, 17);
@@ -12031,7 +12035,7 @@ namespace Chummer
             this.chkVehicleBlackMarketDiscount.DefaultColorScheme = true;
             this.chkVehicleBlackMarketDiscount.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.chkVehicleBlackMarketDiscount.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkVehicleBlackMarketDiscount.Location = new System.Drawing.Point(65, 29);
+            this.chkVehicleBlackMarketDiscount.Location = new System.Drawing.Point(3, 29);
             this.chkVehicleBlackMarketDiscount.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkVehicleBlackMarketDiscount.Name = "chkVehicleBlackMarketDiscount";
             this.chkVehicleBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
@@ -12049,7 +12053,7 @@ namespace Chummer
             this.gpbVehiclesVehicle.Dock = System.Windows.Forms.DockStyle.Top;
             this.gpbVehiclesVehicle.Location = new System.Drawing.Point(3, 233);
             this.gpbVehiclesVehicle.Name = "gpbVehiclesVehicle";
-            this.gpbVehiclesVehicle.Size = new System.Drawing.Size(501, 119);
+            this.gpbVehiclesVehicle.Size = new System.Drawing.Size(626, 119);
             this.gpbVehiclesVehicle.TabIndex = 2;
             this.gpbVehiclesVehicle.TabStop = false;
             this.gpbVehiclesVehicle.Tag = "String_Vehicle";
@@ -12106,7 +12110,7 @@ namespace Chummer
             this.tlpVehiclesVehicle.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesVehicle.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesVehicle.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehiclesVehicle.Size = new System.Drawing.Size(495, 100);
+            this.tlpVehiclesVehicle.Size = new System.Drawing.Size(620, 100);
             this.tlpVehiclesVehicle.TabIndex = 0;
             // 
             // lblVehicleHandlingLabel
@@ -12135,7 +12139,7 @@ namespace Chummer
             // 
             this.lblVehicleAccelLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleAccelLabel.AutoSize = true;
-            this.lblVehicleAccelLabel.Location = new System.Drawing.Point(138, 6);
+            this.lblVehicleAccelLabel.Location = new System.Drawing.Point(169, 6);
             this.lblVehicleAccelLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleAccelLabel.Name = "lblVehicleAccelLabel";
             this.lblVehicleAccelLabel.Size = new System.Drawing.Size(37, 13);
@@ -12146,7 +12150,7 @@ namespace Chummer
             // lblVehicleAccel
             // 
             this.lblVehicleAccel.AutoSize = true;
-            this.lblVehicleAccel.Location = new System.Drawing.Point(181, 6);
+            this.lblVehicleAccel.Location = new System.Drawing.Point(212, 6);
             this.lblVehicleAccel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleAccel.Name = "lblVehicleAccel";
             this.lblVehicleAccel.Size = new System.Drawing.Size(40, 13);
@@ -12157,7 +12161,7 @@ namespace Chummer
             // 
             this.lblVehicleSpeedLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleSpeedLabel.AutoSize = true;
-            this.lblVehicleSpeedLabel.Location = new System.Drawing.Point(250, 6);
+            this.lblVehicleSpeedLabel.Location = new System.Drawing.Point(312, 6);
             this.lblVehicleSpeedLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSpeedLabel.Name = "lblVehicleSpeedLabel";
             this.lblVehicleSpeedLabel.Size = new System.Drawing.Size(41, 13);
@@ -12168,7 +12172,7 @@ namespace Chummer
             // lblVehicleSpeed
             // 
             this.lblVehicleSpeed.AutoSize = true;
-            this.lblVehicleSpeed.Location = new System.Drawing.Point(297, 6);
+            this.lblVehicleSpeed.Location = new System.Drawing.Point(359, 6);
             this.lblVehicleSpeed.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSpeed.Name = "lblVehicleSpeed";
             this.lblVehicleSpeed.Size = new System.Drawing.Size(44, 13);
@@ -12178,7 +12182,7 @@ namespace Chummer
             // lblVehicleCosmetic
             // 
             this.lblVehicleCosmetic.AutoSize = true;
-            this.lblVehicleCosmetic.Location = new System.Drawing.Point(428, 81);
+            this.lblVehicleCosmetic.Location = new System.Drawing.Point(521, 81);
             this.lblVehicleCosmetic.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleCosmetic.Name = "lblVehicleCosmetic";
             this.lblVehicleCosmetic.Size = new System.Drawing.Size(56, 13);
@@ -12189,7 +12193,7 @@ namespace Chummer
             // 
             this.lblVehicleCosmeticLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleCosmeticLabel.AutoSize = true;
-            this.lblVehicleCosmeticLabel.Location = new System.Drawing.Point(369, 81);
+            this.lblVehicleCosmeticLabel.Location = new System.Drawing.Point(462, 81);
             this.lblVehicleCosmeticLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleCosmeticLabel.Name = "lblVehicleCosmeticLabel";
             this.lblVehicleCosmeticLabel.Size = new System.Drawing.Size(53, 13);
@@ -12201,7 +12205,7 @@ namespace Chummer
             // 
             this.lblVehiclePilotLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehiclePilotLabel.AutoSize = true;
-            this.lblVehiclePilotLabel.Location = new System.Drawing.Point(392, 6);
+            this.lblVehiclePilotLabel.Location = new System.Drawing.Point(485, 6);
             this.lblVehiclePilotLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehiclePilotLabel.Name = "lblVehiclePilotLabel";
             this.lblVehiclePilotLabel.Size = new System.Drawing.Size(30, 13);
@@ -12212,7 +12216,7 @@ namespace Chummer
             // lblVehiclePilot
             // 
             this.lblVehiclePilot.AutoSize = true;
-            this.lblVehiclePilot.Location = new System.Drawing.Point(428, 6);
+            this.lblVehiclePilot.Location = new System.Drawing.Point(521, 6);
             this.lblVehiclePilot.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehiclePilot.Name = "lblVehiclePilot";
             this.lblVehiclePilot.Size = new System.Drawing.Size(33, 13);
@@ -12256,7 +12260,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponsmodLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleWeaponsmodLabel.AutoSize = true;
-            this.lblVehicleWeaponsmodLabel.Location = new System.Drawing.Point(366, 56);
+            this.lblVehicleWeaponsmodLabel.Location = new System.Drawing.Point(459, 56);
             this.lblVehicleWeaponsmodLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponsmodLabel.Name = "lblVehicleWeaponsmodLabel";
             this.lblVehicleWeaponsmodLabel.Size = new System.Drawing.Size(56, 13);
@@ -12280,7 +12284,7 @@ namespace Chummer
             // lblVehicleSeats
             // 
             this.lblVehicleSeats.AutoSize = true;
-            this.lblVehicleSeats.Location = new System.Drawing.Point(297, 31);
+            this.lblVehicleSeats.Location = new System.Drawing.Point(359, 31);
             this.lblVehicleSeats.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSeats.Name = "lblVehicleSeats";
             this.lblVehicleSeats.Size = new System.Drawing.Size(40, 13);
@@ -12292,7 +12296,7 @@ namespace Chummer
             this.lblVehicleBodymodLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleBodymodLabel.AutoSize = true;
             this.tlpVehiclesVehicle.SetColumnSpan(this.lblVehicleBodymodLabel, 3);
-            this.lblVehicleBodymodLabel.Location = new System.Drawing.Point(112, 81);
+            this.lblVehicleBodymodLabel.Location = new System.Drawing.Point(143, 81);
             this.lblVehicleBodymodLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleBodymodLabel.Name = "lblVehicleBodymodLabel";
             this.lblVehicleBodymodLabel.Size = new System.Drawing.Size(63, 13);
@@ -12304,7 +12308,7 @@ namespace Chummer
             // 
             this.lblVehicleArmorLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleArmorLabel.AutoSize = true;
-            this.lblVehicleArmorLabel.Location = new System.Drawing.Point(138, 31);
+            this.lblVehicleArmorLabel.Location = new System.Drawing.Point(169, 31);
             this.lblVehicleArmorLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleArmorLabel.Name = "lblVehicleArmorLabel";
             this.lblVehicleArmorLabel.Size = new System.Drawing.Size(37, 13);
@@ -12315,7 +12319,7 @@ namespace Chummer
             // lblVehicleArmor
             // 
             this.lblVehicleArmor.AutoSize = true;
-            this.lblVehicleArmor.Location = new System.Drawing.Point(181, 31);
+            this.lblVehicleArmor.Location = new System.Drawing.Point(212, 31);
             this.lblVehicleArmor.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleArmor.Name = "lblVehicleArmor";
             this.lblVehicleArmor.Size = new System.Drawing.Size(40, 13);
@@ -12326,7 +12330,7 @@ namespace Chummer
             // 
             this.lblVehicleSeatsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleSeatsLabel.AutoSize = true;
-            this.lblVehicleSeatsLabel.Location = new System.Drawing.Point(254, 31);
+            this.lblVehicleSeatsLabel.Location = new System.Drawing.Point(316, 31);
             this.lblVehicleSeatsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSeatsLabel.Name = "lblVehicleSeatsLabel";
             this.lblVehicleSeatsLabel.Size = new System.Drawing.Size(37, 13);
@@ -12338,7 +12342,7 @@ namespace Chummer
             // 
             this.lblVehicleSensorLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleSensorLabel.AutoSize = true;
-            this.lblVehicleSensorLabel.Location = new System.Drawing.Point(379, 31);
+            this.lblVehicleSensorLabel.Location = new System.Drawing.Point(472, 31);
             this.lblVehicleSensorLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSensorLabel.Name = "lblVehicleSensorLabel";
             this.lblVehicleSensorLabel.Size = new System.Drawing.Size(43, 13);
@@ -12349,7 +12353,7 @@ namespace Chummer
             // lblVehicleSensor
             // 
             this.lblVehicleSensor.AutoSize = true;
-            this.lblVehicleSensor.Location = new System.Drawing.Point(428, 31);
+            this.lblVehicleSensor.Location = new System.Drawing.Point(521, 31);
             this.lblVehicleSensor.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSensor.Name = "lblVehicleSensor";
             this.lblVehicleSensor.Size = new System.Drawing.Size(46, 13);
@@ -12360,7 +12364,7 @@ namespace Chummer
             // 
             this.lblVehiclePowertrainLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehiclePowertrainLabel.AutoSize = true;
-            this.lblVehiclePowertrainLabel.Location = new System.Drawing.Point(135, 56);
+            this.lblVehiclePowertrainLabel.Location = new System.Drawing.Point(166, 56);
             this.lblVehiclePowertrainLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehiclePowertrainLabel.Name = "lblVehiclePowertrainLabel";
             this.lblVehiclePowertrainLabel.Size = new System.Drawing.Size(40, 13);
@@ -12371,7 +12375,7 @@ namespace Chummer
             // lblVehiclePowertrain
             // 
             this.lblVehiclePowertrain.AutoSize = true;
-            this.lblVehiclePowertrain.Location = new System.Drawing.Point(181, 56);
+            this.lblVehiclePowertrain.Location = new System.Drawing.Point(212, 56);
             this.lblVehiclePowertrain.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehiclePowertrain.Name = "lblVehiclePowertrain";
             this.lblVehiclePowertrain.Size = new System.Drawing.Size(43, 13);
@@ -12381,7 +12385,7 @@ namespace Chummer
             // lblVehicleWeaponsmod
             // 
             this.lblVehicleWeaponsmod.AutoSize = true;
-            this.lblVehicleWeaponsmod.Location = new System.Drawing.Point(428, 56);
+            this.lblVehicleWeaponsmod.Location = new System.Drawing.Point(521, 56);
             this.lblVehicleWeaponsmod.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponsmod.Name = "lblVehicleWeaponsmod";
             this.lblVehicleWeaponsmod.Size = new System.Drawing.Size(42, 13);
@@ -12391,7 +12395,7 @@ namespace Chummer
             // lblVehicleElectromagnetic
             // 
             this.lblVehicleElectromagnetic.AutoSize = true;
-            this.lblVehicleElectromagnetic.Location = new System.Drawing.Point(297, 81);
+            this.lblVehicleElectromagnetic.Location = new System.Drawing.Point(359, 81);
             this.lblVehicleElectromagnetic.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleElectromagnetic.Name = "lblVehicleElectromagnetic";
             this.lblVehicleElectromagnetic.Size = new System.Drawing.Size(34, 13);
@@ -12402,7 +12406,7 @@ namespace Chummer
             // 
             this.lblVehicleElectromagneticLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleElectromagneticLabel.AutoSize = true;
-            this.lblVehicleElectromagneticLabel.Location = new System.Drawing.Point(260, 81);
+            this.lblVehicleElectromagneticLabel.Location = new System.Drawing.Point(322, 81);
             this.lblVehicleElectromagneticLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleElectromagneticLabel.Name = "lblVehicleElectromagneticLabel";
             this.lblVehicleElectromagneticLabel.Size = new System.Drawing.Size(31, 13);
@@ -12413,7 +12417,7 @@ namespace Chummer
             // lblVehicleBodymod
             // 
             this.lblVehicleBodymod.AutoSize = true;
-            this.lblVehicleBodymod.Location = new System.Drawing.Point(181, 81);
+            this.lblVehicleBodymod.Location = new System.Drawing.Point(212, 81);
             this.lblVehicleBodymod.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleBodymod.Name = "lblVehicleBodymod";
             this.lblVehicleBodymod.Size = new System.Drawing.Size(37, 13);
@@ -12424,7 +12428,7 @@ namespace Chummer
             // 
             this.lblVehicleProtectionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblVehicleProtectionLabel.AutoSize = true;
-            this.lblVehicleProtectionLabel.Location = new System.Drawing.Point(262, 56);
+            this.lblVehicleProtectionLabel.Location = new System.Drawing.Point(324, 56);
             this.lblVehicleProtectionLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleProtectionLabel.Name = "lblVehicleProtectionLabel";
             this.lblVehicleProtectionLabel.Size = new System.Drawing.Size(29, 13);
@@ -12435,7 +12439,7 @@ namespace Chummer
             // lblVehicleProtection
             // 
             this.lblVehicleProtection.AutoSize = true;
-            this.lblVehicleProtection.Location = new System.Drawing.Point(297, 56);
+            this.lblVehicleProtection.Location = new System.Drawing.Point(359, 56);
             this.lblVehicleProtection.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleProtection.Name = "lblVehicleProtection";
             this.lblVehicleProtection.Size = new System.Drawing.Size(32, 13);
@@ -12450,7 +12454,7 @@ namespace Chummer
             this.gpbVehiclesWeapon.Dock = System.Windows.Forms.DockStyle.Top;
             this.gpbVehiclesWeapon.Location = new System.Drawing.Point(3, 358);
             this.gpbVehiclesWeapon.Name = "gpbVehiclesWeapon";
-            this.gpbVehiclesWeapon.Size = new System.Drawing.Size(501, 152);
+            this.gpbVehiclesWeapon.Size = new System.Drawing.Size(626, 152);
             this.gpbVehiclesWeapon.TabIndex = 0;
             this.gpbVehiclesWeapon.TabStop = false;
             this.gpbVehiclesWeapon.Tag = "String_Weapon";
@@ -12467,7 +12471,7 @@ namespace Chummer
             this.flpVehiclesWeapon.Location = new System.Drawing.Point(3, 16);
             this.flpVehiclesWeapon.Margin = new System.Windows.Forms.Padding(0);
             this.flpVehiclesWeapon.Name = "flpVehiclesWeapon";
-            this.flpVehiclesWeapon.Size = new System.Drawing.Size(495, 133);
+            this.flpVehiclesWeapon.Size = new System.Drawing.Size(620, 133);
             this.flpVehiclesWeapon.TabIndex = 0;
             this.flpVehiclesWeapon.WrapContents = false;
             // 
@@ -12475,17 +12479,18 @@ namespace Chummer
             // 
             this.tlpVehiclesWeaponCommon.AutoSize = true;
             this.tlpVehiclesWeaponCommon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpVehiclesWeaponCommon.ColumnCount = 9;
+            this.tlpVehiclesWeaponCommon.ColumnCount = 11;
             this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponDamageLabel, 0, 0);
             this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponDamage, 1, 0);
             this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAPLabel, 3, 0);
@@ -12500,6 +12505,10 @@ namespace Chummer
             this.tlpVehiclesWeaponCommon.Controls.Add(this.cboVehicleWeaponFiringMode, 6, 1);
             this.tlpVehiclesWeaponCommon.Controls.Add(this.lblFiringModeLabel, 5, 1);
             this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponMode, 8, 0);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponRCLabel, 9, 0);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponReachLabel, 9, 1);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponRC, 10, 0);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponReach, 10, 1);
             this.tlpVehiclesWeaponCommon.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpVehiclesWeaponCommon.Location = new System.Drawing.Point(0, 0);
             this.tlpVehiclesWeaponCommon.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
@@ -12507,7 +12516,7 @@ namespace Chummer
             this.tlpVehiclesWeaponCommon.RowCount = 2;
             this.tlpVehiclesWeaponCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesWeaponCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehiclesWeaponCommon.Size = new System.Drawing.Size(494, 52);
+            this.tlpVehiclesWeaponCommon.Size = new System.Drawing.Size(620, 52);
             this.tlpVehiclesWeaponCommon.TabIndex = 0;
             // 
             // lblVehicleWeaponDamageLabel
@@ -12673,6 +12682,18 @@ namespace Chummer
             this.lblVehicleWeaponMode.TabIndex = 139;
             this.lblVehicleWeaponMode.Text = "[Mode]";
             // 
+            // lblVehicleWeaponRCLabel
+            // 
+            this.lblVehicleWeaponRCLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblVehicleWeaponRCLabel.AutoSize = true;
+            this.lblVehicleWeaponRCLabel.Location = new System.Drawing.Point(541, 6);
+            this.lblVehicleWeaponRCLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponRCLabel.Name = "lblVehicleWeaponRCLabel";
+            this.lblVehicleWeaponRCLabel.Size = new System.Drawing.Size(25, 13);
+            this.lblVehicleWeaponRCLabel.TabIndex = 251;
+            this.lblVehicleWeaponRCLabel.Tag = "Label_RC";
+            this.lblVehicleWeaponRCLabel.Text = "RC:";
+            // 
             // tlpVehiclesWeaponRanges
             // 
             this.tlpVehiclesWeaponRanges.AutoSize = true;
@@ -12707,14 +12728,14 @@ namespace Chummer
             this.tlpVehiclesWeaponRanges.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesWeaponRanges.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesWeaponRanges.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehiclesWeaponRanges.Size = new System.Drawing.Size(494, 75);
+            this.tlpVehiclesWeaponRanges.Size = new System.Drawing.Size(620, 75);
             this.tlpVehiclesWeaponRanges.TabIndex = 245;
             // 
             // lblVehicleWeaponAlternateRangeExtreme
             // 
             this.lblVehicleWeaponAlternateRangeExtreme.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblVehicleWeaponAlternateRangeExtreme.AutoSize = true;
-            this.lblVehicleWeaponAlternateRangeExtreme.Location = new System.Drawing.Point(433, 56);
+            this.lblVehicleWeaponAlternateRangeExtreme.Location = new System.Drawing.Point(548, 56);
             this.lblVehicleWeaponAlternateRangeExtreme.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAlternateRangeExtreme.Name = "lblVehicleWeaponAlternateRangeExtreme";
             this.lblVehicleWeaponAlternateRangeExtreme.Size = new System.Drawing.Size(19, 13);
@@ -12726,7 +12747,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponRangeExtreme.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblVehicleWeaponRangeExtreme.AutoSize = true;
-            this.lblVehicleWeaponRangeExtreme.Location = new System.Drawing.Point(433, 31);
+            this.lblVehicleWeaponRangeExtreme.Location = new System.Drawing.Point(548, 31);
             this.lblVehicleWeaponRangeExtreme.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeExtreme.Name = "lblVehicleWeaponRangeExtreme";
             this.lblVehicleWeaponRangeExtreme.Size = new System.Drawing.Size(19, 13);
@@ -12738,7 +12759,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponAlternateRangeLong.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblVehicleWeaponAlternateRangeLong.AutoSize = true;
-            this.lblVehicleWeaponAlternateRangeLong.Location = new System.Drawing.Point(333, 56);
+            this.lblVehicleWeaponAlternateRangeLong.Location = new System.Drawing.Point(424, 56);
             this.lblVehicleWeaponAlternateRangeLong.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAlternateRangeLong.Name = "lblVehicleWeaponAlternateRangeLong";
             this.lblVehicleWeaponAlternateRangeLong.Size = new System.Drawing.Size(19, 13);
@@ -12750,7 +12771,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponRangeExtremeLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.lblVehicleWeaponRangeExtremeLabel.AutoSize = true;
-            this.lblVehicleWeaponRangeExtremeLabel.Location = new System.Drawing.Point(411, 6);
+            this.lblVehicleWeaponRangeExtremeLabel.Location = new System.Drawing.Point(526, 6);
             this.lblVehicleWeaponRangeExtremeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeExtremeLabel.Name = "lblVehicleWeaponRangeExtremeLabel";
             this.lblVehicleWeaponRangeExtremeLabel.Size = new System.Drawing.Size(63, 13);
@@ -12763,7 +12784,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponRangeLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.lblVehicleWeaponRangeLabel.AutoSize = true;
-            this.lblVehicleWeaponRangeLabel.Location = new System.Drawing.Point(29, 6);
+            this.lblVehicleWeaponRangeLabel.Location = new System.Drawing.Point(42, 6);
             this.lblVehicleWeaponRangeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeLabel.Name = "lblVehicleWeaponRangeLabel";
             this.lblVehicleWeaponRangeLabel.Size = new System.Drawing.Size(39, 13);
@@ -12776,7 +12797,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponAlternateRangeMedium.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblVehicleWeaponAlternateRangeMedium.AutoSize = true;
-            this.lblVehicleWeaponAlternateRangeMedium.Location = new System.Drawing.Point(235, 56);
+            this.lblVehicleWeaponAlternateRangeMedium.Location = new System.Drawing.Point(300, 56);
             this.lblVehicleWeaponAlternateRangeMedium.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAlternateRangeMedium.Name = "lblVehicleWeaponAlternateRangeMedium";
             this.lblVehicleWeaponAlternateRangeMedium.Size = new System.Drawing.Size(19, 13);
@@ -12788,7 +12809,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponRangeLong.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblVehicleWeaponRangeLong.AutoSize = true;
-            this.lblVehicleWeaponRangeLong.Location = new System.Drawing.Point(333, 31);
+            this.lblVehicleWeaponRangeLong.Location = new System.Drawing.Point(424, 31);
             this.lblVehicleWeaponRangeLong.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeLong.Name = "lblVehicleWeaponRangeLong";
             this.lblVehicleWeaponRangeLong.Size = new System.Drawing.Size(19, 13);
@@ -12800,7 +12821,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponAlternateRangeShort.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblVehicleWeaponAlternateRangeShort.AutoSize = true;
-            this.lblVehicleWeaponAlternateRangeShort.Location = new System.Drawing.Point(137, 56);
+            this.lblVehicleWeaponAlternateRangeShort.Location = new System.Drawing.Point(176, 56);
             this.lblVehicleWeaponAlternateRangeShort.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAlternateRangeShort.Name = "lblVehicleWeaponAlternateRangeShort";
             this.lblVehicleWeaponAlternateRangeShort.Size = new System.Drawing.Size(19, 13);
@@ -12812,7 +12833,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponRangeLongLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.lblVehicleWeaponRangeLongLabel.AutoSize = true;
-            this.lblVehicleWeaponRangeLongLabel.Location = new System.Drawing.Point(318, 6);
+            this.lblVehicleWeaponRangeLongLabel.Location = new System.Drawing.Point(409, 6);
             this.lblVehicleWeaponRangeLongLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeLongLabel.Name = "lblVehicleWeaponRangeLongLabel";
             this.lblVehicleWeaponRangeLongLabel.Size = new System.Drawing.Size(49, 13);
@@ -12825,7 +12846,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponRangeShortLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.lblVehicleWeaponRangeShortLabel.AutoSize = true;
-            this.lblVehicleWeaponRangeShortLabel.Location = new System.Drawing.Point(122, 6);
+            this.lblVehicleWeaponRangeShortLabel.Location = new System.Drawing.Point(161, 6);
             this.lblVehicleWeaponRangeShortLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeShortLabel.Name = "lblVehicleWeaponRangeShortLabel";
             this.lblVehicleWeaponRangeShortLabel.Size = new System.Drawing.Size(50, 13);
@@ -12838,7 +12859,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponRangeMedium.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblVehicleWeaponRangeMedium.AutoSize = true;
-            this.lblVehicleWeaponRangeMedium.Location = new System.Drawing.Point(235, 31);
+            this.lblVehicleWeaponRangeMedium.Location = new System.Drawing.Point(300, 31);
             this.lblVehicleWeaponRangeMedium.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeMedium.Name = "lblVehicleWeaponRangeMedium";
             this.lblVehicleWeaponRangeMedium.Size = new System.Drawing.Size(19, 13);
@@ -12850,7 +12871,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponRangeAlternate.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblVehicleWeaponRangeAlternate.AutoSize = true;
-            this.lblVehicleWeaponRangeAlternate.Location = new System.Drawing.Point(5, 56);
+            this.lblVehicleWeaponRangeAlternate.Location = new System.Drawing.Point(31, 56);
             this.lblVehicleWeaponRangeAlternate.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeAlternate.Name = "lblVehicleWeaponRangeAlternate";
             this.lblVehicleWeaponRangeAlternate.Size = new System.Drawing.Size(90, 13);
@@ -12862,7 +12883,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponRangeMain.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblVehicleWeaponRangeMain.AutoSize = true;
-            this.lblVehicleWeaponRangeMain.Location = new System.Drawing.Point(24, 31);
+            this.lblVehicleWeaponRangeMain.Location = new System.Drawing.Point(50, 31);
             this.lblVehicleWeaponRangeMain.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeMain.Name = "lblVehicleWeaponRangeMain";
             this.lblVehicleWeaponRangeMain.Size = new System.Drawing.Size(71, 13);
@@ -12874,7 +12895,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponRangeMediumLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.lblVehicleWeaponRangeMediumLabel.AutoSize = true;
-            this.lblVehicleWeaponRangeMediumLabel.Location = new System.Drawing.Point(214, 6);
+            this.lblVehicleWeaponRangeMediumLabel.Location = new System.Drawing.Point(279, 6);
             this.lblVehicleWeaponRangeMediumLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeMediumLabel.Name = "lblVehicleWeaponRangeMediumLabel";
             this.lblVehicleWeaponRangeMediumLabel.Size = new System.Drawing.Size(62, 13);
@@ -12887,7 +12908,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponRangeShort.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblVehicleWeaponRangeShort.AutoSize = true;
-            this.lblVehicleWeaponRangeShort.Location = new System.Drawing.Point(137, 31);
+            this.lblVehicleWeaponRangeShort.Location = new System.Drawing.Point(176, 31);
             this.lblVehicleWeaponRangeShort.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponRangeShort.Name = "lblVehicleWeaponRangeShort";
             this.lblVehicleWeaponRangeShort.Size = new System.Drawing.Size(19, 13);
@@ -12903,7 +12924,7 @@ namespace Chummer
             this.gpbVehiclesMatrix.Dock = System.Windows.Forms.DockStyle.Top;
             this.gpbVehiclesMatrix.Location = new System.Drawing.Point(3, 516);
             this.gpbVehiclesMatrix.Name = "gpbVehiclesMatrix";
-            this.gpbVehiclesMatrix.Size = new System.Drawing.Size(501, 94);
+            this.gpbVehiclesMatrix.Size = new System.Drawing.Size(626, 94);
             this.gpbVehiclesMatrix.TabIndex = 1;
             this.gpbVehiclesMatrix.TabStop = false;
             this.gpbVehiclesMatrix.Tag = "String_Matrix";
@@ -12937,7 +12958,7 @@ namespace Chummer
             this.tlpVehiclesMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpVehiclesMatrix.Size = new System.Drawing.Size(495, 75);
+            this.tlpVehiclesMatrix.Size = new System.Drawing.Size(620, 75);
             this.tlpVehiclesMatrix.TabIndex = 0;
             // 
             // lblVehicleDeviceLabel
@@ -12968,9 +12989,9 @@ namespace Chummer
             this.cboVehicleAttack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboVehicleAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboVehicleAttack.FormattingEnabled = true;
-            this.cboVehicleAttack.Location = new System.Drawing.Point(102, 51);
+            this.cboVehicleAttack.Location = new System.Drawing.Point(127, 51);
             this.cboVehicleAttack.Name = "cboVehicleAttack";
-            this.cboVehicleAttack.Size = new System.Drawing.Size(93, 21);
+            this.cboVehicleAttack.Size = new System.Drawing.Size(118, 21);
             this.cboVehicleAttack.TabIndex = 193;
             this.cboVehicleAttack.TooltipText = "";
             this.cboVehicleAttack.Visible = false;
@@ -12980,7 +13001,7 @@ namespace Chummer
             // 
             this.lblVehicleAttackLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblVehicleAttackLabel.AutoSize = true;
-            this.lblVehicleAttackLabel.Location = new System.Drawing.Point(102, 29);
+            this.lblVehicleAttackLabel.Location = new System.Drawing.Point(127, 29);
             this.lblVehicleAttackLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleAttackLabel.Name = "lblVehicleAttackLabel";
             this.lblVehicleAttackLabel.Size = new System.Drawing.Size(41, 13);
@@ -12992,7 +13013,7 @@ namespace Chummer
             // 
             this.lblVehicleSleazeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblVehicleSleazeLabel.AutoSize = true;
-            this.lblVehicleSleazeLabel.Location = new System.Drawing.Point(201, 29);
+            this.lblVehicleSleazeLabel.Location = new System.Drawing.Point(251, 29);
             this.lblVehicleSleazeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleSleazeLabel.Name = "lblVehicleSleazeLabel";
             this.lblVehicleSleazeLabel.Size = new System.Drawing.Size(42, 13);
@@ -13005,9 +13026,9 @@ namespace Chummer
             this.cboVehicleSleaze.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboVehicleSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboVehicleSleaze.FormattingEnabled = true;
-            this.cboVehicleSleaze.Location = new System.Drawing.Point(201, 51);
+            this.cboVehicleSleaze.Location = new System.Drawing.Point(251, 51);
             this.cboVehicleSleaze.Name = "cboVehicleSleaze";
-            this.cboVehicleSleaze.Size = new System.Drawing.Size(93, 21);
+            this.cboVehicleSleaze.Size = new System.Drawing.Size(118, 21);
             this.cboVehicleSleaze.TabIndex = 194;
             this.cboVehicleSleaze.TooltipText = "";
             this.cboVehicleSleaze.Visible = false;
@@ -13017,7 +13038,7 @@ namespace Chummer
             // 
             this.lblVehicleDataProcessingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblVehicleDataProcessingLabel.AutoSize = true;
-            this.lblVehicleDataProcessingLabel.Location = new System.Drawing.Point(300, 29);
+            this.lblVehicleDataProcessingLabel.Location = new System.Drawing.Point(375, 29);
             this.lblVehicleDataProcessingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleDataProcessingLabel.Name = "lblVehicleDataProcessingLabel";
             this.lblVehicleDataProcessingLabel.Size = new System.Drawing.Size(58, 13);
@@ -13030,9 +13051,9 @@ namespace Chummer
             this.cboVehicleDataProcessing.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboVehicleDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboVehicleDataProcessing.FormattingEnabled = true;
-            this.cboVehicleDataProcessing.Location = new System.Drawing.Point(300, 51);
+            this.cboVehicleDataProcessing.Location = new System.Drawing.Point(375, 51);
             this.cboVehicleDataProcessing.Name = "cboVehicleDataProcessing";
-            this.cboVehicleDataProcessing.Size = new System.Drawing.Size(93, 21);
+            this.cboVehicleDataProcessing.Size = new System.Drawing.Size(118, 21);
             this.cboVehicleDataProcessing.TabIndex = 196;
             this.cboVehicleDataProcessing.TooltipText = "";
             this.cboVehicleDataProcessing.Visible = false;
@@ -13043,9 +13064,9 @@ namespace Chummer
             this.cboVehicleFirewall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboVehicleFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboVehicleFirewall.FormattingEnabled = true;
-            this.cboVehicleFirewall.Location = new System.Drawing.Point(399, 51);
+            this.cboVehicleFirewall.Location = new System.Drawing.Point(499, 51);
             this.cboVehicleFirewall.Name = "cboVehicleFirewall";
-            this.cboVehicleFirewall.Size = new System.Drawing.Size(93, 21);
+            this.cboVehicleFirewall.Size = new System.Drawing.Size(118, 21);
             this.cboVehicleFirewall.TabIndex = 195;
             this.cboVehicleFirewall.TooltipText = "";
             this.cboVehicleFirewall.Visible = false;
@@ -13055,7 +13076,7 @@ namespace Chummer
             // 
             this.lblVehicleFirewallLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblVehicleFirewallLabel.AutoSize = true;
-            this.lblVehicleFirewallLabel.Location = new System.Drawing.Point(399, 29);
+            this.lblVehicleFirewallLabel.Location = new System.Drawing.Point(499, 29);
             this.lblVehicleFirewallLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleFirewallLabel.Name = "lblVehicleFirewallLabel";
             this.lblVehicleFirewallLabel.Size = new System.Drawing.Size(45, 13);
@@ -13071,7 +13092,7 @@ namespace Chummer
             this.tlpVehiclesMatrix.SetColumnSpan(this.flpVehiclesMatrixCheckBoxes, 3);
             this.flpVehiclesMatrixCheckBoxes.Controls.Add(this.chkVehicleHomeNode);
             this.flpVehiclesMatrixCheckBoxes.Controls.Add(this.chkVehicleActiveCommlink);
-            this.flpVehiclesMatrixCheckBoxes.Location = new System.Drawing.Point(198, 0);
+            this.flpVehiclesMatrixCheckBoxes.Location = new System.Drawing.Point(248, 0);
             this.flpVehiclesMatrixCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
             this.flpVehiclesMatrixCheckBoxes.Name = "flpVehiclesMatrixCheckBoxes";
             this.flpVehiclesMatrixCheckBoxes.Size = new System.Drawing.Size(199, 23);
@@ -15429,6 +15450,42 @@ namespace Chummer
             this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
             this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
             // 
+            // lblVehicleWeaponReachLabel
+            // 
+            this.lblVehicleWeaponReachLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblVehicleWeaponReachLabel.AutoSize = true;
+            this.lblVehicleWeaponReachLabel.Location = new System.Drawing.Point(524, 32);
+            this.lblVehicleWeaponReachLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponReachLabel.Name = "lblVehicleWeaponReachLabel";
+            this.lblVehicleWeaponReachLabel.Size = new System.Drawing.Size(42, 13);
+            this.lblVehicleWeaponReachLabel.TabIndex = 252;
+            this.lblVehicleWeaponReachLabel.Tag = "Label_Reach";
+            this.lblVehicleWeaponReachLabel.Text = "Reach:";
+            // 
+            // lblVehicleWeaponRC
+            // 
+            this.lblVehicleWeaponRC.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblVehicleWeaponRC.AutoSize = true;
+            this.lblVehicleWeaponRC.Location = new System.Drawing.Point(589, 6);
+            this.lblVehicleWeaponRC.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponRC.Name = "lblVehicleWeaponRC";
+            this.lblVehicleWeaponRC.Size = new System.Drawing.Size(28, 13);
+            this.lblVehicleWeaponRC.TabIndex = 253;
+            this.lblVehicleWeaponRC.Tag = "";
+            this.lblVehicleWeaponRC.Text = "[RC]";
+            // 
+            // lblVehicleWeaponReach
+            // 
+            this.lblVehicleWeaponReach.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblVehicleWeaponReach.AutoSize = true;
+            this.lblVehicleWeaponReach.Location = new System.Drawing.Point(572, 32);
+            this.lblVehicleWeaponReach.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponReach.Name = "lblVehicleWeaponReach";
+            this.lblVehicleWeaponReach.Size = new System.Drawing.Size(45, 13);
+            this.lblVehicleWeaponReach.TabIndex = 254;
+            this.lblVehicleWeaponReach.Tag = "";
+            this.lblVehicleWeaponReach.Text = "[Reach]";
+            // 
             // CharacterCreate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -16855,5 +16912,9 @@ namespace Chummer
         private System.Windows.Forms.Label lblLiftCarryHitsLabel;
         private NumericUpDownEx nudLiftCarryHits;
         private BufferedTableLayoutPanel tlpArmorLocationButtons;
+        private System.Windows.Forms.Label lblVehicleWeaponRCLabel;
+        private System.Windows.Forms.Label lblVehicleWeaponReachLabel;
+        private System.Windows.Forms.Label lblVehicleWeaponRC;
+        private System.Windows.Forms.Label lblVehicleWeaponReach;
     }
 }

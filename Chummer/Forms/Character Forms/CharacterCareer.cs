@@ -17761,7 +17761,7 @@ namespace Chummer
                                                                        GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token);
                         await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblVehicleSlots.DoThreadSafeAsync(x => x.Visible = true, token);
-                        if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
+                            if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
                         {
                             if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
                                                                 StringComparison.OrdinalIgnoreCase))
@@ -17860,7 +17860,15 @@ namespace Chummer
                             await lblVehicleWeaponAlternateRangeMedium.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternatemedium"], token);
                             await lblVehicleWeaponAlternateRangeLong.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternatelong"], token);
                             await lblVehicleWeaponAlternateRangeExtreme.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternateextreme"], token);
-                        }
+                            await lblVehicleWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                            await lblVehicleWeaponRC.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objWeapon.DisplayTotalRC;
+                            }, token);
+                            await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleWeaponReach.DoThreadSafeAsync(x => x.Visible = false, token);
+                            }
                         else
                         {
                             if (objWeapon.Ammo != "0")
@@ -17880,6 +17888,12 @@ namespace Chummer
                             await lblVehicleWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false, token);
                             await lblVehicleWeaponMode.DoThreadSafeAsync(x => x.Visible = false, token);
                             await tlpVehiclesWeaponRanges.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                            await lblVehicleWeaponReach.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objWeapon.TotalReach.ToString(GlobalSettings.CultureInfo);
+                            }, token);
                         }
 
                         if (objWeapon.RangeType == "Ranged" || objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
@@ -18175,7 +18189,38 @@ namespace Chummer
                                          .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
                             }, token);
                         }
-                        if (string.IsNullOrEmpty(objAccessory.AP))
+                        if (string.IsNullOrEmpty(objAccessory.RC))
+                        {
+                            await lblVehicleWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleWeaponRC.DoThreadSafeAsync(x => x.Visible = false, token);
+                        }
+                        else
+                        {
+                            await lblVehicleWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objAccessory.RC), token);
+                            await lblVehicleWeaponRC.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = !string.IsNullOrEmpty(objAccessory
+                                    .RC);
+                                x.Text = objAccessory.RC;
+                            }, token);
+                        }
+                        if (objAccessory.Reach == 0)
+                        {
+                            await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleWeaponReach.DoThreadSafeAsync(x => x.Visible = false, token);
+                        }
+                        else
+                        {
+                            await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objAccessory.RC), token);
+                            await lblVehicleWeaponReach.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = Convert
+                                    .ToInt32(objAccessory.Reach, GlobalSettings.InvariantCultureInfo)
+                                    .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            }, token);
+                        }
+                            if (string.IsNullOrEmpty(objAccessory.AP))
                         {
                             await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = false, token);
                             await lblVehicleWeaponAP.DoThreadSafeAsync(x => x.Visible = false, token);

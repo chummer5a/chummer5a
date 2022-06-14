@@ -1376,6 +1376,10 @@ namespace Chummer
             this.tsVehicleWeaponMountNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.cmdUnloadWeapon = new System.Windows.Forms.Button();
             this.cmdUnloadVehicleWeapon = new System.Windows.Forms.Button();
+            this.lblVehicleWeaponRCLabel = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponRC = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponReachLabel = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponReach = new System.Windows.Forms.Label();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -17683,13 +17687,16 @@ namespace Chummer
             // 
             this.tlpVehiclesWeaponCommon.AutoSize = true;
             this.tlpVehiclesWeaponCommon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpVehiclesWeaponCommon.ColumnCount = 6;
+            this.tlpVehiclesWeaponCommon.ColumnCount = 8;
             this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponReach, 6, 1);
             this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponDamageLabel, 0, 0);
             this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponDamage, 1, 0);
             this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAccuracy, 5, 0);
@@ -17702,6 +17709,9 @@ namespace Chummer
             this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAmmoLabel, 4, 1);
             this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAmmo, 5, 1);
             this.tlpVehiclesWeaponCommon.Controls.Add(this.dpcVehicleWeaponDicePool, 1, 1);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponRCLabel, 6, 0);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponRC, 7, 0);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponReachLabel, 6, 1);
             this.tlpVehiclesWeaponCommon.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpVehiclesWeaponCommon.Location = new System.Drawing.Point(0, 0);
             this.tlpVehiclesWeaponCommon.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
@@ -17739,7 +17749,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponAccuracy.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblVehicleWeaponAccuracy.AutoSize = true;
-            this.lblVehicleWeaponAccuracy.Location = new System.Drawing.Point(387, 6);
+            this.lblVehicleWeaponAccuracy.Location = new System.Drawing.Point(309, 6);
             this.lblVehicleWeaponAccuracy.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAccuracy.Name = "lblVehicleWeaponAccuracy";
             this.lblVehicleWeaponAccuracy.Size = new System.Drawing.Size(32, 13);
@@ -17750,7 +17760,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponAPLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblVehicleWeaponAPLabel.AutoSize = true;
-            this.lblVehicleWeaponAPLabel.Location = new System.Drawing.Point(187, 6);
+            this.lblVehicleWeaponAPLabel.Location = new System.Drawing.Point(148, 6);
             this.lblVehicleWeaponAPLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAPLabel.Name = "lblVehicleWeaponAPLabel";
             this.lblVehicleWeaponAPLabel.Size = new System.Drawing.Size(24, 13);
@@ -17774,7 +17784,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponAccuracyLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblVehicleWeaponAccuracyLabel.AutoSize = true;
-            this.lblVehicleWeaponAccuracyLabel.Location = new System.Drawing.Point(326, 6);
+            this.lblVehicleWeaponAccuracyLabel.Location = new System.Drawing.Point(248, 6);
             this.lblVehicleWeaponAccuracyLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAccuracyLabel.Name = "lblVehicleWeaponAccuracyLabel";
             this.lblVehicleWeaponAccuracyLabel.Size = new System.Drawing.Size(55, 13);
@@ -17786,7 +17796,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponAP.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblVehicleWeaponAP.AutoSize = true;
-            this.lblVehicleWeaponAP.Location = new System.Drawing.Point(217, 6);
+            this.lblVehicleWeaponAP.Location = new System.Drawing.Point(178, 6);
             this.lblVehicleWeaponAP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAP.Name = "lblVehicleWeaponAP";
             this.lblVehicleWeaponAP.Size = new System.Drawing.Size(27, 13);
@@ -17797,7 +17807,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponModeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblVehicleWeaponModeLabel.AutoSize = true;
-            this.lblVehicleWeaponModeLabel.Location = new System.Drawing.Point(174, 31);
+            this.lblVehicleWeaponModeLabel.Location = new System.Drawing.Point(135, 31);
             this.lblVehicleWeaponModeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponModeLabel.Name = "lblVehicleWeaponModeLabel";
             this.lblVehicleWeaponModeLabel.Size = new System.Drawing.Size(37, 13);
@@ -17809,7 +17819,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponMode.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblVehicleWeaponMode.AutoSize = true;
-            this.lblVehicleWeaponMode.Location = new System.Drawing.Point(217, 31);
+            this.lblVehicleWeaponMode.Location = new System.Drawing.Point(178, 31);
             this.lblVehicleWeaponMode.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponMode.Name = "lblVehicleWeaponMode";
             this.lblVehicleWeaponMode.Size = new System.Drawing.Size(40, 13);
@@ -17820,7 +17830,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponAmmoLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblVehicleWeaponAmmoLabel.AutoSize = true;
-            this.lblVehicleWeaponAmmoLabel.Location = new System.Drawing.Point(342, 31);
+            this.lblVehicleWeaponAmmoLabel.Location = new System.Drawing.Point(264, 31);
             this.lblVehicleWeaponAmmoLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAmmoLabel.Name = "lblVehicleWeaponAmmoLabel";
             this.lblVehicleWeaponAmmoLabel.Size = new System.Drawing.Size(39, 13);
@@ -17832,7 +17842,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponAmmo.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblVehicleWeaponAmmo.AutoSize = true;
-            this.lblVehicleWeaponAmmo.Location = new System.Drawing.Point(387, 31);
+            this.lblVehicleWeaponAmmo.Location = new System.Drawing.Point(309, 31);
             this.lblVehicleWeaponAmmo.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAmmo.Name = "lblVehicleWeaponAmmo";
             this.lblVehicleWeaponAmmo.Size = new System.Drawing.Size(42, 13);
@@ -22132,6 +22142,52 @@ namespace Chummer
             this.cmdUnloadVehicleWeapon.UseVisualStyleBackColor = true;
             this.cmdUnloadVehicleWeapon.Click += new System.EventHandler(this.cmdUnloadVehicleWeapon_Click);
             // 
+            // lblVehicleWeaponRCLabel
+            // 
+            this.lblVehicleWeaponRCLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblVehicleWeaponRCLabel.AutoSize = true;
+            this.lblVehicleWeaponRCLabel.Location = new System.Drawing.Point(379, 6);
+            this.lblVehicleWeaponRCLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponRCLabel.Name = "lblVehicleWeaponRCLabel";
+            this.lblVehicleWeaponRCLabel.Size = new System.Drawing.Size(25, 13);
+            this.lblVehicleWeaponRCLabel.TabIndex = 248;
+            this.lblVehicleWeaponRCLabel.Tag = "Label_RC";
+            this.lblVehicleWeaponRCLabel.Text = "RC:";
+            // 
+            // lblVehicleWeaponRC
+            // 
+            this.lblVehicleWeaponRC.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblVehicleWeaponRC.AutoSize = true;
+            this.lblVehicleWeaponRC.Location = new System.Drawing.Point(427, 6);
+            this.lblVehicleWeaponRC.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponRC.Name = "lblVehicleWeaponRC";
+            this.lblVehicleWeaponRC.Size = new System.Drawing.Size(28, 13);
+            this.lblVehicleWeaponRC.TabIndex = 249;
+            this.lblVehicleWeaponRC.Text = "[RC]";
+            // 
+            // lblVehicleWeaponReachLabel
+            // 
+            this.lblVehicleWeaponReachLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblVehicleWeaponReachLabel.AutoSize = true;
+            this.lblVehicleWeaponReachLabel.Location = new System.Drawing.Point(379, 31);
+            this.lblVehicleWeaponReachLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponReachLabel.Name = "lblVehicleWeaponReachLabel";
+            this.lblVehicleWeaponReachLabel.Size = new System.Drawing.Size(42, 13);
+            this.lblVehicleWeaponReachLabel.TabIndex = 250;
+            this.lblVehicleWeaponReachLabel.Tag = "Label_Reach";
+            this.lblVehicleWeaponReachLabel.Text = "Reach:";
+            // 
+            // lblVehicleWeaponReach
+            // 
+            this.lblVehicleWeaponReach.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblVehicleWeaponReach.AutoSize = true;
+            this.lblVehicleWeaponReach.Location = new System.Drawing.Point(427, 31);
+            this.lblVehicleWeaponReach.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponReach.Name = "lblVehicleWeaponReach";
+            this.lblVehicleWeaponReach.Size = new System.Drawing.Size(45, 13);
+            this.lblVehicleWeaponReach.TabIndex = 251;
+            this.lblVehicleWeaponReach.Text = "[Reach]";
+            // 
             // CharacterCareer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -23968,5 +24024,9 @@ namespace Chummer
         private Button cmdUnloadWeapon;
         private Button cmdUnloadVehicleWeapon;
         private ColorableCheckBox chkHideLoadedAmmo;
+        private Label lblVehicleWeaponReach;
+        private Label lblVehicleWeaponRCLabel;
+        private Label lblVehicleWeaponRC;
+        private Label lblVehicleWeaponReachLabel;
     }
 }
