@@ -1892,6 +1892,7 @@ namespace Chummer
                 Page = bonusNode["page"]?.InnerText ?? "0",
                 ParentID = SourceName
             };
+            objWeapon.CreateClips();
 
             _objCharacter.Weapons.Add(objWeapon);
 

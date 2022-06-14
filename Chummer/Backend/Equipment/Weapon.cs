@@ -898,7 +898,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Create a weapon's initial clips. Should only be called while the ammo list is empty.
         /// </summary>
-        private void CreateClips()
+        public void CreateClips()
         {
             Debug.Assert(_lstAmmo.Count == 0);
             List<WeaponAccessory> adoptables = GetClipProvidingAccessories();
