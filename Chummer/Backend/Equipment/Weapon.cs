@@ -6541,7 +6541,7 @@ namespace Chummer.Backend.Equipment
                         else
                         {
                             objCurrentlyLoadedAmmo.Quantity = decQty;
-                            objSelectedAmmo.Quantity -= decQty;
+                            objSelectedAmmo.Quantity -= decTopUp;
                             await treGearView.DoThreadSafeAsync(x =>
                             {
                                 // Refresh the Gear tree.
