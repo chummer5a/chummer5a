@@ -122,7 +122,7 @@
   
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.5" />
   
-    <PackageReference Include="NuGet.CommandLine" Version="6.2.0">
+    <PackageReference Include="NuGet.CommandLine" Version="6.2.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
