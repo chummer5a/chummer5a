@@ -13592,7 +13592,7 @@
       <ap>-4</ap>
       <mode>SA</mode>
       <rc>0</rc>
-      <ammo>2x12(c)</ammo>
+      <ammo>12(c)</ammo>
       <avail>12F</avail>
       <cost>11000</cost>
       <source>SL</source>
@@ -13627,7 +13627,7 @@
       <ap>-1</ap>
       <mode>SA</mode>
       <rc>0</rc>
-      <ammo>6(m)x2</ammo>
+      <ammo>6(m)</ammo>
       <avail>12R</avail>
       <cost>2000</cost>
       <source>SL</source>

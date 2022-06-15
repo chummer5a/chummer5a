@@ -550,6 +550,9 @@ namespace Chummer.Backend.Equipment
 
             objXmlWeapon.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
 
+            // create a weapon's initial clips
+            CreateClips();
+
             // If there are any Accessories that come with the Weapon, add them.
             if (blnCreateChildren)
             {
@@ -646,9 +649,6 @@ namespace Chummer.Backend.Equipment
 
             if (blnCreateImprovements)
                 RefreshWirelessBonuses();
-
-            // create a weapon's initial clips
-            CreateClips();
 
             // Add Subweapons (not underbarrels) if applicable.
             if (lstWeapons == null)
@@ -900,7 +900,6 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public void CreateClips()
         {
-            Debug.Assert(_lstAmmo.Count == 0);
             List<WeaponAccessory> adoptables = GetClipProvidingAccessories();
             foreach (WeaponAccessory adoptable in adoptables)
                 _lstAmmo.Add(new Clip(_objCharacter, adoptable, this, null, 0));
