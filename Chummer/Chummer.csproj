@@ -1097,9 +1097,6 @@
     <Content Include="customdata\Neon Anarchy House Rules\custom_qualities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Neon Anarchy House Rules\custom_ranges.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="customdata\Neon Anarchy House Rules\custom_skills.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

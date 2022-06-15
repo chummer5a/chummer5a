@@ -63,6 +63,8 @@ Data Changes:
 - Added more quips and tips to Chummy.
 - Fixed the sensor collar not being able to add sensor functions to its camera or microphone.
 - Fixed name of 'Auctioneer Business Clothes' to 'Actioneer Business Clothes'.
+- Added missing Carbines range category, which maps to Submachine Guns ranges per Street Lethal. 
+- Removed legacy custom_ranges.xml file from Neon Anarchy House Rules customdata.
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups

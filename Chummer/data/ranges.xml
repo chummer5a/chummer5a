@@ -259,5 +259,13 @@
       <long>-1</long>
       <extreme>-1</extreme>
     </range>
+    <range>
+      <name>Carbines</name>
+      <min>0</min>
+      <short>10</short>
+      <medium>40</medium>
+      <long>80</long>
+      <extreme>150</extreme>
+    </range>
   </ranges>
 </chummer>
