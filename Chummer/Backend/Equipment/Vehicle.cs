@@ -1230,22 +1230,8 @@ namespace Chummer.Backend.Equipment
                 {
                     if (!objMod.IncludedInVehicle && objMod.Equipped)
                     {
-                        string strBonusPilot = objMod.Bonus?["pilot"]?.InnerText;
-                        // Set the Vehicle's Pilot to the Modification's bonus.
-                        if (!string.IsNullOrEmpty(strBonusPilot))
-                        {
-                            if (int.TryParse(strBonusPilot.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intTest)
-                                && intTest > intReturn)
-                                intReturn = intTest;
-                        }
-                        else if (objMod.WirelessOn)
-                        {
-                            strBonusPilot = objMod.WirelessBonus?["pilot"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strBonusPilot) && int.TryParse(strBonusPilot.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intTest) && intTest > intReturn)
-                            {
-                                intReturn = intTest;
-                            }
-                        }
+                        string strBonusPilot = objMod.WirelessOn ? objMod.WirelessBonus?["pilot"]?.InnerText ?? objMod.Bonus?["pilot"]?.InnerText : objMod.Bonus?["pilot"]?.InnerText;
+                        intReturn = Math.Max(ParseBonus(strBonusPilot, objMod.Rating, _intPilot, "Pilot", false), intReturn);
                     }
                 }
                 return intReturn;
@@ -1583,21 +1569,13 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intTotalSensor = _intSensor;
-                char chrFirstCharacter;
                 // First check for mods that overwrite the Sensor value
                 foreach (VehicleMod objMod in Mods)
                 {
                     if (objMod.IncludedInVehicle || !objMod.Equipped)
                         continue;
                     string strBonusSensor = objMod.WirelessOn ? objMod.WirelessBonus?["sensor"]?.InnerText ?? objMod.Bonus?["sensor"]?.InnerText : objMod.Bonus?["sensor"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strBonusSensor))
-                    {
-                        chrFirstCharacter = strBonusSensor[0];
-                        if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
-                        {
-                            intTotalSensor = Math.Max(Convert.ToInt32(strBonusSensor.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo), intTotalSensor);
-                        }
-                    }
+                    intTotalSensor = Math.Max(ParseBonus(strBonusSensor, objMod.Rating, _intSensor, "Sensor", false),intTotalSensor);
                 }
 
                 // Then check for mods that modify the sensor value (needs separate loop in case of % modifiers on top of stat-overriding mods)
@@ -1606,7 +1584,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (objMod.IncludedInVehicle || !objMod.Equipped)
                         continue;
-                    intTotalBonusSensor += ParseBonus(objMod.WirelessBonus?["sensor"]?.InnerText, objMod.Rating, intTotalSensor, "Sensor");
+                    intTotalBonusSensor += ParseBonus(objMod.Bonus?["sensor"]?.InnerText, objMod.Rating, intTotalSensor, "Sensor");
 
                     if (objMod.WirelessOn)
                     {
@@ -1625,21 +1603,32 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Parse a given Bonus string from a Mod for a new bonus value. 
+        /// Parse a given string from a Mod's bonus node to calculate new bonus or base value. 
         /// </summary>
         /// <param name="strBonus">String that will be parsed, replacing values.</param>
         /// <param name="intModRating">Current Rating of the relevant Mod.</param>
         /// <param name="intTotalRating">Total current Rating of the value that is being improved.</param>
         /// <param name="strReplaceRating">String value that will be replaced by intModRating.</param>
+        /// <param name="blnBonus">Whether the value must be prefixed with + or - to return a value.</param>
         /// <returns></returns>
-        private int ParseBonus(string strBonus, int intModRating, int intTotalRating, string strReplaceRating)
+        private static int ParseBonus(string strBonus, int intModRating, int intTotalRating, string strReplaceRating, bool blnBonus = true)
         {
             if (!string.IsNullOrEmpty(strBonus))
             {
                 char chrFirstCharacter = strBonus[0];
-                if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
+                //Value is a bonus 
+                if ((chrFirstCharacter == '+' || chrFirstCharacter == '-')&& blnBonus)
                 {
-                    // If the bonus is determined by the existing seat number, evaluate the expression.
+                    // If the bonus is determined by the existing number, evaluate the expression.
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(strBonus.TrimStart('+')
+                        .Replace("Rating", intModRating.ToString(GlobalSettings.InvariantCultureInfo))
+                        .Replace(strReplaceRating, intTotalRating.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
+                    if (blnIsSuccess)
+                        return ((double)objProcess).StandardRound();
+                }
+                if (chrFirstCharacter != '+' && chrFirstCharacter != '-' && !blnBonus)
+                {
+                    // If the bonus is determined by the existing number, evaluate the expression.
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strBonus.TrimStart('+')
                         .Replace("Rating", intModRating.ToString(GlobalSettings.InvariantCultureInfo))
                         .Replace(strReplaceRating, intTotalRating.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
@@ -2081,22 +2070,15 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                char chrFirstCharacter;
                 // First check for mods that overwrite the seat value
                 int intTotalSeats = Seats;
                 foreach (VehicleMod objMod in Mods)
                 {
                     if (objMod.IncludedInVehicle || !objMod.Equipped)
                         continue;
+
                     string strBonusSeats = objMod.WirelessOn ? objMod.WirelessBonus?["seats"]?.InnerText ?? objMod.Bonus?["seats"]?.InnerText : objMod.Bonus?["seats"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strBonusSeats))
-                    {
-                        chrFirstCharacter = strBonusSeats[0];
-                        if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
-                        {
-                            intTotalSeats = Math.Max(Convert.ToInt32(strBonusSeats.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo), intTotalSeats);
-                        }
-                    }
+                    intTotalSeats = Math.Max(ParseBonus(strBonusSeats, objMod.Rating, Seats, "Seats", false), intTotalSeats);
                 }
 
                 // Then check for mods that modify the seat value (needs separate loop in case of % modifiers on top of stat-overriding mods)
@@ -2105,32 +2087,13 @@ namespace Chummer.Backend.Equipment
                 {
                     if (objMod.IncludedInVehicle || !objMod.Equipped)
                         continue;
-                    string strBonusSeats = objMod.Bonus?["seats"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strBonusSeats))
-                    {
-                        chrFirstCharacter = strBonusSeats[0];
-                        if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
-                        {
-                            // If the bonus is determined by the existing seat number, evaluate the expression.
-                            object objProcess = CommonFunctions.EvaluateInvariantXPath(strBonusSeats.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Seats", intTotalSeats.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
-                            if (blnIsSuccess)
-                                intTotalBonusSeats += ((double)objProcess).StandardRound();
-                        }
-                    }
+                    intTotalBonusSeats += ParseBonus(objMod.Bonus?["seats"]?.InnerText, objMod.Rating, intTotalSeats, "Seats");
 
                     if (objMod.WirelessOn)
                     {
-                        strBonusSeats = objMod.WirelessBonus?["seats"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strBonusSeats))
+                        if (objMod.WirelessBonus != null)
                         {
-                            chrFirstCharacter = strBonusSeats[0];
-                            if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
-                            {
-                                // If the bonus is determined by the existing seat number, evaluate the expression.
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strBonusSeats.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Seats", intTotalSeats.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
-                                if (blnIsSuccess)
-                                    intTotalBonusSeats += ((double)objProcess).StandardRound();
-                            }
+                            intTotalBonusSeats += ParseBonus(objMod.WirelessBonus?["seats"]?.InnerText, objMod.Rating, intTotalSeats, "Seats");
                         }
                     }
                 }
@@ -2146,7 +2109,6 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                char chrFirstCharacter;
                 int intTotalSpeed = Speed;
                 int intBaseOffroadSpeed = OffroadSpeed;
                 int intTotalArmor = 0;
@@ -2156,63 +2118,16 @@ namespace Chummer.Backend.Equipment
                 {
                     if (objMod.IncludedInVehicle || !objMod.Equipped)
                         continue;
-                    if (objMod.Bonus != null)
+
+                    string strBonus = objMod.WirelessOn ? objMod.WirelessBonus?["speed"]?.InnerText ?? objMod.Bonus?["speed"]?.InnerText : objMod.Bonus?["speed"]?.InnerText;
+                    intTotalSpeed = Math.Max(ParseBonus(strBonus, objMod.Rating, Speed, "Speed", false), intTotalSpeed);
+
+                    strBonus = objMod.WirelessOn ? objMod.WirelessBonus?["offroadspeed"]?.InnerText ?? objMod.Bonus?["offroadspeed"]?.InnerText : objMod.Bonus?["offroadspeed"]?.InnerText;
+                    intBaseOffroadSpeed = Math.Max(ParseBonus(strBonus, objMod.Rating, OffroadSpeed, "OffroadSpeed", false), intTotalSpeed);
+                    if (IsDrone && _objCharacter.Settings.DroneMods)
                     {
-                        string strSpeed = objMod.Bonus["speed"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strSpeed))
-                        {
-                            chrFirstCharacter = strSpeed[0];
-                            if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
-                            {
-                                intTotalSpeed = Math.Max(intTotalSpeed, Convert.ToInt32(strSpeed.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
-                            }
-                        }
-                        strSpeed = objMod.Bonus["offroadspeed"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strSpeed))
-                        {
-                            chrFirstCharacter = strSpeed[0];
-                            if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
-                            {
-                                intBaseOffroadSpeed = Math.Max(intBaseOffroadSpeed, Convert.ToInt32(strSpeed.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
-                            }
-                        }
-                        if (IsDrone && _objCharacter.Settings.DroneMods)
-                        {
-                            string strArmor = objMod.Bonus["armor"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strArmor))
-                            {
-                                intTotalArmor = Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo);
-                            }
-                        }
-                    }
-                    if (objMod.WirelessOn && objMod.WirelessBonus != null)
-                    {
-                        string strSpeed = objMod.WirelessBonus["speed"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strSpeed))
-                        {
-                            chrFirstCharacter = strSpeed[0];
-                            if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
-                            {
-                                intTotalSpeed = Math.Max(intTotalSpeed, Convert.ToInt32(strSpeed.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
-                            }
-                        }
-                        strSpeed = objMod.WirelessBonus["offroadspeed"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strSpeed))
-                        {
-                            chrFirstCharacter = strSpeed[0];
-                            if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
-                            {
-                                intBaseOffroadSpeed = Math.Max(intBaseOffroadSpeed, Convert.ToInt32(strSpeed.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
-                            }
-                        }
-                        if (IsDrone && _objCharacter.Settings.DroneMods)
-                        {
-                            string strArmor = objMod.WirelessBonus["armor"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strArmor))
-                            {
-                                intTotalArmor = Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo);
-                            }
-                        }
+                        strBonus = objMod.WirelessOn ? objMod.WirelessBonus?["armor"]?.InnerText ?? objMod.Bonus?["armor"]?.InnerText : objMod.Bonus?["armor"]?.InnerText;
+                        intTotalArmor = Math.Max(ParseBonus(strBonus, objMod.Rating, Armor, "Armor", false), intTotalArmor);
                     }
                 }
 
@@ -2225,57 +2140,13 @@ namespace Chummer.Backend.Equipment
                         continue;
                     if (objMod.Bonus != null)
                     {
-                        string strSpeed = objMod.Bonus["speed"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strSpeed))
-                        {
-                            chrFirstCharacter = strSpeed[0];
-                            if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
-                            {
-                                // If the bonus is determined by the existing speed number, evaluate the expression.
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Speed", intTotalSpeed.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
-                                if (blnIsSuccess)
-                                    intTotalBonusSpeed += ((double)objProcess).StandardRound();
-                            }
-                        }
-                        strSpeed = objMod.Bonus["offroadspeed"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strSpeed))
-                        {
-                            chrFirstCharacter = strSpeed[0];
-                            if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
-                            {
-                                // If the bonus is determined by the existing speed number, evaluate the expression.
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("OffroadSpeed", intBaseOffroadSpeed.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
-                                if (blnIsSuccess)
-                                    intTotalBonusOffroadSpeed += ((double)objProcess).StandardRound();
-                            }
-                        }
+                        intTotalBonusSpeed += ParseBonus(objMod.Bonus?["speed"]?.InnerText, objMod.Rating, intTotalSpeed, "Speed");
+                        intTotalBonusOffroadSpeed += ParseBonus(objMod.Bonus?["offroadspeed"]?.InnerText, objMod.Rating, intTotalSpeed, "OffroadSpeed");
                     }
                     if (objMod.WirelessOn && objMod.WirelessBonus != null)
                     {
-                        string strSpeed = objMod.WirelessBonus["speed"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strSpeed))
-                        {
-                            chrFirstCharacter = strSpeed[0];
-                            if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
-                            {
-                                // If the bonus is determined by the existing speed number, evaluate the expression.
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("Speed", intTotalSpeed.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
-                                if (blnIsSuccess)
-                                    intTotalBonusSpeed += ((double)objProcess).StandardRound();
-                            }
-                        }
-                        strSpeed = objMod.WirelessBonus["offroadspeed"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strSpeed))
-                        {
-                            chrFirstCharacter = strSpeed[0];
-                            if (chrFirstCharacter == '+' || chrFirstCharacter == '-')
-                            {
-                                // If the bonus is determined by the existing speed number, evaluate the expression.
-                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strSpeed.TrimStart('+').Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)).Replace("OffroadSpeed", intBaseOffroadSpeed.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
-                                if (blnIsSuccess)
-                                    intTotalBonusOffroadSpeed += ((double)objProcess).StandardRound();
-                            }
-                        }
+                        intTotalBonusSpeed += ParseBonus(objMod.WirelessBonus?["speed"]?.InnerText, objMod.Rating, intTotalSpeed, "Speed");
+                        intTotalBonusOffroadSpeed += ParseBonus(objMod.WirelessBonus?["offroadspeed"]?.InnerText, objMod.Rating, intTotalSpeed, "OffroadSpeed");
                     }
                 }
 
@@ -2298,7 +2169,6 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                char chrFirstCharacter;
                 int intTotalAccel = Accel;
                 int intBaseOffroadAccel = OffroadAccel;
                 int intTotalArmor = 0;
@@ -2308,63 +2178,15 @@ namespace Chummer.Backend.Equipment
                 {
                     if (objMod.IncludedInVehicle || !objMod.Equipped)
                         continue;
-                    if (objMod.Bonus != null)
+                    string strBonus = objMod.WirelessOn ? objMod.WirelessBonus?["accel"]?.InnerText ?? objMod.Bonus?["accel"]?.InnerText : objMod.Bonus?["accel"]?.InnerText;
+                    intTotalAccel = Math.Max(ParseBonus(strBonus, objMod.Rating, Accel, "Accel", false), intTotalAccel);
+
+                    strBonus = objMod.WirelessOn ? objMod.WirelessBonus?["offroadaccel"]?.InnerText ?? objMod.Bonus?["offroadaccel"]?.InnerText : objMod.Bonus?["offroadaccel"]?.InnerText;
+                    intBaseOffroadAccel = Math.Max(ParseBonus(strBonus, objMod.Rating, OffroadAccel, "OffroadAccel", false), intTotalAccel);
+                    if (IsDrone && _objCharacter.Settings.DroneMods)
                     {
-                        string strAccel = objMod.Bonus["accel"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strAccel))
-                        {
-                            chrFirstCharacter = strAccel[0];
-                            if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
-                            {
-                                intTotalAccel = Math.Max(intTotalAccel, Convert.ToInt32(strAccel.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
-                            }
-                        }
-                        strAccel = objMod.Bonus["offroadaccel"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strAccel))
-                        {
-                            chrFirstCharacter = strAccel[0];
-                            if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
-                            {
-                                intBaseOffroadAccel = Math.Max(intBaseOffroadAccel, Convert.ToInt32(strAccel.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
-                            }
-                        }
-                        if (IsDrone && _objCharacter.Settings.DroneMods)
-                        {
-                            string strArmor = objMod.Bonus["armor"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strArmor))
-                            {
-                                intTotalArmor = Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo);
-                            }
-                        }
-                    }
-                    if (objMod.WirelessOn && objMod.WirelessBonus != null)
-                    {
-                        string strAccel = objMod.WirelessBonus["accel"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strAccel))
-                        {
-                            chrFirstCharacter = strAccel[0];
-                            if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
-                            {
-                                intTotalAccel = Math.Max(intTotalAccel, Convert.ToInt32(strAccel.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
-                            }
-                        }
-                        strAccel = objMod.WirelessBonus["offroadaccel"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strAccel))
-                        {
-                            chrFirstCharacter = strAccel[0];
-                            if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
-                            {
-                                intBaseOffroadAccel = Math.Max(intBaseOffroadAccel, Convert.ToInt32(strAccel.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
-                            }
-                        }
-                        if (IsDrone && _objCharacter.Settings.DroneMods)
-                        {
-                            string strArmor = objMod.WirelessBonus["armor"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strArmor))
-                            {
-                                intTotalArmor = Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo);
-                            }
-                        }
+                        strBonus = objMod.WirelessOn ? objMod.WirelessBonus?["armor"]?.InnerText ?? objMod.Bonus?["armor"]?.InnerText : objMod.Bonus?["armor"]?.InnerText;
+                        intTotalArmor = Math.Max(ParseBonus(strBonus, objMod.Rating, Armor, "Armor", false), intTotalArmor);
                     }
                 }
 
@@ -2431,7 +2253,6 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                char chrFirstCharacter;
                 int intBaseHandling = Handling;
                 int intBaseOffroadHandling = OffroadHandling;
                 int intTotalArmor = 0;
@@ -2441,63 +2262,15 @@ namespace Chummer.Backend.Equipment
                 {
                     if (objMod.IncludedInVehicle || !objMod.Equipped)
                         continue;
-                    if (objMod.Bonus != null)
+                    string strBonus = objMod.WirelessOn ? objMod.WirelessBonus?["handling"]?.InnerText ?? objMod.Bonus?["handling"]?.InnerText : objMod.Bonus?["handling"]?.InnerText;
+                    intBaseHandling = Math.Max(ParseBonus(strBonus, objMod.Rating, Handling, "Handling", false), intBaseHandling);
+
+                    strBonus = objMod.WirelessOn ? objMod.WirelessBonus?["offroadhandling"]?.InnerText ?? objMod.Bonus?["offroadhandling"]?.InnerText : objMod.Bonus?["offroadhandling"]?.InnerText;
+                    intBaseOffroadHandling = Math.Max(ParseBonus(strBonus, objMod.Rating, OffroadHandling, "OffroadHandling", false), intBaseOffroadHandling);
+                    if (IsDrone && _objCharacter.Settings.DroneMods)
                     {
-                        string strHandling = objMod.Bonus["handling"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strHandling))
-                        {
-                            chrFirstCharacter = strHandling[0];
-                            if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
-                            {
-                                intBaseHandling = Math.Max(intBaseHandling, Convert.ToInt32(strHandling.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
-                            }
-                        }
-                        strHandling = objMod.Bonus["offroadhandling"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strHandling))
-                        {
-                            chrFirstCharacter = strHandling[0];
-                            if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
-                            {
-                                intBaseOffroadHandling = Math.Max(intBaseOffroadHandling, Convert.ToInt32(strHandling.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
-                            }
-                        }
-                        if (IsDrone && _objCharacter.Settings.DroneMods)
-                        {
-                            string strArmor = objMod.Bonus["armor"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strArmor))
-                            {
-                                intTotalArmor = Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo);
-                            }
-                        }
-                    }
-                    if (objMod.WirelessOn && objMod.WirelessBonus != null)
-                    {
-                        string strHandling = objMod.WirelessBonus["handling"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strHandling))
-                        {
-                            chrFirstCharacter = strHandling[0];
-                            if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
-                            {
-                                intBaseHandling = Math.Max(intBaseHandling, Convert.ToInt32(strHandling.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
-                            }
-                        }
-                        strHandling = objMod.WirelessBonus["offroadhandling"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strHandling))
-                        {
-                            chrFirstCharacter = strHandling[0];
-                            if (chrFirstCharacter != '+' && chrFirstCharacter != '-')
-                            {
-                                intBaseOffroadHandling = Math.Max(intBaseOffroadHandling, Convert.ToInt32(strHandling.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo));
-                            }
-                        }
-                        if (IsDrone && _objCharacter.Settings.DroneMods)
-                        {
-                            string strArmor = objMod.WirelessBonus["armor"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strArmor))
-                            {
-                                intTotalArmor = Convert.ToInt32(strArmor.Replace("Rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo);
-                            }
-                        }
+                        strBonus = objMod.WirelessOn ? objMod.WirelessBonus?["armor"]?.InnerText ?? objMod.Bonus?["armor"]?.InnerText : objMod.Bonus?["armor"]?.InnerText;
+                        intTotalArmor = Math.Max(ParseBonus(strBonus, objMod.Rating, Armor, "Armor", false), intTotalArmor);
                     }
                 }
 
