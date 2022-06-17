@@ -676,9 +676,22 @@ namespace Chummer
                 {
                     try
                     {
-                        await Task.Run(
-                            () => ZipFile.CreateFromDirectory(_strAppPath, strBackupZipPath, CompressionLevel.Fastest,
-                                                              true), token);
+                        using (var zipToOpen = new FileStream(strBackupZipPath, FileMode.Create))
+                        using (var archive = new ZipArchive(zipToOpen, ZipArchiveMode.Create))
+                        {
+                            foreach (var file in Directory.GetFiles(_strAppPath))
+                            {
+                                var entry = archive.CreateEntry(Path.GetFileName(file));
+                                entry.LastWriteTime = File.GetLastWriteTime(file);
+                                using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read,
+                                           FileShare.ReadWrite))
+                                using (var stream = entry.Open())
+                                {
+                                    //magic number default buffer size, no overload that is only stream+token
+                                    await fs.CopyToAsync(stream, 81920, token);
+                                }
+                            }
+                        }
                     }
                     catch (OperationCanceledException)
                     {
