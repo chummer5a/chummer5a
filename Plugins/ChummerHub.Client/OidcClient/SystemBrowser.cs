@@ -26,7 +26,7 @@ namespace ChummerHub.Client.OidcClient
 
             if (!port.HasValue)
             {
-                Port = GetRandomUnusedPort();
+                Port = GetPsydoRandomUnusedPort();
             }
             else
             {
@@ -34,13 +34,30 @@ namespace ChummerHub.Client.OidcClient
             }
         }
 
-        private int GetRandomUnusedPort()
+        private int GetPsydoRandomUnusedPort()
         {
-            var listener = new TcpListener(IPAddress.Loopback, 0);
-            listener.Start();
-            var port = ((IPEndPoint)listener.LocalEndpoint).Port;
-            listener.Stop();
-            return port;
+            int[] allowedports = new int[3] { 5013, 64888, 62777 };
+            int port = -1;
+            int counter = -1;
+            while (port == -1 && counter < 3)
+            {
+                counter++;
+                try
+                {
+                    var listener = new TcpListener(IPAddress.Loopback, allowedports[counter]);
+                    listener.Start();
+                    port = ((IPEndPoint)listener.LocalEndpoint).Port;
+                    listener.Stop();
+                    return port;
+                }
+                catch (Exception e)
+                {
+                    port = -1;
+                }
+            }
+            return -1;
+            
+            
         }
 
         public async Task<BrowserResult> InvokeAsync(BrowserOptions options, CancellationToken cancellationToken)

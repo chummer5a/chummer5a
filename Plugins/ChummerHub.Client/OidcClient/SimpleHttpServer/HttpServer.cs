@@ -42,18 +42,26 @@ namespace SimpleHttpServer
 
         public void Listen()
         {
-            this.Listener = new TcpListener(IPAddress.Any, this.Port);
-            this.Listener.Start();
-            while (this.IsActive)
+            try
             {
-                TcpClient s = this.Listener.AcceptTcpClient();
-                Thread thread = new Thread(() =>
+                this.Listener = new TcpListener(IPAddress.Any, this.Port);
+                this.Listener.Start();
+                while (this.IsActive)
                 {
-                    this.Processor.HandleClient(s);
-                });
-                thread.Start();
-                Thread.Sleep(1);
+                    TcpClient s = this.Listener.AcceptTcpClient();
+                    Thread thread = new Thread(() =>
+                    {
+                        this.Processor.HandleClient(s);
+                    });
+                    thread.Start();
+                    Thread.Sleep(1);
+                }
             }
+            catch(Exception e)
+            {
+                log.Error(e);
+            }
+            
         }
 
         #endregion
