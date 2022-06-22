@@ -57,6 +57,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Threading.Tasks;
 using ChummerHub.Services.JwT;
 using System.Text;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace ChummerHub
 {
@@ -233,6 +234,8 @@ namespace ChummerHub
 
             services.AddIdentityServer(options =>
             {
+               
+                options.Authentication.CookieAuthenticationScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.Authentication.CookieLifetime = TimeSpan.MaxValue;
                 options.Authentication.CookieSlidingExpiration = false;
             }).AddInMemoryIdentityResources(Config.IdentityResources)
@@ -276,69 +279,18 @@ namespace ChummerHub
             // order is vital, this *must* be called *after* AddNewtonsoftJson()
             services.AddSwaggerGenNewtonsoftSupport();
 
+            //services.AddDataProtection()
+            //    .PersistKeysToFileSystem(PersistKeysLocation.GetKeyRingDirInfo()).SetApplicationName(Config.ApplicationName);
 
-            
 
             services.AddAuthentication(options =>
             {
-                //options.DefaultAuthenticateScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
-                //options.DefaultChallengeScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                // CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = "oidc";
-            }).AddJwtBearer(x =>
-            {
-                x.Events = new JwtBearerEvents
-                {
-                    OnTokenValidated = context =>
-                    {
-
-                        var userService = context.HttpContext.RequestServices.GetRequiredService<UserService>();
-                        var userId = Guid.Parse(context.Principal.Identity.Name);
-                        var user = userService.GetById(userId);
-                        if (user == null)
-                        {
-                            // return unauthorized if user no longer exists
-                            context.Fail("Unauthorized");
-                        }
-
-                        return Task.CompletedTask;
-                    }
-                };
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("secret")),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                //options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                //// CookieAuthenticationDefaults.AuthenticationScheme;
+                //options.DefaultChallengeScheme = "oidc";
             })
-
-
-
-//                .AddJwtBearer(options =>
-//            {
-//                options.Authority = "https://localhost:64939"; // this was in correct
-//#if DEBUG                
-//                options.Authority = "https://localhost:64939"; // this was in correct
-//#endif
-//                //options.Audience = ....
-//            })
-                //.AddFacebook(facebookOptions =>
-                //{
-                //    facebookOptions.AppId = Configuration["Authentication.Facebook.AppId"];
-                //    facebookOptions.AppSecret = Configuration["Authentication.Facebook.AppSecret"];
-                //    facebookOptions.BackchannelHttpHandler = new FacebookBackChannelHandler();
-                //    facebookOptions.UserInformationEndpoint = "https://graph.facebook.com/v2.8/me?fields=id,name,email,first_name,last_name";
-                //})
-                //.AddGoogle(options =>
-                //{
-                //    options.ClientId = Configuration["Authentication.Google.ClientId"];
-                //    options.ClientSecret = Configuration["Authentication.Google.ClientSecret"];
-                //    options.CallbackPath = new PathString("/ExternalLogin");
-                //})
                 .AddCookie("Cookies", options =>
                 {
                     options.LoginPath = new PathString("/Identity/Account/Login");
@@ -346,23 +298,29 @@ namespace ChummerHub
                     options.LogoutPath = "/Identity/Account/Logout";
                     options.Cookie.Name = "Cookies";
                     options.Cookie.HttpOnly = false;
-                    options.ExpireTimeSpan = TimeSpan.FromDays(5 * 365);
+                    options.ExpireTimeSpan = TimeSpan.MaxValue;
                     options.LoginPath = "/Identity/Account/Login";
                     // ReturnUrlParameter requires
                     //using Microsoft.AspNetCore.Authentication.Cookies;
                     options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                     options.SlidingExpiration = false;
-                }).AddOpenIdConnect("oidc", options =>
+                })
+        .AddOpenIdConnect("oidc", options =>
                 {
-                    options.Authority = "https://localhost:5001";
+                    options.Authority = "https://localhost:64939";
 
-                    options.ClientId = "web";
-                    options.ClientSecret = "secret";
-                    options.ResponseType = "code";
+                    options.ClientId = "interactive.public";
+                    //options.ClientSecret = "secret";
+                    //options.ResponseType = "code";
+                    
 
                     options.Scope.Clear();
                     options.Scope.Add("openid");
                     options.Scope.Add("profile");
+                    options.Scope.Add("api");
+                    options.Scope.Add("verification");
+                    options.Scope.Add("offline_access");
+                   
 
                     options.SaveTokens = true;
                 });
@@ -404,7 +362,7 @@ namespace ChummerHub
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 options.Cookie.Name = "Cookies";
                 options.Cookie.HttpOnly = false;
-                options.ExpireTimeSpan = TimeSpan.FromDays(5 * 365);
+                options.ExpireTimeSpan = TimeSpan.MaxValue;
                 options.LoginPath = "/Identity/Account/Login";
                 // ReturnUrlParameter requires
                 //using Microsoft.AspNetCore.Authentication.Cookies;
@@ -442,21 +400,21 @@ namespace ChummerHub
             services.AddSwaggerExamples();
 
             // Include 'SecurityScheme' to use JWT Authentication
-            var jwtSecurityScheme = new OpenApiSecurityScheme
-            {
-                Scheme = "bearer",
-                BearerFormat = "JWT",
-                Name = "JWT Authentication",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.Http,
-                Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
+            //var jwtSecurityScheme = new OpenApiSecurityScheme
+            //{
+            //    Scheme = "bearer",
+            //    BearerFormat = "JWT",
+            //    Name = "JWT Authentication",
+            //    In = ParameterLocation.Header,
+            //    Type = SecuritySchemeType.Http,
+            //    Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
 
-                Reference = new OpenApiReference
-                {
-                    Id = JwtBearerDefaults.AuthenticationScheme,
-                    Type = ReferenceType.SecurityScheme
-                }
-            };
+            //    Reference = new OpenApiReference
+            //    {
+            //        Id = JwtBearerDefaults.AuthenticationScheme,
+            //        Type = ReferenceType.SecurityScheme
+            //    }
+            //};
 
             services.AddSwaggerGen(options =>
             {
@@ -474,12 +432,12 @@ namespace ChummerHub
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
 
-                options.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+                //options.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
 
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    { jwtSecurityScheme, Array.Empty<string>() }
-                });
+                //options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                //{
+                //    { jwtSecurityScheme, Array.Empty<string>() }
+                //});
             });
             services.AddAzureAppConfiguration();
 
