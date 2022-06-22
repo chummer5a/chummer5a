@@ -7476,6 +7476,17 @@ namespace Chummer
                 intMaxForce = ImprovementManager.ValueToInt(_objCharacter, strDummy, _intRating);
             CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.PenaltyFreeSustain, _strUnique, intMaxForce, intCount);
         }
+
+        public void replaceskillspell(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            Log.Trace("replaceskillspell" + Environment.NewLine
+                    + "replaceskillspell = " + bonusNode.OuterXml);
+
+            CreateImprovement(bonusNode.Attributes?["spell"]?.InnerText ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ReplaceSkillSpell, _strUnique,
+                ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty);
+        }
 #pragma warning restore IDE1006 // Naming Styles
         #endregion
     }

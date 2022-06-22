@@ -1235,6 +1235,10 @@ namespace Chummer
                     return null;
                 string strSkillKey = string.Empty;
                 objCategoryNode.TryGetStringFieldQuickly("@useskill", ref strSkillKey);
+
+                if(strSkillKey == string.Empty)
+                    strSkillKey = _objCharacter.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.ReplaceSkillSpell && x.ImprovedName == Name).FirstOrDefault()?.Condition;
+
                 if (Alchemical)
                 {
                     objCategoryNode.TryGetStringFieldQuickly("@alchemicalskill", ref strSkillKey);
