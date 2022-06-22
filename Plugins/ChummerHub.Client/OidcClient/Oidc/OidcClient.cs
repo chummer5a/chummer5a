@@ -2,12 +2,17 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using Chummer;
+using ChummerHub.Client.Backend;
+using ChummerHub.Client.Properties;
 using IdentityModel.Client;
 using IdentityModel.OidcClient.Infrastructure;
 using IdentityModel.OidcClient.Results;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,6 +24,8 @@ namespace IdentityModel.OidcClient
     /// </summary>
     public class OidcClient
     {
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+
         private readonly AuthorizeClient _authorizeClient;
 
         private readonly bool _useDiscovery;
@@ -88,12 +95,32 @@ namespace IdentityModel.OidcClient
 
             if (!result.IsError)
             {
-                //_logger.LogInformation("Authentication request success.");
+                SetCookieContainer();
             }
 
             return result;
         }
-        
+
+        private void SetCookieContainer()
+        {
+            try
+            {
+                Settings.Default.CookieData = null;
+                Settings.Default.Save();
+                CookieCollection cookies =
+                    StaticUtils.AuthorizationCookieContainer?.GetCookies(new Uri(Settings.Default
+                        .SINnerUrl));
+                //return StaticUtils.GetClient(true);
+            }
+            catch (Exception ex)
+            {
+                Log.Warn(ex);
+            }
+            return;
+        }
+
+
+
         /// <summary>
         /// Prepares the login request.
         /// </summary>

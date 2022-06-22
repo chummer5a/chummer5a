@@ -17,9 +17,7 @@ namespace IdentityModel.OidcClient
 
         private static Logger logger = LogManager.GetCurrentClassLogger();
         /// <inheritdoc />
-#pragma warning disable 1998
         public async Task<IdentityTokenValidationResult> ValidateAsync(string identityToken, OidcClientOptions options, CancellationToken cancellationToken = default)
-#pragma warning restore 1998
         {
             //var logger = options.LoggerFactory.CreateLogger<JwtHandlerIdentityTokenValidator>();
          

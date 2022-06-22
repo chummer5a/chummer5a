@@ -89,11 +89,16 @@ namespace ChummerHub
                 ClientId = "interactive.public",
                 ClientSecrets = { new Secret("secret".Sha256()) },
 
-                AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
+                AllowedGrantTypes = GrantTypes.CodeAndClientCredentials,
                 
 
                 // where to redirect after login
-                //RedirectUris = { "https://localhost:64939/signin-oidc" },
+                RedirectUris = new List<string>()
+                {
+                    "https://127.0.0.1:64888",
+                    "https://127.0.0.1:5013",
+                    "https://127.0.0.1:62777"
+                },
 
                 // where to redirect after logout
                 //PostLogoutRedirectUris = { "https://localhost:64939/signout-callback-oidc" },

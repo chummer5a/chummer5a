@@ -532,14 +532,14 @@ namespace ChummerHub.Client.UI
             // create a redirect URI using an available port on the loopback address.
             // requires the OP to allow random ports on 127.0.0.1 - otherwise set a static port
             var browser = new SystemBrowser();
-            string redirectUri = string.Format($"http://127.0.0.1:{browser.Port}");
+            string redirectUri = string.Format($"https://127.0.0.1:{browser.Port}");
 
             var options = new OidcClientOptions
             {
                 Authority = _authority,
                 ClientId = "interactive.public",
                 RedirectUri = redirectUri,
-                Scope = "openid profile api offline_access verification",
+                Scope = "openid profile verification", //api offline_access
                 FilterClaims = false,
 
                 Browser = browser,
@@ -549,6 +549,12 @@ namespace ChummerHub.Client.UI
 
             _oidcClient = new IdentityModel.OidcClient.OidcClient(options);
             var result = await _oidcClient.LoginAsync(new LoginRequest());
+
+            if (result == null || result.IsError == true)
+            {
+                Log.Error("LoginAsync failed!");
+                return;
+            }
 
             _apiClient = new HttpClient(result.RefreshTokenHandler)
             {

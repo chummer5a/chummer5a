@@ -29,15 +29,11 @@ using System.Threading.Tasks;
 
 namespace ChummerHub
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SeedData'
     public class SeedData
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SeedData'
     {
 
         #region snippet_Initialize
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SeedData.Initialize(IServiceProvider, string, IHostingEnvironment)'
         public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw, IHostEnvironment env)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SeedData.Initialize(IServiceProvider, string, IHostingEnvironment)'
         {
             using (var context = new ApplicationDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>(), env))
@@ -128,9 +124,7 @@ namespace ChummerHub
 
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SeedData.EnsureRole(IServiceProvider, Guid, string, RoleManager<ApplicationRole>, UserManager<ApplicationUser>)'
         public static async Task<IdentityResult> EnsureRole(IServiceProvider serviceProvider,
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SeedData.EnsureRole(IServiceProvider, Guid, string, RoleManager<ApplicationRole>, UserManager<ApplicationUser>)'
                                                                       Guid uid, string role, RoleManager<ApplicationRole> roleManager, UserManager<ApplicationUser> userManager)
         {
             IdentityResult IR = null;
