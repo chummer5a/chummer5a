@@ -109,6 +109,10 @@ namespace ChummerHub
             }
        };
 
+        public static string ApplicationName {
+            get { return "ChummerHub"; }
+            }
+
         internal static List<ApplicationUser> GetAdminUsers()
         {
             var a = new ApplicationUser()
