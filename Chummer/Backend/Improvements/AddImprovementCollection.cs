@@ -95,9 +95,8 @@ namespace Chummer
         /// <summary>
         /// CreateImprovement overload method that takes only ImprovedName and ImprovementType, using default properties otherwise. 
         /// </summary>
-        /// <param name="strImprovedName">Specific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
-        /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
-        /// <param name="ImprovementType">Type of object the Improvement applies to.</param>
+        /// <param name="selectedValue">Specific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
+        /// <param name="improvementType">Type of object the Improvement applies to.</param>
         /// <returns></returns>
         private Improvement CreateImprovement(string selectedValue, Improvement.ImprovementType improvementType)
         {
@@ -111,9 +110,9 @@ namespace Chummer
         /// <summary>
         /// CreateImprovement overload method that takes only ImprovedName, Target and ImprovementType, using default properties otherwise. 
         /// </summary>
-        /// <param name="strImprovedName">Specific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
+        /// <param name="strImprovementName">Specific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
         /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
-        /// <param name="ImprovementType">Type of object the Improvement applies to.</param>
+        /// <param name="improvementType">Type of object the Improvement applies to.</param>
         /// <returns></returns>
         private Improvement CreateImprovement(string strImprovementName, string strTarget,
             Improvement.ImprovementType improvementType)
