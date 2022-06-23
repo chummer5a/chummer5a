@@ -1235,6 +1235,9 @@ namespace Chummer
                     return null;
                 string strSkillKey = string.Empty;
                 objCategoryNode.TryGetStringFieldQuickly("@useskill", ref strSkillKey);
+                strSkillKey =
+                    RelevantImprovements(o => o.ImproveType == Improvement.ImprovementType.ReplaceSkillSpell)
+                        .FirstOrDefault()?.Target ?? strSkillKey;
                 if (Alchemical)
                 {
                     objCategoryNode.TryGetStringFieldQuickly("@alchemicalskill", ref strSkillKey);
@@ -1382,6 +1385,15 @@ namespace Chummer
                         }
                         break;
 
+                    case Improvement.ImprovementType.ReplaceSkillSpell:
+                        if (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == SourceID.ToString() ||
+                            objImprovement.ImprovedName == string.Empty)
+                        {
+                            yield return objImprovement;
+                            if (blnExitAfterFirst)
+                                yield break;
+                        }
+                        break;
                     case Improvement.ImprovementType.SpellCategory:
                         if (objImprovement.ImprovedName == Category)
                         {

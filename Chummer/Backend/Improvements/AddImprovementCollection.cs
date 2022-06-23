@@ -62,6 +62,25 @@ namespace Chummer
         private readonly string _strFriendlyName;
         private readonly int _intRating;
 
+        /// <summary>
+        /// Create a new Improvement and add it to the Character.
+        /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="strImprovedName">Specific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
+        /// <param name="objImprovementSource">Type of object that grants this Improvement.</param>
+        /// <param name="strSourceName">Name of the item that grants this Improvement.</param>
+        /// <param name="objImprovementType">Type of object the Improvement applies to.</param>
+        /// <param name="strUnique">Name of the pool this Improvement should be added to - only the single highest value in the pool will be applied to the character.</param>
+        /// <param name="decValue">Set a Value for the Improvement.</param>
+        /// <param name="intRating">Set a Rating for the Improvement - typically used for Adept Powers.</param>
+        /// <param name="intMinimum">Improve the Minimum for an CharacterAttribute by the given amount.</param>
+        /// <param name="intMaximum">Improve the Maximum for an CharacterAttribute by the given amount.</param>
+        /// <param name="decAugmented">Improve the Augmented value for an CharacterAttribute by the given amount.</param>
+        /// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an CharacterAttribute by the given amount.</param>
+        /// <param name="strExclude">A list of child items that should not receive the Improvement's benefit (typically for Skill Groups).</param>
+        /// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
+        /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
+        /// <param name="strCondition">Condition for when the bonus is applied.</param>
         private Improvement CreateImprovement(string strImprovedName, Improvement.ImprovementSource objImprovementSource,
             string strSourceName, Improvement.ImprovementType objImprovementType, string strUnique,
             decimal decValue = 0, int intRating = 1, int intMinimum = 0, int intMaximum = 0, decimal decAugmented = 0,
@@ -73,6 +92,13 @@ namespace Chummer
                 intAugmentedMaximum, strExclude, blnAddToRating, strTarget, strCondition);
         }
 
+        /// <summary>
+        /// CreateImprovement overload method that takes only ImprovedName and ImprovementType, using default properties otherwise. 
+        /// </summary>
+        /// <param name="strImprovedName">Specific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
+        /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
+        /// <param name="ImprovementType">Type of object the Improvement applies to.</param>
+        /// <returns></returns>
         private Improvement CreateImprovement(string selectedValue, Improvement.ImprovementType improvementType)
         {
             if (string.IsNullOrEmpty(SelectedValue))
@@ -80,6 +106,20 @@ namespace Chummer
             else
                 SelectedValue += ", " + selectedValue;
             return CreateImprovement(selectedValue, _objImprovementSource, SourceName, improvementType, _strUnique);
+        }
+
+        /// <summary>
+        /// CreateImprovement overload method that takes only ImprovedName, Target and ImprovementType, using default properties otherwise. 
+        /// </summary>
+        /// <param name="strImprovedName">Specific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
+        /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
+        /// <param name="ImprovementType">Type of object the Improvement applies to.</param>
+        /// <returns></returns>
+        private Improvement CreateImprovement(string strImprovementName, string strTarget,
+            Improvement.ImprovementType improvementType)
+        {
+            return CreateImprovement(strImprovementName, _objImprovementSource, SourceName, improvementType, _strUnique,
+                0, 1, 0, 0, 0, 0, string.Empty, false, strTarget);
         }
 
         #region Improvement Methods
@@ -7475,6 +7515,23 @@ namespace Chummer
             if (bonusNode.TryGetStringFieldQuickly("force", ref strDummy))
                 intMaxForce = ImprovementManager.ValueToInt(_objCharacter, strDummy, _intRating);
             CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.PenaltyFreeSustain, _strUnique, intMaxForce, intCount);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bonusNode">Replaces the Active Skill used for one or all spells with another. Example:
+        /// <replacespellskill spell="Mana Net">Blades</replacespellskill> Replace the Spellcasting skill with Blades for the spell Mana Net.
+        /// <replacespellskill>Blades</replacespellskill> Replace the Spellcasting skill with Blades for ALL spells that are not marked as Alchemical or BareHandedAdept.
+        /// </param>
+        public void replaceskillspell(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            Log.Trace("replaceskillspell" + Environment.NewLine
+                                          + "replaceskillspell = " + bonusNode.OuterXml);
+            
+            CreateImprovement(bonusNode.Attributes?["spell"]?.InnerText ?? string.Empty, bonusNode.InnerText, Improvement.ImprovementType.ReplaceSkillSpell);
         }
 #pragma warning restore IDE1006 // Naming Styles
         #endregion

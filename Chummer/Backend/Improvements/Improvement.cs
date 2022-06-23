@@ -350,6 +350,7 @@ namespace Chummer
             CyberadeptDaemon,
             PenaltyFreeSustain,
             WeaponRangeModifier,
+            ReplaceSkillSpell,
             NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 
