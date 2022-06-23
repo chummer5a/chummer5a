@@ -732,6 +732,11 @@ namespace Chummer
                         ++intReturn;
                     }
                 }
+                else if (PointsPerLevel == 0)
+                {
+                    Utils.BreakIfDebug();
+                    // power costs no PP, just return free levels
+                }
                 //Either the first level of the power has been paid for with PP, or the power doesn't have an extra cost.
                 else
                 {
