@@ -303,7 +303,6 @@
           <xs:element name="forceLockingQueue" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="fullBatchSizeWriteLimit" type="xs:integer" minOccurs="0" maxOccurs="1" default="5" />
           <xs:element name="timeToSleepBetweenBatches" type="xs:integer" minOccurs="0" maxOccurs="1" default="1" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -327,22 +326,17 @@
         </xs:attribute>
         <xs:attribute name="forceLockingQueue" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to use the locking queue, instead of a lock-free concurrent queue The locking queue is less concurrent when many logger threads, but reduces memory allocation</xs:documentation>
+            <xs:documentation>Whether to use the locking queue, instead of a lock-free concurrent queue</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="fullBatchSizeWriteLimit" type="xs:integer">
           <xs:annotation>
-            <xs:documentation>Limit of full s to write before yielding into  Performance is better when writing many small batches, than writing a single large batch</xs:documentation>
+            <xs:documentation>Number of batches of P:NLog.Targets.Wrappers.AsyncTargetWrapper.BatchSize to write before yielding into P:NLog.Targets.Wrappers.AsyncTargetWrapper.TimeToSleepBetweenBatches</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="timeToSleepBetweenBatches" type="xs:integer">
           <xs:annotation>
             <xs:documentation>Time in milliseconds to sleep between batches. (1 or less means trigger on new activity)</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -363,7 +357,6 @@
           <xs:element name="asyncFlush" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
           <xs:element name="condition" type="Condition" minOccurs="0" maxOccurs="1" />
           <xs:element name="flushOnConditionOnly" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -385,11 +378,6 @@
             <xs:documentation>Only flush when LogEvent matches condition. Ignore explicit-flush, config-reload-flush and shutdown-flush</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -402,7 +390,6 @@
           <xs:element name="overflowAction" type="NLog.Targets.Wrappers.BufferingTargetWrapperOverflowAction" minOccurs="0" maxOccurs="1" default="Flush" />
           <xs:element name="flushTimeout" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="slidingTimeout" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -427,11 +414,6 @@
         <xs:attribute name="slidingTimeout" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Indicates whether to use sliding timeout.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -466,18 +448,17 @@
           <xs:element name="onQueueOverflow" type="NLog.Targets.NetworkTargetQueueOverflowAction" minOccurs="0" maxOccurs="1" default="Discard" />
           <xs:element name="onOverflow" type="NLog.Targets.NetworkTargetOverflowAction" minOccurs="0" maxOccurs="1" default="Split" />
           <xs:element name="maxQueueSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="10000" />
-          <xs:element name="connectionCacheSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="5" />
+          <xs:element name="address" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="keepConnection" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
           <xs:element name="keepAliveTimeSeconds" type="xs:integer" minOccurs="0" maxOccurs="1" default="0" />
-          <xs:element name="address" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="connectionCacheSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="5" />
           <xs:element name="maxConnections" type="xs:integer" minOccurs="0" maxOccurs="1" default="100" />
           <xs:element name="compress" type="NLog.Targets.NetworkTargetCompressionType" minOccurs="0" maxOccurs="1" default="None" />
           <xs:element name="compressMinBytes" type="xs:integer" minOccurs="0" maxOccurs="1" default="0" />
-          <xs:element name="newLine" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="maxMessageSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="65000" />
           <xs:element name="encoding" type="xs:string" minOccurs="0" maxOccurs="1" default="utf-8" />
           <xs:element name="lineEnding" type="LineEndingMode" minOccurs="0" maxOccurs="1" />
-          <xs:element name="maxMessageSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="65000" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="newLine" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -486,12 +467,12 @@
         </xs:attribute>
         <xs:attribute name="scopeNestedSeparator" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Separator for  operation-states-stack.</xs:documentation>
+            <xs:documentation>Separator for T:NLog.ScopeContext operation-states-stack.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="ndcItemSeparator" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Stack separator for log4j:NDC in output from  nested context.</xs:documentation>
+            <xs:documentation>Stack separator for log4j:NDC in output from T:NLog.ScopeContext nested context.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="loggerName" type="SimpleLayoutAttribute">
@@ -501,12 +482,12 @@
         </xs:attribute>
         <xs:attribute name="includeScopeProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to include the contents of the  properties-dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext properties-dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeScopeNested" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to include log4j:NDC in output from  nested context.</xs:documentation>
+            <xs:documentation>Whether to include log4j:NDC in output from T:NLog.ScopeContext nested context.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeSourceInfo" type="xs:boolean">
@@ -516,7 +497,7 @@
         </xs:attribute>
         <xs:attribute name="includeNdc" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to include log4j:NDC in output from  nested context.</xs:documentation>
+            <xs:documentation>Whether to include log4j:NDC in output from T:NLog.ScopeContext nested context.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeEventProperties" type="xs:boolean">
@@ -536,7 +517,7 @@
         </xs:attribute>
         <xs:attribute name="layout" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>Instance of  that is used to format log messages.</xs:documentation>
+            <xs:documentation>Instance of T:NLog.Layouts.Log4JXmlEventLayout that is used to format log messages.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeNLogData" type="xs:boolean">
@@ -546,32 +527,32 @@
         </xs:attribute>
         <xs:attribute name="onConnectionOverflow" type="NLog.Targets.NetworkTargetConnectionsOverflowAction">
           <xs:annotation>
-            <xs:documentation>Action that should be taken, when more connections than .</xs:documentation>
+            <xs:documentation>Action that should be taken, when more connections than P:NLog.Targets.NetworkTarget.MaxConnections.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="sslProtocols" type="System.Security.Authentication.SslProtocols">
           <xs:annotation>
-            <xs:documentation>Get or set the SSL/TLS protocols. Default no SSL/TLS is used. Currently only implemented for TCP.</xs:documentation>
+            <xs:documentation>SSL/TLS protocols. Default no SSL/TLS is used. Currently only implemented for TCP.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="onQueueOverflow" type="NLog.Targets.NetworkTargetQueueOverflowAction">
           <xs:annotation>
-            <xs:documentation>Action that should be taken, when more pending messages than .</xs:documentation>
+            <xs:documentation>Action that should be taken, when more pending messages than P:NLog.Targets.NetworkTarget.MaxQueueSize.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="onOverflow" type="NLog.Targets.NetworkTargetOverflowAction">
           <xs:annotation>
-            <xs:documentation>Action that should be taken if the message is larger than </xs:documentation>
+            <xs:documentation>Action that should be taken if the message is larger than P:NLog.Targets.NetworkTarget.MaxMessageSize</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="maxQueueSize" type="xs:integer">
           <xs:annotation>
-            <xs:documentation>Maximum queue size for a single connection. Requires  = true</xs:documentation>
+            <xs:documentation>Maximum queue size for a single connection. Requires P:NLog.Targets.NetworkTarget.KeepConnection = true</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="connectionCacheSize" type="xs:integer">
+        <xs:attribute name="address" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>Size of the connection cache (number of connections which are kept alive). Requires  = true</xs:documentation>
+            <xs:documentation>Network address.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="keepConnection" type="xs:boolean">
@@ -584,14 +565,14 @@
             <xs:documentation>The number of seconds a connection will remain idle before the first keep-alive probe is sent</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="address" type="SimpleLayoutAttribute">
+        <xs:attribute name="connectionCacheSize" type="xs:integer">
           <xs:annotation>
-            <xs:documentation>Network address.</xs:documentation>
+            <xs:documentation>Size of the connection cache (number of connections which are kept alive). Requires P:NLog.Targets.NetworkTarget.KeepConnection = true</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="maxConnections" type="xs:integer">
           <xs:annotation>
-            <xs:documentation>Maximum simultaneous connections. Requires  = false</xs:documentation>
+            <xs:documentation>Maximum simultaneous connections. Requires P:NLog.Targets.NetworkTarget.KeepConnection = false</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="compress" type="NLog.Targets.NetworkTargetCompressionType">
@@ -604,9 +585,9 @@
             <xs:documentation>Skip compression when protocol payload is below limit to reduce overhead in cpu-usage and additional headers</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="newLine" type="xs:boolean">
+        <xs:attribute name="maxMessageSize" type="xs:integer">
           <xs:annotation>
-            <xs:documentation>Indicates whether to append newline at the end of log message.</xs:documentation>
+            <xs:documentation>Maximum message size in bytes. On limit breach then P:NLog.Targets.NetworkTarget.OnOverflow action is activated.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="encoding" type="xs:string">
@@ -616,17 +597,12 @@
         </xs:attribute>
         <xs:attribute name="lineEnding" type="LineEndingMode">
           <xs:annotation>
-            <xs:documentation>End of line value if a newline is appended at the end of log message .</xs:documentation>
+            <xs:documentation>End of line value if a newline is appended at the end of log message P:NLog.Targets.NetworkTarget.NewLine.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="maxMessageSize" type="xs:integer">
+        <xs:attribute name="newLine" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Maximum message size in bytes. On limit breach then  action is activated.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
+            <xs:documentation>Indicates whether to append newline at the end of log message.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -713,7 +689,6 @@
           <xs:element name="useDefaultRowHighlightingRules" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
           <xs:element name="highlight-row" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.ConsoleRowHighlightingRule" />
           <xs:element name="highlight-word" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.ConsoleWordHighlightingRule" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -747,7 +722,7 @@
         </xs:attribute>
         <xs:attribute name="encoding" type="xs:string">
           <xs:annotation>
-            <xs:documentation>The encoding for writing messages to the .</xs:documentation>
+            <xs:documentation>The encoding for writing messages to the T:System.Console.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="stdErr" type="xs:boolean">
@@ -757,7 +732,7 @@
         </xs:attribute>
         <xs:attribute name="autoFlush" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Indicates whether to auto-flush after </xs:documentation>
+            <xs:documentation>Indicates whether to auto-flush after M:System.Console.WriteLine</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="detectOutputRedirected" type="xs:boolean">
@@ -768,11 +743,6 @@
         <xs:attribute name="useDefaultRowHighlightingRules" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Indicates whether to use default row highlighting rules.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -839,7 +809,7 @@
     </xs:attribute>
     <xs:attribute name="compileRegex" type="xs:boolean">
       <xs:annotation>
-        <xs:documentation>Compile the ? This can improve the performance, but at the costs of more memory usage. If false, the Regex Cache is used.</xs:documentation>
+        <xs:documentation>Compile the P:NLog.Targets.ConsoleWordHighlightingRule.Regex? This can improve the performance, but at the costs of more memory usage. If false, the Regex Cache is used.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="condition" type="Condition">
@@ -886,7 +856,6 @@
           <xs:element name="encoding" type="xs:string" minOccurs="0" maxOccurs="1" default="IBM437" />
           <xs:element name="stdErr" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="writeBuffer" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -910,7 +879,7 @@
         </xs:attribute>
         <xs:attribute name="autoFlush" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Indicates whether to auto-flush after </xs:documentation>
+            <xs:documentation>Indicates whether to auto-flush after M:System.Console.WriteLine</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="detectConsoleAvailable" type="xs:boolean">
@@ -920,7 +889,7 @@
         </xs:attribute>
         <xs:attribute name="encoding" type="xs:string">
           <xs:annotation>
-            <xs:documentation>The encoding for writing messages to the .</xs:documentation>
+            <xs:documentation>The encoding for writing messages to the T:System.Console.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="stdErr" type="xs:boolean">
@@ -930,16 +899,253 @@
         </xs:attribute>
         <xs:attribute name="writeBuffer" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to activate internal buffering to allow batch writing, instead of using </xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
+            <xs:documentation>Whether to activate internal buffering to allow batch writing, instead of using M:System.Console.WriteLine</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
     </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Database">
+    <xs:complexContent>
+      <xs:extension base="Target">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="dbUserName" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="dbPassword" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="dbDatabase" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="connectionStringName" type="xs:string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="dbHost" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="commandproperty" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.DatabaseObjectPropertyInfo" />
+          <xs:element name="keepConnection" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="dbProvider" type="xs:string" minOccurs="0" maxOccurs="1" default="sqlserver" />
+          <xs:element name="connectionString" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="connectionproperty" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.DatabaseObjectPropertyInfo" />
+          <xs:element name="uninstall-command" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.DatabaseCommandInfo" />
+          <xs:element name="installConnectionString" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="install-command" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.DatabaseCommandInfo" />
+          <xs:element name="isolationLevel" type="System.Data.IsolationLevel" minOccurs="0" maxOccurs="1" />
+          <xs:element name="commandText" type="Layout" minOccurs="1" maxOccurs="1" />
+          <xs:element name="commandType" type="System.Data.CommandType" minOccurs="0" maxOccurs="1" default="Text" />
+          <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.DatabaseParameterInfo" />
+        </xs:choice>
+        <xs:attribute name="name" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>Name of the target.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="dbUserName" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>Database user name. If the ConnectionString is not provided this value will be used to construct the "User ID=" part of the connection string.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="dbPassword" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>Database password. If the ConnectionString is not provided this value will be used to construct the "Password=" part of the connection string.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="dbDatabase" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>Database name. If the ConnectionString is not provided this value will be used to construct the "Database=" part of the connection string.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="connectionStringName" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>Name of the connection string (as specified in &lt;connectionStrings&gt; configuration section.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="dbHost" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>Database host name. If the ConnectionString is not provided this value will be used to construct the "Server=" part of the connection string.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="keepConnection" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Indicates whether to keep the database connection open between the log events.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="dbProvider" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>Name of the database provider.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="connectionString" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>Connection string. When provided, it overrides the values specified in DBHost, DBUserName, DBPassword, DBDatabase.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="installConnectionString" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>Connection string using for installation and uninstallation. If not provided, regular ConnectionString is being used.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="isolationLevel" type="System.Data.IsolationLevel">
+          <xs:annotation>
+            <xs:documentation>Configures isolated transaction batch writing. If supported by the database, then it will improve insert performance.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="commandText" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>Text of the SQL command to be run on each log level.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="commandType" type="System.Data.CommandType">
+          <xs:annotation>
+            <xs:documentation>Type of the SQL command to be run on each log level.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:simpleType name="System.Data.CommandType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Text" />
+      <xs:enumeration value="StoredProcedure" />
+      <xs:enumeration value="TableDirect" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="System.Data.IsolationLevel">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Unspecified" />
+      <xs:enumeration value="Chaos" />
+      <xs:enumeration value="ReadUncommitted" />
+      <xs:enumeration value="ReadCommitted" />
+      <xs:enumeration value="RepeatableRead" />
+      <xs:enumeration value="Serializable" />
+      <xs:enumeration value="Snapshot" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="NLog.Targets.DatabaseObjectPropertyInfo">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="format" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="culture" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="layout" type="Layout" minOccurs="1" maxOccurs="1" />
+      <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="propertyType" type="xs:string" minOccurs="0" maxOccurs="1" default="System.String" />
+    </xs:choice>
+    <xs:attribute name="format" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>Convert format of the property value</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="culture" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>Culture used for parsing property string-value for type-conversion</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="layout" type="SimpleLayoutAttribute">
+      <xs:annotation>
+        <xs:documentation>Value to assign on the object-property</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="name" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>Name for the object-property</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="propertyType" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>Type of the object-property</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="NLog.Targets.DatabaseCommandInfo">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="commandType" type="System.Data.CommandType" minOccurs="0" maxOccurs="1" default="Text" />
+      <xs:element name="connectionString" type="Layout" minOccurs="0" maxOccurs="1" />
+      <xs:element name="ignoreFailures" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+      <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.DatabaseParameterInfo" />
+      <xs:element name="text" type="Layout" minOccurs="1" maxOccurs="1" />
+    </xs:choice>
+    <xs:attribute name="commandType" type="System.Data.CommandType">
+      <xs:annotation>
+        <xs:documentation>Type of the command.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="connectionString" type="SimpleLayoutAttribute">
+      <xs:annotation>
+        <xs:documentation>Connection string to run the command against. If not provided, connection string from the target is used.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="ignoreFailures" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>Indicates whether to ignore failures.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="text" type="SimpleLayoutAttribute">
+      <xs:annotation>
+        <xs:documentation>Command text.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="NLog.Targets.DatabaseParameterInfo">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="layout" type="Layout" minOccurs="1" maxOccurs="1" />
+      <xs:element name="dbType" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="size" type="xs:integer" minOccurs="0" maxOccurs="1" default="0" />
+      <xs:element name="precision" type="xs:byte" minOccurs="0" maxOccurs="1" default="0" />
+      <xs:element name="scale" type="xs:byte" minOccurs="0" maxOccurs="1" default="0" />
+      <xs:element name="parameterType" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="defaultValue" type="Layout" minOccurs="0" maxOccurs="1" />
+      <xs:element name="format" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="culture" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="allowDbNull" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+    </xs:choice>
+    <xs:attribute name="name" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>Database parameter name.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="layout" type="SimpleLayoutAttribute">
+      <xs:annotation>
+        <xs:documentation>Layout that should be use to calculate the value for the parameter.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="dbType" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>Database parameter DbType.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="size" type="xs:integer">
+      <xs:annotation>
+        <xs:documentation>Database parameter size.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="precision" type="xs:byte">
+      <xs:annotation>
+        <xs:documentation>Database parameter precision.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="scale" type="xs:byte">
+      <xs:annotation>
+        <xs:documentation>Database parameter scale.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="parameterType" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>Type of the parameter.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="defaultValue" type="SimpleLayoutAttribute">
+      <xs:annotation>
+        <xs:documentation>Fallback value when result value is not available</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="format" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>Convert format of the database parameter value.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="culture" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>Culture used for parsing parameter string-value for type-conversion</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="allowDbNull" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>Whether empty value should translate into DbNull. Requires database column to allow NULL values.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
   </xs:complexType>
   <xs:complexType name="Debugger">
     <xs:complexContent>
@@ -949,7 +1155,6 @@
           <xs:element name="layout" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="header" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="footer" type="Layout" minOccurs="0" maxOccurs="1" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -969,11 +1174,6 @@
         <xs:attribute name="footer" type="SimpleLayoutAttribute">
           <xs:annotation>
             <xs:documentation>Footer.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -987,7 +1187,6 @@
           <xs:element name="layout" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="header" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="footer" type="Layout" minOccurs="0" maxOccurs="1" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -1009,11 +1208,6 @@
             <xs:documentation>Footer.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -1023,7 +1217,6 @@
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
           <xs:element name="layout" type="Layout" minOccurs="0" maxOccurs="1" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -1033,11 +1226,6 @@
         <xs:attribute name="layout" type="SimpleLayoutAttribute">
           <xs:annotation>
             <xs:documentation>Layout used to format log messages.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -1058,7 +1246,6 @@
           <xs:element name="maxMessageLength" type="xs:integer" minOccurs="0" maxOccurs="1" default="16384" />
           <xs:element name="source" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="onOverflow" type="NLog.Targets.EventLogTargetOverflowAction" minOccurs="0" maxOccurs="1" default="Truncate" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -1077,7 +1264,7 @@
         </xs:attribute>
         <xs:attribute name="entryType" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>Optional entry type. When not set, or when not convertible to  then determined by </xs:documentation>
+            <xs:documentation>Optional entry type. When not set, or when not convertible to T:System.Diagnostics.EventLogEntryType then determined by T:NLog.LogLevel</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="eventId" type="SimpleLayoutAttribute">
@@ -1112,12 +1299,7 @@
         </xs:attribute>
         <xs:attribute name="onOverflow" type="NLog.Targets.EventLogTargetOverflowAction">
           <xs:annotation>
-            <xs:documentation>Action to take if the message is larger than the  option.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
+            <xs:documentation>Action to take if the message is larger than the P:NLog.Targets.EventLogTarget.MaxMessageLength option.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -1137,7 +1319,6 @@
           <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
           <xs:element name="returnToFirstOnSuccess" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="enableBatchWrite" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -1152,11 +1333,6 @@
         <xs:attribute name="enableBatchWrite" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Whether to enable batching, but fallback will be handled individually</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -1195,18 +1371,17 @@
           <xs:element name="encoding" type="xs:string" minOccurs="0" maxOccurs="1" default="utf-8" />
           <xs:element name="replaceFileContentsOnEachWrite" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="lineEnding" type="LineEndingMode" minOccurs="0" maxOccurs="1" />
-          <xs:element name="discardAll" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="concurrentWriteAttempts" type="xs:integer" minOccurs="0" maxOccurs="1" default="10" />
           <xs:element name="concurrentWriteAttemptDelay" type="xs:integer" minOccurs="0" maxOccurs="1" default="1" />
           <xs:element name="openFileFlushTimeout" type="xs:integer" minOccurs="0" maxOccurs="1" default="0" />
           <xs:element name="openFileCacheTimeout" type="xs:integer" minOccurs="0" maxOccurs="1" default="0" />
           <xs:element name="networkWrites" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="bufferSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="32768" />
           <xs:element name="autoFlush" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
-          <xs:element name="openFileCacheSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="5" />
           <xs:element name="keepFileOpen" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
           <xs:element name="concurrentWrites" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
-          <xs:element name="concurrentWriteAttempts" type="xs:integer" minOccurs="0" maxOccurs="1" default="10" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="discardAll" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="openFileCacheSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="5" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -1270,7 +1445,7 @@
         </xs:attribute>
         <xs:attribute name="archiveFileKind" type="NLog.Targets.FilePathKind">
           <xs:annotation>
-            <xs:documentation>Is the  an absolute or relative path?</xs:documentation>
+            <xs:documentation>Is the P:NLog.Targets.FileTarget.ArchiveFileName an absolute or relative path?</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="archiveEvery" type="NLog.Targets.FileArchivePeriod">
@@ -1310,7 +1485,7 @@
         </xs:attribute>
         <xs:attribute name="fileNameKind" type="NLog.Targets.FilePathKind">
           <xs:annotation>
-            <xs:documentation>Is the  an absolute or relative path?</xs:documentation>
+            <xs:documentation>Is the P:NLog.Targets.FileTarget.FileName an absolute or relative path?</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="fileAttributes" type="NLog.Targets.Win32FileAttributes">
@@ -1353,9 +1528,9 @@
             <xs:documentation>Line ending mode.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="discardAll" type="xs:boolean">
+        <xs:attribute name="concurrentWriteAttempts" type="xs:integer">
           <xs:annotation>
-            <xs:documentation>Whether or not this target should just discard all data that its asked to write. Mostly used for when testing NLog Stack except final write</xs:documentation>
+            <xs:documentation>Number of times the write is appended on the file before NLog discards the log message.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="concurrentWriteAttemptDelay" type="xs:integer">
@@ -1388,11 +1563,6 @@
             <xs:documentation>Indicates whether to automatically flush the file buffers after each log message.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="openFileCacheSize" type="xs:integer">
-          <xs:annotation>
-            <xs:documentation>Number of files to be kept open. Setting this to a higher value may improve performance in a situation where a single File target is writing to many files (such as splitting by level or by logger).</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
         <xs:attribute name="keepFileOpen" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Indicates whether to keep log file open instead of opening and closing it on each logging event.</xs:documentation>
@@ -1403,14 +1573,14 @@
             <xs:documentation>Indicates whether concurrent writes to the log file by multiple processes on the same host.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="concurrentWriteAttempts" type="xs:integer">
+        <xs:attribute name="discardAll" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Number of times the write is appended on the file before NLog discards the log message.</xs:documentation>
+            <xs:documentation>Whether or not this target should just discard all data that its asked to write. Mostly used for when testing NLog Stack except final write</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
+        <xs:attribute name="openFileCacheSize" type="xs:integer">
           <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
+            <xs:documentation>Number of files to be kept open. Setting this to a higher value may improve performance in a situation where a single File target is writing to many files (such as splitting by level or by logger).</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -1475,7 +1645,6 @@
           <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
           <xs:element name="condition" type="Condition" minOccurs="0" maxOccurs="1" />
           <xs:element name="filter" type="Filter" minOccurs="0" maxOccurs="1" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -1487,11 +1656,6 @@
             <xs:documentation>Condition expression. Log events who meet this condition will be forwarded to the wrapped target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -1501,7 +1665,6 @@
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
           <xs:element name="key" type="Layout" minOccurs="0" maxOccurs="1" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -1511,11 +1674,6 @@
         <xs:attribute name="key" type="SimpleLayoutAttribute">
           <xs:annotation>
             <xs:documentation>Identifier to perform group-by</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -1528,7 +1686,6 @@
           <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
           <xs:element name="interval" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="messageLimit" type="Layout" minOccurs="0" maxOccurs="1" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -1537,17 +1694,12 @@
         </xs:attribute>
         <xs:attribute name="interval" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>Interval in which messages will be written up to the  number of messages.</xs:documentation>
+            <xs:documentation>Interval in which messages will be written up to the P:NLog.Targets.Wrappers.LimitingTargetWrapper.MessageLimit number of messages.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="messageLimit" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>Maximum allowed number of messages written per .</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
+            <xs:documentation>Maximum allowed number of messages written per P:NLog.Targets.Wrappers.LimitingTargetWrapper.Interval.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -1572,8 +1724,7 @@
           <xs:element name="body" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="subject" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="to" type="Layout" minOccurs="1" maxOccurs="1" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
-          <xs:element name="timeout" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="deliveryMethod" type="System.Net.Mail.SmtpDeliveryMethod" minOccurs="0" maxOccurs="1" default="Network" />
           <xs:element name="smtpServer" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="smtpAuthentication" type="NLog.Targets.SmtpAuthenticationMode" minOccurs="0" maxOccurs="1" default="None" />
           <xs:element name="smtpUserName" type="Layout" minOccurs="0" maxOccurs="1" />
@@ -1582,7 +1733,7 @@
           <xs:element name="smtpPort" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="useSystemNetMailSettings" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="pickupDirectoryLocation" type="Layout" minOccurs="0" maxOccurs="1" />
-          <xs:element name="deliveryMethod" type="System.Net.Mail.SmtpDeliveryMethod" minOccurs="0" maxOccurs="1" default="Network" />
+          <xs:element name="timeout" type="Layout" minOccurs="0" maxOccurs="1" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -1659,14 +1810,9 @@
             <xs:documentation>Recipients' email addresses separated by semicolons (e.g. john@domain.com;jane@domain.com).</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
+        <xs:attribute name="deliveryMethod" type="System.Net.Mail.SmtpDeliveryMethod">
           <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="timeout" type="SimpleLayoutAttribute">
-          <xs:annotation>
-            <xs:documentation>Indicates the SMTP client timeout.</xs:documentation>
+            <xs:documentation>Specifies how outgoing email messages will be handled.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="smtpServer" type="SimpleLayoutAttribute">
@@ -1709,26 +1855,26 @@
             <xs:documentation>Folder where applications save mail messages to be processed by the local SMTP server.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="deliveryMethod" type="System.Net.Mail.SmtpDeliveryMethod">
+        <xs:attribute name="timeout" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>Specifies how outgoing email messages will be handled.</xs:documentation>
+            <xs:documentation>Indicates the SMTP client timeout.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  <xs:simpleType name="NLog.Targets.SmtpAuthenticationMode">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="None" />
-      <xs:enumeration value="Basic" />
-      <xs:enumeration value="Ntlm" />
-    </xs:restriction>
-  </xs:simpleType>
   <xs:simpleType name="System.Net.Mail.SmtpDeliveryMethod">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Network" />
       <xs:enumeration value="SpecifiedPickupDirectory" />
       <xs:enumeration value="PickupDirectoryFromIis" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="NLog.Targets.SmtpAuthenticationMode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="None" />
+      <xs:enumeration value="Basic" />
+      <xs:enumeration value="Ntlm" />
     </xs:restriction>
   </xs:simpleType>
   <xs:complexType name="Memory">
@@ -1740,7 +1886,6 @@
           <xs:element name="header" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="footer" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="maxLogsCount" type="xs:integer" minOccurs="0" maxOccurs="1" default="0" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -1767,11 +1912,6 @@
             <xs:documentation>Max number of items to have in memory</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -1783,7 +1923,6 @@
           <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.MethodCallParameter" />
           <xs:element name="className" type="xs:string" minOccurs="0" maxOccurs="1" />
           <xs:element name="methodName" type="xs:string" minOccurs="0" maxOccurs="1" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -1798,11 +1937,6 @@
         <xs:attribute name="methodName" type="xs:string">
           <xs:annotation>
             <xs:documentation>Method name. The method must be public and static. Use the AssemblyQualifiedName , https://msdn.microsoft.com/en-us/library/system.type.assemblyqualifiedname(v=vs.110).aspx e.g.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -1844,9 +1978,9 @@
           <xs:element name="layout" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="sslProtocols" type="System.Security.Authentication.SslProtocols" minOccurs="0" maxOccurs="1" default="None" />
           <xs:element name="onQueueOverflow" type="NLog.Targets.NetworkTargetQueueOverflowAction" minOccurs="0" maxOccurs="1" default="Discard" />
-          <xs:element name="onConnectionOverflow" type="NLog.Targets.NetworkTargetConnectionsOverflowAction" minOccurs="0" maxOccurs="1" default="Discard" />
-          <xs:element name="maxQueueSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="10000" />
           <xs:element name="onOverflow" type="NLog.Targets.NetworkTargetOverflowAction" minOccurs="0" maxOccurs="1" default="Split" />
+          <xs:element name="maxQueueSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="10000" />
+          <xs:element name="onConnectionOverflow" type="NLog.Targets.NetworkTargetConnectionsOverflowAction" minOccurs="0" maxOccurs="1" default="Discard" />
           <xs:element name="keepConnection" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
           <xs:element name="keepAliveTimeSeconds" type="xs:integer" minOccurs="0" maxOccurs="1" default="0" />
           <xs:element name="connectionCacheSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="5" />
@@ -1854,11 +1988,10 @@
           <xs:element name="maxConnections" type="xs:integer" minOccurs="0" maxOccurs="1" default="100" />
           <xs:element name="compress" type="NLog.Targets.NetworkTargetCompressionType" minOccurs="0" maxOccurs="1" default="None" />
           <xs:element name="compressMinBytes" type="xs:integer" minOccurs="0" maxOccurs="1" default="0" />
-          <xs:element name="newLine" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="maxMessageSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="65000" />
           <xs:element name="encoding" type="xs:string" minOccurs="0" maxOccurs="1" default="utf-8" />
           <xs:element name="lineEnding" type="LineEndingMode" minOccurs="0" maxOccurs="1" />
-          <xs:element name="maxMessageSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="65000" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="newLine" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -1872,27 +2005,27 @@
         </xs:attribute>
         <xs:attribute name="sslProtocols" type="System.Security.Authentication.SslProtocols">
           <xs:annotation>
-            <xs:documentation>Get or set the SSL/TLS protocols. Default no SSL/TLS is used. Currently only implemented for TCP.</xs:documentation>
+            <xs:documentation>SSL/TLS protocols. Default no SSL/TLS is used. Currently only implemented for TCP.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="onQueueOverflow" type="NLog.Targets.NetworkTargetQueueOverflowAction">
           <xs:annotation>
-            <xs:documentation>Action that should be taken, when more pending messages than .</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="onConnectionOverflow" type="NLog.Targets.NetworkTargetConnectionsOverflowAction">
-          <xs:annotation>
-            <xs:documentation>Action that should be taken, when more connections than .</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="maxQueueSize" type="xs:integer">
-          <xs:annotation>
-            <xs:documentation>Maximum queue size for a single connection. Requires  = true</xs:documentation>
+            <xs:documentation>Action that should be taken, when more pending messages than P:NLog.Targets.NetworkTarget.MaxQueueSize.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="onOverflow" type="NLog.Targets.NetworkTargetOverflowAction">
           <xs:annotation>
-            <xs:documentation>Action that should be taken if the message is larger than </xs:documentation>
+            <xs:documentation>Action that should be taken if the message is larger than P:NLog.Targets.NetworkTarget.MaxMessageSize</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="maxQueueSize" type="xs:integer">
+          <xs:annotation>
+            <xs:documentation>Maximum queue size for a single connection. Requires P:NLog.Targets.NetworkTarget.KeepConnection = true</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="onConnectionOverflow" type="NLog.Targets.NetworkTargetConnectionsOverflowAction">
+          <xs:annotation>
+            <xs:documentation>Action that should be taken, when more connections than P:NLog.Targets.NetworkTarget.MaxConnections.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="keepConnection" type="xs:boolean">
@@ -1907,7 +2040,7 @@
         </xs:attribute>
         <xs:attribute name="connectionCacheSize" type="xs:integer">
           <xs:annotation>
-            <xs:documentation>Size of the connection cache (number of connections which are kept alive). Requires  = true</xs:documentation>
+            <xs:documentation>Size of the connection cache (number of connections which are kept alive). Requires P:NLog.Targets.NetworkTarget.KeepConnection = true</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="address" type="SimpleLayoutAttribute">
@@ -1917,7 +2050,7 @@
         </xs:attribute>
         <xs:attribute name="maxConnections" type="xs:integer">
           <xs:annotation>
-            <xs:documentation>Maximum simultaneous connections. Requires  = false</xs:documentation>
+            <xs:documentation>Maximum simultaneous connections. Requires P:NLog.Targets.NetworkTarget.KeepConnection = false</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="compress" type="NLog.Targets.NetworkTargetCompressionType">
@@ -1930,9 +2063,9 @@
             <xs:documentation>Skip compression when protocol payload is below limit to reduce overhead in cpu-usage and additional headers</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="newLine" type="xs:boolean">
+        <xs:attribute name="maxMessageSize" type="xs:integer">
           <xs:annotation>
-            <xs:documentation>Indicates whether to append newline at the end of log message.</xs:documentation>
+            <xs:documentation>Maximum message size in bytes. On limit breach then P:NLog.Targets.NetworkTarget.OnOverflow action is activated.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="encoding" type="xs:string">
@@ -1942,17 +2075,12 @@
         </xs:attribute>
         <xs:attribute name="lineEnding" type="LineEndingMode">
           <xs:annotation>
-            <xs:documentation>End of line value if a newline is appended at the end of log message .</xs:documentation>
+            <xs:documentation>End of line value if a newline is appended at the end of log message P:NLog.Targets.NetworkTarget.NewLine.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="maxMessageSize" type="xs:integer">
+        <xs:attribute name="newLine" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Maximum message size in bytes. On limit breach then  action is activated.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
+            <xs:documentation>Indicates whether to append newline at the end of log message.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -1981,18 +2109,17 @@
           <xs:element name="onQueueOverflow" type="NLog.Targets.NetworkTargetQueueOverflowAction" minOccurs="0" maxOccurs="1" default="Discard" />
           <xs:element name="onOverflow" type="NLog.Targets.NetworkTargetOverflowAction" minOccurs="0" maxOccurs="1" default="Split" />
           <xs:element name="maxQueueSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="10000" />
-          <xs:element name="connectionCacheSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="5" />
+          <xs:element name="address" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="keepConnection" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
           <xs:element name="keepAliveTimeSeconds" type="xs:integer" minOccurs="0" maxOccurs="1" default="0" />
-          <xs:element name="address" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="connectionCacheSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="5" />
           <xs:element name="maxConnections" type="xs:integer" minOccurs="0" maxOccurs="1" default="100" />
           <xs:element name="compress" type="NLog.Targets.NetworkTargetCompressionType" minOccurs="0" maxOccurs="1" default="None" />
           <xs:element name="compressMinBytes" type="xs:integer" minOccurs="0" maxOccurs="1" default="0" />
-          <xs:element name="newLine" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="maxMessageSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="65000" />
           <xs:element name="encoding" type="xs:string" minOccurs="0" maxOccurs="1" default="utf-8" />
           <xs:element name="lineEnding" type="LineEndingMode" minOccurs="0" maxOccurs="1" />
-          <xs:element name="maxMessageSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="65000" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="newLine" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -2001,12 +2128,12 @@
         </xs:attribute>
         <xs:attribute name="scopeNestedSeparator" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Separator for  operation-states-stack.</xs:documentation>
+            <xs:documentation>Separator for T:NLog.ScopeContext operation-states-stack.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="ndcItemSeparator" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Stack separator for log4j:NDC in output from  nested context.</xs:documentation>
+            <xs:documentation>Stack separator for log4j:NDC in output from T:NLog.ScopeContext nested context.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="loggerName" type="SimpleLayoutAttribute">
@@ -2016,12 +2143,12 @@
         </xs:attribute>
         <xs:attribute name="includeScopeProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to include the contents of the  properties-dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext properties-dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeScopeNested" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to include log4j:NDC in output from  nested context.</xs:documentation>
+            <xs:documentation>Whether to include log4j:NDC in output from T:NLog.ScopeContext nested context.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeSourceInfo" type="xs:boolean">
@@ -2031,7 +2158,7 @@
         </xs:attribute>
         <xs:attribute name="includeNdc" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to include log4j:NDC in output from  nested context.</xs:documentation>
+            <xs:documentation>Whether to include log4j:NDC in output from T:NLog.ScopeContext nested context.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeEventProperties" type="xs:boolean">
@@ -2051,7 +2178,7 @@
         </xs:attribute>
         <xs:attribute name="layout" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>Instance of  that is used to format log messages.</xs:documentation>
+            <xs:documentation>Instance of T:NLog.Layouts.Log4JXmlEventLayout that is used to format log messages.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeNLogData" type="xs:boolean">
@@ -2061,32 +2188,32 @@
         </xs:attribute>
         <xs:attribute name="onConnectionOverflow" type="NLog.Targets.NetworkTargetConnectionsOverflowAction">
           <xs:annotation>
-            <xs:documentation>Action that should be taken, when more connections than .</xs:documentation>
+            <xs:documentation>Action that should be taken, when more connections than P:NLog.Targets.NetworkTarget.MaxConnections.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="sslProtocols" type="System.Security.Authentication.SslProtocols">
           <xs:annotation>
-            <xs:documentation>Get or set the SSL/TLS protocols. Default no SSL/TLS is used. Currently only implemented for TCP.</xs:documentation>
+            <xs:documentation>SSL/TLS protocols. Default no SSL/TLS is used. Currently only implemented for TCP.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="onQueueOverflow" type="NLog.Targets.NetworkTargetQueueOverflowAction">
           <xs:annotation>
-            <xs:documentation>Action that should be taken, when more pending messages than .</xs:documentation>
+            <xs:documentation>Action that should be taken, when more pending messages than P:NLog.Targets.NetworkTarget.MaxQueueSize.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="onOverflow" type="NLog.Targets.NetworkTargetOverflowAction">
           <xs:annotation>
-            <xs:documentation>Action that should be taken if the message is larger than </xs:documentation>
+            <xs:documentation>Action that should be taken if the message is larger than P:NLog.Targets.NetworkTarget.MaxMessageSize</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="maxQueueSize" type="xs:integer">
           <xs:annotation>
-            <xs:documentation>Maximum queue size for a single connection. Requires  = true</xs:documentation>
+            <xs:documentation>Maximum queue size for a single connection. Requires P:NLog.Targets.NetworkTarget.KeepConnection = true</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="connectionCacheSize" type="xs:integer">
+        <xs:attribute name="address" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>Size of the connection cache (number of connections which are kept alive). Requires  = true</xs:documentation>
+            <xs:documentation>Network address.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="keepConnection" type="xs:boolean">
@@ -2099,14 +2226,14 @@
             <xs:documentation>The number of seconds a connection will remain idle before the first keep-alive probe is sent</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="address" type="SimpleLayoutAttribute">
+        <xs:attribute name="connectionCacheSize" type="xs:integer">
           <xs:annotation>
-            <xs:documentation>Network address.</xs:documentation>
+            <xs:documentation>Size of the connection cache (number of connections which are kept alive). Requires P:NLog.Targets.NetworkTarget.KeepConnection = true</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="maxConnections" type="xs:integer">
           <xs:annotation>
-            <xs:documentation>Maximum simultaneous connections. Requires  = false</xs:documentation>
+            <xs:documentation>Maximum simultaneous connections. Requires P:NLog.Targets.NetworkTarget.KeepConnection = false</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="compress" type="NLog.Targets.NetworkTargetCompressionType">
@@ -2119,9 +2246,9 @@
             <xs:documentation>Skip compression when protocol payload is below limit to reduce overhead in cpu-usage and additional headers</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="newLine" type="xs:boolean">
+        <xs:attribute name="maxMessageSize" type="xs:integer">
           <xs:annotation>
-            <xs:documentation>Indicates whether to append newline at the end of log message.</xs:documentation>
+            <xs:documentation>Maximum message size in bytes. On limit breach then P:NLog.Targets.NetworkTarget.OnOverflow action is activated.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="encoding" type="xs:string">
@@ -2131,17 +2258,12 @@
         </xs:attribute>
         <xs:attribute name="lineEnding" type="LineEndingMode">
           <xs:annotation>
-            <xs:documentation>End of line value if a newline is appended at the end of log message .</xs:documentation>
+            <xs:documentation>End of line value if a newline is appended at the end of log message P:NLog.Targets.NetworkTarget.NewLine.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="maxMessageSize" type="xs:integer">
+        <xs:attribute name="newLine" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Maximum message size in bytes. On limit breach then  action is activated.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
+            <xs:documentation>Indicates whether to append newline at the end of log message.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -2154,7 +2276,6 @@
           <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
           <xs:element name="layout" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="formatMessage" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -2171,11 +2292,6 @@
             <xs:documentation>Indicates whether to perform layout calculation.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -2186,7 +2302,6 @@
           <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
           <xs:element name="defaultFilter" type="Condition" minOccurs="0" maxOccurs="1" />
           <xs:element name="when" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.Wrappers.FilteringRule" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -2196,11 +2311,6 @@
         <xs:attribute name="defaultFilter" type="Condition">
           <xs:annotation>
             <xs:documentation>Default filter to be applied when no specific rule matches.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -2227,16 +2337,10 @@
       <xs:extension base="CompoundTargetBase">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
             <xs:documentation>Name of the target.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -2247,17 +2351,11 @@
       <xs:extension base="WrapperTargetBase">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="repeatCount" type="xs:integer" minOccurs="0" maxOccurs="1" default="3" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
             <xs:documentation>Name of the target.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="repeatCount" type="xs:integer">
@@ -2273,7 +2371,6 @@
       <xs:extension base="WrapperTargetBase">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="enableBatchWrite" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
           <xs:element name="retryCount" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="retryDelayMilliseconds" type="Layout" minOccurs="0" maxOccurs="1" />
@@ -2281,11 +2378,6 @@
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
             <xs:documentation>Name of the target.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="enableBatchWrite" type="xs:boolean">
@@ -2311,16 +2403,10 @@
       <xs:extension base="CompoundTargetBase">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
             <xs:documentation>Name of the target.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -2331,16 +2417,10 @@
       <xs:extension base="CompoundTargetBase">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
             <xs:documentation>Name of the target.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -2356,7 +2436,6 @@
           <xs:element name="footer" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="enableTraceFail" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="rawWrite" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -2380,17 +2459,12 @@
         </xs:attribute>
         <xs:attribute name="enableTraceFail" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Forward  to  (Instead of )</xs:documentation>
+            <xs:documentation>Forward F:NLog.LogLevel.Fatal to M:System.Diagnostics.Trace.Fail(System.String) (Instead of M:System.Diagnostics.Trace.TraceError(System.String))</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="rawWrite" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Force use  independent of </xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
+            <xs:documentation>Force use M:System.Diagnostics.Trace.WriteLine(System.String) independent of T:NLog.LogLevel</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -2402,76 +2476,30 @@
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
           <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.MethodCallParameter" />
-          <xs:element name="layoutWithLock" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
-          <xs:element name="header" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.MethodCallParameter" />
-          <xs:element name="includeBOM" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
-          <xs:element name="methodName" type="xs:string" minOccurs="0" maxOccurs="1" />
-          <xs:element name="namespace" type="xs:string" minOccurs="0" maxOccurs="1" />
-          <xs:element name="protocol" type="NLog.Targets.WebServiceProtocol" minOccurs="0" maxOccurs="1" default="Soap11" />
-          <xs:element name="xmlRootNamespace" type="xs:string" minOccurs="0" maxOccurs="1" />
-          <xs:element name="proxyType" type="NLog.Targets.WebServiceProxyType" minOccurs="0" maxOccurs="1" default="DefaultWebProxy" />
-          <xs:element name="url" type="Layout" minOccurs="0" maxOccurs="1" />
-          <xs:element name="userAgent" type="Layout" minOccurs="0" maxOccurs="1" />
-          <xs:element name="escapeDataNLogLegacy" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
-          <xs:element name="escapeDataRfc3986" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="preAuthenticate" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
-          <xs:element name="xmlRoot" type="xs:string" minOccurs="0" maxOccurs="1" />
-          <xs:element name="encoding" type="xs:string" minOccurs="0" maxOccurs="1" default="utf-8" />
+          <xs:element name="escapeDataRfc3986" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="escapeDataNLogLegacy" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="userAgent" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="url" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="proxyType" type="NLog.Targets.WebServiceProxyType" minOccurs="0" maxOccurs="1" default="DefaultWebProxy" />
           <xs:element name="proxyAddress" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="protocol" type="NLog.Targets.WebServiceProtocol" minOccurs="0" maxOccurs="1" default="Soap11" />
+          <xs:element name="namespace" type="xs:string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="methodName" type="xs:string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="includeBOM" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="header" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.MethodCallParameter" />
+          <xs:element name="encoding" type="xs:string" minOccurs="0" maxOccurs="1" default="utf-8" />
+          <xs:element name="xmlRoot" type="xs:string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="xmlRootNamespace" type="xs:string" minOccurs="0" maxOccurs="1" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
             <xs:documentation>Name of the target.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="layoutWithLock" type="xs:boolean">
+        <xs:attribute name="preAuthenticate" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>NLog Layout are by default threadsafe, so multiple threads can be rendering logevents at the same time. This ensure high concurrency with no lock-congestion for the application-threads, especially when using  or AsyncTaskTarget. But if using custom  or  that are not threadsafe, then this option can enabled to protect against thread-concurrency-issues. Allowing one to update to NLog 5.0 without having to fix custom/external layout-dependencies.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="includeBOM" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>Should we include the BOM (Byte-order-mark) for UTF? Influences the  property. This will only work for UTF-8.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="methodName" type="xs:string">
-          <xs:annotation>
-            <xs:documentation>Web service method name. Only used with Soap.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="namespace" type="xs:string">
-          <xs:annotation>
-            <xs:documentation>Web service namespace. Only used with Soap.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="protocol" type="NLog.Targets.WebServiceProtocol">
-          <xs:annotation>
-            <xs:documentation>Protocol to be used when calling web service.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="xmlRootNamespace" type="xs:string">
-          <xs:annotation>
-            <xs:documentation>(optional) root namespace of the XML document, if POST of XML document chosen. (see  and ).</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="proxyType" type="NLog.Targets.WebServiceProxyType">
-          <xs:annotation>
-            <xs:documentation>Proxy configuration when calling web service</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="url" type="SimpleLayoutAttribute">
-          <xs:annotation>
-            <xs:documentation>Web service URL.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="userAgent" type="SimpleLayoutAttribute">
-          <xs:annotation>
-            <xs:documentation>Value of the User-agent HTTP header.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="escapeDataNLogLegacy" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>Value whether escaping be done according to the old NLog style (Very non-standard)</xs:documentation>
+            <xs:documentation>Indicates whether to pre-authenticate the HttpWebRequest (Requires 'Authorization' in P:NLog.Targets.WebServiceTarget.Headers parameters)</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="escapeDataRfc3986" type="xs:boolean">
@@ -2479,19 +2507,24 @@
             <xs:documentation>Value whether escaping be done according to Rfc3986 (Supports Internationalized Resource Identifiers - IRIs)</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="preAuthenticate" type="xs:boolean">
+        <xs:attribute name="escapeDataNLogLegacy" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Indicates whether to pre-authenticate the HttpWebRequest (Requires 'Authorization' in  parameters)</xs:documentation>
+            <xs:documentation>Value whether escaping be done according to the old NLog style (Very non-standard)</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="xmlRoot" type="xs:string">
+        <xs:attribute name="userAgent" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>Name of the root XML element, if POST of XML document chosen. If so, this property must not be null. (see  and ).</xs:documentation>
+            <xs:documentation>Value of the User-agent HTTP header.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="encoding" type="xs:string">
+        <xs:attribute name="url" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>Encoding.</xs:documentation>
+            <xs:documentation>Web service URL.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="proxyType" type="NLog.Targets.WebServiceProxyType">
+          <xs:annotation>
+            <xs:documentation>Proxy configuration when calling web service</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="proxyAddress" type="SimpleLayoutAttribute">
@@ -2499,9 +2532,52 @@
             <xs:documentation>Custom proxy address, include port separated by a colon</xs:documentation>
           </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="protocol" type="NLog.Targets.WebServiceProtocol">
+          <xs:annotation>
+            <xs:documentation>Protocol to be used when calling web service.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="namespace" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>Web service namespace. Only used with Soap.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="methodName" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>Web service method name. Only used with Soap.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="includeBOM" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Should we include the BOM (Byte-order-mark) for UTF? Influences the P:NLog.Targets.WebServiceTarget.Encoding property. This will only work for UTF-8.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="encoding" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>Encoding.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="xmlRoot" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>Name of the root XML element, if POST of XML document chosen. If so, this property must not be null. (see P:NLog.Targets.WebServiceTarget.Protocol and F:NLog.Targets.WebServiceProtocol.XmlPost).</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="xmlRootNamespace" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>(optional) root namespace of the XML document, if POST of XML document chosen. (see P:NLog.Targets.WebServiceTarget.Protocol and F:NLog.Targets.WebServiceProtocol.XmlPost).</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  <xs:simpleType name="NLog.Targets.WebServiceProxyType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="DefaultWebProxy" />
+      <xs:enumeration value="AutoProxy" />
+      <xs:enumeration value="NoProxy" />
+      <xs:enumeration value="ProxyAddress" />
+    </xs:restriction>
+  </xs:simpleType>
   <xs:simpleType name="NLog.Targets.WebServiceProtocol">
     <xs:restriction base="xs:string">
       <xs:enumeration value="Soap11" />
@@ -2510,14 +2586,6 @@
       <xs:enumeration value="HttpGet" />
       <xs:enumeration value="JsonPost" />
       <xs:enumeration value="XmlPost" />
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:simpleType name="NLog.Targets.WebServiceProxyType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="DefaultWebProxy" />
-      <xs:enumeration value="AutoProxy" />
-      <xs:enumeration value="NoProxy" />
-      <xs:enumeration value="ProxyAddress" />
     </xs:restriction>
   </xs:simpleType>
   <xs:complexType name="CompoundLayout">
@@ -2672,12 +2740,12 @@
         </xs:attribute>
         <xs:attribute name="includeGdc" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Indicates whether to include contents of the  dictionary.</xs:documentation>
+            <xs:documentation>Indicates whether to include contents of the T:NLog.GlobalDiagnosticsContext dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeScopeProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to include the contents of the  dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="escapeForwardSlash" type="xs:boolean">
@@ -2692,7 +2760,7 @@
         </xs:attribute>
         <xs:attribute name="excludeProperties" type="xs:string">
           <xs:annotation>
-            <xs:documentation>List of property names to exclude when  is true</xs:documentation>
+            <xs:documentation>List of property names to exclude when P:NLog.Layouts.JsonLayout.IncludeAllProperties is true</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="maxRecursionLimit" type="xs:integer">
@@ -2741,7 +2809,7 @@
     </xs:attribute>
     <xs:attribute name="encode" type="xs:boolean">
       <xs:annotation>
-        <xs:documentation>Determines whether or not this attribute will be Json encoded.</xs:documentation>
+        <xs:documentation>Whether output should be encoded as Json-String-Property, or be treated as valid json.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="escapeForwardSlash" type="xs:boolean">
@@ -2813,17 +2881,17 @@
         </xs:attribute>
         <xs:attribute name="includeNdc" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to include log4j:NDC in output from  nested context.</xs:documentation>
+            <xs:documentation>Whether to include log4j:NDC in output from T:NLog.ScopeContext nested context.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeScopeNested" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to include log4j:NDC in output from  nested context.</xs:documentation>
+            <xs:documentation>Whether to include log4j:NDC in output from T:NLog.ScopeContext nested context.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeScopeProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to include the contents of the  properties-dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext properties-dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="appInfo" type="SimpleLayoutAttribute">
@@ -2900,7 +2968,7 @@
         </xs:attribute>
         <xs:attribute name="includeScopeProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to include the contents of the  dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="elementEncode" type="xs:boolean">
@@ -2910,7 +2978,7 @@
         </xs:attribute>
         <xs:attribute name="excludeProperties" type="xs:string">
           <xs:annotation>
-            <xs:documentation>List of property names to exclude when  is true</xs:documentation>
+            <xs:documentation>List of property names to exclude when P:NLog.Layouts.XmlElementBase.IncludeAllProperties is true</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeEmptyValue" type="xs:boolean">
@@ -2982,7 +3050,7 @@
     </xs:attribute>
     <xs:attribute name="encode" type="xs:boolean">
       <xs:annotation>
-        <xs:documentation>Determines whether or not this attribute will be Xml encoded.</xs:documentation>
+        <xs:documentation>Whether output should be encoded with Xml-string escaping, or be treated as valid xml-attribute-value</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="includeEmptyValue" type="xs:boolean">
@@ -3021,7 +3089,7 @@
     </xs:attribute>
     <xs:attribute name="includeScopeProperties" type="xs:boolean">
       <xs:annotation>
-        <xs:documentation>Whether to include the contents of the  dictionary.</xs:documentation>
+        <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext dictionary.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="value" type="SimpleLayoutAttribute">
@@ -3031,12 +3099,12 @@
     </xs:attribute>
     <xs:attribute name="encode" type="xs:boolean">
       <xs:annotation>
-        <xs:documentation>Determines whether or not this attribute will be Xml encoded.</xs:documentation>
+        <xs:documentation>Whether output should be encoded with Xml-string escaping, or be treated as valid xml-element-value</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="excludeProperties" type="xs:string">
       <xs:annotation>
-        <xs:documentation>List of property names to exclude when  is true</xs:documentation>
+        <xs:documentation>List of property names to exclude when P:NLog.Layouts.XmlElementBase.IncludeAllProperties is true</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="includeEmptyValue" type="xs:boolean">
@@ -3259,12 +3327,12 @@
         </xs:attribute>
         <xs:attribute name="filterCountMessageAppendFormat" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Append FilterCount to the  when an event is no longer filtered</xs:documentation>
+            <xs:documentation>Append FilterCount to the P:NLog.LogEventInfo.Message when an event is no longer filtered</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="filterCountPropertyName" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Insert FilterCount value into  when an event is no longer filtered</xs:documentation>
+            <xs:documentation>Insert FilterCount value into P:NLog.LogEventInfo.Properties when an event is no longer filtered</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeFirst" type="xs:boolean">
