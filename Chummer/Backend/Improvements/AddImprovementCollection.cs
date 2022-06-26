@@ -65,7 +65,6 @@ namespace Chummer
         /// <summary>
         /// Create a new Improvement and add it to the Character.
         /// </summary>
-        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
         /// <param name="strImprovedName">Specific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
         /// <param name="objImprovementSource">Type of object that grants this Improvement.</param>
         /// <param name="strSourceName">Name of the item that grants this Improvement.</param>

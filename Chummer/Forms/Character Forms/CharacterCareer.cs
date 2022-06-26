@@ -16364,11 +16364,11 @@ namespace Chummer
                                                                       objGear.MatrixCMFilled, token);
                     if (objGear.LoadedIntoClip != null)
                     {
-                        await cmdGearIncreaseQty.DoThreadSafeAsync(x => x.Enabled = false);
-                        await cmdGearReduceQty.DoThreadSafeAsync(x => x.Enabled = false);
-                        await cmdGearMergeQty.DoThreadSafeAsync(x => x.Enabled = false);
-                        await cmdGearSplitQty.DoThreadSafeAsync(x => x.Enabled = false);
-                        await cmdGearMoveToVehicle.DoThreadSafeAsync(x => x.Enabled = false);
+                        await cmdGearIncreaseQty.DoThreadSafeAsync(x => x.Enabled = false, token);
+                        await cmdGearReduceQty.DoThreadSafeAsync(x => x.Enabled = false, token);
+                        await cmdGearMergeQty.DoThreadSafeAsync(x => x.Enabled = false, token);
+                        await cmdGearSplitQty.DoThreadSafeAsync(x => x.Enabled = false, token);
+                        await cmdGearMoveToVehicle.DoThreadSafeAsync(x => x.Enabled = false, token);
                     }
                 }
                 else
@@ -17868,7 +17868,7 @@ namespace Chummer
                             }, token);
                             await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false, token);
                             await lblVehicleWeaponReach.DoThreadSafeAsync(x => x.Visible = false, token);
-                            }
+                        }
                         else
                         {
                             if (objWeapon.Ammo != "0")
@@ -18039,7 +18039,7 @@ namespace Chummer
                                     token.ThrowIfCancellationRequested();
                                     lstAmmo.Add(new ListItem(intSlot.ToString(GlobalSettings.InvariantCultureInfo),
                                                                 strAmmoName));
-                                    }
+                                }
                                 token.ThrowIfCancellationRequested();
                                 await cboVehicleWeaponAmmo.PopulateWithListItemsAsync(lstAmmo, token);
                                 await cboVehicleWeaponAmmo.DoThreadSafeAsync(x =>
@@ -18220,7 +18220,7 @@ namespace Chummer
                                     .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
                             }, token);
                         }
-                            if (string.IsNullOrEmpty(objAccessory.AP))
+                        if (string.IsNullOrEmpty(objAccessory.AP))
                         {
                             await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = false, token);
                             await lblVehicleWeaponAP.DoThreadSafeAsync(x => x.Visible = false, token);

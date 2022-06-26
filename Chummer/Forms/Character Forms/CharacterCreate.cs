@@ -14324,7 +14324,7 @@ namespace Chummer
                             await lblVehicleWeaponAlternateRangeExtreme.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternateextreme"], token);
                             await lblVehicleWeaponReach.DoThreadSafeAsync(x => x.Visible = false, token);
                             await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false, token);
-                            }
+                        }
                         else
                         {
                             if (objWeapon.Ammo != "0")
