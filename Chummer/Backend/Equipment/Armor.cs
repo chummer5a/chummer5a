@@ -212,7 +212,7 @@ namespace Chummer.Backend.Equipment
                         setChangedProperties.Add(nameof(Character.ArmorEncumbrance));
                     }
 
-                    if (lstImprovementSourcesToProcess.Count > 0 && _objCharacter.IsLoading == false)
+                    if (lstImprovementSourcesToProcess.Count > 0 && !_objCharacter.IsLoading)
                     {
                         foreach (ArmorMod objItem in lstImprovementSourcesToProcess)
                         {

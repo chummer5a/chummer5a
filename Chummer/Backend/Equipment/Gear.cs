@@ -756,7 +756,6 @@ namespace Chummer.Backend.Equipment
                 string strMaxRating = lstGearAttributes?["maxrating"]?.InnerText ?? string.Empty;
                 Create(xmlGearDataNode, intRating, lstWeapons, strForceValue, blnAddImprovements, true, blnSkipSelectForms);
 
-
                 // Change the Capacity of the child if necessary.
                 if (xmlGearNode["capacity"] != null)
                     Capacity = xmlGearNode["capacity"].InnerText;
@@ -3259,7 +3258,7 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(GearName))
                 strReturn += strSpace + "(\"" + GearName + "\")";
             if (LoadedIntoClip != null)
-                strReturn += strSpace + '(' + string.Format(objCulture, await LanguageManager.GetStringAsync("Label_Loaded"), await LoadedIntoClip.DisplayWeaponNameAsync(objCulture, strLanguage)) + ')'; ;
+                strReturn += strSpace + '(' + string.Format(objCulture, await LanguageManager.GetStringAsync("Label_Loaded"), await LoadedIntoClip.DisplayWeaponNameAsync(objCulture, strLanguage)) + ')';
             return strReturn;
         }
 

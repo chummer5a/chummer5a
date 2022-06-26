@@ -30,9 +30,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.Xml.XPath;
-#if DEBUG
-using Chummer.Annotations;
-#endif
 using Chummer.Plugins;
 using Newtonsoft.Json;
 using NLog;
