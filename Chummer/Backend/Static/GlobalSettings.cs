@@ -1078,9 +1078,12 @@ namespace Chummer
                     _blnUseLogging = value;
                     // Sets up logging if the option is changed during runtime
                     if (value)
-                        LogManager.EnableLogging();
-                    else
-                        LogManager.DisableLogging();
+                    {
+                        if (!LogManager.IsLoggingEnabled())
+                            LogManager.ResumeLogging();
+                    }
+                    else if (LogManager.IsLoggingEnabled())
+                        LogManager.SuspendLogging();
                 }
             }
         }
