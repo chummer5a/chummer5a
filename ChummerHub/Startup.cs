@@ -309,7 +309,7 @@ namespace ChummerHub
                     options.LoginPath = new PathString("/Identity/Account/Login");
                     options.AccessDeniedPath = new PathString("/Identity/Account/AccessDenied");
                     options.LogoutPath = "/Identity/Account/Logout";
-                    options.Cookie.Name = "Chummer5";
+                    options.Cookie.Name = "Cookies";
                     options.Cookie.HttpOnly = false;
                     options.ExpireTimeSpan = TimeSpan.FromDays(365);
                     options.Cookie.SameSite = SameSiteMode.None;
