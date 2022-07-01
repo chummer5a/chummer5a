@@ -532,7 +532,7 @@ namespace ChummerHub.Client.UI
             // create a redirect URI using an available port on the loopback address.
             // requires the OP to allow random ports on 127.0.0.1 - otherwise set a static port
             var browser = new SystemBrowser();
-            string redirectUri = string.Format($"https://localhost:{browser.Port}");
+            string redirectUri = string.Format($"https://localhost:{browser.Port}/signin-oidc");
 
             var options = new OidcClientOptions
             {

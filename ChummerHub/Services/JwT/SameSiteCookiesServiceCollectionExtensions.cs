@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,7 +10,8 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.Configure<CookiePolicyOptions>(options =>
             {
-                options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
+                options.MinimumSameSitePolicy = SameSiteMode.Lax;
+                options.Secure = CookieSecurePolicy.Always;
                 options.OnAppendCookie = cookieContext =>
                     CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
                 options.OnDeleteCookie = cookieContext =>

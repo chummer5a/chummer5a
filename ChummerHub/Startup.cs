@@ -58,6 +58,7 @@ using System.Threading.Tasks;
 using ChummerHub.Services.JwT;
 using System.Text;
 using Microsoft.AspNetCore.DataProtection;
+using Duende.IdentityServer.Configuration;
 
 namespace ChummerHub
 {
@@ -182,13 +183,6 @@ namespace ChummerHub
 
             services.AddApplicationInsightsTelemetry(aiOptions);
             
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => false;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-
             services.AddResponseCompression(options =>
             {
                 options.Providers.Add<BrotliCompressionProvider>();
@@ -233,6 +227,21 @@ namespace ChummerHub
                 options.Authentication.CookieAuthenticationScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.Authentication.CookieLifetime = TimeSpan.FromDays(365);
                 options.Authentication.CookieSlidingExpiration = true;
+                options.UserInteraction = new UserInteractionOptions()
+                {
+                    LogoutUrl = "/Identity/Account/Logout",
+                    LoginUrl = "/Identity/Account/Login",
+                    LoginReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter,
+                    
+                };
+                options.IssuerUri = "https://localhost:64939"; //configuration.GetRequiredValue<string>("Oidc:IdentityServer:IssuerUri");
+                options.Events.RaiseErrorEvents = true;
+                options.Events.RaiseInformationEvents = true;
+                options.Events.RaiseFailureEvents = true;
+                options.Events.RaiseSuccessEvents = true;
+
+                options.EmitStaticAudienceClaim = true;
+
             }).AddInMemoryIdentityResources(Config.IdentityResources)
               .AddInMemoryApiScopes(Config.ApiScopes)
               .AddInMemoryClients(Config.Clients)
@@ -255,7 +264,7 @@ namespace ChummerHub
                 var filter = new AuthorizeFilter(policy);
                 options.Filters.Add(filter);
                 options.EnableEndpointRouting = false;
-            }).SetCompatibilityVersion(CompatibilityVersion.Latest)
+            })//.SetCompatibilityVersion(CompatibilityVersion.Latest)
                 .AddRazorPagesOptions(options =>
                 {
                     //options.AllowAreas = true;
@@ -278,29 +287,15 @@ namespace ChummerHub
             //services.AddDataProtection()
             //    .PersistKeysToFileSystem(PersistKeysLocation.GetKeyRingDirInfo()).SetApplicationName(Config.ApplicationName);
 
-            // Cookie policy stuff
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.Secure = CookieSecurePolicy.None;
-                options.HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.None;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-                
-                //options.MinimumSameSitePolicy = SameSiteMode.None;
-                //options.OnAppendCookie = cookieContext =>
-                //    CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
-                //options.OnDeleteCookie = cookieContext =>
-                //    CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
-            });
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            //    options =>
+            //{
+            //    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            //    //options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 
-            
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                
-            })
-                .AddCookie(options =>
+            //})
+                .AddCookie("Cookies", options =>
                 {
                     options.LoginPath = new PathString("/Identity/Account/Login");
                     options.AccessDeniedPath = new PathString("/Identity/Account/AccessDenied");
@@ -308,8 +303,8 @@ namespace ChummerHub
                     //options.Cookie.Name = "Cookies";
                     options.Cookie.HttpOnly = false;
                     options.ExpireTimeSpan = TimeSpan.FromDays(365);
-                    options.Cookie.SameSite = SameSiteMode.None;
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+                    options.Cookie.SameSite = SameSiteMode.Lax;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                     options.LoginPath = "/Identity/Account/Login";
                     // ReturnUrlParameter requires
                     //using Microsoft.AspNetCore.Authentication.Cookies;
@@ -322,7 +317,7 @@ namespace ChummerHub
                         context.HttpContext.Response.Redirect(context.RedirectUri);// "https://externaldomain.com/login");
                         return Task.CompletedTask;
                     };
-                    
+
                     options.Events.OnSigningIn = (context) =>
                     {
                         context.CookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(30);
@@ -332,7 +327,7 @@ namespace ChummerHub
         .AddOpenIdConnect("oidc", options =>
                 {
                     options.Authority = "https://localhost:64939";
-                    //options.SignInScheme = "Cookies";
+                    options.SignInScheme = "Cookies";
                     options.RequireHttpsMetadata = false;
                     options.SaveTokens = true;
                     options.ClientId = "interactive.public";
@@ -534,7 +529,19 @@ namespace ChummerHub
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-            app.UseCookiePolicy();
+            //app.UseCookiePolicy(new CookiePolicyOptions
+            //{
+            //    HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.None,
+            //    MinimumSameSitePolicy = SameSiteMode.Strict,
+            //    Secure = CookieSecurePolicy.Always,
+            //    OnAppendCookie = context =>
+            //    {
+            //        context.CookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(365);
+            //        context.CookieOptions.Secure = true;
+            //    }
+            //});
+        
+
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -546,9 +553,9 @@ namespace ChummerHub
             {
                 _logger?.LogWarning(e, e.Message);
             }
-            app.UseRouting();
-            app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.None, HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.None, Secure = CookieSecurePolicy.None });
             app.UseIdentityServer();
+            app.UseRouting();
+            app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax, Secure = CookieSecurePolicy.Always });
             app.UseAuthentication();
             app.UseAuthorization();
 
