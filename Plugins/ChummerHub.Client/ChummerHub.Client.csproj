@@ -183,6 +183,7 @@
     </Reference>
     <Reference Include="System.Text.Json, Version=6.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Text.Json.6.0.5\lib\net461\System.Text.Json.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
@@ -496,9 +497,9 @@
       copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SINners\" /Y
       echo Statement 3: copy "$(TargetDir)*.dll.config" "$(TargetDir)Plugins\SINners\" /Y
       copy "$(TargetDir)*.dll.config" "$(TargetDir)Plugins\SINners\" /Y
-      echo Statement 13: copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
+      echo Statement 4: copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
       copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
-    </PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>echo Statement 1: mkdir "$(TargetDir)Plugins\SINners\"

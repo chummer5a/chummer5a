@@ -145,6 +145,11 @@ namespace ChummerHub
             // Use this if MyCustomTelemetryInitializer can be constructed without DI injected parameters
             services.AddSingleton<ITelemetryInitializer>(new MyTelemetryInitializer());
 
+            services.AddControllersWithViews();
+            services.AddRazorPages();
+            // cookie policy to deal with temporary browser incompatibilities
+            services.AddSameSiteCookiePolicy();
+
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowOrigin",
@@ -177,16 +182,6 @@ namespace ChummerHub
 
             services.AddApplicationInsightsTelemetry(aiOptions);
             
-
-
-            //var tcbuilder = TelemetryConfiguration.Active.TelemetryProcessorChainBuilder;
-            //tcbuilder.Use(next => new GroupNotFoundFilter(next));
-
-            //// If you have more processors:
-            //tcbuilder.Use(next => new ExceptionDataProcessor(next));
-
-
-
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -265,9 +260,9 @@ namespace ChummerHub
                 {
                     //options.AllowAreas = true;
                     //options.Conventions.AuthorizePage("/Home/Contact");
-                    options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
-                    options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
-                    options.Conventions.AuthorizeAreaPage("Identity", "/Account/ChummerLogin/Logout");
+                    //options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
+                    //options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
+                    //options.Conventions.AuthorizeAreaPage("Identity", "/Account/ChummerLogin/Logout");
                 })
                 .AddNewtonsoftJson(x =>
                 {
@@ -289,6 +284,7 @@ namespace ChummerHub
                 options.Secure = CookieSecurePolicy.None;
                 options.HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.None;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
+                
                 //options.MinimumSameSitePolicy = SameSiteMode.None;
                 //options.OnAppendCookie = cookieContext =>
                 //    CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
@@ -296,43 +292,47 @@ namespace ChummerHub
                 //    CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
             });
 
+            
+
             services.AddAuthentication(options =>
             {
-                options.DefaultScheme = "Cookies";// CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = "oidc"; // CookieAuthenticationDefaults.AuthenticationScheme;
-                //options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                //// CookieAuthenticationDefaults.AuthenticationScheme;
-                //options.DefaultChallengeScheme = "oidc";
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                
             })
-                .AddCookie("Cookies", options =>
+                .AddCookie(options =>
                 {
                     options.LoginPath = new PathString("/Identity/Account/Login");
                     options.AccessDeniedPath = new PathString("/Identity/Account/AccessDenied");
                     options.LogoutPath = "/Identity/Account/Logout";
-                    options.Cookie.Name = "Cookies";
+                    //options.Cookie.Name = "Cookies";
                     options.Cookie.HttpOnly = false;
                     options.ExpireTimeSpan = TimeSpan.FromDays(365);
                     options.Cookie.SameSite = SameSiteMode.None;
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                     options.LoginPath = "/Identity/Account/Login";
                     // ReturnUrlParameter requires
                     //using Microsoft.AspNetCore.Authentication.Cookies;
                     options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                     options.SlidingExpiration = true;
-                    options.Events = new CookieAuthenticationEvents()
+                    //options.Events = new CookieAuthenticationEvents();
+                    options.Events.OnRedirectToLogin = (context) =>
                     {
-                        OnRedirectToLogin = (context) =>
-                        {
-                            
-                            context.HttpContext.Response.Redirect(context.RedirectUri);// "https://externaldomain.com/login");
-                            return Task.CompletedTask;
-                        }
+
+                        context.HttpContext.Response.Redirect(context.RedirectUri);// "https://externaldomain.com/login");
+                        return Task.CompletedTask;
+                    };
+                    
+                    options.Events.OnSigningIn = (context) =>
+                    {
+                        context.CookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(30);
+                        return Task.CompletedTask;
                     };
                 })
         .AddOpenIdConnect("oidc", options =>
                 {
                     options.Authority = "https://localhost:64939";
-                    options.SignInScheme = "Cookies";
+                    //options.SignInScheme = "Cookies";
                     options.RequireHttpsMetadata = false;
                     options.SaveTokens = true;
                     options.ClientId = "interactive.public";
@@ -345,9 +345,6 @@ namespace ChummerHub
                     options.Scope.Add("api");
                     options.Scope.Add("verification");
                     options.Scope.Add("offline_access");
-                   
-
-                    options.SaveTokens = true;
                 });
             ;
 
@@ -377,7 +374,7 @@ namespace ChummerHub
                 options.SignIn.RequireConfirmedEmail = true;
 #endif
                 options.SignIn.RequireConfirmedPhoneNumber = false;
-
+                
             });
 
             //services.ConfigureApplicationCookie(options =>
@@ -485,55 +482,7 @@ namespace ChummerHub
 
         }
 
-        private void CheckSameSite(HttpContext httpContext, CookieOptions options)
-        {
-            if (options.SameSite == SameSiteMode.None)
-            {
-                var userAgent = httpContext.Request.Headers["User-Agent"].ToString();
-                if (DisallowsSameSiteNone(userAgent))
-                {
-                    options.SameSite = (SameSiteMode)(-1);
-                }
-            }
-        }
-
-        private bool DisallowsSameSiteNone(string userAgent)
-        {
-            // Cover all iOS based browsers here. This includes:
-            // - Safari on iOS 12 for iPhone, iPod Touch, iPad
-            // - WkWebview on iOS 12 for iPhone, iPod Touch, iPad
-            // - Chrome on iOS 12 for iPhone, iPod Touch, iPad
-            // All of which are broken by SameSite=None, because they use the iOS networking
-            // stack.
-            if (userAgent.Contains("CPU iPhone OS 12") ||
-            userAgent.Contains("iPad; CPU OS 12"))
-            {
-                return true;
-            }
-
-            // Cover Mac OS X based browsers that use the Mac OS networking stack. 
-            // This includes:
-            // - Safari on Mac OS X.
-            // This does not include:
-            // - Chrome on Mac OS X
-            // Because they do not use the Mac OS networking stack.
-            if (userAgent.Contains("Macintosh; Intel Mac OS X 10_14") &&
-                userAgent.Contains("Version/") && userAgent.Contains("Safari"))
-            {
-                return true;
-            }
-
-            // Cover Chrome 50-69, because some versions are broken by SameSite=None, 
-            // and none in this range require it.
-            // Note: this covers some pre-Chromium Edge versions, 
-            // but pre-Chromium Edge does not require SameSite=None.
-            if (userAgent.Contains("Chrome/5") || userAgent.Contains("Chrome/6"))
-            {
-                return true;
-            }
-
-            return false;
-        }
+     
 
         private static void AddSwaggerApiVersionDescriptions(IServiceCollection services, Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions options)
         {
@@ -585,6 +534,7 @@ namespace ChummerHub
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+            app.UseCookiePolicy();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

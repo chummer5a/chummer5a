@@ -97,7 +97,10 @@ namespace ChummerHub
                 {
                     "https://127.0.0.1:64888",
                     "https://127.0.0.1:5013",
-                    "https://127.0.0.1:62777"
+                    "https://127.0.0.1:62777",
+                    "https://localhost:64888",
+                    "https://localhost:5013",
+                    "https://localhost:62777"
                 },
 
                 // where to redirect after logout
