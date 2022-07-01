@@ -393,8 +393,7 @@ namespace IdentityModel.OidcClient
         {
             await EnsureProviderInformationAsync(cancellationToken);
 
-            //_logger.LogTrace("Effective options:");
-            //_logger.LogTrace(LogSerializer.Serialize(Options));
+            Log.Trace("Effective options: " + LogSerializer.Serialize(Options));
         }
 
         internal async Task EnsureProviderInformationAsync(CancellationToken cancellationToken)
@@ -408,7 +407,7 @@ namespace IdentityModel.OidcClient
                     // discovery document has been loaded before - skip reload
                     if (Options.ProviderInformation != null)
                     {
-                        //_logger.LogDebug("Skipping refresh of discovery document.");
+                        Log.Debug("Skipping refresh of discovery document.");
 
                         return;
                     }
@@ -423,7 +422,7 @@ namespace IdentityModel.OidcClient
 
                 if (disco.IsError)
                 {
-                    //_logger.LogError("Error loading discovery document: {errorType} - {error}", disco.ErrorType.ToString(), disco.Error);
+                    Log.Error("Error loading discovery document: {errorType} - {error}", disco.ErrorType.ToString(), disco.Error);
 
                     if (disco.ErrorType == ResponseErrorType.Exception)
                     {
@@ -433,8 +432,8 @@ namespace IdentityModel.OidcClient
                     throw new InvalidOperationException("Error loading discovery document: " + disco.Error);
                 }
 
-                //_logger.LogDebug("Successfully loaded discovery document");
-                //_logger.LogDebug("Loaded keyset from {jwks_uri}", disco.JwksUri);
+                Log.Debug("Successfully loaded discovery document");
+                Log.Debug("Loaded keyset from {jwks_uri}", disco.JwksUri);
                 var kids = disco.KeySet?.Keys?.Select(k => k.Kid);
                 if (kids != null)
                 {
@@ -458,7 +457,7 @@ namespace IdentityModel.OidcClient
             {
                 var error = "Issuer name is missing in provider information";
 
-                //_logger.LogError(error);
+                Log.Error(error);
                 throw new InvalidOperationException(error);
             }
 
@@ -466,7 +465,7 @@ namespace IdentityModel.OidcClient
             {
                 var error = "Authorize endpoint is missing in provider information";
 
-                //_logger.LogError(error);
+                Log.Error(error);
                 throw new InvalidOperationException(error);
             }
 
@@ -474,7 +473,7 @@ namespace IdentityModel.OidcClient
             {
                 var error = "Token endpoint is missing in provider information";
 
-                //_logger.LogError(error);
+                Log.Error(error);
                 throw new InvalidOperationException(error);
             }
 
@@ -484,7 +483,7 @@ namespace IdentityModel.OidcClient
                 {
                     var error = "Key set is missing in provider information";
 
-                    //_logger.LogError(error);
+                    Log.Error(error);
                     throw new InvalidOperationException(error);
                 }
             }

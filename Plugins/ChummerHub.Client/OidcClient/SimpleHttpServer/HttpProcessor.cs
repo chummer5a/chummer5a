@@ -198,7 +198,7 @@ namespace SimpleHttpServer
             string line;
             while ((line = Readline(inputStream)) != null)
             {
-                if (line.Equals(""))
+                if (line.Trim().Equals(""))
                 {
                     break;
                 }

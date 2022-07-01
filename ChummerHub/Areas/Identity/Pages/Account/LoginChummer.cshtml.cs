@@ -15,14 +15,14 @@ using Microsoft.Extensions.Logging;
 namespace ChummerHub.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
-    public class LoginModel : PageModel
+    public class LoginChummerModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly ILogger<LoginModel> _logger;
+        private readonly ILogger<LoginChummerModel> _logger;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, 
-            ILogger<LoginModel> logger,
+        public LoginChummerModel(SignInManager<ApplicationUser> signInManager, 
+            ILogger<LoginChummerModel> logger,
             UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
@@ -54,7 +54,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account
             public bool RememberMe { get; set; }
         }
 
-        public async Task<IActionResult> OnGetAsync(string returnUrl = null)
+        public async Task OnGetAsync(string returnUrl = null)
         {
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
@@ -63,20 +63,12 @@ namespace ChummerHub.Areas.Identity.Pages.Account
 
             returnUrl ??= Url.Content("~/");
 
-            if (_signInManager.IsSignedIn(User))
-            {
-                _logger.LogInformation("User logged in.");
-                return LocalRedirect(returnUrl);
-            }
-
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             ReturnUrl = returnUrl;
-
-            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
