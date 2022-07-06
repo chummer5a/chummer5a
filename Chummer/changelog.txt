@@ -66,6 +66,7 @@ Data Changes:
 - Fixed name of 'Auctioneer Business Clothes' to 'Actioneer Business Clothes'.
 - Added missing Carbines range category, which maps to Submachine Guns ranges per Street Lethal. 
 - Removed legacy custom_ranges.xml file from Neon Anarchy House Rules customdata.
+- Fixed the Krime Pack not requiring a parent weapon with (belt) ammo.
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups

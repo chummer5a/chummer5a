@@ -18183,6 +18183,13 @@
       <ammoreplace>2500(belt)</ammoreplace>
       <ammoslots>1</ammoslots>
       <rating>0</rating>
+      <required>
+        <weapondetails>
+          <OR>
+            <ammo operation="contains">(belt)</ammo>
+          </OR>
+        </weapondetails>
+      </required>
     </accessory>
     <accessory>
       <id>f52db08a-a2f5-482b-8cd0-4cf3045e0d60</id>
