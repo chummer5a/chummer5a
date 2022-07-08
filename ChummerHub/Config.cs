@@ -23,12 +23,33 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace ChummerHub
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Config'
+    public class JwtTokenClass
+    {
+        public JwtTokenClass()
+        {
+            TokenTimeoutMinutes = 60 * 24 * 365;
+            SigningKey = "MySecretChummer5aKey";
+            if (Debugger.IsAttached)
+            {
+                Issuer = "https://localhost:64939";
+            }
+            else
+            {
+                Issuer = "https://chummer.azurewebsites.net/";
+            }
+            Audience = "";
+        }
+        public string Issuer { get; internal set; }
+        public string Audience { get; internal set; }
+        public string SigningKey { get; internal set; }
+        public double TokenTimeoutMinutes { get; internal set; }
+    }
+
     public class Config
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Config'
     {
         public static IEnumerable<IdentityResource> IdentityResources =>
             new List<IdentityResource>
@@ -55,35 +76,55 @@ namespace ChummerHub
         public static IEnumerable<Client> Clients =>
        new List<Client>
        {
-            new Client
-            {
-                ClientId = "Chummer5a",
-
-                // no interactive user, use the clientid/secret for authentication
-                AllowedGrantTypes = GrantTypes.DeviceFlow,
-
-                // secret for authentication
-                ClientSecrets =
+           // JWT-based client authentication sample
+                new Client
                 {
-                    new Secret("secret".Sha256())
+                    ClientId = "Chummer5a",
+
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    
+                    // this client uses an RSA key as client secret
+                    // and https://docs.duendesoftware.com/identityserver/v5/tokens/authentication/jwt/
+                    ClientSecrets =
+                    {
+                        new Secret
+                        {
+                            Type = IdentityServerConstants.SecretTypes.JsonWebKey,
+                            Value = "{'e':'AQAB','kid':'ZzAjSnraU3bkWGnnAqLapYGpTyNfLbjbzgAPbbW2GEA','kty':'RSA','n':'wWwQFtSzeRjjerpEM5Rmqz_DsNaZ9S1Bw6UbZkDLowuuTCjBWUax0vBMMxdy6XjEEK4Oq9lKMvx9JzjmeJf1knoqSNrox3Ka0rnxXpNAz6sATvme8p9mTXyp0cX4lF4U2J54xa2_S9NF5QWvpXvBeC4GAJx7QaSw4zrUkrc6XyaAiFnLhQEwKJCwUw4NOqIuYvYp_IXhw-5Ti_icDlZS-282PcccnBeOcX7vc21pozibIdmZJKqXNsL1Ibx5Nkx1F1jLnekJAmdaACDjYRLL_6n3W4wUp19UvzB1lGtXcJKLLkqB6YDiZNu16OSiSprfmrRXvYmvD8m6Fnl5aetgKw'}"
+                        }
+                    },
+
+                    AllowedScopes = { "ChummerHubV1" }
                 },
+            //new Client
+            //{
+            //    ClientId = "Chummer5a",
 
-                // where to redirect to after login
-                RedirectUris = { "https://localhost:64939/signin-oidc" },
+            //    // no interactive user, use the clientid/secret for authentication
+            //    AllowedGrantTypes = GrantTypes.DeviceFlow,
 
-                // where to redirect to after logout
-                PostLogoutRedirectUris = { "https://localhost:63939/signout-callback-oidc" },
+            //    // secret for authentication
+            //    ClientSecrets =
+            //    {
+            //        new Secret("secret".Sha256())
+            //    },
 
-                AllowOfflineAccess = true,
+            //    // where to redirect to after login
+            //    RedirectUris = { "https://localhost:64939/signin-oidc" },
 
-                // scopes that client has access to
-                AllowedScopes =
-                {
-                    IdentityServerConstants.StandardScopes.OpenId,
-                    IdentityServerConstants.StandardScopes.Profile,
-                    "ChummerHubV1"
-                }
-            },
+            //    // where to redirect to after logout
+            //    PostLogoutRedirectUris = { "https://localhost:63939/signout-callback-oidc" },
+
+            //    AllowOfflineAccess = true,
+
+            //    // scopes that client has access to
+            //    AllowedScopes =
+            //    {
+            //        IdentityServerConstants.StandardScopes.OpenId,
+            //        IdentityServerConstants.StandardScopes.Profile,
+            //        "ChummerHubV1"
+            //    }
+            //},
             new Client
             {
                 ClientId = "interactive.public",
@@ -128,6 +169,20 @@ namespace ChummerHub
             get { return "ChummerHub"; }
             }
 
+        private static JwtTokenClass _jwtToken = null;
+
+        public static JwtTokenClass JwtToken
+        {
+            get
+            {
+                if (_jwtToken == null)
+                {
+                    _jwtToken = new JwtTokenClass();
+                }
+                return _jwtToken;
+            }
+        }
+
         internal static List<ApplicationUser> GetAdminUsers()
         {
             var a = new ApplicationUser()
@@ -138,9 +193,7 @@ namespace ChummerHub
                 NormalizedEmail = "ARCHON.MEGALON@GMAIL.COM",
                 NormalizedUserName = "archon",
                 UserName = "Archon",
-#pragma warning disable CS0612 // 'ApplicationUser.Groupname' is obsolete
                 Groupname = "MyPlayGroup1",
-#pragma warning restore CS0612 // 'ApplicationUser.Groupname' is obsolete
                 Id = Guid.Parse("9FC744C1-FC22-4EDA-6A05-08D64B08AE81"),
             };
             var b = new ApplicationUser()
@@ -151,9 +204,7 @@ namespace ChummerHub
                 NormalizedEmail = "CHUMMER5ISALIVE@GMAIL.COM",
                 NormalizedUserName = "chummer",
                 UserName = "Chummer",
-#pragma warning disable CS0612 // 'ApplicationUser.Groupname' is obsolete
                 Groupname = "MyPlayGroup2",
-#pragma warning restore CS0612 // 'ApplicationUser.Groupname' is obsolete
                 Id = Guid.Parse("AFC744C1-FC22-4EDA-6A05-08D64B08AE81"),
             };
             var list = new List<ApplicationUser>() { a, b };
