@@ -15,8 +15,8 @@ namespace ChummerHub.Services
                 : base(userManager, roleManager, optionsAccessor)
         {
         }
-/// <inheritdoc/>
 
+        /// <inheritdoc/>
         protected override async Task<ClaimsIdentity> GenerateClaimsAsync(ApplicationUser user)
         {
             var identity = await base.GenerateClaimsAsync(user).ConfigureAwait(false);

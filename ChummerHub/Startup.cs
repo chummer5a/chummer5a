@@ -57,14 +57,13 @@ using Microsoft.IdentityModel.Tokens;
 using System.Threading.Tasks;
 using ChummerHub.Services.JwT;
 using System.Text;
-using Microsoft.AspNetCore.DataProtection;
+
+using Microsoft.Net.Http.Headers;
 using Duende.IdentityServer.Configuration;
 
 namespace ChummerHub
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup'
     public class Startup
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup'
     {
 
 
@@ -72,9 +71,7 @@ namespace ChummerHub
         private readonly ILogger<Startup> _logger;
 
         private static DriveHandler _gdrive;
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.GDrive'
         public static DriveHandler GDrive
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.GDrive'
         {
             get
             {
@@ -149,7 +146,7 @@ namespace ChummerHub
             services.AddControllersWithViews();
             services.AddRazorPages();
             // cookie policy to deal with temporary browser incompatibilities
-            services.AddSameSiteCookiePolicy();
+            //services.AddSameSiteCookiePolicy();
 
             services.AddCors(options =>
             {
@@ -211,7 +208,45 @@ namespace ChummerHub
                 options.EnableDetailedErrors();
             });
 
-     
+            services.AddAuthentication(options =>
+            {
+                // custom scheme defined in .AddPolicyScheme() below
+                options.DefaultScheme = "JWT_OR_COOKIE";
+                options.DefaultChallengeScheme = "JWT_OR_COOKIE";
+            })
+            
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/login";
+                options.ExpireTimeSpan = TimeSpan.FromDays(1);
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidIssuer = Config.JwtToken.Issuer,
+                    ValidateAudience = false,
+                    ValidAudience = Config.JwtToken.Audience,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config.JwtToken.SigningKey))
+                };
+            })
+            // this is the key piece!
+            .AddPolicyScheme("JWT_OR_COOKIE", "JWT_OR_COOKIE", options =>
+            {
+                options.ForwardDefaultSelector = context =>
+                {
+                    string authorization = context.Request.Headers[HeaderNames.Authorization];
+                    if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer "))
+                        return JwtBearerDefaults.AuthenticationScheme;
+
+                    return CookieAuthenticationDefaults.AuthenticationScheme;
+                };
+            });
+
+            #region OLDAUTH
+
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()
                     .AddDefaultTokenProviders()
@@ -223,16 +258,16 @@ namespace ChummerHub
 
             services.AddIdentityServer(options =>
             {
-               
-                options.Authentication.CookieAuthenticationScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.Authentication.CookieLifetime = TimeSpan.FromDays(365);
-                options.Authentication.CookieSlidingExpiration = true;
+
+                //options.Authentication.CookieAuthenticationScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                //options.Authentication.CookieLifetime = TimeSpan.FromDays(365);
+                //options.Authentication.CookieSlidingExpiration = true;
                 options.UserInteraction = new UserInteractionOptions()
                 {
                     LogoutUrl = "/Identity/Account/Logout",
                     LoginUrl = "/Identity/Account/Login",
                     LoginReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter,
-                    
+
                 };
                 options.IssuerUri = "https://localhost:64939"; //configuration.GetRequiredValue<string>("Oidc:IdentityServer:IssuerUri");
                 options.Events.RaiseErrorEvents = true;
@@ -246,8 +281,78 @@ namespace ChummerHub
               .AddInMemoryApiScopes(Config.ApiScopes)
               .AddInMemoryClients(Config.Clients)
               .AddAspNetIdentity<ApplicationUser>()
-              
+              //.AddCookieAuthentication();
+              //.AddJwtBearerClientAuthentication();
             ;
+
+            //services.AddAuthentication()
+            //.AddCookie("Cookies", options =>
+            //{
+            //    options.LoginPath = new PathString("/Identity/Account/Login");
+            //    options.AccessDeniedPath = new PathString("/Identity/Account/AccessDenied");
+            //    options.LogoutPath = "/Identity/Account/Logout";
+            //                //options.Cookie.Name = "Cookies";
+            //    options.Cookie.HttpOnly = false;
+            //    options.ExpireTimeSpan = TimeSpan.FromDays(365);
+            //    options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Lax;
+            //    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            //    options.LoginPath = "/Identity/Account/Login";
+            //                // ReturnUrlParameter requires
+            //                //using Microsoft.AspNetCore.Authentication.Cookies;
+            //    options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+            //    options.SlidingExpiration = true;
+            //                //options.Events = new CookieAuthenticationEvents();
+            //    options.Events.OnRedirectToLogin = (context) =>
+            //    {
+
+            //        context.HttpContext.Response.Redirect(context.RedirectUri);// "https://externaldomain.com/login");
+            //        return Task.CompletedTask;
+            //    };
+
+            //    options.Events.OnSigningIn = (context) =>
+            //    {
+            //        context.CookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(30);
+            //        return Task.CompletedTask;
+            //    };
+            //})
+            //            .AddJwtBearer(options =>
+            //            {
+            //                options.Authority = "https://localhost:64939";
+            //                options.TokenValidationParameters.ValidateAudience = false;
+            //                options.RequireHttpsMetadata = false;
+            //                options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
+            //            })
+            //        .AddOpenIdConnect("oidc", options =>
+            //        {
+            //            options.Authority = "https://localhost:64939";
+            //            options.SignInScheme = "Cookies";
+            //            options.RequireHttpsMetadata = false;
+            //            options.SaveTokens = true;
+            //            options.ClientId = "interactive.public";
+            //                //options.ClientSecret = "secret";
+            //                //options.ResponseType = "code";
+
+            //            options.Scope.Clear();
+            //            options.Scope.Add("openid");
+            //            options.Scope.Add("profile");
+            //            options.Scope.Add("api");
+            //            options.Scope.Add("verification");
+            //            options.Scope.Add("offline_access");
+            //        });
+            //            ;
+
+            //            //services.AddAuthentication("Bearer")
+            //            //     .AddIdentityServerAuthentication("Bearer", options =>
+            //            //     {
+            //            //         // required audience of access tokens
+            //            //         options.ApiName = "api1";
+
+            //            //         // auth server base endpoint (this will be used to search for disco doc)
+            //            //         options.Authority = "https://localhost:5000";
+            //            //     });
+
+
+            #endregion
 
             services.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
 
@@ -287,63 +392,9 @@ namespace ChummerHub
             //services.AddDataProtection()
             //    .PersistKeysToFileSystem(PersistKeysLocation.GetKeyRingDirInfo()).SetApplicationName(Config.ApplicationName);
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            //    options =>
-            //{
-            //    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            //    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            //    //options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        
 
-            //})
-                .AddCookie("Cookies", options =>
-                {
-                    options.LoginPath = new PathString("/Identity/Account/Login");
-                    options.AccessDeniedPath = new PathString("/Identity/Account/AccessDenied");
-                    options.LogoutPath = "/Identity/Account/Logout";
-                    //options.Cookie.Name = "Cookies";
-                    options.Cookie.HttpOnly = false;
-                    options.ExpireTimeSpan = TimeSpan.FromDays(365);
-                    options.Cookie.SameSite = SameSiteMode.Lax;
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                    options.LoginPath = "/Identity/Account/Login";
-                    // ReturnUrlParameter requires
-                    //using Microsoft.AspNetCore.Authentication.Cookies;
-                    options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
-                    options.SlidingExpiration = true;
-                    //options.Events = new CookieAuthenticationEvents();
-                    options.Events.OnRedirectToLogin = (context) =>
-                    {
 
-                        context.HttpContext.Response.Redirect(context.RedirectUri);// "https://externaldomain.com/login");
-                        return Task.CompletedTask;
-                    };
-
-                    options.Events.OnSigningIn = (context) =>
-                    {
-                        context.CookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(30);
-                        return Task.CompletedTask;
-                    };
-                })
-        .AddOpenIdConnect("oidc", options =>
-                {
-                    options.Authority = "https://localhost:64939";
-                    options.SignInScheme = "Cookies";
-                    options.RequireHttpsMetadata = false;
-                    options.SaveTokens = true;
-                    options.ClientId = "interactive.public";
-                    //options.ClientSecret = "secret";
-                    //options.ResponseType = "code";
-                    
-                    options.Scope.Clear();
-                    options.Scope.Add("openid");
-                    options.Scope.Add("profile");
-                    options.Scope.Add("api");
-                    options.Scope.Add("verification");
-                    options.Scope.Add("offline_access");
-                });
-            ;
-
-          
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -372,31 +423,7 @@ namespace ChummerHub
                 
             });
 
-            //services.ConfigureApplicationCookie(options =>
-            //{
-            //    // Cookie settings
-            //    options.LogoutPath = "/Identity/Account/Logout";
-            //    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-            //    options.Cookie.Name = "Cookies";
-            //    options.Cookie.HttpOnly = false;
-            //    options.Cookie.SameSite = SameSiteMode.Lax;
-            //    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
-            //    options.ExpireTimeSpan = TimeSpan.FromDays(365);
-            //    options.LoginPath = "/Identity/Account/Login";
-            //    // ReturnUrlParameter requires
-            //    //using Microsoft.AspNetCore.Authentication.Cookies;
-            //    options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
-            //    options.SlidingExpiration = true;
-            //    //options.Events.OnRedirectToAccessDenied = context => {
-
-            //    //    // Your code here.
-            //    //    // e.g.
-            //    //    throw new Not();
-            //    //};
-            //});
-
-
-
+          
             services.AddVersionedApiExplorer(options =>
                 {
                     options.GroupNameFormat = "'v'VVV";
@@ -404,7 +431,8 @@ namespace ChummerHub
                     // can also be used to control the format of the API version in route templates
                     options.SubstituteApiVersionInUrl = true;
                 })
-                .AddAuthorization();
+                //.AddAuthorization()
+                ;
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddApiVersioning(o =>
             {
@@ -416,24 +444,9 @@ namespace ChummerHub
                 //o.Conventions.Controller<Controllers.V2.SINnerController>().HasApiVersion(new ApiVersion(2, 0));
             });
 
-            services.AddSwaggerExamples();
+            services.AddSwaggerExamplesFromAssemblyOf<Startup>();
 
-            // Include 'SecurityScheme' to use JWT Authentication
-            //var jwtSecurityScheme = new OpenApiSecurityScheme
-            //{
-            //    Scheme = "bearer",
-            //    BearerFormat = "JWT",
-            //    Name = "JWT Authentication",
-            //    In = ParameterLocation.Header,
-            //    Type = SecuritySchemeType.Http,
-            //    Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
-
-            //    Reference = new OpenApiReference
-            //    {
-            //        Id = JwtBearerDefaults.AuthenticationScheme,
-            //        Type = ReferenceType.SecurityScheme
-            //    }
-            //};
+            
 
             services.AddSwaggerGen(options =>
             {
@@ -451,12 +464,53 @@ namespace ChummerHub
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
 
-                //options.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-
-                //options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                //OpenApiSecurityScheme jwtSecurityScheme = new OpenApiSecurityScheme()
                 //{
-                //    { jwtSecurityScheme, Array.Empty<string>() }
-                //});
+                //    Name = JwtAuthenticationDefaults.HeaderName,
+                //    Type = SecuritySchemeType.Http,
+                //    Scheme = "bearer",
+                //    BearerFormat = "JWT",
+                //    In = ParameterLocation.Header,
+                //    Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
+                //    Reference = new OpenApiReference
+                //    {
+                //        Id = JwtBearerDefaults.AuthenticationScheme,
+                //        Type = ReferenceType.SecurityScheme
+                //    }
+                //};
+                options.AddSecurityDefinition(JwtAuthenticationDefaults.AuthenticationScheme,
+                new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme.",
+                    Name = JwtAuthenticationDefaults.HeaderName, // Authorization
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer"
+                });
+
+
+                //options.AddSecurityDefinition(jwtSecurityScheme.Scheme, jwtSecurityScheme);
+
+
+                //OpenApiSecurityRequirement requirement = new OpenApiSecurityRequirement()
+                //{
+                //    { jwtSecurityScheme, new List<string>() }
+                //};
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = JwtAuthenticationDefaults.AuthenticationScheme
+                            }
+                        },
+                        new List<string>()
+                    }
+                });
             });
             services.AddAzureAppConfiguration();
 
@@ -529,19 +583,7 @@ namespace ChummerHub
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-            //app.UseCookiePolicy(new CookiePolicyOptions
-            //{
-            //    HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.None,
-            //    MinimumSameSitePolicy = SameSiteMode.Strict,
-            //    Secure = CookieSecurePolicy.Always,
-            //    OnAppendCookie = context =>
-            //    {
-            //        context.CookieOptions.Expires = DateTimeOffset.UtcNow.AddDays(365);
-            //        context.CookieOptions.Secure = true;
-            //    }
-            //});
-        
-
+         
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -553,10 +595,13 @@ namespace ChummerHub
             {
                 _logger?.LogWarning(e, e.Message);
             }
-            app.UseIdentityServer();
             app.UseRouting();
-            app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax, Secure = CookieSecurePolicy.Always });
             app.UseAuthentication();
+            app.UseIdentityServer();
+           
+           
+            app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.Lax, Secure = CookieSecurePolicy.Always });
+            
             app.UseAuthorization();
 
             app.UseMvc(routes =>
@@ -640,9 +685,7 @@ FROM            dbo.SINners INNER JOIN
             Seed(app);
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program.Seed()'
         public static void Seed(IApplicationBuilder app)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Program.Seed()'
         {
             if (app == null)
                 throw new ArgumentNullException(nameof(app));
