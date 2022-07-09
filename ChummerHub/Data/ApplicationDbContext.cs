@@ -31,6 +31,7 @@ using Duende.IdentityServer.EntityFramework.Interfaces;
 using System.Threading.Tasks;
 using Duende.IdentityServer.EntityFramework.Entities;
 using Microsoft.EntityFrameworkCore.Design;
+using System.Security.Claims;
 
 namespace ChummerHub.Data
 {
@@ -171,6 +172,7 @@ namespace ChummerHub.Data
         public DbSet<Models.V1.SINnerMetaData> SINnerMetaData { get; set; }
 
         public DbSet<Models.V1.SINnerGroupSetting> SINnerGroupSettings { get; set; }
+
 
         #endregion
 

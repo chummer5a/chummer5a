@@ -21,6 +21,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
@@ -64,6 +65,10 @@ namespace Microsoft.AspNetCore.Identity
         }
 
         private ILazyLoader LazyLoader { get; set; }
+
+        [NotMapped]
+        public ClaimsIdentity Username { get; internal set; }
+        public string Fullname { get { return this.UserName; } }
 
         private ApplicationUser(ILazyLoader lazyLoader)
         {

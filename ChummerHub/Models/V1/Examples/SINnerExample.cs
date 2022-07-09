@@ -24,9 +24,7 @@ namespace ChummerHub.Models.V1.Examples
 {
 
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerExample'
     public class SINnerExample : IExamplesProvider<object>
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerExample'
     {
         /// <summary>
         /// Class to enalbe Swagger to generate an Example
@@ -36,16 +34,12 @@ namespace ChummerHub.Models.V1.Examples
 
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerExample.GetExamples()'
         public object GetExamples()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerExample.GetExamples()'
         {
             return GetSINnerExample();
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerExample.GetSINnerExample()'
         public SINner GetSINnerExample()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerExample.GetSINnerExample()'
         {
             Guid parentTagGuid = Guid.NewGuid();
             Guid childTagGuid = Guid.NewGuid();
