@@ -10334,8 +10334,6 @@ namespace Chummer
                                     intMasteryQualityKarmaUsed * CharacterObjectSettings.KarmaQuality
                                     / CharacterObjectSettings.KarmaSpell);
                             spells += intQualityKarmaToSpellPoints;
-                            // Add the karma paid for by spell points back into the available karma pool.
-                            intKarmaPointsRemain += intQualityKarmaToSpellPoints * CharacterObjectSettings.KarmaSpell;
                         }
                     }
                 }
