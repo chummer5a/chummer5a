@@ -72,7 +72,7 @@ namespace ChummerHub
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                 new IdentityResource()
+                new IdentityResource()
                 {
                     Name = "verification",
                     UserClaims = new List<string>
@@ -80,7 +80,8 @@ namespace ChummerHub
                         JwtClaimTypes.Email,
                         JwtClaimTypes.EmailVerified
                     }
-                }
+                },
+                new IdentityResource("roles", "Your role(s)", new List<string>() { API.Authorization.Constants.UserRolePublicAccess })
             };
 
         public static IEnumerable<ApiScope> ApiScopes =>
@@ -110,7 +111,7 @@ namespace ChummerHub
                         }
                     },
 
-                    AllowedScopes = { "ChummerHubV1" }
+                    AllowedScopes = { "ChummerHubV1", "roles", "verification" }
                 },
             //new Client
             //{
@@ -176,7 +177,8 @@ namespace ChummerHub
                     IdentityServerConstants.StandardScopes.Profile,
                     IdentityServerConstants.StandardScopes.OfflineAccess,
                     "api",
-                    "verification"
+                    "verification",
+                    "roles"
                 }
             }
        };

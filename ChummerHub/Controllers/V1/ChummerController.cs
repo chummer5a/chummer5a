@@ -44,7 +44,7 @@ namespace ChummerHub.Controllers.V1
     [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
     [ControllerName("Chummer")]
-    [Authorize(Roles = Authorizarion.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+    [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
     public class ChummerController : Controller
     {
         private readonly ILogger _logger;

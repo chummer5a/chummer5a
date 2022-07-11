@@ -52,7 +52,7 @@ namespace ChummerHub.Controllers.V1
     [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
     [ControllerName("SINner")]
-    [Authorize(Roles = Authorizarion.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+    [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
     public class SINnerController : ControllerBase
     {
         private readonly ApplicationDbContext _context;

@@ -51,7 +51,7 @@ namespace ChummerHub.Controllers.V1
     [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
     [ControllerName("SINGroup")]
-    [Authorize(Roles = Authorizarion.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+    [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
     public class SINnerGroupController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -89,7 +89,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupPutGroupInGroup")]
-        [Authorize(Roles = Authorizarion.Constants.UserRoleAdmin + "," + Authorizarion.Constants.UserRoleArchetypeAdmin, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRoleAdmin + "," + API.Authorization.Constants.UserRoleArchetypeAdmin, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultGroupPutGroupInGroup>> PutGroupInGroup(Guid GroupId, string groupname, Guid? parentGroupId, string adminIdentityRole, bool isPublicVisible)
         {
             ResultGroupPutGroupInGroup res;
@@ -246,7 +246,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("PutGroupSetting")]
-        [Authorize(Roles = Authorizarion.Constants.UserRoleAdmin + "," + Authorizarion.Constants.UserRoleArchetypeAdmin,
+        [Authorize(Roles = API.Authorization.Constants.UserRoleAdmin + "," + API.Authorization.Constants.UserRoleArchetypeAdmin,
             AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultGroupPutSetting>> PutGroupSetting([FromRoute] Guid id, IFormFile uploadedFile)
         {
@@ -339,7 +339,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse(statusCode: (int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse(statusCode: (int)HttpStatusCode.Conflict)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation(summary: "GroupPostGroup")]
-        [Authorize(Roles = Authorizarion.Constants.UserRoleConfirmed, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRoleConfirmed, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultGroupPostGroup>> PostGroup([FromBody] SINnerGroup mygroup, Guid? SinnerId)
         {
             _logger.LogTrace(message: "Post SINnerGroupInternal: " + mygroup?.Groupname + " (" + SinnerId + ").");
@@ -567,7 +567,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK, "SINner joined the group", typeof(SINner))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest, "an error occured", typeof(HubException))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupPutSINerInGroup")]
-        [Authorize(Roles = Authorizarion.Constants.UserRoleConfirmed, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRoleConfirmed, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultGroupPutSINerInGroup>> PutSINerInGroup(Guid? GroupId, Guid? SinnerId, string pwhash)
         {
             ResultGroupPutSINerInGroup res;
@@ -745,7 +745,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupGetGroupById")]
-        [Authorize(Roles = Authorizarion.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         
         public async Task<ActionResult<ResultGroupGetGroupById>> GetGroupById(Guid groupid)
         {
@@ -827,7 +827,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupGetPublicGroup")]
-        [Authorize(Roles = Authorizarion.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultGroupGetSearchGroups>> GetPublicGroup(string Groupname, string Language)
         {
             Stopwatch sw = new Stopwatch();
@@ -881,7 +881,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupGetGroupmembers")]
-        [Authorize(Roles = Authorizarion.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultGroupGetSearchGroups>> GetGroupmembers(string Groupname, string Language, string email, string password)
         {
             ResultGroupGetSearchGroups res;
@@ -1002,7 +1002,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupGetSearchGroups")]
-        [Authorize(Roles = Authorizarion.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultGroupGetSearchGroups>> GetSearchGroups(string Groupname, string UsernameOrEmail, string SINnerName, string Language)
         {
             Stopwatch sw = new Stopwatch();
@@ -1066,7 +1066,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("DeleteLeaveGroup")]
-        [Authorize(Roles = Authorizarion.Constants.UserRoleConfirmed, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRoleConfirmed, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<bool>> DeleteLeaveGroup(Guid groupid, Guid sinnerid)
         {
             _logger.LogTrace("DeleteLeaveGroup: " + groupid + "/" + sinnerid + ".");
@@ -1104,7 +1104,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("DeleteGroup")]
-        [Authorize(Roles = Authorizarion.Constants.UserRoleConfirmed, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRoleConfirmed, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<bool>> DeleteGroup(Guid groupid)
         {
             _logger.LogTrace("DeleteLeaveGroup: " + groupid + ".");
@@ -1441,7 +1441,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetGroupmembersById")]
-        [Authorize(Roles = Authorizarion.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultGroupGetSearchGroups>> GetGroupmembersById(Guid groupid)
         {
             ResultGroupGetSearchGroups res;

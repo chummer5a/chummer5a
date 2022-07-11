@@ -18,7 +18,7 @@
  */
 namespace ChummerHub.API
 {
-    public static class Authorizarion
+    public static class Authorization
     {
         public static class Constants
         {

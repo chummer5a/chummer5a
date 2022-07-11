@@ -16,6 +16,8 @@ using ChummerHub.Services.JwT;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Primitives;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
 
 namespace ChummerHub.Areas.Identity.Pages.Account
 {
@@ -26,15 +28,17 @@ namespace ChummerHub.Areas.Identity.Pages.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly IActionContextAccessor _accessor;
+        //private readonly ICookieManager _cookieManager;
 
         public LoginModel(SignInManager<ApplicationUser> signInManager, 
             ILogger<LoginModel> logger,
-            UserManager<ApplicationUser> userManager, IActionContextAccessor accessor)
+            UserManager<ApplicationUser> userManager, IActionContextAccessor accessor /*, ICookieManager cookieManager*/)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _accessor = accessor;
+            //_cookieManager = cookieManager;
         }
 
         [BindProperty]
@@ -101,21 +105,62 @@ namespace ChummerHub.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    if (!returnUrl.Contains("localhost"))
-                    {
-                        return LocalRedirect(returnUrl);
-                    }
+
+
+
+                    //my code
                     string tokenstring = null;
                     JwtSecurityToken token = null;
                     IList<string> roles = new List<string>();
                     if (User != null)
                     {
-                        user = await _signInManager.UserManager.GetUserAsync(User);
+                        //user = await _signInManager.UserManager.GetUserAsync(User);
                         roles = await _userManager.GetRolesAsync(user);
                     }
                     token = JwtHelper.GenerateJwTSecurityToken(_logger, user, roles);
+                    var claims = new List<Claim>();
+
+                    foreach (var tokenClaim in token.Claims)
+                    {
+                        var claim = new Claim(tokenClaim.Type, tokenClaim.Value);
+                        claims.Add(claim);
+                    }
+
+                    var identity = new ClaimsIdentity(
+                        claims, CookieAuthenticationDefaults.AuthenticationScheme,
+                        ClaimsIdentity.DefaultNameClaimType,
+                        ClaimsIdentity.DefaultRoleClaimType);
+
+                    //var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme, nameType, roleType);
+
+                    var principal = new ClaimsPrincipal(identity);
+
+                    var authProperties = new AuthenticationProperties
+                    {
+                        AllowRefresh = true,
+                        IsPersistent = true,
+                        ExpiresUtc = token.ValidTo,
+                        IssuedUtc = DateTime.UtcNow
+                    };
+
+                    await HttpContext.SignInAsync(
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        principal,
+                        authProperties);
+
+                  
+
+
+                    
+                    if (!returnUrl.Contains("localhost"))
+                    {
+                        return LocalRedirect(returnUrl);
+                    }
+
                     var redirectresult = new RedirectResult(returnUrl, true);
                     redirectresult.UrlHelper = new UrlHelper(_accessor.ActionContext);
+
+
 
                     redirectresult.UrlHelper
                           .ActionContext
@@ -126,6 +171,16 @@ namespace ChummerHub.Areas.Identity.Pages.Account
                           .ActionContext
                           .HttpContext
                           .Response.Headers.Add("Bearer Authorization", new StringValues(JwtHelper.GetJwtTokenString(token)));
+
+                    //redirectresult.UrlHelper
+                    //      .ActionContext.HttpContext.Response.Cookies.Append("token", JwtHelper.GetJwtTokenString(token));
+                    ////_sessionManager.SetString("token", response.Token);
+
+                    HttpContext.User = principal;
+                    redirectresult.UrlHelper
+                          .ActionContext
+                          .HttpContext.User = principal;
+
                     return redirectresult;
                 }
                 if (result.RequiresTwoFactor)
@@ -146,6 +201,11 @@ namespace ChummerHub.Areas.Identity.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return Page();
+        }
+
+        private void HandleCookieLogin()
+        {
+          
         }
     }
 }

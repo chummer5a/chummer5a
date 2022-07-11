@@ -69,6 +69,7 @@ namespace ChummerHub.Services.JwT
         {
             JwtSecurityToken token = null;
             List<Claim> claims = new List<Claim>();
+            //claims.Add(new Claim("idp", "local");
             claims.Add(new Claim("issued at", DateTime.UtcNow.ToString()));
             claims.Add(new Claim("notbefore", DateTime.UtcNow.ToString()));
             claims.Add(new Claim(ClaimTypes.Role, "PublicAccess"));

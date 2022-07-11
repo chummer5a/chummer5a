@@ -539,7 +539,7 @@ namespace ChummerHub.Client.UI
                 Authority = _authority,
                 ClientId = "interactive.public",
                 RedirectUri = redirectUri,
-                Scope = "openid profile verification", //api offline_access
+                Scope = "openid profile verification",
                 FilterClaims = false,
 
                 Browser = browser,

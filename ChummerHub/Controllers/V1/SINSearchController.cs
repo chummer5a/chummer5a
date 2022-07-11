@@ -41,7 +41,7 @@ namespace ChummerHub.Controllers.V1
     [ApiVersion("1.0")]
     [EnableCors("AllowOrigin")]
     [ControllerName("SINSearch")]
-    [Authorize(Roles = Authorizarion.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+    [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
     public class SINSearchController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -55,7 +55,7 @@ namespace ChummerHub.Controllers.V1
 
         // GET: api/ChummerFiles
         [HttpGet()]
-        [Authorize(Roles = Authorizarion.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         [SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerListExample))]
         [SwaggerRequestExample(typeof(SearchTag), typeof(SINnerSearchExample))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
@@ -85,7 +85,7 @@ namespace ChummerHub.Controllers.V1
 
         // GET: api/ChummerFiles
         [HttpGet()]
-        [Authorize(Roles = Authorizarion.Constants.UserRoleAdmin, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRoleAdmin, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SearchAdminGetSINnerIds")]
         public async Task<IEnumerable<SINner>> AdminGetSINners()
         {

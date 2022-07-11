@@ -54,7 +54,7 @@ namespace ChummerHub.Controllers
     [ApiController]
     [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
-    [Authorize(Roles = Authorizarion.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+    [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
     public class AccountController : Controller
     {
 
@@ -134,7 +134,8 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Forbidden)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetPossibleRoles")]
-        [Authorize(Roles = Authorizarion.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = "JWT_OR_COOKIE")]
+        //[Authorize(Roles = Authorizarion.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultAccountGetPossibleRoles>> GetPossibleRoles()
         {
             ResultAccountGetPossibleRoles res;
@@ -157,7 +158,7 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Forbidden)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetRoles")]
-        [Authorize(Roles = Authorizarion.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultAccountGetRoles>> GetRoles()
         {
             ResultAccountGetRoles res;
@@ -167,7 +168,7 @@ namespace ChummerHub.Controllers
                 //var user = await _signInManager.UserManager.GetUserAsync(User);
                 if (user.EmailConfirmed)
                 {
-                    await SeedData.EnsureRole(Program.MyHost.Services, user.Id, Authorizarion.Constants.UserRoleConfirmed, _roleManager, _userManager);
+                    await SeedData.EnsureRole(Program.MyHost.Services, user.Id, API.Authorization.Constants.UserRoleConfirmed, _roleManager, _userManager);
                 }
                 var roles = await _userManager.GetRolesAsync(user);
                 var list = await _context.Roles.Select(a => a.Name).ToListAsync();
@@ -213,7 +214,7 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetAddSqlDbUser")]
-        [Authorize(Roles = Authorizarion.Constants.UserRoleAdmin, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRoleAdmin, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<string>> GetAddSqlDbUser(string username, string password, string start_ip_address, string end_ip_address)
         {
             string result = string.Empty;
@@ -380,7 +381,7 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("PostSetUserRole")]
-        [Authorize(Roles = Authorizarion.Constants.UserRoleAdmin, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRoleAdmin, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ApplicationUser>> PostSetUserRole(string email, string userrole)
         {
             try
@@ -457,7 +458,7 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("ResetDb")]
-        [Authorize(Roles = Authorizarion.Constants.UserRoleAdmin, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRoleAdmin, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<string>> GetDeleteAllSINnersDb()
         {
             try
@@ -511,7 +512,7 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("DeleteAndRecreate")]
-        [Authorize(Roles = Authorizarion.Constants.UserRoleAdmin, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRoleAdmin, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<string>> GetDeleteAndRecreateDb()
         {
             try
@@ -559,7 +560,7 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse(StatusCodes.Status200OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse(StatusCodes.Status400BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetSinnersByAuthorization")]
-        [Authorize(Roles = Authorizarion.Constants.UserRoleRegistered, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRoleRegistered, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultAccountGetSinnersByAuthorization>> GetSINnersByAuthorization()
         {
             try
@@ -751,7 +752,7 @@ namespace ChummerHub.Controllers
 
         // GET: api/ChummerFiles
         [HttpGet]
-        [Authorize(Roles = Authorizarion.Constants.UserRoleAdmin, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRoleAdmin, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NoContent)]
@@ -847,7 +848,7 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountLogout")]
-        [Authorize(Roles = Authorizarion.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<bool>> Logout()
         {
             try
