@@ -11,6 +11,11 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System.IdentityModel.Tokens.Jwt;
+using ChummerHub.Services.JwT;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.Extensions.Primitives;
 
 namespace ChummerHub.Areas.Identity.Pages.Account
 {
@@ -20,14 +25,16 @@ namespace ChummerHub.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly IActionContextAccessor _accessor;
 
         public LoginModel(SignInManager<ApplicationUser> signInManager, 
             ILogger<LoginModel> logger,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager, IActionContextAccessor accessor)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _accessor = accessor;
         }
 
         [BindProperty]
@@ -94,8 +101,32 @@ namespace ChummerHub.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+                    if (!returnUrl.Contains("localhost"))
+                    {
+                        return LocalRedirect(returnUrl);
+                    }
+                    string tokenstring = null;
+                    JwtSecurityToken token = null;
+                    IList<string> roles = new List<string>();
+                    if (User != null)
+                    {
+                        user = await _signInManager.UserManager.GetUserAsync(User);
+                        roles = await _userManager.GetRolesAsync(user);
+                    }
+                    token = JwtHelper.GenerateJwTSecurityToken(_logger, user, roles);
+                    var redirectresult = new RedirectResult(returnUrl, true);
+                    redirectresult.UrlHelper = new UrlHelper(_accessor.ActionContext);
 
-                    return LocalRedirect(returnUrl);
+                    redirectresult.UrlHelper
+                          .ActionContext
+                          .HttpContext
+                          .Response.Redirect(returnUrl);
+
+                    redirectresult.UrlHelper
+                          .ActionContext
+                          .HttpContext
+                          .Response.Headers.Add("Bearer Authorization", new StringValues(JwtHelper.GetJwtTokenString(token)));
+                    return redirectresult;
                 }
                 if (result.RequiresTwoFactor)
                 {

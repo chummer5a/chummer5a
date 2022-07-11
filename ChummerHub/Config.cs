@@ -16,10 +16,12 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+using ChummerHub.Services;
 using Duende.IdentityServer;
 using Duende.IdentityServer.Models;
 using IdentityModel;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -29,8 +31,12 @@ namespace ChummerHub
 {
     public class JwtTokenClass
     {
-        public JwtTokenClass()
+        public static ILogger _logger;
+
+        public JwtTokenClass(ILogger logger)
         {
+            _logger = logger;
+
             TokenTimeoutMinutes = 60 * 24 * 365;
             SigningKey = "MySecretChummer5aKey";
             if (Debugger.IsAttached)
@@ -40,6 +46,16 @@ namespace ChummerHub
             else
             {
                 Issuer = "https://chummer.azurewebsites.net/";
+                try
+                {
+                    string issuerstring = Startup.AppSettings["JWTIssuer"];
+                    _logger?.LogDebug("JWTIssuer: " + issuerstring);
+                    Issuer = issuerstring;
+                }
+                catch (Exception e)
+                {
+                    _logger?.LogError("Could not get JWTIssuer: " + e);
+                }
             }
             Audience = "";
         }
@@ -177,7 +193,7 @@ namespace ChummerHub
             {
                 if (_jwtToken == null)
                 {
-                    _jwtToken = new JwtTokenClass();
+                    _jwtToken = new JwtTokenClass(JwtTokenClass._logger);
                 }
                 return _jwtToken;
             }

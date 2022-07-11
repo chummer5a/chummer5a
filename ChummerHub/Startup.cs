@@ -60,6 +60,7 @@ using System.Text;
 
 using Microsoft.Net.Http.Headers;
 using Duende.IdentityServer.Configuration;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace ChummerHub
 {
@@ -147,6 +148,7 @@ namespace ChummerHub
             services.AddRazorPages();
             // cookie policy to deal with temporary browser incompatibilities
             //services.AddSameSiteCookiePolicy();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             services.AddCors(options =>
             {
