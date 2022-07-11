@@ -60,6 +60,7 @@ using System.Text;
 
 using Microsoft.Net.Http.Headers;
 using Duende.IdentityServer.Configuration;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace ChummerHub
 {
@@ -145,8 +146,8 @@ namespace ChummerHub
 
             services.AddControllersWithViews();
             services.AddRazorPages();
-            // cookie policy to deal with temporary browser incompatibilities
-            //services.AddSameSiteCookiePolicy();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            //services.AddSingleton<ICookieManager, SystemWebCookieManager>();
 
             services.AddCors(options =>
             {
@@ -213,18 +214,21 @@ namespace ChummerHub
                 // custom scheme defined in .AddPolicyScheme() below
                 options.DefaultScheme = "JWT_OR_COOKIE";
                 options.DefaultChallengeScheme = "JWT_OR_COOKIE";
+                options.DefaultAuthenticateScheme = "JWT_OR_COOKIE";
             })
             
             .AddCookie(options =>
             {
                 options.LoginPath = "/login";
                 options.ExpireTimeSpan = TimeSpan.FromDays(1);
+                options.ClaimsIssuer = Config.JwtToken.Issuer;
+                
             })
             .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = false,
+                    ValidateIssuer = true,
                     ValidIssuer = Config.JwtToken.Issuer,
                     ValidateAudience = false,
                     ValidAudience = Config.JwtToken.Audience,

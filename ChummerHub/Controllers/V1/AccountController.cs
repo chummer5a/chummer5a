@@ -54,10 +54,8 @@ namespace ChummerHub.Controllers
     [ApiController]
     [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
-    [Authorize]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController'
+    [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
     public class AccountController : Controller
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController'
     {
 
         private readonly UserManager<ApplicationUser> _userManager;
@@ -87,104 +85,48 @@ namespace ChummerHub.Controllers
         /// <summary>
         /// This is only a sample-Implementation, Authentication should be handeld via the login-page and the cookie (only with a different redirect)
         /// </summary>
-        /// <param name="username">archon.megalon@gmail.com</param>
-        /// <param name="password">yourpassword</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         [AllowAnonymous]
         [HttpPost]
-        public async Task<object> Authenticate(/*[FromQuery] string username, [FromBody] string password */)
+        public async Task<string> Authenticate()
         {
-            ApplicationUser user;
-            //if (String.IsNullOrEmpty(username))
-            //{
-                if (User == null)
-                    throw new ArgumentNullException("No Login Credentials");
-                user = await _signInManager.UserManager.GetUserAsync(User);
-                if (user == null)
-                    throw new ArgumentNullException("No Login Credentials");
-            //}
-            //else
-            //{
-            //    user = await _userManager.FindByEmailAsync(username);
-            //    if (user == null)
-            //        user = await _userManager.FindByNameAsync(username);
-            //    if (user == null)
-            //        throw new ArgumentException("Invalid Login Credentials");
-
-            //    // This doesn't count login failures towards account lockout
-            //    // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-            //    var result = await _signInManager.PasswordSignInAsync(user, password, true, lockoutOnFailure: false);
-            //    if (result.Succeeded == false)
-            //    {
-            //        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-            //        throw new ArgumentException("Invalid login attempt.");
-            //    }
-            //}
-            
-            // APP SPECIFIC: create a state object we can serialize as a single claim
-            //var UserState = new UserState();
-
-            //// track user state through our claim
-            //UserState.UserId = user.Id;
-            //UserState.Name = user.UserName;
-            //UserState.Email = user.Email;
-
-            var roles = await _userManager.GetRolesAsync(user);
-
-            //UserState.Roles = new List<string>(roles);
-
-            List<Claim> claims = new List<Claim>()
+            string tokenstring = null;
+            ApplicationUser user = null;
+            JwtSecurityToken token = null;
+            IList<string> roles = new List<string>();
+            if (User != null)
             {
-                new Claim(ClaimTypes.NameIdentifier, user.UserName),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.IsPersistent, true.ToString()),
-                //new Claim("UserState", System.Text.Json.JsonSerializer.Serialize(UserState)),
-                new Claim("issued at", DateTime.UtcNow.ToString()),
-                new Claim("notbefore", DateTime.UtcNow.ToString())
-            };
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
+                user = await JwtHelper.GetApplicationUserAsync(User, _userManager);
+                roles = await _userManager.GetRolesAsync(user);
             }
-
-            // create a new token with token helper and add our claim
-            JwtSecurityToken token = JwtHelper.GetJwtToken(
-                user.UserName,
-                Config.JwtToken.SigningKey,
-                Config.JwtToken.Issuer,
-                Config.JwtToken.Audience,
-                TimeSpan.FromMinutes(Config.JwtToken.TokenTimeoutMinutes),
-                claims.ToArray());
-           
-            // also add cookie auth for Swagger Access
-            var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, ClaimTypes.Role);
-            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.UserName));
-            identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
-            identity.AddClaim(new Claim(ClaimTypes.Email, user.Email));
-            identity.AddClaim(new Claim(ClaimTypes.IsPersistent, true.ToString()));
-            var principal = new ClaimsPrincipal(identity);
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                principal,
-                new AuthenticationProperties
-                {
-                    IsPersistent = true,
-                    AllowRefresh = true,
-                    ExpiresUtc = DateTime.UtcNow.AddDays(1)
-                });
-
-        //return the token to API client
-            return new
+            token = JwtHelper.GenerateJwTSecurityToken(_logger, user, roles);
+            if (User != null)
             {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                expires = token.ValidTo,
-                displayName = user.Fullname
-            };
-
+                // also add cookie auth for Swagger Access
+                var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, ClaimTypes.Role);
+                identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.UserName));
+                identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
+                identity.AddClaim(new Claim(ClaimTypes.Email, user.Email));
+                identity.AddClaim(new Claim(ClaimTypes.IsPersistent, true.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    principal,
+                    new AuthenticationProperties
+                    {
+                        IsPersistent = true,
+                        AllowRefresh = true,
+                        ExpiresUtc = DateTime.UtcNow.AddDays(1)
+                    });
+            }
+            //return the token to API client
+            tokenstring = new JwtSecurityTokenHandler().WriteToken(token);
+            return tokenstring;
         }
+
+     
 
         [HttpGet]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
@@ -192,11 +134,9 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Forbidden)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetPossibleRoles")]
-        [Authorize]
-
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetPossibleRoles()'
+        [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = "JWT_OR_COOKIE")]
+        //[Authorize(Roles = Authorizarion.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultAccountGetPossibleRoles>> GetPossibleRoles()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetPossibleRoles()'
         {
             ResultAccountGetPossibleRoles res;
             try
@@ -218,22 +158,17 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Forbidden)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetRoles")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetRoles()'
+        [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultAccountGetRoles>> GetRoles()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetRoles()'
         {
             ResultAccountGetRoles res;
             try
             {
-                //var user = _userManager.FindByEmailAsync(email).Result;
-                var username = (from a in User.Claims where a.Type == ClaimTypes.Name select a.Value).FirstOrDefault();
-                var user = await _userManager.FindByNameAsync(username);
+                ApplicationUser user = await JwtHelper.GetApplicationUserAsync(User, _userManager);
                 //var user = await _signInManager.UserManager.GetUserAsync(User);
                 if (user.EmailConfirmed)
                 {
-                    await SeedData.EnsureRole(Program.MyHost.Services, user.Id, Authorizarion.Constants.UserRoleConfirmed, _roleManager, _userManager);
+                    await SeedData.EnsureRole(Program.MyHost.Services, user.Id, API.Authorization.Constants.UserRoleConfirmed, _roleManager, _userManager);
                 }
                 var roles = await _userManager.GetRolesAsync(user);
                 var list = await _context.Roles.Select(a => a.Name).ToListAsync();
@@ -248,44 +183,39 @@ namespace ChummerHub.Controllers
             }
         }
 
-        [HttpGet]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetUserByEmail")]
-        [Authorize]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetUserByEmail(string)'
-        public async Task<ActionResult<ResultAccountGetUserByEmail>> GetUserByEmail(string email)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetUserByEmail(string)'
-        {
-            ResultAccountGetUserByEmail res;
-            try
-            {
-                var user = await _userManager.FindByEmailAsync(email);
-                res = new ResultAccountGetUserByEmail(user);
-                if (user == null)
-                    return NotFound(res);
-                user.PasswordHash = string.Empty;
-                user.SecurityStamp = string.Empty;
-                return Ok(res);
-            }
-            catch (Exception e)
-            {
-                res = new ResultAccountGetUserByEmail(e);
-                return BadRequest(res);
-            }
-        }
+        //[HttpGet]
+        //[Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
+        //[Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
+        //[Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        //[Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetUserByEmail")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        //public async Task<ActionResult<ResultAccountGetUserByEmail>> GetUserByEmail(string email)
+        //{
+        //    ResultAccountGetUserByEmail res;
+        //    try
+        //    {
+        //        ApplicationUser user = await JwtHelper.GetApplicationUserAsync(User, _userManager);
+        //        res = new ResultAccountGetUserByEmail(user);
+        //        if (user == null)
+        //            return NotFound(res);
+        //        user.PasswordHash = string.Empty;
+        //        user.SecurityStamp = string.Empty;
+        //        return Ok(res);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        res = new ResultAccountGetUserByEmail(e);
+        //        return BadRequest(res);
+        //    }
+        //}
 
         [HttpGet]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetAddSqlDbUser")]
-        [Authorize(Roles = "Administrator")]
-
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetAddSqlDbUser(string, string, string, string)'
+        [Authorize(Roles = API.Authorization.Constants.UserRoleAdmin, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<string>> GetAddSqlDbUser(string username, string password, string start_ip_address, string end_ip_address)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetAddSqlDbUser(string, string, string, string)'
         {
             string result = string.Empty;
             try
@@ -451,10 +381,8 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("PostSetUserRole")]
-        [Authorize(Roles = "Administrator")]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.PostSetUserRole(string, string)'
+        [Authorize(Roles = API.Authorization.Constants.UserRoleAdmin, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ApplicationUser>> PostSetUserRole(string email, string userrole)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.PostSetUserRole(string, string)'
         {
             try
             {
@@ -492,13 +420,13 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound, "LogonUser", typeof(ResultAccountGetUserByAuthorization))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest, "LogonUser", typeof(ResultAccountGetUserByAuthorization))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetUserByAuthorization")]
-        [Authorize]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultAccountGetUserByAuthorization>> GetUserByAuthorization()
         {
             ResultAccountGetUserByAuthorization res;
             try
             {
-                var user = await _signInManager.UserManager.GetUserAsync(User);
+                ApplicationUser user = await JwtHelper.GetApplicationUserAsync(User, _userManager);
                 res = new ResultAccountGetUserByAuthorization(user);
                 if (user == null)
                     return NotFound(res);
@@ -530,10 +458,8 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("ResetDb")]
-        [Authorize(Roles = "Administrator")]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetDeleteAllSINnersDb()'
+        [Authorize(Roles = API.Authorization.Constants.UserRoleAdmin, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<string>> GetDeleteAllSINnersDb()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetDeleteAllSINnersDb()'
         {
             try
             {
@@ -586,10 +512,8 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("DeleteAndRecreate")]
-        [Authorize(Roles = "Administrator")]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetDeleteAndRecreateDb()'
+        [Authorize(Roles = API.Authorization.Constants.UserRoleAdmin, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<string>> GetDeleteAndRecreateDb()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetDeleteAndRecreateDb()'
         {
             try
             {
@@ -636,7 +560,7 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse(StatusCodes.Status200OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse(StatusCodes.Status400BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetSinnersByAuthorization")]
-        [Authorize]
+        [Authorize(Roles = API.Authorization.Constants.UserRoleRegistered, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultAccountGetSinnersByAuthorization>> GetSINnersByAuthorization()
         {
             try
@@ -651,6 +575,8 @@ namespace ChummerHub.Controllers
             }
         }
 
+        
+
         private async Task<ActionResult<ResultAccountGetSinnersByAuthorization>> GetSINnersByAuthorizationInternal()
         {
             Stopwatch sw = new Stopwatch();
@@ -661,8 +587,7 @@ namespace ChummerHub.Controllers
             SINSearchGroupResult ret = new SINSearchGroupResult();
             res = new ResultAccountGetSinnersByAuthorization(ret);
             SINnerGroup sg = new SINnerGroup();
-            var user = await _signInManager.UserManager.GetUserAsync(User);
-
+            ApplicationUser user = await JwtHelper.GetApplicationUserAsync(User, _userManager);
             if (user == null)
             {
                 var e = new AuthenticationException("User is not authenticated.");
@@ -827,15 +752,13 @@ namespace ChummerHub.Controllers
 
         // GET: api/ChummerFiles
         [HttpGet]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = API.Authorization.Constants.UserRoleAdmin, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NoContent)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetSinnerAsAdmin")]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetSinnerAsAdmin()'
         public async Task<ActionResult<ResultGroupGetSearchGroups>> GetSinnerAsAdmin()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetSinnerAsAdmin()'
         {
             SINSearchGroupResult ret = new SINSearchGroupResult();
             ResultAccountGetSinnersByAuthorization res = new ResultAccountGetSinnersByAuthorization(ret);
@@ -925,11 +848,8 @@ namespace ChummerHub.Controllers
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountLogout")]
-        [Authorize]
-
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.Logout()'
+        [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<bool>> Logout()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.Logout()'
         {
             try
             {

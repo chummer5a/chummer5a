@@ -51,9 +51,9 @@ namespace ChummerHub
                 foreach (var user in Config.GetAdminUsers())
                 {
                     var userID = await EnsureUser(serviceProvider, user, testUserPw);
-                    await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.AdministratorsRole, null, null);
-                    await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.UserRoleRegistered, null, null);
-                    await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.UserRoleArchetype, null, null);
+                    await EnsureRole(serviceProvider, user.Id, API.Authorization.Constants.UserRoleAdmin, null, null);
+                    await EnsureRole(serviceProvider, user.Id, API.Authorization.Constants.UserRoleRegistered, null, null);
+                    await EnsureRole(serviceProvider, user.Id, API.Authorization.Constants.UserRoleArchetypeAdmin, null, null);
                 }
 
                 CreateViews(context);

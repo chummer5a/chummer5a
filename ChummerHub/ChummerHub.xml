@@ -20,12 +20,10 @@
              </summary>
             
         </member>
-        <member name="M:ChummerHub.Controllers.AccountController.Authenticate(System.String,System.String)">
+        <member name="M:ChummerHub.Controllers.AccountController.Authenticate">
             <summary>
             This is only a sample-Implementation, Authentication should be handeld via the login-page and the cookie (only with a different redirect)
             </summary>
-            <param name="username">archon.megalon@gmail.com</param>
-            <param name="password">yourpassword</param>
             <returns></returns>
             <exception cref="T:System.ArgumentNullException"></exception>
             <exception cref="T:System.ArgumentException"></exception>
@@ -270,27 +268,11 @@
             <param name="key"></param>
             <returns></returns>
         </member>
-        <member name="T:ChummerHub.Services.JwT.User">
-            <summary>
-            User to Login
-            </summary>
-        </member>
-        <member name="P:ChummerHub.Services.JwT.User.Username">
-            <summary>
-            UserName or Email
-            </summary>
-            <example>archon.megalon@gmail.com</example>
-        </member>
-        <member name="P:ChummerHub.Services.JwT.User.Password">
-            <summary>
-            password
-            </summary>
-            <example>yourPassword</example>
-        </member>
-        <member name="M:ChummerHub.Services.JwT.JwtHelper.GetJwtToken(System.String,System.String,System.String,System.String,System.TimeSpan,System.Security.Claims.Claim[])">
+        <member name="M:ChummerHub.Services.JwT.JwtHelper.GetJwtToken(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.String,System.String,System.TimeSpan,System.Security.Claims.Claim[])">
             <summary>
             Returns a Jwt Token from basic input parameters
             </summary>
+            <param name="logger"></param>
             <param name="username"></param>
             <param name="uniqueKey"></param>
             <param name="issuer"></param>
@@ -299,7 +281,7 @@
             <param name="additionalClaims"></param>
             <returns></returns>
         </member>
-        <member name="M:ChummerHub.Services.JwT.JwtHelper.GetJwtTokenString(System.String,System.String,System.String,System.String,System.TimeSpan,System.Security.Claims.Claim[])">
+        <member name="M:ChummerHub.Services.JwT.JwtHelper.GetJwtTokenString(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.String,System.String,System.TimeSpan,System.Security.Claims.Claim[])">
             <summary>
             Returns a token string from base claims
             </summary>
