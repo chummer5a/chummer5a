@@ -941,6 +941,39 @@
         <spiritmanipulation>Spirit of Earth</spiritmanipulation>
       </spirits>
     </tradition>
+    <tradition>
+      <id>9d18592e-5f49-4992-babd-d1ac98c48f78</id>
+      <name>Shamanic [Traditionalist]</name>
+      <drain>{WIL} + {CHA}</drain>
+      <source>FA</source>
+      <page>74</page>
+      <addqualities>
+        <addquality forced="False">Mentor Spirit</addquality>
+        <addquality forced="True" select="Shamans Code: Harmony with Nature">Code of Honor</addquality>
+      </addqualities>
+      <spirits>
+        <spiritcombat>Spirit of Beasts</spiritcombat>
+        <spiritdetection>Spirit of Water</spiritdetection>
+        <spirithealth>Spirit of Earth</spirithealth>
+        <spiritillusion>Spirit of Air</spiritillusion>
+        <spiritmanipulation>Spirit of Man</spiritmanipulation>
+      </spirits>
+      <skilldisable>Binding</skilldisable>
+    </tradition>
+    <tradition>
+      <id>9d18592e-5f49-4992-babd-d1ac98c48f78</id>
+      <name>Shamanic [Ancestor]</name>
+      <drain>{WIL} + {CHA}</drain>
+      <source>FA</source>
+      <page>74</page>
+      <spirits>
+        <spiritcombat>Spirit of Beasts</spiritcombat>
+        <spiritdetection>Spirit of Water</spiritdetection>
+        <spirithealth>Spirit of Earth</spirithealth>
+        <spiritillusion>Spirit of Air</spiritillusion>
+        <spiritmanipulation>Spirit of Man</spiritmanipulation>
+      </spirits>
+    </tradition>    
     <!-- End Region -->
     <!-- Region SotA ADL-->
     <tradition>
