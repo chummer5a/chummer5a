@@ -219,21 +219,23 @@ namespace ChummerHub
             
             .AddCookie(options =>
             {
+                var helper = new JwtHelper(Program.logger, Configuration);
                 options.LoginPath = "/login";
                 options.ExpireTimeSpan = TimeSpan.FromDays(1);
-                options.ClaimsIssuer = Config.JwtToken.Issuer;
+                options.ClaimsIssuer = helper.jwtToken.Issuer;
                 
             })
             .AddJwtBearer(options =>
             {
+                var helper = new JwtHelper(Program.logger, Configuration);
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
-                    ValidIssuer = Config.JwtToken.Issuer,
+                    ValidIssuer = helper.jwtToken.Issuer,
                     ValidateAudience = false,
-                    ValidAudience = Config.JwtToken.Audience,
+                    ValidAudience = helper.jwtToken.Audience,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config.JwtToken.SigningKey))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(helper.jwtToken.SigningKey))
                 };
             })
             // this is the key piece!

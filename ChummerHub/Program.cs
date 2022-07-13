@@ -32,6 +32,7 @@ namespace ChummerHub
 {
     public class Program
     {
+        public static Microsoft.Extensions.Logging.ILogger logger;
         public static IWebHost MyHost;
         public static void Main(string[] args)
         {
@@ -53,7 +54,12 @@ namespace ChummerHub
 #endif
 
             MyHost = CreateWebHostBuilder(args);
-          
+            var loggerFactory = LoggerFactory
+            .Create(builder =>
+            {
+                builder.AddConsole();
+            });
+            logger = loggerFactory.CreateLogger<Program>();
             MyHost.Run();
         }
 

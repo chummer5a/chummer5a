@@ -21,6 +21,7 @@ using Duende.IdentityServer;
 using Duende.IdentityServer.Models;
 using IdentityModel;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -32,13 +33,17 @@ namespace ChummerHub
     public class JwtTokenClass
     {
         public static ILogger _logger;
+        private IConfiguration _configuration;
 
-        public JwtTokenClass(ILogger logger)
+        public JwtTokenClass(ILogger logger, IConfiguration configuration)
         {
             _logger = logger;
+            _configuration = configuration;
 
             TokenTimeoutMinutes = 60 * 24 * 365;
-            SigningKey = "MySecretChummer5aKey";
+            KeyVault keyVault = new KeyVault(logger);
+            
+            SigningKey = keyVault.GetSecret("JwtSigningKey");  //"MySecretChummer5aKey";
             if (Debugger.IsAttached)
             {
                 Issuer = "https://localhost:64939";
@@ -48,8 +53,9 @@ namespace ChummerHub
                 Issuer = "https://chummer.azurewebsites.net/";
                 try
                 {
-                    string issuerstring = Startup.AppSettings["JWTIssuer"];
-                    _logger?.LogDebug("JWTIssuer: " + issuerstring);
+                    var issuerstring = _configuration["JWTIssuer"];
+                    //string issuerstring = Startup.AppSettings["JWTIssuer"];
+                    _logger.LogInformation("JWTIssuer: " + issuerstring);
                     Issuer = issuerstring;
                 }
                 catch (Exception e)
@@ -189,16 +195,14 @@ namespace ChummerHub
 
         private static JwtTokenClass _jwtToken = null;
 
-        public static JwtTokenClass JwtToken
+        public JwtTokenClass JwtToken(ILogger logger, IConfiguration configuration)
         {
-            get
-            {
+            
                 if (_jwtToken == null)
                 {
-                    _jwtToken = new JwtTokenClass(JwtTokenClass._logger);
+                    _jwtToken = new JwtTokenClass(logger, configuration);
                 }
                 return _jwtToken;
-            }
         }
 
         internal static List<ApplicationUser> GetAdminUsers()

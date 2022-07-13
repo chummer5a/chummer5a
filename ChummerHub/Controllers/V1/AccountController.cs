@@ -34,6 +34,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
@@ -63,6 +64,7 @@ namespace ChummerHub.Controllers
         private readonly ApplicationDbContext _context;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ILogger _logger;
+        private readonly IConfiguration _configuration;
         private readonly TelemetryClient tc;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.AccountController(ApplicationDbContext, ILogger<AccountController>, UserManager<ApplicationUser>, SignInManager<ApplicationUser>, RoleManager<ApplicationRole>, TelemetryClient)'
@@ -72,6 +74,7 @@ namespace ChummerHub.Controllers
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             RoleManager<ApplicationRole> roleManager,
+            IConfiguration configuration,
             TelemetryClient telemetry)
         {
             _context = context;
@@ -79,6 +82,7 @@ namespace ChummerHub.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _configuration = configuration;
             tc = telemetry;
         }
 
@@ -101,7 +105,8 @@ namespace ChummerHub.Controllers
                 user = await JwtHelper.GetApplicationUserAsync(User, _userManager);
                 roles = await _userManager.GetRolesAsync(user);
             }
-            token = JwtHelper.GenerateJwTSecurityToken(_logger, user, roles);
+            var helper = new JwtHelper(_logger, _configuration);
+            token = helper.GenerateJwTSecurityToken(user, roles);
             if (User != null)
             {
                 // also add cookie auth for Swagger Access
