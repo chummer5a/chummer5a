@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Primitives;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
+using Microsoft.Extensions.Configuration;
 
 namespace ChummerHub.Areas.Identity.Pages.Account
 {
@@ -28,17 +29,17 @@ namespace ChummerHub.Areas.Identity.Pages.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly IActionContextAccessor _accessor;
-        //private readonly ICookieManager _cookieManager;
+        private readonly IConfiguration _configuration;
 
         public LoginModel(SignInManager<ApplicationUser> signInManager, 
             ILogger<LoginModel> logger,
-            UserManager<ApplicationUser> userManager, IActionContextAccessor accessor /*, ICookieManager cookieManager*/)
+            UserManager<ApplicationUser> userManager, IActionContextAccessor accessor, IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _accessor = accessor;
-            //_cookieManager = cookieManager;
+            _configuration = configuration;
         }
 
         [BindProperty]
@@ -117,7 +118,8 @@ namespace ChummerHub.Areas.Identity.Pages.Account
                         //user = await _signInManager.UserManager.GetUserAsync(User);
                         roles = await _userManager.GetRolesAsync(user);
                     }
-                    token = JwtHelper.GenerateJwTSecurityToken(_logger, user, roles);
+                    var helper = new JwtHelper(_logger, _configuration);
+                    token = helper.GenerateJwTSecurityToken(user, roles);
                     var claims = new List<Claim>();
 
                     foreach (var tokenClaim in token.Claims)

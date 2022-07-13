@@ -268,11 +268,10 @@
             <param name="key"></param>
             <returns></returns>
         </member>
-        <member name="M:ChummerHub.Services.JwT.JwtHelper.GetJwtToken(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.String,System.String,System.TimeSpan,System.Security.Claims.Claim[])">
+        <member name="M:ChummerHub.Services.JwT.JwtHelper.GetJwtToken(System.String,System.String,System.String,System.String,System.TimeSpan,System.Security.Claims.Claim[])">
             <summary>
             Returns a Jwt Token from basic input parameters
             </summary>
-            <param name="logger"></param>
             <param name="username"></param>
             <param name="uniqueKey"></param>
             <param name="issuer"></param>

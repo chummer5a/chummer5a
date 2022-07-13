@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
@@ -52,7 +53,28 @@ namespace ChummerHub.Services.JwT
 
     public class JwtHelper
     {
-        private static ILogger _logger;
+        private ILogger _logger;
+        private readonly IConfiguration _configuration;
+
+        public JwtHelper(ILogger logger, IConfiguration configuration)
+        {
+            _logger = logger;
+            _configuration = configuration;
+        }
+
+        private  JwtTokenClass _jwtToken = null;
+
+        public  JwtTokenClass jwtToken
+        {
+            get
+            {
+                if (_jwtToken == null)
+                {
+                    _jwtToken = new JwtTokenClass(_logger, _configuration);
+                }
+                return _jwtToken;
+            }
+        }
 
         public static async Task<ApplicationUser> GetApplicationUserAsync(ClaimsPrincipal claimsuser, UserManager<ApplicationUser> userManager)
         {
@@ -65,7 +87,7 @@ namespace ChummerHub.Services.JwT
             return user;
         }
 
-        public static JwtSecurityToken GenerateJwTSecurityToken(ILogger logger, ApplicationUser user, IList<string> roles)
+        public JwtSecurityToken GenerateJwTSecurityToken(ApplicationUser user, IList<string> roles)
         {
             JwtSecurityToken token = null;
             List<Claim> claims = new List<Claim>();
@@ -87,13 +109,14 @@ namespace ChummerHub.Services.JwT
                     }
                 }
             }
+            JwtHelper helper = new JwtHelper(_logger, _configuration);
             // create a new token with token helper and add our claim
-            token = JwtHelper.GetJwtToken(logger,
+            token = helper.GetJwtToken(
                 user?.UserName,
-                Config.JwtToken.SigningKey,
-                Config.JwtToken.Issuer,
-                Config.JwtToken.Audience,
-                TimeSpan.FromMinutes(Config.JwtToken.TokenTimeoutMinutes),
+                helper.jwtToken.SigningKey,
+                helper.jwtToken.Issuer,
+                helper.jwtToken.Audience,
+                TimeSpan.FromMinutes(helper.jwtToken.TokenTimeoutMinutes),
                 claims.ToArray());
             return token;
         }
@@ -101,7 +124,6 @@ namespace ChummerHub.Services.JwT
         /// <summary>
         /// Returns a Jwt Token from basic input parameters
         /// </summary>
-        /// <param name="logger"></param>
         /// <param name="username"></param>
         /// <param name="uniqueKey"></param>
         /// <param name="issuer"></param>
@@ -109,8 +131,7 @@ namespace ChummerHub.Services.JwT
         /// <param name="expiration"></param>
         /// <param name="additionalClaims"></param>
         /// <returns></returns>
-        public static JwtSecurityToken GetJwtToken(
-            ILogger logger,
+        public JwtSecurityToken GetJwtToken(
             string username,
             string uniqueKey,
             string issuer,
@@ -118,7 +139,6 @@ namespace ChummerHub.Services.JwT
             TimeSpan expiration,
             Claim[] additionalClaims = null)
         {
-            _logger = logger;
             var claims = new List<Claim>()
             {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
@@ -155,7 +175,7 @@ namespace ChummerHub.Services.JwT
         /// <param name="expiration"></param>
         /// <param name="additionalClaims"></param>
         /// <returns></returns>
-        public static string GetJwtTokenString(ILogger logger,
+        public string GetJwtTokenString(ILogger logger,
             string username,
             string uniqueKey,
             string issuer,
@@ -163,8 +183,7 @@ namespace ChummerHub.Services.JwT
             TimeSpan expiration,
             Claim[] additionalClaims = null)
         {
-            _logger = logger;
-            var token = GetJwtToken(_logger, username, uniqueKey, issuer, audience, expiration, additionalClaims);
+            var token = GetJwtToken(username, uniqueKey, issuer, audience, expiration, additionalClaims);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
