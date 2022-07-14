@@ -84,7 +84,8 @@ namespace ChummerHub
                     UserClaims = new List<string>
                     {
                         JwtClaimTypes.Email,
-                        JwtClaimTypes.EmailVerified
+                        JwtClaimTypes.EmailVerified,
+                        JwtClaimTypes.IdentityProvider
                     }
                 },
                 new IdentityResource("roles", "Your role(s)", new List<string>() { API.Authorization.Constants.UserRolePublicAccess })
@@ -100,62 +101,40 @@ namespace ChummerHub
        new List<Client>
        {
            // JWT-based client authentication sample
-                new Client
-                {
-                    ClientId = "Chummer5a",
+                //new Client
+                //{
+                //    ClientId = "Chummer5a",
 
-                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                //    AllowedGrantTypes = GrantTypes.ClientCredentials,
                     
-                    // this client uses an RSA key as client secret
-                    // and https://docs.duendesoftware.com/identityserver/v5/tokens/authentication/jwt/
-                    ClientSecrets =
-                    {
-                        new Secret
-                        {
-                            Type = IdentityServerConstants.SecretTypes.JsonWebKey,
-                            Value = "{'e':'AQAB','kid':'ZzAjSnraU3bkWGnnAqLapYGpTyNfLbjbzgAPbbW2GEA','kty':'RSA','n':'wWwQFtSzeRjjerpEM5Rmqz_DsNaZ9S1Bw6UbZkDLowuuTCjBWUax0vBMMxdy6XjEEK4Oq9lKMvx9JzjmeJf1knoqSNrox3Ka0rnxXpNAz6sATvme8p9mTXyp0cX4lF4U2J54xa2_S9NF5QWvpXvBeC4GAJx7QaSw4zrUkrc6XyaAiFnLhQEwKJCwUw4NOqIuYvYp_IXhw-5Ti_icDlZS-282PcccnBeOcX7vc21pozibIdmZJKqXNsL1Ibx5Nkx1F1jLnekJAmdaACDjYRLL_6n3W4wUp19UvzB1lGtXcJKLLkqB6YDiZNu16OSiSprfmrRXvYmvD8m6Fnl5aetgKw'}"
-                        }
-                    },
+                //    // this client uses an RSA key as client secret
+                //    // and https://docs.duendesoftware.com/identityserver/v5/tokens/authentication/jwt/
+                //    ClientSecrets =
+                //    {
+                //        new Secret
+                //        {
+                //            Type = IdentityServerConstants.SecretTypes.JsonWebKey,
+                //            Value = "{'e':'AQAB','kid':'ZzAjSnraU3bkWGnnAqLapYGpTyNfLbjbzgAPbbW2GEA','kty':'RSA','n':'wWwQFtSzeRjjerpEM5Rmqz_DsNaZ9S1Bw6UbZkDLowuuTCjBWUax0vBMMxdy6XjEEK4Oq9lKMvx9JzjmeJf1knoqSNrox3Ka0rnxXpNAz6sATvme8p9mTXyp0cX4lF4U2J54xa2_S9NF5QWvpXvBeC4GAJx7QaSw4zrUkrc6XyaAiFnLhQEwKJCwUw4NOqIuYvYp_IXhw-5Ti_icDlZS-282PcccnBeOcX7vc21pozibIdmZJKqXNsL1Ibx5Nkx1F1jLnekJAmdaACDjYRLL_6n3W4wUp19UvzB1lGtXcJKLLkqB6YDiZNu16OSiSprfmrRXvYmvD8m6Fnl5aetgKw'}"
+                //        }
+                //    },
 
-                    AllowedScopes = { "ChummerHubV1", "roles", "verification" }
-                },
-            //new Client
-            //{
-            //    ClientId = "Chummer5a",
-
-            //    // no interactive user, use the clientid/secret for authentication
-            //    AllowedGrantTypes = GrantTypes.DeviceFlow,
-
-            //    // secret for authentication
-            //    ClientSecrets =
-            //    {
-            //        new Secret("secret".Sha256())
-            //    },
-
-            //    // where to redirect to after login
-            //    RedirectUris = { "https://localhost:64939/signin-oidc" },
-
-            //    // where to redirect to after logout
-            //    PostLogoutRedirectUris = { "https://localhost:63939/signout-callback-oidc" },
-
-            //    AllowOfflineAccess = true,
-
-            //    // scopes that client has access to
-            //    AllowedScopes =
-            //    {
-            //        IdentityServerConstants.StandardScopes.OpenId,
-            //        IdentityServerConstants.StandardScopes.Profile,
-            //        "ChummerHubV1"
-            //    }
-            //},
+                //    AllowedScopes = { "ChummerHubV1", "roles", "verification" }
+                //},
+      
             new Client
             {
                 ClientId = "interactive.public",
                 ClientSecrets = { new Secret("secret".Sha256()) },
 
-                AllowedGrantTypes = GrantTypes.CodeAndClientCredentials,
-                
+                AllowedGrantTypes = GrantTypes.DeviceFlow,//.CodeAndClientCredentials,
+                AllowAccessTokensViaBrowser = true,
+                AllowOfflineAccess = true,
 
+                Claims = new List<ClientClaim>()
+                {
+                    new ClientClaim("idp", "local")
+                },
+                AccessTokenType = AccessTokenType.Jwt,
                 // where to redirect after login
                 RedirectUris = new List<string>()
                 {

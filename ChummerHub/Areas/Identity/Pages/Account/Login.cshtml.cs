@@ -19,6 +19,8 @@ using Microsoft.Extensions.Primitives;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ChummerHub.Areas.Identity.Pages.Account
 {
@@ -107,10 +109,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User logged in.");
 
-
-
                     //my code
-                    string tokenstring = null;
                     JwtSecurityToken token = null;
                     IList<string> roles = new List<string>();
                     if (User != null)
@@ -154,25 +153,33 @@ namespace ChummerHub.Areas.Identity.Pages.Account
 
 
                     
-                    if (!returnUrl.Contains("localhost"))
-                    {
-                        return LocalRedirect(returnUrl);
-                    }
+                    //if (!returnUrl.Contains("localhost"))
+                    //{
+                    //    return LocalRedirect(returnUrl);
+                    //}
 
                     var redirectresult = new RedirectResult(returnUrl, true);
                     redirectresult.UrlHelper = new UrlHelper(_accessor.ActionContext);
 
+                    string returntoken = JwtHelper.GetJwtTokenString(token);
 
+                    //returntoken = Convert.ToBase64String(Encoding.ASCII.GetBytes(returntoken));
+                    string encheadertoken = System.Text.Encoding.ASCII.GetString(Encoding.ASCII.GetBytes(returntoken)); //System.Web.HttpUtility.HtmlEncode(returntoken);
+
+
+                    var urlEncode = String.Join("/", returntoken.Split("/").Select(s => System.Net.WebUtility.UrlEncode(s)));
+
+                    encheadertoken = Regex.Replace(encheadertoken, @"[^\u001F-\u007F]+", string.Empty);
 
                     redirectresult.UrlHelper
                           .ActionContext
                           .HttpContext
-                          .Response.Redirect(returnUrl);
+                          .Response.Headers.TryAdd(System.Net.WebUtility.HtmlEncode("Bearer"), encheadertoken);
 
                     redirectresult.UrlHelper
                           .ActionContext
                           .HttpContext
-                          .Response.Headers.Add("Bearer Authorization", new StringValues(JwtHelper.GetJwtTokenString(token)));
+                          .Response.Redirect(urlEncode);
 
                     //redirectresult.UrlHelper
                     //      .ActionContext.HttpContext.Response.Cookies.Append("token", JwtHelper.GetJwtTokenString(token));

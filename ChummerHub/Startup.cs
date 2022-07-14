@@ -208,7 +208,7 @@ namespace ChummerHub
                     });
                 options.EnableDetailedErrors();
             });
-
+            var helper = new JwtHelper(Program.logger, Configuration);
             services.AddAuthentication(options =>
             {
                 // custom scheme defined in .AddPolicyScheme() below
@@ -216,10 +216,9 @@ namespace ChummerHub
                 options.DefaultChallengeScheme = "JWT_OR_COOKIE";
                 options.DefaultAuthenticateScheme = "JWT_OR_COOKIE";
             })
-            
             .AddCookie(options =>
             {
-                var helper = new JwtHelper(Program.logger, Configuration);
+                
                 options.LoginPath = "/login";
                 options.ExpireTimeSpan = TimeSpan.FromDays(1);
                 options.ClaimsIssuer = helper.jwtToken.Issuer;
@@ -235,8 +234,10 @@ namespace ChummerHub
                     ValidateAudience = false,
                     ValidAudience = helper.jwtToken.Audience,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(helper.jwtToken.SigningKey))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(helper.jwtToken.SigningKey)),
                 };
+                options.SaveToken = true;
+                options.ClaimsIssuer = helper.jwtToken.Issuer;
             })
             // this is the key piece!
             .AddPolicyScheme("JWT_OR_COOKIE", "JWT_OR_COOKIE", options =>
