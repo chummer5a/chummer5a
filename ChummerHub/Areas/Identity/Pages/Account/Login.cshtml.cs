@@ -167,7 +167,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account
                     string encheadertoken = System.Text.Encoding.ASCII.GetString(Encoding.ASCII.GetBytes(returntoken)); //System.Web.HttpUtility.HtmlEncode(returntoken);
 
 
-                    var urlEncode = String.Join("/", returntoken.Split("/").Select(s => System.Net.WebUtility.UrlEncode(s)));
+                    var urlEncode = String.Join("/", returnUrl.Split("/").Select(s => System.Net.WebUtility.UrlEncode(s)));
 
                     encheadertoken = Regex.Replace(encheadertoken, @"[^\u001F-\u007F]+", string.Empty);
 
