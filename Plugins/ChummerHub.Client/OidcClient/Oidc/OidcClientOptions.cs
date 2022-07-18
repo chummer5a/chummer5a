@@ -239,7 +239,8 @@ namespace IdentityModel.OidcClient
             JwtClaimTypes.AuthenticationTime,
             JwtClaimTypes.AuthorizationCodeHash,
             JwtClaimTypes.AccessTokenHash,
-            JwtClaimTypes.StateHash
+            JwtClaimTypes.StateHash,
+            JwtClaimTypes.IdentityProvider
         };
     }
 }

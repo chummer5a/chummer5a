@@ -541,8 +541,9 @@ namespace ChummerHub.Client.UI
                 RedirectUri = redirectUri,
                 Scope = "openid profile verification",
                 FilterClaims = false,
-
                 Browser = browser,
+                TokenClientCredentialStyle = IdentityModel.Client.ClientCredentialStyle.AuthorizationHeader,
+                
                 IdentityTokenValidator = new IdentityModel.OidcClient.JwtHandlerIdentityTokenValidator(),
                 RefreshTokenInnerHttpHandler = new HttpClientHandler()
             };
