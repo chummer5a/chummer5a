@@ -54,5 +54,9 @@
 			<name>Grey Mana Integration</name>
 			<avail>FixedValues(6R,6R,6R,9R,9R,9R)</avail>
 		</mod>
+		<mod>
+			<name>Universal Mirror Material</name>
+			<avail>8F</avail>
+		</mod>
 	</mods>
 </chummer>
