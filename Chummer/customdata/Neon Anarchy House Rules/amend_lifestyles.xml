@@ -23,14 +23,90 @@
 	https://www.reddit.com/r/NeonAnarchy
 -->
 <chummer>
-	<lifestyles>
-		<lifestyle>
-			<name>Commercial</name>
-			<hide />
-		</lifestyle>
-		<lifestyle>
-			<name>Traveler</name>
-			<hide />
-		</lifestyle>
-	</lifestyles>
+  <lifestyles>
+	<lifestyle>
+		<name>Commercial</name>
+		<hide />
+	</lifestyle>
+	<lifestyle>
+		<name>Traveler</name>
+		<hide />
+	</lifestyle>
+  </lifestyles>
+  <qualities>
+    <quality>
+      <id>280535d6-9e2a-4831-8b22-b2fb0647cff7</id>
+      <name>Cramped Garage (Airplane)</name>
+	  <hide/>
+    </quality>
+    <quality>
+      <id>df7d2669-2af5-475b-853d-819498b3badc</id>
+      <name>Cramped Garage (Boat)</name>
+	  <hide/>
+    </quality>
+    <quality>
+      <id>efe7c46c-b863-4696-a750-015837861f81</id>
+      <name>Cramped Garage (Car (Body 4 or Less))</name>
+	  <hide/>
+    </quality>
+    <quality>
+      <id>3d62f25c-8c84-476f-907d-a95073711b44</id>
+      <name>Cramped Garage (Car (Body 5 or More))</name>
+	  <hide/>
+    </quality>
+    <quality>
+      <id>10a65174-a6a3-467b-b66e-6a837bf0e11b</id>
+      <name>Cramped Garage (Helicopter)</name>
+	  <hide/>
+    </quality>
+    <quality>
+      <name>Gym</name>
+	  <hide/>
+    </quality>
+    <quality>
+      <name>Shooting Range</name>
+	  <hide/>
+    </quality>
+    <quality>
+      <name>Sports Court - Small</name>
+	  <hide/>
+    </quality>
+    <quality>
+      <name>Cramped Workshop/Facility</name>
+	  <hide/>
+    </quality>
+    <quality>
+      <name>Cramped</name>
+	  <hide/>
+    </quality>
+    <quality>
+      <name>Dangerous Area</name>
+	  <hide/>
+    </quality>
+    <quality>
+      <id>61e7bb21-cb25-44ff-a332-639fe9dac893</id>
+      <name>Thrifty</name>
+	  <hide/>
+    </quality>
+    <quality>
+      <name>Household Gremlins I</name>
+	  <hide/>
+    </quality>
+    <quality>
+      <name>Household Gremlins II</name>
+	  <hide/>
+    </quality>
+    <quality>
+      <name>No Masters</name>
+	  <hide/>
+    </quality>
+    <quality>
+      <name>Cramped Garage (Stable)</name>
+      <hide/>
+    </quality>
+    <quality>
+      <name>Haunted</name>
+      <hide/>
+    </quality>
+  </qualities>
 </chummer>

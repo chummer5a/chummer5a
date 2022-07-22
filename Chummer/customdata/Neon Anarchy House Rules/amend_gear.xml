@@ -124,5 +124,14 @@
 		    <name>Naga Venom</name>
 			<rating amendoperation="replace">12</rating>
 		</gear>
+		<gear>
+			<name>Micro-Transceiver</name>
+			<gears amendoperation="addnode">
+				<usegear amendoperation="addnode">
+				  <name amendoperation="addnode">Subvocal Mic</name>
+				  <category amendoperation="addnode">Electronics Accessories</category>
+				</usegear>
+			</gears>
+		</gear>
 	</gears>
 </chummer>
