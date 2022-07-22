@@ -40265,6 +40265,418 @@
       <page>93</page>
     </metatype>
     <metatype>
+      <id>dd02cc73-dcf6-44e8-b1f9-91307bff51ce</id>
+      <name>Hopper</name>
+      <category>Shedim</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>F</bodmin>
+      <bodmax>F</bodmax>
+      <bodaug>F</bodaug>
+      <agimin>F</agimin>
+      <agimax>F</agimax>
+      <agiaug>F</agiaug>
+      <reamin>F+4</reamin>
+      <reamax>F+4</reamax>
+      <reaaug>F+4</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F+2</intmin>
+      <intmax>F+2</intmax>
+      <intaug>F+2</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <inimin>(F*2)+6</inimin>
+      <inimax>(F*2)+6</inimax>
+      <iniaug>(F*2)+6</iniaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>F</min>
+          <max>F</max>
+          <aug>F</aug>
+          <val>F</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass>1</initiativepass>
+      </bonus>
+      <powers>
+        <power>Astral Form</power>
+        <power>Deathly Aura</power>
+        <power>Energy Drain</power>
+        <power>Fear</power>
+        <power select="Age">Immunity</power>
+        <power select="Pathogens">Immunity</power>
+        <power select="Toxins">Immunity</power>
+        <power>Paralyzing Touch</power>
+        <power>Possession</power>
+        <power>Sapience</power>
+        <power>Shell Game</power>
+        <power select="Sunlight, Mild">Allergy</power>
+        <power select="Gold, Heavy">Allergy</power>
+        <power>Evanescence</power>
+      </powers>
+      <optionalpowers>
+        <optionalpower>Aura Masking</optionalpower>
+        <optionalpower>Banishing Resistance</optionalpower>
+        <optionalpower>Compulsion</optionalpower>
+        <optionalpower>Search</optionalpower>
+        <optionalpower>Shadow Cloak</optionalpower>
+        <optionalpower>Silence</optionalpower>
+      </optionalpowers>
+      <skills>
+        <skill rating="F">Gymnastics</skill>
+        <skill rating="F">Assensing</skill>
+        <skill rating="F">Astral Combat</skill>
+        <skill rating="F">Blades</skill>
+        <skill rating="F">Perception</skill>
+        <skill rating="F">Running</skill>
+        <skill rating="F">Sneaking</skill>
+        <skill rating="F">Throwing Weapons</skill>
+        <skill rating="F">Unarmed Combat</skill>
+      </skills>
+      <source>DTR</source>
+      <page>50</page>
+    </metatype>
+    <metatype>
+      <id>eccf5014-91e1-4a7d-b71b-1afb6a77b663</id>
+      <name>Blade-Summoned</name>
+      <category>Shedim</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>F+1</bodmin>
+      <bodmax>F+1</bodmax>
+      <bodaug>F+1</bodaug>
+      <agimin>F+3</agimin>
+      <agimax>F+3</agimax>
+      <agiaug>F+3</agiaug>
+      <reamin>F+2</reamin>
+      <reamax>F+2</reamax>
+      <reaaug>F+2</reaaug>
+      <strmin>F+1</strmin>
+      <strmax>F+1</strmax>
+      <straug>F+1</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <inimin>(F*2)+2</inimin>
+      <inimax>(F*2)+2</inimax>
+      <iniaug>(F*2)+2</iniaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>F</min>
+          <max>F</max>
+          <aug>F</aug>
+          <val>F</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass>1</initiativepass>
+      </bonus>
+      <powers>
+        <power>Astral Form</power>
+        <power>Anchored Resident</power>
+        <power>Deathly Aura</power>
+        <power>Energy Drain</power>
+        <power>Fear</power>
+        <power select="Age">Immunity</power>
+        <power select="Pathogens">Immunity</power>
+        <power select="Toxins">Immunity</power>
+        <power>Paralyzing Touch</power>
+        <power>Possession</power>
+        <power>Sapience</power>
+        <power>Superior Regeneration</power>
+        <power>Wounded Fury</power>
+        <power select="Sunlight, Mild">Allergy</power>
+        <power select="Bronze, Heavy">Allergy</power>
+        <power>Evanescence</power>
+      </powers>
+      <optionalpowers>
+        <optionalpower>Aura Masking</optionalpower>
+        <optionalpower>Banishing Resistance</optionalpower>
+        <optionalpower>Compulsion</optionalpower>
+        <optionalpower>Search</optionalpower>
+        <optionalpower>Shadow Cloak</optionalpower>
+        <optionalpower>Silence</optionalpower>
+      </optionalpowers>
+      <skills>
+        <skill rating="F">Gymnastics</skill>
+        <skill rating="F">Assensing</skill>
+        <skill rating="F">Astral Combat</skill>
+        <skill rating="F">Blades</skill>
+        <skill rating="F">Perception</skill>
+        <skill rating="F">Running</skill>
+        <skill rating="F">Sneaking</skill>
+        <skill rating="F">Throwing Weapons</skill>
+        <skill rating="F">Unarmed Combat</skill>
+      </skills>
+      <source>DTR</source>
+      <page>50</page>
+    </metatype>
+    <metatype>
+      <id>55ed410d-44b7-44f9-9132-9bde33385c0a</id>
+      <name>Horror Show</name>
+      <category>Shedim</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>F+1</bodmin>
+      <bodmax>F+1</bodmax>
+      <bodaug>F+1</bodaug>
+      <agimin>F+3</agimin>
+      <agimax>F+3</agimax>
+      <agiaug>F+3</agiaug>
+      <reamin>F+2</reamin>
+      <reamax>F+2</reamax>
+      <reaaug>F+2</reaaug>
+      <strmin>F+1</strmin>
+      <strmax>F+1</strmax>
+      <straug>F+1</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <inimin>(F*2)+2</inimin>
+      <inimax>(F*2)+2</inimax>
+      <iniaug>(F*2)+2</iniaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>F</min>
+          <max>F</max>
+          <aug>F</aug>
+          <val>F</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass>1</initiativepass>
+      </bonus>
+      <powers>
+        <power>Astral Form</power>
+        <power>Anchored Resident</power>
+        <power>Deathly Aura</power>
+        <power>Energy Drain</power>
+        <power>Fear</power>
+        <power select="Age">Immunity</power>
+        <power select="Pathogens">Immunity</power>
+        <power select="Toxins">Immunity</power>
+        <power>Paralyzing Touch</power>
+        <power>Possession</power>
+        <power>Sapience</power>
+        <power>Superior Regeneration</power>
+        <power>Superior Banishing Resistance</power>
+        <power>Wounded Fury</power>
+        <power select="Sunlight, Mild">Allergy</power>
+        <power>Evanescence</power>
+      </powers>
+      <optionalpowers>
+        <optionalpower>Accident</optionalpower>
+        <optionalpower>Compulsion</optionalpower>
+        <optionalpower>Search</optionalpower>
+        <optionalpower>Shadow Cloak</optionalpower>
+        <optionalpower>Silence</optionalpower>
+      </optionalpowers>
+      <skills>
+        <skill rating="F">Gymnastics</skill>
+        <skill rating="F">Assensing</skill>
+        <skill rating="F">Astral Combat</skill>
+        <skill rating="F">Blades</skill>
+        <skill rating="F">Perception</skill>
+        <skill rating="F">Running</skill>
+        <skill rating="F">Sneaking</skill>
+        <skill rating="F">Con</skill>
+        <skill rating="F">Disguise</skill>
+        <skill rating="F">Impersonation</skill>
+        <skill rating="F">Unarmed Combat</skill>
+      </skills>
+      <source>DTR</source>
+      <page>51</page>
+    </metatype>
+    <metatype>
+      <id>f77a102b-f23b-4871-94d7-86932358e9ca</id>
+      <name>Unbreakable</name>
+      <category>Shedim</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>F+3</bodmin>
+      <bodmax>F+3</bodmax>
+      <bodaug>F+3</bodaug>
+      <agimin>F+1</agimin>
+      <agimax>F+1</agimax>
+      <agiaug>F+1</agiaug>
+      <reamin>F+1</reamin>
+      <reamax>F+1</reamax>
+      <reaaug>F+1</reaaug>
+      <strmin>F+3</strmin>
+      <strmax>F+3</strmax>
+      <straug>F+3</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F-1</logmin>
+      <logmax>F-1</logmax>
+      <logaug>F-1</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <inimin>(F*2)+2</inimin>
+      <inimax>(F*2)+2</inimax>
+      <iniaug>(F*2)+2</iniaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/1/0</walk>
+      <run>4/0/0</run>
+      <sprint>2/1/0</sprint>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>F</min>
+          <max>F</max>
+          <aug>F</aug>
+          <val>F</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass>1</initiativepass>
+      </bonus>
+      <powers>
+        <power>Astral Form</power>
+        <power>Deathly Aura</power>
+        <power>Energy Drain</power>
+        <power select="Age">Immunity</power>
+        <power select="Pathogens">Immunity</power>
+        <power select="Toxins">Immunity</power>
+        <power>Paralyzing Touch</power>
+        <power>Possession</power>
+        <power>Sapience</power>
+        <power>Superior Regeneration</power>
+        <power>Wounded Fury</power>
+        <power select="Sunlight, Mild">Allergy</power>
+        <power select="Wood, Heavy">Allergy</power>
+        <power>Evanescence</power>
+      </powers>
+      <optionalpowers>
+        <optionalpower>Aura Masking</optionalpower>
+        <optionalpower>Accident</optionalpower>
+        <optionalpower>Banishing Resistance</optionalpower>
+        <optionalpower>Fear</optionalpower>
+        <optionalpower>Search</optionalpower>
+        <optionalpower>Shadow Cloak</optionalpower>
+        <optionalpower>Silence</optionalpower>
+      </optionalpowers>
+      <skills>
+        <skill rating="F">Assensing</skill>
+        <skill rating="F">Astral Combat</skill>
+        <skill rating="F">Clubs</skill>
+        <skill rating="F">Perception</skill>
+        <skill rating="F">Sneaking</skill>
+        <skill rating="F">Throwing Weapons</skill>
+        <skill rating="F">Unarmed Combat</skill>
+      </skills>
+      <source>DTR</source>
+      <page>51</page>
+    </metatype>
+    <metatype>
       <id>5b122a59-408e-4634-855a-763b25fbad16</id>
       <name>Master Shedim</name>
       <category>Shedim</category>
