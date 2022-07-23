@@ -609,7 +609,7 @@ namespace Chummer
 
                                             lstSpirit.Sort(CompareListItems.CompareNames);
 
-                                            async void BindSpiritVisibility(ElasticComboBox cboBox, Label lblName,
+                                            async ValueTask BindSpiritVisibility(ElasticComboBox cboBox, Label lblName,
                                                 string strSpirit)
                                             {
                                                 await cboBox.PopulateWithListItemsAsync(lstSpirit, GenericToken);
@@ -627,15 +627,15 @@ namespace Chummer
                                                 }, GenericToken);
                                             }
 
-                                            BindSpiritVisibility(cboSpiritCombat, lblSpiritCombat,
+                                            await BindSpiritVisibility(cboSpiritCombat, lblSpiritCombat,
                                                 nameof(Tradition.SpiritCombat));
-                                            BindSpiritVisibility(cboSpiritDetection, lblSpiritDetection,
+                                            await BindSpiritVisibility(cboSpiritDetection, lblSpiritDetection,
                                                 nameof(Tradition.SpiritDetection));
-                                            BindSpiritVisibility(cboSpiritHealth, lblSpiritHealth,
+                                            await BindSpiritVisibility(cboSpiritHealth, lblSpiritHealth,
                                                 nameof(Tradition.SpiritHealth));
-                                            BindSpiritVisibility(cboSpiritIllusion, lblSpiritIllusion,
+                                            await BindSpiritVisibility(cboSpiritIllusion, lblSpiritIllusion,
                                                 nameof(Tradition.SpiritIllusion));
-                                            BindSpiritVisibility(cboSpiritManipulation, lblSpiritManipulation,
+                                            await BindSpiritVisibility(cboSpiritManipulation, lblSpiritManipulation,
                                                 nameof(Tradition.SpiritManipulation));
                                         }
                                     }
