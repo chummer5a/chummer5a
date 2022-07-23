@@ -60,6 +60,7 @@ using System.Text;
 
 using Microsoft.Net.Http.Headers;
 using Duende.IdentityServer.Configuration;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace ChummerHub
 {
@@ -145,8 +146,8 @@ namespace ChummerHub
 
             services.AddControllersWithViews();
             services.AddRazorPages();
-            // cookie policy to deal with temporary browser incompatibilities
-            //services.AddSameSiteCookiePolicy();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            //services.AddSingleton<ICookieManager, SystemWebCookieManager>();
 
             services.AddCors(options =>
             {
@@ -207,30 +208,36 @@ namespace ChummerHub
                     });
                 options.EnableDetailedErrors();
             });
-
+            var helper = new JwtHelper(Program.logger, Configuration);
             services.AddAuthentication(options =>
             {
                 // custom scheme defined in .AddPolicyScheme() below
                 options.DefaultScheme = "JWT_OR_COOKIE";
                 options.DefaultChallengeScheme = "JWT_OR_COOKIE";
+                options.DefaultAuthenticateScheme = "JWT_OR_COOKIE";
             })
-            
             .AddCookie(options =>
             {
+                
                 options.LoginPath = "/login";
                 options.ExpireTimeSpan = TimeSpan.FromDays(1);
+                options.ClaimsIssuer = helper.jwtToken.Issuer;
+                
             })
             .AddJwtBearer(options =>
             {
+                var helper = new JwtHelper(Program.logger, Configuration);
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = false,
-                    ValidIssuer = Config.JwtToken.Issuer,
+                    ValidateIssuer = true,
+                    ValidIssuer = helper.jwtToken.Issuer,
                     ValidateAudience = false,
-                    ValidAudience = Config.JwtToken.Audience,
+                    ValidAudience = helper.jwtToken.Audience,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config.JwtToken.SigningKey))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(helper.jwtToken.SigningKey)),
                 };
+                options.SaveToken = true;
+                options.ClaimsIssuer = helper.jwtToken.Issuer;
             })
             // this is the key piece!
             .AddPolicyScheme("JWT_OR_COOKIE", "JWT_OR_COOKIE", options =>

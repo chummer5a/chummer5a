@@ -1,9 +1,5 @@
 {
   "dependencies": {
-    "secrets1": {
-      "type": "secrets",
-      "connectionId": "VaultUri"
-    },
     "mssql3": {
       "type": "mssql",
       "connectionId": "ConnectionStrings:MasterSqlConnection"
@@ -31,6 +27,11 @@
     "appConfig1": {
       "type": "appConfig",
       "connectionId": "AppConfig"
+    },
+    "secrets1": {
+      "type": "secrets",
+      "connectionId": "VaultUri",
+      "dynamicId": null
     }
   }
 }

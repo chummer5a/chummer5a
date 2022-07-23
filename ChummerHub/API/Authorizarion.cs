@@ -18,23 +18,23 @@
  */
 namespace ChummerHub.API
 {
-    public class Authorizarion
+    public static class Authorization
     {
-        public class Constants
+        public static class Constants
         {
-            public static readonly string CreateOperationName = "Create";
-            public static readonly string ReadOperationName = "Read";
-            public static readonly string UpdateOperationName = "Update";
-            public static readonly string DeleteOperationName = "Delete";
-            public static readonly string ApproveOperationName = "Approve";
-            public static readonly string RejectOperationName = "Reject";
-
-            public static readonly string AdministratorsRole = "Administrator";
-            public static readonly string ManagersRole = "Manager";
-            public static readonly string UserRoleRegistered = "RegisteredUser";
-            public static readonly string UserRoleConfirmed = "ConfirmedUser";
-            public static readonly string UserRoleArchetype = "ArchetypeAdmin";
-
+            public const string CreateOperationName = "Create";
+            public const string ReadOperationName = "Read";
+            public const string UpdateOperationName = "Update";
+            public const string DeleteOperationName = "Delete";
+            public const string ApproveOperationName = "Approve";
+            public const string RejectOperationName = "Reject";
+                   
+            public const string UserRoleAdmin = "Administrator";
+            //public const string ManagersRole = "Manager";
+            public const string UserRoleRegistered = "RegisteredUser";
+            public const string UserRoleConfirmed = "ConfirmedUser";
+            public const string UserRoleArchetypeAdmin = "ArchetypeAdmin";
+            public const string UserRolePublicAccess = "PublicAccess";
 
         }
     }
