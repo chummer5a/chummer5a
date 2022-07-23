@@ -560,74 +560,34 @@ namespace Chummer
 
                                             lstSpirit.Sort(CompareListItems.CompareNames);
 
-                                            await cboSpiritCombat.PopulateWithListItemsAsync(lstSpirit, GenericToken);
-                                            cboSpiritCombat.DoDataBinding(
-                                                "SelectedValue", CharacterObject.MagicTradition,
+                                            async void BindSpiritVisibility(ElasticComboBox cboBox, Label lblName,
+                                                string strSpirit)
+                                            {
+                                                await cboBox.PopulateWithListItemsAsync(lstSpirit, GenericToken);
+                                                cboBox.DoDataBinding(
+                                                    "SelectedValue", CharacterObject.MagicTradition, strSpirit);
+                                                await lblName.DoThreadSafeAsync(x => x.Visible
+                                                        = CharacterObject.MagicTradition.Type == TraditionType.MAG,
+                                                    GenericToken);
+                                                await cboBox.DoThreadSafeAsync(x =>
+                                                {
+                                                    x.Visible
+                                                        = CharacterObject.MagicTradition.Type == TraditionType.MAG;
+                                                    x.Enabled
+                                                        = CharacterObject.MagicTradition.IsCustomTradition;
+                                                }, GenericToken);
+                                            }
+
+                                            BindSpiritVisibility(cboSpiritCombat, lblSpiritCombat,
                                                 nameof(Tradition.SpiritCombat));
-                                            await lblSpiritCombat.DoThreadSafeAsync(x => x.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG, GenericToken);
-                                            await cboSpiritCombat.DoThreadSafeAsync(x =>
-                                            {
-                                                x.Visible
-                                                    = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                                x.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
-                                            }, GenericToken);
-
-                                            await cboSpiritDetection.PopulateWithListItemsAsync(lstSpirit, GenericToken);
-                                            cboSpiritDetection.DoDataBinding(
-                                                "SelectedValue", CharacterObject.MagicTradition,
+                                            BindSpiritVisibility(cboSpiritDetection, lblSpiritDetection,
                                                 nameof(Tradition.SpiritDetection));
-                                            await lblSpiritDetection.DoThreadSafeAsync(x => x.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG, GenericToken);
-                                            await cboSpiritDetection.DoThreadSafeAsync(x =>
-                                            {
-                                                x.Visible
-                                                    = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                                x.Enabled
-                                                    = CharacterObject.MagicTradition.IsCustomTradition;
-                                            }, GenericToken);
-
-                                            await cboSpiritHealth.PopulateWithListItemsAsync(lstSpirit, GenericToken);
-                                            cboSpiritHealth.DoDataBinding(
-                                                "SelectedValue", CharacterObject.MagicTradition,
+                                            BindSpiritVisibility(cboSpiritHealth, lblSpiritHealth,
                                                 nameof(Tradition.SpiritHealth));
-                                            await lblSpiritHealth.DoThreadSafeAsync(x => x.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG, GenericToken);
-                                            await cboSpiritDetection.DoThreadSafeAsync(x =>
-                                            {
-                                                x.Visible
-                                                    = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                                x.Enabled
-                                                    = CharacterObject.MagicTradition.IsCustomTradition;
-                                            }, GenericToken);
-
-                                            await cboSpiritIllusion.PopulateWithListItemsAsync(lstSpirit, GenericToken);
-                                            cboSpiritIllusion.DoDataBinding(
-                                                "SelectedValue", CharacterObject.MagicTradition,
+                                            BindSpiritVisibility(cboSpiritIllusion, lblSpiritIllusion,
                                                 nameof(Tradition.SpiritIllusion));
-                                            await lblSpiritIllusion.DoThreadSafeAsync(x => x.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG, GenericToken);
-                                            await cboSpiritIllusion.DoThreadSafeAsync(x =>
-                                            {
-                                                x.Visible
-                                                    = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                                x.Enabled
-                                                    = CharacterObject.MagicTradition.IsCustomTradition;
-                                            }, GenericToken);
-
-                                            await cboSpiritManipulation.PopulateWithListItemsAsync(lstSpirit, GenericToken);
-                                            cboSpiritManipulation.DoDataBinding(
-                                                "SelectedValue", CharacterObject.MagicTradition,
+                                            BindSpiritVisibility(cboSpiritManipulation, lblSpiritManipulation,
                                                 nameof(Tradition.SpiritManipulation));
-                                            await lblSpiritManipulation.DoThreadSafeAsync(x => x.Visible
-                                                = CharacterObject.MagicTradition.Type == TraditionType.MAG, GenericToken);
-                                            await cboSpiritManipulation.DoThreadSafeAsync(x =>
-                                            {
-                                                x.Visible
-                                                    = CharacterObject.MagicTradition.Type == TraditionType.MAG;
-                                                x.Enabled
-                                                    = CharacterObject.MagicTradition.IsCustomTradition;
-                                            }, GenericToken);
                                         }
                                     }
 
