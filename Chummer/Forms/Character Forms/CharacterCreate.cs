@@ -14237,8 +14237,7 @@ namespace Chummer
                             await lblVehicleWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblVehicleWeaponRC.DoThreadSafeAsync(x =>
                             {
-                                x.Text = objWeapon.DisplayTotalRC.ToString(GlobalSettings
-                                    .CultureInfo);
+                                x.Text = objWeapon.DisplayTotalRC;
                                 x.Visible = true;
                             }, token);
                             await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true, token);
@@ -14373,8 +14372,9 @@ namespace Chummer
                             await lblVehicleWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblVehicleWeaponRC.DoThreadSafeAsync(x =>
                             {
-                                x.Text = objAccessory.RC.ToString(GlobalSettings
-                                    .CultureInfo);
+                                x.Text = Convert
+                                         .ToInt32(objAccessory.RC, GlobalSettings.InvariantCultureInfo)
+                                         .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
                                 x.Visible = true;
                             }, token);
                         }
@@ -14389,8 +14389,7 @@ namespace Chummer
                             await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblVehicleWeaponReach.DoThreadSafeAsync(x =>
                             {
-                                x.Text = objAccessory.Reach.ToString(GlobalSettings
-                                    .CultureInfo);
+                                x.Text = objAccessory.Reach.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
                                 x.Visible = true;
                             }, token);
                         }
@@ -14495,15 +14494,14 @@ namespace Chummer
                             }
                             else
                             {
-                                await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objAccessory.Damage), token);
+                                await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                                 await lblVehicleWeaponDamage.DoThreadSafeAsync(x =>
                                 {
-                                    x.Visible = !string.IsNullOrEmpty(objAccessory
-                                                                          .Damage);
                                     x.Text = Convert
                                              .ToInt32(objAccessory.Damage,
                                                       GlobalSettings.InvariantCultureInfo)
                                              .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                    x.Visible = true;
                                 }, token);
                             }
                             token.ThrowIfCancellationRequested();
@@ -14517,10 +14515,10 @@ namespace Chummer
                                 await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                                 await lblVehicleWeaponAP.DoThreadSafeAsync(x =>
                                 {
-                                    x.Visible = true;
                                     x.Text = Convert
                                              .ToInt32(objAccessory.AP, GlobalSettings.InvariantCultureInfo)
                                              .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                    x.Visible = true;
                                 }, token);
                             }
                             token.ThrowIfCancellationRequested();
@@ -14534,9 +14532,9 @@ namespace Chummer
                                 await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                                 await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x =>
                                 {
-                                    x.Visible = true;
                                     x.Text
                                         = objAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                    x.Visible = true;
                                 }, token);
                             }
                             if (objAccessory.DicePool == 0)
@@ -14549,9 +14547,9 @@ namespace Chummer
                                 await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                                 await lblVehicleWeaponDicePool.DoThreadSafeAsync(x =>
                                 {
-                                    x.Visible = true;
                                     x.Text
                                         = objAccessory.DicePool.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                    x.Visible = true;
                                 }, token);
                                 await lblVehicleWeaponDicePool.SetToolTipAsync(string.Empty, token);
                             }

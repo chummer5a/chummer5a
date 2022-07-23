@@ -840,7 +840,7 @@ namespace Chummer.Backend.Equipment
                 return;
 
             int intAmmoCount = 0;
-            if (_lstAmmo.Any())
+            if (_lstAmmo.Count > 0)
             {
                 Clip objCurrentClip = GetClip(_intActiveAmmoSlot);
                 if (objCurrentClip != null)
@@ -7072,7 +7072,7 @@ namespace Chummer.Backend.Equipment
 
         private List<WeaponAccessory> GetClipProvidingAccessories()
         {
-            List<WeaponAccessory> weaponAccessories = new List<WeaponAccessory>();
+            List<WeaponAccessory> weaponAccessories = new List<WeaponAccessory>(_intAmmoSlots);
             for (int i = 0; i < _intAmmoSlots; i++)
                 weaponAccessories.Add(null);
             // null represents a clip owned by the weapon itself

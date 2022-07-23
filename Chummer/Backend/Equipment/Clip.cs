@@ -24,7 +24,7 @@ using System.Xml;
 
 namespace Chummer.Backend.Equipment
 {
-    public class Clip
+    public sealed class Clip
     {
         private readonly Character _objCharacter;
         private readonly Weapon _objWeapon;

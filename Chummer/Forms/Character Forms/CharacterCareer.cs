@@ -69,7 +69,7 @@ namespace Chummer
             CharacterObject.PropertyChanged += OnCharacterPropertyChanged;
             CharacterObject.SettingsPropertyChanged += OnCharacterSettingsPropertyChanged;
             CharacterObject.AttributeSection.PropertyChanged += MakeDirtyWithCharacterUpdate;
-            
+
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirty += MakeDirty;
@@ -5799,7 +5799,7 @@ namespace Chummer
 
                         objWeapon.ParentVehicle = null;
 
-                        List<Gear> lstGearToMove = new List<Gear>();
+                        List<Gear> lstGearToMove = new List<Gear>(objWeapon.Clips.Count);
                         foreach (Clip objClip in objWeapon.Clips)
                         {
                             if (objClip.AmmoGear != null)
@@ -8590,7 +8590,7 @@ namespace Chummer
                 case Cyberware objCyberware when objCyberware.Capacity == "[*]" && objCyberware.Parent != null:
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotRemoveCyberware"), await LanguageManager.GetStringAsync("MessageTitle_CannotRemoveCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
-                    
+
                 case ICanSell vendorTrash:
                     {
                         using (ThreadSafeForm<SellItem> frmSell = await ThreadSafeForm<SellItem>.GetAsync(() => new SellItem()))
@@ -9063,7 +9063,7 @@ namespace Chummer
                             TreeNode objNode = await treFoci.DoThreadSafeFuncAsync(x => x.FindNode(objStack.InternalId));
                             if (objNode == null)
                                 continue;
-                            
+
                             IsRefreshing = true;
                             try
                             {
@@ -11855,7 +11855,7 @@ namespace Chummer
                 await objMod.Weapons.AddAsync(objWeapon);
             }
 
-            List<Gear> lstGearToMove = new List<Gear>();
+            List<Gear> lstGearToMove = new List<Gear>(objWeapon.Clips.Count);
             foreach (Clip objClip in objWeapon.Clips)
             {
                 if (objClip.AmmoGear != null)
@@ -12388,7 +12388,7 @@ namespace Chummer
                 IsRefreshing = false;
             }
         }
-        
+
         private async void cboWeaponGearAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || !await cboWeaponGearAttack.DoThreadSafeFuncAsync(x => x.Enabled))
@@ -18138,15 +18138,14 @@ namespace Chummer
                         }
                         else
                         {
-                            await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objAccessory.Damage), token);
+                            await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblVehicleWeaponDamage.DoThreadSafeAsync(x =>
                             {
-                                x.Visible = !string.IsNullOrEmpty(objAccessory
-                                                                      .Damage);
                                 x.Text = Convert
                                          .ToInt32(objAccessory.Damage,
                                                   GlobalSettings.InvariantCultureInfo)
                                          .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                x.Visible = true;
                             }, token);
                         }
                         if (string.IsNullOrEmpty(objAccessory.RC))
@@ -18156,12 +18155,13 @@ namespace Chummer
                         }
                         else
                         {
-                            await lblVehicleWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objAccessory.RC), token);
+                            await lblVehicleWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblVehicleWeaponRC.DoThreadSafeAsync(x =>
                             {
-                                x.Visible = !string.IsNullOrEmpty(objAccessory
-                                    .RC);
-                                x.Text = objAccessory.RC;
+                                x.Text = Convert
+                                         .ToInt32(objAccessory.RC, GlobalSettings.InvariantCultureInfo)
+                                         .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                x.Visible = true;
                             }, token);
                         }
                         if (objAccessory.Reach == 0)
@@ -18171,13 +18171,11 @@ namespace Chummer
                         }
                         else
                         {
-                            await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objAccessory.RC), token);
+                            await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblVehicleWeaponReach.DoThreadSafeAsync(x =>
                             {
+                                x.Text = objAccessory.Reach.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
                                 x.Visible = true;
-                                x.Text = Convert
-                                    .ToInt32(objAccessory.Reach, GlobalSettings.InvariantCultureInfo)
-                                    .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
                             }, token);
                         }
                         if (string.IsNullOrEmpty(objAccessory.AP))
@@ -18190,10 +18188,10 @@ namespace Chummer
                             await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblVehicleWeaponAP.DoThreadSafeAsync(x =>
                             {
-                                x.Visible = true;
                                 x.Text = Convert
                                          .ToInt32(objAccessory.AP, GlobalSettings.InvariantCultureInfo)
                                          .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                                x.Visible = true;
                             }, token);
                         }
                         if (objAccessory.Accuracy == 0)
