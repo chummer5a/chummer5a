@@ -2426,11 +2426,10 @@ namespace Chummer
 
                 case ImprovementType.SkillGroupCategoryDisable:
                 {
-                    foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups)
+                    foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups.Where(x => x.GetRelevantSkillCategories.Contains(ImprovedName)))
                     {
-                        if (objTargetGroup.GetRelevantSkillCategories.Contains(ImprovedName))
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup,
-                                nameof(SkillGroup.IsDisabled));
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup,
+                            nameof(SkillGroup.IsDisabled));
                     }
                 }
                     break;
@@ -2438,11 +2437,10 @@ namespace Chummer
                 case ImprovementType.SkillGroupCategoryKarmaCostMultiplier:
                 case ImprovementType.SkillGroupCategoryKarmaCost:
                 {
-                    foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups)
+                    foreach (SkillGroup objTargetGroup in _objCharacter.SkillsSection.SkillGroups.Where(x => x.GetRelevantSkillCategories.Contains(ImprovedName)))
                     {
-                        if (objTargetGroup.GetRelevantSkillCategories.Contains(ImprovedName))
-                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup,
-                                nameof(SkillGroup.UpgradeKarmaCost));
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetGroup,
+                            nameof(SkillGroup.UpgradeKarmaCost));
                     }
                 }
                     break;
