@@ -373,7 +373,7 @@ namespace Chummer
                                          _xmlCritterPowerDocumentPowersNode, _xmlSkillsDocumentKnowledgeSkillsNode,
                                          chkPossessionBased.Checked
                                              ? cboPossessionMethod.SelectedValue?.ToString()
-                                             : string.Empty);
+                                             : string.Empty, token);
                     foreach (Quality objQuality in lstQualitiesToCheck)
                     {
                         if ((await objQuality.GetNodeXPathAsync(token: token))?.RequirementsMet(_objCharacter) == false)

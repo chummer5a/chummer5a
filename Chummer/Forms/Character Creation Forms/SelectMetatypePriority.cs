@@ -1062,7 +1062,7 @@ namespace Chummer
                                          _xmlCritterPowerDocumentPowersNode, null,
                                          await chkPossessionBased.DoThreadSafeFuncAsync(x => x.Checked, token)
                                              ? await cboPossessionMethod.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
-                                             : string.Empty);
+                                             : string.Empty, token);
                     foreach (Quality objQuality in lstQualitiesToCheck)
                     {
                         // Set strIgnoreQuality to quality's name to make sure limit counts are not an issue

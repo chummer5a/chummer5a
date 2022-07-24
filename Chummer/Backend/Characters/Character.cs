@@ -2059,9 +2059,9 @@ namespace Chummer
         /// <summary>
         /// Set up a character with a metatype and new attributes to match.
         /// </summary>
-        public void Create(string strSelectedMetatypeCategory, string strMetatypeId, string strMetavariantId, XmlNode objXmlMetatype, int intForce, XmlNode xmlQualityDocumentQualitiesNode = null, XmlNode xmlCritterPowerDocumentPowersNode = null, XmlNode xmlSkillsDocumentKnowledgeSkillsNode = null, string strSelectedPossessionMethod = "")
+        public void Create(string strSelectedMetatypeCategory, string strMetatypeId, string strMetavariantId, XmlNode objXmlMetatype, int intForce, XmlNode xmlQualityDocumentQualitiesNode = null, XmlNode xmlCritterPowerDocumentPowersNode = null, XmlNode xmlSkillsDocumentKnowledgeSkillsNode = null, string strSelectedPossessionMethod = "", CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 if (objXmlMetatype == null)
                     throw new ArgumentNullException(nameof(objXmlMetatype));
@@ -2097,7 +2097,7 @@ namespace Chummer
                     strSelectedMetatypeCategory == "Shapeshifter" || strMetavariantId == Guid.Empty.ToString()
                         ? objXmlMetatype
                         : objXmlMetavariant ?? objXmlMetatype;
-                AttributeSection.Create(charNode, intForce);
+                AttributeSection.Create(charNode, intForce, token: token);
                 MetatypeGuid = new Guid(strMetatypeId);
                 Metatype = objXmlMetatype["name"]?.InnerText ?? "Human";
                 MetatypeCategory = strSelectedMetatypeCategory;
@@ -2127,7 +2127,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>(1);
                 // Create the Qualities that come with the Metatype.
                 if (xmlQualityDocumentQualitiesNode == null)
-                    xmlQualityDocumentQualitiesNode = LoadData("qualities.xml").SelectSingleNode("/chummer/qualities");
+                    xmlQualityDocumentQualitiesNode = LoadData("qualities.xml", token: token).SelectSingleNode("/chummer/qualities");
                 if (xmlQualityDocumentQualitiesNode != null)
                 {
                     using (XmlNodeList xmlQualityList = charNode.SelectNodes("qualities/*/quality"))
@@ -2163,7 +2163,7 @@ namespace Chummer
                 //Load any critter powers the character has.
                 if (xmlCritterPowerDocumentPowersNode == null)
                     xmlCritterPowerDocumentPowersNode =
-                        LoadData("critterpowers.xml").SelectSingleNode("/chummer/powers");
+                        LoadData("critterpowers.xml", token: token).SelectSingleNode("/chummer/powers");
                 if (xmlCritterPowerDocumentPowersNode != null)
                 {
                     foreach (XmlNode objXmlPower in charNode.SelectNodes("powers/power"))
@@ -2222,7 +2222,7 @@ namespace Chummer
                 // Add the Unarmed Attack Weapon to the character.
                 if (Weapons.All(x => x.Name != "Unarmed Attack"))
                 {
-                    XmlNode objXmlWeapon = LoadData("weapons.xml")
+                    XmlNode objXmlWeapon = LoadData("weapons.xml", token: token)
                         .SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
                     if (objXmlWeapon != null)
                     {
@@ -2297,7 +2297,7 @@ namespace Chummer
                 //Set the Knowledge Skill Ratings for the Critter.
                 if (xmlSkillsDocumentKnowledgeSkillsNode == null)
                     xmlSkillsDocumentKnowledgeSkillsNode =
-                        LoadData("skills.xml").SelectSingleNode("/chummer/knowledgeskills");
+                        LoadData("skills.xml", token: token).SelectSingleNode("/chummer/knowledgeskills");
                 if (xmlSkillsDocumentKnowledgeSkillsNode != null)
                 {
                     foreach (XmlNode xmlSkill in charNode.SelectNodes("skills/knowledge"))
@@ -2343,7 +2343,7 @@ namespace Chummer
                 }
 
                 // Add any Complex Forms the Critter comes with (typically Sprites)
-                XmlDocument xmlComplexFormDocument = LoadData("complexforms.xml");
+                XmlDocument xmlComplexFormDocument = LoadData("complexforms.xml", token: token);
                 foreach (XmlNode xmlComplexForm in charNode.SelectNodes("complexforms/complexform"))
                 {
                     string strComplexForm = xmlComplexForm.InnerText;
@@ -2370,7 +2370,7 @@ namespace Chummer
                 }
 
                 //Load any cyberware the character has.
-                XmlDocument xmlCyberwareDocument = LoadData("cyberware.xml");
+                XmlDocument xmlCyberwareDocument = LoadData("cyberware.xml", token: token);
                 foreach (XmlNode node in charNode.SelectNodes("cyberwares/cyberware"))
                 {
                     string strCyberware = node.InnerText;
@@ -2387,7 +2387,7 @@ namespace Chummer
                         CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerText, intForce, 0, 0);
 
                     objWare.Create(objXmlCyberwareNode,
-                        GetGrades(Improvement.ImprovementSource.Cyberware, true)
+                        GetGrades(Improvement.ImprovementSource.Cyberware, true, token)
                             .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
                         Weapons, Vehicles, true, true, strForcedValue);
                     Cyberware.Add(objWare);
@@ -2398,7 +2398,7 @@ namespace Chummer
                 }
 
                 //Load any bioware the character has.
-                XmlDocument xmlBiowareDocument = LoadData("bioware.xml");
+                XmlDocument xmlBiowareDocument = LoadData("bioware.xml", token: token);
                 foreach (XmlNode node in charNode.SelectNodes("biowares/bioware"))
                 {
                     string strCyberware = node.InnerText;
@@ -2415,7 +2415,7 @@ namespace Chummer
                         CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerText, intForce, 0, 0);
 
                     objWare.Create(objXmlCyberwareNode,
-                        GetGrades(Improvement.ImprovementSource.Bioware, true)
+                        GetGrades(Improvement.ImprovementSource.Bioware, true, token)
                             .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
                         Weapons, Vehicles, true, true, strForcedValue);
                     Cyberware.Add(objWare);
@@ -2426,7 +2426,7 @@ namespace Chummer
                 }
 
                 // Add any Advanced Programs the Critter comes with (typically A.I.s)
-                XmlDocument xmlAIProgramDocument = LoadData("programs.xml");
+                XmlDocument xmlAIProgramDocument = LoadData("programs.xml", token: token);
                 foreach (XmlNode xmlAIProgram in charNode.SelectNodes("programs/program"))
                 {
                     string strAIProgram = xmlAIProgram.InnerText;
@@ -2451,7 +2451,7 @@ namespace Chummer
                         }))
                         {
                             // Make sure the dialogue window was not canceled.
-                            if (frmPickText.ShowDialogSafe(this) == DialogResult.Cancel)
+                            if (frmPickText.ShowDialogSafe(this, token) == DialogResult.Cancel)
                                 continue;
                             strExtra = frmPickText.MyForm.SelectedValue;
                         }
@@ -2471,7 +2471,7 @@ namespace Chummer
                 }
 
                 // Add any Gear the Critter comes with (typically Programs for A.I.s)
-                XmlDocument xmlGearDocument = LoadData("gear.xml");
+                XmlDocument xmlGearDocument = LoadData("gear.xml", token: token);
                 foreach (XmlNode xmlGear in charNode.SelectNodes("gears/gear"))
                 {
                     XmlNode xmlGearData = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " +
@@ -2917,7 +2917,7 @@ namespace Chummer
 
                             // <attributes>
                             objWriter.WriteStartElement("attributes");
-                            AttributeSection.Save(objWriter);
+                            AttributeSection.Save(objWriter, token);
                             // </attributes>
                             objWriter.WriteEndElement();
 
@@ -2946,7 +2946,7 @@ namespace Chummer
 
                             // External reader friendly stuff.
                             objWriter.WriteElementString("totaless",
-                                Essence().ToString(GlobalSettings.InvariantCultureInfo));
+                                Essence(token: token).ToString(GlobalSettings.InvariantCultureInfo));
 
                             // Write out the Mystic Adept MAG split info.
                             if (_blnAdeptEnabled && _blnMagicianEnabled)
@@ -3661,7 +3661,7 @@ namespace Chummer
 
                             // <attributes>
                             await objWriter.WriteStartElementAsync("attributes");
-                            AttributeSection.Save(objWriter);
+                            AttributeSection.Save(objWriter, token);
                             // </attributes>
                             await objWriter.WriteEndElementAsync();
 
@@ -3690,7 +3690,7 @@ namespace Chummer
 
                             // External reader friendly stuff.
                             await objWriter.WriteElementStringAsync("totaless",
-                                (await EssenceAsync()).ToString(GlobalSettings.InvariantCultureInfo));
+                                (await EssenceAsync(token: innerToken)).ToString(GlobalSettings.InvariantCultureInfo));
 
                             // Write out the Mystic Adept MAG split info.
                             if (_blnAdeptEnabled && _blnMagicianEnabled)
@@ -4635,7 +4635,7 @@ namespace Chummer
                                 xmlCharacterNavigator.TryGetBoolFieldQuickly("ignorerules", ref _blnIgnoreRules);
                                 xmlCharacterNavigator.TryGetBoolFieldQuickly("created", ref _blnCreated);
 
-                                ResetCharacter();
+                                ResetCharacter(token);
 
                                 // Get the game edition of the file if possible and make sure it's intended to be used with this version of the application.
                                 string strGameEdition = string.Empty;
@@ -6024,7 +6024,7 @@ namespace Chummer
                                        ? Timekeeper.StartSyncron("load_char_attributes", loadActivity)
                                        : await Timekeeper.StartSyncronAsync("load_char_attributes", loadActivity))
                             {
-                                AttributeSection.Load(objXmlCharacter);
+                                AttributeSection.Load(objXmlCharacter, token);
                             }
 
                             if (frmLoadingForm != null)
@@ -7913,7 +7913,7 @@ namespace Chummer
                             }
 
                             if (!InitiationEnabled || !AddInitiationsAllowed)
-                                ClearInitiations();
+                                ClearInitiations(token);
                             foreach (Func<bool> funcToCall in PostLoadMethods)
                                 if (!funcToCall.Invoke())
                                     return false;
@@ -8277,7 +8277,7 @@ namespace Chummer
                         "critter", CritterEnabled.ToString(GlobalSettings.InvariantCultureInfo));
 
                     await objWriter.WriteElementStringAsync(
-                        "totaless", (await EssenceAsync()).ToString(Settings.EssenceFormat, objCulture));
+                        "totaless", (await EssenceAsync(token: token)).ToString(Settings.EssenceFormat, objCulture));
 
                     // <tradition />
                     if (MagicTradition.Type != TraditionType.None)
@@ -8289,7 +8289,7 @@ namespace Chummer
                     XmlElementWriteHelper objAttributesElement = await objWriter.StartElementAsync("attributes");
                     try
                     {
-                        await AttributeSection.Print(objWriter, objCulture, strLanguageToPrint);
+                        await AttributeSection.Print(objWriter, objCulture, strLanguageToPrint, token);
                     }
                     finally
                     {
@@ -9460,9 +9460,9 @@ namespace Chummer
         /// <summary>
         /// Reset all of the Character information and start from scratch.
         /// </summary>
-        public void ResetCharacter()
+        public void ResetCharacter(CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 _intFreeSpells = 0;
                 _intCFPLimit = 0;
@@ -9494,7 +9494,7 @@ namespace Chummer
                 _intCurrentLiftCarryHits = 0;
                 _decCachedBiowareEssence = decimal.MinValue;
                 _decCachedCyberwareEssence = decimal.MinValue;
-                ResetCachedEssence();
+                ResetCachedEssence(token);
                 _decCachedEssenceHole = decimal.MinValue;
                 _decCachedPowerPointsUsed = decimal.MinValue;
                 _decCachedPrototypeTranshumanEssenceUsed = decimal.MinValue;
@@ -9525,7 +9525,7 @@ namespace Chummer
                 _blnCritterEnabled = false;
 
                 // Reset Attributes.
-                AttributeSection.Reset();
+                AttributeSection.Reset(token: token);
                 _blnMAGEnabled = false;
                 _blnRESEnabled = false;
                 _blnDEPEnabled = false;
@@ -10767,9 +10767,9 @@ namespace Chummer
             return string.Empty;
         }
 
-        public void CleanUpOrphanedImprovements()
+        public void CleanUpOrphanedImprovements(CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 int intNewImprovementCount = 0;
                 int intOldImprovementCount = Improvements.Count;
@@ -10778,19 +10778,19 @@ namespace Chummer
                 {
                     intOldImprovementCount = Improvements.Count;
                     // Relying on (a lack of) GetObjectName is slower than ideal, but much easier to maintain
-                    Improvements.RemoveAll(x => string.IsNullOrEmpty(GetObjectName(x, GlobalSettings.DefaultLanguage)));
+                    Improvements.RemoveAll(x => string.IsNullOrEmpty(GetObjectName(x, GlobalSettings.DefaultLanguage, token)));
                     intNewImprovementCount = Improvements.Count;
                 }
             }
         }
 
-        public void FormatImprovementModifiers(StringBuilder sbdToolTip, IEnumerable<Improvement.ImprovementType> improvements, string strSpace, int intModifiers)
+        public void FormatImprovementModifiers(StringBuilder sbdToolTip, IEnumerable<Improvement.ImprovementType> improvements, string strSpace, int intModifiers, CancellationToken token = default)
         {
             if (sbdToolTip == null)
                 return;
             sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Tip_Modifiers"));
             bool blnFirstModifier = true;
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 foreach (Improvement.ImprovementType eType in improvements)
                 {
@@ -10805,7 +10805,7 @@ namespace Chummer
                         else
                             sbdToolTip.Append(',');
 
-                        sbdToolTip.Append(strSpace).Append(GetObjectName(objLoopImprovement));
+                        sbdToolTip.Append(strSpace).Append(GetObjectName(objLoopImprovement, token: token));
                     }
                 }
             }
@@ -10818,9 +10818,10 @@ namespace Chummer
         /// </summary>
         /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
         /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
-        public IEnumerable<Grade> GetGrades(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public IEnumerable<Grade> GetGrades(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 string strXPath;
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
@@ -10847,7 +10848,7 @@ namespace Chummer
                         strXPath = "/chummer/grades/grade";
                 }
 
-                using (XmlNodeList xmlGradeList = LoadData(Grade.GetDataFileNameFromImprovementSource(objSource))
+                using (XmlNodeList xmlGradeList = LoadData(Grade.GetDataFileNameFromImprovementSource(objSource), token: token)
                            .SelectNodes(strXPath))
                 {
                     if (xmlGradeList?.Count > 0)
@@ -10878,10 +10879,11 @@ namespace Chummer
         /// </summary>
         /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
         /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
-        public async Task<List<Grade>> GetGradesListAsync(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public async Task<List<Grade>> GetGradesListAsync(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false, CancellationToken token = default)
         {
             List<Grade> lstReturn;
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 string strXPath;
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
@@ -10908,7 +10910,7 @@ namespace Chummer
                         strXPath = "/chummer/grades/grade";
                 }
 
-                using (XmlNodeList xmlGradeList = (await LoadDataAsync(Grade.GetDataFileNameFromImprovementSource(objSource)))
+                using (XmlNodeList xmlGradeList = (await LoadDataAsync(Grade.GetDataFileNameFromImprovementSource(objSource), token: token))
                            .SelectNodes(strXPath))
                 {
                     lstReturn = new List<Grade>(xmlGradeList?.Count ?? 0);
@@ -10930,11 +10932,11 @@ namespace Chummer
         /// <summary>
         /// Calculate the number of Free Spirit Power Points used.
         /// </summary>
-        public string CalculateFreeSpiritPowerPoints()
+        public string CalculateFreeSpiritPowerPoints(CancellationToken token = default)
         {
             string strSpace = LanguageManager.GetString("String_Space");
 
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 if (Metatype == "Free Spirit" && !IsCritter)
                 {
@@ -10999,12 +11001,12 @@ namespace Chummer
         /// <summary>
         /// Calculate the number of Free Sprite Power Points used.
         /// </summary>
-        public string CalculateFreeSpritePowerPoints()
+        public string CalculateFreeSpritePowerPoints(CancellationToken token = default)
         {
             // Free Sprite Power Points.
             int intUsedPowerPoints = 0;
 
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 foreach (CritterPower objPower in CritterPowers)
                 {
@@ -11028,13 +11030,14 @@ namespace Chummer
         /// Construct a list of possible places to put a piece of modular cyberware. Names are display names of the given items, values are internalIDs of the given items.
         /// </summary>
         /// <param name="objModularCyberware">Cyberware for which to construct the list.</param>
-        public IEnumerable<ListItem> ConstructModularCyberlimbList([NotNull] Cyberware objModularCyberware)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public IEnumerable<ListItem> ConstructModularCyberlimbList([NotNull] Cyberware objModularCyberware, CancellationToken token = default)
         {
             yield return new ListItem("None", LanguageManager.GetString("String_None"));
 
             string strSpace = LanguageManager.GetString("String_Space");
 
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 foreach (Cyberware objLoopCyberware in Cyberware.GetAllDescendants(x => x.Children))
                 {
@@ -11106,25 +11109,25 @@ namespace Chummer
             }
         }
 
-        public async Task<bool> SwitchBuildMethods(CharacterBuildMethod eOldBuildMethod, CharacterBuildMethod eNewBuildMethod, string strOldSettingsKey)
+        public async Task<bool> SwitchBuildMethods(CharacterBuildMethod eOldBuildMethod, CharacterBuildMethod eNewBuildMethod, string strOldSettingsKey, CancellationToken token = default)
         {
             DialogResult eResult;
             if (eNewBuildMethod.UsesPriorityTables())
             {
-                using (ThreadSafeForm<SelectMetatypePriority> frmSelectMetatype = await ThreadSafeForm<SelectMetatypePriority>.GetAsync(() => new SelectMetatypePriority(this)))
+                using (ThreadSafeForm<SelectMetatypePriority> frmSelectMetatype = await ThreadSafeForm<SelectMetatypePriority>.GetAsync(() => new SelectMetatypePriority(this), token))
                 {
-                    eResult = await frmSelectMetatype.ShowDialogSafeAsync(this);
+                    eResult = await frmSelectMetatype.ShowDialogSafeAsync(this, token);
                 }
             }
             else
             {
-                using (ThreadSafeForm<SelectMetatypeKarma> frmSelectMetatype = await ThreadSafeForm<SelectMetatypeKarma>.GetAsync(() => new SelectMetatypeKarma(this)))
+                using (ThreadSafeForm<SelectMetatypeKarma> frmSelectMetatype = await ThreadSafeForm<SelectMetatypeKarma>.GetAsync(() => new SelectMetatypeKarma(this), token))
                 {
-                    eResult = await frmSelectMetatype.ShowDialogSafeAsync(this);
+                    eResult = await frmSelectMetatype.ShowDialogSafeAsync(this, token);
                 }
             }
 
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 if (eResult != DialogResult.OK)
                 {
@@ -11439,11 +11442,11 @@ namespace Chummer
         /// <summary>
         /// Creates a list of keywords for each category of an XML node. Used to preselect whether items of that category are discounted by the Black Market Pipeline quality.
         /// </summary>
-        public IEnumerable<string> GenerateBlackMarketMappings(XPathNavigator xmlCategoryList)
+        public IEnumerable<string> GenerateBlackMarketMappings(XPathNavigator xmlCategoryList, CancellationToken token = default)
         {
             if (xmlCategoryList == null)
                 yield break;
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 // Character has no Black Market discount qualities. Fail out early.
                 if (!BlackMarketDiscount)
@@ -11596,7 +11599,8 @@ namespace Chummer
         /// </summary>
         /// <param name="objGearNode">Node of gear to move.</param>
         /// <param name="objDestination">Destination Node.</param>
-        public void MoveGearParent(TreeNode objDestination, TreeNode objGearNode)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public void MoveGearParent(TreeNode objDestination, TreeNode objGearNode, CancellationToken token = default)
         {
             if (objGearNode == null || objDestination == null)
                 return;
@@ -11630,7 +11634,7 @@ namespace Chummer
             if(!blnAllowMove)
                 return;
 
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 // Remove the Gear from the character.
                 if (objGear.Parent is IHasChildren<Gear> parent)
@@ -11661,7 +11665,8 @@ namespace Chummer
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
         /// <param name="nodeToMove">Node of gear to move.</param>
-        public void MoveGearNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public void MoveGearNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove, CancellationToken token = default)
         {
             if (objDestination == null || nodeToMove == null)
                 return;
@@ -11671,7 +11676,7 @@ namespace Chummer
             while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                 objNewParent = objNewParent.Parent;
 
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 switch (objNewParent.Tag)
                 {
@@ -11747,7 +11752,8 @@ namespace Chummer
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
         /// <param name="nodeToMove">Node of armor to move.</param>
-        public void MoveArmorNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public void MoveArmorNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove, CancellationToken token = default)
         {
             if (objDestination == null)
                 return;
@@ -11757,7 +11763,7 @@ namespace Chummer
             while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                 objNewParent = objNewParent.Parent;
 
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 switch (objNewParent.Tag)
                 {
@@ -11807,7 +11813,8 @@ namespace Chummer
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
         /// <param name="nodeToMove">Node of weapon to move.</param>
-        public void MoveWeaponNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public void MoveWeaponNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove, CancellationToken token = default)
         {
             if (objDestination == null)
                 return;
@@ -11817,7 +11824,7 @@ namespace Chummer
             while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                 objNewParent = objNewParent.Parent;
 
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 switch (objNewParent.Tag)
                 {
@@ -11867,7 +11874,8 @@ namespace Chummer
         /// <param name="intNewIndex">Node's new index.</param>
         /// <param name="objDestination">Destination Node.</param>
         /// <param name="nodeToMove">Node of vehicle to move.</param>
-        public void MoveVehicleNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public void MoveVehicleNode(int intNewIndex, TreeNode objDestination, TreeNode nodeToMove, CancellationToken token = default)
         {
             if (objDestination == null)
                 return;
@@ -11877,7 +11885,7 @@ namespace Chummer
             while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                 objNewParent = objNewParent.Parent;
 
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 switch (objNewParent.Tag)
                 {
@@ -11900,7 +11908,8 @@ namespace Chummer
         /// </summary>
         /// <param name="nodDestination">Destination Node.</param>
         /// <param name="nodGearNode">Node of gear to move.</param>
-        public void MoveVehicleGearParent(TreeNode nodDestination, TreeNode nodGearNode)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public void MoveVehicleGearParent(TreeNode nodDestination, TreeNode nodGearNode, CancellationToken token = default)
         {
             if (nodDestination == null || nodGearNode == null)
                 return;
@@ -11912,7 +11921,7 @@ namespace Chummer
                     return;
             if (!(nodGearNode.Tag is IHasInternalId nodeId))
                 return;
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 // Locate the currently selected piece of Gear.
                 //TODO: Better interface for determining what the parent of a bit of gear is.
@@ -11923,7 +11932,7 @@ namespace Chummer
                 if (objGear == null)
                     return;
 
-                using (LockObject.EnterWriteLock())
+                using (LockObject.EnterWriteLock(token))
                 {
                     if (nodDestination.Tag is Gear objDestinationGear)
                     {
@@ -11984,7 +11993,8 @@ namespace Chummer
         /// </summary>
         /// <param name="objDestination">Destination Node.</param>
         /// <param name="nodOldNode">Node of improvement to move.</param>
-        public void MoveImprovementNode(TreeNode objDestination, TreeNode nodOldNode)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public void MoveImprovementNode(TreeNode objDestination, TreeNode nodOldNode, CancellationToken token = default)
         {
             if (objDestination == null)
                 return;
@@ -11994,7 +12004,7 @@ namespace Chummer
             while (objNewParent.Level > 0)
                 objNewParent = objNewParent.Parent;
 
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 objImprovement.CustomGroup = objNewParent.Tag.ToString() == "Node_SelectedImprovements"
                     ? string.Empty
@@ -12035,9 +12045,9 @@ namespace Chummer
         /// <summary>
         /// Clear all Spell tab elements from the character.
         /// </summary>
-        public void ClearMagic(bool blnKeepAdeptEligible)
+        public void ClearMagic(bool blnKeepAdeptEligible, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 if (ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.FreeSpells)
                         .Count > 0
@@ -12048,7 +12058,7 @@ namespace Chummer
                     0)
                 {
                     // Run through all of the Spells and remove their Improvements.
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.EnterWriteLock(token))
                     {
                         for (int i = Spells.Count - 1; i >= 0; --i)
                         {
@@ -12070,7 +12080,7 @@ namespace Chummer
                     }
                 }
 
-                using (LockObject.EnterWriteLock())
+                using (LockObject.EnterWriteLock(token))
                 {
                     for (int i = Spirits.Count - 1; i >= 0; --i)
                     {
@@ -12090,9 +12100,9 @@ namespace Chummer
         /// <summary>
         /// Clear all Adept tab elements from the character.
         /// </summary>
-        public void ClearAdeptPowers()
+        public void ClearAdeptPowers(CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 // Run through all powers and remove the ones not added by improvements or foci
                 for (int i = Powers.Count - 1; i >= 0; --i)
@@ -12117,9 +12127,9 @@ namespace Chummer
         /// <summary>
         /// Clear all Technomancer tab elements from the character.
         /// </summary>
-        public void ClearResonance()
+        public void ClearResonance(CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 // Run through all of the Complex Forms and remove their Improvements.
                 for (int i = ComplexForms.Count - 1; i >= 0; --i)
@@ -12154,9 +12164,9 @@ namespace Chummer
         /// <summary>
         /// Clear all Advanced Programs tab elements from the character.
         /// </summary>
-        public void ClearAdvancedPrograms()
+        public void ClearAdvancedPrograms(CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 // Run through all advanced programs and remove the ones not added by improvements
                 for (int i = AIPrograms.Count - 1; i >= 0; --i)
@@ -12179,9 +12189,9 @@ namespace Chummer
         /// <summary>
         /// Clear all cyberware and bioware implanted on the character.
         /// </summary>
-        public void ClearCyberwareTab()
+        public void ClearCyberwareTab(CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 string strDisabledSource = string.Empty;
                 if (Created)
@@ -12195,13 +12205,13 @@ namespace Chummer
                     if (objDisablingImprovement != null)
                     {
                         strDisabledSource = LanguageManager.GetString("String_Space") +
-                                            '(' + GetObjectName(objDisablingImprovement, GlobalSettings.Language) +
+                                            '(' + GetObjectName(objDisablingImprovement, GlobalSettings.Language, token: token) +
                                             ')' +
                                             LanguageManager.GetString("String_Space");
                     }
                 }
 
-                using (LockObject.EnterWriteLock())
+                using (LockObject.EnterWriteLock(token))
                 {
                     foreach (Cyberware objCyberware in Cyberware
                                  .Where(x => x.SourceID != Backend.Equipment.Cyberware.EssenceHoleGUID
@@ -12240,9 +12250,9 @@ namespace Chummer
         /// <summary>
         /// Clear all Critter tab elements from the character.
         /// </summary>
-        public void ClearCritterPowers()
+        public void ClearCritterPowers(CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 for (int i = CritterPowers.Count - 1; i >= 0; --i)
                 {
@@ -12264,9 +12274,9 @@ namespace Chummer
         /// <summary>
         /// Clear all Initiation tab elements from the character that were not added by improvements.
         /// </summary>
-        public void ClearInitiations()
+        public void ClearInitiations(CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 // Do not update grade numbers until after we're done processing everything
                 _blnClearingInitiations = true;
@@ -16163,10 +16173,10 @@ namespace Chummer
         private decimal _decCachedEssence = decimal.MinValue;
         private readonly AsyncFriendlyReaderWriterLock _objCachedEssenceLock = new AsyncFriendlyReaderWriterLock();
 
-        public void ResetCachedEssence()
+        public void ResetCachedEssence(CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
-            using (_objCachedEssenceLock.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
+            using (_objCachedEssenceLock.EnterWriteLock(token))
                 _decCachedEssence = decimal.MinValue;
         }
 
@@ -16174,17 +16184,18 @@ namespace Chummer
         /// Character's Essence.
         /// </summary>
         /// <param name="blnForMAGPenalty">Whether fetched Essence is to be used to calculate the penalty MAG should receive from lost Essence (true) or not (false).</param>
-        public decimal Essence(bool blnForMAGPenalty = false)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public decimal Essence(bool blnForMAGPenalty = false, CancellationToken token = default)
         {
             if (blnForMAGPenalty)
-                return EssenceForMagPenalty();
-            using (EnterReadLock.Enter(LockObject))
+                return EssenceForMagPenalty(token);
+            using (EnterReadLock.Enter(LockObject, token))
             {
-                using (EnterReadLock.Enter(_objCachedEssenceLock))
+                using (EnterReadLock.Enter(_objCachedEssenceLock, token))
                 {
                     if (_decCachedEssence != decimal.MinValue)
                         return _decCachedEssence;
-                    using (_objCachedEssenceLock.EnterWriteLock())
+                    using (_objCachedEssenceLock.EnterWriteLock(token))
                     {
                         // Another check in case this was already cached in between requesting the lock and obtaining the lock
                         if (_decCachedEssence != decimal.MinValue)
@@ -16218,17 +16229,18 @@ namespace Chummer
         /// Character's Essence.
         /// </summary>
         /// <param name="blnForMAGPenalty">Whether fetched Essence is to be used to calculate the penalty MAG should receive from lost Essence (true) or not (false).</param>
-        public async ValueTask<decimal> EssenceAsync(bool blnForMAGPenalty = false)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public async ValueTask<decimal> EssenceAsync(bool blnForMAGPenalty = false, CancellationToken token = default)
         {
             if (blnForMAGPenalty)
                 return await EssenceForMagPenaltyAsync();
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
-                using (await EnterReadLock.EnterAsync(_objCachedEssenceLock))
+                using (await EnterReadLock.EnterAsync(_objCachedEssenceLock, token))
                 {
                     if (_decCachedEssence != decimal.MinValue)
                         return _decCachedEssence;
-                    IAsyncDisposable objLocker = await _objCachedEssenceLock.EnterWriteLockAsync();
+                    IAsyncDisposable objLocker = await _objCachedEssenceLock.EnterWriteLockAsync(token);
                     try
                     {
                         // Another check in case this was already cached in between requesting the lock and obtaining the lock
@@ -16248,7 +16260,7 @@ namespace Chummer
                                   / 100.0m;
 
                         // Run through all of the pieces of Cyberware and include their Essence cost.
-                        decESS -= await Cyberware.SumAsync(objCyberware => objCyberware.CalculatedESSAsync);
+                        decESS -= await Cyberware.SumAsync(objCyberware => objCyberware.CalculatedESSAsync, token: token);
 
                         //1781 Essence is not printing
                         //ESS.Base = Convert.ToInt32(decESS); -- Disabled because this messes up Character Validity, and it really shouldn't be what "Base" of an attribute is supposed to be (it's supposed to be extra levels gained)
@@ -16268,9 +16280,9 @@ namespace Chummer
         /// <summary>
         /// Character's Essence to be used to calculate the penalty MAG should receive from lost Essence.
         /// </summary>
-        public decimal EssenceForMagPenalty()
+        public decimal EssenceForMagPenalty(CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
                 if (ImprovementManager

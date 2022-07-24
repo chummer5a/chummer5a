@@ -26,6 +26,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -110,11 +111,11 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        private void InitializeAttributesList()
+        private void InitializeAttributesList(CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(_objCharacter.LockObject))
+            using (EnterReadLock.Enter(_objCharacter.LockObject, token))
             {
-                using (_objAttributesInitializerLock.EnterWriteLock())
+                using (_objAttributesInitializerLock.EnterWriteLock(token))
                 {
                     _blnAttributesInitialized = true;
 
@@ -370,9 +371,9 @@ namespace Chummer.Backend.Attributes
             await LockObject.DisposeAsync();
         }
 
-        internal void Save(XmlWriter objWriter)
+        internal void Save(XmlWriter objWriter, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 foreach (CharacterAttrib objAttribute in AttributeList)
                 {
@@ -386,12 +387,12 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public void Create(XmlNode charNode, int intValue, int intMinModifier = 0, int intMaxModifier = 0)
+        public void Create(XmlNode charNode, int intValue, int intMinModifier = 0, int intMaxModifier = 0, CancellationToken token = default)
         {
             if (charNode == null)
                 return;
-            using (_objCharacter.LockObject.EnterWriteLock())
-            using (LockObject.EnterWriteLock())
+            using (_objCharacter.LockObject.EnterWriteLock(token))
+            using (LockObject.EnterWriteLock(token))
             {
                 bool blnOldLoading = _blnLoading;
                 try
@@ -550,8 +551,8 @@ namespace Chummer.Backend.Attributes
                             _objCharacter.DEP.Karma = Math.Min(intOldDEPKarma, _objCharacter.DEP.KarmaMaximum);
                         }
 
-                        InitializeAttributesList();
-                        ResetBindings();
+                        InitializeAttributesList(token);
+                        ResetBindings(token);
 
                         //Timekeeper.Finish("create_char_attrib");
                     }
@@ -563,11 +564,11 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public void Load(XmlNode xmlSavedCharacterNode)
+        public void Load(XmlNode xmlSavedCharacterNode, CancellationToken token = default)
         {
             if (xmlSavedCharacterNode == null)
                 return;
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 bool blnOldLoading = _blnLoading;
                 try
@@ -576,11 +577,11 @@ namespace Chummer.Backend.Attributes
                     //Timekeeper.Start("load_char_attrib");
                     AttributeList.Clear();
                     SpecialAttributeList.Clear();
-                    XPathNavigator xmlCharNode = _objCharacter.GetNodeXPath();
+                    XPathNavigator xmlCharNode = _objCharacter.GetNodeXPath(token);
                     // We only want to remake attributes for shifters in career mode, because they only get their second set of attributes when exporting from create mode into career mode
                     XPathNavigator xmlCharNodeAnimalForm =
                         _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created
-                            ? _objCharacter.GetNodeXPath(true)
+                            ? _objCharacter.GetNodeXPath(true, token: token)
                             : null;
                     foreach (string strAttribute in AttributeStrings)
                     {
@@ -599,14 +600,14 @@ namespace Chummer.Backend.Attributes
                                 case CharacterAttrib.AttributeCategory.Special:
                                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                        CharacterAttrib.AttributeCategory.Special);
-                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
+                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
                                     SpecialAttributeList.Add(objAttribute);
                                     break;
 
                                 case CharacterAttrib.AttributeCategory.Standard:
                                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                        CharacterAttrib.AttributeCategory.Standard);
-                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
+                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
                                     AttributeList.Add(objAttribute);
                                     break;
                             }
@@ -614,7 +615,7 @@ namespace Chummer.Backend.Attributes
                             if (xmlCharNodeAnimalForm == null) continue;
                             objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                CharacterAttrib.AttributeCategory.Shapeshifter);
-                            objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
+                            objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token);
                             switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
                             {
                                 case CharacterAttrib.AttributeCategory.Special:
@@ -651,7 +652,7 @@ namespace Chummer.Backend.Attributes
                         }
                     }
 
-                    ResetBindings();
+                    ResetBindings(token);
                 }
                 finally
                 {
@@ -662,11 +663,11 @@ namespace Chummer.Backend.Attributes
         }
 
         [CLSCompliant(false)]
-        public void LoadFromHeroLab(XPathNavigator xmlStatBlockBaseNode, CustomActivity parentActivity)
+        public void LoadFromHeroLab(XPathNavigator xmlStatBlockBaseNode, CustomActivity parentActivity, CancellationToken token = default)
         {
             if (xmlStatBlockBaseNode == null)
                 return;
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 using (_ = Timekeeper.StartSyncron("load_char_attrib", parentActivity))
                 {
@@ -676,11 +677,11 @@ namespace Chummer.Backend.Attributes
                         _blnLoading = true;
                         AttributeList.Clear();
                         SpecialAttributeList.Clear();
-                        XPathNavigator xmlCharNode = _objCharacter.GetNodeXPath();
+                        XPathNavigator xmlCharNode = _objCharacter.GetNodeXPath(token);
                         // We only want to remake attributes for shifters in career mode, because they only get their second set of attributes when exporting from create mode into career mode
                         XPathNavigator xmlCharNodeAnimalForm =
                             _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created
-                                ? _objCharacter.GetNodeXPath(true)
+                                ? _objCharacter.GetNodeXPath(true, token: token)
                                 : null;
                         foreach (string strAttribute in AttributeStrings)
                         {
@@ -692,14 +693,14 @@ namespace Chummer.Backend.Attributes
                                 case CharacterAttrib.AttributeCategory.Special:
                                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                        CharacterAttrib.AttributeCategory.Special);
-                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
+                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
                                     SpecialAttributeList.Add(objAttribute);
                                     break;
 
                                 case CharacterAttrib.AttributeCategory.Standard:
                                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                        CharacterAttrib.AttributeCategory.Standard);
-                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
+                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
                                     AttributeList.Add(objAttribute);
                                     break;
                             }
@@ -711,7 +712,7 @@ namespace Chummer.Backend.Attributes
                                     case CharacterAttrib.AttributeCategory.Special:
                                         objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                            CharacterAttrib.AttributeCategory.Special);
-                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
+                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token);
                                         SpecialAttributeList.Add(objAttribute);
                                         break;
 
@@ -719,7 +720,7 @@ namespace Chummer.Backend.Attributes
                                         objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                            CharacterAttrib.AttributeCategory
                                                                                .Shapeshifter);
-                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
+                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token);
                                         AttributeList.Add(objAttribute);
                                         break;
                                 }
@@ -738,7 +739,7 @@ namespace Chummer.Backend.Attributes
                             if (xmlAttributeBaseNode != null &&
                                 int.TryParse(xmlAttributeBaseNode.Value, out int intHeroLabAttributeBaseValue))
                             {
-                                int intAttributeMinimumValue = GetAttributeByName(strAttribute).MetatypeMinimum;
+                                int intAttributeMinimumValue = GetAttributeByName(strAttribute, token).MetatypeMinimum;
                                 if (intHeroLabAttributeBaseValue == intAttributeMinimumValue) continue;
                                 if (objAttribute != null)
                                     objAttribute.Karma = intHeroLabAttributeBaseValue - intAttributeMinimumValue;
@@ -871,7 +872,7 @@ namespace Chummer.Backend.Attributes
                             }
                         }
 
-                        ResetBindings();
+                        ResetBindings(token);
                     }
                     finally
                     {
@@ -882,7 +883,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        private static CharacterAttrib RemakeAttribute(CharacterAttrib objNewAttribute, XPathNavigator objCharacterNode)
+        private static CharacterAttrib RemakeAttribute(CharacterAttrib objNewAttribute, XPathNavigator objCharacterNode, CancellationToken token = default)
         {
             if (objNewAttribute == null)
                 return null;
@@ -899,7 +900,7 @@ namespace Chummer.Backend.Attributes
             try
             {
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "min")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
-                    out bool blnIsSuccess);
+                    out bool blnIsSuccess, token);
                 if (blnIsSuccess)
                     intMinValue = ((double)objProcess).StandardRound();
             }
@@ -909,7 +910,7 @@ namespace Chummer.Backend.Attributes
             try
             {
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "max")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
-                    out bool blnIsSuccess);
+                    out bool blnIsSuccess, token);
                 if (blnIsSuccess)
                     intMaxValue = ((double)objProcess).StandardRound();
             }
@@ -919,7 +920,7 @@ namespace Chummer.Backend.Attributes
             try
             {
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objCharacterNode.SelectSingleNode(strAttributeLower + "aug")?.Value.Replace("/", " div ").Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1",
-                    out bool blnIsSuccess);
+                    out bool blnIsSuccess, token);
                 if (blnIsSuccess)
                     intAugValue = ((double)objProcess).StandardRound();
             }
@@ -933,13 +934,13 @@ namespace Chummer.Backend.Attributes
             return objNewAttribute;
         }
 
-        internal async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        internal async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 if (_objCharacter.MetatypeCategory == "Shapeshifter")
                 {
-                    XPathNavigator xmlNode = await _objCharacter.GetNodeXPathAsync(true);
+                    XPathNavigator xmlNode = await _objCharacter.GetNodeXPathAsync(true, token: token);
 
                     if (AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
                     {
@@ -980,9 +981,9 @@ namespace Chummer.Backend.Attributes
 
         #region Methods
 
-        public CharacterAttrib GetAttributeByName(string abbrev)
+        public CharacterAttrib GetAttributeByName(string abbrev, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 bool blnGetShifterAttribute = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created
                     && AttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter;
@@ -996,17 +997,17 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public BindingSource GetAttributeBindingByName(string abbrev)
+        public BindingSource GetAttributeBindingByName(string abbrev, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
                 return _dicBindings.TryGetValue(abbrev, out BindingSource objAttributeBinding) ? objAttributeBinding : null;
         }
 
-        public async ValueTask<BindingSource> GetAttributeBindingByNameAsync(string abbrev)
+        public async ValueTask<BindingSource> GetAttributeBindingByNameAsync(string abbrev, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
-                (bool blnSuccess, BindingSource objAttributeBinding) = await _dicBindings.TryGetValueAsync(abbrev);
+                (bool blnSuccess, BindingSource objAttributeBinding) = await _dicBindings.TryGetValueAsync(abbrev, token);
                 return blnSuccess ? objAttributeBinding : null;
             }
         }
@@ -1044,11 +1045,11 @@ namespace Chummer.Backend.Attributes
             objTarget.Karma = objSource.Karma;
         }
 
-        public string ProcessAttributesInXPath(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        public string ProcessAttributesInXPath(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 string strReturn = strInput;
                 foreach (string strCharAttributeName in AttributeStrings)
@@ -1076,13 +1077,13 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public void ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        public void ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             if (sbdInput == null || sbdInput.Length <= 0)
                 return;
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
@@ -1105,7 +1106,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public string ProcessAttributesInXPathForTooltip(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        public string ProcessAttributesInXPathForTooltip(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
@@ -1115,7 +1116,7 @@ namespace Chummer.Backend.Attributes
                 strLanguage = GlobalSettings.Language;
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             string strReturn = strInput;
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
@@ -1180,7 +1181,7 @@ namespace Chummer.Backend.Attributes
             return strReturn;
         }
 
-        public void ProcessAttributesInXPathForTooltip(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        public void ProcessAttributesInXPathForTooltip(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             if (sbdInput == null || sbdInput.Length <= 0)
                 return;
@@ -1191,7 +1192,7 @@ namespace Chummer.Backend.Attributes
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
@@ -1247,7 +1248,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public async ValueTask<string> ProcessAttributesInXPathForTooltipAsync(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null)
+        public async ValueTask<string> ProcessAttributesInXPathForTooltipAsync(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
@@ -1257,7 +1258,7 @@ namespace Chummer.Backend.Attributes
                 strLanguage = GlobalSettings.Language;
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
             string strReturn = strInput;
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
@@ -1328,7 +1329,7 @@ namespace Chummer.Backend.Attributes
             return strReturn;
         }
 
-        public async ValueTask ProcessAttributesInXPathForTooltipAsync(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null)
+        public async ValueTask ProcessAttributesInXPathForTooltipAsync(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             if (sbdInput == null || sbdInput.Length <= 0)
                 return;
@@ -1339,7 +1340,7 @@ namespace Chummer.Backend.Attributes
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
@@ -1395,9 +1396,9 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        internal void Reset(bool blnFirstTime = false)
+        internal void Reset(bool blnFirstTime = false, CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 bool blnOldLoading = !blnFirstTime && _blnLoading;
                 try
@@ -1435,7 +1436,7 @@ namespace Chummer.Backend.Attributes
                         }
                     }
 
-                    ResetBindings();
+                    ResetBindings(token);
                 }
                 finally
                 {
@@ -1465,14 +1466,14 @@ namespace Chummer.Backend.Attributes
         /// Reset the databindings for all character attributes.
         /// This method is used to support hot-swapping attributes for shapeshifters.
         /// </summary>
-        public void ResetBindings()
+        public void ResetBindings(CancellationToken token = default)
         {
-            using (_objCharacter.LockObject.EnterWriteLock())
-            using (LockObject.EnterWriteLock())
+            using (_objCharacter.LockObject.EnterWriteLock(token))
+            using (LockObject.EnterWriteLock(token))
             {
                 foreach (KeyValuePair<string, BindingSource> objBindingEntry in _dicBindings)
                 {
-                    objBindingEntry.Value.DataSource = GetAttributeByName(objBindingEntry.Key);
+                    objBindingEntry.Value.DataSource = GetAttributeByName(objBindingEntry.Key, token);
                 }
                 _objCharacter.RefreshAttributeBindings();
                 foreach (KeyValuePair<string, BindingSource> objBindingEntry in _dicBindings)
@@ -1487,10 +1488,11 @@ namespace Chummer.Backend.Attributes
         /// Note: if the attribute is already at its metatype maximum, this method assumes that we just raised it and will decrease it if it's illegal.
         /// </summary>
         /// <param name="objAttribute">Attribute to raise to its metatype maximum.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<bool> CanRaiseAttributeToMetatypeMax(CharacterAttrib objAttribute)
+        public async ValueTask<bool> CanRaiseAttributeToMetatypeMax(CharacterAttrib objAttribute, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 if (_objCharacter.Created || _objCharacter.IgnoreRules
                                           || objAttribute.MetatypeCategory == CharacterAttrib.AttributeCategory.Special
@@ -1498,7 +1500,7 @@ namespace Chummer.Backend.Attributes
                     return true;
                 return await AttributeList.CountAsync(async x => x.MetatypeCategory == objAttribute.MetatypeCategory
                                                                  && x != objAttribute
-                                                                 && await x.AtMetatypeMaximumAsync)
+                                                                 && await x.AtMetatypeMaximumAsync, token)
                        < _objCharacter.Settings.MaxNumberMaxAttributesCreate;
             }
         }

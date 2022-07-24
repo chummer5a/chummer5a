@@ -4671,7 +4671,7 @@ namespace Chummer
                 }
 
                 // Fix for legacy characters with old addqualities improvements.
-                await RemoveAddedQualities(objXmlDeleteQuality?.CreateNavigator().Select("addqualities/addquality"));
+                await RemoveAddedQualities(objXmlDeleteQuality?.CreateNavigator().Select("addqualities/addquality"), token: token);
 
                 // Perform removal
                 objSelectedQuality.DeleteQuality(blnCompleteDelete);
@@ -5976,15 +5976,15 @@ namespace Chummer
 
         private async void tsGearRename_Click(object sender, EventArgs e)
         {
-            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Gear objGear))
+            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: GenericToken) is Gear objGear))
                 return;
             using (ThreadSafeForm<SelectText> frmPickText
                    = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText()))
             {
-                if (await frmPickText.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                if (await frmPickText.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
                     return;
                 objGear.Extra = frmPickText.MyForm.SelectedValue;
-                await treGear.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName);
+                await treGear.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName, token: GenericToken);
                 await SetDirty(true);
             }
         }
@@ -5994,7 +5994,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = await AddArmor(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) as Location);
+                blnAddAgain = await AddArmor(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: GenericToken) as Location);
             }
             while (blnAddAgain);
         }
@@ -6002,7 +6002,7 @@ namespace Chummer
         private async void tsAddArmorGear_Click(object sender, EventArgs e)
         {
             // Make sure a parent items is selected, then open the Select Gear window.
-            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Armor objArmor))
+            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: GenericToken) is Armor objArmor))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -15342,7 +15342,7 @@ namespace Chummer
                     // Check if the character's Essence is above 0.
                     if (CharacterObject.ESS.MetatypeMaximum > 0)
                     {
-                        decimal decEss = await CharacterObject.EssenceAsync();
+                        decimal decEss = await CharacterObject.EssenceAsync(token: token);
                         decimal decExcessEss = 0.0m;
                         // Need to split things up this way because without internal rounding, Essence can be as small as the player wants as long as it is positive
                         // And getting the smallest positive number supported by the decimal type is way trickier than just checking if it's zero or negative
@@ -17266,13 +17266,13 @@ namespace Chummer
 
         private async void tsMetamagicAddMetamagic_Click(object sender, EventArgs e)
         {
-            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is InitiationGrade objGrade))
+            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is InitiationGrade objGrade))
                 return;
 
-            using (ThreadSafeForm<SelectMetamagic> frmPickMetamagic = await ThreadSafeForm<SelectMetamagic>.GetAsync(() => new SelectMetamagic(CharacterObject, objGrade)))
+            using (ThreadSafeForm<SelectMetamagic> frmPickMetamagic = await ThreadSafeForm<SelectMetamagic>.GetAsync(() => new SelectMetamagic(CharacterObject, objGrade), GenericToken))
             {
                 // Make sure a value was selected.
-                if (await frmPickMetamagic.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                if (await frmPickMetamagic.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
                     return;
 
                 Metamagic objNewMetamagic = new Metamagic(CharacterObject);
@@ -17281,12 +17281,12 @@ namespace Chummer
                 Improvement.ImprovementSource objSource;
                 if (CharacterObject.RESEnabled)
                 {
-                    objXmlMetamagic = (await CharacterObject.LoadDataAsync("echoes.xml")).SelectSingleNode("/chummer/echoes/echo[id = " + frmPickMetamagic.MyForm.SelectedMetamagic.CleanXPath() + ']');
+                    objXmlMetamagic = (await CharacterObject.LoadDataAsync("echoes.xml", token: GenericToken)).SelectSingleNode("/chummer/echoes/echo[id = " + frmPickMetamagic.MyForm.SelectedMetamagic.CleanXPath() + ']');
                     objSource = Improvement.ImprovementSource.Echo;
                 }
                 else
                 {
-                    objXmlMetamagic = (await CharacterObject.LoadDataAsync("metamagic.xml")).SelectSingleNode("/chummer/metamagics/metamagic[id = " + frmPickMetamagic.MyForm.SelectedMetamagic.CleanXPath() + ']');
+                    objXmlMetamagic = (await CharacterObject.LoadDataAsync("metamagic.xml", token: GenericToken)).SelectSingleNode("/chummer/metamagics/metamagic[id = " + frmPickMetamagic.MyForm.SelectedMetamagic.CleanXPath() + ']');
                     objSource = Improvement.ImprovementSource.Metamagic;
                 }
 
@@ -17301,18 +17301,18 @@ namespace Chummer
 
         private async void tsMetamagicAddArt_Click(object sender, EventArgs e)
         {
-            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is InitiationGrade objGrade))
+            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is InitiationGrade objGrade))
                 return;
 
             using (ThreadSafeForm<SelectArt> frmPickArt
                    = await ThreadSafeForm<SelectArt>.GetAsync(
-                       () => new SelectArt(CharacterObject, SelectArt.Mode.Art)))
+                       () => new SelectArt(CharacterObject, SelectArt.Mode.Art), GenericToken))
             {
                 // Make sure a value was selected.
-                if (await frmPickArt.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                if (await frmPickArt.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
                     return;
 
-                XmlNode objXmlArt = (await CharacterObject.LoadDataAsync("metamagic.xml")).SelectSingleNode("/chummer/arts/art[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
+                XmlNode objXmlArt = (await CharacterObject.LoadDataAsync("metamagic.xml", token: GenericToken)).SelectSingleNode("/chummer/arts/art[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
 
                 Art objArt = new Art(CharacterObject);
 
@@ -17327,18 +17327,18 @@ namespace Chummer
 
         private async void tsMetamagicAddEnchantment_Click(object sender, EventArgs e)
         {
-            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is InitiationGrade objGrade))
+            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is InitiationGrade objGrade))
                 return;
 
             using (ThreadSafeForm<SelectArt> frmPickArt
                    = await ThreadSafeForm<SelectArt>.GetAsync(
-                       () => new SelectArt(CharacterObject, SelectArt.Mode.Enchantment)))
+                       () => new SelectArt(CharacterObject, SelectArt.Mode.Enchantment), GenericToken))
             {
                 // Make sure a value was selected.
-                if (await frmPickArt.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                if (await frmPickArt.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
                     return;
 
-                XmlNode objXmlArt = (await CharacterObject.LoadDataAsync("spells.xml")).SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
+                XmlNode objXmlArt = (await CharacterObject.LoadDataAsync("spells.xml", token: GenericToken)).SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
 
                 Spell objNewSpell = new Spell(CharacterObject);
 
@@ -17356,18 +17356,18 @@ namespace Chummer
 
         private async void tsMetamagicAddRitual_Click(object sender, EventArgs e)
         {
-            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is InitiationGrade objGrade))
+            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: GenericToken) is InitiationGrade objGrade))
                 return;
 
             using (ThreadSafeForm<SelectArt> frmPickArt
                    = await ThreadSafeForm<SelectArt>.GetAsync(
-                       () => new SelectArt(CharacterObject, SelectArt.Mode.Ritual)))
+                       () => new SelectArt(CharacterObject, SelectArt.Mode.Ritual), GenericToken))
             {
                 // Make sure a value was selected.
-                if (await frmPickArt.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                if (await frmPickArt.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
                     return;
 
-                XmlNode objXmlArt = (await CharacterObject.LoadDataAsync("spells.xml")).SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
+                XmlNode objXmlArt = (await CharacterObject.LoadDataAsync("spells.xml", token: GenericToken)).SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
 
                 Spell objNewSpell = new Spell(CharacterObject);
 
@@ -17387,7 +17387,7 @@ namespace Chummer
         {
             try
             {
-                await WriteNotes(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode), GenericToken);
+                await WriteNotes(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken), GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -17397,18 +17397,18 @@ namespace Chummer
 
         private async void tsMetamagicAddEnhancement_Click(object sender, EventArgs e)
         {
-            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is InitiationGrade objGrade))
+            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is InitiationGrade objGrade))
                 return;
 
             using (ThreadSafeForm<SelectArt> frmPickArt
                    = await ThreadSafeForm<SelectArt>.GetAsync(
-                       () => new SelectArt(CharacterObject, SelectArt.Mode.Enhancement)))
+                       () => new SelectArt(CharacterObject, SelectArt.Mode.Enhancement), GenericToken))
             {
                 // Make sure a value was selected.
-                if (await frmPickArt.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                if (await frmPickArt.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
                     return;
 
-                XmlNode objXmlArt = (await CharacterObject.LoadDataAsync("powers.xml")).SelectSingleNode("/chummer/enhancements/enhancement[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
+                XmlNode objXmlArt = (await CharacterObject.LoadDataAsync("powers.xml", token: GenericToken)).SelectSingleNode("/chummer/enhancements/enhancement[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
                 if (objXmlArt == null)
                     return;
 
@@ -17550,7 +17550,7 @@ namespace Chummer
         {
             if (IsLoading || IsRefreshing || CharacterObject.Ambidextrous)
                 return;
-            CharacterObject.PrimaryArm = await cboPrimaryArm.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
+            CharacterObject.PrimaryArm = await cboPrimaryArm.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken);
 
             await SetDirty(true);
         }
@@ -17908,7 +17908,7 @@ namespace Chummer
 
         private async void cmdCyberwareChangeMount_Click(object sender, EventArgs e)
         {
-            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Cyberware objModularCyberware))
+            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Cyberware objModularCyberware))
                 return;
             string strSelectedParentID;
             using (new FetchSafelyFromPool<List<ListItem>>(
@@ -17931,12 +17931,12 @@ namespace Chummer
                 using (ThreadSafeForm<SelectItem> frmPickMount = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
                        {
                            Description = strDescription
-                       }))
+                       }, GenericToken))
                 {
                     frmPickMount.MyForm.SetGeneralItemsMode(lstModularMounts);
 
                     // Make sure the dialogue window was not canceled.
-                    if (await frmPickMount.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                    if (await frmPickMount.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
                     {
                         return;
                     }
@@ -18005,7 +18005,7 @@ namespace Chummer
 
         private async void cmdVehicleCyberwareChangeMount_Click(object sender, EventArgs e)
         {
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Cyberware objModularCyberware))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Cyberware objModularCyberware))
                 return;
             string strSelectedParentID;
             using (new FetchSafelyFromPool<List<ListItem>>(
@@ -18029,12 +18029,12 @@ namespace Chummer
                 using (ThreadSafeForm<SelectItem> frmPickMount = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
                        {
                            Description = strDescription
-                       }))
+                       }, GenericToken))
                 {
                     frmPickMount.MyForm.SetGeneralItemsMode(lstModularMounts);
 
                     // Make sure the dialogue window was not canceled.
-                    if (await frmPickMount.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                    if (await frmPickMount.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
                     {
                         return;
                     }
@@ -18131,7 +18131,7 @@ namespace Chummer
 
         private async void tsWeaponLocationAddWeapon_Click(object sender, EventArgs e)
         {
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Location objLocation))
+            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Location objLocation))
                 return;
             bool blnAddAgain;
             do
@@ -18146,20 +18146,20 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                blnAddAgain = await AddVehicle(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) as Location);
+                blnAddAgain = await AddVehicle(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as Location);
             }
             while (blnAddAgain);
         }
 
         private async void tsEditWeaponMount_Click(object sender, EventArgs e)
         {
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is WeaponMount objWeaponMount))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is WeaponMount objWeaponMount))
                 return;
             using (ThreadSafeForm<CreateWeaponMount> frmCreateWeaponMount
                    = await ThreadSafeForm<CreateWeaponMount>.GetAsync(
-                       () => new CreateWeaponMount(objWeaponMount.Parent, CharacterObject, objWeaponMount)))
+                       () => new CreateWeaponMount(objWeaponMount.Parent, CharacterObject, objWeaponMount), GenericToken))
             {
-                if (await frmCreateWeaponMount.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                if (await frmCreateWeaponMount.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
                     return;
             }
 
@@ -18170,9 +18170,9 @@ namespace Chummer
 
         private async void btnCreateCustomDrug_Click_1(object sender, EventArgs e)
         {
-            using (ThreadSafeForm<CreateCustomDrug> form = await ThreadSafeForm<CreateCustomDrug>.GetAsync(() => new CreateCustomDrug(CharacterObject)))
+            using (ThreadSafeForm<CreateCustomDrug> form = await ThreadSafeForm<CreateCustomDrug>.GetAsync(() => new CreateCustomDrug(CharacterObject), GenericToken))
             {
-                if (await form.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                if (await form.ShowDialogSafeAsync(this, GenericToken) == DialogResult.Cancel)
                     return;
 
                 Drug objCustomDrug = form.MyForm.CustomDrug;
@@ -18286,12 +18286,12 @@ namespace Chummer
             if (IsRefreshing)
                 return;
 
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Weapon objWeapon))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is Weapon objWeapon))
                 return;
             objWeapon.FireMode = await cboVehicleWeaponFiringMode.DoThreadSafeFuncAsync(x => x.SelectedIndex >= 0
                 ? (Weapon.FiringMode) x.SelectedValue
-                : Weapon.FiringMode.DogBrain);
-            await RefreshSelectedVehicle();
+                : Weapon.FiringMode.DogBrain, GenericToken);
+            await RefreshSelectedVehicle(GenericToken);
 
             await SetDirty(true);
         }
@@ -18300,7 +18300,7 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is ICanBlackMarketDiscount objItem))
+            if (!(await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is ICanBlackMarketDiscount objItem))
                 return;
             objItem.DiscountCost = chkCyberwareBlackMarketDiscount.Checked;
             await RequestCharacterUpdate();
@@ -18311,9 +18311,9 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is ICanBlackMarketDiscount objItem))
+            if (!(await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: GenericToken) is ICanBlackMarketDiscount objItem))
                 return;
-            objItem.DiscountCost = await chkGearBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked);
+            objItem.DiscountCost = await chkGearBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
             await RequestCharacterUpdate();
             await SetDirty(true);
         }
@@ -18322,9 +18322,9 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is ICanBlackMarketDiscount objItem))
+            if (!(await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is ICanBlackMarketDiscount objItem))
                 return;
-            objItem.DiscountCost = await chkArmorBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked);
+            objItem.DiscountCost = await chkArmorBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
             await RequestCharacterUpdate();
             await SetDirty(true);
         }
@@ -18333,9 +18333,9 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is ICanBlackMarketDiscount objItem))
+            if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: GenericToken) is ICanBlackMarketDiscount objItem))
                 return;
-            objItem.DiscountCost = await chkWeaponBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked);
+            objItem.DiscountCost = await chkWeaponBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: GenericToken);
             await RequestCharacterUpdate();
             await SetDirty(true);
         }
@@ -18344,9 +18344,9 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is ICanBlackMarketDiscount objItem))
+            if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) is ICanBlackMarketDiscount objItem))
                 return;
-            objItem.DiscountCost = await chkVehicleBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked);
+            objItem.DiscountCost = await chkVehicleBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, GenericToken);
             await RequestCharacterUpdate();
             await SetDirty(true);
         }

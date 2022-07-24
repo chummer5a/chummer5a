@@ -2514,16 +2514,17 @@ namespace Chummer
         /// Method for removing old <addqualities /> nodes from existing characters.
         /// </summary>
         /// <param name="objNodeList">XmlNode to load. Expected to be addqualities/addquality</param>
-        protected async ValueTask RemoveAddedQualities(XPathNodeIterator objNodeList)
+        /// <param name="token">CancellationToken to listen to.</param>
+        protected async ValueTask RemoveAddedQualities(XPathNodeIterator objNodeList, CancellationToken token = default)
         {
             if (objNodeList == null || objNodeList.Count <= 0)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
             try
             {
                 foreach (XPathNavigator objNode in objNodeList)
                 {
-                    Quality objQuality = CharacterObject.Qualities.FirstOrDefault(x => x.Name == objNode.Value);
+                    Quality objQuality = await CharacterObject.Qualities.FirstOrDefaultAsync(x => x.Name == objNode.Value, token);
                     if (objQuality != null)
                     {
                         objQuality.DeleteQuality();
@@ -8339,7 +8340,7 @@ namespace Chummer
                     case ItemTreeViewTypes.Weapons:
                     {
                         if (objSelected.Level == 1)
-                            CharacterObject.MoveWeaponNode(intNewIndex, nodDestination, objSelected);
+                            CharacterObject.MoveWeaponNode(intNewIndex, nodDestination, objSelected, token: token);
                         else
                             CharacterObject.MoveWeaponRoot(intNewIndex, nodDestination, objSelected);
                         break;
@@ -8347,7 +8348,7 @@ namespace Chummer
                     case ItemTreeViewTypes.Armor:
                     {
                         if (objSelected.Level == 1)
-                            CharacterObject.MoveArmorNode(intNewIndex, nodDestination, objSelected);
+                            CharacterObject.MoveArmorNode(intNewIndex, nodDestination, objSelected, token: token);
                         else
                             CharacterObject.MoveArmorRoot(intNewIndex, nodDestination, objSelected);
                         break;
@@ -8358,7 +8359,7 @@ namespace Chummer
                         {
                             // If the item was moved using the left mouse button, change the order of things.
                             case MouseButtons.Left when objSelected.Level == 1:
-                                CharacterObject.MoveGearNode(intNewIndex, nodDestination, objSelected);
+                                CharacterObject.MoveGearNode(intNewIndex, nodDestination, objSelected, token: token);
                                 break;
 
                             case MouseButtons.Left:
@@ -8366,7 +8367,7 @@ namespace Chummer
                                 break;
 
                             case MouseButtons.Right:
-                                CharacterObject.MoveGearParent(objSelected, objSelected);
+                                CharacterObject.MoveGearParent(objSelected, objSelected, token: token);
                                 break;
                         }
                         break;
@@ -8375,11 +8376,11 @@ namespace Chummer
                     {
                         if (!DraggingGear)
                         {
-                            CharacterObject.MoveVehicleNode(intNewIndex, nodDestination, objSelected);
+                            CharacterObject.MoveVehicleNode(intNewIndex, nodDestination, objSelected, token: token);
                         }
                         else
                         {
-                            CharacterObject.MoveVehicleGearParent(nodDestination, objSelected);
+                            CharacterObject.MoveVehicleGearParent(nodDestination, objSelected, token: token);
                             DraggingGear = false;
                         }
                         break;
@@ -8387,7 +8388,7 @@ namespace Chummer
                     case ItemTreeViewTypes.Improvements:
                     {
                         if (objSelected.Level == 1)
-                            CharacterObject.MoveImprovementNode(nodDestination, objSelected);
+                            CharacterObject.MoveImprovementNode(nodDestination, objSelected, token: token);
                         else
                             CharacterObject.MoveImprovementRoot(intNewIndex, nodDestination, objSelected);
                         break;
