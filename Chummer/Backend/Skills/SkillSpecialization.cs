@@ -91,19 +91,20 @@ namespace Chummer.Backend.Skills
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
             // <skillspecialization>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("skillspecialization");
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("skillspecialization", token: token);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId);
-                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("free", Free.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("expertise", Expertise.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("specbonus", SpecializationBonus.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("guid", InternalId, token: token);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("free", Free.ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                await objWriter.WriteElementStringAsync("expertise", Expertise.ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                await objWriter.WriteElementStringAsync("specbonus", SpecializationBonus.ToString(objCulture), token: token);
             }
             finally
             {

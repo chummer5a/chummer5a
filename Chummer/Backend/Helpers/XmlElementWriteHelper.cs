@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -33,8 +34,9 @@ namespace Chummer
             return new XmlElementWriteHelper(objWriter);
         }
 
-        public static async Task<XmlElementWriteHelper> StartElementAsync(XmlWriter objWriter, string localName)
+        public static async Task<XmlElementWriteHelper> StartElementAsync(XmlWriter objWriter, string localName, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             await objWriter.WriteStartElementAsync(localName);
             return new XmlElementWriteHelper(objWriter);
         }

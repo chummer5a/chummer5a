@@ -847,7 +847,7 @@ namespace Chummer
             if (treCharacterList.IsNullOrDisposed())
                 return;
 
-            List<string> lstFavorites = (await GlobalSettings.FavoriteCharacters.ToArrayAsync()).ToList();
+            List<string> lstFavorites = (await GlobalSettings.FavoriteCharacters.ToArrayAsync(token)).ToList();
             bool blnAddFavoriteNode = false;
             TreeNode objFavoriteNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.FindNode("Favorite", false), token);
             if (objFavoriteNode == null && blnRefreshFavorites)
@@ -860,7 +860,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
 
             bool blnAddRecentNode = false;
-            List<string> lstRecents = (await GlobalSettings.MostRecentlyUsedCharacters.ToArrayAsync()).ToList();
+            List<string> lstRecents = (await GlobalSettings.MostRecentlyUsedCharacters.ToArrayAsync(token)).ToList();
             // Add any characters that are open to the displayed list so we can have more than 10 characters listed
             foreach (string strFile in Program.MainForm.OpenFormsWithCharacters.SelectMany(
                          x => x.CharacterObjects).Select(x => x.FileName))
@@ -1815,7 +1815,7 @@ namespace Chummer
                         {
                             using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                    = await Program.CreateAndShowProgressBarAsync(
-                                       objCache.FilePath, Character.NumLoadingSections))
+                                       objCache.FilePath, Character.NumLoadingSections, _objGenericToken))
                                 objCharacter = await Program.LoadCharacterAsync(
                                     objCache.FilePath, frmLoadingBar: frmLoadingBar.MyForm, token: _objGenericToken);
                         }
@@ -1855,7 +1855,7 @@ namespace Chummer
                     {
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(
-                                   objCache.FilePath, Character.NumLoadingSections))
+                                   objCache.FilePath, Character.NumLoadingSections, _objGenericToken))
                             objCharacter
                                 = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar.MyForm,
                                                                    token: _objGenericToken);
@@ -1895,7 +1895,7 @@ namespace Chummer
                     {
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(
-                                   objCache.FilePath, Character.NumLoadingSections))
+                                   objCache.FilePath, Character.NumLoadingSections, _objGenericToken))
                             objCharacter
                                 = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar.MyForm,
                                                                    token: _objGenericToken);

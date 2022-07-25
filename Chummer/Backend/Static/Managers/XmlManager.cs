@@ -2047,7 +2047,7 @@ namespace Chummer
                 {
                     await objWriter.WriteStartDocumentAsync();
                     // <results>
-                    await objWriter.WriteStartElementAsync("results");
+                    await objWriter.WriteStartElementAsync("results", token: token);
 
                     foreach (string strFile in Directory.EnumerateFiles(Utils.GetDataFolderPath, "*.xml"))
                     {
@@ -2072,8 +2072,8 @@ namespace Chummer
                             blnExists = true;
 
                         // <file name="x" needstobeadded="y">
-                        await objWriter.WriteStartElementAsync("file");
-                        await objWriter.WriteAttributeStringAsync("name", strFileName);
+                        await objWriter.WriteStartElementAsync("file", token: token);
+                        await objWriter.WriteAttributeStringAsync("name", strFileName, token: token);
 
                         if (blnExists)
                         {
@@ -2182,23 +2182,23 @@ namespace Chummer
                                                     if (!blnTypeWritten)
                                                     {
                                                         blnTypeWritten = true;
-                                                        await objWriter.WriteStartElementAsync(strTypeName);
+                                                        await objWriter.WriteStartElementAsync(strTypeName, token: token);
                                                     }
 
                                                     // <results>
-                                                    await objWriter.WriteStartElementAsync(strChildName);
+                                                    await objWriter.WriteStartElementAsync(strChildName, token: token);
                                                     await objWriter.WriteElementStringAsync(
-                                                        "name", strChildNameElement);
+                                                        "name", strChildNameElement, token: token);
                                                     if (!blnTranslate)
-                                                        await objWriter.WriteElementStringAsync("missing", "translate");
+                                                        await objWriter.WriteElementStringAsync("missing", "translate", token: token);
                                                     if (!blnAltPage)
-                                                        await objWriter.WriteElementStringAsync("missing", "altpage");
+                                                        await objWriter.WriteElementStringAsync("missing", "altpage", token: token);
                                                     if (!blnAdvantage)
                                                         await objWriter.WriteElementStringAsync(
-                                                            "missing", "altadvantage");
+                                                            "missing", "altadvantage", token: token);
                                                     if (!blnDisadvantage)
                                                         await objWriter.WriteElementStringAsync(
-                                                            "missing", "altdisadvantage");
+                                                            "missing", "altdisadvantage", token: token);
                                                     // </results>
                                                     await objWriter.WriteEndElementAsync();
                                                 }
@@ -2208,15 +2208,15 @@ namespace Chummer
                                                 if (!blnTypeWritten)
                                                 {
                                                     blnTypeWritten = true;
-                                                    await objWriter.WriteStartElementAsync(strTypeName);
+                                                    await objWriter.WriteStartElementAsync(strTypeName, token: token);
                                                 }
 
                                                 // No match was found, so write out that the data item is missing.
                                                 // <result>
-                                                await objWriter.WriteStartElementAsync(strChildName);
+                                                await objWriter.WriteStartElementAsync(strChildName, token: token);
                                                 await objWriter.WriteAttributeStringAsync(
-                                                    "needstobeadded", bool.TrueString);
-                                                await objWriter.WriteElementStringAsync("name", strChildNameElement);
+                                                    "needstobeadded", bool.TrueString, token: token);
+                                                await objWriter.WriteElementStringAsync("name", strChildNameElement, token: token);
                                                 // </result>
                                                 await objWriter.WriteEndElementAsync();
                                             }
@@ -2258,20 +2258,20 @@ namespace Chummer
                                                                 if (!blnTypeWritten)
                                                                 {
                                                                     blnTypeWritten = true;
-                                                                    await objWriter.WriteStartElementAsync(strTypeName);
+                                                                    await objWriter.WriteStartElementAsync(strTypeName, token: token);
                                                                 }
 
                                                                 // <result>
-                                                                await objWriter.WriteStartElementAsync("metavariants");
-                                                                await objWriter.WriteStartElementAsync("metavariant");
+                                                                await objWriter.WriteStartElementAsync("metavariants", token: token);
+                                                                await objWriter.WriteStartElementAsync("metavariant", token: token);
                                                                 await objWriter.WriteElementStringAsync(
-                                                                    "name", strMetavariantName);
+                                                                    "name", strMetavariantName, token: token);
                                                                 if (!blnTranslate)
                                                                     await objWriter.WriteElementStringAsync(
-                                                                        "missing", "translate");
+                                                                        "missing", "translate", token: token);
                                                                 if (!blnAltPage)
                                                                     await objWriter.WriteElementStringAsync(
-                                                                        "missing", "altpage");
+                                                                        "missing", "altpage", token: token);
                                                                 await objWriter.WriteEndElementAsync();
                                                                 // </result>
                                                                 await objWriter.WriteEndElementAsync();
@@ -2282,16 +2282,16 @@ namespace Chummer
                                                             if (!blnTypeWritten)
                                                             {
                                                                 blnTypeWritten = true;
-                                                                await objWriter.WriteStartElementAsync(strTypeName);
+                                                                await objWriter.WriteStartElementAsync(strTypeName, token: token);
                                                             }
 
                                                             // <result>
-                                                            await objWriter.WriteStartElementAsync("metavariants");
-                                                            await objWriter.WriteStartElementAsync("metavariant");
+                                                            await objWriter.WriteStartElementAsync("metavariants", token: token);
+                                                            await objWriter.WriteStartElementAsync("metavariant", token: token);
                                                             await objWriter.WriteAttributeStringAsync(
-                                                                "needstobeadded", bool.TrueString);
+                                                                "needstobeadded", bool.TrueString, token: token);
                                                             await objWriter.WriteElementStringAsync(
-                                                                "name", strMetavariantName);
+                                                                "name", strMetavariantName, token: token);
                                                             await objWriter.WriteEndElementAsync();
                                                             // </result>
                                                             await objWriter.WriteEndElementAsync();
@@ -2331,16 +2331,16 @@ namespace Chummer
                                                         if (!blnTypeWritten)
                                                         {
                                                             blnTypeWritten = true;
-                                                            await objWriter.WriteStartElementAsync(strTypeName);
+                                                            await objWriter.WriteStartElementAsync(strTypeName, token: token);
                                                         }
 
                                                         // <results>
-                                                        await objWriter.WriteStartElementAsync(strChildName);
+                                                        await objWriter.WriteStartElementAsync(strChildName, token: token);
                                                         await objWriter.WriteElementStringAsync(
-                                                            "text", strChildTextElement);
+                                                            "text", strChildTextElement, token: token);
                                                         if (!blnTranslate)
                                                             await objWriter.WriteElementStringAsync(
-                                                                "missing", "translate");
+                                                                "missing", "translate", token: token);
                                                         // </results>
                                                         await objWriter.WriteEndElementAsync();
                                                     }
@@ -2350,16 +2350,16 @@ namespace Chummer
                                                     if (!blnTypeWritten)
                                                     {
                                                         blnTypeWritten = true;
-                                                        await objWriter.WriteStartElementAsync(strTypeName);
+                                                        await objWriter.WriteStartElementAsync(strTypeName, token: token);
                                                     }
 
                                                     // No match was found, so write out that the data item is missing.
                                                     // <result>
-                                                    await objWriter.WriteStartElementAsync(strChildName);
+                                                    await objWriter.WriteStartElementAsync(strChildName, token: token);
                                                     await objWriter.WriteAttributeStringAsync(
-                                                        "needstobeadded", bool.TrueString);
+                                                        "needstobeadded", bool.TrueString, token: token);
                                                     await objWriter.WriteElementStringAsync(
-                                                        "text", strChildTextElement);
+                                                        "text", strChildTextElement, token: token);
                                                     // </result>
                                                     await objWriter.WriteEndElementAsync();
                                                 }
@@ -2383,14 +2383,14 @@ namespace Chummer
                                                         if (!blnTypeWritten)
                                                         {
                                                             blnTypeWritten = true;
-                                                            await objWriter.WriteStartElementAsync(strTypeName);
+                                                            await objWriter.WriteStartElementAsync(strTypeName, token: token);
                                                         }
 
                                                         // <result>
-                                                        await objWriter.WriteStartElementAsync(strChildName);
+                                                        await objWriter.WriteStartElementAsync(strChildName, token: token);
                                                         await objWriter.WriteElementStringAsync(
-                                                            "name", strChildInnerText);
-                                                        await objWriter.WriteElementStringAsync("missing", "translate");
+                                                            "name", strChildInnerText, token: token);
+                                                        await objWriter.WriteElementStringAsync("missing", "translate", token: token);
                                                         // </result>
                                                         await objWriter.WriteEndElementAsync();
                                                     }
@@ -2400,15 +2400,15 @@ namespace Chummer
                                                     if (!blnTypeWritten)
                                                     {
                                                         blnTypeWritten = true;
-                                                        await objWriter.WriteStartElementAsync(strTypeName);
+                                                        await objWriter.WriteStartElementAsync(strTypeName, token: token);
                                                     }
 
                                                     // No match was found, so write out that the data item is missing.
                                                     // <result>
-                                                    await objWriter.WriteStartElementAsync(strChildName);
+                                                    await objWriter.WriteStartElementAsync(strChildName, token: token);
                                                     await objWriter.WriteAttributeStringAsync(
-                                                        "needstobeadded", bool.TrueString);
-                                                    await objWriter.WriteElementStringAsync("name", strChildInnerText);
+                                                        "needstobeadded", bool.TrueString, token: token);
+                                                    await objWriter.WriteElementStringAsync("name", strChildInnerText, token: token);
                                                     // </result>
                                                     await objWriter.WriteEndElementAsync();
                                                 }
@@ -2440,9 +2440,9 @@ namespace Chummer
                                         if (objNode == null)
                                         {
                                             // <noentry>
-                                            await objWriter.WriteStartElementAsync("noentry");
-                                            await objWriter.WriteStartElementAsync(strChildName);
-                                            await objWriter.WriteElementStringAsync("name", strChildNameElement);
+                                            await objWriter.WriteStartElementAsync("noentry", token: token);
+                                            await objWriter.WriteStartElementAsync(strChildName, token: token);
+                                            await objWriter.WriteElementStringAsync("name", strChildNameElement, token: token);
                                             await objWriter.WriteEndElementAsync();
                                             // </noentry>
                                             await objWriter.WriteEndElementAsync();
@@ -2452,7 +2452,7 @@ namespace Chummer
                             }
                         }
                         else
-                            await objWriter.WriteAttributeStringAsync("needstobeadded", bool.TrueString);
+                            await objWriter.WriteAttributeStringAsync("needstobeadded", bool.TrueString, token: token);
 
                         // </file>
                         await objWriter.WriteEndElementAsync();

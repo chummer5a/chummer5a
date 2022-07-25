@@ -1120,9 +1120,10 @@ namespace Chummer
 
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverload
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     OpenCharacters.Add(objCharacter);
                 else
-                    await OpenCharacters.AddAsync(objCharacter);
+                    await OpenCharacters.AddAsync(objCharacter, token);
                 //Timekeeper.Start("load_file");
                 bool blnLoaded = blnSync
                     // ReSharper disable once MethodHasAsyncOverload
@@ -1133,9 +1134,10 @@ namespace Chummer
                 {
                     if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverload
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         OpenCharacters.Remove(objCharacter);
                     else
-                        await OpenCharacters.RemoveAsync(objCharacter);
+                        await OpenCharacters.RemoveAsync(objCharacter, token);
                     return null;
                 }
 

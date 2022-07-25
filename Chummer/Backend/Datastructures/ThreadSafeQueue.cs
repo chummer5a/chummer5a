@@ -276,8 +276,6 @@ namespace Chummer
             }
         }
 
-        public ValueTask<int> CountAsync => GetCountAsync();
-
         public async ValueTask<int> GetCountAsync(CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))

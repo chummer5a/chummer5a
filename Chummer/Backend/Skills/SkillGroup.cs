@@ -25,6 +25,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
@@ -385,22 +386,22 @@ namespace Chummer.Backend.Skills
             writer.WriteEndElement();
         }
 
-        internal async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        internal async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
             // <skillgroup>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("skillgroup");
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("skillgroup", token: token);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId);
-                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("name_english", Name);
-                await objWriter.WriteElementStringAsync("rating", Rating.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("ratingmax", RatingMaximum.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("base", Base.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("karma", Karma.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("isbroken", IsBroken.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("guid", InternalId, token: token);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("name_english", Name, token: token);
+                await objWriter.WriteElementStringAsync("rating", Rating.ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("ratingmax", RatingMaximum.ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("base", Base.ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("karma", Karma.ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("isbroken", IsBroken.ToString(GlobalSettings.InvariantCultureInfo), token: token);
             }
             finally
             {

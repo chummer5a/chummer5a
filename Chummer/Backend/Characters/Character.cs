@@ -3406,28 +3406,28 @@ namespace Chummer
                             await objWriter.WriteStartDocumentAsync();
 
                             // <character>
-                            await objWriter.WriteStartElementAsync("character");
+                            await objWriter.WriteStartElementAsync("character", token: innerToken);
 
                             // <createdversion />
-                            await objWriter.WriteElementStringAsync("createdversion", _strVersionCreated);
+                            await objWriter.WriteElementStringAsync("createdversion", _strVersionCreated, token: innerToken);
                             // <minimumappversion />
-                            await objWriter.WriteElementStringAsync("minimumappversion", "5.214.1");
+                            await objWriter.WriteElementStringAsync("minimumappversion", "5.214.1", token: innerToken);
                             // <appversion />
                             await objWriter.WriteElementStringAsync("appversion",
-                                Application.ProductVersion.FastEscapeOnceFromStart("0.0."));
+                                Application.ProductVersion.FastEscapeOnceFromStart("0.0."), token: innerToken);
                             // <gameedition />
-                            await objWriter.WriteElementStringAsync("gameedition", "SR5");
+                            await objWriter.WriteElementStringAsync("gameedition", "SR5", token: innerToken);
 
                             // <settings />
-                            await objWriter.WriteElementStringAsync("settings", _strSettingsKey);
+                            await objWriter.WriteElementStringAsync("settings", _strSettingsKey, token: innerToken);
                             // <buildmethod />
-                            await objWriter.WriteElementStringAsync("buildmethod", Settings.BuildMethod.ToString());
+                            await objWriter.WriteElementStringAsync("buildmethod", Settings.BuildMethod.ToString(), token: innerToken);
 
                             // <sources>
-                            await objWriter.WriteStartElementAsync("sources");
+                            await objWriter.WriteStartElementAsync("sources", token: innerToken);
                             foreach (string strBook in Settings.Books)
                             {
-                                await objWriter.WriteElementStringAsync("source", strBook);
+                                await objWriter.WriteElementStringAsync("source", strBook, token: innerToken);
                             }
 
                             // </sources>
@@ -3436,11 +3436,11 @@ namespace Chummer
                             if (Settings.EnabledCustomDataDirectoryInfos.Count > 0)
                             {
                                 // <customdatadirectorynames>
-                                await objWriter.WriteStartElementAsync("customdatadirectorynames");
+                                await objWriter.WriteStartElementAsync("customdatadirectorynames", token: innerToken);
                                 foreach (string strDirectoryName in Settings.EnabledCustomDataDirectoryInfos.Select(x =>
                                              x.Name))
                                 {
-                                    await objWriter.WriteElementStringAsync("directoryname", strDirectoryName);
+                                    await objWriter.WriteElementStringAsync("directoryname", strDirectoryName, token: innerToken);
                                 }
 
                                 // </customdatadirectorynames>
@@ -3448,55 +3448,55 @@ namespace Chummer
                             }
 
                             // <metatype />
-                            await objWriter.WriteElementStringAsync("metatype", _strMetatype);
+                            await objWriter.WriteElementStringAsync("metatype", _strMetatype, token: innerToken);
                             // <metatypeid />
                             await objWriter.WriteElementStringAsync("metatypeid",
-                                _guiMetatype.ToString("D", GlobalSettings.InvariantCultureInfo));
+                                _guiMetatype.ToString("D", GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <metatypebp />
                             await objWriter.WriteElementStringAsync("metatypebp",
-                                _intMetatypeBP.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intMetatypeBP.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <metavariant />
-                            await objWriter.WriteElementStringAsync("metavariant", _strMetavariant);
+                            await objWriter.WriteElementStringAsync("metavariant", _strMetavariant, token: innerToken);
                             // <metavariantid />
                             await objWriter.WriteElementStringAsync("metavariantid",
-                                _guiMetavariant.ToString("D", GlobalSettings.InvariantCultureInfo));
+                                _guiMetavariant.ToString("D", GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <metatypecategory />
-                            await objWriter.WriteElementStringAsync("metatypecategory", _strMetatypeCategory);
+                            await objWriter.WriteElementStringAsync("metatypecategory", _strMetatypeCategory, token: innerToken);
                             // <movement />
-                            await objWriter.WriteElementStringAsync("movement", _strMovement);
+                            await objWriter.WriteElementStringAsync("movement", _strMovement, token: innerToken);
                             // <walk />
-                            await objWriter.WriteElementStringAsync("walk", _strWalk);
+                            await objWriter.WriteElementStringAsync("walk", _strWalk, token: innerToken);
                             // <run />
-                            await objWriter.WriteElementStringAsync("run", _strRun);
+                            await objWriter.WriteElementStringAsync("run", _strRun, token: innerToken);
                             // <sprint />
-                            await objWriter.WriteElementStringAsync("sprint", _strSprint);
+                            await objWriter.WriteElementStringAsync("sprint", _strSprint, token: innerToken);
                             // <walk />
-                            await objWriter.WriteElementStringAsync("walkalt", _strWalk);
+                            await objWriter.WriteElementStringAsync("walkalt", _strWalk, token: innerToken);
                             // <run />
-                            await objWriter.WriteElementStringAsync("runalt", _strRun);
+                            await objWriter.WriteElementStringAsync("runalt", _strRun, token: innerToken);
                             // <sprint />
-                            await objWriter.WriteElementStringAsync("sprintalt", _strSprint);
+                            await objWriter.WriteElementStringAsync("sprintalt", _strSprint, token: innerToken);
                             // <initiativedice />
                             await objWriter.WriteElementStringAsync("initiativedice",
-                                _intInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
 
                             // <prioritymetatype />
-                            await objWriter.WriteElementStringAsync("prioritymetatype", _strPriorityMetatype);
+                            await objWriter.WriteElementStringAsync("prioritymetatype", _strPriorityMetatype, token: innerToken);
                             // <priorityattributes />
-                            await objWriter.WriteElementStringAsync("priorityattributes", _strPriorityAttributes);
+                            await objWriter.WriteElementStringAsync("priorityattributes", _strPriorityAttributes, token: innerToken);
                             // <priorityspecial />
-                            await objWriter.WriteElementStringAsync("priorityspecial", _strPrioritySpecial);
+                            await objWriter.WriteElementStringAsync("priorityspecial", _strPrioritySpecial, token: innerToken);
                             // <priorityskills />
-                            await objWriter.WriteElementStringAsync("priorityskills", _strPrioritySkills);
+                            await objWriter.WriteElementStringAsync("priorityskills", _strPrioritySkills, token: innerToken);
                             // <priorityresources />
-                            await objWriter.WriteElementStringAsync("priorityresources", _strPriorityResources);
+                            await objWriter.WriteElementStringAsync("priorityresources", _strPriorityResources, token: innerToken);
                             // <priorityresources />
-                            await objWriter.WriteElementStringAsync("prioritytalent", _strPriorityTalent);
+                            await objWriter.WriteElementStringAsync("prioritytalent", _strPriorityTalent, token: innerToken);
                             // <priorityskills >
-                            await objWriter.WriteStartElementAsync("priorityskills");
+                            await objWriter.WriteStartElementAsync("priorityskills", token: innerToken);
                             foreach (string strSkill in _lstPrioritySkills)
                             {
-                                await objWriter.WriteElementStringAsync("priorityskill", strSkill);
+                                await objWriter.WriteElementStringAsync("priorityskill", strSkill, token: innerToken);
                             }
 
                             // </priorityskills>
@@ -3504,201 +3504,203 @@ namespace Chummer
 
                             // <essenceatspecialstart />
                             await objWriter.WriteElementStringAsync("essenceatspecialstart",
-                                _decEssenceAtSpecialStart.ToString(GlobalSettings.InvariantCultureInfo));
+                                _decEssenceAtSpecialStart.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
 
                             // <name />
-                            await objWriter.WriteElementStringAsync("name", _strName);
+                            await objWriter.WriteElementStringAsync("name", _strName, token: innerToken);
                             await SaveMugshotsAsync(objWriter, innerToken);
 
                             // <gender />
-                            await objWriter.WriteElementStringAsync("gender", _strGender);
+                            await objWriter.WriteElementStringAsync("gender", _strGender, token: innerToken);
                             // <age />
-                            await objWriter.WriteElementStringAsync("age", _strAge);
+                            await objWriter.WriteElementStringAsync("age", _strAge, token: innerToken);
                             // <eyes />
-                            await objWriter.WriteElementStringAsync("eyes", _strEyes);
+                            await objWriter.WriteElementStringAsync("eyes", _strEyes, token: innerToken);
                             // <height />
-                            await objWriter.WriteElementStringAsync("height", _strHeight);
+                            await objWriter.WriteElementStringAsync("height", _strHeight, token: innerToken);
                             // <weight />
-                            await objWriter.WriteElementStringAsync("weight", _strWeight);
+                            await objWriter.WriteElementStringAsync("weight", _strWeight, token: innerToken);
                             // <skin />
-                            await objWriter.WriteElementStringAsync("skin", _strSkin);
+                            await objWriter.WriteElementStringAsync("skin", _strSkin, token: innerToken);
                             // <hair />
-                            await objWriter.WriteElementStringAsync("hair", _strHair);
+                            await objWriter.WriteElementStringAsync("hair", _strHair, token: innerToken);
                             // <description />
-                            await objWriter.WriteElementStringAsync("description", _strDescription);
+                            await objWriter.WriteElementStringAsync("description", _strDescription, token: innerToken);
                             // <background />
-                            await objWriter.WriteElementStringAsync("background", _strBackground);
+                            await objWriter.WriteElementStringAsync("background", _strBackground, token: innerToken);
                             // <concept />
-                            await objWriter.WriteElementStringAsync("concept", _strConcept);
+                            await objWriter.WriteElementStringAsync("concept", _strConcept, token: innerToken);
                             // <notes />
-                            await objWriter.WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                            await objWriter.WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars(), token: innerToken);
                             // <alias />
-                            await objWriter.WriteElementStringAsync("alias", _strAlias);
+                            await objWriter.WriteElementStringAsync("alias", _strAlias, token: innerToken);
                             // <playername />
-                            await objWriter.WriteElementStringAsync("playername", _strPlayerName);
+                            await objWriter.WriteElementStringAsync("playername", _strPlayerName, token: innerToken);
                             // <gamenotes />
-                            await objWriter.WriteElementStringAsync("gamenotes", _strGameNotes);
+                            await objWriter.WriteElementStringAsync("gamenotes", _strGameNotes, token: innerToken);
                             // <primaryarm />
-                            await objWriter.WriteElementStringAsync("primaryarm", _strPrimaryArm);
+                            await objWriter.WriteElementStringAsync("primaryarm", _strPrimaryArm, token: innerToken);
 
                             // <ignorerules />
                             if (_blnIgnoreRules)
                                 await objWriter.WriteElementStringAsync("ignorerules",
-                                    _blnIgnoreRules.ToString(GlobalSettings.InvariantCultureInfo));
+                                    _blnIgnoreRules.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <iscritter />
                             if (_blnIsCritter)
                                 await objWriter.WriteElementStringAsync("iscritter",
-                                    _blnIsCritter.ToString(GlobalSettings.InvariantCultureInfo));
+                                    _blnIsCritter.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             if (_blnPossessed)
                                 await objWriter.WriteElementStringAsync("possessed",
-                                    _blnPossessed.ToString(GlobalSettings.InvariantCultureInfo));
+                                    _blnPossessed.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <karma />
-                            await objWriter.WriteElementStringAsync("karma", _intKarma.ToString(GlobalSettings.InvariantCultureInfo));
+                            await objWriter.WriteElementStringAsync(
+                                "karma", _intKarma.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <special />
                             await objWriter.WriteElementStringAsync("special",
-                                _intSpecial.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intSpecial.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <totalspecial />
                             await objWriter.WriteElementStringAsync("totalspecial",
-                                _intTotalSpecial.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intTotalSpecial.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <totalattributes />
                             await objWriter.WriteElementStringAsync("totalattributes",
-                                _intTotalAttributes.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intTotalAttributes.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <edgeused />
                             await objWriter.WriteElementStringAsync("edgeused",
-                                _intEdgeUsed.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intEdgeUsed.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <contactpoints />
                             await objWriter.WriteElementStringAsync("contactpoints",
-                                _intCachedContactPoints.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intCachedContactPoints.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <contactpointsused />
                             await objWriter.WriteElementStringAsync("contactpointsused",
-                                _intContactPointsUsed.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intContactPointsUsed.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <spelllimit />
                             await objWriter.WriteElementStringAsync("spelllimit",
-                                _intFreeSpells.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intFreeSpells.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <cfplimit />
                             await objWriter.WriteElementStringAsync("cfplimit",
-                                _intCFPLimit.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intCFPLimit.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <totalaiprogramlimit />
                             await objWriter.WriteElementStringAsync("ainormalprogramlimit",
-                                _intAINormalProgramLimit.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intAINormalProgramLimit.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <aiadvancedprogramlimit />
                             await objWriter.WriteElementStringAsync("aiadvancedprogramlimit",
-                                _intAIAdvancedProgramLimit.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intAIAdvancedProgramLimit.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <currentcounterspellingdice />
                             await objWriter.WriteElementStringAsync("currentcounterspellingdice",
-                                _intCurrentCounterspellingDice.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intCurrentCounterspellingDice.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <currentliftcarryhits />
                             await objWriter.WriteElementStringAsync("currentliftcarryhits",
-                                _intCurrentLiftCarryHits.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intCurrentLiftCarryHits.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <carrylimit />
                             await objWriter.WriteElementStringAsync("basecarrylimit",
-                                _decCachedBaseCarryLimit.ToString(GlobalSettings.InvariantCultureInfo));
+                                _decCachedBaseCarryLimit.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <liftlimit />
                             await objWriter.WriteElementStringAsync("baseliftlimit",
-                                _decCachedBaseLiftLimit.ToString(GlobalSettings.InvariantCultureInfo));
+                                _decCachedBaseLiftLimit.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <totalcarriedweight />
                             await objWriter.WriteElementStringAsync("totalcarriedweight",
-                                _decCachedTotalCarriedWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                                _decCachedTotalCarriedWeight.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <encumbranceinterval />
                             await objWriter.WriteElementStringAsync("encumbranceinterval",
-                                _decCachedEncumbranceInterval.ToString(GlobalSettings.InvariantCultureInfo));
+                                _decCachedEncumbranceInterval.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <streetcred />
                             await objWriter.WriteElementStringAsync("streetcred",
-                                _intStreetCred.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intStreetCred.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <notoriety />
                             await objWriter.WriteElementStringAsync("notoriety",
-                                _intNotoriety.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intNotoriety.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <publicaware />
                             await objWriter.WriteElementStringAsync("publicawareness",
-                                _intPublicAwareness.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intPublicAwareness.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <burntstreetcred />
                             await objWriter.WriteElementStringAsync("burntstreetcred",
-                                _intBurntStreetCred.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intBurntStreetCred.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <baseastralreputation />
                             await objWriter.WriteElementStringAsync("baseastralreputation",
-                                _intBaseAstralReputation.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intBaseAstralReputation.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <basewildreputation />
                             await objWriter.WriteElementStringAsync("basewildreputation",
-                                _intBaseWildReputation.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intBaseWildReputation.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <created />
                             await objWriter.WriteElementStringAsync("created",
-                                _blnCreated.ToString(GlobalSettings.InvariantCultureInfo));
+                                _blnCreated.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <nuyen />
-                            await objWriter.WriteElementStringAsync("nuyen", _decNuyen.ToString(GlobalSettings.InvariantCultureInfo));
+                            await objWriter.WriteElementStringAsync(
+                                "nuyen", _decNuyen.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <startingnuyen />
                             await objWriter.WriteElementStringAsync("startingnuyen",
-                                _decStartingNuyen.ToString(GlobalSettings.InvariantCultureInfo));
+                                _decStartingNuyen.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
 
                             // <nuyenbp />
                             await objWriter.WriteElementStringAsync("nuyenbp",
-                                _decNuyenBP.ToString(GlobalSettings.InvariantCultureInfo));
+                                _decNuyenBP.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
 
                             // <adept />
                             await objWriter.WriteElementStringAsync("adept",
-                                _blnAdeptEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+                                _blnAdeptEnabled.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <magician />
                             await objWriter.WriteElementStringAsync("magician",
-                                _blnMagicianEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+                                _blnMagicianEnabled.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <technomancer />
                             await objWriter.WriteElementStringAsync("technomancer",
-                                _blnTechnomancerEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+                                _blnTechnomancerEnabled.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <ai />
                             await objWriter.WriteElementStringAsync("ai",
-                                _blnAdvancedProgramsEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+                                _blnAdvancedProgramsEnabled.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <cyberwaredisabled />
                             await objWriter.WriteElementStringAsync("cyberwaredisabled",
-                                _blnCyberwareDisabled.ToString(GlobalSettings.InvariantCultureInfo));
+                                _blnCyberwareDisabled.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <initiationdisabled />
                             await objWriter.WriteElementStringAsync("initiationdisabled",
-                                _blnInitiationDisabled.ToString(GlobalSettings.InvariantCultureInfo));
+                                _blnInitiationDisabled.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <critter />
                             await objWriter.WriteElementStringAsync("critter",
-                                _blnCritterEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+                                _blnCritterEnabled.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
 
                             // <prototypetranshuman />
                             await objWriter.WriteElementStringAsync("prototypetranshuman",
-                                _decPrototypeTranshuman.ToString(GlobalSettings.InvariantCultureInfo));
+                                _decPrototypeTranshuman.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
 
                             // <attributes>
-                            await objWriter.WriteStartElementAsync("attributes");
+                            await objWriter.WriteStartElementAsync("attributes", token: innerToken);
                             AttributeSection.Save(objWriter, token);
                             // </attributes>
                             await objWriter.WriteEndElementAsync();
 
                             // <magenabled />
                             await objWriter.WriteElementStringAsync("magenabled",
-                                _blnMAGEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+                                _blnMAGEnabled.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <initiategrade />
                             await objWriter.WriteElementStringAsync("initiategrade",
-                                _intInitiateGrade.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intInitiateGrade.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <resenabled />
                             await objWriter.WriteElementStringAsync("resenabled",
-                                _blnRESEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+                                _blnRESEnabled.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <submersiongrade />
                             await objWriter.WriteElementStringAsync("submersiongrade",
-                                _intSubmersionGrade.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intSubmersionGrade.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <depenabled />
                             await objWriter.WriteElementStringAsync("depenabled",
-                                _blnDEPEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+                                _blnDEPEnabled.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <groupmember />
                             await objWriter.WriteElementStringAsync("groupmember",
-                                _blnGroupMember.ToString(GlobalSettings.InvariantCultureInfo));
+                                _blnGroupMember.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <groupname />
-                            await objWriter.WriteElementStringAsync("groupname", _strGroupName);
+                            await objWriter.WriteElementStringAsync("groupname", _strGroupName, token: innerToken);
                             // <groupnotes />
-                            await objWriter.WriteElementStringAsync("groupnotes", _strGroupNotes);
+                            await objWriter.WriteElementStringAsync("groupnotes", _strGroupNotes, token: innerToken);
 
                             // External reader friendly stuff.
                             await objWriter.WriteElementStringAsync("totaless",
-                                (await EssenceAsync(token: innerToken)).ToString(GlobalSettings.InvariantCultureInfo));
+                                (await EssenceAsync(token: innerToken)).ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
 
                             // Write out the Mystic Adept MAG split info.
                             if (_blnAdeptEnabled && _blnMagicianEnabled)
                             {
                                 await objWriter.WriteElementStringAsync("magsplitadept",
-                                    _intMAGAdept.ToString(GlobalSettings.InvariantCultureInfo));
+                                    _intMAGAdept.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                                 await objWriter.WriteElementStringAsync("magsplitmagician",
-                                    _intMAGMagician.ToString(GlobalSettings.InvariantCultureInfo));
+                                    _intMAGMagician.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             }
 
                             _objTradition?.Save(objWriter);
@@ -3706,14 +3708,14 @@ namespace Chummer
                             // Condition Monitor Progress.
                             // <physicalcmfilled />
                             await objWriter.WriteElementStringAsync("physicalcmfilled",
-                                _intPhysicalCMFilled.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intPhysicalCMFilled.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             // <stuncmfilled />
                             await objWriter.WriteElementStringAsync("stuncmfilled",
-                                _intStunCMFilled.ToString(GlobalSettings.InvariantCultureInfo));
+                                _intStunCMFilled.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
 
                             //<psyche />
                             await objWriter.WriteElementStringAsync("psyche",
-                                _blnPsycheActive.ToString(GlobalSettings.InvariantCultureInfo));
+                                _blnPsycheActive.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
 
                             ///////////////////////////////////////////SKILLS
 
@@ -3726,7 +3728,7 @@ namespace Chummer
                             ///////////////////////////////////////////SKILLS
 
                             // <contacts>
-                            await objWriter.WriteStartElementAsync("contacts");
+                            await objWriter.WriteStartElementAsync("contacts", token: innerToken);
                             foreach (Contact objContact in _lstContacts)
                             {
                                 await objContact.SaveAsync(objWriter);
@@ -3736,7 +3738,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <spells>
-                            await objWriter.WriteStartElementAsync("spells");
+                            await objWriter.WriteStartElementAsync("spells", token: innerToken);
                             foreach (Spell objSpell in _lstSpells)
                             {
                                 objSpell.Save(objWriter);
@@ -3746,7 +3748,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <foci>
-                            await objWriter.WriteStartElementAsync("foci");
+                            await objWriter.WriteStartElementAsync("foci", token: innerToken);
                             foreach (Focus objFocus in _lstFoci)
                             {
                                 objFocus.Save(objWriter);
@@ -3756,7 +3758,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <stackedfoci>
-                            await objWriter.WriteStartElementAsync("stackedfoci");
+                            await objWriter.WriteStartElementAsync("stackedfoci", token: innerToken);
                             foreach (StackedFocus objStack in _lstStackedFoci)
                             {
                                 objStack.Save(objWriter);
@@ -3766,7 +3768,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <powers>
-                            await objWriter.WriteStartElementAsync("powers");
+                            await objWriter.WriteStartElementAsync("powers", token: innerToken);
                             foreach (Power objPower in _lstPowers)
                             {
                                 objPower.Save(objWriter);
@@ -3776,7 +3778,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <spirits>
-                            await objWriter.WriteStartElementAsync("spirits");
+                            await objWriter.WriteStartElementAsync("spirits", token: innerToken);
                             foreach (Spirit objSpirit in _lstSpirits)
                             {
                                 await objSpirit.SaveAsync(objWriter);
@@ -3786,7 +3788,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <complexforms>
-                            await objWriter.WriteStartElementAsync("complexforms");
+                            await objWriter.WriteStartElementAsync("complexforms", token: innerToken);
                             foreach (ComplexForm objComplexForm in _lstComplexForms)
                             {
                                 objComplexForm.Save(objWriter);
@@ -3796,7 +3798,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <aiprograms>
-                            await objWriter.WriteStartElementAsync("aiprograms");
+                            await objWriter.WriteStartElementAsync("aiprograms", token: innerToken);
                             foreach (AIProgram objProgram in _lstAIPrograms)
                             {
                                 objProgram.Save(objWriter);
@@ -3806,7 +3808,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <martialarts>
-                            await objWriter.WriteStartElementAsync("martialarts");
+                            await objWriter.WriteStartElementAsync("martialarts", token: innerToken);
                             foreach (MartialArt objMartialArt in _lstMartialArts)
                             {
                                 objMartialArt.Save(objWriter);
@@ -3816,7 +3818,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <limitmodifiers>
-                            await objWriter.WriteStartElementAsync("limitmodifiers");
+                            await objWriter.WriteStartElementAsync("limitmodifiers", token: innerToken);
                             foreach (LimitModifier objLimitModifier in _lstLimitModifiers)
                             {
                                 objLimitModifier.Save(objWriter);
@@ -3826,7 +3828,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <armors>
-                            await objWriter.WriteStartElementAsync("armors");
+                            await objWriter.WriteStartElementAsync("armors", token: innerToken);
                             foreach (Armor objArmor in _lstArmor)
                             {
                                 objArmor.Save(objWriter);
@@ -3836,7 +3838,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <weapons>
-                            await objWriter.WriteStartElementAsync("weapons");
+                            await objWriter.WriteStartElementAsync("weapons", token: innerToken);
                             foreach (Weapon objWeapon in _lstWeapons)
                             {
                                 objWeapon.Save(objWriter);
@@ -3846,7 +3848,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <cyberwares>
-                            await objWriter.WriteStartElementAsync("cyberwares");
+                            await objWriter.WriteStartElementAsync("cyberwares", token: innerToken);
                             foreach (Cyberware objCyberware in _lstCyberware)
                             {
                                 objCyberware.Save(objWriter);
@@ -3856,7 +3858,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <qualities>
-                            await objWriter.WriteStartElementAsync("qualities");
+                            await objWriter.WriteStartElementAsync("qualities", token: innerToken);
                             foreach (Quality objQuality in _lstQualities)
                             {
                                 objQuality.Save(objWriter);
@@ -3866,7 +3868,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <lifestyles>
-                            await objWriter.WriteStartElementAsync("lifestyles");
+                            await objWriter.WriteStartElementAsync("lifestyles", token: innerToken);
                             foreach (Lifestyle objLifestyle in _lstLifestyles)
                             {
                                 objLifestyle.Save(objWriter);
@@ -3876,7 +3878,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <gears>
-                            await objWriter.WriteStartElementAsync("gears");
+                            await objWriter.WriteStartElementAsync("gears", token: innerToken);
                             foreach (Gear objGear in _lstGear)
                             {
                                 objGear.Save(objWriter);
@@ -3886,7 +3888,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <vehicles>
-                            await objWriter.WriteStartElementAsync("vehicles");
+                            await objWriter.WriteStartElementAsync("vehicles", token: innerToken);
                             foreach (Vehicle objVehicle in _lstVehicles)
                             {
                                 objVehicle.Save(objWriter);
@@ -3896,7 +3898,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <metamagics>
-                            await objWriter.WriteStartElementAsync("metamagics");
+                            await objWriter.WriteStartElementAsync("metamagics", token: innerToken);
                             foreach (Metamagic objMetamagic in _lstMetamagics)
                             {
                                 objMetamagic.Save(objWriter);
@@ -3906,7 +3908,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <arts>
-                            await objWriter.WriteStartElementAsync("arts");
+                            await objWriter.WriteStartElementAsync("arts", token: innerToken);
                             foreach (Art objArt in _lstArts)
                             {
                                 objArt.Save(objWriter);
@@ -3916,7 +3918,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <enhancements>
-                            await objWriter.WriteStartElementAsync("enhancements");
+                            await objWriter.WriteStartElementAsync("enhancements", token: innerToken);
                             foreach (Enhancement objEnhancement in _lstEnhancements)
                             {
                                 objEnhancement.Save(objWriter);
@@ -3926,7 +3928,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <critterpowers>
-                            await objWriter.WriteStartElementAsync("critterpowers");
+                            await objWriter.WriteStartElementAsync("critterpowers", token: innerToken);
                             foreach (CritterPower objPower in _lstCritterPowers)
                             {
                                 objPower.Save(objWriter);
@@ -3936,7 +3938,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <initiationgrades>
-                            await objWriter.WriteStartElementAsync("initiationgrades");
+                            await objWriter.WriteStartElementAsync("initiationgrades", token: innerToken);
                             foreach (InitiationGrade objGrade in _lstInitiationGrades)
                             {
                                 objGrade.Save(objWriter);
@@ -3946,7 +3948,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <improvements>
-                            await objWriter.WriteStartElementAsync("improvements");
+                            await objWriter.WriteStartElementAsync("improvements", token: innerToken);
                             foreach (Improvement objImprovement in _lstImprovements)
                             {
                                 objImprovement.Save(objWriter);
@@ -3956,7 +3958,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <sustained>
-                            await objWriter.WriteStartElementAsync("sustainedobjects");
+                            await objWriter.WriteStartElementAsync("sustainedobjects", token: innerToken);
                             foreach (SustainedObject objSustained in _lstSustainedObjects)
                             {
                                 objSustained.Save(objWriter);
@@ -3966,7 +3968,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <drugs>
-                            await objWriter.WriteStartElementAsync("drugs");
+                            await objWriter.WriteStartElementAsync("drugs", token: innerToken);
                             foreach (Drug objDrug in _lstDrugs)
                             {
                                 objDrug.Save(objWriter);
@@ -3976,7 +3978,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <mentorspirits>
-                            await objWriter.WriteStartElementAsync("mentorspirits");
+                            await objWriter.WriteStartElementAsync("mentorspirits", token: innerToken);
                             foreach (MentorSpirit objMentor in _lstMentorSpirits)
                             {
                                 objMentor.Save(objWriter);
@@ -3986,7 +3988,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <expenses>
-                            await objWriter.WriteStartElementAsync("expenses");
+                            await objWriter.WriteStartElementAsync("expenses", token: innerToken);
                             foreach (ExpenseLogEntry objExpenseLogEntry in _lstExpenseLog)
                             {
                                 objExpenseLogEntry.Save(objWriter);
@@ -3996,7 +3998,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <locations>
-                            await objWriter.WriteStartElementAsync("gearlocations");
+                            await objWriter.WriteStartElementAsync("gearlocations", token: innerToken);
                             foreach (Location objLocation in _lstGearLocations)
                             {
                                 objLocation.Save(objWriter);
@@ -4006,7 +4008,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <armorlocations>
-                            await objWriter.WriteStartElementAsync("armorlocations");
+                            await objWriter.WriteStartElementAsync("armorlocations", token: innerToken);
                             foreach (Location objLocation in _lstArmorLocations)
                             {
                                 objLocation.Save(objWriter);
@@ -4016,7 +4018,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <vehiclelocations>
-                            await objWriter.WriteStartElementAsync("vehiclelocations");
+                            await objWriter.WriteStartElementAsync("vehiclelocations", token: innerToken);
                             foreach (Location objLocation in _lstVehicleLocations)
                             {
                                 objLocation.Save(objWriter);
@@ -4026,7 +4028,7 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <weaponlocations>
-                            await objWriter.WriteStartElementAsync("weaponlocations");
+                            await objWriter.WriteStartElementAsync("weaponlocations", token: innerToken);
                             foreach (Location objLocation in _lstWeaponLocations)
                             {
                                 objLocation.Save(objWriter);
@@ -4036,17 +4038,17 @@ namespace Chummer
                             await objWriter.WriteEndElementAsync();
 
                             // <improvementgroups>
-                            await objWriter.WriteStartElementAsync("improvementgroups");
+                            await objWriter.WriteStartElementAsync("improvementgroups", token: innerToken);
                             foreach (string strGroup in _lstImprovementGroups)
                             {
-                                await objWriter.WriteElementStringAsync("improvementgroup", strGroup);
+                                await objWriter.WriteElementStringAsync("improvementgroup", strGroup, token: innerToken);
                             }
 
                             // </improvementgroups>
                             await objWriter.WriteEndElementAsync();
 
                             // <calendar>
-                            await objWriter.WriteStartElementAsync("calendar");
+                            await objWriter.WriteStartElementAsync("calendar", token: innerToken);
                             foreach (CalendarWeek objWeek in _lstCalendar)
                             {
                                 objWeek.Save(objWriter);
@@ -4059,14 +4061,14 @@ namespace Chummer
                             if (Program.PluginLoader?.MyActivePlugins?.Count > 0)
                             {
                                 // <plugins>
-                                await objWriter.WriteStartElementAsync("plugins");
+                                await objWriter.WriteStartElementAsync("plugins", token: innerToken);
                                 foreach (IPlugin plugin in Program.PluginLoader.MyActivePlugins)
                                 {
                                     try
                                     {
                                         System.Reflection.Assembly pluginAssm = plugin.GetPluginAssembly();
-                                        await objWriter.WriteStartElementAsync(pluginAssm.GetName().Name);
-                                        await objWriter.WriteAttributeStringAsync("version", pluginAssm.GetName().Version.ToString());
+                                        await objWriter.WriteStartElementAsync(pluginAssm.GetName().Name, token: innerToken);
+                                        await objWriter.WriteAttributeStringAsync("version", pluginAssm.GetName().Version.ToString(), token: innerToken);
                                         await objWriter.WriteStringAsync(plugin.GetSaveToFileElement(this));
                                         await objWriter.WriteEndElementAsync();
                                     }
@@ -4081,18 +4083,18 @@ namespace Chummer
                             }
 
                             //calculatedValues
-                            await objWriter.WriteStartElementAsync("calculatedvalues");
+                            await objWriter.WriteStartElementAsync("calculatedvalues", token: innerToken);
                             await objWriter.WriteCommentAsync(
                                 "these values are not loaded and only stored here for third parties, who parse this files (to not have to calculate them themselves)");
                             await objWriter.WriteElementStringAsync("physicalcm",
-                                PhysicalCM.ToString(GlobalSettings.InvariantCultureInfo));
+                                PhysicalCM.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             await objWriter.WriteElementStringAsync("physicalcmthresholdoffset",
-                                PhysicalCMThresholdOffset.ToString(GlobalSettings.InvariantCultureInfo));
+                                PhysicalCMThresholdOffset.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             await objWriter.WriteElementStringAsync("physicalcmoverflow",
-                                CMOverflow.ToString(GlobalSettings.InvariantCultureInfo));
-                            await objWriter.WriteElementStringAsync("stuncm", StunCM.ToString(GlobalSettings.InvariantCultureInfo));
+                                CMOverflow.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
+                            await objWriter.WriteElementStringAsync("stuncm", StunCM.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             await objWriter.WriteElementStringAsync("stuncmthresholdoffset",
-                                StunCMThresholdOffset.ToString(GlobalSettings.InvariantCultureInfo));
+                                StunCMThresholdOffset.ToString(GlobalSettings.InvariantCultureInfo), token: innerToken);
                             await objWriter.WriteEndElementAsync();
                             // </calculatedValues>
 
@@ -4142,9 +4144,10 @@ namespace Chummer
                 {
                     if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverload
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         GlobalSettings.MostRecentlyUsedCharacters.Insert(0, FileName);
                     else
-                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, FileName);
+                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, FileName, token);
                 }
 
                 if (blnSync)
@@ -5416,7 +5419,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstMentorSpirits.Add(objMentor);
                                     else
-                                        await _lstMentorSpirits.AddAsync(objMentor);
+                                        await _lstMentorSpirits.AddAsync(objMentor, token);
                                 }
 
                                 //using finish("load_char_mentorspirit");
@@ -5544,7 +5547,7 @@ namespace Chummer
                                             // ReSharper disable once MethodHasAsyncOverload
                                             _lstImprovements.Add(objImprovement);
                                         else
-                                            await _lstImprovements.AddAsync(objImprovement);
+                                            await _lstImprovements.AddAsync(objImprovement, token);
 
                                         if (objImprovement.ImproveType ==
                                             Improvement.ImprovementType.SkillsoftAccess &&
@@ -5575,7 +5578,7 @@ namespace Chummer
                                                     // ReSharper disable once MethodHasAsyncOverload
                                                     _lstImprovements.Remove(objImprovement);
                                                 else
-                                                    await _lstImprovements.RemoveAsync(objImprovement);
+                                                    await _lstImprovements.RemoveAsync(objImprovement, token);
                                             }
                                             else
                                                 lstCyberadeptSweepGrades.Add(objImprovement);
@@ -5626,7 +5629,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstContacts.Add(objContact);
                                     else
-                                        await _lstContacts.AddAsync(objContact);
+                                        await _lstContacts.AddAsync(objContact, token);
                                 }
 
                                 //Timekeeper.Finish("load_char_contacts");
@@ -5673,7 +5676,7 @@ namespace Chummer
                                                 // ReSharper disable once MethodHasAsyncOverload
                                                 _lstQualities.Add(objQuality);
                                             else
-                                                await _lstQualities.AddAsync(objQuality);
+                                                await _lstQualities.AddAsync(objQuality, token);
                                             if ((blnSync
                                                     // ReSharper disable once MethodHasAsyncOverload
                                                     ? objQuality.GetNodeXPath(token: token)
@@ -6360,7 +6363,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstArmor.Add(objArmor);
                                     else
-                                        await _lstArmor.AddAsync(objArmor);
+                                        await _lstArmor.AddAsync(objArmor, token);
                                 }
 
                                 //Timekeeper.Finish("load_char_armor");
@@ -6392,7 +6395,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstDrugs.Add(objDrug);
                                     else
-                                        await _lstDrugs.AddAsync(objDrug);
+                                        await _lstDrugs.AddAsync(objDrug, token);
                                 }
 
                                 //Timekeeper.Finish("load_char_drugs");
@@ -6427,7 +6430,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstCyberware.Add(objCyberware);
                                     else
-                                        await _lstCyberware.AddAsync(objCyberware);
+                                        await _lstCyberware.AddAsync(objCyberware, token);
                                     // Legacy shim #1
                                     if (objCyberware.Name == "Myostatin Inhibitor" &&
                                         LastSavedVersion <= new Version(5, 195, 1) &&
@@ -6728,7 +6731,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstSpells.Add(objSpell);
                                     else
-                                        await _lstSpells.AddAsync(objSpell);
+                                        await _lstSpells.AddAsync(objSpell, token);
                                 }
                                 //Timekeeper.Finish("load_char_spells");
                             }
@@ -6844,7 +6847,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstSpirits.Add(objSpirit);
                                     else
-                                        await _lstSpirits.AddAsync(objSpirit);
+                                        await _lstSpirits.AddAsync(objSpirit, token);
                                 }
 
                                 if (!_lstSpirits.Any(s => s.Fettered) && Improvements.Any(imp =>
@@ -6889,7 +6892,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstComplexForms.Add(objComplexForm);
                                     else
-                                        await _lstComplexForms.AddAsync(objComplexForm);
+                                        await _lstComplexForms.AddAsync(objComplexForm, token);
                                 }
 
                                 //Timekeeper.Finish("load_char_complex");
@@ -6921,7 +6924,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstAIPrograms.Add(objProgram);
                                     else
-                                        await _lstAIPrograms.AddAsync(objProgram);
+                                        await _lstAIPrograms.AddAsync(objProgram, token);
                                 }
 
                                 //Timekeeper.Finish("load_char_aiprogram");
@@ -6953,7 +6956,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstMartialArts.Add(objMartialArt);
                                     else
-                                        await _lstMartialArts.AddAsync(objMartialArt);
+                                        await _lstMartialArts.AddAsync(objMartialArt, token);
                                 }
 
                                 //Timekeeper.Finish("load_char_marts");
@@ -6985,7 +6988,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstLimitModifiers.Add(obLimitModifier);
                                     else
-                                        await _lstLimitModifiers.AddAsync(obLimitModifier);
+                                        await _lstLimitModifiers.AddAsync(obLimitModifier, token);
                                 }
 
                                 //Timekeeper.Finish("load_char_mod");
@@ -7017,7 +7020,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstLifestyles.Add(objLifestyle);
                                     else
-                                        await _lstLifestyles.AddAsync(objLifestyle);
+                                        await _lstLifestyles.AddAsync(objLifestyle, token);
                                 }
 
                                 //Timekeeper.Finish("load_char_lifestyle");
@@ -7049,7 +7052,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstGear.Add(objGear);
                                     else
-                                        await _lstGear.AddAsync(objGear);
+                                        await _lstGear.AddAsync(objGear, token);
                                 }
 
                                 // If the character has a technomancer quality but no Living Persona commlink, its improvements get re-applied immediately
@@ -7205,7 +7208,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstVehicles.Add(objVehicle);
                                     else
-                                        await _lstVehicles.AddAsync(objVehicle);
+                                        await _lstVehicles.AddAsync(objVehicle, token);
                                 }
 
                                 //Timekeeper.Finish("load_char_car");
@@ -7237,7 +7240,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstWeapons.Add(objWeapon);
                                     else
-                                        await _lstWeapons.AddAsync(objWeapon);
+                                        await _lstWeapons.AddAsync(objWeapon, token);
                                 }
 
                                 //Timekeeper.Finish("load_char_weapons");
@@ -7269,7 +7272,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstMetamagics.Add(objMetamagic);
                                     else
-                                        await _lstMetamagics.AddAsync(objMetamagic);
+                                        await _lstMetamagics.AddAsync(objMetamagic, token);
                                 }
 
                                 //Timekeeper.Finish("load_char_mmagic");
@@ -7301,7 +7304,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstArts.Add(objArt);
                                     else
-                                        await _lstArts.AddAsync(objArt);
+                                        await _lstArts.AddAsync(objArt, token);
                                 }
 
                                 //Timekeeper.Finish("load_char_arts");
@@ -7333,7 +7336,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstEnhancements.Add(objEnhancement);
                                     else
-                                        await _lstEnhancements.AddAsync(objEnhancement);
+                                        await _lstEnhancements.AddAsync(objEnhancement, token);
                                 }
 
                                 //Timekeeper.Finish("load_char_ench");
@@ -7365,7 +7368,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstCritterPowers.Add(objPower);
                                     else
-                                        await _lstCritterPowers.AddAsync(objPower);
+                                        await _lstCritterPowers.AddAsync(objPower, token);
                                 }
 
                                 //Timekeeper.Finish("load_char_cpow");
@@ -7429,7 +7432,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstInitiationGrades.Add(objGrade);
                                     else
-                                        await _lstInitiationGrades.AddAsync(objGrade);
+                                        await _lstInitiationGrades.AddAsync(objGrade, token);
                                 }
 
                                 //Timekeeper.Finish("load_char_init");
@@ -7507,7 +7510,7 @@ namespace Chummer
                                             // ReSharper disable once MethodHasAsyncOverload
                                             _lstSustainedObjects.Add(objSustained);
                                         else
-                                            await _lstSustainedObjects.AddAsync(objSustained);
+                                            await _lstSustainedObjects.AddAsync(objSustained, token);
                                     }
                                 }
                             }
@@ -7543,7 +7546,7 @@ namespace Chummer
                                 {
                                     foreach (XmlNode objXmlGroup in objXmlGroupList)
                                     {
-                                        await _lstImprovementGroups.AddAsync(objXmlGroup.InnerText);
+                                        await _lstImprovementGroups.AddAsync(objXmlGroup.InnerText, token);
                                     }
                                 }
 
@@ -7624,7 +7627,7 @@ namespace Chummer
                                             // ReSharper disable once MethodHasAsyncOverload
                                             _lstWeapons.Add(objWeapon);
                                         else
-                                            await _lstWeapons.AddAsync(objWeapon);
+                                            await _lstWeapons.AddAsync(objWeapon, token);
                                     }
                                 }
 
@@ -7676,8 +7679,8 @@ namespace Chummer
                                             else
                                             {
                                                 foreach (Weapon objWeapon in lstWeapons)
-                                                    await Weapons.AddAsync(objWeapon);
-                                                await Qualities.AddAsync(objQuality);
+                                                    await Weapons.AddAsync(objWeapon, token);
+                                                await Qualities.AddAsync(objQuality, token);
                                             }
                                         }
                                     }
@@ -7723,7 +7726,7 @@ namespace Chummer
                                             // ReSharper disable once MethodHasAsyncOverload
                                             _lstImprovements.Remove(objCyberadeptImprovement);
                                         else
-                                            await _lstImprovements.RemoveAsync(objCyberadeptImprovement);
+                                            await _lstImprovements.RemoveAsync(objCyberadeptImprovement, token);
                                     }
                                 }
 
@@ -7896,7 +7899,7 @@ namespace Chummer
                                 // ReSharper disable once MethodHasAsyncOverload
                                 RefreshEssenceLossImprovements();
                             else
-                                await RefreshEssenceLossImprovementsAsync();
+                                await RefreshEssenceLossImprovementsAsync(token);
                             // Refresh dicepool modifiers due to filled condition monitor boxes
                             RefreshWoundPenalties();
                             // Refresh dicepool modifiers due to sustained spells
@@ -8022,67 +8025,67 @@ namespace Chummer
             using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 // <character>
-                XmlElementWriteHelper objCharacterElement = await objWriter.StartElementAsync("character");
+                XmlElementWriteHelper objCharacterElement = await objWriter.StartElementAsync("character", token: token);
                 try
                 {
                     // <settings />
-                    await objWriter.WriteElementStringAsync("settings", SettingsKey);
+                    await objWriter.WriteElementStringAsync("settings", SettingsKey, token: token);
                     // <buildmethod />
-                    await objWriter.WriteElementStringAsync("buildmethod", Settings.BuildMethod.ToString());
+                    await objWriter.WriteElementStringAsync("buildmethod", Settings.BuildMethod.ToString(), token: token);
                     // <imageformat />
                     await objWriter.WriteElementStringAsync("imageformat",
-                                                            "jpeg"); // Here for legacy/compatibility purposes, we always export as JPEG now
+                                                            "jpeg", token: token); // Here for legacy/compatibility purposes, we always export as JPEG now
                     // <metatype />
-                    await objWriter.WriteElementStringAsync("metatype", await DisplayMetatypeAsync(strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("metatype", await DisplayMetatypeAsync(strLanguageToPrint), token: token);
                     // <metatype_english />
-                    await objWriter.WriteElementStringAsync("metatype_english", Metatype);
+                    await objWriter.WriteElementStringAsync("metatype_english", Metatype, token: token);
                     // <metatype_guid />
                     await objWriter.WriteElementStringAsync("metatype_guid",
                                                             MetatypeGuid.ToString(
-                                                                "D", GlobalSettings.InvariantCultureInfo));
+                                                                "D", GlobalSettings.InvariantCultureInfo), token: token);
                     // <metavariant />
                     await objWriter.WriteElementStringAsync("metavariant",
-                                                            await DisplayMetavariantAsync(strLanguageToPrint));
+                                                            await DisplayMetavariantAsync(strLanguageToPrint), token: token);
                     // <metavariant_english />
-                    await objWriter.WriteElementStringAsync("metavariant_english", Metavariant);
+                    await objWriter.WriteElementStringAsync("metavariant_english", Metavariant, token: token);
                     // <metavariant_guid />
                     await objWriter.WriteElementStringAsync("metavariant_guid",
                                                             MetavariantGuid.ToString(
-                                                                "D", GlobalSettings.InvariantCultureInfo));
+                                                                "D", GlobalSettings.InvariantCultureInfo), token: token);
                     // <movement />
-                    await objWriter.WriteElementStringAsync("movement", FullMovement(objCulture, strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("movement", FullMovement(objCulture, strLanguageToPrint), token: token);
                     // <walk />
-                    await objWriter.WriteElementStringAsync("walk", FullMovement(objCulture, strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("walk", FullMovement(objCulture, strLanguageToPrint), token: token);
                     // <run />
-                    await objWriter.WriteElementStringAsync("run", FullMovement(objCulture, strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("run", FullMovement(objCulture, strLanguageToPrint), token: token);
                     // <sprint />
-                    await objWriter.WriteElementStringAsync("sprint", FullMovement(objCulture, strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("sprint", FullMovement(objCulture, strLanguageToPrint), token: token);
                     // <movementwalk />
                     await objWriter.WriteElementStringAsync("movementwalk",
-                                                            GetMovement(objCulture, strLanguageToPrint));
+                                                            GetMovement(objCulture, strLanguageToPrint), token: token);
                     // <movementswim />
-                    await objWriter.WriteElementStringAsync("movementswim", GetSwim(objCulture, strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("movementswim", GetSwim(objCulture, strLanguageToPrint), token: token);
                     // <movementfly />
-                    await objWriter.WriteElementStringAsync("movementfly", GetFly(objCulture, strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("movementfly", GetFly(objCulture, strLanguageToPrint), token: token);
 
                     // <prioritymetatype />
-                    await objWriter.WriteElementStringAsync("prioritymetatype", MetatypePriority);
+                    await objWriter.WriteElementStringAsync("prioritymetatype", MetatypePriority, token: token);
                     // <priorityattributes />
-                    await objWriter.WriteElementStringAsync("priorityattributes", AttributesPriority);
+                    await objWriter.WriteElementStringAsync("priorityattributes", AttributesPriority, token: token);
                     // <priorityspecial />
-                    await objWriter.WriteElementStringAsync("priorityspecial", SpecialPriority);
+                    await objWriter.WriteElementStringAsync("priorityspecial", SpecialPriority, token: token);
                     // <priorityskills />
-                    await objWriter.WriteElementStringAsync("priorityskills", SkillsPriority);
+                    await objWriter.WriteElementStringAsync("priorityskills", SkillsPriority, token: token);
                     // <priorityresources />
-                    await objWriter.WriteElementStringAsync("priorityresources", ResourcesPriority);
+                    await objWriter.WriteElementStringAsync("priorityresources", ResourcesPriority, token: token);
 
                     // <priorityskills>
-                    XmlElementWriteHelper objPrioritySkillsElement = await objWriter.StartElementAsync("priorityskills");
+                    XmlElementWriteHelper objPrioritySkillsElement = await objWriter.StartElementAsync("priorityskills", token: token);
                     try
                     {
                         foreach (string strSkill in PriorityBonusSkillList)
                         {
-                            await objWriter.WriteElementStringAsync("priorityskill", strSkill);
+                            await objWriter.WriteElementStringAsync("priorityskill", strSkill, token: token);
                         }
                     }
                     finally
@@ -8096,20 +8099,20 @@ namespace Chummer
                     {
                         await objWriter.WriteElementStringAsync("primaryarm",
                                                                 await LanguageManager.GetStringAsync(
-                                                                    "String_Ambidextrous", strLanguageToPrint));
+                                                                    "String_Ambidextrous", strLanguageToPrint), token: token);
                     }
                     else if (PrimaryArm == "Left")
                     {
                         await objWriter.WriteElementStringAsync("primaryarm",
                                                                 await LanguageManager.GetStringAsync(
-                                                                    "String_Improvement_SideLeft", strLanguageToPrint));
+                                                                    "String_Improvement_SideLeft", strLanguageToPrint), token: token);
                     }
                     else
                     {
                         await objWriter.WriteElementStringAsync("primaryarm",
                                                                 await LanguageManager.GetStringAsync(
                                                                     "String_Improvement_SideRight",
-                                                                    strLanguageToPrint));
+                                                                    strLanguageToPrint), token: token);
                     }
 
                     // If the character does not have a name, call them Unnamed Character. This prevents a transformed document from
@@ -8119,7 +8122,7 @@ namespace Chummer
                                                             !string.IsNullOrEmpty(Name)
                                                                 ? Name
                                                                 : await LanguageManager.GetStringAsync(
-                                                                    "String_UnnamedCharacter", strLanguageToPrint));
+                                                                    "String_UnnamedCharacter", strLanguageToPrint), token: token);
 
                     await PrintMugshots(objWriter, token);
 
@@ -8128,156 +8131,156 @@ namespace Chummer
                                                             await TranslateExtraAsync(
                                                                 await ReverseTranslateExtraAsync(
                                                                     Gender, GlobalSettings.Language, "contacts.xml"),
-                                                                strLanguageToPrint, "contacts.xml"));
+                                                                strLanguageToPrint, "contacts.xml"), token: token);
                     // <age />
                     await objWriter.WriteElementStringAsync("age",
                                                             await TranslateExtraAsync(
                                                                 await ReverseTranslateExtraAsync(
                                                                     Age, GlobalSettings.Language, "contacts.xml"),
                                                                 strLanguageToPrint,
-                                                                "contacts.xml"));
+                                                                "contacts.xml"), token: token);
                     // <eyes />
                     await objWriter.WriteElementStringAsync("eyes",
                                                             await TranslateExtraAsync(
                                                                 await ReverseTranslateExtraAsync(Eyes),
-                                                                strLanguageToPrint));
+                                                                strLanguageToPrint), token: token);
                     // <height />
                     await objWriter.WriteElementStringAsync("height",
                                                             await TranslateExtraAsync(
                                                                 await ReverseTranslateExtraAsync(Height),
-                                                                strLanguageToPrint));
+                                                                strLanguageToPrint), token: token);
                     // <weight />
                     await objWriter.WriteElementStringAsync("weight",
                                                             await TranslateExtraAsync(
                                                                 await ReverseTranslateExtraAsync(Weight),
-                                                                strLanguageToPrint));
+                                                                strLanguageToPrint), token: token);
                     // <skin />
                     await objWriter.WriteElementStringAsync("skin",
                                                             await TranslateExtraAsync(
                                                                 await ReverseTranslateExtraAsync(Skin),
-                                                                strLanguageToPrint));
+                                                                strLanguageToPrint), token: token);
                     // <hair />
                     await objWriter.WriteElementStringAsync("hair",
                                                             await TranslateExtraAsync(
                                                                 await ReverseTranslateExtraAsync(Hair),
-                                                                strLanguageToPrint));
+                                                                strLanguageToPrint), token: token);
                     // <description />
-                    await objWriter.WriteElementStringAsync("description", await Description.RtfToHtmlAsync(token));
+                    await objWriter.WriteElementStringAsync("description", await Description.RtfToHtmlAsync(token), token: token);
                     // <background />
-                    await objWriter.WriteElementStringAsync("background", await Background.RtfToHtmlAsync(token));
+                    await objWriter.WriteElementStringAsync("background", await Background.RtfToHtmlAsync(token), token: token);
                     // <concept />
-                    await objWriter.WriteElementStringAsync("concept", await Concept.RtfToHtmlAsync(token));
+                    await objWriter.WriteElementStringAsync("concept", await Concept.RtfToHtmlAsync(token), token: token);
                     // <notes />
-                    await objWriter.WriteElementStringAsync("notes", await Notes.RtfToHtmlAsync(token));
+                    await objWriter.WriteElementStringAsync("notes", await Notes.RtfToHtmlAsync(token), token: token);
                     // <alias />
-                    await objWriter.WriteElementStringAsync("alias", Alias);
+                    await objWriter.WriteElementStringAsync("alias", Alias, token: token);
                     // <playername />
-                    await objWriter.WriteElementStringAsync("playername", PlayerName);
+                    await objWriter.WriteElementStringAsync("playername", PlayerName, token: token);
                     // <gamenotes />
-                    await objWriter.WriteElementStringAsync("gamenotes", await GameNotes.RtfToHtmlAsync(token));
+                    await objWriter.WriteElementStringAsync("gamenotes", await GameNotes.RtfToHtmlAsync(token), token: token);
 
                     // <limitphysical />
-                    await objWriter.WriteElementStringAsync("limitphysical", LimitPhysical.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("limitphysical", LimitPhysical.ToString(objCulture), token: token);
                     // <limitmental />
-                    await objWriter.WriteElementStringAsync("limitmental", LimitMental.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("limitmental", LimitMental.ToString(objCulture), token: token);
                     // <limitsocial />
-                    await objWriter.WriteElementStringAsync("limitsocial", LimitSocial.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("limitsocial", LimitSocial.ToString(objCulture), token: token);
                     // <limitastral />
-                    await objWriter.WriteElementStringAsync("limitastral", LimitAstral.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("limitastral", LimitAstral.ToString(objCulture), token: token);
                     // <contactpoints />
-                    await objWriter.WriteElementStringAsync("contactpoints", ContactPoints.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("contactpoints", ContactPoints.ToString(objCulture), token: token);
                     // <contactpointsused />
                     await objWriter.WriteElementStringAsync("contactpointsused",
-                                                            ContactPointsUsed.ToString(objCulture));
+                                                            ContactPointsUsed.ToString(objCulture), token: token);
                     // <cfplimit />
-                    await objWriter.WriteElementStringAsync("cfplimit", CFPLimit.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("cfplimit", CFPLimit.ToString(objCulture), token: token);
                     // <totalaiprogramlimit />
                     await objWriter.WriteElementStringAsync("ainormalprogramlimit",
-                                                            AINormalProgramLimit.ToString(objCulture));
+                                                            AINormalProgramLimit.ToString(objCulture), token: token);
                     // <aiadvancedprogramlimit />
                     await objWriter.WriteElementStringAsync("aiadvancedprogramlimit",
-                                                            AIAdvancedProgramLimit.ToString(objCulture));
+                                                            AIAdvancedProgramLimit.ToString(objCulture), token: token);
                     // <spelllimit />
-                    await objWriter.WriteElementStringAsync("spelllimit", FreeSpells.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("spelllimit", FreeSpells.ToString(objCulture), token: token);
                     // <karma />
-                    await objWriter.WriteElementStringAsync("karma", Karma.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("karma", Karma.ToString(objCulture), token: token);
                     // <totalkarma />
-                    await objWriter.WriteElementStringAsync("totalkarma", CareerKarma.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("totalkarma", CareerKarma.ToString(objCulture), token: token);
                     // <special />
-                    await objWriter.WriteElementStringAsync("special", Special.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("special", Special.ToString(objCulture), token: token);
                     // <totalspecial />
-                    await objWriter.WriteElementStringAsync("totalspecial", TotalSpecial.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("totalspecial", TotalSpecial.ToString(objCulture), token: token);
                     // <attributes />
-                    await objWriter.WriteElementStringAsync("attributes", Attributes.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("attributes", Attributes.ToString(objCulture), token: token);
                     // <totalattributes />
-                    await objWriter.WriteElementStringAsync("totalattributes", TotalAttributes.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("totalattributes", TotalAttributes.ToString(objCulture), token: token);
                     // <edgeused />
-                    await objWriter.WriteElementStringAsync("edgeused", EdgeUsed.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("edgeused", EdgeUsed.ToString(objCulture), token: token);
                     // <edgeremaining />
-                    await objWriter.WriteElementStringAsync("edgeremaining", EdgeRemaining.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("edgeremaining", EdgeRemaining.ToString(objCulture), token: token);
                     // <streetcred />
-                    await objWriter.WriteElementStringAsync("streetcred", StreetCred.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("streetcred", StreetCred.ToString(objCulture), token: token);
                     // <calculatedstreetcred />
                     await objWriter.WriteElementStringAsync("calculatedstreetcred",
-                                                            CalculatedStreetCred.ToString(objCulture));
+                                                            CalculatedStreetCred.ToString(objCulture), token: token);
                     // <totalstreetcred />
-                    await objWriter.WriteElementStringAsync("totalstreetcred", TotalStreetCred.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("totalstreetcred", TotalStreetCred.ToString(objCulture), token: token);
                     // <burntstreetcred />
-                    await objWriter.WriteElementStringAsync("burntstreetcred", BurntStreetCred.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("burntstreetcred", BurntStreetCred.ToString(objCulture), token: token);
                     // <notoriety />
-                    await objWriter.WriteElementStringAsync("notoriety", Notoriety.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("notoriety", Notoriety.ToString(objCulture), token: token);
                     // <calculatednotoriety />
                     await objWriter.WriteElementStringAsync("calculatednotoriety",
-                                                            CalculatedNotoriety.ToString(objCulture));
+                                                            CalculatedNotoriety.ToString(objCulture), token: token);
                     // <totalnotoriety />
-                    await objWriter.WriteElementStringAsync("totalnotoriety", TotalNotoriety.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("totalnotoriety", TotalNotoriety.ToString(objCulture), token: token);
                     // <publicawareness />
-                    await objWriter.WriteElementStringAsync("publicawareness", PublicAwareness.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("publicawareness", PublicAwareness.ToString(objCulture), token: token);
                     // <calculatedpublicawareness />
                     await objWriter.WriteElementStringAsync("calculatedpublicawareness",
-                                                            CalculatedPublicAwareness.ToString(objCulture));
+                                                            CalculatedPublicAwareness.ToString(objCulture), token: token);
                     // <totalpublicawareness />
                     await objWriter.WriteElementStringAsync("totalpublicawareness",
-                                                            TotalPublicAwareness.ToString(objCulture));
+                                                            TotalPublicAwareness.ToString(objCulture), token: token);
                     // <astralreputation />
-                    await objWriter.WriteElementStringAsync("astralreputation", AstralReputation.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("astralreputation", AstralReputation.ToString(objCulture), token: token);
                     // <totalastralreputation />
                     await objWriter.WriteElementStringAsync("totalastralreputation",
-                                                            TotalAstralReputation.ToString(objCulture));
+                                                            TotalAstralReputation.ToString(objCulture), token: token);
                     // <wildreputation />
-                    await objWriter.WriteElementStringAsync("wildreputation", WildReputation.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("wildreputation", WildReputation.ToString(objCulture), token: token);
                     // <totalwildreputation />
                     await objWriter.WriteElementStringAsync("totalwildreputation",
-                                                            TotalWildReputation.ToString(objCulture));
+                                                            TotalWildReputation.ToString(objCulture), token: token);
                     // <created />
                     await objWriter.WriteElementStringAsync(
-                        "created", Created.ToString(GlobalSettings.InvariantCultureInfo));
+                        "created", Created.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                     // <nuyen />
-                    await objWriter.WriteElementStringAsync("nuyen", Nuyen.ToString(Settings.NuyenFormat, objCulture));
+                    await objWriter.WriteElementStringAsync("nuyen", Nuyen.ToString(Settings.NuyenFormat, objCulture), token: token);
                     // <adept />
                     await objWriter.WriteElementStringAsync(
-                        "adept", AdeptEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+                        "adept", AdeptEnabled.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                     // <magician />
                     await objWriter.WriteElementStringAsync(
-                        "magician", MagicianEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+                        "magician", MagicianEnabled.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                     // <technomancer />
                     await objWriter.WriteElementStringAsync("technomancer",
                                                             TechnomancerEnabled.ToString(
-                                                                GlobalSettings.InvariantCultureInfo));
+                                                                GlobalSettings.InvariantCultureInfo), token: token);
                     // <ai />
                     await objWriter.WriteElementStringAsync("ai",
                                                             AdvancedProgramsEnabled.ToString(
-                                                                GlobalSettings.InvariantCultureInfo));
+                                                                GlobalSettings.InvariantCultureInfo), token: token);
                     // <cyberwaredisabled />
                     await objWriter.WriteElementStringAsync("cyberwaredisabled",
                                                             CyberwareDisabled.ToString(
-                                                                GlobalSettings.InvariantCultureInfo));
+                                                                GlobalSettings.InvariantCultureInfo), token: token);
                     // <critter />
                     await objWriter.WriteElementStringAsync(
-                        "critter", CritterEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+                        "critter", CritterEnabled.ToString(GlobalSettings.InvariantCultureInfo), token: token);
 
                     await objWriter.WriteElementStringAsync(
-                        "totaless", (await EssenceAsync(token: token)).ToString(Settings.EssenceFormat, objCulture));
+                        "totaless", (await EssenceAsync(token: token)).ToString(Settings.EssenceFormat, objCulture), token: token);
 
                     // <tradition />
                     if (MagicTradition.Type != TraditionType.None)
@@ -8286,7 +8289,7 @@ namespace Chummer
                     }
 
                     // <attributes>
-                    XmlElementWriteHelper objAttributesElement = await objWriter.StartElementAsync("attributes");
+                    XmlElementWriteHelper objAttributesElement = await objWriter.StartElementAsync("attributes", token: token);
                     try
                     {
                         await AttributeSection.Print(objWriter, objCulture, strLanguageToPrint, token);
@@ -8298,322 +8301,322 @@ namespace Chummer
                     }
 
                     // <dodge />
-                    await objWriter.WriteElementStringAsync("dodge", Dodge.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("dodge", Dodge.ToString(objCulture), token: token);
                     // <armor />
-                    await objWriter.WriteElementStringAsync("armor", TotalArmorRating.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("armor", TotalArmorRating.ToString(objCulture), token: token);
                     // <firearmor />
-                    await objWriter.WriteElementStringAsync("firearmor", TotalFireArmorRating.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("firearmor", TotalFireArmorRating.ToString(objCulture), token: token);
                     // <coldarmor />
-                    await objWriter.WriteElementStringAsync("coldarmor", TotalColdArmorRating.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("coldarmor", TotalColdArmorRating.ToString(objCulture), token: token);
                     // <electricityarmor />
                     await objWriter.WriteElementStringAsync("electricityarmor",
-                                                            TotalElectricityArmorRating.ToString(objCulture));
+                                                            TotalElectricityArmorRating.ToString(objCulture), token: token);
                     // <acidarmor />
-                    await objWriter.WriteElementStringAsync("acidarmor", TotalAcidArmorRating.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("acidarmor", TotalAcidArmorRating.ToString(objCulture), token: token);
                     // <fallingarmor />
                     await objWriter.WriteElementStringAsync("fallingarmor",
-                                                            TotalFallingArmorRating.ToString(objCulture));
+                                                            TotalFallingArmorRating.ToString(objCulture), token: token);
 
                     int intDamageResistanceDice = (await ImprovementManager
-                            .ValueOfAsync(this, Improvement.ImprovementType.DamageResistance))
+                            .ValueOfAsync(this, Improvement.ImprovementType.DamageResistance, token: token))
                                                   .StandardRound();
                     // <armordicestun />
                     await objWriter.WriteElementStringAsync("armordicestun",
                                                             (BOD.TotalValue + intDamageResistanceDice
-                                                                            + TotalArmorRating).ToString(objCulture));
+                                                                            + TotalArmorRating).ToString(objCulture), token: token);
                     // <firearmordicestun />
                     await objWriter.WriteElementStringAsync("firearmordicestun",
                                                             (BOD.TotalValue + intDamageResistanceDice
                                                                             + TotalFireArmorRating)
-                                                            .ToString(objCulture));
+                                                            .ToString(objCulture), token: token);
                     // <coldarmordicestun />
                     await objWriter.WriteElementStringAsync("coldarmordicestun",
                                                             (BOD.TotalValue + intDamageResistanceDice
                                                                             + TotalColdArmorRating)
-                                                            .ToString(objCulture));
+                                                            .ToString(objCulture), token: token);
                     // <electricityarmordicestun />
                     await objWriter.WriteElementStringAsync("electricityarmordicestun",
                                                             (BOD.TotalValue + intDamageResistanceDice
                                                                             + TotalElectricityArmorRating)
-                                                            .ToString(objCulture));
+                                                            .ToString(objCulture), token: token);
                     // <acidarmordicestun />
                     await objWriter.WriteElementStringAsync("acidarmordicestun",
                                                             (BOD.TotalValue + intDamageResistanceDice
                                                                             + TotalAcidArmorRating)
-                                                            .ToString(objCulture));
+                                                            .ToString(objCulture), token: token);
                     // <fallingarmordicestun />
                     await objWriter.WriteElementStringAsync("fallingarmordicestun",
                                                             (BOD.TotalValue + intDamageResistanceDice
                                                                             + TotalFallingArmorRating)
-                                                            .ToString(objCulture));
+                                                            .ToString(objCulture), token: token);
                     // <armordicephysical />
                     await objWriter.WriteElementStringAsync("armordicephysical",
                                                             (BOD.TotalValue + intDamageResistanceDice
-                                                                            + TotalArmorRating).ToString(objCulture));
+                                                                            + TotalArmorRating).ToString(objCulture), token: token);
                     // <firearmordicephysical />
                     await objWriter.WriteElementStringAsync("firearmordicephysical",
                                                             (BOD.TotalValue + intDamageResistanceDice
                                                                             + TotalFireArmorRating)
-                                                            .ToString(objCulture));
+                                                            .ToString(objCulture), token: token);
                     // <coldarmordicephysical />
                     await objWriter.WriteElementStringAsync("coldarmordicephysical",
                                                             (BOD.TotalValue + intDamageResistanceDice
                                                                             + TotalColdArmorRating)
-                                                            .ToString(objCulture));
+                                                            .ToString(objCulture), token: token);
                     // <electricityarmordicephysical />
                     await objWriter.WriteElementStringAsync("electricityarmordicephysical",
                                                             (BOD.TotalValue + intDamageResistanceDice
                                                                             + TotalElectricityArmorRating)
-                                                            .ToString(objCulture));
+                                                            .ToString(objCulture), token: token);
                     // <acidarmordicephysical />
                     await objWriter.WriteElementStringAsync("acidarmordicephysical",
                                                             (BOD.TotalValue + intDamageResistanceDice
                                                                             + TotalAcidArmorRating)
-                                                            .ToString(objCulture));
+                                                            .ToString(objCulture), token: token);
                     // <fallingarmordicephysical />
                     await objWriter.WriteElementStringAsync("fallingarmordicephysical",
                                                             (BOD.TotalValue + intDamageResistanceDice
                                                                             + TotalFallingArmorRating)
-                                                            .ToString(objCulture));
+                                                            .ToString(objCulture), token: token);
 
                     bool blnIsAI = IsAI;
                     bool blnPhysicalTrackIsCore = blnIsAI && !(HomeNode is Vehicle);
                     // Condition Monitors.
                     // <physicalcm />
                     int intPhysicalCM = PhysicalCM;
-                    await objWriter.WriteElementStringAsync("physicalcm", intPhysicalCM.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("physicalcm", intPhysicalCM.ToString(objCulture), token: token);
                     await objWriter.WriteElementStringAsync("physicalcmiscorecm",
                                                             blnPhysicalTrackIsCore.ToString(
-                                                                GlobalSettings.InvariantCultureInfo));
+                                                                GlobalSettings.InvariantCultureInfo), token: token);
                     // <stuncm />
                     int intStunCM = StunCM;
-                    await objWriter.WriteElementStringAsync("stuncm", intStunCM.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("stuncm", intStunCM.ToString(objCulture), token: token);
                     await objWriter.WriteElementStringAsync("stuncmismatrixcm",
-                                                            blnIsAI.ToString(GlobalSettings.InvariantCultureInfo));
+                                                            blnIsAI.ToString(GlobalSettings.InvariantCultureInfo), token: token);
 
                     // Condition Monitor Progress.
                     // <physicalcmfilled />
-                    await objWriter.WriteElementStringAsync("physicalcmfilled", PhysicalCMFilled.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("physicalcmfilled", PhysicalCMFilled.ToString(objCulture), token: token);
                     // <stuncmfilled />
-                    await objWriter.WriteElementStringAsync("stuncmfilled", StunCMFilled.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("stuncmfilled", StunCMFilled.ToString(objCulture), token: token);
 
                     // <cmthreshold>
-                    await objWriter.WriteElementStringAsync("cmthreshold", CMThreshold.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("cmthreshold", CMThreshold.ToString(objCulture), token: token);
                     // <cmthresholdoffset>
                     await objWriter.WriteElementStringAsync("physicalcmthresholdoffset",
                                                             Math.Min(PhysicalCMThresholdOffset, intPhysicalCM)
-                                                                .ToString(objCulture));
+                                                                .ToString(objCulture), token: token);
                     // <cmthresholdoffset>
                     await objWriter.WriteElementStringAsync("stuncmthresholdoffset",
                                                             Math.Min(StunCMThresholdOffset, intStunCM)
-                                                                .ToString(objCulture));
+                                                                .ToString(objCulture), token: token);
                     // <cmoverflow>
-                    await objWriter.WriteElementStringAsync("cmoverflow", CMOverflow.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("cmoverflow", CMOverflow.ToString(objCulture), token: token);
 
                     // <psyche>
                     await objWriter.WriteElementStringAsync(
-                        "psyche", _blnPsycheActive.ToString(GlobalSettings.InvariantCultureInfo));
+                        "psyche", _blnPsycheActive.ToString(GlobalSettings.InvariantCultureInfo), token: token);
 
                     // Calculate Initiatives.
                     // Initiative.
-                    await objWriter.WriteElementStringAsync("init", GetInitiative(objCulture, strLanguageToPrint));
-                    await objWriter.WriteElementStringAsync("initdice", InitiativeDice.ToString(objCulture));
-                    await objWriter.WriteElementStringAsync("initvalue", InitiativeValue.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("init", GetInitiative(objCulture, strLanguageToPrint), token: token);
+                    await objWriter.WriteElementStringAsync("initdice", InitiativeDice.ToString(objCulture), token: token);
+                    await objWriter.WriteElementStringAsync("initvalue", InitiativeValue.ToString(objCulture), token: token);
                     await objWriter.WriteElementStringAsync("initbonus",
                                                             Math.Max(
                                                                     await ImprovementManager.ValueOfAsync(
-                                                                        this, Improvement.ImprovementType.Initiative),
+                                                                        this, Improvement.ImprovementType.Initiative, token: token),
                                                                     0)
-                                                                .ToString(objCulture));
+                                                                .ToString(objCulture), token: token);
 
                     // Astral Initiative.
                     if (MAGEnabled)
                     {
                         await objWriter.WriteElementStringAsync("astralinit",
-                                                                GetAstralInitiative(objCulture, strLanguageToPrint));
+                                                                GetAstralInitiative(objCulture, strLanguageToPrint), token: token);
                         await objWriter.WriteElementStringAsync("astralinitdice",
-                                                                AstralInitiativeDice.ToString(objCulture));
+                                                                AstralInitiativeDice.ToString(objCulture), token: token);
                         await objWriter.WriteElementStringAsync("astralinitvalue",
-                                                                AstralInitiativeValue.ToString(objCulture));
+                                                                AstralInitiativeValue.ToString(objCulture), token: token);
                     }
 
                     // Matrix Initiative (AR).
                     await objWriter.WriteElementStringAsync("matrixarinit",
-                                                            GetMatrixInitiative(objCulture, strLanguageToPrint));
+                                                            GetMatrixInitiative(objCulture, strLanguageToPrint), token: token);
                     await objWriter.WriteElementStringAsync("matrixarinitdice",
-                                                            MatrixInitiativeDice.ToString(objCulture));
+                                                            MatrixInitiativeDice.ToString(objCulture), token: token);
                     await objWriter.WriteElementStringAsync("matrixarinitvalue",
-                                                            MatrixInitiativeValue.ToString(objCulture));
+                                                            MatrixInitiativeValue.ToString(objCulture), token: token);
 
                     // Matrix Initiative (Cold).
                     await objWriter.WriteElementStringAsync("matrixcoldinit",
-                                                            GetMatrixInitiativeCold(objCulture, strLanguageToPrint));
+                                                            GetMatrixInitiativeCold(objCulture, strLanguageToPrint), token: token);
                     await objWriter.WriteElementStringAsync("matrixcoldinitdice",
-                                                            MatrixInitiativeDice.ToString(objCulture));
+                                                            MatrixInitiativeDice.ToString(objCulture), token: token);
                     await objWriter.WriteElementStringAsync("matrixcoldinitvalue",
-                                                            MatrixInitiativeValue.ToString(objCulture));
+                                                            MatrixInitiativeValue.ToString(objCulture), token: token);
 
                     // Matrix Initiative (Hot).
                     await objWriter.WriteElementStringAsync("matrixhotinit",
-                                                            GetMatrixInitiativeHot(objCulture, strLanguageToPrint));
+                                                            GetMatrixInitiativeHot(objCulture, strLanguageToPrint), token: token);
                     await objWriter.WriteElementStringAsync("matrixhotinitdice",
-                                                            MatrixInitiativeDice.ToString(objCulture));
+                                                            MatrixInitiativeDice.ToString(objCulture), token: token);
                     await objWriter.WriteElementStringAsync("matrixhotinitvalue",
-                                                            MatrixInitiativeValue.ToString(objCulture));
+                                                            MatrixInitiativeValue.ToString(objCulture), token: token);
 
                     // Rigger Initiative.
                     await objWriter.WriteElementStringAsync("riggerinit",
-                                                            GetInitiative(objCulture, strLanguageToPrint));
+                                                            GetInitiative(objCulture, strLanguageToPrint), token: token);
 
                     // <magenabled />
                     await objWriter.WriteElementStringAsync("magenabled",
-                                                            MAGEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+                                                            MAGEnabled.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                     // <initiategrade />
-                    await objWriter.WriteElementStringAsync("initiategrade", InitiateGrade.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("initiategrade", InitiateGrade.ToString(objCulture), token: token);
                     // <resenabled />
                     await objWriter.WriteElementStringAsync("resenabled",
-                                                            RESEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+                                                            RESEnabled.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                     // <submersiongrade />
-                    await objWriter.WriteElementStringAsync("submersiongrade", SubmersionGrade.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("submersiongrade", SubmersionGrade.ToString(objCulture), token: token);
                     // <depenabled />
                     await objWriter.WriteElementStringAsync("depenabled",
-                                                            DEPEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+                                                            DEPEnabled.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                     // <groupmember />
                     await objWriter.WriteElementStringAsync("groupmember",
-                                                            GroupMember.ToString(GlobalSettings.InvariantCultureInfo));
+                                                            GroupMember.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                     // <groupname />
-                    await objWriter.WriteElementStringAsync("groupname", GroupName);
+                    await objWriter.WriteElementStringAsync("groupname", GroupName, token: token);
                     // <groupnotes />
-                    await objWriter.WriteElementStringAsync("groupnotes", GroupNotes);
+                    await objWriter.WriteElementStringAsync("groupnotes", GroupNotes, token: token);
                     // <surprise />
-                    await objWriter.WriteElementStringAsync("surprise", Surprise.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("surprise", Surprise.ToString(objCulture), token: token);
                     // <composure />
-                    await objWriter.WriteElementStringAsync("composure", Composure.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("composure", Composure.ToString(objCulture), token: token);
                     // <judgeintentions />
-                    await objWriter.WriteElementStringAsync("judgeintentions", JudgeIntentions.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("judgeintentions", JudgeIntentions.ToString(objCulture), token: token);
                     // <judgeintentionsresist />
                     await objWriter.WriteElementStringAsync("judgeintentionsresist",
-                                                            JudgeIntentionsResist.ToString(objCulture));
+                                                            JudgeIntentionsResist.ToString(objCulture), token: token);
                     // <liftandcarry />
-                    await objWriter.WriteElementStringAsync("liftandcarry", LiftAndCarry.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("liftandcarry", LiftAndCarry.ToString(objCulture), token: token);
                     // <memory />
-                    await objWriter.WriteElementStringAsync("memory", Memory.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("memory", Memory.ToString(objCulture), token: token);
                     // <liftweight />
                     await objWriter.WriteElementStringAsync("liftweight",
-                                                            LiftLimit.ToString(Settings.WeightFormat, objCulture));
+                                                            LiftLimit.ToString(Settings.WeightFormat, objCulture), token: token);
                     // <carryweight />
                     await objWriter.WriteElementStringAsync("carryweight",
-                                                            CarryLimit.ToString(Settings.WeightFormat, objCulture));
+                                                            CarryLimit.ToString(Settings.WeightFormat, objCulture), token: token);
                     // <totalcarriedweight />
                     await objWriter.WriteElementStringAsync("totalcarriedweight",
                                                             TotalCarriedWeight.ToString(
-                                                                Settings.WeightFormat, objCulture));
+                                                                Settings.WeightFormat, objCulture), token: token);
                     // <fatigueresist />
-                    await objWriter.WriteElementStringAsync("fatigueresist", FatigueResist.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("fatigueresist", FatigueResist.ToString(objCulture), token: token);
                     // <radiationresist />
-                    await objWriter.WriteElementStringAsync("radiationresist", RadiationResist.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("radiationresist", RadiationResist.ToString(objCulture), token: token);
                     // <sonicresist />
-                    await objWriter.WriteElementStringAsync("sonicresist", SonicResist.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("sonicresist", SonicResist.ToString(objCulture), token: token);
                     // <toxincontacttesist />
                     await objWriter.WriteElementStringAsync("toxincontactresist",
-                                                            ToxinContactResist(strLanguageToPrint, objCulture));
+                                                            ToxinContactResist(strLanguageToPrint, objCulture), token: token);
                     // <toxiningestionresist />
                     await objWriter.WriteElementStringAsync("toxiningestionresist",
-                                                            ToxinIngestionResist(strLanguageToPrint, objCulture));
+                                                            ToxinIngestionResist(strLanguageToPrint, objCulture), token: token);
                     // <toxininhalationresist />
                     await objWriter.WriteElementStringAsync("toxininhalationresist",
-                                                            ToxinInhalationResist(strLanguageToPrint, objCulture));
+                                                            ToxinInhalationResist(strLanguageToPrint, objCulture), token: token);
                     // <toxininjectionresist />
                     await objWriter.WriteElementStringAsync("toxininjectionresist",
-                                                            ToxinInjectionResist(strLanguageToPrint, objCulture));
+                                                            ToxinInjectionResist(strLanguageToPrint, objCulture), token: token);
                     // <pathogencontactresist />
                     await objWriter.WriteElementStringAsync("pathogencontactresist",
-                                                            PathogenContactResist(strLanguageToPrint, objCulture));
+                                                            PathogenContactResist(strLanguageToPrint, objCulture), token: token);
                     // <pathogeningestionresist />
                     await objWriter.WriteElementStringAsync("pathogeningestionresist",
-                                                            PathogenIngestionResist(strLanguageToPrint, objCulture));
+                                                            PathogenIngestionResist(strLanguageToPrint, objCulture), token: token);
                     // <pathogeninhalationresist />
                     await objWriter.WriteElementStringAsync("pathogeninhalationresist",
-                                                            PathogenInhalationResist(strLanguageToPrint, objCulture));
+                                                            PathogenInhalationResist(strLanguageToPrint, objCulture), token: token);
                     // <pathogeninjectionresist />
                     await objWriter.WriteElementStringAsync("pathogeninjectionresist",
-                                                            PathogenInjectionResist(strLanguageToPrint, objCulture));
+                                                            PathogenInjectionResist(strLanguageToPrint, objCulture), token: token);
                     // <physiologicaladdictionresistfirsttime />
                     await objWriter.WriteElementStringAsync("physiologicaladdictionresistfirsttime",
-                                                            PhysiologicalAddictionResistFirstTime.ToString(objCulture));
+                                                            PhysiologicalAddictionResistFirstTime.ToString(objCulture), token: token);
                     // <physiologicaladdictionresistalreadyaddicted />
                     await objWriter.WriteElementStringAsync("physiologicaladdictionresistalreadyaddicted",
                                                             PhysiologicalAddictionResistAlreadyAddicted.ToString(
-                                                                objCulture));
+                                                                objCulture), token: token);
                     // <psychologicaladdictionresistfirsttime />
                     await objWriter.WriteElementStringAsync("psychologicaladdictionresistfirsttime",
-                                                            PsychologicalAddictionResistFirstTime.ToString(objCulture));
+                                                            PsychologicalAddictionResistFirstTime.ToString(objCulture), token: token);
                     // <psychologicaladdictionresistalreadyaddicted />
                     await objWriter.WriteElementStringAsync("psychologicaladdictionresistalreadyaddicted",
                                                             PsychologicalAddictionResistAlreadyAddicted.ToString(
-                                                                objCulture));
+                                                                objCulture), token: token);
                     // <physicalcmnaturalrecovery />
                     await objWriter.WriteElementStringAsync("physicalcmnaturalrecovery",
-                                                            PhysicalCMNaturalRecovery.ToString(objCulture));
+                                                            PhysicalCMNaturalRecovery.ToString(objCulture), token: token);
                     // <stuncmnaturalrecovery />
                     await objWriter.WriteElementStringAsync("stuncmnaturalrecovery",
-                                                            StunCMNaturalRecovery.ToString(objCulture));
+                                                            StunCMNaturalRecovery.ToString(objCulture), token: token);
 
                     // Spell Resistances
                     //Indirect Dodge
                     await objWriter.WriteElementStringAsync("indirectdefenseresist",
-                                                            SpellDefenseIndirectDodge.ToString(objCulture));
+                                                            SpellDefenseIndirectDodge.ToString(objCulture), token: token);
                     //Direct Soak - Mana
                     await objWriter.WriteElementStringAsync("directmanaresist",
-                                                            SpellDefenseDirectSoakMana.ToString(objCulture));
+                                                            SpellDefenseDirectSoakMana.ToString(objCulture), token: token);
                     //Direct Soak - Physical
                     await objWriter.WriteElementStringAsync("directphysicalresist",
-                                                            SpellDefenseDirectSoakPhysical.ToString(objCulture));
+                                                            SpellDefenseDirectSoakPhysical.ToString(objCulture), token: token);
                     //Detection Spells
                     await objWriter.WriteElementStringAsync("detectionspellresist",
-                                                            SpellDefenseDetection.ToString(objCulture));
+                                                            SpellDefenseDetection.ToString(objCulture), token: token);
                     //Decrease Attribute - BOD
                     await objWriter.WriteElementStringAsync("decreasebodresist",
-                                                            SpellDefenseDecreaseBOD.ToString(objCulture));
+                                                            SpellDefenseDecreaseBOD.ToString(objCulture), token: token);
                     //Decrease Attribute - AGI
                     await objWriter.WriteElementStringAsync("decreaseagiresist",
-                                                            SpellDefenseDecreaseAGI.ToString(objCulture));
+                                                            SpellDefenseDecreaseAGI.ToString(objCulture), token: token);
                     //Decrease Attribute - REA
                     await objWriter.WriteElementStringAsync("decreaserearesist",
-                                                            SpellDefenseDecreaseREA.ToString(objCulture));
+                                                            SpellDefenseDecreaseREA.ToString(objCulture), token: token);
                     //Decrease Attribute - STR
                     await objWriter.WriteElementStringAsync("decreasestrresist",
-                                                            SpellDefenseDecreaseSTR.ToString(objCulture));
+                                                            SpellDefenseDecreaseSTR.ToString(objCulture), token: token);
                     //Decrease Attribute - CHA
                     await objWriter.WriteElementStringAsync("decreasecharesist",
-                                                            SpellDefenseDecreaseCHA.ToString(objCulture));
+                                                            SpellDefenseDecreaseCHA.ToString(objCulture), token: token);
                     //Decrease Attribute - INT
                     await objWriter.WriteElementStringAsync("decreaseintresist",
-                                                            SpellDefenseDecreaseINT.ToString(objCulture));
+                                                            SpellDefenseDecreaseINT.ToString(objCulture), token: token);
                     //Decrease Attribute - LOG
                     await objWriter.WriteElementStringAsync("decreaselogresist",
-                                                            SpellDefenseDecreaseLOG.ToString(objCulture));
+                                                            SpellDefenseDecreaseLOG.ToString(objCulture), token: token);
                     //Decrease Attribute - WIL
                     await objWriter.WriteElementStringAsync("decreasewilresist",
-                                                            SpellDefenseDecreaseWIL.ToString(objCulture));
+                                                            SpellDefenseDecreaseWIL.ToString(objCulture), token: token);
                     //Illusion - Mana
                     await objWriter.WriteElementStringAsync("illusionmanaresist",
-                                                            SpellDefenseIllusionMana.ToString(objCulture));
+                                                            SpellDefenseIllusionMana.ToString(objCulture), token: token);
                     //Illusion - Physical
                     await objWriter.WriteElementStringAsync("illusionphysicalresist",
-                                                            SpellDefenseIllusionPhysical.ToString(objCulture));
+                                                            SpellDefenseIllusionPhysical.ToString(objCulture), token: token);
                     //Manipulation - Mental
                     await objWriter.WriteElementStringAsync("manipulationmentalresist",
-                                                            SpellDefenseManipulationMental.ToString(objCulture));
+                                                            SpellDefenseManipulationMental.ToString(objCulture), token: token);
                     //Manipulation - Physical
                     await objWriter.WriteElementStringAsync("manipulationphysicalresist",
-                                                            SpellDefenseManipulationPhysical.ToString(objCulture));
+                                                            SpellDefenseManipulationPhysical.ToString(objCulture), token: token);
 
                     // <skills>
-                    XmlElementWriteHelper objSkillsElement = await objWriter.StartElementAsync("skills");
+                    XmlElementWriteHelper objSkillsElement = await objWriter.StartElementAsync("skills", token: token);
                     try
                     {
-                        await SkillsSection.Print(objWriter, objCulture, strLanguageToPrint);
+                        await SkillsSection.Print(objWriter, objCulture, strLanguageToPrint, token: token);
                     }
                     finally
                     {
@@ -8622,7 +8625,7 @@ namespace Chummer
                     }
 
                     // <contacts>
-                    XmlElementWriteHelper objContactsElement = await objWriter.StartElementAsync("contacts");
+                    XmlElementWriteHelper objContactsElement = await objWriter.StartElementAsync("contacts", token: token);
                     try
                     {
                         foreach (Contact objContact in Contacts)
@@ -8637,7 +8640,7 @@ namespace Chummer
                     }
 
                     // <limitmodifiersphys>
-                    XmlElementWriteHelper objLimitModifiersPhysElement = await objWriter.StartElementAsync("limitmodifiersphys");
+                    XmlElementWriteHelper objLimitModifiersPhysElement = await objWriter.StartElementAsync("limitmodifiersphys", token: token);
                     try
                     {
                         foreach (LimitModifier objLimitModifier in LimitModifiers.Where(x => x.Limit == "Physical"))
@@ -8647,7 +8650,7 @@ namespace Chummer
 
                         // Populate Limit Modifiers from Improvements
                         foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
-                                     Improvement.ImprovementType.LimitModifier, "Physical"))
+                                     Improvement.ImprovementType.LimitModifier, "Physical", token: token))
                         {
                             string strName = await GetObjectNameAsync(objImprovement, strLanguageToPrint, token);
                             if (strName == objImprovement.SourceName)
@@ -8663,12 +8666,12 @@ namespace Chummer
                                            objImprovement.Condition;
 
                             // <limitmodifier>
-                            XmlElementWriteHelper objLimitModifierElement = await objWriter.StartElementAsync("limitmodifier");
+                            XmlElementWriteHelper objLimitModifierElement = await objWriter.StartElementAsync("limitmodifier", token: token);
                             try
                             {
-                                await objWriter.WriteElementStringAsync("name", strName);
+                                await objWriter.WriteElementStringAsync("name", strName, token: token);
                                 if (GlobalSettings.PrintNotes)
-                                    await objWriter.WriteElementStringAsync("notes", objImprovement.Notes);
+                                    await objWriter.WriteElementStringAsync("notes", objImprovement.Notes, token: token);
                             }
                             finally
                             {
@@ -8684,7 +8687,7 @@ namespace Chummer
                     }
 
                     // <limitmodifiersment>
-                    XmlElementWriteHelper objLimitModifiersMentElement = await objWriter.StartElementAsync("limitmodifiersment");
+                    XmlElementWriteHelper objLimitModifiersMentElement = await objWriter.StartElementAsync("limitmodifiersment", token: token);
                     try
                     {
                         foreach (LimitModifier objLimitModifier in LimitModifiers.Where(x => x.Limit == "Mental"))
@@ -8694,7 +8697,7 @@ namespace Chummer
 
                         // Populate Limit Modifiers from Improvements
                         foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
-                                     Improvement.ImprovementType.LimitModifier, "Mental"))
+                                     Improvement.ImprovementType.LimitModifier, "Mental", token: token))
                         {
                             string strName = await GetObjectNameAsync(objImprovement, strLanguageToPrint, token);
                             if (strName == objImprovement.SourceName)
@@ -8710,12 +8713,12 @@ namespace Chummer
                                            objImprovement.Condition;
 
                             // <limitmodifier>
-                            XmlElementWriteHelper objLimitModifierElement = await objWriter.StartElementAsync("limitmodifier");
+                            XmlElementWriteHelper objLimitModifierElement = await objWriter.StartElementAsync("limitmodifier", token: token);
                             try
                             {
-                                await objWriter.WriteElementStringAsync("name", strName);
+                                await objWriter.WriteElementStringAsync("name", strName, token: token);
                                 if (GlobalSettings.PrintNotes)
-                                    await objWriter.WriteElementStringAsync("notes", objImprovement.Notes);
+                                    await objWriter.WriteElementStringAsync("notes", objImprovement.Notes, token: token);
                             }
                             finally
                             {
@@ -8731,7 +8734,7 @@ namespace Chummer
                     }
 
                     // <limitmodifierssoc>
-                    XmlElementWriteHelper objLimitModifiersSocElement = await objWriter.StartElementAsync("limitmodifierssoc");
+                    XmlElementWriteHelper objLimitModifiersSocElement = await objWriter.StartElementAsync("limitmodifierssoc", token: token);
                     try
                     {
                         foreach (LimitModifier objLimitModifier in LimitModifiers.Where(x => x.Limit == "Social"))
@@ -8741,7 +8744,7 @@ namespace Chummer
 
                         // Populate Limit Modifiers from Improvements
                         foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
-                                     Improvement.ImprovementType.LimitModifier, "Social"))
+                                     Improvement.ImprovementType.LimitModifier, "Social", token: token))
                         {
                             string strName = await GetObjectNameAsync(objImprovement, strLanguageToPrint, token);
                             if (strName == objImprovement.SourceName)
@@ -8757,12 +8760,12 @@ namespace Chummer
                                            objImprovement.Condition;
 
                             // <limitmodifier>
-                            XmlElementWriteHelper objLimitModifierElement = await objWriter.StartElementAsync("limitmodifier");
+                            XmlElementWriteHelper objLimitModifierElement = await objWriter.StartElementAsync("limitmodifier", token: token);
                             try
                             {
-                                await objWriter.WriteElementStringAsync("name", strName);
+                                await objWriter.WriteElementStringAsync("name", strName, token: token);
                                 if (GlobalSettings.PrintNotes)
-                                    await objWriter.WriteElementStringAsync("notes", objImprovement.Notes);
+                                    await objWriter.WriteElementStringAsync("notes", objImprovement.Notes, token: token);
                             }
                             finally
                             {
@@ -8778,7 +8781,7 @@ namespace Chummer
                     }
 
                     // <mentorspirits>
-                    XmlElementWriteHelper objMentorSpiritsElement = await objWriter.StartElementAsync("mentorspirits");
+                    XmlElementWriteHelper objMentorSpiritsElement = await objWriter.StartElementAsync("mentorspirits", token: token);
                     try
                     {
                         foreach (MentorSpirit objMentorSpirit in MentorSpirits)
@@ -8793,7 +8796,7 @@ namespace Chummer
                     }
 
                     // <spells>
-                    XmlElementWriteHelper objSpellsElement = await objWriter.StartElementAsync("spells");
+                    XmlElementWriteHelper objSpellsElement = await objWriter.StartElementAsync("spells", token: token);
                     try
                     {
                         foreach (Spell objSpell in Spells)
@@ -8808,7 +8811,7 @@ namespace Chummer
                     }
 
                     // <powers>
-                    XmlElementWriteHelper objPowersElement = await objWriter.StartElementAsync("powers");
+                    XmlElementWriteHelper objPowersElement = await objWriter.StartElementAsync("powers", token: token);
                     try
                     {
                         foreach (Power objPower in Powers)
@@ -8823,7 +8826,7 @@ namespace Chummer
                     }
 
                     // <spirits>
-                    XmlElementWriteHelper objSpiritsElement = await objWriter.StartElementAsync("spirits");
+                    XmlElementWriteHelper objSpiritsElement = await objWriter.StartElementAsync("spirits", token: token);
                     try
                     {
                         foreach (Spirit objSpirit in Spirits)
@@ -8838,7 +8841,7 @@ namespace Chummer
                     }
 
                     // <complexforms>
-                    XmlElementWriteHelper objComplexFormsElement = await objWriter.StartElementAsync("complexforms");
+                    XmlElementWriteHelper objComplexFormsElement = await objWriter.StartElementAsync("complexforms", token: token);
                     try
                     {
                         foreach (ComplexForm objComplexForm in ComplexForms)
@@ -8853,7 +8856,7 @@ namespace Chummer
                     }
 
                     // <aiprograms>
-                    XmlElementWriteHelper objAIProgramsElement = await objWriter.StartElementAsync("aiprograms");
+                    XmlElementWriteHelper objAIProgramsElement = await objWriter.StartElementAsync("aiprograms", token: token);
                     try
                     {
                         foreach (AIProgram objProgram in AIPrograms)
@@ -8868,7 +8871,7 @@ namespace Chummer
                     }
 
                     // <martialarts>
-                    XmlElementWriteHelper objMartialArtsElement = await objWriter.StartElementAsync("martialarts");
+                    XmlElementWriteHelper objMartialArtsElement = await objWriter.StartElementAsync("martialarts", token: token);
                     try
                     {
                         foreach (MartialArt objMartialArt in MartialArts)
@@ -8883,7 +8886,7 @@ namespace Chummer
                     }
 
                     // <armors>
-                    XmlElementWriteHelper objArmorsElement = await objWriter.StartElementAsync("armors");
+                    XmlElementWriteHelper objArmorsElement = await objWriter.StartElementAsync("armors", token: token);
                     try
                     {
                         foreach (Armor objArmor in Armor)
@@ -8898,7 +8901,7 @@ namespace Chummer
                     }
 
                     // <weapons>
-                    XmlElementWriteHelper objWeaponsElement = await objWriter.StartElementAsync("weapons");
+                    XmlElementWriteHelper objWeaponsElement = await objWriter.StartElementAsync("weapons", token: token);
                     try
                     {
                         foreach (Weapon objWeapon in Weapons)
@@ -8913,7 +8916,7 @@ namespace Chummer
                     }
 
                     // <cyberwares>
-                    XmlElementWriteHelper objCyberwaresElement = await objWriter.StartElementAsync("cyberwares");
+                    XmlElementWriteHelper objCyberwaresElement = await objWriter.StartElementAsync("cyberwares", token: token);
                     try
                     {
                         foreach (Cyberware objCyberware in Cyberware)
@@ -8928,7 +8931,7 @@ namespace Chummer
                     }
 
                     // <qualities>
-                    XmlElementWriteHelper objQualitiesElement = await objWriter.StartElementAsync("qualities");
+                    XmlElementWriteHelper objQualitiesElement = await objWriter.StartElementAsync("qualities", token: token);
                     try
                     {
                         // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
@@ -8965,7 +8968,7 @@ namespace Chummer
                     }
 
                     // <lifestyles>
-                    XmlElementWriteHelper objLifestylesElement = await objWriter.StartElementAsync("lifestyles");
+                    XmlElementWriteHelper objLifestylesElement = await objWriter.StartElementAsync("lifestyles", token: token);
                     try
                     {
                         foreach (Lifestyle objLifestyle in Lifestyles)
@@ -8980,7 +8983,7 @@ namespace Chummer
                     }
 
                     // <gears>
-                    XmlElementWriteHelper objGearsElement = await objWriter.StartElementAsync("gears");
+                    XmlElementWriteHelper objGearsElement = await objWriter.StartElementAsync("gears", token: token);
                     try
                     {
                         foreach (Gear objGear in Gear)
@@ -8995,7 +8998,7 @@ namespace Chummer
                     }
 
                     // <drugs>
-                    XmlElementWriteHelper objDrugsElement = await objWriter.StartElementAsync("drugs");
+                    XmlElementWriteHelper objDrugsElement = await objWriter.StartElementAsync("drugs", token: token);
                     try
                     {
                         foreach (Drug objDrug in Drugs)
@@ -9010,7 +9013,7 @@ namespace Chummer
                     }
 
                     // <vehicles>
-                    XmlElementWriteHelper objVehiclesElement = await objWriter.StartElementAsync("vehicles");
+                    XmlElementWriteHelper objVehiclesElement = await objWriter.StartElementAsync("vehicles", token: token);
                     try
                     {
                         foreach (Vehicle objVehicle in Vehicles)
@@ -9025,7 +9028,7 @@ namespace Chummer
                     }
 
                     // <initiationgrade>
-                    XmlElementWriteHelper objInitiationGradeElement = await objWriter.StartElementAsync("initiationgrade");
+                    XmlElementWriteHelper objInitiationGradeElement = await objWriter.StartElementAsync("initiationgrade", token: token);
                     try
                     {
                         foreach (InitiationGrade objGrade in InitiationGrades)
@@ -9034,7 +9037,7 @@ namespace Chummer
 
                             //TODO: Probably better to integrate this into the main print method, but eh.
                             // <metamagics>
-                            XmlElementWriteHelper objInitiationMetamagicsElement = await objWriter.StartElementAsync("metamagics");
+                            XmlElementWriteHelper objInitiationMetamagicsElement = await objWriter.StartElementAsync("metamagics", token: token);
                             try
                             {
                                 foreach (Metamagic objMetamagic in Metamagics)
@@ -9050,7 +9053,7 @@ namespace Chummer
                             }
 
                             // <arts>
-                            XmlElementWriteHelper objInitiationArtsElement = await objWriter.StartElementAsync("arts");
+                            XmlElementWriteHelper objInitiationArtsElement = await objWriter.StartElementAsync("arts", token: token);
                             try
                             {
                                 foreach (Art objArt in Arts)
@@ -9066,7 +9069,7 @@ namespace Chummer
                             }
 
                             // <enhancements>
-                            XmlElementWriteHelper objInitiationEnhancementsElement = await objWriter.StartElementAsync("enhancements");
+                            XmlElementWriteHelper objInitiationEnhancementsElement = await objWriter.StartElementAsync("enhancements", token: token);
                             try
                             {
                                 foreach (Enhancement objEnhancement in Enhancements)
@@ -9089,7 +9092,7 @@ namespace Chummer
                     }
 
                     // <metamagics>
-                    XmlElementWriteHelper objMetamagicsElement = await objWriter.StartElementAsync("metamagics");
+                    XmlElementWriteHelper objMetamagicsElement = await objWriter.StartElementAsync("metamagics", token: token);
                     try
                     {
                         foreach (Metamagic objMetamagic in Metamagics)
@@ -9104,7 +9107,7 @@ namespace Chummer
                     }
 
                     // <arts>
-                    XmlElementWriteHelper objArtsElement = await objWriter.StartElementAsync("arts");
+                    XmlElementWriteHelper objArtsElement = await objWriter.StartElementAsync("arts", token: token);
                     try
                     {
                         foreach (Art objArt in Arts)
@@ -9119,7 +9122,7 @@ namespace Chummer
                     }
 
                     // <enhancements>
-                    XmlElementWriteHelper objEnhancementsElement = await objWriter.StartElementAsync("enhancements");
+                    XmlElementWriteHelper objEnhancementsElement = await objWriter.StartElementAsync("enhancements", token: token);
                     try
                     {
                         foreach (Enhancement objEnhancement in Enhancements)
@@ -9134,7 +9137,7 @@ namespace Chummer
                     }
 
                     // <critterpowers>
-                    XmlElementWriteHelper objCritterPowersElement = await objWriter.StartElementAsync("critterpowers");
+                    XmlElementWriteHelper objCritterPowersElement = await objWriter.StartElementAsync("critterpowers", token: token);
                     try
                     {
                         foreach (CritterPower objPower in CritterPowers)
@@ -9149,7 +9152,7 @@ namespace Chummer
                     }
 
                     // <sustainedobjects>
-                    XmlElementWriteHelper objSustainedObjectsElement = await objWriter.StartElementAsync("sustainedobjects");
+                    XmlElementWriteHelper objSustainedObjectsElement = await objWriter.StartElementAsync("sustainedobjects", token: token);
                     try
                     {
                         foreach (SustainedObject objSustained in SustainedCollection)
@@ -9164,29 +9167,29 @@ namespace Chummer
                     }
 
                     // <otherarmors>
-                    XmlElementWriteHelper objOtherArmorsElement = await objWriter.StartElementAsync("otherarmors");
+                    XmlElementWriteHelper objOtherArmorsElement = await objWriter.StartElementAsync("otherarmors", token: token);
                     try
                     {
-                        foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.Armor))
+                        foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.Armor, token: token))
                         {
                             if (objImprovement.ImproveSource == Improvement.ImprovementSource.Armor
                                 || objImprovement.ImproveSource == Improvement.ImprovementSource.ArmorMod)
                                 continue;
                             // <otherarmor>
-                            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("otherarmor");
+                            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("otherarmor", token: token);
                             try
                             {
-                                await objWriter.WriteElementStringAsync("guid", objImprovement.InternalId);
-                                await objWriter.WriteElementStringAsync("sourcename", objImprovement.SourceName);
-                                await objWriter.WriteElementStringAsync("objectname", await GetObjectNameAsync(objImprovement, strLanguageToPrint, token));
-                                await objWriter.WriteElementStringAsync("objectname_english", await GetObjectNameAsync(objImprovement, GlobalSettings.DefaultLanguage, token));
-                                await objWriter.WriteElementStringAsync("armor", objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo));
-                                await objWriter.WriteElementStringAsync("improvesource", objImprovement.ImproveSource.ToString());
-                                await objWriter.WriteElementStringAsync("enabled", objImprovement.Enabled.ToString(GlobalSettings.InvariantCultureInfo));
-                                await objWriter.WriteElementStringAsync("customname", objImprovement.CustomName);
-                                await objWriter.WriteElementStringAsync("customgroup", objImprovement.CustomGroup);
+                                await objWriter.WriteElementStringAsync("guid", objImprovement.InternalId, token: token);
+                                await objWriter.WriteElementStringAsync("sourcename", objImprovement.SourceName, token: token);
+                                await objWriter.WriteElementStringAsync("objectname", await GetObjectNameAsync(objImprovement, strLanguageToPrint, token), token: token);
+                                await objWriter.WriteElementStringAsync("objectname_english", await GetObjectNameAsync(objImprovement, GlobalSettings.DefaultLanguage, token), token: token);
+                                await objWriter.WriteElementStringAsync("armor", objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                                await objWriter.WriteElementStringAsync("improvesource", objImprovement.ImproveSource.ToString(), token: token);
+                                await objWriter.WriteElementStringAsync("enabled", objImprovement.Enabled.ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                                await objWriter.WriteElementStringAsync("customname", objImprovement.CustomName, token: token);
+                                await objWriter.WriteElementStringAsync("customgroup", objImprovement.CustomGroup, token: token);
                                 if (GlobalSettings.PrintNotes)
-                                    await objWriter.WriteElementStringAsync("notes", objImprovement.Notes);
+                                    await objWriter.WriteElementStringAsync("notes", objImprovement.Notes, token: token);
                             }
                             finally
                             {
@@ -9202,7 +9205,7 @@ namespace Chummer
                     }
 
                     // <calendar>
-                    XmlElementWriteHelper objCalendarElement = await objWriter.StartElementAsync("calendar");
+                    XmlElementWriteHelper objCalendarElement = await objWriter.StartElementAsync("calendar", token: token);
                     try
                     {
                         foreach (CalendarWeek objWeek in Calendar)
@@ -9218,7 +9221,7 @@ namespace Chummer
                     if (GlobalSettings.PrintExpenses)
                     {
                         // <expenses>
-                        XmlElementWriteHelper objExpensesElement = await objWriter.StartElementAsync("expenses");
+                        XmlElementWriteHelper objExpensesElement = await objWriter.StartElementAsync("expenses", token: token);
                         try
                         {
                             foreach (ExpenseLogEntry objExpense in ExpenseEntries.Reverse())
@@ -10795,7 +10798,7 @@ namespace Chummer
                 foreach (Improvement.ImprovementType eType in improvements)
                 {
                     foreach (Improvement objLoopImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
-                                 this, eType))
+                                 this, eType, token: token))
                     {
                         if (blnFirstModifier)
                         {
@@ -10951,13 +10954,13 @@ namespace Chummer
 
                     int intPowerPoints = EDG.TotalValue + ImprovementManager
                                                           .ValueOf(
-                                                              this, Improvement.ImprovementType.FreeSpiritPowerPoints)
+                                                              this, Improvement.ImprovementType.FreeSpiritPowerPoints, token: token)
                                                           .StandardRound();
 
                     // If the house rule to base Power Points on the character's MAG value instead, use the character's MAG.
                     if (Settings.FreeSpiritPowerPointsMAG)
                         intPowerPoints = MAG.TotalValue + ImprovementManager.ValueOf(this,
-                            Improvement.ImprovementType.FreeSpiritPowerPoints).StandardRound();
+                            Improvement.ImprovementType.FreeSpiritPowerPoints, token: token).StandardRound();
 
                     return intPowerPoints.ToString(GlobalSettings.CultureInfo) + strSpace + '('
                            + (intPowerPoints - decPowerPoints).ToString(GlobalSettings.CultureInfo) + strSpace
@@ -10974,7 +10977,7 @@ namespace Chummer
                             intPowerPoints = EDG.TotalValue + ImprovementManager
                                                               .ValueOf(
                                                                   this,
-                                                                  Improvement.ImprovementType.FreeSpiritPowerPoints)
+                                                                  Improvement.ImprovementType.FreeSpiritPowerPoints, token: token)
                                                               .StandardRound();
                             break;
                         case "Ally Spirit":
@@ -11015,7 +11018,7 @@ namespace Chummer
                 }
 
                 int intPowerPoints = EDG.TotalValue + ImprovementManager
-                                                      .ValueOf(this, Improvement.ImprovementType.FreeSpiritPowerPoints)
+                                                      .ValueOf(this, Improvement.ImprovementType.FreeSpiritPowerPoints, token: token)
                                                       .StandardRound();
 
                 string strSpace = LanguageManager.GetString("String_Space");
@@ -11464,7 +11467,7 @@ namespace Chummer
                                                                 out HashSet<string> setNames))
                 {
                     foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
-                                 this, Improvement.ImprovementType.BlackMarketDiscount))
+                                 this, Improvement.ImprovementType.BlackMarketDiscount, token: token))
                     {
                         setNames.Add(objImprovement.ImprovedName);
                     }
@@ -12049,12 +12052,12 @@ namespace Chummer
         {
             using (EnterReadLock.Enter(LockObject, token))
             {
-                if (ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.FreeSpells)
+                if (ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.FreeSpells, token: token)
                         .Count > 0
                     || ImprovementManager
-                        .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.FreeSpellsATT).Count > 0
+                        .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.FreeSpellsATT, token: token).Count > 0
                     || ImprovementManager
-                        .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.FreeSpellsSkill).Count >
+                        .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.FreeSpellsSkill, token: token).Count >
                     0)
                 {
                     // Run through all of the Spells and remove their Improvements.
@@ -12200,7 +12203,7 @@ namespace Chummer
                         .GetCachedImprovementListForValueOf(
                             this,
                             Improvement.ImprovementType.SpecialTab,
-                            "Cyberware")
+                            "Cyberware", token: token)
                         .Find(x => x.UniqueName == "disabletab");
                     if (objDisablingImprovement != null)
                     {
@@ -12555,6 +12558,7 @@ namespace Chummer
                                                  MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo));
                     // <mugshot>
                     // ReSharper disable once MethodHasAsyncOverload
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     using (objWriter.StartElement("mugshots"))
                     {
                         foreach (Image imgMugshot in Mugshots)
@@ -12571,15 +12575,15 @@ namespace Chummer
                 {
                     await objWriter.WriteElementStringAsync("mainmugshotindex",
                                                             MainMugshotIndex.ToString(
-                                                                GlobalSettings.InvariantCultureInfo));
+                                                                GlobalSettings.InvariantCultureInfo), token: token);
                     // <mugshots>
-                    XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("mugshots");
+                    XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("mugshots", token: token);
                     try
                     {
                         foreach (Image imgMugshot in Mugshots)
                         {
                             await objWriter.WriteElementStringAsync(
-                                "mugshot", await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot, token));
+                                "mugshot", await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot, token), token: token);
                         }
                     }
                     finally
@@ -12670,18 +12674,18 @@ namespace Chummer
                         // <mainmugshotpath />
                         await objWriter.WriteElementStringAsync("mainmugshotpath",
                                                      "file://" + imgMugshotPath.Replace(
-                                                         Path.DirectorySeparatorChar, '/'));
+                                                         Path.DirectorySeparatorChar, '/'), token: token);
                         // <mainmugshotbase64 />
-                        await objWriter.WriteElementStringAsync("mainmugshotbase64", await imgMainMugshot.ToBase64StringAsJpegAsync(token: token));
+                        await objWriter.WriteElementStringAsync("mainmugshotbase64", await imgMainMugshot.ToBase64StringAsJpegAsync(token: token), token: token);
                     }
 
                     // <othermugshots>
                     await objWriter.WriteElementStringAsync("hasothermugshots",
                                                  (imgMainMugshot == null || Mugshots.Count > 1).ToString(
-                                                     GlobalSettings.InvariantCultureInfo));
+                                                     GlobalSettings.InvariantCultureInfo), token: token);
 
                     // <othermugshots>
-                    XmlElementWriteHelper objOtherMugshotsElement = await objWriter.StartElementAsync("othermugshots");
+                    XmlElementWriteHelper objOtherMugshotsElement = await objWriter.StartElementAsync("othermugshots", token: token);
                     try
                     {
                         for (int i = 0; i < Mugshots.Count; ++i)
@@ -12691,7 +12695,7 @@ namespace Chummer
                             Image imgMugshot = Mugshots[i];
 
                             // <mugshot>
-                            XmlElementWriteHelper objMugshotElement = await objWriter.StartElementAsync("mugshot");
+                            XmlElementWriteHelper objMugshotElement = await objWriter.StartElementAsync("mugshot", token: token);
                             try
                             {
                                 await objWriter.WriteElementStringAsync("stringbase64", await imgMugshot.ToBase64StringAsJpegAsync(token: token));
@@ -12703,7 +12707,7 @@ namespace Chummer
                                 imgMugshot.Save(imgMugshotPath);
                                 await objWriter.WriteElementStringAsync("temppath",
                                                                         "file://" + imgMugshotPath.Replace(
-                                                                            Path.DirectorySeparatorChar, '/'));
+                                                                            Path.DirectorySeparatorChar, '/'), token: token);
                             }
                             finally
                             {
@@ -16202,15 +16206,15 @@ namespace Chummer
                             return _decCachedEssence;
                         // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
                         if (ImprovementManager
-                            .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.CyborgEssence).Count
+                            .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.CyborgEssence, token: token).Count
                             > 0)
                         {
                             return _decCachedEssence = 0.1m;
                         }
 
                         decimal decESS = ESS.MetatypeMaximum;
-                        decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenalty);
-                        decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyT100)
+                        decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenalty, token: token);
+                        decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyT100, token: token)
                                   / 100.0m;
 
                         // Run through all of the pieces of Cyberware and include their Essence cost.
@@ -16233,7 +16237,7 @@ namespace Chummer
         public async ValueTask<decimal> EssenceAsync(bool blnForMAGPenalty = false, CancellationToken token = default)
         {
             if (blnForMAGPenalty)
-                return await EssenceForMagPenaltyAsync();
+                return await EssenceForMagPenaltyAsync(token: token);
             using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 using (await EnterReadLock.EnterAsync(_objCachedEssenceLock, token))
@@ -16248,15 +16252,15 @@ namespace Chummer
                             return _decCachedEssence;
                         // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
                         if ((await ImprovementManager
-                                .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.CyborgEssence)).Count
+                                .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.CyborgEssence, token: token)).Count
                             > 0)
                         {
                             return _decCachedEssence = 0.1m;
                         }
 
-                        decimal decESS = await ESS.MetatypeMaximumAsync;
-                        decESS += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.EssencePenalty);
-                        decESS += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.EssencePenaltyT100)
+                        decimal decESS = await ESS.GetMetatypeMaximumAsync(token);
+                        decESS += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.EssencePenalty, token: token);
+                        decESS += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.EssencePenaltyT100, token: token)
                                   / 100.0m;
 
                         // Run through all of the pieces of Cyberware and include their Essence cost.
@@ -16286,18 +16290,18 @@ namespace Chummer
             {
                 // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
                 if (ImprovementManager
-                    .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.CyborgEssence).Count
+                    .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.CyborgEssence, token: token).Count
                     > 0)
                 {
                     return 0.1m;
                 }
 
                 decimal decESS = ESS.MetatypeMaximum;
-                decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenalty);
-                decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyT100)
+                decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenalty, token: token);
+                decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyT100, token: token)
                           / 100.0m;
                 decESS += ImprovementManager.ValueOf(
-                              this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100)
+                              this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100, token: token)
                           / 100.0m;
 
                 // Run through all of the pieces of Cyberware and include their Essence cost.
@@ -16313,28 +16317,29 @@ namespace Chummer
         /// <summary>
         /// Character's Essence to be used to calculate the penalty MAG should receive from lost Essence.
         /// </summary>
-        public async ValueTask<decimal> EssenceForMagPenaltyAsync()
+        public async ValueTask<decimal> EssenceForMagPenaltyAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            token.ThrowIfCancellationRequested();
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
                 if ((await ImprovementManager
-                        .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.CyborgEssence)).Count
+                        .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.CyborgEssence, token: token)).Count
                     > 0)
                 {
                     return 0.1m;
                 }
 
-                decimal decESS = await ESS.MetatypeMaximumAsync;
-                decESS += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.EssencePenalty);
-                decESS += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.EssencePenaltyT100)
+                decimal decESS = await ESS.GetMetatypeMaximumAsync(token);
+                decESS += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.EssencePenalty, token: token);
+                decESS += await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.EssencePenaltyT100, token: token)
                           / 100.0m;
                 decESS += await ImprovementManager.ValueOfAsync(
-                              this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100)
+                              this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100, token: token)
                           / 100.0m;
 
                 // Run through all of the pieces of Cyberware and include their Essence cost.
-                decESS -= await Cyberware.SumAsync(objCyberware => objCyberware.CalculatedESS);
+                decESS -= await Cyberware.SumAsync(objCyberware => objCyberware.CalculatedESS, token: token);
 
                 //1781 Essence is not printing
                 //ESS.Base = Convert.ToInt32(decESS); -- Disabled because this messes up Character Validity, and it really shouldn't be what "Base" of an attribute is supposed to be (it's supposed to be extra levels gained)
@@ -21756,12 +21761,12 @@ namespace Chummer
             {
                 if (string.IsNullOrEmpty(strLimbSlot))
                 {
-                    return Settings.LimbCount + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.AddLimb))
+                    return Settings.LimbCount + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.AddLimb, token: token))
                                                                   .StandardRound();
                 }
 
                 int intReturn =
-                    1 + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.AddLimb, false, strLimbSlot))
+                    1 + (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.AddLimb, false, strLimbSlot, token: token))
                                           .StandardRound();
                 if (strLimbSlot == "arm" || strLimbSlot == "leg")
                     ++intReturn;
@@ -24875,9 +24880,9 @@ namespace Chummer
             }
         }
 
-        public async ValueTask RefreshEssenceLossImprovementsAsync()
+        public async ValueTask RefreshEssenceLossImprovementsAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
                 // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
@@ -24888,8 +24893,8 @@ namespace Chummer
                 // (which means EssenceAtSpecialStart is not set to decimal.MinValue)
                 if (EssenceAtSpecialStart != decimal.MinValue)
                 {
-                    decimal decESS = await EssenceAsync();
-                    decimal decESSMag = await EssenceAsync(true);
+                    decimal decESS = await EssenceAsync(token: token);
+                    decimal decESSMag = await EssenceAsync(true, token);
                     if (!Settings.DontRoundEssenceInternally)
                     {
                         int intESSDecimals = Settings.EssenceDecimals;
@@ -24898,7 +24903,7 @@ namespace Chummer
                     }
 
                     // Reduce a character's MAG and RES from Essence Loss.
-                    decimal decMetatypeMaximumESS = await ESS.MetatypeMaximumAsync;
+                    decimal decMetatypeMaximumESS = await ESS.GetMetatypeMaximumAsync(token);
                     int intMagMaxReduction = (decMetatypeMaximumESS - decESSMag).StandardRound();
                     int intMaxReduction = (decMetatypeMaximumESS - decESS).StandardRound();
                     // Character has the option set where essence loss just acts as an augmented malus, so just replace old essence loss improvements with new ones that apply an augmented malus
@@ -24921,7 +24926,7 @@ namespace Chummer
                             if (TechnomancerEnabled && SubmersionGrade > 0 && (await ImprovementManager
                                     .GetCachedImprovementListForValueOfAsync(this,
                                                                              Improvement.ImprovementType
-                                                                                 .CyberadeptDaemon))
+                                                                                 .CyberadeptDaemon, token: token))
                                 .Count > 0)
                             {
                                 decimal decNonCyberwareEssence = BiowareEssence + EssenceHole;
@@ -24979,26 +24984,29 @@ namespace Chummer
                         // They are extra amounts by which the relevant attributes' karma levels should be burned
                         int intExtraRESBurn = Math.Max(0,
                                                        Math.Max(
-                                                           RES.Base + await RES.FreeBaseAsync + await RES.RawMinimumAsync
-                                                           + await RES.AttributeValueModifiersAsync,
-                                                           await RES.TotalMinimumAsync) + RES.Karma - await RES.TotalMaximumAsync);
+                                                           RES.Base + await RES.GetFreeBaseAsync(token) + await RES.GetRawMinimumAsync(token)
+                                                           + await RES.GetAttributeValueModifiersAsync(token),
+                                                           await RES.GetTotalMinimumAsync(token)) + RES.Karma - await RES.GetTotalMaximumAsync(token));
                         int intExtraDEPBurn = Math.Max(0,
                                                        Math.Max(
-                                                           DEP.Base + await DEP.FreeBaseAsync + await DEP.RawMinimumAsync
-                                                           + await DEP.AttributeValueModifiersAsync,
-                                                           await DEP.TotalMinimumAsync) + DEP.Karma - await DEP.TotalMaximumAsync);
+                                                           DEP.Base + await DEP.GetFreeBaseAsync(token) + await DEP.GetRawMinimumAsync(token)
+                                                           + await DEP.GetAttributeValueModifiersAsync(token),
+                                                           await DEP.GetTotalMinimumAsync(token)) + DEP.Karma - await DEP.GetTotalMaximumAsync(token));
                         int intExtraMAGBurn = Math.Max(0,
                                                        Math.Max(
-                                                           MAG.Base + await MAG.FreeBaseAsync + await MAG.RawMinimumAsync
-                                                           + await MAG.AttributeValueModifiersAsync,
-                                                           await MAG.TotalMinimumAsync) + MAG.Karma - await MAG.TotalMaximumAsync);
-                        int intExtraMAGAdeptBurn = Math.Max(0,
-                                                            Math.Max(
-                                                                MAGAdept.Base + await MAGAdept.FreeBaseAsync + await MAGAdept.RawMinimumAsync
-                                                                +
-                                                                await MAGAdept.AttributeValueModifiersAsync,
-                                                                await MAGAdept.TotalMinimumAsync) + MAGAdept.Karma
-                                                            - await MAGAdept.TotalMaximumAsync);
+                                                           MAG.Base + await MAG.GetFreeBaseAsync(token) + await MAG.GetRawMinimumAsync(token)
+                                                           + await MAG.GetAttributeValueModifiersAsync(token),
+                                                           await MAG.GetTotalMinimumAsync(token)) + MAG.Karma - await MAG.GetTotalMaximumAsync(token));
+                        int intExtraMAGAdeptBurn = MAG == MAGAdept
+                            ? intExtraMAGBurn
+                            : Math.Max(0,
+                                       Math.Max(
+                                           MAGAdept.Base + await MAGAdept.GetFreeBaseAsync(token)
+                                                         + await MAGAdept.GetRawMinimumAsync(token)
+                                                         +
+                                                         await MAGAdept.GetAttributeValueModifiersAsync(token),
+                                           await MAGAdept.GetTotalMinimumAsync(token)) + MAGAdept.Karma
+                                       - await MAGAdept.GetTotalMaximumAsync(token));
                         // Old values for minimum reduction from essence loss in career mode. These are used to determine if any karma needs to get burned.
                         int intOldRESCareerMinimumReduction = 0;
                         int intOldDEPCareerMinimumReduction = 0;
@@ -25006,7 +25014,7 @@ namespace Chummer
                         int intOldMAGAdeptCareerMinimumReduction = 0;
                         foreach (Improvement objImprovement in await ImprovementManager
                                      .GetCachedImprovementListForValueOfAsync(
-                                         this, Improvement.ImprovementType.Attribute))
+                                         this, Improvement.ImprovementType.Attribute, token: token))
                         {
                             if (objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss)
                             {
@@ -25041,13 +25049,13 @@ namespace Chummer
                         // Career Minimum and Maximum reduction relies on whether there's any extra reduction since chargen.
                         // This is the step where create mode attribute loss regarding attribute maximum loss gets factored out.
                         int intRESMaximumReduction
-                            = intMaxReduction + await RES.TotalMaximumAsync - await RES.MaximumNoEssenceLossAsync();
+                            = intMaxReduction + await RES.GetTotalMaximumAsync(token) - await RES.MaximumNoEssenceLossAsync(token: token);
                         int intDEPMaximumReduction
-                            = intMaxReduction + await DEP.TotalMaximumAsync - await DEP.MaximumNoEssenceLossAsync();
-                        int intMAGMaximumReduction = intMagMaxReduction + MAG.TotalMaximum
-                                                     - await MAG.MaximumNoEssenceLossAsync();
+                            = intMaxReduction + await DEP.GetTotalMaximumAsync(token) - await DEP.MaximumNoEssenceLossAsync(token: token);
+                        int intMAGMaximumReduction = intMagMaxReduction + await MAG.GetTotalMaximumAsync(token)
+                                                     - await MAG.MaximumNoEssenceLossAsync(token: token);
                         int intMAGAdeptMaximumReduction =
-                            intMagMaxReduction + await MAGAdept.TotalMaximumAsync - await MAGAdept.MaximumNoEssenceLossAsync();
+                            intMagMaxReduction + await MAGAdept.GetTotalMaximumAsync(token: token) - await MAGAdept.MaximumNoEssenceLossAsync(token: token);
 
                         // Create the Essence Loss (or gain, in case of essence restoration and increasing maxima) Improvements.
                         if (intMaxReduction > 0
@@ -25062,18 +25070,18 @@ namespace Chummer
                             if (Settings.ESSLossReducesMaximumOnly)
                             {
                                 intRESMinimumReduction = Math.Max(0,
-                                                                  intMinReduction + await RES.TotalValueAsync
-                                                                  - await RES.MaximumNoEssenceLossAsync(true));
+                                                                  intMinReduction + await RES.GetTotalValueAsync(token)
+                                                                  - await RES.MaximumNoEssenceLossAsync(true, token));
                                 intDEPMinimumReduction = Math.Max(0,
-                                                                  intMinReduction + await DEP.TotalValueAsync
-                                                                  - await DEP.MaximumNoEssenceLossAsync(true));
+                                                                  intMinReduction + await DEP.GetTotalValueAsync(token)
+                                                                  - await DEP.MaximumNoEssenceLossAsync(true, token));
                             }
                             else
                             {
                                 intRESMinimumReduction =
-                                    intMinReduction + await RES.TotalMaximumAsync - await RES.MaximumNoEssenceLossAsync(true);
+                                    intMinReduction + await RES.GetTotalMaximumAsync(token) - await RES.MaximumNoEssenceLossAsync(true, token);
                                 intDEPMinimumReduction =
-                                    intMinReduction + await DEP.TotalMaximumAsync - await DEP.MaximumNoEssenceLossAsync(true);
+                                    intMinReduction + await DEP.GetTotalMaximumAsync(token) - await DEP.MaximumNoEssenceLossAsync(true, token);
                             }
 
                             // If the new RES reduction is greater than the old one...
@@ -25082,7 +25090,7 @@ namespace Chummer
                             {
                                 // ... and adding minimum reducing-improvements wouldn't do anything, start burning karma.
                                 if (intRESMinimumReduction >
-                                    RES.Base + await RES.FreeBaseAsync + await RES.RawMinimumAsync + await RES.AttributeValueModifiersAsync)
+                                    RES.Base + await RES.GetFreeBaseAsync(token) + await RES.GetRawMinimumAsync(token) + await RES.GetAttributeValueModifiersAsync(token))
                                 {
                                     // intRESMinimumReduction is not actually reduced so that karma doesn't get burned away each time this function is called.
                                     // Besides, this only fires if intRESMinimumReduction is already at a level where increasing it any more wouldn't have any effect on the character.
@@ -25102,7 +25110,7 @@ namespace Chummer
                             {
                                 // ... and adding minimum reducing-improvements wouldn't do anything, start burning karma.
                                 if (intDEPMinimumReduction >
-                                    DEP.Base + await DEP.FreeBaseAsync + await DEP.RawMinimumAsync + await DEP.AttributeValueModifiersAsync)
+                                    DEP.Base + await DEP.GetFreeBaseAsync(token) + await DEP.GetRawMinimumAsync(token) + await DEP.GetAttributeValueModifiersAsync(token))
                                 {
                                     // intDEPMinimumReduction is not actually reduced so that karma doesn't get burned away each time this function is called.
                                     // Besides, this only fires if intDEPMinimumReduction is already at a level where increasing it any more wouldn't have any effect on the character.
@@ -25144,20 +25152,20 @@ namespace Chummer
                             if (Settings.ESSLossReducesMaximumOnly)
                             {
                                 intMAGMinimumReduction = Math.Max(0,
-                                                                  intMagMinReduction + await MAG.TotalValueAsync
-                                                                  - await MAG.MaximumNoEssenceLossAsync(true));
+                                                                  intMagMinReduction + await MAG.GetTotalValueAsync(token)
+                                                                  - await MAG.MaximumNoEssenceLossAsync(true, token));
                                 intMAGAdeptMinimumReduction = Math.Max(0,
-                                                                       intMagMinReduction + await MAGAdept.TotalValueAsync
+                                                                       intMagMinReduction + await MAGAdept.GetTotalValueAsync(token)
                                                                        - await MAGAdept
-                                                                           .MaximumNoEssenceLossAsync(true));
+                                                                           .MaximumNoEssenceLossAsync(true, token));
                             }
                             else
                             {
                                 intMAGMinimumReduction =
-                                    intMagMinReduction + await MAG.TotalMaximumAsync - await MAG.MaximumNoEssenceLossAsync(true);
+                                    intMagMinReduction + await MAG.GetTotalMaximumAsync(token) - await MAG.MaximumNoEssenceLossAsync(true, token);
                                 intMAGAdeptMinimumReduction =
-                                    intMagMinReduction + await MAGAdept.TotalMaximumAsync
-                                    - await MAGAdept.MaximumNoEssenceLossAsync(true);
+                                    intMagMinReduction + await MAGAdept.GetTotalMaximumAsync(token)
+                                    - await MAGAdept.MaximumNoEssenceLossAsync(true, token);
                             }
 
                             // If the new MAG reduction is greater than the old one...
@@ -25166,7 +25174,7 @@ namespace Chummer
                             {
                                 // ... and adding minimum reducing-improvements wouldn't do anything, start burning karma.
                                 if (intMAGMinimumReduction >
-                                    MAG.Base + await MAG.FreeBaseAsync + await MAG.RawMinimumAsync + await MAG.AttributeValueModifiersAsync)
+                                    MAG.Base + await MAG.GetFreeBaseAsync(token) + await MAG.GetRawMinimumAsync(token) + await MAG.GetAttributeValueModifiersAsync(token))
                                 {
                                     // intMAGMinimumReduction is not actually reduced so that karma doesn't get burned away each time this function is called.
                                     // Besides, this only fires if intMAGMinimumReduction is already at a level where increasing it any more wouldn't have any effect on the character.
@@ -25185,7 +25193,7 @@ namespace Chummer
                                     decimal decPPBurn = Math.Min(intMAGMinimumReductionDelta - intChargenPPBurn,
                                                                  await ImprovementManager.ValueOfAsync(
                                                                      this,
-                                                                     Improvement.ImprovementType.AdeptPowerPoints));
+                                                                     Improvement.ImprovementType.AdeptPowerPoints, token: token));
                                     // Source needs to be EssenceLossChargen so that it doesn't get wiped in career mode.
                                     if (decPPBurn != 0)
                                     {
@@ -25211,8 +25219,8 @@ namespace Chummer
                                 if (intMAGAdeptMinimumReductionDelta > 0)
                                 {
                                     // ... and adding minimum reducing-improvements wouldn't do anything, start burning karma.
-                                    if (intMAGAdeptMinimumReduction > MAGAdept.Base + await MAGAdept.FreeBaseAsync +
-                                        await MAGAdept.RawMinimumAsync + await MAGAdept.AttributeValueModifiersAsync)
+                                    if (intMAGAdeptMinimumReduction > MAGAdept.Base + await MAGAdept.GetFreeBaseAsync(token) +
+                                        await MAGAdept.GetRawMinimumAsync(token) + await MAGAdept.GetAttributeValueModifiersAsync(token))
                                     {
                                         // intMAGAdeptMinimumReduction is not actually reduced so that karma doesn't get burned away each time this function is called.
                                         // Besides, this only fires if intMAGAdeptMinimumReduction is already at a level where increasing it any more wouldn't have any effect on the character.
@@ -25261,13 +25269,13 @@ namespace Chummer
                         int intMAGAdeptMinimumReduction = intMagMinReduction;
                         if (Settings.ESSLossReducesMaximumOnly)
                         {
-                            intRESMinimumReduction = Math.Max(0, intMinReduction + await RES.TotalValueAsync - await RES.TotalMaximumAsync);
-                            intDEPMinimumReduction = Math.Max(0, intMinReduction + await DEP.TotalValueAsync - await DEP.TotalMaximumAsync);
+                            intRESMinimumReduction = Math.Max(0, intMinReduction + await RES.GetTotalValueAsync(token) - await RES.GetTotalMaximumAsync(token));
+                            intDEPMinimumReduction = Math.Max(0, intMinReduction + await DEP.GetTotalValueAsync(token) - await DEP.GetTotalMaximumAsync(token));
                             intMAGMinimumReduction =
-                                Math.Max(0, intMagMinReduction + await MAG.TotalValueAsync - await MAG.TotalMaximumAsync);
+                                Math.Max(0, intMagMinReduction + await MAG.GetTotalValueAsync(token) - await MAG.GetTotalMaximumAsync(token));
                             intMAGAdeptMinimumReduction = Math.Max(0,
-                                                                   intMagMinReduction + await MAGAdept.TotalValueAsync
-                                                                   - await MAGAdept.TotalMaximumAsync);
+                                                                   intMagMinReduction + await MAGAdept.GetTotalValueAsync(token)
+                                                                   - await MAGAdept.GetTotalMaximumAsync(token));
                         }
 
                         await ImprovementManager.RemoveImprovementsAsync(
@@ -25320,7 +25328,7 @@ namespace Chummer
                             {
                                 if (Settings.MysAdeptSecondMAGAttribute && IsMysticAdept)
                                 {
-                                    if (intMagMaxReduction >= await MAG.TotalMaximumAsync)
+                                    if (intMagMaxReduction >= await MAG.GetTotalMaximumAsync(token))
                                     {
                                         MAG.Base = MAGAdept.Base;
                                         MAG.Karma = MAGAdept.Karma;
@@ -25333,7 +25341,7 @@ namespace Chummer
                                         MagicianEnabled = false;
                                     }
 
-                                    if (intMagMaxReduction >= await MAGAdept.TotalMaximumAsync)
+                                    if (intMagMaxReduction >= await MAGAdept.GetTotalMaximumAsync(token))
                                     {
                                         MAGAdept.Base = 0;
                                         MAGAdept.Karma = 0;
@@ -25345,7 +25353,7 @@ namespace Chummer
                                     if (!MagicianEnabled && !AdeptEnabled)
                                         MAGEnabled = false;
                                 }
-                                else if (intMagMaxReduction >= await MAG.TotalMaximumAsync)
+                                else if (intMagMaxReduction >= await MAG.GetTotalMaximumAsync(token))
                                 {
                                     MAG.Base = 0;
                                     MAG.Karma = 0;
@@ -25358,7 +25366,7 @@ namespace Chummer
                             }
                             else if (Settings.MysAdeptSecondMAGAttribute && IsMysticAdept)
                             {
-                                if (MAG.TotalMaximum < 1)
+                                if (await MAG.GetTotalMaximumAsync(token) < 1)
                                 {
                                     MAG.Base = MAGAdept.Base;
                                     MAG.Karma = MAGAdept.Karma;
@@ -25371,7 +25379,7 @@ namespace Chummer
                                     MagicianEnabled = false;
                                 }
 
-                                if (MAGAdept.TotalMaximum < 1)
+                                if (await MAGAdept.GetTotalMaximumAsync(token) < 1)
                                 {
                                     MAGAdept.Base = 0;
                                     MAGAdept.Karma = 0;
@@ -25383,7 +25391,7 @@ namespace Chummer
                                 if (!MagicianEnabled && !AdeptEnabled)
                                     MAGEnabled = false;
                             }
-                            else if (MAG.TotalMaximum < 1)
+                            else if (await MAG.GetTotalMaximumAsync(token) < 1)
                             {
                                 MAG.Base = 0;
                                 MAG.Karma = 0;
@@ -25395,18 +25403,21 @@ namespace Chummer
                             }
                         }
 
-                        if (RESEnabled
-                            && (Settings.SpecialKarmaCostBasedOnShownValue
-                                && intMaxReduction >= RES.TotalMaximum
-                                || !Settings.SpecialKarmaCostBasedOnShownValue
-                                && RES.TotalMaximum < 1))
+                        if (RESEnabled)
                         {
-                            RES.Base = 0;
-                            RES.Karma = 0;
-                            RES.AssignLimits(0, 0, 0);
+                            int intResTotalMaximum = await RES.GetTotalMaximumAsync(token);
+                            if (Settings.SpecialKarmaCostBasedOnShownValue
+                                && intMaxReduction >= intResTotalMaximum
+                                || !Settings.SpecialKarmaCostBasedOnShownValue
+                                && intResTotalMaximum < 1)
+                            {
+                                RES.Base = 0;
+                                RES.Karma = 0;
+                                RES.AssignLimits(0, 0, 0);
 
-                            RESEnabled = false;
-                            TechnomancerEnabled = false;
+                                RESEnabled = false;
+                                TechnomancerEnabled = false;
+                            }
                         }
                     }
                 }
@@ -25422,7 +25433,7 @@ namespace Chummer
                 // If the character is Cyberzombie, adjust their Attributes based on their Essence.
                 if (MetatypeCategory == "Cyberzombie")
                 {
-                    int intESSModifier = (-await EssenceAsync()).StandardRound();
+                    int intESSModifier = (-await EssenceAsync(token: token)).StandardRound();
                     await ImprovementManager.RemoveImprovementsAsync(this,
                                                                      Improvements.Where(x =>
                                                                              x.ImproveSource
@@ -30466,14 +30477,15 @@ namespace Chummer
         /// Returns Page if not found or the string is empty.
         /// </summary>
         /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
         /// <returns></returns>
-        public string DisplayPage(string strLanguage)
+        public string DisplayPage(string strLanguage, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Page;
-                string s = this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+                string s = this.GetNodeXPath(token)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
                 return !string.IsNullOrWhiteSpace(s) ? s : Page;
             }
         }
@@ -30495,15 +30507,15 @@ namespace Chummer
 
         #region Special Methods
 
-        public async Task<bool> ConvertCyberzombie()
+        public async Task<bool> ConvertCyberzombie(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 bool blnEssence = true;
                 string strMessage = await LanguageManager.GetStringAsync("Message_CyberzombieRequirements");
 
                 // Make sure the character has an Essence lower than 0.
-                decimal decEssence = await EssenceAsync();
+                decimal decEssence = await EssenceAsync(token: token);
                 if (decEssence >= 0)
                 {
                     strMessage += Environment.NewLine + '\t' +
@@ -30512,7 +30524,7 @@ namespace Chummer
                 }
 
                 bool blnEnabled = (await ImprovementManager
-                    .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.EnableCyberzombie)).Count > 0;
+                    .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.EnableCyberzombie, token: token)).Count > 0;
 
                 if (!blnEnabled)
                     strMessage += Environment.NewLine + '\t' +
@@ -30534,23 +30546,23 @@ namespace Chummer
                 int intWILResult;
                 string strText = await LanguageManager.GetStringAsync("String_CyberzombieWILText");
                 string strDescription = await LanguageManager.GetStringAsync("String_CyberzombieWILDescription");
-                int intDice = await WIL.TotalValueAsync;
+                int intDice = await WIL.GetTotalValueAsync(token);
                 // Get the player to roll Dice to make a WIL Test and record the result.
                 using (ThreadSafeForm<SelectDiceHits> frmWILHits = await ThreadSafeForm<SelectDiceHits>.GetAsync(() => new SelectDiceHits
                        {
                            Text = strText,
                            Description = strDescription,
                            Dice = intDice
-                       }))
+                       }, token))
                 {
-                    if (await frmWILHits.ShowDialogSafeAsync(this) != DialogResult.OK)
+                    if (await frmWILHits.ShowDialogSafeAsync(this, token) != DialogResult.OK)
                         return false;
 
                     intWILResult = frmWILHits.MyForm.Result;
                 }
 
                 // The character gains 10 + ((Threshold - Hits) * 10)BP worth of Negative Qualities.
-                int intThreshold = 3 + (decEssence - await ESS.MetatypeMaximumAsync).ToInt32();
+                int intThreshold = 3 + (decEssence - await ESS.GetMetatypeMaximumAsync(token)).ToInt32();
                 int intResult = 10;
                 if (intWILResult < intThreshold)
                 {
@@ -30574,7 +30586,7 @@ namespace Chummer
                 // Add the Cyberzombie Lifestyle if it is not already taken.
                 if (Lifestyles.All(x => x.BaseLifestyle != "Cyberzombie Lifestyle Addition"))
                 {
-                    XmlDocument objXmlLifestyleDocument = await LoadDataAsync("lifestyles.xml");
+                    XmlDocument objXmlLifestyleDocument = await LoadDataAsync("lifestyles.xml", token: token);
                     XmlNode objXmlLifestyle =
                         objXmlLifestyleDocument.SelectSingleNode(
                             "/chummer/lifestyles/lifestyle[name = \"Cyberzombie Lifestyle Addition\"]");
@@ -30583,7 +30595,7 @@ namespace Chummer
                     {
                         Lifestyle objLifestyle = new Lifestyle(this);
                         objLifestyle.Create(objXmlLifestyle);
-                        await Lifestyles.AddAsync(objLifestyle);
+                        await Lifestyles.AddAsync(objLifestyle, token);
                     }
                 }
 
@@ -30597,14 +30609,14 @@ namespace Chummer
                 if (CritterPowers.All(x => x.Name != "Dual Natured"))
                 {
                     XmlNode objXmlPowerNode =
-                        (await LoadDataAsync("critterpowers.xml")).SelectSingleNode(
+                        (await LoadDataAsync("critterpowers.xml", token: token)).SelectSingleNode(
                             "/chummer/powers/power[name = \"Dual Natured\"]");
 
                     if (objXmlPowerNode != null)
                     {
                         CritterPower objCritterPower = new CritterPower(this);
                         objCritterPower.Create(objXmlPowerNode);
-                        await CritterPowers.AddAsync(objCritterPower);
+                        await CritterPowers.AddAsync(objCritterPower, token);
                     }
                 }
 
@@ -30612,14 +30624,14 @@ namespace Chummer
                 if (!CritterPowers.Any(x => x.Name == "Immunity" && x.Extra == "Normal Weapons"))
                 {
                     XmlNode objXmlPowerNode =
-                        (await LoadDataAsync("critterpowers.xml")).SelectSingleNode(
+                        (await LoadDataAsync("critterpowers.xml", token: token)).SelectSingleNode(
                             "/chummer/powers/power[name = \"Immunity\"]");
 
                     if (objXmlPowerNode != null)
                     {
                         CritterPower objCritterPower = new CritterPower(this);
                         objCritterPower.Create(objXmlPowerNode, 0, "Normal Weapons");
-                        await CritterPowers.AddAsync(objCritterPower);
+                        await CritterPowers.AddAsync(objCritterPower, token);
                     }
                 }
 

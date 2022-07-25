@@ -950,7 +950,7 @@ namespace Chummer.Backend.Attributes
                                                                         .SelectSingleNodeAndCacheExpressionAsync(
                                                                             "name/@translate"))
                                                                     ?.Value ?? _objCharacter.Metatype
-                                                                    : _objCharacter.Metatype);
+                                                                    : _objCharacter.Metatype, token: token);
                     }
                     else
                     {
@@ -960,19 +960,19 @@ namespace Chummer.Backend.Attributes
                                                                                "D", GlobalSettings.InvariantCultureInfo)
                                                                            .CleanXPath() + ']');
                         await objWriter.WriteElementStringAsync("attributecategory",
-                                                                xmlNode?.Value ?? _objCharacter.Metavariant);
+                                                                xmlNode?.Value ?? _objCharacter.Metavariant, token: token);
                     }
                 }
 
-                await objWriter.WriteElementStringAsync("attributecategory_english", AttributeCategory.ToString());
+                await objWriter.WriteElementStringAsync("attributecategory_english", AttributeCategory.ToString(), token: token);
                 foreach (CharacterAttrib att in AttributeList)
                 {
-                    await att.Print(objWriter, objCulture, strLanguageToPrint);
+                    await att.Print(objWriter, objCulture, strLanguageToPrint, token);
                 }
 
                 foreach (CharacterAttrib att in SpecialAttributeList)
                 {
-                    await att.Print(objWriter, objCulture, strLanguageToPrint);
+                    await att.Print(objWriter, objCulture, strLanguageToPrint, token);
                 }
             }
         }
@@ -1496,11 +1496,11 @@ namespace Chummer.Backend.Attributes
             {
                 if (_objCharacter.Created || _objCharacter.IgnoreRules
                                           || objAttribute.MetatypeCategory == CharacterAttrib.AttributeCategory.Special
-                                          || _objCharacter.Settings.MaxNumberMaxAttributesCreate >= await AttributeList.CountAsync)
+                                          || _objCharacter.Settings.MaxNumberMaxAttributesCreate >= await AttributeList.GetCountAsync(token))
                     return true;
                 return await AttributeList.CountAsync(async x => x.MetatypeCategory == objAttribute.MetatypeCategory
                                                                  && x != objAttribute
-                                                                 && await x.AtMetatypeMaximumAsync, token)
+                                                                 && await x.GetAtMetatypeMaximumAsync(token), token)
                        < _objCharacter.Settings.MaxNumberMaxAttributesCreate;
             }
         }

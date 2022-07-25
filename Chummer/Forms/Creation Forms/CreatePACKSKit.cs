@@ -127,19 +127,19 @@ namespace Chummer
                     // Export Attributes.
                     if (await chkAttributes.DoThreadSafeFuncAsync(x => x.Checked))
                     {
-                        int intBOD = await _objCharacter.BOD.ValueAsync - (await _objCharacter.BOD.MetatypeMinimumAsync - 1);
-                        int intAGI = await _objCharacter.AGI.ValueAsync - (await _objCharacter.AGI.MetatypeMinimumAsync - 1);
-                        int intREA = await _objCharacter.REA.ValueAsync - (await _objCharacter.REA.MetatypeMinimumAsync - 1);
-                        int intSTR = await _objCharacter.STR.ValueAsync - (await _objCharacter.STR.MetatypeMinimumAsync - 1);
-                        int intCHA = await _objCharacter.CHA.ValueAsync - (await _objCharacter.CHA.MetatypeMinimumAsync - 1);
-                        int intINT = await _objCharacter.INT.ValueAsync - (await _objCharacter.INT.MetatypeMinimumAsync - 1);
-                        int intLOG = await _objCharacter.LOG.ValueAsync - (await _objCharacter.LOG.MetatypeMinimumAsync - 1);
-                        int intWIL = await _objCharacter.WIL.ValueAsync - (await _objCharacter.WIL.MetatypeMinimumAsync - 1);
-                        int intEDG = await _objCharacter.EDG.ValueAsync - (await _objCharacter.EDG.MetatypeMinimumAsync - 1);
-                        int intMAG = await _objCharacter.MAG.ValueAsync - (await _objCharacter.MAG.MetatypeMinimumAsync - 1);
-                        int intMAGAdept = await _objCharacter.MAGAdept.ValueAsync - (await _objCharacter.MAGAdept.MetatypeMinimumAsync - 1);
-                        int intDEP = await _objCharacter.DEP.ValueAsync - (await _objCharacter.DEP.MetatypeMinimumAsync - 1);
-                        int intRES = await _objCharacter.RES.ValueAsync - (await _objCharacter.RES.MetatypeMinimumAsync - 1);
+                        int intBOD = await _objCharacter.BOD.GetValueAsync() - (await _objCharacter.BOD.GetMetatypeMinimumAsync() - 1);
+                        int intAGI = await _objCharacter.AGI.GetValueAsync() - (await _objCharacter.AGI.GetMetatypeMinimumAsync() - 1);
+                        int intREA = await _objCharacter.REA.GetValueAsync() - (await _objCharacter.REA.GetMetatypeMinimumAsync() - 1);
+                        int intSTR = await _objCharacter.STR.GetValueAsync() - (await _objCharacter.STR.GetMetatypeMinimumAsync() - 1);
+                        int intCHA = await _objCharacter.CHA.GetValueAsync() - (await _objCharacter.CHA.GetMetatypeMinimumAsync() - 1);
+                        int intINT = await _objCharacter.INT.GetValueAsync() - (await _objCharacter.INT.GetMetatypeMinimumAsync() - 1);
+                        int intLOG = await _objCharacter.LOG.GetValueAsync() - (await _objCharacter.LOG.GetMetatypeMinimumAsync() - 1);
+                        int intWIL = await _objCharacter.WIL.GetValueAsync() - (await _objCharacter.WIL.GetMetatypeMinimumAsync() - 1);
+                        int intEDG = await _objCharacter.EDG.GetValueAsync() - (await _objCharacter.EDG.GetMetatypeMinimumAsync() - 1);
+                        int intMAG = await _objCharacter.MAG.GetValueAsync() - (await _objCharacter.MAG.GetMetatypeMinimumAsync() - 1);
+                        int intMAGAdept = await _objCharacter.MAGAdept.GetValueAsync() - (await _objCharacter.MAGAdept.GetMetatypeMinimumAsync() - 1);
+                        int intDEP = await _objCharacter.DEP.GetValueAsync() - (await _objCharacter.DEP.GetMetatypeMinimumAsync() - 1);
+                        int intRES = await _objCharacter.RES.GetValueAsync() - (await _objCharacter.RES.GetMetatypeMinimumAsync() - 1);
                         // <attributes>
                         await objWriter.WriteStartElementAsync("attributes");
                         await objWriter.WriteElementStringAsync("bod", intBOD.ToString(GlobalSettings.InvariantCultureInfo));

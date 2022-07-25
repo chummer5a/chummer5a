@@ -21,6 +21,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Annotations;
@@ -237,7 +238,7 @@ namespace Chummer.UI.Attributes
                 return;
             }
 
-            string confirmstring = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"), await AttributeObject.DisplayNameFormattedAsync, await AttributeObject.ValueAsync + 1, intUpgradeKarmaCost);
+            string confirmstring = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"), await AttributeObject.DisplayNameFormattedAsync, await AttributeObject.GetValueAsync() + 1, intUpgradeKarmaCost);
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
@@ -252,8 +253,8 @@ namespace Chummer.UI.Attributes
                 return;
             if (!await CanBeMetatypeMax(
                 Math.Max(
-                    await nudKarma.DoThreadSafeFuncAsync(x => x.ValueAsInt) + await AttributeObject.FreeBaseAsync + await AttributeObject.RawMinimumAsync +
-                    await AttributeObject.AttributeValueModifiersAsync, await AttributeObject.TotalMinimumAsync) + intValue))
+                    await nudKarma.DoThreadSafeFuncAsync(x => x.ValueAsInt) + await AttributeObject.GetFreeBaseAsync() + await AttributeObject.GetRawMinimumAsync() +
+                    await AttributeObject.GetAttributeValueModifiersAsync(), await AttributeObject.GetTotalMinimumAsync()) + intValue))
             {
                 await nudBase.DoThreadSafeAsync(x =>
                 {
@@ -281,11 +282,11 @@ namespace Chummer.UI.Attributes
                 return;
             if (!await CanBeMetatypeMax(
                 Math.Max(
-                    await nudBase.DoThreadSafeFuncAsync(x => x.ValueAsInt) + await AttributeObject.FreeBaseAsync + await AttributeObject.RawMinimumAsync +
-                    await AttributeObject.AttributeValueModifiersAsync, await AttributeObject.TotalMinimumAsync) + intValue))
+                    await nudBase.DoThreadSafeFuncAsync(x => x.ValueAsInt) + await AttributeObject.GetFreeBaseAsync() + await AttributeObject.GetRawMinimumAsync() +
+                    await AttributeObject.GetAttributeValueModifiersAsync(), await AttributeObject.GetTotalMinimumAsync()) + intValue))
             {
                 // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to.
-                int intKarmaMaximum = await AttributeObject.KarmaMaximumAsync;
+                int intKarmaMaximum = await AttributeObject.GetKarmaMaximumAsync();
                 if (_oldKarma > intKarmaMaximum)
                 {
                     _oldKarma = intKarmaMaximum - 1;
@@ -320,13 +321,14 @@ namespace Chummer.UI.Attributes
         /// attribute at their natural maximum limit; the special attributes of Magic, Edge,
         /// and Resonance are not included in this limitation.
         /// </summary>
-        private async ValueTask<bool> CanBeMetatypeMax(int intValue)
+        private async ValueTask<bool> CanBeMetatypeMax(int intValue, CancellationToken token = default)
         {
-            int intTotalMaximum = await AttributeObject.TotalMaximumAsync;
+            token.ThrowIfCancellationRequested();
+            int intTotalMaximum = await AttributeObject.GetTotalMaximumAsync(token);
             if (intValue < intTotalMaximum || intTotalMaximum == 0)
                 return true;
 
-            if (await _objCharacter.AttributeSection.CanRaiseAttributeToMetatypeMax(AttributeObject))
+            if (await _objCharacter.AttributeSection.CanRaiseAttributeToMetatypeMax(AttributeObject, token))
                 return true;
 
             Program.ShowMessageBox(
@@ -351,7 +353,7 @@ namespace Chummer.UI.Attributes
         private async void cmdBurnEdge_Click(object sender, EventArgs e)
         {
             // Edge cannot go below 1.
-            if (await AttributeObject.ValueAsync <= 0)
+            if (await AttributeObject.GetValueAsync() <= 0)
             {
                 Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_CannotBurnEdge"), await LanguageManager.GetStringAsync("MessageTitle_CannotBurnEdge"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;

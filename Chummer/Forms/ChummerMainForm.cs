@@ -1448,7 +1448,7 @@ namespace Chummer
                 return;
             if (_blnSkipReopenUntilAllClear)
             {
-                if (await OpenCharacterEditorForms.CountAsync != 0)
+                if (await OpenCharacterEditorForms.GetCountAsync(token) != 0)
                     return;
                 _blnSkipReopenUntilAllClear = false;
             }
@@ -2101,7 +2101,7 @@ namespace Chummer
                         {
                             if (Program.OpenCharacters.All(
                                     x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
-                                await Program.OpenCharacters.RemoveAsync(objCharacter);
+                                await Program.OpenCharacters.RemoveAsync(objCharacter, token);
                             continue;
                         }
 
@@ -2122,7 +2122,7 @@ namespace Chummer
                         }, token);
                         if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
                                             && File.Exists(objCharacter.FileName))
-                            await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, objCharacter.FileName);
+                            await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, objCharacter.FileName, token);
                         //Timekeeper.Finish("load_event_time");
                     }
                 }
@@ -2244,7 +2244,7 @@ namespace Chummer
                         {
                             if (Program.OpenCharacters.All(
                                     x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
-                                await Program.OpenCharacters.RemoveAsync(objCharacter);
+                                await Program.OpenCharacters.RemoveAsync(objCharacter, token);
                             continue;
                         }
 
@@ -2262,7 +2262,7 @@ namespace Chummer
 
                         if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
                                             && File.Exists(objCharacter.FileName))
-                            await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, objCharacter.FileName);
+                            await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, objCharacter.FileName, token);
                         //Timekeeper.Finish("load_event_time");
                     }
                 }
@@ -2405,7 +2405,7 @@ namespace Chummer
                         {
                             if (Program.OpenCharacters.All(
                                     x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
-                                await Program.OpenCharacters.RemoveAsync(objCharacter);
+                                await Program.OpenCharacters.RemoveAsync(objCharacter, token);
                             continue;
                         }
 
@@ -2426,7 +2426,7 @@ namespace Chummer
                         }, token);
                         if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
                                             && File.Exists(objCharacter.FileName))
-                            await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, objCharacter.FileName);
+                            await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, objCharacter.FileName, token);
                         //Timekeeper.Finish("load_event_time");
                     }
                 }
@@ -2543,7 +2543,7 @@ namespace Chummer
                         i >= GlobalSettings.MostRecentlyUsedCharacters.Count)
                         continue;
                     string strFile = GlobalSettings.MostRecentlyUsedCharacters[i];
-                    if (await GlobalSettings.FavoriteCharacters.ContainsAsync(strFile))
+                    if (await GlobalSettings.FavoriteCharacters.ContainsAsync(strFile, token))
                         continue;
                     DpiFriendlyToolStripMenuItem objItem;
                     switch (i2)

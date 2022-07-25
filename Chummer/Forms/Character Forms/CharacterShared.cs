@@ -280,7 +280,7 @@ namespace Chummer
         }
 
         protected Stopwatch AutosaveStopWatch { get; } = Stopwatch.StartNew();
-        
+
         /// <summary>
         /// Automatically Save the character to a backup folder.
         /// </summary>
@@ -373,7 +373,7 @@ namespace Chummer
                         return;
 
                     //Remove the old LimitModifier to ensure we don't double up.
-                    await CharacterObject.LimitModifiers.RemoveAsync(objLimitModifier);
+                    await CharacterObject.LimitModifiers.RemoveAsync(objLimitModifier, token);
                     // Create the new limit modifier.
                     LimitModifier objNewLimitModifier = new LimitModifier(CharacterObject, strGuid);
                     objNewLimitModifier.Create(frmPickLimitModifier.MyForm.SelectedName,
@@ -381,7 +381,7 @@ namespace Chummer
                                                frmPickLimitModifier.MyForm.SelectedLimitType,
                                                frmPickLimitModifier.MyForm.SelectedCondition, true);
 
-                    await CharacterObject.LimitModifiers.AddAsync(objNewLimitModifier);
+                    await CharacterObject.LimitModifiers.AddAsync(objNewLimitModifier, token);
                 }
             }
             finally
@@ -2571,14 +2571,22 @@ namespace Chummer
             if (treGear == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
-                string strSelectedId = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)?.InternalId ?? string.Empty;
+                string strSelectedId
+                    = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken) as IHasInternalId)
+                    ?.InternalId ?? string.Empty;
 
-                TreeNode nodRoot = await treGear.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedGear", false), GenericToken);
+                TreeNode nodRoot
+                    = await treGear.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedGear", false), GenericToken);
                 await RefreshLocation(treGear, nodRoot, cmsGearLocation, notifyCollectionChangedEventArgs,
                                       strSelectedId,
                                       "Node_SelectedGear");
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -7543,7 +7551,7 @@ namespace Chummer
                             // Do not let the user copy Gear or Cyberware Weapons.
                             if (objCopyWeapon.Category == "Gear" || objCopyWeapon.Cyberware)
                                 return;
-                            
+
                             XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
                             using (MemoryStream objStream = new MemoryStream())
                             {
@@ -7583,7 +7591,7 @@ namespace Chummer
                             // Do not let the user copy accessories that are unique to its parent.
                             if (objCopyAccessory.IncludedInWeapon)
                                 return;
-                            
+
                             XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
                             using (MemoryStream objStream = new MemoryStream())
                             {
@@ -7759,7 +7767,7 @@ namespace Chummer
                 {
                     Contact objContact = new Contact(CharacterObject);
                     objContact.Load(xmlContact);
-                    await CharacterObject.Contacts.AddAsync(objContact);
+                    await CharacterObject.Contacts.AddAsync(objContact, token);
                 }
             }
             finally
@@ -8732,7 +8740,7 @@ namespace Chummer
                     return await SaveCharacterAsCreated(token);
                 }
 
-                using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync())
+                using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(token: token))
                 {
                     await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
                                                                 LoadingBar.ProgressBarTextPatterns.Saving, token);
@@ -8749,7 +8757,7 @@ namespace Chummer
                             _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
                     }
 
-                    await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, CharacterObject.FileName);
+                    await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, CharacterObject.FileName, token);
                     await SetDirty(false);
                 }
 
@@ -8970,16 +8978,16 @@ namespace Chummer
                         {
                             // Add the Gear to the Vehicle.
                             if (objLocation != null)
-                                await objLocation.Children.AddAsync(objGear);
-                            await objSelectedVehicle.GearChildren.AddAsync(objGear);
+                                await objLocation.Children.AddAsync(objGear, token);
+                            await objSelectedVehicle.GearChildren.AddAsync(objGear, token);
                             objGear.Parent = objSelectedVehicle;
 
                             foreach (Weapon objWeapon in lstWeapons)
                             {
                                 if (objLocation != null)
-                                    await objLocation.Children.AddAsync(objGear);
+                                    await objLocation.Children.AddAsync(objGear, token);
                                 objWeapon.ParentVehicle = objSelectedVehicle;
-                                await objSelectedVehicle.Weapons.AddAsync(objWeapon);
+                                await objSelectedVehicle.Weapons.AddAsync(objWeapon, token);
                             }
                         }
                     }

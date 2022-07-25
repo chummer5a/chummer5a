@@ -364,15 +364,16 @@ namespace Chummer
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
         /// <param name="lstUsedImprovements">List of the improvements actually used for the value</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static decimal ValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType,
                                       out List<Improvement> lstUsedImprovements,
                                       bool blnAddToRating = false, string strImprovedName = "",
-                                      bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
+                                      bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false, CancellationToken token = default)
         {
             decimal decReturn;
             (decReturn, lstUsedImprovements) = MetaValueOf(objCharacter, objImprovementType, x => x.Value,
                                                            s_DictionaryCachedValues, blnAddToRating, strImprovedName,
-                                                           blnUnconditionalOnly, blnIncludeNonImproved);
+                                                           blnUnconditionalOnly, blnIncludeNonImproved, token);
             if (decReturn != 0 && lstUsedImprovements.Count == 0)
             {
                 Log.Warn("A cached value modifier somehow is not zero while having no used improvements in its list.");
@@ -390,13 +391,14 @@ namespace Chummer
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying <paramref name="strImprovedName"/>.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static decimal ValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType,
                                       bool blnAddToRating = false, string strImprovedName = "",
-                                      bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
+                                      bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false, CancellationToken token = default)
         {
             (decimal decReturn, List<Improvement> lstUsedImprovements) = MetaValueOf(
                 objCharacter, objImprovementType, x => x.Value, s_DictionaryCachedValues, blnAddToRating,
-                strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved);
+                strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved, token);
             if (decReturn != 0 && lstUsedImprovements.Count == 0)
             {
                 Log.Warn("A cached value modifier somehow is not zero while having no used improvements in its list.");
@@ -414,13 +416,14 @@ namespace Chummer
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying <paramref name="strImprovedName"/>.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static async Task<decimal> ValueOfAsync(Character objCharacter, Improvement.ImprovementType objImprovementType,
                                                 bool blnAddToRating = false, string strImprovedName = "",
-                                                bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
+                                                bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false, CancellationToken token = default)
         {
             (decimal decReturn, List<Improvement> lstUsedImprovements) = await MetaValueOfAsync(
                 objCharacter, objImprovementType, x => x.Value, s_DictionaryCachedValues, blnAddToRating,
-                strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved);
+                strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved, token);
             if (decReturn != 0 && lstUsedImprovements.Count == 0)
             {
                 Log.Warn("A cached value modifier somehow is not zero while having no used improvements in its list.");
@@ -438,15 +441,16 @@ namespace Chummer
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static async Task<Tuple<decimal, List<Improvement>>> ValueOfTupleAsync(Character objCharacter, Improvement.ImprovementType objImprovementType,
                                                                 bool blnAddToRating = false, string strImprovedName = "",
-                                                                bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
+                                                                bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false, CancellationToken token = default)
         {
             (decimal decReturn, List<Improvement> lstUsedImprovements) = await MetaValueOfAsync(objCharacter, objImprovementType,
                 x => x.Value,
                 s_DictionaryCachedValues, blnAddToRating, strImprovedName,
                 blnUnconditionalOnly,
-                blnIncludeNonImproved);
+                blnIncludeNonImproved, token);
             if (decReturn != 0 && lstUsedImprovements.Count == 0)
             {
                 Log.Warn("A cached value modifier somehow is not zero while having no used improvements in its list.");
@@ -462,13 +466,14 @@ namespace Chummer
         /// <param name="eImprovementType">ImprovementType for which active improvements should be fetched.</param>
         /// <param name="strImprovedName">Improvements are only fetched with the given improvedname. If empty, only those with an empty ImprovedName are fetched.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying <paramref name="strImprovedName"/>.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>A cached list of all unconditional improvements that do not add to ratings and that match the conditions set by the arguments.</returns>
         public static List<Improvement> GetCachedImprovementListForValueOf(
             Character objCharacter, Improvement.ImprovementType eImprovementType, string strImprovedName = "",
-            bool blnIncludeNonImproved = false)
+            bool blnIncludeNonImproved = false, CancellationToken token = default)
         {
             ValueOf(objCharacter, eImprovementType, out List<Improvement> lstReturn, strImprovedName: strImprovedName,
-                    blnIncludeNonImproved: blnIncludeNonImproved);
+                    blnIncludeNonImproved: blnIncludeNonImproved, token: token);
             return lstReturn;
         }
 
@@ -479,14 +484,15 @@ namespace Chummer
         /// <param name="eImprovementType">ImprovementType for which active improvements should be fetched.</param>
         /// <param name="strImprovedName">Improvements are only fetched with the given improvedname. If empty, only those with an empty ImprovedName are fetched.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying <paramref name="strImprovedName"/>.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>A cached list of all unconditional improvements that do not add to ratings and that match the conditions set by the arguments.</returns>
         public static async Task<List<Improvement>> GetCachedImprovementListForValueOfAsync(
             Character objCharacter, Improvement.ImprovementType eImprovementType, string strImprovedName = "",
-            bool blnIncludeNonImproved = false)
+            bool blnIncludeNonImproved = false, CancellationToken token = default)
         {
             (decimal decReturn, List<Improvement> lstUsedImprovements) = await MetaValueOfAsync(
                 objCharacter, eImprovementType, x => x.Value, s_DictionaryCachedValues, false,
-                strImprovedName, true, blnIncludeNonImproved);
+                strImprovedName, true, blnIncludeNonImproved, token);
             if (decReturn != 0 && lstUsedImprovements.Count == 0)
             {
                 Log.Warn("A cached value modifier somehow is not zero while having no used improvements in its list.");
@@ -504,15 +510,16 @@ namespace Chummer
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static decimal AugmentedValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType,
                                                bool blnAddToRating = false, string strImprovedName = "",
-                                               bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
+                                               bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false, CancellationToken token = default)
         {
             (decimal decReturn, List<Improvement> lstUsedImprovements) = MetaValueOf(objCharacter, objImprovementType,
                 x => x.Augmented * x.Rating,
                 s_DictionaryCachedAugmentedValues, blnAddToRating, strImprovedName,
                 blnUnconditionalOnly,
-                blnIncludeNonImproved);
+                blnIncludeNonImproved, token);
             if (decReturn != 0 && lstUsedImprovements.Count == 0)
             {
                 Log.Warn("A cached augmented value modifier somehow is not zero while having no used improvements in its list.");
@@ -530,15 +537,16 @@ namespace Chummer
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static async Task<decimal> AugmentedValueOfAsync(Character objCharacter, Improvement.ImprovementType objImprovementType,
                                                                bool blnAddToRating = false, string strImprovedName = "",
-                                                               bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
+                                                               bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false, CancellationToken token = default)
         {
             (decimal decReturn, List<Improvement> lstUsedImprovements) = await MetaValueOfAsync(objCharacter, objImprovementType,
                 x => x.Augmented * x.Rating,
                 s_DictionaryCachedAugmentedValues, blnAddToRating, strImprovedName,
                 blnUnconditionalOnly,
-                blnIncludeNonImproved);
+                blnIncludeNonImproved, token);
             if (decReturn != 0 && lstUsedImprovements.Count == 0)
             {
                 Log.Warn("A cached augmented value modifier somehow is not zero while having no used improvements in its list.");
@@ -556,15 +564,16 @@ namespace Chummer
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static async Task<Tuple<decimal, List<Improvement>>> AugmentedValueOfTupleAsync(Character objCharacter, Improvement.ImprovementType objImprovementType,
                                                                 bool blnAddToRating = false, string strImprovedName = "",
-                                                                bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
+                                                                bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false, CancellationToken token = default)
         {
             (decimal decReturn, List<Improvement> lstUsedImprovements) = await MetaValueOfAsync(objCharacter, objImprovementType,
                 x => x.Augmented * x.Rating,
                 s_DictionaryCachedAugmentedValues, blnAddToRating, strImprovedName,
                 blnUnconditionalOnly,
-                blnIncludeNonImproved);
+                blnIncludeNonImproved, token);
             if (decReturn != 0 && lstUsedImprovements.Count == 0)
             {
                 Log.Warn("A cached augmented value modifier somehow is not zero while having no used improvements in its list.");
@@ -583,17 +592,18 @@ namespace Chummer
         /// <param name="strImprovedName">Name to assign to the Improvement.</param>
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static decimal AugmentedValueOf(Character objCharacter, Improvement.ImprovementType objImprovementType,
                                                out List<Improvement> lstUsedImprovements, bool blnAddToRating = false,
                                                string strImprovedName = "",
-                                               bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
+                                               bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false, CancellationToken token = default)
         {
             decimal decReturn;
             (decReturn, lstUsedImprovements) = MetaValueOf(objCharacter, objImprovementType,
                                                           x => x.Augmented * x.Rating,
                                                           s_DictionaryCachedAugmentedValues, blnAddToRating, strImprovedName,
                                                           blnUnconditionalOnly,
-                                                          blnIncludeNonImproved);
+                                                          blnIncludeNonImproved, token);
             if (decReturn != 0 && lstUsedImprovements.Count == 0)
             {
                 Log.Warn("A cached augmented value modifier somehow is not zero while having no used improvements in its list.");
@@ -609,13 +619,14 @@ namespace Chummer
         /// <param name="eImprovementType">ImprovementType for which active improvements should be fetched.</param>
         /// <param name="strImprovedName">Improvements are only fetched with the given improvedname. If empty, only those with an empty ImprovedName are fetched.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying <paramref name="strImprovedName"/>.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>A cached list of all unconditional improvements that do not add to ratings and that match the conditions set by the arguments.</returns>
         public static List<Improvement> GetCachedImprovementListForAugmentedValueOf(
             Character objCharacter, Improvement.ImprovementType eImprovementType, string strImprovedName = "",
-            bool blnIncludeNonImproved = false)
+            bool blnIncludeNonImproved = false, CancellationToken token = default)
         {
             AugmentedValueOf(objCharacter, eImprovementType, out List<Improvement> lstReturn,
-                             strImprovedName: strImprovedName, blnIncludeNonImproved: blnIncludeNonImproved);
+                             strImprovedName: strImprovedName, blnIncludeNonImproved: blnIncludeNonImproved, token: token);
             return lstReturn;
         }
 
@@ -626,14 +637,15 @@ namespace Chummer
         /// <param name="eImprovementType">ImprovementType for which active improvements should be fetched.</param>
         /// <param name="strImprovedName">Improvements are only fetched with the given improvedname. If empty, only those with an empty ImprovedName are fetched.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying <paramref name="strImprovedName"/>.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>A cached list of all unconditional improvements that do not add to ratings and that match the conditions set by the arguments.</returns>
         public static async Task<List<Improvement>> GetCachedImprovementListForAugmentedValueOfAsync(
             Character objCharacter, Improvement.ImprovementType eImprovementType, string strImprovedName = "",
-            bool blnIncludeNonImproved = false)
+            bool blnIncludeNonImproved = false, CancellationToken token = default)
         {
             (decimal decReturn, List<Improvement> lstUsedImprovements) = await MetaValueOfAsync(
                 objCharacter, eImprovementType, x => x.Augmented * x.Rating, s_DictionaryCachedAugmentedValues, false,
-                strImprovedName, true, blnIncludeNonImproved);
+                strImprovedName, true, blnIncludeNonImproved, token);
             if (decReturn != 0 && lstUsedImprovements.Count == 0)
             {
                 Log.Warn("A cached augmented value modifier somehow is not zero while having no used improvements in its list.");
@@ -653,15 +665,16 @@ namespace Chummer
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
         /// <param name="funcValueGetter">Function for how to extract values for individual improvements.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         private static Tuple<decimal, List<Improvement>> MetaValueOf(Character objCharacter, Improvement.ImprovementType eImprovementType,
                                                                      Func<Improvement, decimal> funcValueGetter,
                                                                      LockingDictionary<ImprovementDictionaryKey,
                                                                          Tuple<decimal, List<Improvement>>> dicCachedValuesToUse,
                                                                      bool blnAddToRating, string strImprovedName,
-                                                                     bool blnUnconditionalOnly, bool blnIncludeNonImproved)
+                                                                     bool blnUnconditionalOnly, bool blnIncludeNonImproved, CancellationToken token = default)
         {
             return MetaValueOfCoreAsync(true, objCharacter, eImprovementType, funcValueGetter, dicCachedValuesToUse,
-                                        blnAddToRating, strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved).GetAwaiter().GetResult();
+                                        blnAddToRating, strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved, token).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -675,16 +688,17 @@ namespace Chummer
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
         /// <param name="funcValueGetter">Function for how to extract values for individual improvements.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         private static Task<Tuple<decimal, List<Improvement>>> MetaValueOfAsync(
             Character objCharacter, Improvement.ImprovementType eImprovementType,
             Func<Improvement, decimal> funcValueGetter,
             LockingDictionary<ImprovementDictionaryKey,
                 Tuple<decimal, List<Improvement>>> dicCachedValuesToUse,
             bool blnAddToRating, string strImprovedName,
-            bool blnUnconditionalOnly, bool blnIncludeNonImproved)
+            bool blnUnconditionalOnly, bool blnIncludeNonImproved, CancellationToken token = default)
         {
             return MetaValueOfCoreAsync(false, objCharacter, eImprovementType, funcValueGetter, dicCachedValuesToUse,
-                                        blnAddToRating, strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved);
+                                        blnAddToRating, strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved, token);
         }
 
         /// <summary>
@@ -701,16 +715,18 @@ namespace Chummer
         /// <param name="blnUnconditionalOnly">Whether to only fetch values for improvements that do not have a condition.</param>
         /// <param name="blnIncludeNonImproved">Whether to only fetch values for improvements that do not have an improvedname when specifying ImprovedNames.</param>
         /// <param name="funcValueGetter">Function for how to extract values for individual improvements.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
         private static async Task<Tuple<decimal, List<Improvement>>> MetaValueOfCoreAsync(bool blnSync, Character objCharacter, Improvement.ImprovementType eImprovementType,
-            Func<Improvement, decimal> funcValueGetter,
-                                                      LockingDictionary<ImprovementDictionaryKey,
-                                                          Tuple<decimal, List<Improvement>>> dicCachedValuesToUse,
-                                                      bool blnAddToRating, string strImprovedName,
-                                                      bool blnUnconditionalOnly, bool blnIncludeNonImproved)
+                                                                                          Func<Improvement, decimal> funcValueGetter,
+                                                                                          LockingDictionary<ImprovementDictionaryKey,
+                                                                                              Tuple<decimal, List<Improvement>>> dicCachedValuesToUse,
+                                                                                          bool blnAddToRating, string strImprovedName,
+                                                                                          bool blnUnconditionalOnly, bool blnIncludeNonImproved, CancellationToken token = default)
         {
             //Log.Info("objImprovementType = " + objImprovementType.ToString());
             //Log.Info("blnAddToRating = " + blnAddToRating.ToString());
             //Log.Info("strImprovedName = " + ("" + strImprovedName).ToString());
+            token.ThrowIfCancellationRequested();
 
             if (funcValueGetter == null)
                 throw new ArgumentNullException(nameof(funcValueGetter));
@@ -722,7 +738,7 @@ namespace Chummer
                 strImprovedName = string.Empty;
 
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? EnterReadLock.Enter(objCharacter.LockObject) : await EnterReadLock.EnterAsync(objCharacter.LockObject))
+            using (blnSync ? EnterReadLock.Enter(objCharacter.LockObject, token) : await EnterReadLock.EnterAsync(objCharacter.LockObject, token))
             {
                 // These values are needed to prevent race conditions that could cause Chummer to crash
                 Tuple<ImprovementDictionaryKey, IDictionary> tupMyValueToCheck
@@ -752,22 +768,32 @@ namespace Chummer
                                        Utils.SleepEmergencyReleaseMaxTicks * Utils.DefaultSleepDuration))
                             {
                                 CancellationToken objEmergencyReleaseToken = objEmergencyRelease.Token;
-                                try
+                                using (CancellationTokenSource objCombinedTokenSource
+                                       = CancellationTokenSource.CreateLinkedTokenSource(
+                                           token, objEmergencyReleaseToken))
                                 {
-                                    while (s_SetCurrentlyCalculatingValues.Contains(tupMyValueToCheck))
+                                    try
                                     {
-                                        objEmergencyReleaseToken.ThrowIfCancellationRequested();
-                                        if (blnSync)
-                                            Utils.SafeSleep(objEmergencyReleaseToken);
-                                        else
-                                            await Utils.SafeSleepAsync(objEmergencyReleaseToken);
+                                        while (s_SetCurrentlyCalculatingValues.Contains(tupMyValueToCheck))
+                                        {
+                                            objEmergencyReleaseToken.ThrowIfCancellationRequested();
+                                            if (blnSync)
+                                                Utils.SafeSleep(objCombinedTokenSource.Token);
+                                            else
+                                                await Utils.SafeSleepAsync(objCombinedTokenSource.Token);
+                                        }
                                     }
-                                }
-                                // Emergency exit, so break if we are debugging and return the default value (just in case)
-                                catch (OperationCanceledException)
-                                {
-                                    Utils.BreakIfDebug();
-                                    return new Tuple<decimal, List<Improvement>>(0, new List<Improvement>());
+                                    // Emergency exit, so break if we are debugging and return the default value (just in case)
+                                    catch (OperationCanceledException)
+                                    {
+                                        if (objEmergencyReleaseToken.IsCancellationRequested)
+                                        {
+                                            Utils.BreakIfDebug();
+                                            return new Tuple<decimal, List<Improvement>>(0, new List<Improvement>());
+                                        }
+
+                                        throw;
+                                    }
                                 }
                             }
 
@@ -779,22 +805,32 @@ namespace Chummer
                                                Utils.SleepEmergencyReleaseMaxTicks * Utils.DefaultSleepDuration))
                                 {
                                     CancellationToken objEmergencyReleaseToken = objEmergencyRelease.Token;
-                                    try
+                                    using (CancellationTokenSource objCombinedTokenSource
+                                           = CancellationTokenSource.CreateLinkedTokenSource(
+                                               token, objEmergencyReleaseToken))
                                     {
-                                        while (s_SetCurrentlyCalculatingValues.Contains(tupBlankValueToCheck))
+                                        try
                                         {
-                                            objEmergencyReleaseToken.ThrowIfCancellationRequested();
-                                            if (blnSync)
-                                                Utils.SafeSleep(objEmergencyReleaseToken);
-                                            else
-                                                await Utils.SafeSleepAsync(objEmergencyReleaseToken);
+                                            while (s_SetCurrentlyCalculatingValues.Contains(tupBlankValueToCheck))
+                                            {
+                                                objEmergencyReleaseToken.ThrowIfCancellationRequested();
+                                                if (blnSync)
+                                                    Utils.SafeSleep(objCombinedTokenSource.Token);
+                                                else
+                                                    await Utils.SafeSleepAsync(objCombinedTokenSource.Token);
+                                            }
                                         }
-                                    }
-                                    // Emergency exit, so break if we are debugging and return the default value (just in case)
-                                    catch (OperationCanceledException)
-                                    {
-                                        Utils.BreakIfDebug();
-                                        return new Tuple<decimal, List<Improvement>>(0, new List<Improvement>());
+                                        // Emergency exit, so break if we are debugging and return the default value (just in case)
+                                        catch (OperationCanceledException)
+                                        {
+                                            if (objEmergencyReleaseToken.IsCancellationRequested)
+                                            {
+                                                Utils.BreakIfDebug();
+                                                return new Tuple<decimal, List<Improvement>>(0, new List<Improvement>());
+                                            }
+
+                                            throw;
+                                        }
                                     }
                                 }
 
@@ -872,7 +908,7 @@ namespace Chummer
                                         lstUsedImprovements.AddRange(x.Value.Item2);
 
                                         return true;
-                                    });
+                                    }, token: token);
                                 }
 
                                 if (blnDoRecalculate)
@@ -1266,7 +1302,8 @@ namespace Chummer
                                 ImprovementDictionaryKey objLoopCacheKey =
                                     new ImprovementDictionaryKey(objCharacter, eImprovementType, strLoopImprovedName);
                                 // ReSharper disable once MethodHasAsyncOverload
-                                if (!(blnSync ? dicCachedValuesToUse.TryAdd(objLoopCacheKey, tupNewValue) : await dicCachedValuesToUse.TryAddAsync(objLoopCacheKey, tupNewValue)))
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                if (!(blnSync ? dicCachedValuesToUse.TryAdd(objLoopCacheKey, tupNewValue) : await dicCachedValuesToUse.TryAddAsync(objLoopCacheKey, tupNewValue, token)))
                                 {
                                     List<Improvement> lstTemp;
                                     if (blnSync)
@@ -1278,7 +1315,7 @@ namespace Chummer
                                     }
                                     else
                                     {
-                                        lstTemp = (await dicCachedValuesToUse.TryGetValueAsync(objLoopCacheKey)).Item2.Item2;
+                                        lstTemp = (await dicCachedValuesToUse.TryGetValueAsync(objLoopCacheKey, token)).Item2.Item2;
                                     }
                                     if (!ReferenceEquals(lstTemp, tupNewValue.Item2))
                                     {
@@ -1289,11 +1326,12 @@ namespace Chummer
 
                                     if (blnSync)
                                         // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         dicCachedValuesToUse.AddOrUpdate(objLoopCacheKey, tupNewValue,
                                                                          (x, y) => tupNewValue);
                                     else
                                         await dicCachedValuesToUse.AddOrUpdateAsync(objLoopCacheKey, tupNewValue,
-                                            (x, y) => tupNewValue);
+                                            (x, y) => tupNewValue, token);
                                 }
                             }
 

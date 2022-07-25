@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chummer
@@ -66,18 +67,18 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.Insert" />
-        public override async ValueTask InsertAsync(int index, T item)
+        public override async ValueTask InsertAsync(int index, T item, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
                 if (index >= _intMaxSize)
                     return;
-                for (int intCount = await CountAsync; intCount >= _intMaxSize; --intCount)
+                for (int intCount = await GetCountAsync(token); intCount >= _intMaxSize; --intCount)
                 {
-                    await RemoveAtAsync(intCount - 1);
+                    await RemoveAtAsync(intCount - 1, token);
                 }
-                await base.InsertAsync(index, item);
+                await base.InsertAsync(index, item, token);
             }
             finally
             {
@@ -106,13 +107,13 @@ namespace Chummer
             }
         }
 
-        public override async ValueTask AddAsync(T item)
+        public override async ValueTask AddAsync(T item, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
-                if (await CountAsync >= _intMaxSize)
+                if (await GetCountAsync(token) >= _intMaxSize)
                     return;
-                await base.AddAsync(item);
+                await base.AddAsync(item, token);
             }
         }
 

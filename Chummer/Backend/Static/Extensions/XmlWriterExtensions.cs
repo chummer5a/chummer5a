@@ -18,6 +18,7 @@
  */
 
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -27,22 +28,25 @@ namespace Chummer
     {
         /// <inheritdoc cref="XmlWriter.WriteStartElementAsync"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task WriteStartElementAsync(this XmlWriter objWriter, string localName)
+        public static Task WriteStartElementAsync(this XmlWriter objWriter, string localName, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             return objWriter.WriteStartElementAsync(null, localName, null);
         }
 
         /// <inheritdoc cref="XmlWriter.WriteElementStringAsync"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task WriteElementStringAsync(this XmlWriter objWriter, string localName, string value)
+        public static Task WriteElementStringAsync(this XmlWriter objWriter, string localName, string value, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             return objWriter.WriteElementStringAsync(null, localName, null, value);
         }
 
         /// <inheritdoc cref="XmlWriter.WriteElementStringAsync"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task WriteAttributeStringAsync(this XmlWriter objWriter, string localName, string value)
+        public static Task WriteAttributeStringAsync(this XmlWriter objWriter, string localName, string value, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             return objWriter.WriteAttributeStringAsync(null, localName, null, value);
         }
 
@@ -53,9 +57,9 @@ namespace Chummer
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task<XmlElementWriteHelper> StartElementAsync(this XmlWriter objWriter, string localName)
+        public static Task<XmlElementWriteHelper> StartElementAsync(this XmlWriter objWriter, string localName, CancellationToken token = default)
         {
-            return XmlElementWriteHelper.StartElementAsync(objWriter, localName);
+            return XmlElementWriteHelper.StartElementAsync(objWriter, localName, token);
         }
     }
 }

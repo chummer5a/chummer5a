@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chummer
@@ -51,16 +52,16 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.Insert" />
-        public override async ValueTask InsertAsync(int index, T item)
+        public override async ValueTask InsertAsync(int index, T item, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
-                int intExistingIndex = await IndexOfAsync(item);
+                int intExistingIndex = await IndexOfAsync(item, token);
                 if (intExistingIndex == -1)
                     await base.InsertAsync(index, item);
                 else
-                    await MoveAsync(intExistingIndex, Math.Min(index, await CountAsync - 1));
+                    await MoveAsync(intExistingIndex, Math.Min(index, await GetCountAsync(token) - 1), token);
             }
             finally
             {
@@ -94,16 +95,16 @@ namespace Chummer
             }
         }
 
-        public override async ValueTask AddAsync(T item)
+        public override async ValueTask AddAsync(T item, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
-                int intExistingIndex = await IndexOfAsync(item);
+                int intExistingIndex = await IndexOfAsync(item, token);
                 if (intExistingIndex == -1)
-                    await base.AddAsync(item);
+                    await base.AddAsync(item, token);
                 else
-                    await MoveAsync(intExistingIndex, await CountAsync - 1);
+                    await MoveAsync(intExistingIndex, await GetCountAsync(token) - 1, token);
             }
             finally
             {

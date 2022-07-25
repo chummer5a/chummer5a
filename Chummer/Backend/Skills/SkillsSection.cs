@@ -1635,15 +1635,15 @@ namespace Chummer.Backend.Skills
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 foreach (Skill objSkill in Skills)
                 {
                     if ((GlobalSettings.PrintSkillsWithZeroRating || objSkill.Rating > 0) && objSkill.Enabled)
                     {
-                        await objSkill.Print(objWriter, objCulture, strLanguageToPrint);
+                        await objSkill.Print(objWriter, objCulture, strLanguageToPrint, token);
                     }
                 }
 
@@ -1651,13 +1651,13 @@ namespace Chummer.Backend.Skills
                 {
                     if (objSkillGroup.Rating > 0)
                     {
-                        await objSkillGroup.Print(objWriter, objCulture, strLanguageToPrint);
+                        await objSkillGroup.Print(objWriter, objCulture, strLanguageToPrint, token);
                     }
                 }
 
                 foreach (KnowledgeSkill objSkill in KnowledgeSkills)
                 {
-                    await objSkill.Print(objWriter, objCulture, strLanguageToPrint);
+                    await objSkill.Print(objWriter, objCulture, strLanguageToPrint, token);
                 }
             }
         }
