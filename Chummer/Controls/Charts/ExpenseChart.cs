@@ -19,6 +19,7 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
@@ -89,7 +90,7 @@ namespace Chummer.UI.Charts
             }
         }
 
-        public Task NormalizeYAxis()
+        public Task NormalizeYAxis(CancellationToken token = default)
         {
             if (ExpenseValues.Count == 0)
                 return Task.CompletedTask;
@@ -117,7 +118,7 @@ namespace Chummer.UI.Charts
             {
                 x.MinValue = dblActualMin;
                 x.MaxValue = dblActualMax;
-            });
+            }, token);
         }
 
         #region Properties

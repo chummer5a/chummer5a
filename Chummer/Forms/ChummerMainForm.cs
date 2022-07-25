@@ -2080,7 +2080,7 @@ namespace Chummer
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 string strTooManyHandles = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
                 string strTooManyHandlesTitle = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
-                using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count))
+                using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count, token))
                 {
                     foreach (Character objCharacter in lstNewCharacters)
                     {
@@ -2223,7 +2223,7 @@ namespace Chummer
                 string strTooManyHandles = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
                 string strTooManyHandlesTitle = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
                 using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                       = await Program.CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count))
+                       = await Program.CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count, token))
                 {
                     foreach (Character objCharacter in lstNewCharacters)
                     {
@@ -2386,7 +2386,7 @@ namespace Chummer
                 string strTooManyHandles = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
                 string strTooManyHandlesTitle = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
                 using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                       = await Program.CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count))
+                       = await Program.CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count, token))
                 {
                     foreach (Character objCharacter in lstNewCharacters)
                     {
@@ -2445,14 +2445,14 @@ namespace Chummer
             await DoPopulateMruToolstripMenu(e?.Text);
         }
 
-        private async ValueTask DoPopulateMruToolstripMenu(string strText = "")
+        private async ValueTask DoPopulateMruToolstripMenu(string strText = "", CancellationToken token = default)
         {
-            await menuStrip.DoThreadSafeAsync(x => x.SuspendLayout());
+            await menuStrip.DoThreadSafeAsync(x => x.SuspendLayout(), token);
             try
             {
                 await menuStrip.DoThreadSafeAsync(() => mnuFileMRUSeparator.Visible = GlobalSettings.FavoriteCharacters.Count > 0
                                                       || GlobalSettings.MostRecentlyUsedCharacters
-                                                                       .Count > 0);
+                                                                       .Count > 0, token);
 
                 if (strText != "mru")
                 {
@@ -2512,11 +2512,11 @@ namespace Chummer
                                 objItem.Text = GlobalSettings.FavoriteCharacters[i];
                                 objItem.Tag = GlobalSettings.FavoriteCharacters[i];
                                 objItem.Visible = true;
-                            });
+                            }, token);
                         }
                         else
                         {
-                            await menuStrip.DoThreadSafeAsync(() => objItem.Visible = false);
+                            await menuStrip.DoThreadSafeAsync(() => objItem.Visible = false, token);
                         }
                     }
                 }
@@ -2533,7 +2533,7 @@ namespace Chummer
                     mnuMRU7.Visible = false;
                     mnuMRU8.Visible = false;
                     mnuMRU9.Visible = false;
-                });
+                }, token);
 
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 int i2 = 0;
@@ -2598,33 +2598,34 @@ namespace Chummer
                         && i2 >= 0)
                     {
                         string strNumAsString = (i2 + 1).ToString(GlobalSettings.CultureInfo);
-                        await menuStrip.DoThreadSafeAsync(() => objItem.Text = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace + strFile);
+                        await menuStrip.DoThreadSafeAsync(() => objItem.Text = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace + strFile, token);
                     }
                     else
-                        await menuStrip.DoThreadSafeAsync(() => objItem.Text = (i2 + 1).ToString(GlobalSettings.CultureInfo) + strSpace + strFile);
+                        await menuStrip.DoThreadSafeAsync(() => objItem.Text = (i2 + 1).ToString(GlobalSettings.CultureInfo) + strSpace + strFile, token);
 
                     await menuStrip.DoThreadSafeAsync(() =>
                     {
                         objItem.Tag = strFile;
                         objItem.Visible = true;
-                    });
+                    }, token);
                     ++i2;
                 }
             }
             finally
             {
-                await menuStrip.DoThreadSafeAsync(x => x.ResumeLayout());
+                await menuStrip.DoThreadSafeAsync(x => x.ResumeLayout(), token);
             }
         }
 
-        public async ValueTask OpenDiceRollerWithPool(Character objCharacter = null, int intDice = 0)
+        public async ValueTask OpenDiceRollerWithPool(Character objCharacter = null, int intDice = 0, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (GlobalSettings.SingleDiceRoller)
             {
                 if (RollerWindow == null)
                 {
-                    RollerWindow = await this.DoThreadSafeFuncAsync(() => new DiceRoller(this, objCharacter?.Qualities, intDice));
-                    await RollerWindow.DoThreadSafeAsync(x => x.Show());
+                    RollerWindow = await this.DoThreadSafeFuncAsync(() => new DiceRoller(this, objCharacter?.Qualities, intDice), token);
+                    await RollerWindow.DoThreadSafeAsync(x => x.Show(), token);
                 }
                 else
                 {
@@ -2633,13 +2634,13 @@ namespace Chummer
                         x.Dice = intDice;
                         x.ProcessGremlins(objCharacter?.Qualities);
                         x.Activate();
-                    });
+                    }, token);
                 }
             }
             else
             {
-                DiceRoller frmRoller = await this.DoThreadSafeFuncAsync(() => new DiceRoller(this, objCharacter?.Qualities, intDice));
-                await frmRoller.DoThreadSafeAsync(x => x.Show());
+                DiceRoller frmRoller = await this.DoThreadSafeFuncAsync(() => new DiceRoller(this, objCharacter?.Qualities, intDice), token);
+                await frmRoller.DoThreadSafeAsync(x => x.Show(), token);
             }
         }
 

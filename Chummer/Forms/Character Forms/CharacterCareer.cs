@@ -18534,27 +18534,34 @@ namespace Chummer
 
         private async void chkShowFreeKarma_CheckedChanged(object sender, EventArgs e)
         {
-            if (await CharacterObject.ExpenseEntries.AnyAsync(x => x.Type == ExpenseType.Karma && x.Amount == 0))
+            try
             {
-                await RepopulateKarmaExpenseList();
+                if (await CharacterObject.ExpenseEntries.AnyAsync(x => x.Type == ExpenseType.Karma && x.Amount == 0, GenericToken))
+                {
+                    await RepopulateKarmaExpenseList(GenericToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
-        private async ValueTask RepopulateKarmaExpenseList()
+        private async ValueTask RepopulateKarmaExpenseList(CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(this))
+            using (await CursorWait.NewAsync(this, token: token))
             {
                 await lstKarma.DoThreadSafeAsync(x =>
                 {
                     x.Items.Clear();
                     x.ContextMenuStrip = null;
-                });
-                await chtKarma.DoThreadSafeAsync(x => x.SuspendLayout());
+                }, token);
+                await chtKarma.DoThreadSafeAsync(x => x.SuspendLayout(), token);
                 try
                 {
                     chtKarma.ExpenseValues.Clear();
                     decimal decKarmaValue = 0;
-                    bool blnShowFreeKarma = await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked);
+                    bool blnShowFreeKarma = await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked, token);
                     //Find the last karma/nuyen entry as well in case a chart only contains one point
                     DateTime KarmaLast = DateTime.MinValue;
                     foreach (ExpenseLogEntry objExpense in CharacterObject.ExpenseEntries)
@@ -18597,7 +18604,7 @@ namespace Chummer
                             x.Items.Add(objItem);
                             if (objExpense.Undo != null)
                                 x.ContextMenuStrip = cmsUndoKarmaExpense;
-                        });
+                        }, token);
                         if (objExpense.Amount == 0)
                             continue;
                         if (objExpense.Date > KarmaLast)
@@ -18617,38 +18624,45 @@ namespace Chummer
                         chtKarma.ExpenseValues.Add(new DateTimePoint(DateTime.Now, decimal.ToDouble(decKarmaValue)));
                     }
 
-                    await chtKarma.NormalizeYAxis();
+                    await chtKarma.NormalizeYAxis(token);
                 }
                 finally
                 {
-                    await chtKarma.DoThreadSafeAsync(x => x.ResumeLayout());
+                    await chtKarma.DoThreadSafeAsync(x => x.ResumeLayout(), token);
                 }
             }
         }
 
         private async void chkShowFreeNuyen_CheckedChanged(object sender, EventArgs e)
         {
-            if (await CharacterObject.ExpenseEntries.AnyAsync(x => x.Type == ExpenseType.Nuyen && x.Amount == 0))
+            try
             {
-                await RepopulateNuyenExpenseList();
+                if (await CharacterObject.ExpenseEntries.AnyAsync(x => x.Type == ExpenseType.Nuyen && x.Amount == 0, GenericToken))
+                {
+                    await RepopulateNuyenExpenseList(GenericToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
-        private async ValueTask RepopulateNuyenExpenseList()
+        private async ValueTask RepopulateNuyenExpenseList(CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(this))
+            using (await CursorWait.NewAsync(this, token: token))
             {
                 await lstNuyen.DoThreadSafeAsync(x =>
                 {
                     x.Items.Clear();
                     x.ContextMenuStrip = null;
-                });
-                await chtNuyen.DoThreadSafeAsync(x => x.SuspendLayout());
+                }, token);
+                await chtNuyen.DoThreadSafeAsync(x => x.SuspendLayout(), token);
                 try
                 {
                     chtNuyen.ExpenseValues.Clear();
                     decimal decNuyenValue = 0;
-                    bool blnShowFreeNuyen = await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked);
+                    bool blnShowFreeNuyen = await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked, token);
                     //Find the last karma/nuyen entry as well in case a chart only contains one point
                     DateTime NuyenLast = DateTime.MinValue;
                     foreach (ExpenseLogEntry objExpense in CharacterObject.ExpenseEntries)
@@ -18693,7 +18707,7 @@ namespace Chummer
                             x.Items.Add(objItem);
                             if (objExpense.Undo != null)
                                 x.ContextMenuStrip = cmsUndoNuyenExpense;
-                        });
+                        }, token);
                         if (objExpense.Amount == 0)
                             continue;
                         if (objExpense.Date > NuyenLast)
@@ -18713,18 +18727,25 @@ namespace Chummer
                         chtNuyen.ExpenseValues.Add(new DateTimePoint(DateTime.Now, decimal.ToDouble(decNuyenValue)));
                     }
 
-                    await chtNuyen.NormalizeYAxis();
+                    await chtNuyen.NormalizeYAxis(token);
                 }
                 finally
                 {
-                    await chtNuyen.DoThreadSafeAsync(x => x.ResumeLayout());
+                    await chtNuyen.DoThreadSafeAsync(x => x.ResumeLayout(), token);
                 }
             }
         }
 
         private async void UpdateInitiationCostEvent(object sender, EventArgs e)
         {
-            await UpdateInitiationCost();
+            try
+            {
+                await UpdateInitiationCost(GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         /// <summary>
@@ -18770,59 +18791,59 @@ namespace Chummer
         /// <summary>
         /// Set the ToolTips from the Language file.
         /// </summary>
-        private async ValueTask SetTooltips()
+        private async ValueTask SetTooltips(CancellationToken token = default)
         {
             // Armor Tab.
-            await chkArmorEquipped.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_ArmorEquipped"));
+            await chkArmorEquipped.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_ArmorEquipped"), token);
             // ToolTipFactory.SetToolTip(cmdArmorIncrease, LanguageManager.GetString("Tip_ArmorDegradationAPlus"));
             // ToolTipFactory.SetToolTip(cmdArmorDecrease, LanguageManager.GetString("Tip_ArmorDegradationAMinus"));
             // Weapon Tab.
-            await cmdWeaponBuyAmmo.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_BuyAmmo"));
-            await cmdWeaponMoveToVehicle.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_TransferToVehicle"));
+            await cmdWeaponBuyAmmo.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_BuyAmmo"), token);
+            await cmdWeaponMoveToVehicle.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_TransferToVehicle"), token);
             // Gear Tab.
-            await cmdGearIncreaseQty.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_IncreaseGearQty"));
-            await cmdGearReduceQty.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_DecreaseGearQty"));
-            await cmdGearSplitQty.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_SplitGearQty"));
-            await cmdGearMergeQty.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_MergeGearQty"));
-            await cmdGearMoveToVehicle.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_TransferToVehicle"));
-            await chkGearActiveCommlink.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_ActiveCommlink"));
-            await chkCyberwareActiveCommlink.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_ActiveCommlink"));
+            await cmdGearIncreaseQty.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_IncreaseGearQty"), token);
+            await cmdGearReduceQty.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_DecreaseGearQty"), token);
+            await cmdGearSplitQty.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_SplitGearQty"), token);
+            await cmdGearMergeQty.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_MergeGearQty"), token);
+            await cmdGearMoveToVehicle.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_TransferToVehicle"), token);
+            await chkGearActiveCommlink.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_ActiveCommlink"), token);
+            await chkCyberwareActiveCommlink.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_ActiveCommlink"), token);
             // Vehicles Tab.
-            await chkVehicleWeaponAccessoryInstalled.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_WeaponInstalled"));
-            await cmdVehicleGearReduceQty.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_DecreaseGearQty"));
-            await cmdVehicleMoveToInventory.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_TransferToInventory"));
-            await chkVehicleActiveCommlink.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_ActiveCommlink"));
+            await chkVehicleWeaponAccessoryInstalled.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_WeaponInstalled"), token);
+            await cmdVehicleGearReduceQty.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_DecreaseGearQty"), token);
+            await cmdVehicleMoveToInventory.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_TransferToInventory"), token);
+            await chkVehicleActiveCommlink.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_ActiveCommlink"), token);
             // Other Info Tab.
-            await lblCMPhysicalLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherCMPhysical"));
-            await lblCMStunLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherCMStun"));
-            await lblINILabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherInitiative"));
-            await lblMatrixINILabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherMatrixInitiative"));
-            await lblAstralINILabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherAstralInitiative"));
-            await lblArmorLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherArmor"));
-            await lblESS.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherEssence"));
-            await lblRemainingNuyenLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherNuyen"));
-            await lblCareerKarmaLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherCareerKarma"));
-            await lblMovementLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherMovement"));
-            await lblSwimLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherSwim"));
-            await lblFlyLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherFly"));
-            await lblLiftCarryLimitsLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherLiftAndCarryLimits"));
-            await lblComposureLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherComposure"));
-            await lblSurpriseLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherSurprise"));
-            await lblJudgeIntentionsLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherJudgeIntentions"));
-            await lblLiftCarryLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherLiftAndCarry"));
-            await lblMemoryLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherMemory"));
+            await lblCMPhysicalLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherCMPhysical"), token);
+            await lblCMStunLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherCMStun"), token);
+            await lblINILabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherInitiative"), token);
+            await lblMatrixINILabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherMatrixInitiative"), token);
+            await lblAstralINILabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherAstralInitiative"), token);
+            await lblArmorLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherArmor"), token);
+            await lblESS.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherEssence"), token);
+            await lblRemainingNuyenLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherNuyen"), token);
+            await lblCareerKarmaLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherCareerKarma"), token);
+            await lblMovementLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherMovement"), token);
+            await lblSwimLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherSwim"), token);
+            await lblFlyLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherFly"), token);
+            await lblLiftCarryLimitsLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherLiftAndCarryLimits"), token);
+            await lblComposureLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherComposure"), token);
+            await lblSurpriseLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherSurprise"), token);
+            await lblJudgeIntentionsLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherJudgeIntentions"), token);
+            await lblLiftCarryLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherLiftAndCarry"), token);
+            await lblMemoryLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherMemory"), token);
             // Condition Monitor Tab.
-            await lblCMPenaltyLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_CMPenalty"));
-            await lblCMArmorLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherArmor"));
-            await lblCMDamageResistancePoolLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_CMDamageResistance"));
-            await cmdEdgeGained.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_CMRegainEdge"));
-            await cmdEdgeSpent.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_CMSpendEdge"));
+            await lblCMPenaltyLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_CMPenalty"), token);
+            await lblCMArmorLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_OtherArmor"), token);
+            await lblCMDamageResistancePoolLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_CMDamageResistance"), token);
+            await cmdEdgeGained.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_CMRegainEdge"), token);
+            await cmdEdgeSpent.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_CMSpendEdge"), token);
             // Common Info Tab.
-            await lblStreetCred.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_StreetCred"));
-            await lblNotoriety.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_Notoriety"));
+            await lblStreetCred.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_StreetCred"), token);
+            await lblNotoriety.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_Notoriety"), token);
             if (CharacterObjectSettings.UseCalculatedPublicAwareness)
-                await lblPublicAware.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_PublicAwareness"));
-            await cmdBurnStreetCred.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_BurnStreetCred"));
+                await lblPublicAware.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_PublicAwareness"), token);
+            await cmdBurnStreetCred.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_BurnStreetCred"), token);
         }
 
         /// <summary>
