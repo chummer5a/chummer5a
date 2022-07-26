@@ -486,31 +486,31 @@ namespace Chummer
             if (objWriter == null)
                 return;
             // <contact>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("contact");
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("contact", token: token);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId);
-                await objWriter.WriteElementStringAsync("name", Name);
-                await objWriter.WriteElementStringAsync("role", DisplayRoleMethod(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("location", Location);
+                await objWriter.WriteElementStringAsync("guid", InternalId, token: token);
+                await objWriter.WriteElementStringAsync("name", Name, token: token);
+                await objWriter.WriteElementStringAsync("role", DisplayRoleMethod(strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("location", Location, token: token);
                 if (!IsGroup)
-                    await objWriter.WriteElementStringAsync("connection", Connection.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("connection", Connection.ToString(objCulture), token: token);
                 else
-                    await objWriter.WriteElementStringAsync("connection", await LanguageManager.GetStringAsync("String_Group", strLanguageToPrint) + '(' + Connection.ToString(objCulture) + ')');
-                await objWriter.WriteElementStringAsync("loyalty", Loyalty.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("metatype", await DisplayMetatypeMethodAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("gender", await DisplayGenderMethodAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("age", await DisplayAgeMethodAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("contacttype", await DisplayTypeMethodAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("preferredpayment", await DisplayPreferredPaymentMethodAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("hobbiesvice", await DisplayHobbiesViceMethodAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("personallife", await DisplayPersonalLifeMethodAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("type", await LanguageManager.GetStringAsync("String_" + EntityType, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("forcedloyalty", ForcedLoyalty.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("blackmail", Blackmail.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("family", Family.ToString(GlobalSettings.InvariantCultureInfo));
+                    await objWriter.WriteElementStringAsync("connection", await LanguageManager.GetStringAsync("String_Group", strLanguageToPrint) + '(' + Connection.ToString(objCulture) + ')', token: token);
+                await objWriter.WriteElementStringAsync("loyalty", Loyalty.ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("metatype", await DisplayMetatypeMethodAsync(strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("gender", await DisplayGenderMethodAsync(strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("age", await DisplayAgeMethodAsync(strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("contacttype", await DisplayTypeMethodAsync(strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("preferredpayment", await DisplayPreferredPaymentMethodAsync(strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("hobbiesvice", await DisplayHobbiesViceMethodAsync(strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("personallife", await DisplayPersonalLifeMethodAsync(strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("type", await LanguageManager.GetStringAsync("String_" + EntityType, strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("forcedloyalty", ForcedLoyalty.ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("blackmail", Blackmail.ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                await objWriter.WriteElementStringAsync("family", Family.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes);
+                    await objWriter.WriteElementStringAsync("notes", Notes, token: token);
 
                 await PrintMugshots(objWriter, token);
             }
@@ -1427,6 +1427,7 @@ namespace Chummer
                                              MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo));
                 // <mugshot>
                 // ReSharper disable once MethodHasAsyncOverload
+                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                 using (objWriter.StartElement("mugshots"))
                 {
                     foreach (Image imgMugshot in Mugshots)
@@ -1442,15 +1443,15 @@ namespace Chummer
             else
             {
                 await objWriter.WriteElementStringAsync("mainmugshotindex",
-                                                        MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo));
+                                                        MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                 // <mugshots>
-                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("mugshots");
+                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("mugshots", token: token);
                 try
                 {
                     foreach (Image imgMugshot in Mugshots)
                     {
                         await objWriter.WriteElementStringAsync(
-                            "mugshot", await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot, token));
+                            "mugshot", await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot, token), token: token);
                     }
                 }
                 finally
@@ -1519,15 +1520,15 @@ namespace Chummer
                     imgMainMugshot.Save(imgMugshotPath);
                     // <mainmugshotpath />
                     await objWriter.WriteElementStringAsync("mainmugshotpath",
-                        "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
+                        "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'), token: token);
                     // <mainmugshotbase64 />
-                    await objWriter.WriteElementStringAsync("mainmugshotbase64", await imgMainMugshot.ToBase64StringAsJpegAsync(token: token));
+                    await objWriter.WriteElementStringAsync("mainmugshotbase64", await imgMainMugshot.ToBase64StringAsJpegAsync(token: token), token: token);
                 }
                 // <hasothermugshots>
                 await objWriter.WriteElementStringAsync("hasothermugshots",
-                    (imgMainMugshot == null || Mugshots.Count > 1).ToString(GlobalSettings.InvariantCultureInfo));
+                    (imgMainMugshot == null || Mugshots.Count > 1).ToString(GlobalSettings.InvariantCultureInfo), token: token);
                 // <othermugshots>
-                XmlElementWriteHelper objOtherMugshotsElement = await objWriter.StartElementAsync("othermugshots");
+                XmlElementWriteHelper objOtherMugshotsElement = await objWriter.StartElementAsync("othermugshots", token: token);
                 try
                 {
                     for (int i = 0; i < Mugshots.Count; ++i)
@@ -1536,17 +1537,17 @@ namespace Chummer
                             continue;
                         Image imgMugshot = Mugshots[i];
                         // <mugshot>
-                        XmlElementWriteHelper objMugshotElement = await objWriter.StartElementAsync("mugshot");
+                        XmlElementWriteHelper objMugshotElement = await objWriter.StartElementAsync("mugshot", token: token);
                         try
                         {
-                            await objWriter.WriteElementStringAsync("stringbase64", await imgMugshot.ToBase64StringAsJpegAsync(token: token));
+                            await objWriter.WriteElementStringAsync("stringbase64", await imgMugshot.ToBase64StringAsJpegAsync(token: token), token: token);
 
                             string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath,
                                                                  guiImage.ToString("N", GlobalSettings.InvariantCultureInfo) +
                                                                  i.ToString(GlobalSettings.InvariantCultureInfo) + ".jpg");
                             imgMugshot.Save(imgMugshotPath);
                             await objWriter.WriteElementStringAsync("temppath",
-                                                                    "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
+                                                                    "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'), token: token);
                         }
                         finally
                         {

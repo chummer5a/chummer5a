@@ -2506,7 +2506,8 @@ namespace Chummer
                     {
                         if (IsLoading)
                             break;
-                        using (await CursorWait.NewAsync(this, token: GenericToken))
+                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                        try
                         {
                             await this.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken);
                             try
@@ -2554,7 +2555,8 @@ namespace Chummer
                                 await RefreshQualities(treQualities, cmsQuality);
                                 await RefreshSpirits(panSpirits, panSprites);
                                 await RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
-                                await RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
+                                await RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm,
+                                                          cmsInitiationNotes);
                                 await RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
                                 await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
                                 await RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
@@ -2563,22 +2565,24 @@ namespace Chummer
                                 await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
                                 await RefreshContacts(panContacts, panEnemies, panPets);
                                 await RefreshSustainedSpells(flpSustainedSpells, flpSustainedComplexForms,
-                                                       flpSustainedCritterPowers, chkPsycheActiveMagician,
-                                                       chkPsycheActiveTechnomancer);
+                                                             flpSustainedCritterPowers, chkPsycheActiveMagician,
+                                                             chkPsycheActiveTechnomancer);
 
                                 await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
                                 await RefreshGears(treGear, cmsGearLocation, cmsGear,
-                                    await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken),
-                                    await chkHideLoadedAmmo.DoThreadSafeFuncAsync(x => x.Checked, GenericToken));
+                                                   await chkCommlinks.DoThreadSafeFuncAsync(
+                                                       x => x.Checked, GenericToken),
+                                                   await chkHideLoadedAmmo.DoThreadSafeFuncAsync(
+                                                       x => x.Checked, GenericToken));
                                 await RefreshFociFromGear(treFoci, null);
                                 await RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
                                 await RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
-                                               cmsWeaponAccessoryGear);
+                                                     cmsWeaponAccessoryGear);
                                 await RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
-                                                cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
-                                                cmsVehicleGear,
-                                                cmsWeaponMount,
-                                                cmsVehicleCyberware, cmsVehicleCyberwareGear);
+                                                      cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
+                                                      cmsVehicleGear,
+                                                      cmsWeaponMount,
+                                                      cmsVehicleCyberware, cmsVehicleCyberwareGear);
                                 await RefreshDrugs(treCustomDrugs);
                                 await this.DoThreadSafeAsync(() =>
                                 {
@@ -2593,7 +2597,8 @@ namespace Chummer
                                 }, GenericToken);
 
                                 XPathNavigator xmlTraditionsBaseChummerNode =
-                                    await (await CharacterObject.LoadDataXPathAsync("traditions.xml", token: GenericToken))
+                                    await (await CharacterObject.LoadDataXPathAsync(
+                                            "traditions.xml", token: GenericToken))
                                         .SelectSingleNodeAndCacheExpressionAsync("/chummer");
                                 using (new FetchSafelyFromPool<List<ListItem>>(
                                            Utils.ListItemListPool, out List<ListItem> lstTraditions))
@@ -2757,7 +2762,8 @@ namespace Chummer
                                             0,
                                             new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
                                         if (!lstStreams.SequenceEqual(
-                                                await cboStream.DoThreadSafeFuncAsync(x => x.Items.Cast<ListItem>(), GenericToken)))
+                                                await cboStream.DoThreadSafeFuncAsync(
+                                                    x => x.Items.Cast<ListItem>(), GenericToken)))
                                         {
                                             await cboStream.PopulateWithListItemsAsync(lstStreams, GenericToken);
                                             await cboStream.DoThreadSafeAsync(x =>
@@ -2787,6 +2793,10 @@ namespace Chummer
                                 await this.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken);
                             }
                         }
+                        finally
+                        {
+                            await objCursorWait.DisposeAsync();
+                        }
 
                         break;
                     }
@@ -2794,10 +2804,15 @@ namespace Chummer
                     {
                         if (!CharacterObjectSettings.BookEnabled("HT"))
                         {
-                            using (await CursorWait.NewAsync(this, token: GenericToken))
+                            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                            try
                             {
                                 await RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
                                 await treLifestyles.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken);
+                            }
+                            finally
+                            {
+                                await objCursorWait.DisposeAsync();
                             }
                         }
 
@@ -2805,7 +2820,8 @@ namespace Chummer
                     }
                     case nameof(CharacterSettings.EnableEnemyTracking):
                     {
-                        using (await CursorWait.NewAsync(this, token: GenericToken))
+                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                        try
                         {
                             await this.DoThreadSafeAsync(x =>
                                       {
@@ -2832,6 +2848,10 @@ namespace Chummer
                                       .ContinueWith(y => RefreshContacts(panContacts, panEnemies, panPets),
                                                     GenericToken)
                                       .Unwrap();
+                        }
+                        finally
+                        {
+                            await objCursorWait.DisposeAsync();
                         }
 
                         break;
@@ -3001,19 +3021,26 @@ namespace Chummer
                     return;
                 }
 
-                using (await CursorWait.NewAsync(this, token: GenericToken))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                try
                 {
                     Character[] lstClones = new Character[intClones];
-                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(CharacterObject.Alias, Character.NumLoadingSections * intClones, GenericToken))
+                    using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                           = await Program.CreateAndShowProgressBarAsync(
+                               CharacterObject.Alias, Character.NumLoadingSections * intClones, GenericToken))
                     {
                         string strSpace = await LanguageManager.GetStringAsync("String_Space");
                         Task<Character>[] tskLoadingTasks = new Task<Character>[intClones];
                         for (int i = 0; i < intClones; ++i)
                         {
-                            string strNewName = CharacterObject.Alias + strSpace + i.ToString(GlobalSettings.CultureInfo);
+                            string strNewName = CharacterObject.Alias + strSpace
+                                                                      + i.ToString(GlobalSettings.CultureInfo);
                             tskLoadingTasks[i]
                                 // ReSharper disable once AccessToDisposedClosure
-                                = Task.Run(() => Program.LoadCharacterAsync(CharacterObject.FileName, strNewName, true, frmLoadingBar: frmLoadingBar.MyForm, token: GenericToken), GenericToken);
+                                = Task.Run(
+                                    () => Program.LoadCharacterAsync(CharacterObject.FileName, strNewName, true,
+                                                                     frmLoadingBar: frmLoadingBar.MyForm,
+                                                                     token: GenericToken), GenericToken);
                         }
 
                         // Await structure prevents UI thread lock-ups if the LoadCharacter() function shows any messages
@@ -3021,7 +3048,12 @@ namespace Chummer
                         for (int i = 0; i < intClones; ++i)
                             lstClones[i] = await tskLoadingTasks[i];
                     }
+
                     await Program.OpenCharacterList(lstClones, false, GenericToken);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
             catch (OperationCanceledException)
@@ -3050,7 +3082,8 @@ namespace Chummer
         private async ValueTask DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 IAsyncDisposable objLocker
                     = await CharacterObject.LockObject.EnterWriteLockAsync(token);
@@ -3537,10 +3570,13 @@ namespace Chummer
 
                                     TreeNode objWareNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID
                                                            || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
-                                        ? await treCyberware.DoThreadSafeFuncAsync(x => x.FindNode(objCyberware.SourceIDString), token)
-                                        : await treCyberware.DoThreadSafeFuncAsync(x => x.FindNode(objCyberware.InternalId), token);
+                                        ? await treCyberware.DoThreadSafeFuncAsync(
+                                            x => x.FindNode(objCyberware.SourceIDString), token)
+                                        : await treCyberware.DoThreadSafeFuncAsync(
+                                            x => x.FindNode(objCyberware.InternalId), token);
                                     if (objWareNode != null)
-                                        await treCyberware.DoThreadSafeAsync(() => objWareNode.Text = objCyberware.CurrentDisplayName, token);
+                                        await treCyberware.DoThreadSafeAsync(
+                                            () => objWareNode.Text = objCyberware.CurrentDisplayName, token);
                                 }
                                 else
                                 {
@@ -3601,10 +3637,13 @@ namespace Chummer
                                             objCyberware.Extra = ImprovementManager.SelectedValue;
                                         TreeNode objNode = objLoopCyberware.SourceID == Cyberware.EssenceHoleGUID
                                                            || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
-                                            ? await treCyberware.DoThreadSafeFuncAsync(x => x.FindNode(objCyberware.SourceIDString), token)
-                                            : await treCyberware.DoThreadSafeFuncAsync(x => x.FindNode(objLoopCyberware.InternalId), token);
+                                            ? await treCyberware.DoThreadSafeFuncAsync(
+                                                x => x.FindNode(objCyberware.SourceIDString), token)
+                                            : await treCyberware.DoThreadSafeFuncAsync(
+                                                x => x.FindNode(objLoopCyberware.InternalId), token);
                                         if (objNode != null)
-                                            await treCyberware.DoThreadSafeAsync(() => objNode.Text = objLoopCyberware.CurrentDisplayName, token);
+                                            await treCyberware.DoThreadSafeAsync(
+                                                () => objNode.Text = objLoopCyberware.CurrentDisplayName, token);
                                     }
 
                                     --intCyberwaresCount;
@@ -3771,6 +3810,10 @@ namespace Chummer
                 {
                     await objLocker.DisposeAsync();
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
 
             await SetDirty(true);
@@ -4078,19 +4121,25 @@ namespace Chummer
                     return;
 
                 string strOpenFile = string.Empty;
-                using (await CursorWait.NewAsync(this, token: GenericToken))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                try
                 {
                     // Load the Spirit's save file into a new Merge character.
                     Character objMerge = new Character {FileName = CharacterObject.FileName};
                     try
                     {
-                        using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(objMerge.FileName, Character.NumLoadingSections + 1, GenericToken))
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(
+                                   objMerge.FileName, Character.NumLoadingSections + 1, GenericToken))
                         {
                             await objMerge.LoadAsync(frmLoadingBar.MyForm, token: GenericToken);
-                            await frmLoadingBar.MyForm.PerformStepAsync(await LanguageManager.GetStringAsync("String_UI"), token: GenericToken);
+                            await frmLoadingBar.MyForm.PerformStepAsync(
+                                await LanguageManager.GetStringAsync("String_UI"), token: GenericToken);
                             objMerge.Possessed = true;
-                            objMerge.Alias = strSelectedVessel + await LanguageManager.GetStringAsync("String_Space") + '('
-                                             + await LanguageManager.GetStringAsync("String_Possessed") + ')';
+                            objMerge.Alias = strSelectedVessel + await LanguageManager.GetStringAsync("String_Space")
+                                                               + '('
+                                                               + await LanguageManager.GetStringAsync(
+                                                                   "String_Possessed") + ')';
 
                             int intHalfMAGRoundedUp = CharacterObject.MAG.TotalValue.DivAwayFromZero(2);
                             await ImprovementManager.CreateImprovementAsync(
@@ -4130,7 +4179,8 @@ namespace Chummer
                                 CharacterObject.CHA.MetatypeMinimum,
                                 CharacterObject.CHA.MetatypeMaximum, 0, CharacterObject.CHA.MetatypeAugmentedMaximum);
                             await ImprovementManager.CommitAsync(objMerge);
-                            XmlDocument xmlPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml", token: GenericToken);
+                            XmlDocument xmlPowerDoc
+                                = await CharacterObject.LoadDataAsync("critterpowers.xml", token: GenericToken);
 
                             // Update the Movement if the Vessel has one.
                             string strMovement = objSelected["movement"]?.InnerText;
@@ -4152,13 +4202,15 @@ namespace Chummer
                                                     "/chummer/powers/power[name = " + objXmlPower.InnerText.CleanXPath()
                                                     + ']');
                                             CritterPower objPower = new CritterPower(objMerge);
-                                            string strSelect = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
-                                            int intRating = Convert.ToInt32(objXmlPower.Attributes?["rating"]?.InnerText,
-                                                                            GlobalSettings.InvariantCultureInfo);
+                                            string strSelect = objXmlPower.Attributes?["select"]?.InnerText
+                                                               ?? string.Empty;
+                                            int intRating = Convert.ToInt32(
+                                                objXmlPower.Attributes?["rating"]?.InnerText,
+                                                GlobalSettings.InvariantCultureInfo);
 
                                             objPower.Create(objXmlCritterPower, intRating, strSelect);
 
-                                            await objMerge.CritterPowers.AddAsync(objPower);
+                                            await objMerge.CritterPowers.AddAsync(objPower, GenericToken);
                                         }
                                     }
                                 }
@@ -4174,7 +4226,7 @@ namespace Chummer
 
                                 CritterPower objCritterPower = new CritterPower(objMerge);
                                 objCritterPower.Create(objPower, 0, "Normal Weapons");
-                                await objMerge.CritterPowers.AddAsync(objCritterPower);
+                                await objMerge.CritterPowers.AddAsync(objCritterPower, GenericToken);
                             }
 
                             // Add any Improvements the Vessel grants.
@@ -4199,12 +4251,15 @@ namespace Chummer
                         strShowFileName += await LanguageManager.GetStringAsync("String_Space") + '('
                             + await LanguageManager.GetStringAsync("String_Possessed") + ')';
                         dlgSaveFile.FileName = strShowFileName;
-                        if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), GenericToken) != DialogResult.OK)
+                        if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), GenericToken)
+                            != DialogResult.OK)
                             return;
-                        using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(token: GenericToken))
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(token: GenericToken))
                         {
                             await frmLoadingBar.MyForm.PerformStepAsync(objMerge.CharacterName,
-                                                                        LoadingBar.ProgressBarTextPatterns.Saving, token: GenericToken);
+                                                                        LoadingBar.ProgressBarTextPatterns.Saving,
+                                                                        token: GenericToken);
                             objMerge.FileName = dlgSaveFile.FileName;
                             if (await objMerge.SaveAsync(token: GenericToken))
                             {
@@ -4219,15 +4274,28 @@ namespace Chummer
                             .DisposeAsync(); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
                     }
                 }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
 
                 if (!string.IsNullOrEmpty(strOpenFile))
                 {
-                    using (await CursorWait.NewAsync(this, token: GenericToken))
+                    objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                    try
                     {
                         Character objOpenCharacter;
-                        using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strOpenFile, Character.NumLoadingSections, GenericToken))
-                            objOpenCharacter = await Program.LoadCharacterAsync(strOpenFile, frmLoadingBar: frmLoadingBar.MyForm, token: GenericToken);
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(
+                                   strOpenFile, Character.NumLoadingSections, GenericToken))
+                            objOpenCharacter
+                                = await Program.LoadCharacterAsync(strOpenFile, frmLoadingBar: frmLoadingBar.MyForm,
+                                                                   token: GenericToken);
                         await Program.OpenCharacter(objOpenCharacter, token: GenericToken);
+                    }
+                    finally
+                    {
+                        await objCursorWait.DisposeAsync();
                     }
                 }
             }
@@ -8235,12 +8303,15 @@ namespace Chummer
             }
 
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 bool blnAddAgain;
                 do
                 {
-                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories), GenericToken))
+                    using (ThreadSafeForm<SelectGear> frmPickGear
+                           = await ThreadSafeForm<SelectGear>.GetAsync(
+                               () => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories), GenericToken))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
                                                                  && (!objSensor.Capacity.Contains('[')
@@ -8314,7 +8385,7 @@ namespace Chummer
                             objExpense.Undo = objUndo;
                         }
 
-                        await objSensor.Children.AddAsync(objGear);
+                        await objSensor.Children.AddAsync(objGear, GenericToken);
 
                         if (lstWeapons.Count > 0)
                         {
@@ -8322,11 +8393,15 @@ namespace Chummer
                                                                      out WeaponAccessory _, out Cyberware _);
                             foreach (Weapon objWeapon in lstWeapons)
                             {
-                                await objVehicle.Weapons.AddAsync(objWeapon);
+                                await objVehicle.Weapons.AddAsync(objWeapon, GenericToken);
                             }
                         }
                     }
                 } while (blnAddAgain);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -10192,7 +10267,8 @@ namespace Chummer
                 return;
             }
 
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 bool blnAddAgain;
                 do
@@ -10210,7 +10286,9 @@ namespace Chummer
                         }
                     }
 
-                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objCyberware, strCategories), GenericToken))
+                    using (ThreadSafeForm<SelectGear> frmPickGear
+                           = await ThreadSafeForm<SelectGear>.GetAsync(
+                               () => new SelectGear(CharacterObject, 0, 1, objCyberware, strCategories), GenericToken))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objCyberware.Capacity) &&
                             objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
@@ -10222,7 +10300,8 @@ namespace Chummer
                         blnAddAgain = frmPickGear.MyForm.AddAgain;
 
                         // Open the Gear XML file and locate the selected piece.
-                        XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
+                        XmlDocument objXmlDocument
+                            = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
                         XmlNode objXmlGear
                             = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
                                                               + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
@@ -10290,12 +10369,16 @@ namespace Chummer
                         // Create any Weapons that came with this Gear.
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            await CharacterObject.Weapons.AddAsync(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
                         }
 
-                        await objCyberware.GearChildren.AddAsync(objGear);
+                        await objCyberware.GearChildren.AddAsync(objGear, GenericToken);
                     }
                 } while (blnAddAgain);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -10315,7 +10398,8 @@ namespace Chummer
                 return;
             }
 
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 bool blnAddAgain;
                 do
@@ -10333,7 +10417,9 @@ namespace Chummer
                         }
                     }
 
-                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objCyberware, strCategories), GenericToken))
+                    using (ThreadSafeForm<SelectGear> frmPickGear
+                           = await ThreadSafeForm<SelectGear>.GetAsync(
+                               () => new SelectGear(CharacterObject, 0, 1, objCyberware, strCategories), GenericToken))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objCyberware.Capacity) &&
                             objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
@@ -10345,7 +10431,8 @@ namespace Chummer
                         blnAddAgain = frmPickGear.MyForm.AddAgain;
 
                         // Open the Gear XML file and locate the selected piece.
-                        XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
+                        XmlDocument objXmlDocument
+                            = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
                         XmlNode objXmlGear
                             = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
                                                               + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
@@ -10412,12 +10499,16 @@ namespace Chummer
                         // Create any Weapons that came with this Gear.
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            await CharacterObject.Weapons.AddAsync(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
                         }
 
-                        await objCyberware.GearChildren.AddAsync(objGear);
+                        await objCyberware.GearChildren.AddAsync(objGear, GenericToken);
                     }
                 } while (blnAddAgain);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -10456,12 +10547,15 @@ namespace Chummer
             }
 
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 bool blnAddAgain;
                 do
                 {
-                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories), GenericToken))
+                    using (ThreadSafeForm<SelectGear> frmPickGear
+                           = await ThreadSafeForm<SelectGear>.GetAsync(
+                               () => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories), GenericToken))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
                                                                  && (!objSensor.Capacity.Contains('[')
@@ -10539,14 +10633,18 @@ namespace Chummer
                             objExpense.Undo = objUndo;
                         }
 
-                        await objSensor.Children.AddAsync(objGear);
+                        await objSensor.Children.AddAsync(objGear, GenericToken);
 
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            await CharacterObject.Weapons.AddAsync(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
                         }
                     }
                 } while (blnAddAgain);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -10574,12 +10672,15 @@ namespace Chummer
             }
 
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 bool blnAddAgain;
                 do
                 {
-                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories), GenericToken))
+                    using (ThreadSafeForm<SelectGear> frmPickGear
+                           = await ThreadSafeForm<SelectGear>.GetAsync(
+                               () => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories), GenericToken))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
                                                                  && (!objSensor.Capacity.Contains('[')
@@ -10655,14 +10756,18 @@ namespace Chummer
                             objExpense.Undo = objUndo;
                         }
 
-                        await objSensor.Children.AddAsync(objGear);
+                        await objSensor.Children.AddAsync(objGear, GenericToken);
 
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            await CharacterObject.Weapons.AddAsync(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
                         }
                     }
                 } while (blnAddAgain);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -10677,7 +10782,8 @@ namespace Chummer
                 return;
             }
 
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 bool blnAddAgain;
                 do
@@ -10695,7 +10801,9 @@ namespace Chummer
                         }
                     }
 
-                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories), GenericToken))
+                    using (ThreadSafeForm<SelectGear> frmPickGear
+                           = await ThreadSafeForm<SelectGear>.GetAsync(
+                               () => new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories), GenericToken))
                     {
                         if (!string.IsNullOrEmpty(strCategories))
                             frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
@@ -10705,7 +10813,8 @@ namespace Chummer
                         blnAddAgain = frmPickGear.MyForm.AddAgain;
 
                         // Open the Gear XML file and locate the selected piece.
-                        XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
+                        XmlDocument objXmlDocument
+                            = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
                         XmlNode objXmlGear
                             = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
                                                               + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
@@ -10772,12 +10881,16 @@ namespace Chummer
                         // Create any Weapons that came with this Gear.
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            await CharacterObject.Weapons.AddAsync(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
                         }
 
-                        await objAccessory.GearChildren.AddAsync(objGear);
+                        await objAccessory.GearChildren.AddAsync(objGear, GenericToken);
                     }
                 } while (blnAddAgain);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -10808,12 +10921,15 @@ namespace Chummer
                 }
             }
 
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 bool blnAddAgain;
                 do
                 {
-                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories), GenericToken))
+                    using (ThreadSafeForm<SelectGear> frmPickGear
+                           = await ThreadSafeForm<SelectGear>.GetAsync(
+                               () => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories), GenericToken))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
                                                                  && (!objSensor.Capacity.Contains('[')
@@ -10888,14 +11004,18 @@ namespace Chummer
                             objExpense.Undo = objUndo;
                         }
 
-                        await objSensor.Children.AddAsync(objGear);
+                        await objSensor.Children.AddAsync(objGear, GenericToken);
 
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            await CharacterObject.Weapons.AddAsync(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
                         }
                     }
                 } while (blnAddAgain);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -10929,7 +11049,7 @@ namespace Chummer
                     return;
 
                 Weapon objWeapon = frmCreateNaturalWeapon.MyForm.SelectedWeapon;
-                await CharacterObject.Weapons.AddAsync(objWeapon);
+                await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken);
             }
         }
 
@@ -10959,12 +11079,15 @@ namespace Chummer
                 }
             }
 
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 bool blnAddAgain;
                 do
                 {
-                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories), GenericToken))
+                    using (ThreadSafeForm<SelectGear> frmPickGear
+                           = await ThreadSafeForm<SelectGear>.GetAsync(
+                               () => new SelectGear(CharacterObject, 0, 1, objSensor, strCategories), GenericToken))
                     {
                         if (!string.IsNullOrEmpty(strCategories) && !string.IsNullOrEmpty(objSensor.Capacity)
                                                                  && (!objSensor.Capacity.Contains('[')
@@ -11038,16 +11161,20 @@ namespace Chummer
                             objExpense.Undo = objUndo;
                         }
 
-                        await objSensor.Children.AddAsync(objGear);
+                        await objSensor.Children.AddAsync(objGear, GenericToken);
                         CharacterObject.Vehicles.FindVehicleGear(objGear.InternalId, out Vehicle objVehicle, out _,
                                                                  out _);
                         foreach (Weapon objWeapon in lstWeapons)
                         {
                             objWeapon.ParentVehicle = objVehicle;
-                            await objVehicle.Weapons.AddAsync(objWeapon);
+                            await objVehicle.Weapons.AddAsync(objWeapon, GenericToken);
                         }
                     }
                 } while (blnAddAgain);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -11065,7 +11192,8 @@ namespace Chummer
             // Open the Gear XML file and locate the selected piece.
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken);
 
-            using (await CursorWait.NewAsync(this, token: GenericToken))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 bool blnAddAgain;
                 do
@@ -11083,7 +11211,10 @@ namespace Chummer
                         }
                     }
 
-                    using (ThreadSafeForm<SelectGear> frmPickGear = await ThreadSafeForm<SelectGear>.GetAsync(() => new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories), token: GenericToken))
+                    using (ThreadSafeForm<SelectGear> frmPickGear
+                           = await ThreadSafeForm<SelectGear>.GetAsync(
+                               () => new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories),
+                               token: GenericToken))
                     {
                         if (!string.IsNullOrEmpty(strCategories))
                             frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
@@ -11154,15 +11285,19 @@ namespace Chummer
                             objExpense.Undo = objUndo;
                         }
 
-                        await objAccessory.GearChildren.AddAsync(objGear);
+                        await objAccessory.GearChildren.AddAsync(objGear, GenericToken);
 
                         foreach (Weapon objWeapon in lstWeapons)
                         {
                             objWeapon.Parent = objAccessory.Parent;
-                            await objAccessory.Parent.Children.AddAsync(objWeapon);
+                            await objAccessory.Parent.Children.AddAsync(objWeapon, GenericToken);
                         }
                     }
                 } while (blnAddAgain);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -14573,23 +14708,32 @@ namespace Chummer
                     return;
 
                 // Character is not dirty and their save file was updated outside of Chummer5 while it is open, so reload them
-                using (await CursorWait.NewAsync(this, true))
+                CursorWait objCursorWaitOuter = await CursorWait.NewAsync(this, true, GenericToken);
+                try
                 {
-                    using (await CursorWait.NewAsync(this))
-                    using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                           = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName),
-                                                                         Character.NumLoadingSections + 1))
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                    try
                     {
-                        SkipUpdate = true;
-                        try
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName),
+                                                                             Character.NumLoadingSections + 1, GenericToken))
                         {
-                            await CharacterObject.LoadAsync(frmLoadingBar.MyForm);
-                            await frmLoadingBar.MyForm.PerformStepAsync(await LanguageManager.GetStringAsync("String_UI"));
+                            SkipUpdate = true;
+                            try
+                            {
+                                await CharacterObject.LoadAsync(frmLoadingBar.MyForm, token: GenericToken);
+                                await frmLoadingBar.MyForm.PerformStepAsync(
+                                    await LanguageManager.GetStringAsync("String_UI"), token: GenericToken);
+                            }
+                            finally
+                            {
+                                SkipUpdate = false;
+                            }
                         }
-                        finally
-                        {
-                            SkipUpdate = false;
-                        }
+                    }
+                    finally
+                    {
+                        await objCursorWait.DisposeAsync();
                     }
 
                     await RequestCharacterUpdate();
@@ -14611,9 +14755,14 @@ namespace Chummer
                             await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError"),
                             MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     {
-                        await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements, GenericToken);
+                        await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements,
+                                                    GenericToken);
                         await CharacterObject.InternalIdsNeedingReapplyImprovements.ClearAsync();
                     }
+                }
+                finally
+                {
+                    await objCursorWaitOuter.DisposeAsync();
                 }
             }
             finally
@@ -14641,7 +14790,8 @@ namespace Chummer
                         tskAutosave = AutoSaveCharacter(token);
                     }
 
-                    using (await CursorWait.NewAsync(this, true, token))
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token);
+                    try
                     {
                         // TODO: DataBind these wherever possible
 
@@ -14652,7 +14802,7 @@ namespace Chummer
                             await lblCritterPowerPoints.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Text = CharacterObject.CalculateFreeSpiritPowerPoints();
+                                x.Text = CharacterObject.CalculateFreeSpiritPowerPoints(token);
                             }, token);
                         }
                         else if (CharacterObject.IsFreeSprite)
@@ -14661,7 +14811,7 @@ namespace Chummer
                             await lblCritterPowerPoints.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Text = CharacterObject.CalculateFreeSpritePowerPoints();
+                                x.Text = CharacterObject.CalculateFreeSpritePowerPoints(token);
                             }, token);
                         }
                         else
@@ -14681,6 +14831,10 @@ namespace Chummer
                                            RefreshSelectedMartialArt(token), UpdateInitiationCost(token),
                                            RefreshSelectedImprovement(token));
                         await tskAutosave;
+                    }
+                    finally
+                    {
+                        await objCursorWait.DisposeAsync();
                     }
                 }
             }
@@ -16761,7 +16915,8 @@ namespace Chummer
         /// <param name="objStackGear">Whether or not the selected item should stack with a matching item on the character.</param>
         /// <param name="strForceItemValue">Force the user to select an item with the passed name.</param>
         /// <param name="objAmmoForWeapon">Gear is being bought as ammo for this weapon.</param>
-        private async ValueTask<bool> PickGear(IHasChildren<Gear> iParent, Location objLocation = null, Gear objStackGear = null, string strForceItemValue = "", Weapon objAmmoForWeapon = null)
+        /// <param name="token">CancellationToken to listen to.</param>
+        private async ValueTask<bool> PickGear(IHasChildren<Gear> iParent, Location objLocation = null, Gear objStackGear = null, string strForceItemValue = "", Weapon objAmmoForWeapon = null, CancellationToken token = default)
         {
             bool blnNullParent = false;
             Gear objSelectedGear = null;
@@ -16775,9 +16930,10 @@ namespace Chummer
             }
 
             // Open the Gear XML file and locate the selected Gear.
-            XPathNavigator xmlParent = blnNullParent ? null : await objSelectedGear.GetNodeXPathAsync();
+            XPathNavigator xmlParent = blnNullParent ? null : await objSelectedGear.GetNodeXPathAsync(token);
 
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 string strCategories = string.Empty;
 
@@ -16804,9 +16960,11 @@ namespace Chummer
                                                                        objSelectedGear?.ChildCostMultiplier ?? 1,
                                                                        objSelectedGear, strCategories)
                                                                    {
-                                                                       ShowFlechetteAmmoOnly = objAmmoForWeapon?.Damage.EndsWith("(f)", StringComparison.Ordinal)
-                                                                           == true
-                                                                   }))
+                                                                       ShowFlechetteAmmoOnly
+                                                                           = objAmmoForWeapon?.Damage.EndsWith(
+                                                                                 "(f)", StringComparison.Ordinal)
+                                                                             == true
+                                                                   }, token))
                 {
                     if (!blnNullParent)
                     {
@@ -16841,11 +16999,11 @@ namespace Chummer
                     frmPickGear.MyForm.ForceItemAmmoForWeaponType = objAmmoForWeapon?.WeaponType ?? string.Empty;
 
                     // Make sure the dialogue window was not canceled.
-                    if (await frmPickGear.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                    if (await frmPickGear.ShowDialogSafeAsync(this, token) == DialogResult.Cancel)
                         return false;
 
                     // Open the Cyberware XML file and locate the selected piece.
-                    XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
+                    XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: token);
                     XmlNode objXmlGear
                         = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
                                                           + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
@@ -16885,7 +17043,7 @@ namespace Chummer
                                                               (objSelectedGear?.CalculatedCost ?? 0).ToString(
                                                                   GlobalSettings.InvariantCultureInfo));
                         (bool blnIsSuccess, object objProcess)
-                            = await CommonFunctions.EvaluateInvariantXPathAsync(strCost);
+                            = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token);
                         decCost = blnIsSuccess
                             ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo)
                             : objGear.TotalCost;
@@ -16993,23 +17151,27 @@ namespace Chummer
                         // Create any Weapons that came with this Gear.
                         foreach (Weapon objWeapon in lstWeapons)
                         {
-                            await CharacterObject.Weapons.AddAsync(objWeapon);
+                            await CharacterObject.Weapons.AddAsync(objWeapon, token);
                         }
 
                         if (objLocation != null)
-                            await objLocation.Children.AddAsync(objGear);
+                            await objLocation.Children.AddAsync(objGear, token);
                         if (!blnNullParent)
                         {
-                            await objSelectedGear.Children.AddAsync(objGear);
+                            await objSelectedGear.Children.AddAsync(objGear, token);
                         }
                         else
                         {
-                            await CharacterObject.Gear.AddAsync(objGear);
+                            await CharacterObject.Gear.AddAsync(objGear, token);
                         }
                     }
 
                     return frmPickGear.MyForm.AddAgain;
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -17018,7 +17180,8 @@ namespace Chummer
         /// </summary>
         /// <param name="blnShowArmorCapacityOnly">Whether or not only items that consume capacity should be shown.</param>
         /// <param name="strSelectedId">Id attached to the object to which the gear should be added.</param>
-        private async ValueTask<bool> PickArmorGear(string strSelectedId, bool blnShowArmorCapacityOnly = false)
+        /// <param name="token">CancellationToken to listen to.</param>
+        private async ValueTask<bool> PickArmorGear(string strSelectedId, bool blnShowArmorCapacityOnly = false, CancellationToken token = default)
         {
             Gear objSelectedGear = null;
             Armor objSelectedArmor = CharacterObject.Armor.FindById(strSelectedId);
@@ -17034,7 +17197,8 @@ namespace Chummer
             // Open the Gear XML file and locate the selected Gear.
             object objParent = objSelectedGear ?? objSelectedMod ?? (object)objSelectedArmor;
 
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 string strCategories = string.Empty;
 
@@ -17065,7 +17229,7 @@ namespace Chummer
                                CapacityDisplayStyle = objSelectedMod != null
                                    ? CapacityStyle.Standard
                                    : objSelectedArmor.CapacityDisplayStyle
-                           }))
+                           }, token))
                 {
                     // If the Gear has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that consume Capacity).
                     if (!string.IsNullOrEmpty(strSelectedId))
@@ -17104,11 +17268,11 @@ namespace Chummer
                     }
 
                     // Make sure the dialogue window was not canceled.
-                    if (await frmPickGear.ShowDialogSafeAsync(this) == DialogResult.Cancel)
+                    if (await frmPickGear.ShowDialogSafeAsync(this, token) == DialogResult.Cancel)
                         return false;
 
                     // Open the Cyberware XML file and locate the selected piece.
-                    XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
+                    XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: token);
                     XmlNode objXmlGear
                         = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
                                                           + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
@@ -17183,7 +17347,7 @@ namespace Chummer
                     // Add the Gear.
                     else if (!string.IsNullOrEmpty(objSelectedGear?.Name))
                     {
-                        await objSelectedGear.Children.AddAsync(objGear);
+                        await objSelectedGear.Children.AddAsync(objGear, token);
                         if (CharacterObjectSettings.EnforceCapacity && objSelectedGear.CapacityRemaining < 0)
                         {
                             objGear.DeleteGear();
@@ -17196,7 +17360,7 @@ namespace Chummer
                     }
                     else if (!string.IsNullOrEmpty(objSelectedMod?.Name))
                     {
-                        await objSelectedMod.GearChildren.AddAsync(objGear);
+                        await objSelectedMod.GearChildren.AddAsync(objGear, token);
                         if (CharacterObjectSettings.EnforceCapacity && objSelectedMod.GearCapacityRemaining < 0)
                         {
                             objGear.DeleteGear();
@@ -17209,7 +17373,7 @@ namespace Chummer
                     }
                     else
                     {
-                        await objSelectedArmor.GearChildren.AddAsync(objGear);
+                        await objSelectedArmor.GearChildren.AddAsync(objGear, token);
                         if (CharacterObjectSettings.EnforceCapacity && objSelectedArmor.CapacityRemaining < 0)
                         {
                             objGear.DeleteGear();
@@ -17258,11 +17422,15 @@ namespace Chummer
                     // Create any Weapons that came with this Gear.
                     foreach (Weapon objWeapon in lstWeapons)
                     {
-                        await CharacterObject.Weapons.AddAsync(objWeapon);
+                        await CharacterObject.Weapons.AddAsync(objWeapon, token);
                     }
 
                     return frmPickGear.MyForm.AddAgain;
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -18602,7 +18770,8 @@ namespace Chummer
 
         private async ValueTask RepopulateKarmaExpenseList(CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 await lstKarma.DoThreadSafeAsync(x =>
                 {
@@ -18644,8 +18813,10 @@ namespace Chummer
                                 objExpense.Date.ToString(GlobalSettings.CustomDateTimeFormats
                                                              ? GlobalSettings.CustomDateFormat
                                                                + ' ' + GlobalSettings.CustomTimeFormat
-                                                             : GlobalSettings.CultureInfo.DateTimeFormat.ShortDatePattern
-                                                               + ' ' + GlobalSettings.CultureInfo.DateTimeFormat.ShortTimePattern,
+                                                             : GlobalSettings.CultureInfo.DateTimeFormat
+                                                                             .ShortDatePattern
+                                                               + ' ' + GlobalSettings.CultureInfo.DateTimeFormat
+                                                                   .ShortTimePattern,
                                                          GlobalSettings.CultureInfo)
                         );
                         objItem.SubItems.Add(objAmountItem);
@@ -18684,6 +18855,10 @@ namespace Chummer
                     await chtKarma.DoThreadSafeAsync(x => x.ResumeLayout(), token);
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void chkShowFreeNuyen_CheckedChanged(object sender, EventArgs e)
@@ -18703,7 +18878,8 @@ namespace Chummer
 
         private async ValueTask RepopulateNuyenExpenseList(CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(this, token: token))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token);
+            try
             {
                 await lstNuyen.DoThreadSafeAsync(x =>
                 {
@@ -18786,6 +18962,10 @@ namespace Chummer
                 {
                     await chtNuyen.DoThreadSafeAsync(x => x.ResumeLayout(), token);
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 

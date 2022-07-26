@@ -12698,7 +12698,9 @@ namespace Chummer
                             XmlElementWriteHelper objMugshotElement = await objWriter.StartElementAsync("mugshot", token: token);
                             try
                             {
-                                await objWriter.WriteElementStringAsync("stringbase64", await imgMugshot.ToBase64StringAsJpegAsync(token: token));
+                                await objWriter.WriteElementStringAsync(
+                                    "stringbase64", await imgMugshot.ToBase64StringAsJpegAsync(token: token),
+                                    token: token);
 
                                 string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath,
                                                                      guiImage.ToString("N", GlobalSettings.InvariantCultureInfo)

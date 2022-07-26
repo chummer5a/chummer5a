@@ -2048,7 +2048,8 @@ namespace Chummer
                     {
                         if (IsLoading)
                             break;
-                        using (await CursorWait.NewAsync(this, token: GenericToken))
+                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                        try
                         {
                             await this.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken);
                             try
@@ -2091,7 +2092,8 @@ namespace Chummer
                                 await RefreshQualities(treQualities, cmsQuality);
                                 await RefreshSpirits(panSpirits, panSprites);
                                 await RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
-                                await RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
+                                await RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm,
+                                                          cmsInitiationNotes);
                                 await RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
                                 await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
                                 await RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
@@ -2101,16 +2103,18 @@ namespace Chummer
                                 await RefreshContacts(panContacts, panEnemies, panPets);
 
                                 await RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
-                                await RefreshGears(treGear, cmsGearLocation, cmsGear, await chkCommlinks.DoThreadSafeFuncAsync(x => x.Checked, GenericToken), false);
+                                await RefreshGears(treGear, cmsGearLocation, cmsGear,
+                                                   await chkCommlinks.DoThreadSafeFuncAsync(
+                                                       x => x.Checked, GenericToken), false);
                                 await RefreshFociFromGear(treFoci, null);
                                 await RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
                                 await RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
-                                               cmsWeaponAccessoryGear);
+                                                     cmsWeaponAccessoryGear);
                                 await RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
-                                                cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
-                                                cmsVehicleGear,
-                                                cmsWeaponMount,
-                                                cmsVehicleCyberware, cmsVehicleCyberwareGear);
+                                                      cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
+                                                      cmsVehicleGear,
+                                                      cmsWeaponMount,
+                                                      cmsVehicleCyberware, cmsVehicleCyberwareGear);
                                 await RefreshDrugs(treCustomDrugs);
                                 await this.DoThreadSafeAsync(() =>
                                 {
@@ -2125,7 +2129,8 @@ namespace Chummer
                                 }, GenericToken);
 
                                 XPathNavigator xmlTraditionsBaseChummerNode =
-                                    await (await CharacterObject.LoadDataXPathAsync("traditions.xml", token: GenericToken))
+                                    await (await CharacterObject.LoadDataXPathAsync(
+                                            "traditions.xml", token: GenericToken))
                                         .SelectSingleNodeAndCacheExpressionAsync("/chummer");
                                 using (new FetchSafelyFromPool<List<ListItem>>(
                                            Utils.ListItemListPool, out List<ListItem> lstTraditions))
@@ -2288,7 +2293,9 @@ namespace Chummer
                                         lstStreams.Insert(
                                             0,
                                             new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
-                                        if (!lstStreams.SequenceEqual(await cboStream.DoThreadSafeFuncAsync(x => x.Items.Cast<ListItem>(), GenericToken)))
+                                        if (!lstStreams.SequenceEqual(
+                                                await cboStream.DoThreadSafeFuncAsync(
+                                                    x => x.Items.Cast<ListItem>(), GenericToken)))
                                         {
                                             await cboStream.PopulateWithListItemsAsync(lstStreams, GenericToken);
                                             await cboStream.DoThreadSafeAsync(x =>
@@ -2315,6 +2322,10 @@ namespace Chummer
                             {
                                 await this.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken);
                             }
+                        }
+                        finally
+                        {
+                            await objCursorWait.DisposeAsync();
                         }
 
                         break;
@@ -5603,7 +5614,8 @@ namespace Chummer
 
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("weapons.xml");
 
-            using (await CursorWait.NewAsync(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+            try
             {
                 bool blnAddAgain;
                 do
@@ -5651,9 +5663,14 @@ namespace Chummer
                                 await objMod.Weapons.AddAsync(objLoopWeapon);
                         }
 
-                        blnAddAgain = frmPickWeapon.MyForm.AddAgain && (objMod != null || !objWeaponMount.IsWeaponsFull);
+                        blnAddAgain = frmPickWeapon.MyForm.AddAgain
+                                      && (objMod != null || !objWeaponMount.IsWeaponsFull);
                     }
                 } while (blnAddAgain);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 

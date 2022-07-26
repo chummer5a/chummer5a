@@ -107,13 +107,13 @@ namespace Chummer
             /// <summary>
             /// Set the XmlDocument that is created by merging the base data file and data translation file. Does not include custom content since this must be loaded each time.
             /// </summary>
-            public void SetXmlContent(XmlDocument objContent)
+            public void SetXmlContent(XmlDocument objContent, CancellationToken token = default)
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (EnterReadLock.Enter(LockObject, token))
                 {
                     if (objContent == _xmlContent)
                         return;
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.EnterWriteLock(token))
                     {
                         _xmlContent = objContent;
                         if (objContent != null)
@@ -137,13 +137,13 @@ namespace Chummer
             /// <summary>
             /// Set the XmlDocument that is created by merging the base data file and data translation file. Does not include custom content since this must be loaded each time.
             /// </summary>
-            public async ValueTask SetXmlContentAsync(XmlDocument objContent)
+            public async ValueTask SetXmlContentAsync(XmlDocument objContent, CancellationToken token = default)
             {
-                using (await EnterReadLock.EnterAsync(LockObject))
+                using (await EnterReadLock.EnterAsync(LockObject, token))
                 {
                     if (objContent == _xmlContent)
                         return;
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
                     try
                     {
                         _xmlContent = objContent;
@@ -774,9 +774,10 @@ namespace Chummer
                         // Cache the merged document and its relevant information
                         if (blnSync)
                             // ReSharper disable once MethodHasAsyncOverload
-                            xmlReferenceOfReturn.SetXmlContent(xmlReturn);
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            xmlReferenceOfReturn.SetXmlContent(xmlReturn, token);
                         else
-                            await xmlReferenceOfReturn.SetXmlContentAsync(xmlReturn);
+                            await xmlReferenceOfReturn.SetXmlContentAsync(xmlReturn, token);
                     }
                     finally
                     {
