@@ -1,0 +1,23 @@
+<manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+  <guid>ACDAB25C-C659-49AB-ABAC-9ECC0615B894</guid>
+  <version>1.0</version>
+  <authors>
+    <author>
+      <name>chummer5a</name>
+      <main>true</main>
+    </author>
+  </authors>
+  <descriptions>
+    <description>
+      <text>This ruleset is intended as an append to the Shadowrun Missions Rules customdata; it enables the No Future and Krime Katalog books, which are blocked in the 1.3 FAQ for SR5.</text>
+      <lang>en-us</lang>
+    </description>
+  </descriptions>
+  <dependencies>
+    <dependency>
+      <name>Shadowrun Missions Rules</name>
+      <guid>62aeb98e-e61c-4d0e-b4ff-03e0469e6e2b</guid>
+    </dependency>
+  </dependencies>
+</manifest>

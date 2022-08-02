@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chummer>
+  <books>
+    <book>
+      <name>No Future</name>
+      <hide amendoperation="remove"/>
+    </book>
+    <book>
+      <name>Krime Katalog</name>
+      <hide amendoperation="remove"/>
+    </book>
+  </books>
+</chummer>
