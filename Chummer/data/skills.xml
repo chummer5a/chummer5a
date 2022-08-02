@@ -97,7 +97,7 @@
       <id>e09e5aa7-e496-41a2-97ce-17f577361888</id>
       <name>Animal Handling</name>
       <attribute>CHA</attribute>
-      <category>Physical Active</category>
+      <category>Technical Active</category>
       <default>True</default>
       <skillgroup />
       <specs>

@@ -332,8 +332,8 @@
     </security>
     <security>
       <name>Commercial</name>
-      <minimum>4</minimum>
-      <limit>6</limit>
+      <minimum>3</minimum>
+      <limit>7</limit>
     </security>
     <security>
       <name>Traveler</name>

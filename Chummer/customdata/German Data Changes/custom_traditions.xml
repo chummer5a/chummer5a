@@ -26,11 +26,11 @@
       <source>SG</source>
       <page>42</page>
       <spirits>
-        <spiritcombat>Plant Spirit</spiritcombat>
-        <spiritdetection>Spirit of Water</spiritdetection>
-        <spirithealth>Spirit of Beasts</spirithealth>
-        <spiritillusion>Spirit of Fire</spiritillusion>
-        <spiritmanipulation>Spirit of Air</spiritmanipulation>
+        <spiritcombat>Spirit of Beasts</spiritcombat>
+        <spiritdetection>Spirit of Air</spiritdetection>
+        <spirithealth>Plant Spirit</spirithealth>
+        <spiritillusion>Spirit of Water</spiritillusion>
+        <spiritmanipulation>Spirit of Fire</spiritmanipulation>
       </spirits>
     </tradition>
     <tradition>
@@ -40,11 +40,11 @@
       <source>SG</source>
       <page>45</page>
       <spirits>
-        <spiritcombat>Guidance Spirit</spiritcombat>
-        <spiritdetection>Spirit of Water</spiritdetection>
-        <spirithealth>Spirit of Fire</spirithealth>
-        <spiritillusion>Spirit of Man</spiritillusion>
-        <spiritmanipulation>Spirit of Earth</spiritmanipulation>
+        <spiritcombat>Spirit of Fire</spiritcombat>
+        <spiritdetection>Spirit of Earth</spiritdetection>
+        <spirithealth>Guidance Spirit</spirithealth>
+        <spiritillusion>Spirit of Water</spiritillusion>
+        <spiritmanipulation>Spirit of Man</spiritmanipulation>
       </spirits>
     </tradition>
     <tradition>
@@ -54,11 +54,11 @@
       <source>SG</source>
       <page>51</page>
       <spirits>
-        <spiritcombat>Spirit of Earth</spiritcombat>
-        <spiritdetection>Spirit of Air</spiritdetection>
-        <spirithealth>Spirit of Water</spirithealth>
-        <spiritillusion>Spirit of Man</spiritillusion>
-        <spiritmanipulation>Spirit of Beasts</spiritmanipulation>
+        <spiritcombat>Spirit of Water</spiritcombat>
+        <spiritdetection>Spirit of Beasts</spiritdetection>
+        <spirithealth>Spirit of Earth</spirithealth>
+        <spiritillusion>Spirit of Air</spiritillusion>
+        <spiritmanipulation>Spirit of Man</spiritmanipulation>
       </spirits>
     </tradition>
     <tradition>
