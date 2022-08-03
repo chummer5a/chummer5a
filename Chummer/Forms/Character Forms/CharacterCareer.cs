@@ -9019,8 +9019,8 @@ namespace Chummer
                 }
                 case KarmaExpenseType.ImproveSkillGroup:
                     {
-                        // Locate the Skill Group that was affected.
-                        SkillGroup group = CharacterObject.SkillsSection.SkillGroups.FirstOrDefault(g => g.InternalId == strUndoId);
+                        // Locate the Skill Group that was affected. Old characters may have had the expense added as the Name instead of guid.
+                        SkillGroup group = CharacterObject.SkillsSection.SkillGroups.FirstOrDefault(g => g.InternalId == strUndoId || g.Name == strUndoId);
 
                         if (group != null)
                         {
@@ -9065,8 +9065,29 @@ namespace Chummer
                                     objKnowledgeSkill.KarmaPoints = 0;
                                 }
                             }
-                        }
+                            else
+                            {
+                                // Old characters may have incorrectly had their ExpenseType set to AddSkill rather than ImproveSkillGroup.
+                                // Since skill groups can never be deleted, we don't have/need an AddSkillGroup expense type.
+                                // Locate the Skill Group that was affected.
+                                SkillGroup group = CharacterObject.SkillsSection.SkillGroups.FirstOrDefault(g => g.InternalId == strUndoId);
 
+                                if (group != null)
+                                {
+                                    if (group.KarmaUnbroken)
+                                        --group.Karma;
+                                    else
+                                    {
+                                        Program.ShowMessageBox(this,
+                                            await LanguageManager.GetStringAsync("Message_UndoBrokenSkillGroup"),
+                                            await LanguageManager.GetStringAsync("MessageTitle_UndoBrokenSkillGroup"),
+                                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        return;
+                                    }
+                                }
+                                break;
+                            }
+                        }
                         break;
                     }
                 case KarmaExpenseType.ImproveSkill:

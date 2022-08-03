@@ -44,6 +44,7 @@ Application Changes:
 - Cyber/Bioware grades are now exposed to the Requirements system. This allows using the usual required/forbidden/careeronly/etc. nodes to selectively enable or disable a given cyberware grade.  Implements #4789
 - Recoil Compensation and Reach are now visible on Weapons and Weapon Accessories attached to Vehicles. Closes #4753
 - Refactor of Vehicle Sensor, Accel, Handling, Body and Armor ratings to perform in closer to identical fashion. Resolves Sensor Arrays not properly losing their linked Rating if a Sensor Downgrade is equipped to a vehicle. Closes #4813
+- Resolved an issue with skill groups that were purchased in career mode not being properly able to be refunded. 
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.

@@ -304,7 +304,7 @@ namespace Chummer.Backend.Skills
 
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                 objExpense.Create(intPrice * -1, strUpgradetext, ExpenseType.Karma, DateTime.Now);
-                objExpense.Undo = new ExpenseUndo().CreateKarma(Rating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, Name);
+                objExpense.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.ImproveSkillGroup, InternalId);
 
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
