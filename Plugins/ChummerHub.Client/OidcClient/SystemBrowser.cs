@@ -166,6 +166,8 @@ namespace ChummerHub.Client.OidcClient
 
             Thread thread = new Thread(new ThreadStart(httpServer.Listen));
             thread.Start();
+            //wait a bit for the httplistener to spin up
+            System.Threading.Thread.Sleep(100);
 
         }
 
@@ -180,7 +182,7 @@ namespace ChummerHub.Client.OidcClient
         //    path = path ?? String.Empty;
         //    if (path.StartsWith("/")) path = path.Substring(1);
 
-        //    _url = $"http://127.0.0.1:{port}/{path}";
+        //    _url = $"http://localhost:{port}/{path}";
 
         //    _host = new WebHostBuilder()
         //        .UseKestrel()
