@@ -40,6 +40,7 @@ using Newtonsoft.Json;
 using System.Web;
 using System.Diagnostics;
 using System.Net;
+using IdentityModel;
 
 //using Nemiro.OAuth;
 //using Nemiro.OAuth.LoginForms;
@@ -532,7 +533,7 @@ namespace ChummerHub.Client.UI
             // create a redirect URI using an available port on the loopback address.
             // requires the OP to allow random ports on 127.0.0.1 - otherwise set a static port
             var browser = new SystemBrowser();
-            string redirectUri = string.Format($"https://localhost:{browser.Port}/signin-oidc");
+            string redirectUri = string.Format($"http://localhost:{browser.Port}/signin-oidc");
 
             var options = new OidcClientOptions
             {
@@ -543,9 +544,14 @@ namespace ChummerHub.Client.UI
                 FilterClaims = false,
                 Browser = browser,
                 TokenClientCredentialStyle = IdentityModel.Client.ClientCredentialStyle.AuthorizationHeader,
-                
+                ClientSecret = "secret".ToSha256(),
                 IdentityTokenValidator = new IdentityModel.OidcClient.JwtHandlerIdentityTokenValidator(),
-                RefreshTokenInnerHttpHandler = new HttpClientHandler()
+                RefreshTokenInnerHttpHandler = new HttpClientHandler(),
+                //ProviderInformation = new ProviderInformation()
+                //{
+                //    IssuerName = _authority,
+                //    AuthorizeEndpoint
+                //}
             };
 
             _oidcClient = new IdentityModel.OidcClient.OidcClient(options);
@@ -557,10 +563,13 @@ namespace ChummerHub.Client.UI
                 return;
             }
 
-            _apiClient = new HttpClient(result.RefreshTokenHandler)
+            if (result.RefreshTokenHandler != null)
             {
-                BaseAddress = new Uri(_api)
-            };
+                _apiClient = new HttpClient(result.RefreshTokenHandler)
+                {
+                    BaseAddress = new Uri(_api)
+                };
+            }
 
             ShowResult(result);
             await NextSteps(result);
@@ -568,25 +577,28 @@ namespace ChummerHub.Client.UI
 
         private static void ShowResult(LoginResult result)
         {
+            string show = "";
             if (result.IsError)
             {
-                Console.WriteLine("\n\nError:\n{0}", result.Error);
+                Log.Warn("\n\nError:\n{0}", result.Error);
                 return;
             }
 
-            Console.WriteLine("\n\nClaims:");
+            show += "\n\nClaims:";
             foreach (var claim in result.User.Claims)
             {
-                Console.WriteLine("{0}: {1}", claim.Type, claim.Value);
+                show += String.Format("\r\n{0}: {1}", claim.Type, claim.Value);
             }
 
             var values = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(result.TokenResponse.Raw);
 
-            Console.WriteLine($"token response...");
+            show += $"\r\ntoken response...";
             foreach (var item in values)
             {
-                Console.WriteLine($"{item.Key}: {item.Value}");
+                show += $"\r\n{item.Key}: {item.Value}";
             }
+
+            Log.Info(show);
         }
 
         private static async Task NextSteps(LoginResult result)

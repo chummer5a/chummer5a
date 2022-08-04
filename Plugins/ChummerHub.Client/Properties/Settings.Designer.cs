@@ -12,7 +12,7 @@ namespace ChummerHub.Client.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.0.3.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.2.0.0")]
     public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -97,23 +97,6 @@ namespace ChummerHub.Client.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <string>https://chummer-stable.azurewebsites.net/</string>
-  <string>https://localhost:5001/</string>
-  <string>https://chummer-beta.azurewebsites.net/</string>
-</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection SINnerUrls {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["SINnerUrls"]));
-            }
-            set {
-                this["SINnerUrls"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool UpgradeRequired {
             get {
@@ -181,6 +164,47 @@ namespace ChummerHub.Client.Properties {
             }
             set {
                 this["OpenChummerFromSharedLinks"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+  <string>https://localhost:64939/</string>
+  <string>https://chummer-stable.azurewebsites.net/</string>
+  <string>https://chummer-beta.azurewebsites.net/</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection SINnerUrls {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["SINnerUrls"]));
+            }
+            set {
+                this["SINnerUrls"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string IdentityToken {
+            get {
+                return ((string)(this["IdentityToken"]));
+            }
+            set {
+                this["IdentityToken"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AccessToken {
+            get {
+                return ((string)(this["AccessToken"]));
+            }
+            set {
+                this["AccessToken"] = value;
             }
         }
     }

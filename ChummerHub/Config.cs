@@ -97,66 +97,64 @@ namespace ChummerHub
             new ApiScope("ChummerHubV1", "ChummerHub API")
         };
 
-        public static IEnumerable<Client> Clients =>
-       new List<Client>
-       {
-           // JWT-based client authentication sample
-                //new Client
-                //{
-                //    ClientId = "Chummer5a",
+        public static IEnumerable<Client> Clients
+        {
+            get {
+                List<string> grantTypes = new List<string>();
+                grantTypes.AddRange(GrantTypes.DeviceFlow);
+                grantTypes.AddRange(GrantTypes.CodeAndClientCredentials);
+                var result = new List<Client>()
+                   {
+                      new Client
+                        {
+                            ClientId = "interactive.public",
+                            ClientSecrets = { new Secret("secret".Sha256()) },
+                            RequireClientSecret = false,
+                            RequirePkce = true,
+                            AllowedGrantTypes = grantTypes,
+                            AllowAccessTokensViaBrowser = true,
+                            AllowOfflineAccess = true,
 
-                //    AllowedGrantTypes = GrantTypes.ClientCredentials,
-                    
-                //    // this client uses an RSA key as client secret
-                //    // and https://docs.duendesoftware.com/identityserver/v5/tokens/authentication/jwt/
-                //    ClientSecrets =
-                //    {
-                //        new Secret
-                //        {
-                //            Type = IdentityServerConstants.SecretTypes.JsonWebKey,
-                //            Value = "{'e':'AQAB','kid':'ZzAjSnraU3bkWGnnAqLapYGpTyNfLbjbzgAPbbW2GEA','kty':'RSA','n':'wWwQFtSzeRjjerpEM5Rmqz_DsNaZ9S1Bw6UbZkDLowuuTCjBWUax0vBMMxdy6XjEEK4Oq9lKMvx9JzjmeJf1knoqSNrox3Ka0rnxXpNAz6sATvme8p9mTXyp0cX4lF4U2J54xa2_S9NF5QWvpXvBeC4GAJx7QaSw4zrUkrc6XyaAiFnLhQEwKJCwUw4NOqIuYvYp_IXhw-5Ti_icDlZS-282PcccnBeOcX7vc21pozibIdmZJKqXNsL1Ibx5Nkx1F1jLnekJAmdaACDjYRLL_6n3W4wUp19UvzB1lGtXcJKLLkqB6YDiZNu16OSiSprfmrRXvYmvD8m6Fnl5aetgKw'}"
-                //        }
-                //    },
+                            Claims = new List<ClientClaim>()
+                            {
+                                new ClientClaim("idp", "local"),
+                                new ClientClaim("iss", "local")
+                            },
+                            AccessTokenType = AccessTokenType.Jwt,
+                            // where to redirect after login
+                            RedirectUris = new List<string>()
+                            {
+                                "https://127.0.0.1:64888",
+                                "https://127.0.0.1:5013",
+                                "https://127.0.0.1:62777",
+                                "https://localhost:64888",
+                                "https://localhost:5013",
+                                "https://localhost:62777",
+                                "https://127.0.0.1:64888/signin-oidc",
+                                "https://127.0.0.1:5013/signin-oidc",
+                                "https://127.0.0.1:62777/signin-oidc",
+                                "https://localhost:64888/signin-oidc",
+                                "https://localhost:5013/signin-oidc",
+                                "https://localhost:62777/signin-oidc",
+                                "http://127.0.0.1:64888",
+                                "http://127.0.0.1:5013",
+                                "http://127.0.0.1:62777",
+                                "http://localhost:64888",
+                                "http://localhost:5013",
+                                "http://localhost:62777",
+                                "http://127.0.0.1:64888/signin-oidc",
+                                "http://127.0.0.1:5013/signin-oidc",
+                                "http://127.0.0.1:62777/signin-oidc",
+                                "http://localhost:64888/signin-oidc",
+                                "http://localhost:5013/signin-oidc",
+                                "http://localhost:62777/signin-oidc",
 
-                //    AllowedScopes = { "ChummerHubV1", "roles", "verification" }
-                //},
-      
-            new Client
-            {
-                ClientId = "interactive.public",
-                ClientSecrets = { new Secret("secret".Sha256()) },
+                            },
 
-                AllowedGrantTypes = GrantTypes.DeviceFlow,//.CodeAndClientCredentials,
-                AllowAccessTokensViaBrowser = true,
-                AllowOfflineAccess = true,
+                            // where to redirect after logout
+                            //PostLogoutRedirectUris = { "http://localhost:64939/signout-callback-oidc" },
 
-                Claims = new List<ClientClaim>()
-                {
-                    new ClientClaim("idp", "local")
-                },
-                AccessTokenType = AccessTokenType.Jwt,
-                // where to redirect after login
-                RedirectUris = new List<string>()
-                {
-                    "https://127.0.0.1:64888",
-                    "https://127.0.0.1:5013",
-                    "https://127.0.0.1:62777",
-                    "https://localhost:64888",
-                    "https://localhost:5013",
-                    "https://localhost:62777",
-                    "https://127.0.0.1:64888/signin-oidc",
-                    "https://127.0.0.1:5013/signin-oidc",
-                    "https://127.0.0.1:62777/signin-oidc",
-                    "https://localhost:64888/signin-oidc",
-                    "https://localhost:5013/signin-oidc",
-                    "https://localhost:62777/signin-oidc",
-                    
-                },
-
-                // where to redirect after logout
-                //PostLogoutRedirectUris = { "https://localhost:64939/signout-callback-oidc" },
-
-                AllowedScopes = new List<string>
+                            AllowedScopes = new List<string>
                 {
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
@@ -165,8 +163,13 @@ namespace ChummerHub
                     "verification",
                     "roles"
                 }
+
+                      }
+                };
+                return result;
             }
-       };
+               
+        }
 
         public static string ApplicationName {
             get { return "ChummerHub"; }

@@ -96,6 +96,9 @@ namespace IdentityModel.OidcClient
             if (!result.IsError)
             {
                 SetCookieContainer();
+                ChummerHub.Client.Properties.Settings.Default.IdentityToken = result.IdentityToken;
+                ChummerHub.Client.Properties.Settings.Default.AccessToken = result.AccessToken;
+                ChummerHub.Client.Properties.Settings.Default.Save();
             }
 
             return result;
