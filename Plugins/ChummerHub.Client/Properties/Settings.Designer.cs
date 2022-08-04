@@ -207,5 +207,17 @@ namespace ChummerHub.Client.Properties {
                 this["AccessToken"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string BearerToken {
+            get {
+                return ((string)(this["BearerToken"]));
+            }
+            set {
+                this["BearerToken"] = value;
+            }
+        }
     }
 }

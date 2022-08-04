@@ -38,29 +38,37 @@ namespace SimpleHttpServer
         #region Public Methods
         public void HandleClient(TcpClient tcpClient)
         {
-                Stream inputStream = GetInputStream(tcpClient);
-                Stream outputStream = GetOutputStream(tcpClient);
-                HttpRequest request = GetRequest(inputStream, outputStream);
+            Stream inputStream = GetInputStream(tcpClient);
+            Stream outputStream = GetOutputStream(tcpClient);
+            HttpRequest request = GetRequest(inputStream, outputStream);
 
-                // route and handle the request...
-                HttpResponse response = RouteRequest(inputStream, outputStream, request);      
+            // route and handle the request...
+            HttpResponse response = RouteRequest(inputStream, outputStream, request);
+
+            string token = null;
+            if (response.Headers.TryGetValue("Autorization", out token))
+            {
+                string puretoken = token.TrimStart("Bearer ".ToCharArray());
+                ChummerHub.Client.Properties.Settings.Default.BearerToken = puretoken;
+                ChummerHub.Client.Properties.Settings.Default.Save();
+            }
           
-                Console.WriteLine("{0} {1}",response.StatusCode,request.Url);
-                // build a default response for errors
-                if (response.Content == null) {
-                    if (response.StatusCode != "200") {
-                        response.ContentAsUTF8 = string.Format("{0} {1} <p> {2}", response.StatusCode, request.Url, response.ReasonPhrase);
-                    }
+            log.Info("{0} {1}",response.StatusCode,request.Url);
+            // build a default response for errors
+            if (response.Content == null) {
+                if (response.StatusCode != "200") {
+                    response.ContentAsUTF8 = string.Format("{0} {1} <p> {2}", response.StatusCode, request.Url, response.ReasonPhrase);
                 }
+            }
 
-                WriteResponse(outputStream, response);
+            WriteResponse(outputStream, response);
 
-                outputStream.Flush();
-                outputStream.Close();
-                outputStream = null;
+            outputStream.Flush();
+            outputStream.Close();
+            outputStream = null;
 
-                inputStream.Close();
-                inputStream = null;
+            inputStream.Close();
+            inputStream = null;
 
         }
 
