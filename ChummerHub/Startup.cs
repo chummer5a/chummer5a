@@ -274,9 +274,15 @@ namespace ChummerHub
                     LogoutUrl = "/Identity/Account/Logout",
                     LoginUrl = "/Identity/Account/Login",
                     LoginReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter,
-
                 };
-                options.IssuerUri = "https://localhost:64939"; //configuration.GetRequiredValue<string>("Oidc:IdentityServer:IssuerUri");
+                if (Debugger.IsAttached)
+                {
+                    options.IssuerUri = "https://localhost:64939"; //configuration.GetRequiredValue<string>("Oidc:IdentityServer:IssuerUri");
+                }
+                else
+                {
+                    options.IssuerUri = Configuration["JWTIssuer"]; //Configuration.GetValue("Oidc:IdentityServer:IssuerUri");
+                }
                 options.Events.RaiseErrorEvents = true;
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
@@ -427,6 +433,8 @@ namespace ChummerHub
                 options.SignIn.RequireConfirmedEmail = true;
 #endif
                 options.SignIn.RequireConfirmedPhoneNumber = false;
+
+                
                 
             });
 
@@ -471,20 +479,6 @@ namespace ChummerHub
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
 
-                //OpenApiSecurityScheme jwtSecurityScheme = new OpenApiSecurityScheme()
-                //{
-                //    Name = JwtAuthenticationDefaults.HeaderName,
-                //    Type = SecuritySchemeType.Http,
-                //    Scheme = "bearer",
-                //    BearerFormat = "JWT",
-                //    In = ParameterLocation.Header,
-                //    Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
-                //    Reference = new OpenApiReference
-                //    {
-                //        Id = JwtBearerDefaults.AuthenticationScheme,
-                //        Type = ReferenceType.SecurityScheme
-                //    }
-                //};
                 options.AddSecurityDefinition(JwtAuthenticationDefaults.AuthenticationScheme,
                 new OpenApiSecurityScheme
                 {
@@ -492,7 +486,7 @@ namespace ChummerHub
                     Name = JwtAuthenticationDefaults.HeaderName, // Authorization
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.Http,
-                    Scheme = "bearer"
+                    Scheme = "bearer",
                 });
 
 

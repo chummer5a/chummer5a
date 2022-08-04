@@ -499,8 +499,14 @@ namespace ChummerHub.Client.UI
             {
                 Settings.Default.SINnerUrl = cbSINnerUrl.SelectedItem?.ToString();
                 Settings.Default.Save();
-                await SignIn();
-                //await ShowWebBrowserAsync();
+                try
+                {
+                    await SignIn();
+                }
+                catch(Exception ex)
+                {
+                    Log.Warn(ex);
+                }
             }
         }
 
@@ -538,7 +544,7 @@ namespace ChummerHub.Client.UI
             var options = new OidcClientOptions
             {
                 Authority = _authority,
-                ClientId = "interactive.public",
+                ClientId = "Chummer5a",
                 RedirectUri = redirectUri,
                 Scope = "openid profile verification",
                 FilterClaims = false,
@@ -603,6 +609,7 @@ namespace ChummerHub.Client.UI
 
         private static async Task NextSteps(LoginResult result)
         {
+            return;
             var currentAccessToken = result.AccessToken;
             var currentRefreshToken = result.RefreshToken;
 

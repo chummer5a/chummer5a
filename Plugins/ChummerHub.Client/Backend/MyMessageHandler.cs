@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Rest;
@@ -54,6 +55,12 @@ namespace ChummerHub.Client.Backend
             Log.Debug<object>(msg);
             try
             {
+                if (!string.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.BearerToken))
+                {
+                    AuthenticationHeaderValue auth = new AuthenticationHeaderValue("Bearer", ChummerHub.Client.Properties.Settings.Default.BearerToken);
+                    request.Headers.Authorization = auth;
+                    //request.Headers.Add("Bearer", ChummerHub.Client.Properties.Settings.Default.AccessToken);
+                }
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
                 // Call the inner handler.

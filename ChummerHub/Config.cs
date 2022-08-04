@@ -99,18 +99,28 @@ namespace ChummerHub
 
         public static IEnumerable<Client> Clients
         {
-            get {
+            get
+            {
                 List<string> grantTypes = new List<string>();
                 grantTypes.AddRange(GrantTypes.DeviceFlow);
                 grantTypes.AddRange(GrantTypes.CodeAndClientCredentials);
                 var result = new List<Client>()
-                   {
+                {
                       new Client
-                        {
-                            ClientId = "interactive.public",
+                      {
+                            ClientId = "Chummer5a",
                             ClientSecrets = { new Secret("secret".Sha256()) },
                             RequireClientSecret = false,
                             RequirePkce = true,
+                            IdentityTokenLifetime = 60*5*24*365,
+                            AccessTokenLifetime = 60*5*24*365,
+                            AbsoluteRefreshTokenLifetime = 60*5*24*365,
+                            DeviceCodeLifetime = 60*5*24*365,
+                            AllowRememberConsent = true,
+                            AlwaysIncludeUserClaimsInIdToken = true,
+                            AlwaysSendClientClaims = true,
+                            AuthorizationCodeLifetime = 60*5*24*365,
+                            RefreshTokenExpiration = TokenExpiration.Sliding,
                             AllowedGrantTypes = grantTypes,
                             AllowAccessTokensViaBrowser = true,
                             AllowOfflineAccess = true,
@@ -153,17 +163,17 @@ namespace ChummerHub
 
                             // where to redirect after logout
                             //PostLogoutRedirectUris = { "http://localhost:64939/signout-callback-oidc" },
-
+                            
                             AllowedScopes = new List<string>
-                {
-                    IdentityServerConstants.StandardScopes.OpenId,
-                    IdentityServerConstants.StandardScopes.Profile,
-                    IdentityServerConstants.StandardScopes.OfflineAccess,
-                    "api",
-                    "verification",
-                    "roles"
-                }
-
+                            {
+                                IdentityServerConstants.StandardScopes.OpenId,
+                                IdentityServerConstants.StandardScopes.Profile,
+                                IdentityServerConstants.StandardScopes.OfflineAccess,
+                                "api",
+                                "verification",
+                                "roles"
+                            }
+                            
                       }
                 };
                 return result;
@@ -177,15 +187,15 @@ namespace ChummerHub
 
         private static JwtTokenClass _jwtToken = null;
 
-        public JwtTokenClass JwtToken(ILogger logger, IConfiguration configuration)
-        {
+        //public JwtTokenClass JwtToken(ILogger logger, IConfiguration configuration)
+        //{
             
-                if (_jwtToken == null)
-                {
-                    _jwtToken = new JwtTokenClass(logger, configuration);
-                }
-                return _jwtToken;
-        }
+        //        if (_jwtToken == null)
+        //        {
+        //            _jwtToken = new JwtTokenClass(logger, configuration);
+        //        }
+        //        return _jwtToken;
+        //}
 
         internal static List<ApplicationUser> GetAdminUsers()
         {

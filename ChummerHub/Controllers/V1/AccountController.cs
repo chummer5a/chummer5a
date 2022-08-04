@@ -67,9 +67,7 @@ namespace ChummerHub.Controllers
         private readonly IConfiguration _configuration;
         private readonly TelemetryClient tc;
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.AccountController(ApplicationDbContext, ILogger<AccountController>, UserManager<ApplicationUser>, SignInManager<ApplicationUser>, RoleManager<ApplicationRole>, TelemetryClient)'
         public AccountController(ApplicationDbContext context,
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.AccountController(ApplicationDbContext, ILogger<AccountController>, UserManager<ApplicationUser>, SignInManager<ApplicationUser>, RoleManager<ApplicationRole>, TelemetryClient)'
             ILogger<AccountController> logger,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -103,6 +101,8 @@ namespace ChummerHub.Controllers
             if (User != null)
             {
                 user = await JwtHelper.GetApplicationUserAsync(User, _userManager);
+                if (user == null)
+                    throw new ArgumentNullException(nameof(user));
                 roles = await _userManager.GetRolesAsync(user);
             }
             var helper = new JwtHelper(_logger, _configuration);

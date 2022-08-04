@@ -135,21 +135,28 @@ namespace ChummerHub.Client.OidcClient
                 Console.WriteLine("Windows XP SP2 or Server 2003 is required to use the HttpListener class.");
                 return;
             }
-           
+
             List<SimpleHttpServer.Models.Route> route_config = new List<SimpleHttpServer.Models.Route>() {
                 new Route {
                     Name = "Hello Handler",
                     UrlRegex = null,//@"^/$",
                     Method = "GET",
+                    
                     Callable = (SimpleHttpServer.Models.HttpRequest request) =>
                     {
                         _source.TrySetResult(request.Path);
-                        return new SimpleHttpServer.Models.HttpResponse()
+                        var result = new SimpleHttpServer.Models.HttpResponse()
                         {
-                            ContentAsUTF8 = "Hello from SimpleHttpServer",
+                            ContentAsUTF8 = "Authentication complete. You may close this window now.",
                             ReasonPhrase = "OK",
                             StatusCode = "200"
                         };
+                        string token;
+                        if (request.Headers.TryGetValue("Authorization", out token))
+                        {
+                            result.Headers.Add("Authorization", token);
+                        }
+                        return result;
                      }
                 },
                 //new Route {
