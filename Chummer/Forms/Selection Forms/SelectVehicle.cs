@@ -741,8 +741,6 @@ namespace Chummer
                     if (await dgvVehicles.DoThreadSafeFuncAsync(x => x.SelectedRows.Count) == 1)
                     {
                         string strWeapon = await dgvVehicles.DoThreadSafeFuncAsync(x => x.SelectedRows[0].Cells[0].Value.ToString());
-                        if (!string.IsNullOrEmpty(strWeapon))
-                            strWeapon = strWeapon.Substring(0, strWeapon.LastIndexOf('(') - 1);
                         xmlVehicle = _xmlBaseVehicleDataNode.SelectSingleNode("/chummer/vehicles/vehicle[id = " + strWeapon.CleanXPath() + ']');
                         if (xmlVehicle != null)
                         {
