@@ -20,7 +20,7 @@ namespace SimpleHttpServer
         #region Fields
 
         private int Port;
-        private TcpListener Listener;
+        private TcpListener Listener = null;
         private HttpProcessor Processor;
         private bool IsActive = true;
 
@@ -44,8 +44,11 @@ namespace SimpleHttpServer
         {
             try
             {
-                this.Listener = new TcpListener(IPAddress.Any, this.Port);
-                this.Listener.Start();
+                if (Listener == null)
+                {
+                    this.Listener = new TcpListener(IPAddress.Any, this.Port);
+                    this.Listener.Start();
+                }
                 while (this.IsActive)
                 {
                     TcpClient s = this.Listener.AcceptTcpClient();

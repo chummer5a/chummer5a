@@ -1312,7 +1312,7 @@ namespace Chummer
                 x.Closed += (sender, args) => s_lstLoadingBars.Remove(x);
                 x.Show();
             }, token);
-            await s_lstLoadingBars.AddAsync(frmReturn.MyForm);
+            await s_lstLoadingBars.AddAsync(frmReturn.MyForm, token);
             return frmReturn;
         }
 

@@ -135,21 +135,28 @@ namespace ChummerHub.Client.OidcClient
                 Console.WriteLine("Windows XP SP2 or Server 2003 is required to use the HttpListener class.");
                 return;
             }
-           
+
             List<SimpleHttpServer.Models.Route> route_config = new List<SimpleHttpServer.Models.Route>() {
                 new Route {
                     Name = "Hello Handler",
                     UrlRegex = null,//@"^/$",
                     Method = "GET",
+                    
                     Callable = (SimpleHttpServer.Models.HttpRequest request) =>
                     {
                         _source.TrySetResult(request.Path);
-                        return new SimpleHttpServer.Models.HttpResponse()
+                        var result = new SimpleHttpServer.Models.HttpResponse()
                         {
-                            ContentAsUTF8 = "Hello from SimpleHttpServer",
+                            ContentAsUTF8 = "Authentication complete. You may close this window now.",
                             ReasonPhrase = "OK",
                             StatusCode = "200"
                         };
+                        string token;
+                        if (request.Headers.TryGetValue("Authorization", out token))
+                        {
+                            result.Headers.Add("Authorization", token);
+                        }
+                        return result;
                      }
                 },
                 //new Route {
@@ -166,6 +173,8 @@ namespace ChummerHub.Client.OidcClient
 
             Thread thread = new Thread(new ThreadStart(httpServer.Listen));
             thread.Start();
+            //wait a bit for the httplistener to spin up
+            System.Threading.Thread.Sleep(100);
 
         }
 
@@ -180,7 +189,7 @@ namespace ChummerHub.Client.OidcClient
         //    path = path ?? String.Empty;
         //    if (path.StartsWith("/")) path = path.Substring(1);
 
-        //    _url = $"http://127.0.0.1:{port}/{path}";
+        //    _url = $"http://localhost:{port}/{path}";
 
         //    _host = new WebHostBuilder()
         //        .UseKestrel()

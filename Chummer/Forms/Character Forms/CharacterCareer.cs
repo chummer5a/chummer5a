@@ -17226,7 +17226,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strSelectedId) && objParent is IHasXmlDataNode objParentWithDataNode)
                 {
                     XPathNodeIterator xmlAddonCategoryList
-                        = (await objParentWithDataNode.GetNodeXPathAsync())?.Select("addoncategory");
+                        = (await objParentWithDataNode.GetNodeXPathAsync(token))?.Select("addoncategory");
                     if (xmlAddonCategoryList?.Count > 0)
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,

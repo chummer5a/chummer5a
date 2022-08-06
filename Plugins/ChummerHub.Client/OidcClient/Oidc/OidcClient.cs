@@ -96,6 +96,10 @@ namespace IdentityModel.OidcClient
             if (!result.IsError)
             {
                 SetCookieContainer();
+                ChummerHub.Client.Properties.Settings.Default.IdentityToken = result.IdentityToken;
+                ChummerHub.Client.Properties.Settings.Default.AccessToken = result.AccessToken;
+                //BearerToken
+                ChummerHub.Client.Properties.Settings.Default.Save();
             }
 
             return result;
@@ -272,6 +276,7 @@ namespace IdentityModel.OidcClient
                 User = user,
                 AccessToken = result.TokenResponse.AccessToken,
                 RefreshToken = result.TokenResponse.RefreshToken,
+           
                 AccessTokenExpiration = DateTimeOffset.Now.AddSeconds(result.TokenResponse.ExpiresIn),
                 IdentityToken = result.TokenResponse.IdentityToken,
                 AuthenticationTime = authTime,

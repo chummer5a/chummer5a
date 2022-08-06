@@ -106,19 +106,19 @@ namespace ChummerHub
 
         public static IWebHost CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-            //.ConfigureAppConfiguration((hostingContext, config) =>
-            //{
-            //    var settings = config.Build();
-            //    config.AddAzureAppConfiguration(options =>
-            //    {
-                    
-            //        //options.Connect(settings["ConnectionStrings.AppConfig"])
-            //        //        .ConfigureKeyVault(kv =>
-            //        //        {
-            //        //            kv.SetCredential(new DefaultAzureCredential());
-            //        //        });
-            //    });
-            //})
+                //.ConfigureAppConfiguration((hostingContext, config) =>
+                //{
+                //    var settings = config.Build();
+                //    config.AddAzureAppConfiguration(options =>
+                //    {
+
+                //        //options.Connect(settings["ConnectionStrings.AppConfig"])
+                //        //        .ConfigureKeyVault(kv =>
+                //        //        {
+                //        //            kv.SetCredential(new DefaultAzureCredential());
+                //        //        });
+                //    });
+                //})
                 //.UseKestrel(options =>
                 //{
                 //    options.Limits.MinResponseDataRate = null;

@@ -50,7 +50,8 @@ namespace IdentityModel.OidcClient
             var browserOptions = new BrowserOptions(result.State.StartUrl, _options.RedirectUri)
             {
                 Timeout = TimeSpan.FromSeconds(request.Timeout),
-                DisplayMode = request.DisplayMode
+                DisplayMode = request.DisplayMode,
+                
             };
 
             var browserResult = await _options.Browser.InvokeAsync(browserOptions, cancellationToken);

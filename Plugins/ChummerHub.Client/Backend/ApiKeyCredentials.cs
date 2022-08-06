@@ -17,15 +17,19 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using Microsoft.Rest;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ChummerHub.Client.Backend
 {
     class MyCredentials : ServiceClientCredentials
     {
-        //public override Task ProcessHttpRequestAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        //{
-        //    //request.Headers.Add("Bearer", "123456");
-        //    return base.ProcessHttpRequestAsync(request, cancellationToken);
-        //}
+        public override Task ProcessHttpRequestAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            if (!string.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.AccessToken))
+                request.Headers.Add("Bearer", ChummerHub.Client.Properties.Settings.Default.AccessToken);
+            return base.ProcessHttpRequestAsync(request, cancellationToken);
+        }
     }
 }

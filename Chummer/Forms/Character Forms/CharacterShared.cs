@@ -8222,12 +8222,12 @@ namespace Chummer
                         if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
                         {
                             await CharacterObject.Mugshots.AddAsync(
-                                bmpMugshot.Clone() as Bitmap); // Clone makes sure file handle is closed
+                                bmpMugshot.Clone() as Bitmap, token); // Clone makes sure file handle is closed
                         }
                         else
                         {
                             await CharacterObject.Mugshots.AddAsync(
-                                bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb));
+                                bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb), token);
                         }
                     }
 

@@ -102,6 +102,8 @@ namespace ChummerHub.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(Input.Email);
+                if (user == null)
+                    user = await _userManager.FindByNameAsync(Input.Email);
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe, lockoutOnFailure: false);
@@ -114,8 +116,10 @@ namespace ChummerHub.Areas.Identity.Pages.Account
                     IList<string> roles = new List<string>();
                     if (User != null)
                     {
-                        //user = await _signInManager.UserManager.GetUserAsync(User);
-                        roles = await _userManager.GetRolesAsync(user);
+                        if (user == null)
+                            user = await _userManager.GetUserAsync(User);
+                        if (user != null)
+                            roles = await _userManager.GetRolesAsync(user);
                     }
                     var helper = new JwtHelper(_logger, _configuration);
                     token = helper.GenerateJwTSecurityToken(user, roles);
@@ -149,16 +153,8 @@ namespace ChummerHub.Areas.Identity.Pages.Account
                         principal,
                         authProperties);
 
-                  
-
-
-                    
-                    //if (!returnUrl.Contains("localhost"))
-                    //{
-                    //    return LocalRedirect(returnUrl);
-                    //}
-
                     var redirectresult = new RedirectResult(returnUrl, true);
+                    
                     redirectresult.UrlHelper = new UrlHelper(_accessor.ActionContext);
 
                     string returntoken = JwtHelper.GetJwtTokenString(token);
@@ -166,16 +162,21 @@ namespace ChummerHub.Areas.Identity.Pages.Account
                     //returntoken = Convert.ToBase64String(Encoding.ASCII.GetBytes(returntoken));
                     string encheadertoken = System.Text.Encoding.ASCII.GetString(Encoding.ASCII.GetBytes(returntoken)); //System.Web.HttpUtility.HtmlEncode(returntoken);
 
-
-                    var urlEncode = String.Join("/", returnUrl.Split("/").Select(s => System.Net.WebUtility.UrlEncode(s)));
-
                     encheadertoken = Regex.Replace(encheadertoken, @"[^\u001F-\u007F]+", string.Empty);
 
-                    redirectresult.UrlHelper
+                    var urlEncode = String.Join("/", returnUrl.Split("/").Select(s => System.Net.WebUtility.UrlEncode(s)), encheadertoken);
+
+                    
+
+                    if (!redirectresult.UrlHelper
                           .ActionContext
                           .HttpContext
-                          .Response.Headers.TryAdd(System.Net.WebUtility.HtmlEncode("Bearer"), encheadertoken);
+                          .Response.Headers.TryAdd("Authorization", "Bearer " + encheadertoken))
+                    {
+                        _logger.LogWarning("Could not add Bearer to response!");
+                    }
 
+                    
                     redirectresult.UrlHelper
                           .ActionContext
                           .HttpContext
