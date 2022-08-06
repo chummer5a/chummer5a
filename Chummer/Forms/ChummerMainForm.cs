@@ -1457,7 +1457,7 @@ namespace Chummer
             try
             {
                 lstLocal = await _lstCharactersToReopen.ToListAsync(token);
-                await _lstCharactersToReopen.ClearAsync();
+                await _lstCharactersToReopen.ClearAsync(token);
             }
             finally
             {

@@ -5274,7 +5274,7 @@ namespace Chummer
                                     // ReSharper disable once MethodHasAsyncOverload
                                     _lstPrioritySkills.Clear();
                                 else
-                                    await _lstPrioritySkills.ClearAsync();
+                                    await _lstPrioritySkills.ClearAsync(token);
                                 foreach (XPathNavigator xmlSkillName in (blnSync
                                              // ReSharper disable once MethodHasAsyncOverload
                                              ? xmlCharacterNavigator.SelectAndCacheExpression(
@@ -5286,7 +5286,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstPrioritySkills.Add(xmlSkillName.Value);
                                     else
-                                        await _lstPrioritySkills.AddAsync(xmlSkillName.Value);
+                                        await _lstPrioritySkills.AddAsync(xmlSkillName.Value, token);
                                 }
 
                                 string strSkill1 = string.Empty;
@@ -5299,7 +5299,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstPrioritySkills.Add(strSkill1);
                                     else
-                                        await _lstPrioritySkills.AddAsync(strSkill1);
+                                        await _lstPrioritySkills.AddAsync(strSkill1, token);
                                 }
 
                                 if (xmlCharacterNavigator.TryGetStringFieldQuickly("priorityskill2",
@@ -5310,7 +5310,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstPrioritySkills.Add(strSkill2);
                                     else
-                                        await _lstPrioritySkills.AddAsync(strSkill2);
+                                        await _lstPrioritySkills.AddAsync(strSkill2, token);
                                 }
 
                                 xmlCharacterNavigator.TryGetBoolFieldQuickly("possessed", ref _blnPossessed);
@@ -5432,7 +5432,7 @@ namespace Chummer
                                 // ReSharper disable once MethodHasAsyncOverload
                                 _lstInternalIdsNeedingReapplyImprovements.Clear();
                             else
-                                await _lstInternalIdsNeedingReapplyImprovements.ClearAsync();
+                                await _lstInternalIdsNeedingReapplyImprovements.ClearAsync(token);
 
                             if (frmLoadingForm != null)
                             {
@@ -5559,7 +5559,7 @@ namespace Chummer
                                                     .SourceName);
                                             else
                                                 await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objImprovement
-                                                    .SourceName);
+                                                    .SourceName, token);
                                         }
                                         // Cyberadept fix
                                         else if (LastSavedVersion <= new Version(5, 212, 78)
@@ -5592,7 +5592,7 @@ namespace Chummer
                                                 objXmlImprovement["sourcename"]?.InnerText);
                                         else
                                             await _lstInternalIdsNeedingReapplyImprovements.AddAsync(
-                                                objXmlImprovement["sourcename"]?.InnerText);
+                                                objXmlImprovement["sourcename"]?.InnerText, token);
                                     }
                                 }
 
@@ -5781,7 +5781,7 @@ namespace Chummer
                                                         // ReSharper disable once MethodHasAsyncOverload
                                                         _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
                                                     else
-                                                        await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objQuality.InternalId);
+                                                        await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objQuality.InternalId, token);
                                                 }
 
                                                 objQuality.NaturalWeaponsNode = objNode["naturalweapons"];
@@ -5949,7 +5949,7 @@ namespace Chummer
                                                     // ReSharper disable once MethodHasAsyncOverload
                                                     _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
                                                 else
-                                                    await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objQuality.InternalId);
+                                                    await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objQuality.InternalId, token);
                                             }
 
                                             if (LastSavedVersion <= new Version(5, 212, 56)
@@ -5961,7 +5961,7 @@ namespace Chummer
                                                     // ReSharper disable once MethodHasAsyncOverload
                                                     _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
                                                 else
-                                                    await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objQuality.InternalId);
+                                                    await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objQuality.InternalId, token);
                                             }
 
                                             if (LastSavedVersion <= new Version(5, 212, 78)
@@ -6331,7 +6331,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstStackedFoci.Add(objStack);
                                     else
-                                        await _lstStackedFoci.AddAsync(objStack);
+                                        await _lstStackedFoci.AddAsync(objStack, token);
                                 }
 
                                 //Timekeeper.Finish("load_char_sfoci");
@@ -6524,7 +6524,7 @@ namespace Chummer
                                             // ReSharper disable once MethodHasAsyncOverload
                                             _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
                                         else
-                                            await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objCyberware.InternalId);
+                                            await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objCyberware.InternalId, token);
                                     }
                                 }
 
@@ -6631,7 +6631,7 @@ namespace Chummer
                                                 // ReSharper disable once MethodHasAsyncOverload
                                                 _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
                                             else
-                                                await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objCyberware.InternalId);
+                                                await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objCyberware.InternalId, token);
                                         }
                                     }
                                 }
@@ -6773,7 +6773,7 @@ namespace Chummer
                                                     // ReSharper disable once MethodHasAsyncOverload
                                                     _lstInternalIdsNeedingReapplyImprovements.Add(strGuid);
                                                 else
-                                                    await _lstInternalIdsNeedingReapplyImprovements.AddAsync(strGuid);
+                                                    await _lstInternalIdsNeedingReapplyImprovements.AddAsync(strGuid, token);
                                             }
 
                                             if (!string.IsNullOrEmpty(strGuid))
@@ -7150,7 +7150,7 @@ namespace Chummer
                                             // ReSharper disable once MethodHasAsyncOverload
                                             _lstInternalIdsNeedingReapplyImprovements.Add(objLivingPersonaQuality.InternalId);
                                         else
-                                            await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objLivingPersonaQuality.InternalId);
+                                            await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objLivingPersonaQuality.InternalId, token);
                                     }
 
                                     objLivingPersonaQuality.NaturalWeaponsNode = objNode["naturalweapons"];
@@ -7400,7 +7400,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstFoci.Add(objFocus);
                                     else
-                                        await _lstFoci.AddAsync(objFocus);
+                                        await _lstFoci.AddAsync(objFocus, token);
                                 }
 
                                 //Timekeeper.Finish("load_char_foci");
@@ -7749,7 +7749,7 @@ namespace Chummer
                                         // ReSharper disable once MethodHasAsyncOverload
                                         _lstInternalIdsNeedingReapplyImprovements.Add(objMentorQuality.InternalId);
                                     else
-                                        await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objMentorQuality.InternalId);
+                                        await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objMentorQuality.InternalId, token);
                                 }
 
                                 //Timekeeper.Finish("load_char_mentorspiritfix");
