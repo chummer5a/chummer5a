@@ -19,6 +19,7 @@
 
 using System;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Chummer.UI.Table
@@ -30,10 +31,10 @@ namespace Chummer.UI.Table
         private SortOrder _eSortType = SortOrder.None;
         private const int _intLabelPadding = 3;
 
-        public HeaderCell()
+        public HeaderCell(CancellationToken token = default)
         {
             InitializeComponent();
-            this.UpdateLightDarkMode();
+            this.UpdateLightDarkMode(token: token);
             Sortable = false;
             Layout += ResizeControl;
         }
@@ -175,9 +176,9 @@ namespace Chummer.UI.Table
             base.OnPaint(e);
         }
 
-        public void Translate()
+        public void Translate(CancellationToken token = default)
         {
-            this.DoThreadSafe(x => x.TranslateWinForm());
+            this.DoThreadSafe((x, y) => x.TranslateWinForm(token: y), token);
         }
     }
 }

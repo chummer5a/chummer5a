@@ -59,7 +59,7 @@ namespace Chummer
 
         #region Control Events
 
-        public CharacterSheetViewer()
+        public CharacterSheetViewer(CancellationToken token = default)
         {
             Program.MainForm.OpenCharacterSheetViewers.Add(this);
             _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
@@ -84,8 +84,8 @@ namespace Chummer
             }
 
             InitializeComponent();
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
+            this.UpdateLightDarkMode(token);
+            this.TranslateWinForm(token: token);
             ContextMenuStrip[] lstCmsToTranslate = {
                 cmsPrintButton,
                 cmsSaveButton
@@ -96,8 +96,8 @@ namespace Chummer
                     continue;
                 foreach (ToolStripMenuItem tssItem in objCms.Items.OfType<ToolStripMenuItem>())
                 {
-                    tssItem.UpdateLightDarkMode();
-                    tssItem.TranslateToolStripItemsRecursively();
+                    tssItem.UpdateLightDarkMode(token);
+                    tssItem.TranslateToolStripItemsRecursively(token: token);
                 }
             }
         }
@@ -675,7 +675,7 @@ namespace Chummer
                                    cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token),
                                    cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token));
                 token.ThrowIfCancellationRequested();
-                Character[] aobjCharacters = await _lstCharacters.ToArrayAsync();
+                Character[] aobjCharacters = await _lstCharacters.ToArrayAsync(token);
                 token.ThrowIfCancellationRequested();
                 _objCharacterXml = aobjCharacters.Length > 0
                     ? await CommonFunctions.GenerateCharactersExportXml(_objPrintCulture, _strPrintLanguage,
@@ -960,7 +960,7 @@ namespace Chummer
         {
             List<ListItem> lstFiles = await XmlManager.GetXslFilesFromLocalDirectoryAsync(
                 await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
-                ?? GlobalSettings.DefaultLanguage, _lstCharacters, true);
+                ?? GlobalSettings.DefaultLanguage, _lstCharacters, true, token);
             try
             {
                 await cboXSLT.PopulateWithListItemsAsync(lstFiles, token);
@@ -995,9 +995,9 @@ namespace Chummer
                     objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
                     objCharacter.SettingsPropertyChanged -= ObjCharacterOnSettingsPropertyChanged;
                 }
-                await _lstCharacters.ClearAsync();
+                await _lstCharacters.ClearAsync(token);
                 if (lstCharacters != null)
-                    await _lstCharacters.AddRangeAsync(lstCharacters);
+                    await _lstCharacters.AddRangeAsync(lstCharacters, token);
                 foreach (Character objCharacter in _lstCharacters)
                 {
                     objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;

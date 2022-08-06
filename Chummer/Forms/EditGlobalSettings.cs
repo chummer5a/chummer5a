@@ -56,7 +56,7 @@ namespace Chummer
 
         #region Form Events
 
-        public EditGlobalSettings(string strActiveTab = "")
+        public EditGlobalSettings(string strActiveTab = "", CancellationToken token = default)
         {
             InitializeComponent();
 #if !DEBUG
@@ -64,8 +64,8 @@ namespace Chummer
             // Remove this line if cmdUploadPastebin_Click has some functionality if DEBUG is not enabled or if tabPage3 gets some other control that can be used if DEBUG is not enabled
             tabOptions.TabPages.Remove(tabGitHubIssues);
 #endif
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
+            this.UpdateLightDarkMode(token: token);
+            this.TranslateWinForm(token: token);
 
             _setCustomDataDirectoryInfos = new HashSet<CustomDataDirectoryInfo>(GlobalSettings.CustomDataDirectoryInfos);
             _dicSourcebookInfos = new Dictionary<string, SourcebookInfo>(GlobalSettings.SourcebookInfos);
@@ -936,8 +936,8 @@ namespace Chummer
                 string strNewFileName;
                 using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog(), token: token))
                 {
-                    dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Pdf") + '|' +
-                                         await LanguageManager.GetStringAsync("DialogFilter_All");
+                    dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Pdf", token: token) + '|' +
+                                         await LanguageManager.GetStringAsync("DialogFilter_All", token: token);
                     if (!string.IsNullOrEmpty(txtPDFLocation.Text) && File.Exists(txtPDFLocation.Text))
                     {
                         dlgOpenFile.InitialDirectory = Path.GetDirectoryName(txtPDFLocation.Text);
@@ -960,10 +960,10 @@ namespace Chummer
                     Program.ShowMessageBox(this, string.Format(
                                                await LanguageManager.GetStringAsync(
                                                    "Message_Options_FileIsNotPDF",
-                                                   _strSelectedLanguage), Path.GetFileName(strNewFileName)),
+                                                   _strSelectedLanguage, token: token), Path.GetFileName(strNewFileName)),
                                            await LanguageManager.GetStringAsync(
                                                "MessageTitle_Options_FileIsNotPDF",
-                                               _strSelectedLanguage), MessageBoxButtons.OK,
+                                               _strSelectedLanguage, token: token), MessageBoxButtons.OK,
                                            MessageBoxIcon.Error);
                     return;
                 }
@@ -986,8 +986,8 @@ namespace Chummer
             {
                 using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog(), token))
                 {
-                    dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Exe") + '|' +
-                                         await LanguageManager.GetStringAsync("DialogFilter_All");
+                    dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Exe", token: token) + '|' +
+                                         await LanguageManager.GetStringAsync("DialogFilter_All", token: token);
                     string strPdfAppPath = await txtPDFAppPath.DoThreadSafeFuncAsync(x => x.Text, token);
                     if (!string.IsNullOrEmpty(strPdfAppPath) && File.Exists(strPdfAppPath))
                     {
@@ -1268,16 +1268,18 @@ namespace Chummer
                 GlobalSettings.CustomDateFormat = await txtDateFormat.DoThreadSafeFuncAsync(x => x.Text, token);
                 GlobalSettings.CustomTimeFormat = await txtTimeFormat.DoThreadSafeFuncAsync(x => x.Text, token);
             }
-
+            token.ThrowIfCancellationRequested();
             GlobalSettings.CustomDataDirectoryInfos.Clear();
+            token.ThrowIfCancellationRequested();
             foreach (CustomDataDirectoryInfo objInfo in _setCustomDataDirectoryInfos)
                 GlobalSettings.CustomDataDirectoryInfos.Add(objInfo);
-            await XmlManager.RebuildDataDirectoryInfoAsync(GlobalSettings.CustomDataDirectoryInfos);
+            await XmlManager.RebuildDataDirectoryInfoAsync(GlobalSettings.CustomDataDirectoryInfos, token);
             IAsyncDisposable objLocker = await GlobalSettings.SourcebookInfos.LockObject.EnterWriteLockAsync(token);
             try
             {
                 token.ThrowIfCancellationRequested();
                 await GlobalSettings.SourcebookInfos.ClearAsync(token);
+                token.ThrowIfCancellationRequested();
                 foreach (SourcebookInfo objInfo in _dicSourcebookInfos.Values)
                     await GlobalSettings.SourcebookInfos.AddAsync(objInfo.Code, objInfo, token);
             }
@@ -1311,7 +1313,7 @@ namespace Chummer
                         string strName = kvpLoopCharacterOptions.Value.Name;
                         if (strName.IsGuid() || (strName.StartsWith('{') && strName.EndsWith('}')))
                             strName = await LanguageManager.GetStringAsync(strName.TrimStartOnce('{').TrimEndOnce('}'),
-                                                                           _strSelectedLanguage);
+                                                                           _strSelectedLanguage, token: token);
                         lstCharacterSettings.Add(new ListItem(strId, strName));
                     }
                 }
@@ -1320,7 +1322,7 @@ namespace Chummer
 
                 string strOldSelectedDefaultCharacterSetting = await cboDefaultCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
                                                                ?? GlobalSettings.DefaultCharacterSetting;
-                
+
                 await cboDefaultCharacterSetting.PopulateWithListItemsAsync(lstCharacterSettings, token);
                 if (!string.IsNullOrEmpty(strOldSelectedDefaultCharacterSetting))
                 {
@@ -1334,7 +1336,7 @@ namespace Chummer
 
                 string strOldSelectedDefaultMasterIndexSetting = await cboDefaultMasterIndexSetting.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
                                                                  ?? GlobalSettings.DefaultMasterIndexSetting;
-                
+
                 await cboDefaultMasterIndexSetting.PopulateWithListItemsAsync(lstCharacterSettings, token);
                 if (!string.IsNullOrEmpty(strOldSelectedDefaultMasterIndexSetting))
                 {
@@ -1355,13 +1357,13 @@ namespace Chummer
                                                            out List<ListItem> lstMugshotCompressionOptions))
             {
                 lstMugshotCompressionOptions.Add(
-                    new ListItem("png", await LanguageManager.GetStringAsync("String_Lossless_Compression_Option")));
+                    new ListItem("png", await LanguageManager.GetStringAsync("String_Lossless_Compression_Option", token: token)));
                 lstMugshotCompressionOptions.Add(new ListItem("jpeg_automatic",
                                                               await LanguageManager.GetStringAsync(
-                                                                  "String_Lossy_Automatic_Compression_Option")));
+                                                                  "String_Lossy_Automatic_Compression_Option", token: token)));
                 lstMugshotCompressionOptions.Add(new ListItem("jpeg_manual",
                                                               await LanguageManager.GetStringAsync(
-                                                                  "String_Lossy_Manual_Compression_Option")));
+                                                                  "String_Lossy_Manual_Compression_Option", token: token)));
 
                 string strOldSelected = await cboMugshotCompression.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
 
@@ -1385,7 +1387,7 @@ namespace Chummer
 
                     await nudMugshotCompressionQuality.DoThreadSafeAsync(x => x.ValueAsInt = intQuality, token);
                 }
-                
+
                 await cboMugshotCompression.PopulateWithListItemsAsync(lstMugshotCompressionOptions, token);
                 if (!string.IsNullOrEmpty(strOldSelected))
                 {
@@ -1447,7 +1449,7 @@ namespace Chummer
             string strOldSelected
                 = await cboUseLoggingApplicationInsights.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
                   ?? GlobalSettings.UseLoggingApplicationInsights.ToString();
-            
+
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstUseAIOptions))
             {
@@ -1460,9 +1462,9 @@ namespace Chummer
                     lstUseAIOptions.Add(new ListItem(
                                             eOption,
                                             await LanguageManager.GetStringAsync("String_ApplicationInsights_" + eOption,
-                                                _strSelectedLanguage)));
+                                                _strSelectedLanguage, token: token)));
                 }
-                
+
                 await cboUseLoggingApplicationInsights.PopulateWithListItemsAsync(lstUseAIOptions, token);
                 await cboUseLoggingApplicationInsights.DoThreadSafeAsync(x =>
                 {
@@ -1478,7 +1480,7 @@ namespace Chummer
         {
             string strOldSelected = await cboColorMode.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
                                     ?? GlobalSettings.ColorModeSetting.ToString();
-            
+
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstColorModes))
             {
@@ -1486,9 +1488,9 @@ namespace Chummer
                 {
                     lstColorModes.Add(new ListItem(eLoopColorMode,
                                                    await LanguageManager.GetStringAsync(
-                                                       "String_" + eLoopColorMode, _strSelectedLanguage)));
+                                                       "String_" + eLoopColorMode, _strSelectedLanguage, token: token)));
                 }
-                
+
                 await cboColorMode.PopulateWithListItemsAsync(lstColorModes, token);
                 await cboColorMode.DoThreadSafeAsync(x =>
                 {
@@ -1504,7 +1506,7 @@ namespace Chummer
         {
             string strOldSelected = await cboDpiScalingMethod.DoThreadSafeFuncAsync(
                 x => x.SelectedValue?.ToString() ?? GlobalSettings.DpiScalingMethodSetting.ToString(), token);
-            
+
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstDpiScalingMethods))
             {
@@ -1530,9 +1532,9 @@ namespace Chummer
                     lstDpiScalingMethods.Add(new ListItem(eLoopDpiScalingMethod,
                                                           await LanguageManager.GetStringAsync(
                                                               "String_" + eLoopDpiScalingMethod,
-                                                              _strSelectedLanguage)));
+                                                              _strSelectedLanguage, token: token)));
                 }
-                
+
                 await cboDpiScalingMethod.PopulateWithListItemsAsync(lstDpiScalingMethods, token);
                 await cboDpiScalingMethod.DoThreadSafeAsync(x =>
                 {
@@ -1550,7 +1552,7 @@ namespace Chummer
             await cboUseLoggingApplicationInsights.SetToolTipAsync(string.Format(_objSelectedCultureInfo,
                                                                              await LanguageManager.GetStringAsync(
                                                                                  "Tip_Options_TelemetryId",
-                                                                                 _strSelectedLanguage),
+                                                                                 _strSelectedLanguage, token: token),
                                                                              Properties.Settings.Default.UploadClientId
                                                                                  .ToString(
                                                                                      "D",
@@ -1700,12 +1702,12 @@ namespace Chummer
                 {
                     strOldSelected = string.Empty;
                 }
-                 
+
                 // Strip away the language prefix
                 int intPos = strOldSelected.LastIndexOf(Path.DirectorySeparatorChar);
                 if (intPos != -1)
                     strOldSelected = strOldSelected.Substring(intPos + 1);
-                
+
                 await cboXSLT.PopulateWithListItemsAsync(lstFiles, token);
                 if (!string.IsNullOrEmpty(strOldSelected))
                 {
@@ -1907,7 +1909,7 @@ namespace Chummer
             }
         }
 
-        private async Task<List<SourcebookInfo>> ScanFilesForPDFTexts(IEnumerable<string> lstFiles, XPathNodeIterator matches, LoadingBar frmProgressBar)
+        private async Task<List<SourcebookInfo>> ScanFilesForPDFTexts(IEnumerable<string> lstFiles, XPathNodeIterator matches, LoadingBar frmProgressBar, CancellationToken token = default)
         {
             // LockingDictionary makes sure we don't pick out multiple files for the same sourcebook
             LockingDictionary<string, SourcebookInfo>
@@ -1926,10 +1928,10 @@ namespace Chummer
                     {
                         SourcebookInfo info = await tskLoop;
                         // ReSharper disable once AccessToDisposedClosure
-                        if (info == null || await dicResults.ContainsKeyAsync(info.Code))
+                        if (info == null || await dicResults.ContainsKeyAsync(info.Code, token))
                             continue;
                         // ReSharper disable once AccessToDisposedClosure
-                        await dicResults.TryAddAsync(info.Code, info);
+                        await dicResults.TryAddAsync(info.Code, info, token);
                     }
 
                     intCounter = 0;
@@ -1941,17 +1943,17 @@ namespace Chummer
                 {
                     SourcebookInfo info = await tskLoop;
                     // ReSharper disable once AccessToDisposedClosure
-                    if (info == null || await dicResults.ContainsKeyAsync(info.Code))
+                    if (info == null || await dicResults.ContainsKeyAsync(info.Code, token))
                         continue;
                     // ReSharper disable once AccessToDisposedClosure
-                    await dicResults.TryAddAsync(info.Code, info);
+                    await dicResults.TryAddAsync(info.Code, info, token);
                 }
 
                 async Task<SourcebookInfo> GetSourcebookInfo(string strBookFile)
                 {
                     FileInfo fileInfo = new FileInfo(strBookFile);
-                    await frmProgressBar.PerformStepAsync(fileInfo.Name, LoadingBar.ProgressBarTextPatterns.Scanning);
-                    return await ScanPDFForMatchingText(fileInfo, matches);
+                    await frmProgressBar.PerformStepAsync(fileInfo.Name, LoadingBar.ProgressBarTextPatterns.Scanning, token);
+                    return await ScanPDFForMatchingText(fileInfo, matches, token);
                 }
 
                 foreach (KeyValuePair<string, SourcebookInfo> kvpInfo in dicResults)
@@ -1965,17 +1967,19 @@ namespace Chummer
             }
         }
 
-        private static async ValueTask<SourcebookInfo> ScanPDFForMatchingText(FileSystemInfo fileInfo, XPathNodeIterator xmlMatches)
+        private static async ValueTask<SourcebookInfo> ScanPDFForMatchingText(FileSystemInfo fileInfo, XPathNodeIterator xmlMatches, CancellationToken token = default)
         {
             //Search the first 10 pages for all the text
             for (int intPage = 1; intPage <= 10; intPage++)
             {
+                token.ThrowIfCancellationRequested();
                 string text = GetPageTextFromPDF(fileInfo, intPage);
                 if (string.IsNullOrEmpty(text))
                     continue;
 
                 foreach (XPathNavigator xmlMatch in xmlMatches)
                 {
+                    token.ThrowIfCancellationRequested();
                     string strLanguageText = (await xmlMatch.SelectSingleNodeAndCacheExpressionAsync("text"))?.Value ?? string.Empty;
                     if (!text.Contains(strLanguageText))
                         continue;
@@ -2021,6 +2025,8 @@ namespace Chummer
                         return null;
                     }
 
+                    token.ThrowIfCancellationRequested();
+
                     List<string> lstStringFromPdf = new List<string>(30);
                     // Loop through each page, starting at the listed page + offset.
                     if (intPage >= objPdfDocument.GetNumberOfPages())
@@ -2037,11 +2043,17 @@ namespace Chummer
                                                       new SimpleTextExtractionStrategy())
                                                   .CleanStylisticLigatures().NormalizeWhiteSpace()
                                                   .NormalizeLineEndings().CleanOfInvalidUnicodeChars();
-
+                        token.ThrowIfCancellationRequested();
                         // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
                         lstStringFromPdf.AddRange(
                             strPageText.SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
                                        .Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
+                        token.ThrowIfCancellationRequested();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        throw;
+                        // simply rethrow this
                     }
                     // Need to catch all sorts of exceptions here just in case weird stuff happens in the scanner
                     catch (Exception e)
@@ -2056,6 +2068,7 @@ namespace Chummer
                     {
                         for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
                         {
+                            token.ThrowIfCancellationRequested();
                             string strCurrentLine = lstStringFromPdf[i];
                             sbdAllLines.AppendLine(strCurrentLine);
                         }

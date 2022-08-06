@@ -1105,12 +1105,12 @@ namespace Chummer
                     if (blnLoadAutosave && ShowMessageBox(
                         string.Format(GlobalSettings.CultureInfo,
                                       // ReSharper disable once MethodHasAsyncOverload
-                                      blnSync ? LanguageManager.GetString("Message_AutosaveFound") : await LanguageManager.GetStringAsync("Message_AutosaveFound"),
+                                      blnSync ? LanguageManager.GetString("Message_AutosaveFound", token: token) : await LanguageManager.GetStringAsync("Message_AutosaveFound", token: token),
                             Path.GetFileName(strFileName),
                             File.GetLastWriteTimeUtc(objCharacter.FileName).ToLocalTime(),
                             File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
                         // ReSharper disable once MethodHasAsyncOverload
-                        blnSync ? LanguageManager.GetString("MessageTitle_AutosaveFound") : await LanguageManager.GetStringAsync("MessageTitle_AutosaveFound"),
+                        blnSync ? LanguageManager.GetString("MessageTitle_AutosaveFound", token: token) : await LanguageManager.GetStringAsync("MessageTitle_AutosaveFound", token: token),
                         MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     {
                         blnLoadAutosave = false;
@@ -1159,13 +1159,13 @@ namespace Chummer
                 ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
                         blnSync
                             // ReSharper disable once MethodHasAsyncOverload
-                            ? LanguageManager.GetString("Message_FileNotFound")
-                            : await LanguageManager.GetStringAsync("Message_FileNotFound"),
+                            ? LanguageManager.GetString("Message_FileNotFound", token: token)
+                            : await LanguageManager.GetStringAsync("Message_FileNotFound", token: token),
                         strFileName),
                     blnSync
                         // ReSharper disable once MethodHasAsyncOverload
-                        ? LanguageManager.GetString("MessageTitle_FileNotFound")
-                        : await LanguageManager.GetStringAsync("MessageTitle_FileNotFound"),
+                        ? LanguageManager.GetString("MessageTitle_FileNotFound", token: token)
+                        : await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token),
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return objCharacter;

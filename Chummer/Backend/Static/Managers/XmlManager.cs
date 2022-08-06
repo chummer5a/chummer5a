@@ -42,21 +42,46 @@ namespace Chummer
             /// <summary>
             /// Whether or not the XML content has been successfully checked for duplicate guids.
             /// </summary>
-            public bool DuplicatesChecked
+            public bool GetDuplicatesChecked(CancellationToken token = default)
             {
-                get
+                using (EnterReadLock.Enter(LockObject, token))
+                    return _blnDuplicatesChecked;
+            }
+
+            public void SetDuplicatesChecked(bool blnNewValue, CancellationToken token = default)
+            {
+                using (EnterReadLock.Enter(LockObject, token))
                 {
-                    using (EnterReadLock.Enter(LockObject))
-                        return _blnDuplicatesChecked;
+                    if (_blnDuplicatesChecked == blnNewValue)
+                        return;
+                    using (LockObject.EnterWriteLock(token))
+                        _blnDuplicatesChecked = blnNewValue;
                 }
-                set
+            }
+
+            /// <summary>
+            /// Whether or not the XML content has been successfully checked for duplicate guids.
+            /// </summary>
+            public async ValueTask<bool> GetDuplicatesCheckedAsync(CancellationToken token = default)
+            {
+                using (await EnterReadLock.EnterAsync(LockObject, token))
+                    return _blnDuplicatesChecked;
+            }
+
+            public async ValueTask SetDuplicatesCheckedAsync(bool blnNewValue, CancellationToken token = default)
+            {
+                using (await EnterReadLock.EnterAsync(LockObject, token))
                 {
-                    using (EnterReadLock.Enter(LockObject))
+                    if (_blnDuplicatesChecked == blnNewValue)
+                        return;
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+                    try
                     {
-                        if (_blnDuplicatesChecked == value)
-                            return;
-                        using (LockObject.EnterWriteLock())
-                            _blnDuplicatesChecked = value;
+                        _blnDuplicatesChecked = blnNewValue;
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync();
                     }
                 }
             }
@@ -222,7 +247,7 @@ namespace Chummer
             /// <inheritdoc />
             public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
         }
-        
+
         private static readonly LockingDictionary<KeyArray<string>, XmlReference> s_DicXmlDocuments =
             new LockingDictionary<KeyArray<string>, XmlReference>(); // Key is language + array of all file paths for the complete combination of data used
         private static readonly AsyncFriendlyReaderWriterLock s_objDataDirectoriesLock = new AsyncFriendlyReaderWriterLock();
@@ -250,17 +275,22 @@ namespace Chummer
             }
         }
 
-        public static void RebuildDataDirectoryInfo(IEnumerable<CustomDataDirectoryInfo> lstCustomDirectories)
+        public static void RebuildDataDirectoryInfo(IEnumerable<CustomDataDirectoryInfo> lstCustomDirectories, CancellationToken token = default)
         {
-            using (s_objDataDirectoriesLock.EnterWriteLock())
+            using (s_objDataDirectoriesLock.EnterWriteLock(token))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (XmlReference objReference in s_DicXmlDocuments.Values)
                     objReference.Dispose();
+                token.ThrowIfCancellationRequested();
                 s_DicXmlDocuments.Clear();
+                token.ThrowIfCancellationRequested();
                 s_SetDataDirectories.Clear();
+                token.ThrowIfCancellationRequested();
                 s_SetDataDirectories.Add(Utils.GetDataFolderPath);
                 foreach (CustomDataDirectoryInfo objCustomDataDirectory in lstCustomDirectories)
                 {
+                    token.ThrowIfCancellationRequested();
                     s_SetDataDirectories.Add(objCustomDataDirectory.DirectoryPath);
                 }
 
@@ -268,6 +298,7 @@ namespace Chummer
                 {
                     foreach (string strFileName in Utils.BasicDataFileNames)
                     {
+                        token.ThrowIfCancellationRequested();
                         if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
                         {
                             setLoop = new HashSet<string>();
@@ -275,24 +306,27 @@ namespace Chummer
                         }
                         else
                             setLoop.Clear();
-
-                        setLoop.AddRange(CompileRelevantCustomDataPaths(strFileName, s_SetDataDirectories));
+                        token.ThrowIfCancellationRequested();
+                        setLoop.AddRange(CompileRelevantCustomDataPaths(strFileName, s_SetDataDirectories, token));
                     }
                 }
             }
         }
 
-        public static async ValueTask RebuildDataDirectoryInfoAsync(IEnumerable<CustomDataDirectoryInfo> lstCustomDirectories)
+        public static async ValueTask RebuildDataDirectoryInfoAsync(IEnumerable<CustomDataDirectoryInfo> lstCustomDirectories, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await s_objDataDirectoriesLock.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await s_objDataDirectoriesLock.EnterWriteLockAsync(token);
             try
             {
-                await s_DicXmlDocuments.ForEachAsync(async kvpDocument => await kvpDocument.Value.DisposeAsync());
-                await s_DicXmlDocuments.ClearAsync();
+                await s_DicXmlDocuments.ForEachAsync(async kvpDocument => await kvpDocument.Value.DisposeAsync(), token: token);
+                await s_DicXmlDocuments.ClearAsync(token);
                 s_SetDataDirectories.Clear();
+                token.ThrowIfCancellationRequested();
                 s_SetDataDirectories.Add(Utils.GetDataFolderPath);
+                token.ThrowIfCancellationRequested();
                 foreach (CustomDataDirectoryInfo objCustomDataDirectory in lstCustomDirectories)
                 {
+                    token.ThrowIfCancellationRequested();
                     s_SetDataDirectories.Add(objCustomDataDirectory.DirectoryPath);
                 }
 
@@ -300,6 +334,7 @@ namespace Chummer
                 {
                     foreach (string strFileName in Utils.BasicDataFileNames)
                     {
+                        token.ThrowIfCancellationRequested();
                         if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
                         {
                             setLoop = new HashSet<string>();
@@ -307,8 +342,8 @@ namespace Chummer
                         }
                         else
                             setLoop.Clear();
-
-                        setLoop.AddRange(CompileRelevantCustomDataPaths(strFileName, s_SetDataDirectories));
+                        token.ThrowIfCancellationRequested();
+                        setLoop.AddRange(CompileRelevantCustomDataPaths(strFileName, s_SetDataDirectories, token));
                     }
                 }
             }
@@ -376,7 +411,7 @@ namespace Chummer
                     strPath = Path.Combine(Utils.GetDataFolderPath, strFileName);
                 else
                 {
-                    strPath = FetchBaseFileFromCustomDataPaths(strFileName, lstEnabledCustomDataPaths);
+                    strPath = FetchBaseFileFromCustomDataPaths(strFileName, lstEnabledCustomDataPaths, token);
                     if (string.IsNullOrEmpty(strPath))
                     {
                         // We don't actually have such a file
@@ -393,7 +428,7 @@ namespace Chummer
                                                   .Where(x => setDirectoriesPossible.Contains(x)).ToArray();
                 else
                 {
-                    astrRelevantCustomDataPaths = CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths)
+                    astrRelevantCustomDataPaths = CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths, token)
                         .ToArray();
                     if (astrRelevantCustomDataPaths.Length > 0 && !Utils.IsDesignerMode
                                                                && !Utils.IsRunningInVisualStudio)
@@ -543,7 +578,7 @@ namespace Chummer
         /// <param name="lstEnabledCustomDataPaths">List of enabled custom data directory paths in their load order</param>
         /// <param name="strLanguage">Language in which to load the data document.</param>
         /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
-        /// <param name="token">Cancellation token to use.</param>
+        /// <param name="token">CancellationToken to use.</param>
         private static async Task<XmlDocument> LoadCoreAsync(bool blnSync, string strFileName, IReadOnlyCollection<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
         {
             bool blnFileFound = false;
@@ -581,7 +616,7 @@ namespace Chummer
                     astrRelevantCustomDataPaths = lstEnabledCustomDataPaths
                                                   .Where(x => setDirectoriesPossible.Contains(x)).ToArray();
                 else
-                    astrRelevantCustomDataPaths = CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths)
+                    astrRelevantCustomDataPaths = CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths, token)
                         .ToArray();
                 bool blnHasCustomData = astrRelevantCustomDataPaths.Length > 0;
                 List<string> lstKey = new List<string>(2 + astrRelevantCustomDataPaths.Length) {strLanguage, strPath};
@@ -652,7 +687,8 @@ namespace Chummer
                             await xmlReferenceOfReturn.DisposeAsync();
 
                             // It somehow got added in the meantime, so let's fetch it again
-                            (blnSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token);
+                            (blnSuccess, xmlReferenceOfReturn)
+                                = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token);
                             if (blnSuccess)
                                 break;
                             // We're iterating the loop because we failed to get the reference, so we need to re-allocate our reference because it was in an out-argument above
@@ -746,7 +782,7 @@ namespace Chummer
                         {
                             foreach (string strLoopPath in astrRelevantCustomDataPaths)
                             {
-                                DoProcessCustomDataFiles(xmlScratchpad, xmlReturn, strLoopPath, strFileName);
+                                DoProcessCustomDataFiles(xmlScratchpad, xmlReturn, strLoopPath, strFileName, token: token);
                             }
                         }
 
@@ -766,7 +802,7 @@ namespace Chummer
                                                                              .Select("/chummer/chummer[@file = "
                                                                                  + strFileName.CleanXPath() + "]/*"))
                                 {
-                                    AppendTranslations(xmlReturn, objType, xmlBaseChummerNode);
+                                    AppendTranslations(xmlReturn, objType, xmlBaseChummerNode, token);
                                 }
                             }
                         }
@@ -822,15 +858,22 @@ namespace Chummer
                     strPath = Path.Combine(Utils.GetStartupPath, "livecustomdata");
                     if (Directory.Exists(strPath))
                     {
-                        blnHasLiveCustomData = DoProcessCustomDataFiles(xmlScratchpad, xmlReturn, strPath, strFileName);
+                        blnHasLiveCustomData = DoProcessCustomDataFiles(xmlScratchpad, xmlReturn, strPath, strFileName, token: token);
                     }
                 }
 
                 // Check for non-unique guids and non-guid formatted ids in the loaded XML file. Ignore improvements.xml since the ids are used in a different way.
-                if (!xmlReferenceOfReturn.DuplicatesChecked || blnHasLiveCustomData)
+                if (blnHasLiveCustomData || (blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? !xmlReferenceOfReturn.GetDuplicatesChecked(token)
+                        : !await xmlReferenceOfReturn.GetDuplicatesCheckedAsync(token)))
                 {
-                    xmlReferenceOfReturn.DuplicatesChecked
-                        = true; // Set early to make sure work isn't done multiple times in case of multiple threads
+                    // Set early to make sure work isn't done multiple times in case of multiple threads
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        xmlReferenceOfReturn.SetDuplicatesChecked(true, token);
+                    else
+                        await xmlReferenceOfReturn.SetDuplicatesCheckedAsync(true, token);
                     using (XmlNodeList xmlNodeList = xmlReturn.SelectNodes("/chummer/*"))
                     {
                         if (xmlNodeList?.Count > 0)
@@ -840,7 +883,7 @@ namespace Chummer
                                 if (objNode.HasChildNodes)
                                 {
                                     // Parsing the node into an XDocument for LINQ parsing would result in slightly slower overall code (31 samples vs. 30 samples).
-                                    CheckIdNodes(objNode, strFileName);
+                                    CheckIdNodes(objNode, strFileName, token);
                                 }
                             }
                         }
@@ -851,8 +894,9 @@ namespace Chummer
             }
         }
 
-        private static void CheckIdNodes(XmlNode xmlParentNode, string strFileName)
+        private static void CheckIdNodes(XmlNode xmlParentNode, string strFileName, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (Utils.IsUnitTest)
                 return;
             List<string> lstItemsWithMalformedIDs = new List<string>(1);
@@ -861,7 +905,7 @@ namespace Chummer
             {
                 // Key is ID, Value is a list of the names of all items with that ID.
                 Dictionary<string, IList<string>> dicItemsWithIDs = new Dictionary<string, IList<string>>(1);
-                CheckIdNode(xmlParentNode, setDuplicateIDs, lstItemsWithMalformedIDs, dicItemsWithIDs);
+                CheckIdNode(xmlParentNode, setDuplicateIDs, lstItemsWithMalformedIDs, dicItemsWithIDs, token);
 
                 if (setDuplicateIDs.Count > 0)
                 {
@@ -872,6 +916,7 @@ namespace Chummer
                                                                     .Where(x => setDuplicateIDs.Contains(x.Key))
                                                                     .Select(x => x.Value))
                         {
+                            token.ThrowIfCancellationRequested();
                             if (sbdDuplicatesNames.Length != 0)
                                 sbdDuplicatesNames.AppendLine();
                             sbdDuplicatesNames.AppendJoin(Environment.NewLine, lstDuplicateNames);
@@ -879,7 +924,7 @@ namespace Chummer
 
                         Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo
                             , LanguageManager.GetString(
-                                "Message_DuplicateGuidWarning")
+                                "Message_DuplicateGuidWarning", token: token)
                             , setDuplicateIDs.Count
                             , strFileName
                             , sbdDuplicatesNames.ToString()));
@@ -890,15 +935,16 @@ namespace Chummer
             if (lstItemsWithMalformedIDs.Count > 0)
             {
                 Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo
-                    , LanguageManager.GetString("Message_NonGuidIdWarning")
+                    , LanguageManager.GetString("Message_NonGuidIdWarning", token: token)
                     , lstItemsWithMalformedIDs.Count
                     , strFileName
                     , string.Join(Environment.NewLine, lstItemsWithMalformedIDs)));
             }
         }
 
-        private static void CheckIdNode(XmlNode xmlParentNode, ICollection<string> setDuplicateIDs, ICollection<string> lstItemsWithMalformedIDs, IDictionary<string, IList<string>> dicItemsWithIDs)
+        private static void CheckIdNode(XmlNode xmlParentNode, ICollection<string> setDuplicateIDs, ICollection<string> lstItemsWithMalformedIDs, IDictionary<string, IList<string>> dicItemsWithIDs, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (XmlNodeList xmlChildNodeList = xmlParentNode.SelectNodes("*"))
             {
                 if (!(xmlChildNodeList?.Count > 0))
@@ -906,6 +952,7 @@ namespace Chummer
 
                 foreach (XmlNode xmlLoopNode in xmlChildNodeList)
                 {
+                    token.ThrowIfCancellationRequested();
                     string strId = xmlLoopNode["id"]?.InnerText;
                     if (!string.IsNullOrEmpty(strId))
                     {
@@ -934,15 +981,17 @@ namespace Chummer
                     }
 
                     // Perform recursion so that nested elements that also have ids are also checked (e.g. Metavariants)
-                    CheckIdNode(xmlLoopNode, setDuplicateIDs, lstItemsWithMalformedIDs, dicItemsWithIDs);
+                    CheckIdNode(xmlLoopNode, setDuplicateIDs, lstItemsWithMalformedIDs, dicItemsWithIDs, token);
                 }
             }
         }
 
-        private static void AppendTranslations(XmlDocument xmlDataDocument, XPathNavigator xmlTranslationListParentNode, XmlNode xmlDataParentNode)
+        private static void AppendTranslations(XmlDocument xmlDataDocument, XPathNavigator xmlTranslationListParentNode, XmlNode xmlDataParentNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             foreach (XPathNavigator objChild in xmlTranslationListParentNode.SelectAndCacheExpression("*"))
             {
+                token.ThrowIfCancellationRequested();
                 XmlNode xmlItem = null;
                 string strXPathPrefix = xmlTranslationListParentNode.Name + '/' + objChild.Name + '[';
                 string strChildName = objChild.SelectSingleNodeAndCacheExpression("id")?.Value;
@@ -1004,27 +1053,27 @@ namespace Chummer
                     XPathNavigator xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("specs");
                     if (xmlSubItemsNode != null)
                     {
-                        AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem);
+                        AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem, token);
                     }
                     xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("metavariants");
                     if (xmlSubItemsNode != null)
                     {
-                        AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem);
+                        AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem, token);
                     }
                     xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("choices");
                     if (xmlSubItemsNode != null)
                     {
-                        AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem);
+                        AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem, token);
                     }
                     xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("talents");
                     if (xmlSubItemsNode != null)
                     {
-                        AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem);
+                        AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem, token);
                     }
                     xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("versions");
                     if (xmlSubItemsNode != null)
                     {
-                        AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem);
+                        AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem, token);
                     }
                 }
                 else
@@ -1046,15 +1095,19 @@ namespace Chummer
         /// </summary>
         /// <param name="strFileName">Name of the file to fetch.</param>
         /// <param name="lstPaths">Paths to check.</param>
+        /// <param name="token">CancellationToken to use.</param>
         /// <returns>The first full path containing <paramref name="strFileName"/> if one is found, string.Empty otherwise.</returns>
-        private static string FetchBaseFileFromCustomDataPaths(string strFileName, IEnumerable<string> lstPaths)
+        private static string FetchBaseFileFromCustomDataPaths(string strFileName, IEnumerable<string> lstPaths, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (strFileName != "improvements.xml" && lstPaths != null)
             {
                 foreach (string strLoopPath in lstPaths)
                 {
+                    token.ThrowIfCancellationRequested();
                     foreach (string strLoop in Directory.EnumerateFiles(strLoopPath, strFileName, SearchOption.AllDirectories))
                     {
+                        token.ThrowIfCancellationRequested();
                         if (!string.IsNullOrEmpty(strLoop))
                             return strLoop;
                     }
@@ -1068,18 +1121,22 @@ namespace Chummer
         /// </summary>
         /// <param name="strFileName">Name of the file that would be modified by custom data files.</param>
         /// <param name="lstPaths">Paths to check for custom data files relevant to <paramref name="strFileName"/>.</param>
+        /// <param name="token">CancellationToken to use.</param>
         /// <returns>A list of paths with <paramref name="lstPaths"/> that is relevant to <paramref name="strFileName"/>, in the same order that they are in <paramref name="lstPaths"/>.</returns>
-        private static IEnumerable<string> CompileRelevantCustomDataPaths(string strFileName, IEnumerable<string> lstPaths)
+        private static IEnumerable<string> CompileRelevantCustomDataPaths(string strFileName, IEnumerable<string> lstPaths, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (strFileName == "improvements.xml" || lstPaths == null)
                 yield break;
             foreach (string strLoopPath in lstPaths)
             {
+                token.ThrowIfCancellationRequested();
                 if (!Directory.Exists(strLoopPath))
                     continue;
                 foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName,
                                                                         SearchOption.AllDirectories))
                 {
+                    token.ThrowIfCancellationRequested();
                     string strInnerFileName = Path.GetFileName(strLoopFile);
                     if (strInnerFileName.StartsWith("override_") || strInnerFileName.StartsWith("custom_")
                                                                  || strInnerFileName.StartsWith("amend_"))
@@ -1091,13 +1148,15 @@ namespace Chummer
             }
         }
 
-        private static bool DoProcessCustomDataFiles(XmlDocument xmlFile, XmlDocument xmlDataDoc, string strLoopPath, string strFileName, SearchOption eSearchOption = SearchOption.AllDirectories)
+        private static bool DoProcessCustomDataFiles(XmlDocument xmlFile, XmlDocument xmlDataDoc, string strLoopPath, string strFileName, SearchOption eSearchOption = SearchOption.AllDirectories, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             bool blnReturn = false;
             XmlElement objDocElement = xmlDataDoc.DocumentElement;
             List<string> lstPossibleCustomFiles = new List<string>(Utils.BasicDataFileNames.Count);
             foreach (string strFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName, eSearchOption))
             {
+                token.ThrowIfCancellationRequested();
                 string strLoopFileName = Path.GetFileName(strFile);
                 if (!strLoopFileName.StartsWith("override_")
                     && !strLoopFileName.StartsWith("custom_")
@@ -1107,6 +1166,7 @@ namespace Chummer
             }
             foreach (string strFile in lstPossibleCustomFiles)
             {
+                token.ThrowIfCancellationRequested();
                 if (!Path.GetFileName(strFile).StartsWith("override_"))
                     continue;
                 try
@@ -1121,6 +1181,7 @@ namespace Chummer
                 {
                     continue;
                 }
+                token.ThrowIfCancellationRequested();
 
                 using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
                 {
@@ -1130,6 +1191,7 @@ namespace Chummer
                         {
                             foreach (XmlNode objType in objNode.ChildNodes)
                             {
+                                token.ThrowIfCancellationRequested();
                                 string strFilter;
                                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdFilter))
@@ -1154,6 +1216,7 @@ namespace Chummer
                                         {
                                             foreach (XmlNode objExtraId in objAmendingNodeExtraIds)
                                             {
+                                                token.ThrowIfCancellationRequested();
                                                 if (sbdFilter.Length > 0)
                                                     sbdFilter.Append(" and ");
                                                 sbdFilter.Append(objExtraId.Name).Append(" = ")
@@ -1184,6 +1247,7 @@ namespace Chummer
             // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
             foreach (string strFile in lstPossibleCustomFiles)
             {
+                token.ThrowIfCancellationRequested();
                 if (!Path.GetFileName(strFile).StartsWith("custom_"))
                     continue;
                 try
@@ -1198,6 +1262,7 @@ namespace Chummer
                 {
                     continue;
                 }
+                token.ThrowIfCancellationRequested();
 
                 using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
                 {
@@ -1205,10 +1270,12 @@ namespace Chummer
                     {
                         foreach (XmlNode objNode in xmlNodeList)
                         {
+                            token.ThrowIfCancellationRequested();
                             // Look for any items with a duplicate name and pluck them from the node so we don't end up with multiple items with the same name.
                             List<XmlNode> lstDelete = new List<XmlNode>(objNode.ChildNodes.Count);
                             foreach (XmlNode objChild in objNode.ChildNodes)
                             {
+                                token.ThrowIfCancellationRequested();
                                 XmlNode objParentNode = objChild.ParentNode;
                                 if (objParentNode == null)
                                     continue;
@@ -1239,6 +1306,7 @@ namespace Chummer
                                         {
                                             foreach (XmlAttribute objLoopAttribute in objParentNode.Attributes)
                                             {
+                                                token.ThrowIfCancellationRequested();
                                                 sbdParentNodeFilter
                                                     .Append('@').Append(objLoopAttribute.Name).Append(" = ")
                                                     .Append(objLoopAttribute.Value.Replace("&amp;", "&")
@@ -1262,6 +1330,7 @@ namespace Chummer
                             // Remove the offending items from the node we're about to merge in.
                             foreach (XmlNode objRemoveNode in lstDelete)
                             {
+                                token.ThrowIfCancellationRequested();
                                 objNode.RemoveChild(objRemoveNode);
                             }
 
@@ -1272,6 +1341,7 @@ namespace Chummer
                                 bool blnAllMatching = true;
                                 foreach (XmlAttribute x in xmlExistingNode.Attributes)
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     if (objNode.Attributes.GetNamedItem(x.Name)?.Value != x.Value)
                                     {
                                         blnAllMatching = false;
@@ -1294,6 +1364,7 @@ namespace Chummer
                                    */
                                     foreach (XmlNode childNode in objNode.ChildNodes)
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         xmlExistingNode.AppendChild(xmlDataDoc.ImportNode(childNode, true));
                                     }
                                 }
@@ -1313,6 +1384,7 @@ namespace Chummer
             // Load any amending data we might have, i.e. rules that only amend items instead of replacing them. Do not attempt this if we're loading the Improvements file.
             foreach (string strFile in lstPossibleCustomFiles)
             {
+                token.ThrowIfCancellationRequested();
                 if (!Path.GetFileName(strFile).StartsWith("amend_"))
                     continue;
                 try
@@ -1327,6 +1399,7 @@ namespace Chummer
                 {
                     continue;
                 }
+                token.ThrowIfCancellationRequested();
 
                 using (XmlNodeList xmlNodeList = xmlFile.SelectNodes("/chummer/*"))
                 {
@@ -1334,7 +1407,8 @@ namespace Chummer
                     {
                         foreach (XmlNode objNode in xmlNodeList)
                         {
-                            blnReturn = AmendNodeChildren(xmlDataDoc, objNode, "/chummer") || blnReturn;
+                            token.ThrowIfCancellationRequested();
+                            blnReturn = AmendNodeChildren(xmlDataDoc, objNode, "/chummer", token: token) || blnReturn;
                         }
                     }
                 }
@@ -1351,9 +1425,11 @@ namespace Chummer
         /// <param name="xmlAmendingNode">The amending (new) node.</param>
         /// <param name="strXPath">The current XPath in the document element that leads to the target node(s) where the amending node would be applied.</param>
         /// <param name="lstExtraNodesToAddIfNotFound">List of extra nodes to add (with their XPaths) if the given amending node would be added if not found, with each entry's node being the parent of the next entry's node. Needed in case of recursing into nodes that don't exist.</param>
+        /// <param name="token">CancellationToken to use.</param>
         /// <returns>True if any amends were made, False otherwise.</returns>
-        private static bool AmendNodeChildren(XmlDocument xmlDoc, XmlNode xmlAmendingNode, string strXPath, IList<Tuple<XmlNode, string>> lstExtraNodesToAddIfNotFound = null)
+        private static bool AmendNodeChildren(XmlDocument xmlDoc, XmlNode xmlAmendingNode, string strXPath, IList<Tuple<XmlNode, string>> lstExtraNodesToAddIfNotFound = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             bool blnReturn = false;
             string strFilter = string.Empty;
             string strOperation = string.Empty;
@@ -1403,6 +1479,7 @@ namespace Chummer
                                          .Append(objAmendingNodeId.InnerText.Replace("&amp;", "&").CleanXPath());
                             }
                         }
+                        token.ThrowIfCancellationRequested();
 
                         // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
                         using (XmlNodeList xmlChildrenWithIds
@@ -1412,6 +1489,7 @@ namespace Chummer
                             {
                                 foreach (XmlNode objExtraId in xmlChildrenWithIds)
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     if (sbdFilter.Length > 0)
                                         sbdFilter.Append(" and ");
                                     sbdFilter.Append(objExtraId.Name).Append(" = ")
@@ -1425,6 +1503,8 @@ namespace Chummer
                         strFilter = '[' + sbdFilter.ToString() + ']';
                 }
 
+                token.ThrowIfCancellationRequested();
+
                 // Get info on whether this node should be appended if no target node is found
                 XmlNode objAddIfNotFound = objAmendingNodeAttribs.RemoveNamedItem("addifnotfound");
                 if (objAddIfNotFound != null)
@@ -1433,6 +1513,8 @@ namespace Chummer
                     blnAddIfNotFound = objAddIfNotFound.InnerText == bool.TrueString;
                 }
 
+                token.ThrowIfCancellationRequested();
+
                 // Gets the RegEx pattern for if the node is meant to be a RegEx replace operation
                 XmlNode objRegExPattern = objAmendingNodeAttribs.RemoveNamedItem("regexpattern");
                 if (objRegExPattern != null)
@@ -1440,6 +1522,8 @@ namespace Chummer
                     strRegexPattern = objRegExPattern.InnerText;
                 }
             }
+
+            token.ThrowIfCancellationRequested();
 
             // AddNode operation will always add this node in its current state.
             // This is almost the functionality of "custom_*" (exception: if a custom item already exists, it won't be replaced), but with all the extra bells and whistles of the amend system for targeting where to add the custom item
@@ -1451,7 +1535,10 @@ namespace Chummer
                     {
                         foreach (XmlNode xmlParentNode in xmlParentNodeList)
                         {
-                            xmlParentNode.AppendChild(xmlDoc.ImportNode(xmlAmendingNode, true));
+                            token.ThrowIfCancellationRequested();
+                            XmlNode xmlLoop = xmlDoc.ImportNode(xmlAmendingNode, true);
+                            token.ThrowIfCancellationRequested();
+                            xmlParentNode.AppendChild(xmlLoop);
                         }
 
                         blnReturn = true;
@@ -1462,6 +1549,8 @@ namespace Chummer
             }
 
             string strNewXPath = strXPath + '/' + xmlAmendingNode.Name + strFilter;
+
+            token.ThrowIfCancellationRequested();
 
             using (XmlNodeList objNodesToEdit = xmlDoc.SelectNodes(strNewXPath))
             {
@@ -1474,6 +1563,7 @@ namespace Chummer
                     {
                         foreach (XmlNode objChild in xmlAmendingNode.ChildNodes)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (objChild.NodeType == XmlNodeType.Element)
                             {
                                 lstElementChildren.Add(objChild);
@@ -1481,6 +1571,8 @@ namespace Chummer
                         }
                     }
                 }
+
+                token.ThrowIfCancellationRequested();
 
                 switch (strOperation)
                 {
@@ -1533,6 +1625,8 @@ namespace Chummer
                         break;
                 }
 
+                token.ThrowIfCancellationRequested();
+
                 // We found nodes to target with the amend!
                 if (objNodesToEdit?.Count > 0 || (strOperation == "recurse" && !blnAddIfNotFound))
                 {
@@ -1541,11 +1635,12 @@ namespace Chummer
                     {
                         if (lstElementChildren?.Count > 0)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (!(lstExtraNodesToAddIfNotFound?.Count > 0) && objNodesToEdit?.Count > 0)
                             {
                                 foreach (XmlNode objChild in lstElementChildren)
                                 {
-                                    blnReturn = AmendNodeChildren(xmlDoc, objChild, strNewXPath);
+                                    blnReturn = AmendNodeChildren(xmlDoc, objChild, strNewXPath, token: token);
                                 }
                             }
                             else
@@ -1558,7 +1653,7 @@ namespace Chummer
                                 foreach (XmlNode objChild in lstElementChildren)
                                 {
                                     blnReturn = AmendNodeChildren(xmlDoc, objChild, strNewXPath,
-                                        lstExtraNodesToAddIfNotFound);
+                                        lstExtraNodesToAddIfNotFound, token);
                                 }
 
                                 // Remove our info in case we weren't added.
@@ -1572,6 +1667,7 @@ namespace Chummer
                     {
                         foreach (XmlNode objNodeToEdit in objNodesToEdit)
                         {
+                            token.ThrowIfCancellationRequested();
                             XmlNode xmlParentNode = objNodeToEdit.ParentNode;
                             // If the old node exists and the amending node has the attribute 'amendoperation="remove"', then the old node is completely erased.
                             if (strOperation == "remove")
@@ -1587,6 +1683,7 @@ namespace Chummer
                                         {
                                             foreach (XmlNode xmlChild in xmlAmendingNode.ChildNodes)
                                             {
+                                                token.ThrowIfCancellationRequested();
                                                 XmlNodeType eChildNodeType = xmlChild.NodeType;
 
                                                 switch (eChildNodeType)
@@ -1620,6 +1717,7 @@ namespace Chummer
                                                                 foreach (XmlNode objLoopChildNode in objNodeToEdit
                                                                              .ChildNodes)
                                                                 {
+                                                                    token.ThrowIfCancellationRequested();
                                                                     if (objLoopChildNode.NodeType == eChildNodeType)
                                                                     {
                                                                         objChildToEdit = objLoopChildNode;
@@ -1638,8 +1736,11 @@ namespace Chummer
                                                     }
                                                 }
 
-                                                StripAmendAttributesRecursively(xmlChild);
-                                                objNodeToEdit.AppendChild(xmlDoc.ImportNode(xmlChild, true));
+                                                StripAmendAttributesRecursively(xmlChild, token);
+                                                token.ThrowIfCancellationRequested();
+                                                XmlNode xmlLoop = xmlDoc.ImportNode(xmlChild, true);
+                                                token.ThrowIfCancellationRequested();
+                                                objNodeToEdit.AppendChild(xmlLoop);
                                             }
                                         }
                                         else if (objNodeToEdit.HasChildNodes)
@@ -1650,9 +1751,12 @@ namespace Chummer
                                                 {
                                                     foreach (XmlNode xmlGrandparentNode in xmlGrandParentNodeList)
                                                     {
-                                                        StripAmendAttributesRecursively(xmlAmendingNode);
-                                                        xmlGrandparentNode.AppendChild(
-                                                            xmlDoc.ImportNode(xmlAmendingNode, true));
+                                                        token.ThrowIfCancellationRequested();
+                                                        StripAmendAttributesRecursively(xmlAmendingNode, token);
+                                                        token.ThrowIfCancellationRequested();
+                                                        XmlNode xmlLoop = xmlDoc.ImportNode(xmlAmendingNode, true);
+                                                        token.ThrowIfCancellationRequested();
+                                                        xmlGrandparentNode.AppendChild(xmlLoop);
                                                     }
                                                 }
                                             }
@@ -1660,15 +1764,22 @@ namespace Chummer
 
                                         break;
                                     case "replace":
-                                        StripAmendAttributesRecursively(xmlAmendingNode);
-                                        xmlParentNode?.ReplaceChild(xmlDoc.ImportNode(xmlAmendingNode, true),
-                                            objNodeToEdit);
+                                        StripAmendAttributesRecursively(xmlAmendingNode, token);
+                                        if (xmlParentNode != null)
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            XmlNode xmlLoop = xmlDoc.ImportNode(xmlAmendingNode, true);
+                                            token.ThrowIfCancellationRequested();
+                                            xmlParentNode.ReplaceChild(xmlLoop, objNodeToEdit);
+                                        }
+
                                         break;
                                     case "regexreplace":
                                         if (xmlAmendingNode.HasChildNodes)
                                         {
                                             foreach (XmlNode xmlChild in xmlAmendingNode.ChildNodes)
                                             {
+                                                token.ThrowIfCancellationRequested();
                                                 XmlNodeType eChildNodeType = xmlChild.NodeType;
 
                                                 // Text, Attributes, and CDATA are subject to the RegexReplace
@@ -1678,6 +1789,7 @@ namespace Chummer
                                                 {
                                                     foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
                                                     {
+                                                        token.ThrowIfCancellationRequested();
                                                         if (objChildToEdit.NodeType == eChildNodeType && (eChildNodeType != XmlNodeType.Attribute ||
                                                             objChildToEdit.Name == xmlChild.Name))
                                                         {
@@ -1708,6 +1820,7 @@ namespace Chummer
                                         {
                                             foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
                                             {
+                                                token.ThrowIfCancellationRequested();
                                                 if (objChildToEdit.NodeType == XmlNodeType.Text)
                                                 {
                                                     // Try-Catch just in case initial RegEx pattern validity check overlooked something
@@ -1742,12 +1855,18 @@ namespace Chummer
                             {
                                 if (xmlParentNodeList?.Count > objNodesToEdit.Count)
                                 {
-                                    StripAmendAttributesRecursively(xmlAmendingNode);
+                                    StripAmendAttributesRecursively(xmlAmendingNode, token);
                                     foreach (XmlNode xmlParentNode in xmlParentNodeList)
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         // Make sure we can't actually find any targets
                                         if (xmlParentNode.SelectSingleNode(xmlAmendingNode.Name + strFilter) == null)
-                                            xmlParentNode.AppendChild(xmlDoc.ImportNode(xmlAmendingNode, true));
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            XmlNode xmlLoop = xmlDoc.ImportNode(xmlAmendingNode, true);
+                                            token.ThrowIfCancellationRequested();
+                                            xmlParentNode.AppendChild(xmlLoop);
+                                        }
                                     }
                                 }
                             }
@@ -1767,16 +1886,21 @@ namespace Chummer
                         // List used instead of a Queue because the youngest element needs to be retrieved first if no additions were made
                         foreach ((XmlNode xmlNodeToAdd, string strXPathToAdd) in lstExtraNodesToAddIfNotFound)
                         {
+                            token.ThrowIfCancellationRequested();
                             using (XmlNodeList xmlParentNodeList = xmlDoc.SelectNodes(strXPathToAdd))
                             {
                                 if (!(xmlParentNodeList?.Count > 0))
                                     continue;
                                 foreach (XmlNode xmlParentNode in xmlParentNodeList)
                                 {
-                                    xmlParentNode.AppendChild(xmlDoc.ImportNode(xmlNodeToAdd, false));
+                                    token.ThrowIfCancellationRequested();
+                                    XmlNode xmlLoop = xmlDoc.ImportNode(xmlNodeToAdd, false);
+                                    token.ThrowIfCancellationRequested();
+                                    xmlParentNode.AppendChild(xmlLoop);
                                 }
                             }
                         }
+                        token.ThrowIfCancellationRequested();
 
                         lstExtraNodesToAddIfNotFound
                             .Clear(); // Everything in the list up to this point has been added, so now we clear the list
@@ -1786,10 +1910,13 @@ namespace Chummer
                     {
                         if (xmlParentNodeList?.Count > 0)
                         {
-                            StripAmendAttributesRecursively(xmlAmendingNode);
+                            StripAmendAttributesRecursively(xmlAmendingNode, token);
                             foreach (XmlNode xmlParentNode in xmlParentNodeList)
                             {
-                                xmlParentNode.AppendChild(xmlDoc.ImportNode(xmlAmendingNode, true));
+                                token.ThrowIfCancellationRequested();
+                                XmlNode xmlLoop = xmlDoc.ImportNode(xmlAmendingNode, true);
+                                token.ThrowIfCancellationRequested();
+                                xmlParentNode.AppendChild(xmlLoop);
                             }
 
                             blnReturn = true;
@@ -1805,8 +1932,10 @@ namespace Chummer
         /// Strips attributes that are only used by the Amend system from a node and all of its children.
         /// </summary>
         /// <param name="xmlNodeToStrip">Node on which to operate</param>
-        private static void StripAmendAttributesRecursively(XmlNode xmlNodeToStrip)
+        /// <param name="token">CancellationToken to use.</param>
+        private static void StripAmendAttributesRecursively(XmlNode xmlNodeToStrip, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             XmlAttributeCollection objAmendingNodeAttribs = xmlNodeToStrip.Attributes;
             if (objAmendingNodeAttribs?.Count > 0)
             {
@@ -1816,31 +1945,34 @@ namespace Chummer
                 objAmendingNodeAttribs.RemoveNamedItem("addifnotfound");
                 objAmendingNodeAttribs.RemoveNamedItem("regexpattern");
             }
+            token.ThrowIfCancellationRequested();
 
             if (xmlNodeToStrip.HasChildNodes)
                 foreach (XmlNode xmlChildNode in xmlNodeToStrip.ChildNodes)
-                    StripAmendAttributesRecursively(xmlChildNode);
+                    StripAmendAttributesRecursively(xmlChildNode, token);
         }
 
-        public static bool AnyXslFiles(string strLanguage, IEnumerable<Character> lstCharacters = null)
+        public static bool AnyXslFiles(string strLanguage, IEnumerable<Character> lstCharacters = null, CancellationToken token = default)
         {
-            GetXslFilesFromLocalDirectory(strLanguage, out bool blnReturn, out List<ListItem> _, lstCharacters, false, false);
+            GetXslFilesFromLocalDirectory(strLanguage, out bool blnReturn, out List<ListItem> _, lstCharacters, false, false, token);
             return blnReturn;
         }
 
         public static List<ListItem> GetXslFilesFromLocalDirectory(string strLanguage,
-                                                                   IEnumerable<Character> lstCharacters = null, bool blnUsePool = false)
+                                                                   IEnumerable<Character> lstCharacters = null, bool blnUsePool = false, CancellationToken token = default)
         {
-            GetXslFilesFromLocalDirectory(strLanguage, out bool _, out List<ListItem> lstReturn, lstCharacters, true, blnUsePool);
+            GetXslFilesFromLocalDirectory(strLanguage, out bool _, out List<ListItem> lstReturn, lstCharacters, true, blnUsePool, token);
             return lstReturn;
         }
 
-        private static void GetXslFilesFromLocalDirectory(string strLanguage, out bool blnAnyItem, out List<ListItem> lstSheets, IEnumerable<Character> lstCharacters, bool blnDoList, bool blnUsePool)
+        private static void GetXslFilesFromLocalDirectory(string strLanguage, out bool blnAnyItem, out List<ListItem> lstSheets, IEnumerable<Character> lstCharacters, bool blnDoList, bool blnUsePool, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             blnAnyItem = false;
             HashSet<string> setAddedSheetFileNames = blnDoList ? Utils.StringHashSetPool.Get() : null;
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (lstCharacters != null)
                 {
                     if (blnDoList)
@@ -1850,12 +1982,14 @@ namespace Chummer
                     // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
                     foreach (Character objCharacter in lstCharacters)
                     {
-                        foreach (XPathNavigator xmlSheet in objCharacter.LoadDataXPath("sheets.xml", strLanguage)
+                        token.ThrowIfCancellationRequested();
+                        foreach (XPathNavigator xmlSheet in objCharacter.LoadDataXPath("sheets.xml", strLanguage, token: token)
                                                                         .SelectAndCacheExpression(
                                                                             "/chummer/sheets[@lang="
                                                                             + strLanguage.CleanXPath()
                                                                             + "]/sheet[not(hide)]"))
                         {
+                            token.ThrowIfCancellationRequested();
                             string strSheetFileName = xmlSheet.SelectSingleNodeAndCacheExpression("filename")?.Value;
                             if (string.IsNullOrEmpty(strSheetFileName))
                                 continue;
@@ -1864,9 +1998,10 @@ namespace Chummer
                                 blnAnyItem = true;
                                 return;
                             }
-
+                            token.ThrowIfCancellationRequested();
                             if (!setAddedSheetFileNames.Add(strSheetFileName))
                                 continue;
+                            token.ThrowIfCancellationRequested();
                             blnAnyItem = true;
                             lstSheets.Add(new ListItem(
                                               !strLanguage.Equals(GlobalSettings.DefaultLanguage,
@@ -1874,13 +2009,13 @@ namespace Chummer
                                                   ? Path.Combine(strLanguage, strSheetFileName)
                                                   : strSheetFileName,
                                               xmlSheet.SelectSingleNodeAndCacheExpression("name")?.Value
-                                              ?? LanguageManager.GetString("String_Unknown")));
+                                              ?? LanguageManager.GetString("String_Unknown", token: token)));
                         }
                     }
                 }
                 else
                 {
-                    XPathNodeIterator xmlIterator = LoadXPath("sheets.xml", null, strLanguage)
+                    XPathNodeIterator xmlIterator = LoadXPath("sheets.xml", null, strLanguage, token: token)
                         .SelectAndCacheExpression(
                             "/chummer/sheets[@lang=" + strLanguage.CleanXPath() + "]/sheet[not(hide)]");
                     if (blnDoList)
@@ -1890,6 +2025,7 @@ namespace Chummer
 
                     foreach (XPathNavigator xmlSheet in xmlIterator)
                     {
+                        token.ThrowIfCancellationRequested();
                         string strSheetFileName = xmlSheet.SelectSingleNodeAndCacheExpression("filename")?.Value;
                         if (string.IsNullOrEmpty(strSheetFileName))
                             continue;
@@ -1898,9 +2034,10 @@ namespace Chummer
                             blnAnyItem = true;
                             return;
                         }
-
+                        token.ThrowIfCancellationRequested();
                         if (!setAddedSheetFileNames.Add(strSheetFileName))
                             continue;
+                        token.ThrowIfCancellationRequested();
                         blnAnyItem = true;
                         lstSheets.Add(new ListItem(
                                           !strLanguage.Equals(GlobalSettings.DefaultLanguage,
@@ -1908,7 +2045,7 @@ namespace Chummer
                                               ? Path.Combine(strLanguage, strSheetFileName)
                                               : strSheetFileName,
                                           xmlSheet.SelectSingleNodeAndCacheExpression("name")?.Value
-                                          ?? LanguageManager.GetString("String_Unknown")));
+                                          ?? LanguageManager.GetString("String_Unknown", token: token)));
                     }
                 }
             }
@@ -1919,23 +2056,25 @@ namespace Chummer
             }
         }
 
-        public static async Task<bool> AnyXslFilesAsync(string strLanguage, IEnumerable<Character> lstCharacters = null)
+        public static async Task<bool> AnyXslFilesAsync(string strLanguage, IEnumerable<Character> lstCharacters = null, CancellationToken token = default)
         {
-            return (await GetXslFilesFromLocalDirectoryAsync(strLanguage, lstCharacters, false, false)).Item1;
+            return (await GetXslFilesFromLocalDirectoryAsync(strLanguage, lstCharacters, false, false, token)).Item1;
         }
 
         public static async Task<List<ListItem>> GetXslFilesFromLocalDirectoryAsync(string strLanguage,
-                                                                   IEnumerable<Character> lstCharacters = null, bool blnUsePool = false)
+                                                                   IEnumerable<Character> lstCharacters = null, bool blnUsePool = false, CancellationToken token = default)
         {
-            return (await GetXslFilesFromLocalDirectoryAsync(strLanguage, lstCharacters, true, blnUsePool)).Item2;
+            return (await GetXslFilesFromLocalDirectoryAsync(strLanguage, lstCharacters, true, blnUsePool, token)).Item2;
         }
 
-        public static async Task<Tuple<bool, List<ListItem>>> GetXslFilesFromLocalDirectoryAsync(string strLanguage, IEnumerable<Character> lstCharacters, bool blnDoList, bool blnUsePool)
+        public static async Task<Tuple<bool, List<ListItem>>> GetXslFilesFromLocalDirectoryAsync(string strLanguage, IEnumerable<Character> lstCharacters, bool blnDoList, bool blnUsePool, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             List<ListItem> lstSheets = null;
             HashSet<string> setAddedSheetFileNames = blnDoList ? Utils.StringHashSetPool.Get() : null;
             try
             {
+                token.ThrowIfCancellationRequested();
                 if (lstCharacters != null)
                 {
                     if (blnDoList)
@@ -1943,33 +2082,36 @@ namespace Chummer
                     // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
                     foreach (Character objCharacter in lstCharacters)
                     {
-                        foreach (XPathNavigator xmlSheet in await (await objCharacter.LoadDataXPathAsync("sheets.xml", strLanguage))
+                        token.ThrowIfCancellationRequested();
+                        foreach (XPathNavigator xmlSheet in await (await objCharacter.LoadDataXPathAsync("sheets.xml", strLanguage, token: token))
                                      .SelectAndCacheExpressionAsync(
                                          "/chummer/sheets[@lang="
                                          + strLanguage.CleanXPath()
                                          + "]/sheet[not(hide)]"))
                         {
+                            token.ThrowIfCancellationRequested();
                             string strSheetFileName = (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("filename"))?.Value;
                             if (string.IsNullOrEmpty(strSheetFileName))
                                 continue;
                             if (!blnDoList)
                                 return new Tuple<bool, List<ListItem>>(true, null);
-
+                            token.ThrowIfCancellationRequested();
                             if (!setAddedSheetFileNames.Add(strSheetFileName))
                                 continue;
+                            token.ThrowIfCancellationRequested();
                             lstSheets.Add(new ListItem(
                                               !strLanguage.Equals(GlobalSettings.DefaultLanguage,
                                                                   StringComparison.OrdinalIgnoreCase)
                                                   ? Path.Combine(strLanguage, strSheetFileName)
                                                   : strSheetFileName,
                                               (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
-                                              ?? await LanguageManager.GetStringAsync("String_Unknown")));
+                                              ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)));
                         }
                     }
                 }
                 else
                 {
-                    XPathNodeIterator xmlIterator = await (await LoadXPathAsync("sheets.xml", null, strLanguage))
+                    XPathNodeIterator xmlIterator = await (await LoadXPathAsync("sheets.xml", null, strLanguage, token: token))
                         .SelectAndCacheExpressionAsync(
                             "/chummer/sheets[@lang=" + strLanguage.CleanXPath() + "]/sheet[not(hide)]");
                     if (blnDoList)
@@ -1977,21 +2119,23 @@ namespace Chummer
 
                     foreach (XPathNavigator xmlSheet in xmlIterator)
                     {
+                        token.ThrowIfCancellationRequested();
                         string strSheetFileName = (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("filename"))?.Value;
                         if (string.IsNullOrEmpty(strSheetFileName))
                             continue;
                         if (!blnDoList)
                             return new Tuple<bool, List<ListItem>>(true, null);
-
+                        token.ThrowIfCancellationRequested();
                         if (!setAddedSheetFileNames.Add(strSheetFileName))
                             continue;
+                        token.ThrowIfCancellationRequested();
                         lstSheets.Add(new ListItem(
                                           !strLanguage.Equals(GlobalSettings.DefaultLanguage,
                                                               StringComparison.OrdinalIgnoreCase)
                                               ? Path.Combine(strLanguage, strSheetFileName)
                                               : strSheetFileName,
                                           (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
-                                          ?? await LanguageManager.GetStringAsync("String_Unknown")));
+                                          ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)));
                     }
                 }
             }

@@ -1651,9 +1651,9 @@ namespace Chummer
 
         public async Task RefreshAllTabTitlesAsync(CancellationToken token = default)
         {
-            string strSpace = await LanguageManager.GetStringAsync("String_Space");
-            string strSheet = await LanguageManager.GetStringAsync("String_Sheet_Blank");
-            string strExport = await LanguageManager.GetStringAsync("String_Export_Blank");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+            string strSheet = await LanguageManager.GetStringAsync("String_Sheet_Blank", token: token);
+            string strExport = await LanguageManager.GetStringAsync("String_Export_Blank", token: token);
             await tabForms.DoThreadSafeAsync(x =>
             {
                 foreach (TabPage objTabPage in x.TabPages)
@@ -2076,10 +2076,10 @@ namespace Chummer
                                                                 y => y.WindowState == FormWindowState.Maximized), token)
                         ? FormWindowState.Maximized
                         : FormWindowState.Normal;
-                string strUI = await LanguageManager.GetStringAsync("String_UI");
-                string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                string strTooManyHandles = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
-                string strTooManyHandlesTitle = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
+                string strUI = await LanguageManager.GetStringAsync("String_UI", token: token);
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+                string strTooManyHandles = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token);
+                string strTooManyHandlesTitle = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token);
                 using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count, token))
                 {
                     foreach (Character objCharacter in lstNewCharacters)
@@ -2218,10 +2218,10 @@ namespace Chummer
                         ? FormWindowState.Maximized
                         : FormWindowState.Normal;
                 List<Tuple<CharacterSheetViewer, Character>> lstNewFormsToProcess = new List<Tuple<CharacterSheetViewer, Character>>(lstNewCharacters.Count);
-                string strUI = await LanguageManager.GetStringAsync("String_UI");
-                string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                string strTooManyHandles = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
-                string strTooManyHandlesTitle = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
+                string strUI = await LanguageManager.GetStringAsync("String_UI", token: token);
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+                string strTooManyHandles = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token);
+                string strTooManyHandlesTitle = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token);
                 using (ThreadSafeForm<LoadingBar> frmLoadingBar
                        = await Program.CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count, token))
                 {
@@ -2381,10 +2381,10 @@ namespace Chummer
                                                                 y => y.WindowState == FormWindowState.Maximized), token)
                         ? FormWindowState.Maximized
                         : FormWindowState.Normal;
-                string strUI = await LanguageManager.GetStringAsync("String_UI");
-                string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                string strTooManyHandles = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
-                string strTooManyHandlesTitle = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning");
+                string strUI = await LanguageManager.GetStringAsync("String_UI", token: token);
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+                string strTooManyHandles = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token);
+                string strTooManyHandlesTitle = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token);
                 using (ThreadSafeForm<LoadingBar> frmLoadingBar
                        = await Program.CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count, token))
                 {
@@ -2535,7 +2535,7 @@ namespace Chummer
                     mnuMRU9.Visible = false;
                 }, token);
 
-                string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
                 int i2 = 0;
                 for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
                 {

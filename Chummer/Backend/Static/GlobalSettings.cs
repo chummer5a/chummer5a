@@ -905,17 +905,17 @@ namespace Chummer
             catch (System.Security.SecurityException)
             {
                 Program.ShowMessageBox(
-                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry"));
+                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token));
             }
             catch (UnauthorizedAccessException)
             {
                 Program.ShowMessageBox(
-                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry"));
+                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token));
             }
             catch (ArgumentNullException e) when (e.ParamName == nameof(Registry))
             {
                 Program.ShowMessageBox(
-                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry"));
+                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token));
             }
         }
 

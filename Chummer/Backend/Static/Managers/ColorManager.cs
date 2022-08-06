@@ -543,24 +543,24 @@ namespace Chummer
         private static Task<Color> DieGlitchHitBackgroundLightAsync => Task.FromResult(DieGlitchHitBackgroundLight);
         private static Task<Color> DieGlitchHitBackgroundDarkAsync => GenerateDarkModeColorAsync(DieHitBackgroundLight);
 
-        public static void UpdateLightDarkMode(this Control objControl)
+        public static void UpdateLightDarkMode(this Control objControl, CancellationToken token = default)
         {
-            ApplyColorsRecursively(objControl, IsLightMode);
+            ApplyColorsRecursively(objControl, IsLightMode, token);
         }
 
-        public static void UpdateLightDarkMode(this Control objControl, bool blnLightMode)
+        public static void UpdateLightDarkMode(this Control objControl, bool blnLightMode, CancellationToken token = default)
         {
-            ApplyColorsRecursively(objControl, blnLightMode);
+            ApplyColorsRecursively(objControl, blnLightMode, token);
         }
 
-        public static void UpdateLightDarkMode(this ToolStripItem tssItem)
+        public static void UpdateLightDarkMode(this ToolStripItem tssItem, CancellationToken token = default)
         {
-            ApplyColorsRecursively(tssItem, IsLightMode);
+            ApplyColorsRecursively(tssItem, IsLightMode, token);
         }
 
-        public static void UpdateLightDarkMode(this ToolStripItem tssItem, bool blnLightMode)
+        public static void UpdateLightDarkMode(this ToolStripItem tssItem, bool blnLightMode, CancellationToken token = default)
         {
-            ApplyColorsRecursively(tssItem, blnLightMode);
+            ApplyColorsRecursively(tssItem, blnLightMode, token);
         }
 
         public static Task UpdateLightDarkModeAsync(this Control objControl, CancellationToken token = default)
@@ -669,17 +669,17 @@ namespace Chummer
             return FromHsva(fltHue, fltBrightness, fltSaturation, objColor.A);
         }
 
-        private static void ApplyColorsRecursively(Control objControl, bool blnLightMode)
+        private static void ApplyColorsRecursively(Control objControl, bool blnLightMode, CancellationToken token = default)
         {
             void ApplyButtonStyle()
             {
                 // Buttons look weird if colored based on anything other than the default color scheme in dark mode
-                objControl.DoThreadSafe(x => x.ForeColor = SystemColors.ControlText);
+                objControl.DoThreadSafe((x, y) => x.ForeColor = SystemColors.ControlText, token);
             }
             switch (objControl)
             {
                 case DataGridView objDataGridView:
-                    objDataGridView.DoThreadSafe(x =>
+                    objDataGridView.DoThreadSafe((x, y) =>
                     {
                         x.BackgroundColor = blnLightMode ? AppWorkspaceLight : AppWorkspaceDark;
                         x.GridColor = blnLightMode ? ControlTextLight : ControlTextDark;
@@ -694,10 +694,11 @@ namespace Chummer
                         x.RowTemplate.DefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;
                         foreach (DataGridViewTextBoxColumn objColumn in x.Columns)
                         {
+                            y.ThrowIfCancellationRequested();
                             objColumn.DefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
                             objColumn.DefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;
                         }
-                    });
+                    }, token);
                     break;
 
                 case SplitContainer objSplitControl:
@@ -708,23 +709,23 @@ namespace Chummer
                             : SplitterColorDark;
                         x.BackColor = blnLightMode ? SplitterColorLight : SplitterColorDark;
                     });
-                    ApplyColorsRecursively(objSplitControl.DoThreadSafeFunc(x => x.Panel1), blnLightMode);
-                    ApplyColorsRecursively(objSplitControl.DoThreadSafeFunc(x => x.Panel2), blnLightMode);
+                    ApplyColorsRecursively(objSplitControl.DoThreadSafeFunc((x, y) => x.Panel1, token), blnLightMode, token);
+                    ApplyColorsRecursively(objSplitControl.DoThreadSafeFunc((x, y) => x.Panel2, token), blnLightMode, token);
                     break;
 
                 case TreeView treControl:
-                    treControl.DoThreadSafe(x =>
+                    treControl.DoThreadSafe((x, y) =>
                     {
                         x.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
                         x.BackColor = blnLightMode ? WindowLight : WindowDark;
                         x.LineColor = blnLightMode ? WindowTextLight : WindowTextDark;
                         foreach (TreeNode objNode in x.Nodes)
-                            ApplyColorsRecursively(objNode, blnLightMode);
-                    });
+                            ApplyColorsRecursively(objNode, blnLightMode, y);
+                    }, token);
                     break;
 
                 case TextBox txtControl:
-                    txtControl.DoThreadSafe(x =>
+                    txtControl.DoThreadSafe((x, y) =>
                     {
                         if (x.ForeColor == ErrorColor)
                             x.ForeColor = ErrorColor;
@@ -736,11 +737,11 @@ namespace Chummer
                             x.BackColor = blnLightMode ? ControlLight : ControlDark;
                         else
                             x.BackColor = blnLightMode ? WindowLight : WindowDark;
-                    });
+                    }, token);
                     break;
 
                 case ListView objListView:
-                    objListView.DoThreadSafe(x =>
+                    objListView.DoThreadSafe((x, y) =>
                     {
                         x.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
                         x.BackColor = blnLightMode ? WindowLight : WindowDark;
@@ -772,25 +773,25 @@ namespace Chummer
                                 objItem.BackColor = blnLightMode ? WindowLight : WindowDark;
                             }
                         }
-                    });
+                    }, token);
                     break;
 
                 case ListBox _:
                 case ComboBox _:
                 case TableCell _:
-                    objControl.DoThreadSafe(x =>
+                    objControl.DoThreadSafe((x, y) =>
                     {
                         x.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
                         x.BackColor = blnLightMode ? WindowLight : WindowDark;
-                    });
+                    }, token);
                     break;
 
                 case GroupBox _:
-                    objControl.DoThreadSafe(x =>
+                    objControl.DoThreadSafe((x, y) =>
                     {
                         x.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
                         x.BackColor = blnLightMode ? ControlLight : ControlDark;
-                    });
+                    }, token);
                     break;
 
                 case ContactControl _:
@@ -805,7 +806,7 @@ namespace Chummer
                     return;
 
                 case CheckBox chkControl:
-                    if (chkControl.DoThreadSafeFunc(x => x.Appearance == Appearance.Button) || chkControl is DpiFriendlyCheckBoxDisguisedAsButton)
+                    if (chkControl.DoThreadSafeFunc((x, y) => x.Appearance == Appearance.Button, token) || chkControl is DpiFriendlyCheckBoxDisguisedAsButton)
                     {
                         ApplyButtonStyle();
                         break;
@@ -813,58 +814,58 @@ namespace Chummer
 
                     if (chkControl is ColorableCheckBox chkControlColored)
                     {
-                        chkControlColored.DoThreadSafe(x =>
+                        chkControlColored.DoThreadSafe((x, y) =>
                         {
                             x.DefaultColorScheme = blnLightMode;
                             if (blnLightMode) // Disabled case for Light mode already handled by the switch above
                                 x.ForeColor = ControlTextLight;
                             else
                                 x.ForeColor = x.Enabled ? ControlTextDark : GrayText;
-                        });
+                        }, token);
                         break;
                     }
                     goto default;
 
                 case Button cmdControl:
-                    if (cmdControl.DoThreadSafeFunc(x => x.FlatStyle) == FlatStyle.Flat)
+                    if (cmdControl.DoThreadSafeFunc((x, y) => x.FlatStyle, token) == FlatStyle.Flat)
                         goto default;
                     ApplyButtonStyle();
                     break;
 
                 case HeaderCell _:
                     // Header cells should use inverted colors
-                    objControl.DoThreadSafe(x =>
+                    objControl.DoThreadSafe((x, y) =>
                     {
                         x.ForeColor = blnLightMode ? ControlLightestLight : ControlLightestDark;
                         x.BackColor = blnLightMode ? ControlTextLight : ControlTextDark;
-                    });
+                    }, token);
                     return;
 
                 case TableLayoutPanel tlpControl:
-                    tlpControl.DoThreadSafe(x =>
+                    tlpControl.DoThreadSafe((x, y) =>
                     {
                         if (x.BorderStyle != BorderStyle.None)
                             x.BorderStyle = blnLightMode ? BorderStyle.FixedSingle : BorderStyle.Fixed3D;
-                    });
+                    }, token);
                     goto default;
                 case Form frmControl:
-                    frmControl.DoThreadSafe(x =>
+                    frmControl.DoThreadSafe((x, y) =>
                     {
                         if (x.MainMenuStrip != null)
                             foreach (ToolStripMenuItem tssItem in x.MainMenuStrip.Items)
-                                ApplyColorsRecursively(tssItem, blnLightMode);
-                    });
+                                ApplyColorsRecursively(tssItem, blnLightMode, y);
+                    }, token);
                     goto default;
                 case TabControl objTabControl:
-                    foreach (TabPage tabPage in objTabControl.DoThreadSafeFunc(x => x.TabPages))
-                        ApplyColorsRecursively(tabPage, blnLightMode);
+                    foreach (TabPage tabPage in objTabControl.DoThreadSafeFunc((x, y) => x.TabPages, token))
+                        ApplyColorsRecursively(tabPage, blnLightMode, token);
                     goto default;
                 case ToolStrip tssStrip:
-                    tssStrip.DoThreadSafe(x =>
+                    tssStrip.DoThreadSafe((x, y) =>
                     {
                         foreach (ToolStripItem tssItem in x.Items)
-                            ApplyColorsRecursively(tssItem, blnLightMode);
-                    });
+                            ApplyColorsRecursively(tssItem, blnLightMode, y);
+                    }, token);
                     goto default;
                 default:
                     objControl.DoThreadSafe(x =>
@@ -897,12 +898,13 @@ namespace Chummer
                     break;
             }
 
-            foreach (Control objChild in objControl.DoThreadSafeFunc(x => x.Controls))
-                ApplyColorsRecursively(objChild, blnLightMode);
+            foreach (Control objChild in objControl.DoThreadSafeFunc((x, y) => x.Controls, token))
+                ApplyColorsRecursively(objChild, blnLightMode, token);
         }
 
-        private static void ApplyColorsRecursively(ToolStripItem tssItem, bool blnLightMode)
+        private static void ApplyColorsRecursively(ToolStripItem tssItem, bool blnLightMode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (tssItem.ForeColor == (blnLightMode ? ControlDark : ControlLight))
                 tssItem.ForeColor = blnLightMode ? ControlLight : ControlDark;
             else if (tssItem.ForeColor == (blnLightMode ? ControlDarkerDark : ControlDarkerLight))
@@ -911,22 +913,24 @@ namespace Chummer
                 tssItem.ForeColor = blnLightMode ? ControlDarkestLight : ControlDarkestDark;
             else
                 tssItem.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
+            token.ThrowIfCancellationRequested();
             if (tssItem.BackColor == (blnLightMode ? ControlLighterDark : ControlLighterLight))
                 tssItem.BackColor = blnLightMode ? ControlLighterLight : ControlLighterDark;
             else if (tssItem.BackColor == (blnLightMode ? ControlLightestDark : ControlLightestLight))
                 tssItem.BackColor = blnLightMode ? ControlLightestLight : ControlLightestDark;
             else
                 tssItem.BackColor = blnLightMode ? ControlLight : ControlDark;
-
+            token.ThrowIfCancellationRequested();
             if (tssItem is ToolStripDropDownItem tssDropDownItem)
             {
                 foreach (ToolStripItem tssDropDownChild in tssDropDownItem.DropDownItems)
-                    ApplyColorsRecursively(tssDropDownChild, blnLightMode);
+                    ApplyColorsRecursively(tssDropDownChild, blnLightMode, token);
             }
         }
 
-        private static void ApplyColorsRecursively(TreeNode nodNode, bool blnLightMode)
+        private static void ApplyColorsRecursively(TreeNode nodNode, bool blnLightMode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (nodNode.ForeColor == (blnLightMode ? HasNotesColorDark : HasNotesColorLight))
                 nodNode.ForeColor = blnLightMode ? HasNotesColorLight : HasNotesColorDark;
             else if (nodNode.ForeColor == (blnLightMode ? GrayHasNotesColorDark : GrayHasNotesColorLight))
@@ -934,9 +938,9 @@ namespace Chummer
             else if (nodNode.ForeColor == (blnLightMode ? WindowTextDark : WindowTextLight))
                 nodNode.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
             nodNode.BackColor = blnLightMode ? WindowLight : WindowDark;
-
+            token.ThrowIfCancellationRequested();
             foreach (TreeNode nodNodeChild in nodNode.Nodes)
-                ApplyColorsRecursively(nodNodeChild, blnLightMode);
+                ApplyColorsRecursively(nodNodeChild, blnLightMode, token);
         }
 
         private static async Task ApplyColorsRecursivelyAsync(Control objControl, bool blnLightMode, CancellationToken token = default)
@@ -983,13 +987,13 @@ namespace Chummer
                     break;
 
                 case TreeView treControl:
-                    await treControl.DoThreadSafeAsync(x =>
+                    await treControl.DoThreadSafeAsync((x, y) =>
                     {
                         x.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
                         x.BackColor = blnLightMode ? WindowLight : WindowDark;
                         x.LineColor = blnLightMode ? WindowTextLight : WindowTextDark;
                         foreach (TreeNode objNode in x.Nodes)
-                            ApplyColorsRecursively(objNode, blnLightMode);
+                            ApplyColorsRecursively(objNode, blnLightMode, y);
                     }, token);
                     break;
 
@@ -1118,11 +1122,11 @@ namespace Chummer
                     }, token);
                     goto default;
                 case Form frmControl:
-                    await frmControl.DoThreadSafeAsync(x =>
+                    await frmControl.DoThreadSafeAsync((x, y) =>
                     {
                         if (x.MainMenuStrip != null)
                             foreach (ToolStripMenuItem tssItem in x.MainMenuStrip.Items)
-                                ApplyColorsRecursively(tssItem, blnLightMode);
+                                ApplyColorsRecursively(tssItem, blnLightMode, y);
                     }, token);
                     goto default;
                 case TabControl objTabControl:
@@ -1130,10 +1134,10 @@ namespace Chummer
                         await ApplyColorsRecursivelyAsync(tabPage, blnLightMode, token);
                     goto default;
                 case ToolStrip tssStrip:
-                    await tssStrip.DoThreadSafeAsync(x =>
+                    await tssStrip.DoThreadSafeAsync((x, y) =>
                     {
                         foreach (ToolStripItem tssItem in x.Items)
-                            ApplyColorsRecursively(tssItem, blnLightMode);
+                            ApplyColorsRecursively(tssItem, blnLightMode, y);
                     }, token);
                     goto default;
                 default:

@@ -9085,7 +9085,6 @@ namespace Chummer
                                         return;
                                     }
                                 }
-                                break;
                             }
                         }
                         break;

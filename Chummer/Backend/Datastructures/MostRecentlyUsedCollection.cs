@@ -59,7 +59,7 @@ namespace Chummer
             {
                 int intExistingIndex = await IndexOfAsync(item, token);
                 if (intExistingIndex == -1)
-                    await base.InsertAsync(index, item);
+                    await base.InsertAsync(index, item, token);
                 else
                     await MoveAsync(intExistingIndex, Math.Min(index, await GetCountAsync(token) - 1), token);
             }
