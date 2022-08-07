@@ -836,7 +836,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         private void RecreateInternalClip()
         {
-            if (RequireAmmo || string.IsNullOrWhiteSpace(Ammo))
+            if (RequireAmmo || string.IsNullOrWhiteSpace(Ammo) || Ammo == "0")
                 return;
 
             int intAmmoCount = 0;
@@ -900,8 +900,10 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public void CreateClips()
         {
-            List<WeaponAccessory> adoptables = GetClipProvidingAccessories();
-            foreach (WeaponAccessory adoptable in adoptables)
+            _lstAmmo.Clear(); // Just in case
+            for (int i = 0; i < _intAmmoSlots; ++i)
+                _lstAmmo.Add(new Clip(_objCharacter, null, this, null, 0));
+            foreach (WeaponAccessory adoptable in GetClipProvidingAccessories())
                 _lstAmmo.Add(new Clip(_objCharacter, adoptable, this, null, 0));
         }
 
@@ -1044,7 +1046,9 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (blnCopy)
+            if (blnCopy
+                // Shortcut for melee weapons and other ammo types that don't use melee weapons
+                || string.IsNullOrWhiteSpace(Ammo) || Ammo == "0")
             {
                 _lstAmmo.Clear();
                 _intActiveAmmoSlot = 1;
@@ -1076,35 +1080,98 @@ namespace Chummer.Backend.Equipment
                 }
                 else //Load old clips
                 {
-                    List<WeaponAccessory> adoptables = GetClipProvidingAccessories();
-                    adoptables.Reverse(); // we'll be pulling from the end to make removing less costly
-                    foreach (string s in s_OldClipValues)
+                    List<WeaponAccessory> lstWeaponAccessoriesWithClipSlots = GetClipProvidingAccessories().ToList();
+                    int i = 0;
+                    foreach (string strOldClipValue in s_OldClipValues)
                     {
-                        int ammo = 0;
-                        if (objNode.TryGetInt32FieldQuickly("ammoremaining" + s, ref ammo) &&
-                            objNode.TryGetField("ammoloaded" + s, Guid.TryParse, out Guid guid) &&
-                            ammo > 0 && guid != Guid.Empty)
+                        int intAmmo = 0;
+                        if (objNode.TryGetInt32FieldQuickly("ammoremaining" + strOldClipValue, ref intAmmo) &&
+                            objNode.TryGetField("ammoloaded" + strOldClipValue, Guid.TryParse, out Guid guid) &&
+                            intAmmo > 0 && guid != Guid.Empty)
                         {
-                            WeaponAccessory owner = null;
-                            if (adoptables.Count > 0)
-                            {
-                                // if false, that means we have more filled clips than we have ammo slots, and the null default passes through
-                                // just default to the weapon owning it, it'll fix itself on reload with empty slots
-                                owner = adoptables[adoptables.Count - 1];
-                                adoptables.RemoveAt(adoptables.Count - 1);
-                            }
                             Gear objGear = ParentVehicle != null
                                 ? ParentVehicle.FindVehicleGear(guid.ToString("D", GlobalSettings.InvariantCultureInfo))
                                 : _objCharacter.Gear.DeepFindById(guid.ToString("D", GlobalSettings.InvariantCultureInfo));
-                            _lstAmmo.Add(new Clip(_objCharacter, owner, this, objGear, ammo));
+                            // Load clips into weapon slots first
+                            if (i < _intAmmoSlots)
+                            {
+                                _lstAmmo.Add(new Clip(_objCharacter, null, this, objGear, intAmmo));
+                                ++i;
+                            }
+                            // Then load clips into accessory-provided slots
+                            else if (i < _intAmmoSlots + lstWeaponAccessoriesWithClipSlots.Count)
+                            {
+                                _lstAmmo.Add(new Clip(_objCharacter, lstWeaponAccessoriesWithClipSlots[i - _intAmmoSlots],
+                                                      this, objGear, intAmmo));
+                                ++i;
+                            }
+                            // Finally, we shouldn't end up in this situation, but just in case, load in the extra clips as part of the base weapon
+                            else
+                            {
+                                Utils.BreakIfDebug();
+                                _lstAmmo.Add(new Clip(_objCharacter, null, this, objGear, intAmmo));
+                                ++i;
+                            }
                         }
                     }
-                    if (adoptables.Count > 0)
+                    // We somehow ended up loading fewer clips than clip slots we have, so fill them up with empties
+                    for (; i < _intAmmoSlots; ++i)
                     {
-                        // still have clip providing objects - create empty clips
-                        for (int i = adoptables.Count - 1; i >= 0; i--)
-                            _lstAmmo.Add(new Clip(_objCharacter, adoptables[i], this, null, 0));
+                        _lstAmmo.Add(new Clip(_objCharacter, null, this, null, 0));
                     }
+                    for (; i < _intAmmoSlots + lstWeaponAccessoriesWithClipSlots.Count; ++i)
+                    {
+                        _lstAmmo.Add(new Clip(_objCharacter, lstWeaponAccessoriesWithClipSlots[i - _intAmmoSlots], this, null, 0));
+                    }
+                }
+            }
+
+            void AddClipNodes(XmlNode clipNode)
+            {
+                List<WeaponAccessory> lstWeaponAccessoriesWithClipSlots = GetClipProvidingAccessories().ToList();
+                int i = 0;
+                foreach (XmlNode node in clipNode.ChildNodes)
+                {
+                    // Load clips into weapon slots first
+                    if (i < _intAmmoSlots)
+                    {
+                        Clip objLoopClip = Clip.Load(node, _objCharacter, this, null);
+                        if (objLoopClip != null)
+                        {
+                            _lstAmmo.Add(objLoopClip);
+                            ++i;
+                        }
+                    }
+                    // Then load clips into accessory-provided slots
+                    else if (i < _intAmmoSlots + lstWeaponAccessoriesWithClipSlots.Count)
+                    {
+                        Clip objLoopClip = Clip.Load(node, _objCharacter, this, lstWeaponAccessoriesWithClipSlots[i - _intAmmoSlots]);
+                        if (objLoopClip != null)
+                        {
+                            _lstAmmo.Add(objLoopClip);
+                            ++i;
+                        }
+                    }
+                    // Finally, we shouldn't end up in this situation, but just in case, load in the extra clips as part of the base weapon
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                        Clip objLoopClip = Clip.Load(node, _objCharacter, this, null);
+                        if (objLoopClip != null)
+                        {
+                            _lstAmmo.Add(objLoopClip);
+                            ++i;
+                        }
+                    }
+                }
+                // We somehow ended up loading fewer clips than clip slots we have, so fill them up with empties
+                for (; i < _intAmmoSlots; ++i)
+                {
+                    _lstAmmo.Add(new Clip(_objCharacter, null, this, null, 0));
+                }
+                for (; i < _intAmmoSlots + lstWeaponAccessoriesWithClipSlots.Count; ++i)
+                {
+                    _lstAmmo.Add(new Clip(_objCharacter, lstWeaponAccessoriesWithClipSlots[i - _intAmmoSlots], this, null, 0));
                 }
             }
 
@@ -1253,39 +1320,6 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
                 objMyNode.Value?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
-        }
-
-        private void AddClipNodes(XmlNode clipNode)
-        {
-            List<WeaponAccessory> adoptables = GetClipProvidingAccessories();
-            adoptables.Reverse(); // we'll be pulling from the end to make removing less costly
-            foreach (XmlNode node in clipNode.ChildNodes)
-            {
-                WeaponAccessory owner = null;
-                if (adoptables.Count > 0)
-                {
-                    // if false, that means we have more filled clips than we have ammo slots, and the null default passes through
-                    // this shouldn't happen but it's not the end of the world
-                    // just default to the weapon owning it, it'll fix itself on reload with empty slots
-                    owner = adoptables[adoptables.Count - 1];
-                }
-                Clip objLoopClip = Clip.Load(node, _objCharacter, this, owner);
-                if (objLoopClip != null)
-                {
-                    if (adoptables.Count > 0)
-                    {
-                        // if .Load fails, don't remove an adoptable
-                        adoptables.RemoveAt(adoptables.Count - 1);
-                    }
-                    _lstAmmo.Add(objLoopClip);
-                }
-            }
-            if (adoptables.Count > 0)
-            {
-                // still have clip providing objects - create empty clips
-                for (int i = adoptables.Count - 1; i >= 0; i--)
-                    _lstAmmo.Add(new Clip(_objCharacter, adoptables[i], this, null, 0));
-            }
         }
 
         /// <summary>
@@ -1532,42 +1566,6 @@ namespace Chummer.Backend.Equipment
                 }
                 IList<Gear> lstGear = ParentVehicle == null ? _objCharacter.Gear : ParentVehicle.GearChildren;
                 return GetAmmoReloadable(lstGear).Sum(x => x.Quantity);
-            }
-        }
-
-        public void DoLegacyClipFix()
-        {
-            if (AmmoCategory != "Gear" && _lstAmmo.Count > 0 && RequireAmmo)
-            {
-                HashSet<Clip> setAmmoToRemove = new HashSet<Clip>();
-                foreach (Clip objClip in _lstAmmo)
-                {
-                    Gear objAmmo = objClip.AmmoGear;
-                    if (objAmmo != null)
-                    {
-                        // If this is a plugin for a Spare Clip, move any extra rounds to the character instead of messing with the Clip amount.
-                        if (objAmmo.Parent is Gear objParent && objParent.Quantity != 1 &&
-                            (objParent.Name.StartsWith("Spare Clip", StringComparison.Ordinal) || objParent.Name.StartsWith("Speed Loader", StringComparison.Ordinal)))
-                        {
-                            Gear objNewGear = new Gear(_objCharacter);
-                            objNewGear.Copy(objAmmo);
-                            objNewGear.Quantity = objClip.Ammo;
-                            if (ParentVehicle != null)
-                                ParentVehicle.GearChildren.Add(objNewGear);
-                            else
-                                _objCharacter.Gear.Add(objNewGear);
-                        }
-                        else
-                            objAmmo.Quantity += objClip.Ammo;
-                        setAmmoToRemove.Add(objClip);
-                    }
-                }
-
-                if (_intActiveAmmoSlot != 1 && setAmmoToRemove.Contains(GetClip(_intActiveAmmoSlot)))
-                    _intActiveAmmoSlot = 1;
-
-                foreach (Clip objClip in setAmmoToRemove)
-                    _lstAmmo.Remove(objClip);
             }
         }
 
@@ -7070,20 +7068,15 @@ namespace Chummer.Backend.Equipment
 
         #endregion Hero Lab Importing
 
-        private List<WeaponAccessory> GetClipProvidingAccessories()
+        private IEnumerable<WeaponAccessory> GetClipProvidingAccessories()
         {
-            List<WeaponAccessory> weaponAccessories = new List<WeaponAccessory>(_intAmmoSlots);
-            for (int i = 0; i < _intAmmoSlots; i++)
-                weaponAccessories.Add(null);
-            // null represents a clip owned by the weapon itself
             foreach (WeaponAccessory accessory in WeaponAccessories)
             {
                 for (int i = 0; i < accessory.AmmoSlots; i++)
                 {
-                    weaponAccessories.Add(accessory);
+                    yield return accessory;
                 }
             }
-            return weaponAccessories;
         }
 
         private void AddAmmoSlots(WeaponAccessory accessory)
