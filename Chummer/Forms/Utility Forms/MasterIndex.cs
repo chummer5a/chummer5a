@@ -334,7 +334,7 @@ namespace Chummer
                                           ?.Value
                                           ?? strName
                                           ?? (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value
-                                          ?? await LanguageManager.GetStringAsync("String_Unknown");
+                                          ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
                                     string strSource
                                         = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value;
                                     string strPage = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("page"))
@@ -378,7 +378,7 @@ namespace Chummer
 
                         using (_ = await Timekeeper.StartSyncronAsync("load_frm_masterindex_populate_entries", opLoadMasterindex))
                         {
-                            string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
                             string strFormat = "{0}" + strSpace + "[{1}]";
                             Dictionary<string, List<ListItem>> dicHelper
                                 = new Dictionary<string, List<ListItem>>(lstItemsForLoading.Count);
@@ -472,7 +472,7 @@ namespace Chummer
                     using (_ = await Timekeeper.StartSyncronAsync("load_frm_masterindex_populate_controls", opLoadMasterindex))
                     {
                         _lstFileNamesWithItems.Insert(
-                            0, new ListItem(string.Empty, await LanguageManager.GetStringAsync("String_All")));
+                            0, new ListItem(string.Empty, await LanguageManager.GetStringAsync("String_All", token: token)));
 
                         int intOldSelectedIndex = await cboFile.DoThreadSafeFuncAsync(x => x.SelectedIndex, token);
                         await cboFile.PopulateWithListItemsAsync(_lstFileNamesWithItems, token);

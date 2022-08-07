@@ -248,18 +248,18 @@ namespace Chummer
             }
 
             // <spirit>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("spirit");
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("spirit", token: token);
             try
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId);
-                await objWriter.WriteElementStringAsync("name", strName);
-                await objWriter.WriteElementStringAsync("name_english", Name);
-                await objWriter.WriteElementStringAsync("crittername", CritterName);
-                await objWriter.WriteElementStringAsync("fettered", Fettered.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("services", ServicesOwed.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("force", Force.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("ratinglabel", await LanguageManager.GetStringAsync(RatingLabel, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("guid", InternalId, token: token);
+                await objWriter.WriteElementStringAsync("name", strName, token: token);
+                await objWriter.WriteElementStringAsync("name_english", Name, token: token);
+                await objWriter.WriteElementStringAsync("crittername", CritterName, token: token);
+                await objWriter.WriteElementStringAsync("fettered", Fettered.ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                await objWriter.WriteElementStringAsync("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                await objWriter.WriteElementStringAsync("services", ServicesOwed.ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("force", Force.ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("ratinglabel", await LanguageManager.GetStringAsync(RatingLabel, strLanguageToPrint, token: token), token: token);
 
                 if (objXmlCritterNode != null)
                 {
@@ -267,7 +267,7 @@ namespace Chummer
 
                     Dictionary<string, int> dicAttributes = new Dictionary<string, int>(s_PrintAttributeLabels.Count);
                     // <spiritattributes>
-                    XmlElementWriteHelper objSpiritAttributesElement = await objWriter.StartElementAsync("spiritattributes");
+                    XmlElementWriteHelper objSpiritAttributesElement = await objWriter.StartElementAsync("spiritattributes", token: token);
                     try
                     {
                         foreach (string strAttribute in s_PrintAttributeLabels)
@@ -277,7 +277,7 @@ namespace Chummer
                             {
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strInner.Replace("F", _intForce.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess, token);
                                 int intValue = Math.Max(blnIsSuccess ? ((double)objProcess).StandardRound() : _intForce, 1);
-                                await objWriter.WriteElementStringAsync(strAttribute, intValue.ToString(objCulture));
+                                await objWriter.WriteElementStringAsync(strAttribute, intValue.ToString(objCulture), token: token);
 
                                 dicAttributes[strAttribute] = intValue;
                             }
@@ -300,7 +300,7 @@ namespace Chummer
                         if (xmlPowersNode != null)
                         {
                             // <powers>
-                            XmlElementWriteHelper objPowersElement = await objWriter.StartElementAsync("powers");
+                            XmlElementWriteHelper objPowersElement = await objWriter.StartElementAsync("powers", token: token);
                             try
                             {
                                 foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
@@ -319,7 +319,7 @@ namespace Chummer
                         if (xmlPowersNode != null)
                         {
                             // <optionalpowers>
-                            XmlElementWriteHelper objOptionalPowersElement = await objWriter.StartElementAsync("optionalpowers");
+                            XmlElementWriteHelper objOptionalPowersElement = await objWriter.StartElementAsync("optionalpowers", token: token);
                             try
                             {
                                 foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
@@ -339,7 +339,7 @@ namespace Chummer
                         {
                             XPathNavigator xmlSkillsDocument = await CharacterObject.LoadDataXPathAsync("skills.xml", strLanguageToPrint, token: token);
                             // <skills>
-                            XmlElementWriteHelper objSkillsElement = await objWriter.StartElementAsync("skills");
+                            XmlElementWriteHelper objSkillsElement = await objWriter.StartElementAsync("skills", token: token);
                             try
                             {
                                 foreach (XmlNode xmlSkillNode in xmlPowersNode.ChildNodes)
@@ -359,14 +359,14 @@ namespace Chummer
                                                   "/chummer/knowledgeskills/skill[name = " + strEnglishName.CleanXPath()
                                                   + "]/translate")?.Value ?? strEnglishName;
                                     // <skill>
-                                    XmlElementWriteHelper objSkillElement = await objWriter.StartElementAsync("skill");
+                                    XmlElementWriteHelper objSkillElement = await objWriter.StartElementAsync("skill", token: token);
                                     try
                                     {
-                                        await objWriter.WriteElementStringAsync("name", strTranslatedName);
-                                        await objWriter.WriteElementStringAsync("name_english", strEnglishName);
-                                        await objWriter.WriteElementStringAsync("attr", strAttrName);
+                                        await objWriter.WriteElementStringAsync("name", strTranslatedName, token: token);
+                                        await objWriter.WriteElementStringAsync("name_english", strEnglishName, token: token);
+                                        await objWriter.WriteElementStringAsync("attr", strAttrName, token: token);
                                         await objWriter.WriteElementStringAsync(
-                                            "pool", intDicepool.ToString(objCulture));
+                                            "pool", intDicepool.ToString(objCulture), token: token);
                                     }
                                     finally
                                     {
@@ -386,7 +386,7 @@ namespace Chummer
                         if (xmlPowersNode != null)
                         {
                             // <weaknesses>
-                            XmlElementWriteHelper objWeaknessesElement = await objWriter.StartElementAsync("weaknesses");
+                            XmlElementWriteHelper objWeaknessesElement = await objWriter.StartElementAsync("weaknesses", token: token);
                             try
                             {
                                 foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
@@ -406,16 +406,16 @@ namespace Chummer
                     string strPage = string.Empty;
 
                     if (objXmlCritterNode.TryGetStringFieldQuickly("source", ref strSource))
-                        await objWriter.WriteElementStringAsync("source", await CharacterObject.LanguageBookShortAsync(strSource, strLanguageToPrint));
+                        await objWriter.WriteElementStringAsync("source", await CharacterObject.LanguageBookShortAsync(strSource, strLanguageToPrint), token: token);
                     if (objXmlCritterNode.TryGetStringFieldQuickly("altpage", ref strPage) || objXmlCritterNode.TryGetStringFieldQuickly("page", ref strPage))
-                        await objWriter.WriteElementStringAsync("page", strPage);
+                        await objWriter.WriteElementStringAsync("page", strPage, token: token);
                 }
 
-                await objWriter.WriteElementStringAsync("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("type", EntityType.ToString());
+                await objWriter.WriteElementStringAsync("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo), token: token);
+                await objWriter.WriteElementStringAsync("type", EntityType.ToString(), token: token);
 
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes);
+                    await objWriter.WriteElementStringAsync("notes", Notes, token: token);
                 await PrintMugshots(objWriter, token);
             }
             finally
@@ -1291,6 +1291,7 @@ namespace Chummer
                 objWriter.WriteElementString("mainmugshotindex", MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo));
                 // <mugshot>
                 // ReSharper disable once MethodHasAsyncOverload
+                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                 using (objWriter.StartElement("mugshots"))
                 {
                     foreach (Image imgMugshot in Mugshots)
@@ -1307,15 +1308,15 @@ namespace Chummer
             else
             {
                 await objWriter.WriteElementStringAsync("mainmugshotindex",
-                                                        MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo));
+                                                        MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                 // <mugshots>
-                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("mugshots");
+                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("mugshots", token: token);
                 try
                 {
                     foreach (Image imgMugshot in Mugshots)
                     {
                         await objWriter.WriteElementStringAsync(
-                            "mugshot", await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot, token));
+                            "mugshot", await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot, token), token: token);
                     }
                 }
                 finally
@@ -1372,7 +1373,7 @@ namespace Chummer
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
+                        Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token));
                     }
                 }
                 Guid guiImage = Guid.NewGuid();
@@ -1384,15 +1385,15 @@ namespace Chummer
                     imgMainMugshot.Save(imgMugshotPath);
                     // <mainmugshotpath />
                     await objWriter.WriteElementStringAsync("mainmugshotpath",
-                        "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
+                        "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'), token: token);
                     // <mainmugshotbase64 />
-                    await objWriter.WriteElementStringAsync("mainmugshotbase64", await imgMainMugshot.ToBase64StringAsJpegAsync(token: token));
+                    await objWriter.WriteElementStringAsync("mainmugshotbase64", await imgMainMugshot.ToBase64StringAsJpegAsync(token: token), token: token);
                 }
                 // <hasothermugshots>
                 await objWriter.WriteElementStringAsync("hasothermugshots",
-                    (imgMainMugshot == null || Mugshots.Count > 1).ToString(GlobalSettings.InvariantCultureInfo));
+                    (imgMainMugshot == null || Mugshots.Count > 1).ToString(GlobalSettings.InvariantCultureInfo), token: token);
                 // <othermugshots>
-                XmlElementWriteHelper objOtherMugshotsElement = await objWriter.StartElementAsync("othermugshots");
+                XmlElementWriteHelper objOtherMugshotsElement = await objWriter.StartElementAsync("othermugshots", token: token);
                 try
                 {
                     for (int i = 0; i < Mugshots.Count; ++i)
@@ -1401,17 +1402,17 @@ namespace Chummer
                             continue;
                         Image imgMugshot = Mugshots[i];
                         // <mugshot>
-                        XmlElementWriteHelper objMugshotElement = await objWriter.StartElementAsync("mugshot");
+                        XmlElementWriteHelper objMugshotElement = await objWriter.StartElementAsync("mugshot", token: token);
                         try
                         {
-                            await objWriter.WriteElementStringAsync("stringbase64", await imgMugshot.ToBase64StringAsJpegAsync(token: token));
+                            await objWriter.WriteElementStringAsync("stringbase64", await imgMugshot.ToBase64StringAsJpegAsync(token: token), token: token);
 
                             string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath,
                                                                  guiImage.ToString("N", GlobalSettings.InvariantCultureInfo) +
                                                                  i.ToString(GlobalSettings.InvariantCultureInfo) + ".jpg");
                             imgMugshot.Save(imgMugshotPath);
                             await objWriter.WriteElementStringAsync("temppath",
-                                                                    "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
+                                                                    "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'), token: token);
                         }
                         finally
                         {

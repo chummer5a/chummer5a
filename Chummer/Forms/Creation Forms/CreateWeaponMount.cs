@@ -736,11 +736,11 @@ namespace Chummer
             switch (chrAvailSuffix)
             {
                 case 'F':
-                    strAvailText += await LanguageManager.GetStringAsync("String_AvailForbidden");
+                    strAvailText += await LanguageManager.GetStringAsync("String_AvailForbidden", token: token);
                     break;
 
                 case 'R':
-                    strAvailText += await LanguageManager.GetStringAsync("String_AvailRestricted");
+                    strAvailText += await LanguageManager.GetStringAsync("String_AvailRestricted", token: token);
                     break;
             }
 
@@ -749,8 +749,8 @@ namespace Chummer
             await lblCost.DoThreadSafeAsync(x => x.Text = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token);
             await lblSlots.DoThreadSafeAsync(x => x.Text = intSlots.ToString(GlobalSettings.CultureInfo), token);
             await lblAvailability.DoThreadSafeAsync(x => x.Text = strAvailText, token);
-            string strSource = xmlSelectedMount["source"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown");
-            string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown");
+            string strSource = xmlSelectedMount["source"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
+            string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown", token: token);
             SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
             await objSourceString.SetControlAsync(lblSource, token);
             strLoop = await lblCost.DoThreadSafeFuncAsync(x => x.Text, token);

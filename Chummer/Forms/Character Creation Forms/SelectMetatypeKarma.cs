@@ -311,8 +311,8 @@ namespace Chummer
                 if (objXmlMetatype == null)
                 {
                     Program.ShowMessageBox(
-                        this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype"),
-                        await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype"),
+                        this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype", token: token),
+                        await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype", token: token),
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
                     return;
@@ -414,8 +414,8 @@ namespace Chummer
             }
             else
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype"),
-                                       await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype"),
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype", token: token),
+                                       await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype", token: token),
                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
@@ -423,7 +423,7 @@ namespace Chummer
         private async ValueTask RefreshSelectedMetavariant(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            string strSpace = await LanguageManager.GetStringAsync("String_Space");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
             XPathNavigator objXmlMetatype = null;
             XPathNavigator objXmlMetavariant = null;
             string strSelectedMetatype = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
@@ -437,7 +437,7 @@ namespace Chummer
                 }
             }
 
-            string strNone = await LanguageManager.GetStringAsync("String_None");
+            string strNone = await LanguageManager.GetStringAsync("String_None", token: token);
             if (objXmlMetavariant != null)
             {
                 await cmdOK.DoThreadSafeAsync(x => x.Enabled = true, token);
@@ -556,7 +556,7 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(strSelect))
                             {
                                 sbdQualities.Append(strSpace).Append('(')
-                                            .Append(await _objCharacter.TranslateExtraAsync(strSelect)).Append(')');
+                                            .Append(await _objCharacter.TranslateExtraAsync(strSelect, token: token)).Append(')');
                             }
                         }
                         else
@@ -592,14 +592,14 @@ namespace Chummer
                     }
                     else
                     {
-                        string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
+                        string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token);
                         await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token);
                         await lblSource.SetToolTipAsync(strUnknown, token);
                     }
                 }
                 else
                 {
-                    string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
+                    string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token);
                     await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token);
                     await lblSource.SetToolTipAsync(strUnknown, token);
                 }
@@ -706,7 +706,7 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(strSelect))
                             {
                                 sbdQualities.Append(strSpace).Append('(')
-                                            .Append(await _objCharacter.TranslateExtraAsync(strSelect))
+                                            .Append(await _objCharacter.TranslateExtraAsync(strSelect, token: token))
                                             .Append(')');
                             }
                         }
@@ -743,14 +743,14 @@ namespace Chummer
                     }
                     else
                     {
-                        string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
+                        string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token);
                         await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token);
                         await lblSource.SetToolTipAsync(strUnknown, token);
                     }
                 }
                 else
                 {
-                    string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
+                    string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token);
                     await lblSource.DoThreadSafeAsync(x => x.Text = strUnknown, token);
                     await lblSource.SetToolTipAsync(strUnknown, token);
                 }
@@ -803,7 +803,7 @@ namespace Chummer
             {
                 if (intPos != -1)
                 {
-                    string strD6 = await LanguageManager.GetStringAsync("String_D6");
+                    string strD6 = await LanguageManager.GetStringAsync("String_D6", token: token);
                     if (intPos > 0)
                     {
                         --intPos;
@@ -821,7 +821,7 @@ namespace Chummer
                     string strText = await LanguageManager.GetStringAsync(
                         await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("forceislevels") != null
                             ? "String_Level"
-                            : "String_Force");
+                            : "String_Force", token: token);
                     await lblForceLabel.DoThreadSafeAsync(x => x.Text = strText, token);
                     await nudForce.DoThreadSafeAsync(x => x.Maximum = 100, token);
                 }
@@ -870,7 +870,7 @@ namespace Chummer
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetavariants))
                 {
-                    lstMetavariants.Add(new ListItem(Guid.Empty, await LanguageManager.GetStringAsync("String_None")));
+                    lstMetavariants.Add(new ListItem(Guid.Empty, await LanguageManager.GetStringAsync("String_None", token: token)));
                     foreach (XPathNavigator objXmlMetavariant in objXmlMetatype.Select(
                                  "metavariants/metavariant[" + _objCharacter.Settings.BookXPath() + ']'))
                     {
@@ -882,7 +882,7 @@ namespace Chummer
                                                                  .SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
                                                              ?? (await objXmlMetavariant
                                                                  .SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
-                                                             ?? await LanguageManager.GetStringAsync("String_Unknown")));
+                                                             ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)));
                         }
                     }
 
@@ -926,7 +926,7 @@ namespace Chummer
                 // Clear the Metavariant list if nothing is currently selected.
                 bool blnOldLoading = _blnLoading;
                 _blnLoading = true;
-                await cboMetavariant.PopulateWithListItemsAsync(new ListItem(Guid.Empty, await LanguageManager.GetStringAsync("String_None")).Yield(), token);
+                await cboMetavariant.PopulateWithListItemsAsync(new ListItem(Guid.Empty, await LanguageManager.GetStringAsync("String_None", token: token)).Yield(), token);
                 await cboMetavariant.DoThreadSafeAsync(x => x.Enabled = false, token);
                 _blnLoading = blnOldLoading;
                 await cboMetavariant.DoThreadSafeAsync(x => x.SelectedIndex = 0, token);
@@ -977,7 +977,7 @@ namespace Chummer
                                                                   ?.Value
                                                               ?? (await xmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name"))
                                                                             ?.Value
-                                                              ?? await LanguageManager.GetStringAsync("String_Unknown")));
+                                                              ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)));
                         }
                     }
 

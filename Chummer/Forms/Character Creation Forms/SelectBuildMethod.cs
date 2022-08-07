@@ -235,12 +235,12 @@ namespace Chummer
             // Load the Priority information.
             if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, token) is CharacterSettings objSelectedGameplayOption)
             {
-                string strText = await LanguageManager.GetStringAsync("String_" + objSelectedGameplayOption.BuildMethod);
+                string strText = await LanguageManager.GetStringAsync("String_" + objSelectedGameplayOption.BuildMethod, token: token);
                 await lblBuildMethod.DoThreadSafeAsync(x => x.Text = strText, token);
                 switch (objSelectedGameplayOption.BuildMethod)
                 {
                     case CharacterBuildMethod.Priority:
-                        strText = await LanguageManager.GetStringAsync("Label_SelectBP_Priorities");
+                        strText = await LanguageManager.GetStringAsync("Label_SelectBP_Priorities", token: token);
                         await lblBuildMethodParamLabel.DoThreadSafeAsync(x =>
                         {
                             x.Text = strText;
@@ -254,7 +254,7 @@ namespace Chummer
                         break;
 
                     case CharacterBuildMethod.SumtoTen:
-                        strText = await LanguageManager.GetStringAsync("String_SumtoTen");
+                        strText = await LanguageManager.GetStringAsync("String_SumtoTen", token: token);
                         await lblBuildMethodParamLabel.DoThreadSafeAsync(x =>
                         {
                             x.Text = strText;
@@ -273,7 +273,7 @@ namespace Chummer
                         break;
                 }
 
-                string strNone = await LanguageManager.GetStringAsync("String_None");
+                string strNone = await LanguageManager.GetStringAsync("String_None", token: token);
 
                 await lblMaxAvail.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.MaximumAvailability.ToString(GlobalSettings.CultureInfo), token);
                 await lblKarma.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.BuildKarma.ToString(GlobalSettings.CultureInfo), token);

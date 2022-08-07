@@ -1424,7 +1424,7 @@ namespace Chummer
                     try
                     {
                         // </characters>
-                        XmlElementWriteHelper objCharactersElement = await objWriter.StartElementAsync("characters");
+                        XmlElementWriteHelper objCharactersElement = await objWriter.StartElementAsync("characters", token: objToken);
                         try
                         {
                             foreach (Character objCharacter in lstCharacters)

@@ -91,11 +91,24 @@ namespace Chummer
             // If there is more than 1 instance running, do not let the application be updated.
             if (blnHasDuplicate)
             {
-                Log.Info("More than one instance, exiting");
-                if (!SilentMode)
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Update_MultipleInstances"), await LanguageManager.GetStringAsync("Title_Update"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                Log.Info("ChummerUpdater_Load exit");
-                await this.DoThreadSafeAsync(x => x.Close(), _objGenericToken);
+                try
+                {
+                    Log.Info("More than one instance, exiting");
+                    if (!SilentMode)
+                        Program.ShowMessageBox(
+                            this,
+                            await LanguageManager.GetStringAsync("Message_Update_MultipleInstances",
+                                                                 token: _objGenericToken),
+                            await LanguageManager.GetStringAsync("Title_Update", token: _objGenericToken),
+                            MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    Log.Info("ChummerUpdater_Load exit");
+                    await this.DoThreadSafeAsync(x => x.Close(), _objGenericToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    // Swallow this
+                    return;
+                }
             }
 
             CancellationTokenSource objNewChangelogSource = new CancellationTokenSource();
@@ -286,7 +299,7 @@ namespace Chummer
             _blnIsConnected = false;
             token.ThrowIfCancellationRequested();
             bool blnChummerVersionGotten = true;
-            string strError = (await LanguageManager.GetStringAsync("String_Error")).Trim();
+            string strError = (await LanguageManager.GetStringAsync("String_Error", token: token)).Trim();
             _strExceptionString = string.Empty;
             LatestVersion = strError;
             Uri uriUpdateLocation = new Uri(_blnPreferNightly
@@ -389,9 +402,9 @@ namespace Chummer
                 if (!SilentMode)
                     Program.ShowMessageBox(this,
                     string.IsNullOrEmpty(_strExceptionString)
-                        ? await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnect")
+                        ? await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnect", token: token)
                         : string.Format(GlobalSettings.CultureInfo,
-                            await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnectException"), _strExceptionString),
+                            await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnectException", token: token), _strExceptionString),
                     Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -424,7 +437,7 @@ namespace Chummer
                 if (!SilentMode)
                     Program.ShowMessageBox(this,
                         string.Format(GlobalSettings.CultureInfo,
-                            await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnectException"), strException),
+                            await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnectException", token: token), strException),
                         Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -440,7 +453,7 @@ namespace Chummer
                 if (!SilentMode)
                     Program.ShowMessageBox(this,
                         string.Format(GlobalSettings.CultureInfo,
-                            await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnectException"), strException),
+                            await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnectException", token: token), strException),
                         Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -508,20 +521,20 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             string strLatestVersion = LatestVersion.TrimStartOnce("Nightly-v");
             await lblUpdaterStatus.DoThreadSafeAsync(x => x.Left = x.Left + x.Width + 6, token);
-            if (!_blnIsConnected || strLatestVersion == (await LanguageManager.GetStringAsync("String_Error")).Trim())
+            if (!_blnIsConnected || strLatestVersion == (await LanguageManager.GetStringAsync("String_Error", token: token)).Trim())
             {
                 token.ThrowIfCancellationRequested();
                 string strText = string.IsNullOrEmpty(_strExceptionString)
                     ? await LanguageManager.GetStringAsync(
-                        "Warning_Update_CouldNotConnect")
+                        "Warning_Update_CouldNotConnect", token: token)
                     : string.Format(
                         GlobalSettings.CultureInfo,
                         (await LanguageManager.GetStringAsync(
-                            "Warning_Update_CouldNotConnectException"))
+                            "Warning_Update_CouldNotConnectException", token: token))
                         .NormalizeWhiteSpace(),
                         _strExceptionString);
                 await Task.WhenAll(lblUpdaterStatus.DoThreadSafeAsync(x => x.Text = strText, token),
-                                   LanguageManager.GetStringAsync("Button_Reconnect")
+                                   LanguageManager.GetStringAsync("Button_Reconnect", token: token)
                                                   .ContinueWith(
                                                       y => cmdUpdate.DoThreadSafeFuncAsync(
                                                           x => x.Text = y.Result, token), token).Unwrap(),
@@ -534,27 +547,27 @@ namespace Chummer
             if (VersionExtensions.TryParse(strLatestVersion, out Version objLatestVersion))
                 intResult = objLatestVersion?.CompareTo(Utils.CurrentChummerVersion) ?? 0;
             token.ThrowIfCancellationRequested();
-            string strSpace = await LanguageManager.GetStringAsync("String_Space");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
             string strStatusText;
             if (intResult > 0)
             {
-                strStatusText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Update_Available"), strLatestVersion) + strSpace +
-                                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Currently_Installed_Version"), CurrentVersion);
+                strStatusText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Update_Available", token: token), strLatestVersion) + strSpace +
+                                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Currently_Installed_Version", token: token), CurrentVersion);
             }
             else
             {
-                strStatusText = await LanguageManager.GetStringAsync("String_Up_To_Date") + strSpace +
+                strStatusText = await LanguageManager.GetStringAsync("String_Up_To_Date", token: token) + strSpace +
                                 string.Format(GlobalSettings.CultureInfo,
-                                              await LanguageManager.GetStringAsync("String_Currently_Installed_Version"),
+                                              await LanguageManager.GetStringAsync("String_Currently_Installed_Version", token: token),
                                               CurrentVersion) + strSpace + string.Format(GlobalSettings.CultureInfo,
-                                    await LanguageManager.GetStringAsync("String_Latest_Version"),
+                                    await LanguageManager.GetStringAsync("String_Latest_Version", token: token),
                                     await LanguageManager.GetStringAsync(_blnPreferNightly
                                                                              ? "String_Nightly"
-                                                                             : "String_Stable"), strLatestVersion);
+                                                                             : "String_Stable", token: token), strLatestVersion);
                 if (intResult < 0)
                 {
                     token.ThrowIfCancellationRequested();
-                    string strText = await LanguageManager.GetStringAsync("Button_Up_To_Date");
+                    string strText = await LanguageManager.GetStringAsync("Button_Up_To_Date", token: token);
                     await cmdRestart.DoThreadSafeAsync(x =>
                     {
                         x.Text = strText;
@@ -563,10 +576,10 @@ namespace Chummer
                 }
             }
             if (_blnPreferNightly)
-                strStatusText += strSpace + await LanguageManager.GetStringAsync("String_Nightly_Changelog_Warning");
+                strStatusText += strSpace + await LanguageManager.GetStringAsync("String_Nightly_Changelog_Warning", token: token);
             token.ThrowIfCancellationRequested();
             await Task.WhenAll(lblUpdaterStatus.DoThreadSafeAsync(x => x.Text = strStatusText, token),
-                               LanguageManager.GetStringAsync(intResult > 0 ? "Button_Download" : "Button_Redownload")
+                               LanguageManager.GetStringAsync(intResult > 0 ? "Button_Download" : "Button_Redownload", token: token)
                                               .ContinueWith(
                                                   y => cmdUpdate.DoThreadSafeFuncAsync(x => x.Text = y.Result, token),
                                                   token).Unwrap());
@@ -705,21 +718,21 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 if (!SilentMode)
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token));
                 return false;
             }
             catch (IOException)
             {
                 token.ThrowIfCancellationRequested();
                 if (!SilentMode)
-                    Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"), Path.GetFileName(strBackupZipPath)));
+                    Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token), Path.GetFileName(strBackupZipPath)));
                 return false;
             }
             catch (NotSupportedException)
             {
                 token.ThrowIfCancellationRequested();
                 if (!SilentMode)
-                    Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"), Path.GetFileName(strBackupZipPath)));
+                    Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token), Path.GetFileName(strBackupZipPath)));
                 return false;
             }
             return true;
@@ -801,8 +814,8 @@ namespace Chummer
         private async ValueTask DoCleanReinstall(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Updater_CleanReinstallPrompt"),
-                                       await LanguageManager.GetStringAsync("MessageTitle_Updater_CleanReinstallPrompt"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Updater_CleanReinstallPrompt", token: token),
+                                       await LanguageManager.GetStringAsync("MessageTitle_Updater_CleanReinstallPrompt", token: token), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempLatestVersionZipPath))
             {
@@ -895,7 +908,7 @@ namespace Chummer
                                         this,
                                         string.Format(GlobalSettings.CultureInfo,
                                                       await LanguageManager.GetStringAsync(
-                                                          "Message_File_Cannot_Be_Accessed"),
+                                                          "Message_File_Cannot_Be_Accessed", token: token),
                                                       Path.GetFileName(strLoopPath)));
                                 blnDoRestart = false;
                                 break;
@@ -907,7 +920,7 @@ namespace Chummer
                                         this,
                                         string.Format(GlobalSettings.CultureInfo,
                                                       await LanguageManager.GetStringAsync(
-                                                          "Message_File_Cannot_Be_Accessed"),
+                                                          "Message_File_Cannot_Be_Accessed", token: token),
                                                       Path.GetFileName(strLoopPath)));
                                 blnDoRestart = false;
                                 break;
@@ -918,7 +931,7 @@ namespace Chummer
                                     Program.ShowMessageBox(
                                         this,
                                         await LanguageManager.GetStringAsync(
-                                            "Message_Insufficient_Permissions_Warning"));
+                                            "Message_Insufficient_Permissions_Warning", token: token));
                                 blnDoRestart = false;
                                 break;
                             }
@@ -933,7 +946,7 @@ namespace Chummer
                         Program.ShowMessageBox(
                             this,
                             string.Format(GlobalSettings.CultureInfo,
-                                          await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"),
+                                          await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token),
                                           strZipPath));
                     blnDoRestart = false;
                 }
@@ -943,7 +956,7 @@ namespace Chummer
                         Program.ShowMessageBox(
                             this,
                             string.Format(GlobalSettings.CultureInfo,
-                                          await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"),
+                                          await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token),
                                           strZipPath));
                     blnDoRestart = false;
                 }
@@ -951,7 +964,7 @@ namespace Chummer
                 {
                     if (!SilentMode)
                         Program.ShowMessageBox(
-                            this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
+                            this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token));
                     blnDoRestart = false;
                 }
 
@@ -993,7 +1006,7 @@ namespace Chummer
                                                                           out StringBuilder sbdOutput))
                             {
                                 sbdOutput.Append(
-                                    await LanguageManager.GetStringAsync("Message_Files_Cannot_Be_Removed"));
+                                    await LanguageManager.GetStringAsync("Message_Files_Cannot_Be_Removed", token: token));
                                 foreach (string strFile in lstBlocked)
                                 {
                                     sbdOutput.AppendLine().Append(strFile);
@@ -1070,7 +1083,7 @@ namespace Chummer
                             this,
                             string.Format(GlobalSettings.CultureInfo,
                                           await LanguageManager.GetStringAsync(
-                                              "Warning_Update_CouldNotConnectException"),
+                                              "Warning_Update_CouldNotConnectException", token: token),
                                           strException), Application.ProductName, MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                     await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = true, token);
@@ -1095,41 +1108,44 @@ namespace Chummer
         private async void wc_DownloadCompleted(object sender, AsyncCompletedEventArgs e)
         {
             Log.Info("wc_DownloadExeFileCompleted enter");
-            string strText1 = await LanguageManager.GetStringAsync("Button_Redownload");
-            string strText2 = await LanguageManager.GetStringAsync("Button_Up_To_Date");
-            await Task.WhenAll(cmdUpdate.DoThreadSafeAsync(x =>
-                               {
-                                   x.Text = strText1;
-                                   x.Enabled = true;
-                               }, _objGenericToken),
-                               cmdRestart.DoThreadSafeAsync(x =>
-                               {
-                                   if (_blnIsConnected && x.Text != strText2)
-                                       x.Enabled = true;
-                               }, _objGenericToken),
-                               cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken));
-            Log.Info("wc_DownloadExeFileCompleted exit");
-            if (SilentMode)
+            try
             {
-                if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Update_CloseForms"),
-                        await LanguageManager.GetStringAsync("Title_Update"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==
-                    DialogResult.Yes)
+                string strText1 = await LanguageManager.GetStringAsync("Button_Redownload", token: _objGenericToken);
+                string strText2 = await LanguageManager.GetStringAsync("Button_Up_To_Date", token: _objGenericToken);
+                await Task.WhenAll(cmdUpdate.DoThreadSafeAsync(x =>
+                                   {
+                                       x.Text = strText1;
+                                       x.Enabled = true;
+                                   }, _objGenericToken),
+                                   cmdRestart.DoThreadSafeAsync(x =>
+                                   {
+                                       if (_blnIsConnected && x.Text != strText2)
+                                           x.Enabled = true;
+                                   }, _objGenericToken),
+                                   cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken));
+                Log.Info("wc_DownloadExeFileCompleted exit");
+                if (SilentMode)
                 {
-                    try
+                    if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Update_CloseForms", token: _objGenericToken),
+                                               await LanguageManager.GetStringAsync(
+                                                   "Title_Update", token: _objGenericToken), MessageBoxButtons.YesNo,
+                                               MessageBoxIcon.Question) ==
+                        DialogResult.Yes)
                     {
                         await DoUpdate(_objGenericToken);
                     }
-                    catch (OperationCanceledException)
+                    else
                     {
-                        //swallow this
+                        _blnSilentModeUpdateWasDenied
+                            = true; // only actually go through with the attempt in Silent Mode once, don't prompt user any more if they canceled out once already
+                        _blnIsConnected = false;
+                        await this.DoThreadSafeAsync(x => x.Close(), _objGenericToken);
                     }
                 }
-                else
-                {
-                    _blnSilentModeUpdateWasDenied = true; // only actually go through with the attempt in Silent Mode once, don't prompt user any more if they canceled out once already
-                    _blnIsConnected = false;
-                    await this.DoThreadSafeAsync(x => x.Close(), _objGenericToken);
-                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 

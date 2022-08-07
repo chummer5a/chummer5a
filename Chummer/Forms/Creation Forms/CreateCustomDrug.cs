@@ -145,7 +145,7 @@ namespace Chummer
             {
                 DrugComponent objDrugComponent = objNodeData.DrugComponent;
                 objDrugComponent.Level = objNodeData.Level;
-                await _objDrug.Components.AddAsync(objDrugComponent);
+                await _objDrug.Components.AddAsync(objDrugComponent, token: token);
             }
         }
 
@@ -155,13 +155,13 @@ namespace Chummer
             // Make sure the suite and file name fields are populated.
             if (string.IsNullOrEmpty(txtDrugName.Text))
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CustomDrug_Name"), await LanguageManager.GetStringAsync("MessageTitle_CustomDrug_Name"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CustomDrug_Name", token: token), await LanguageManager.GetStringAsync("MessageTitle_CustomDrug_Name", token: token), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (_objDrug.Components.Count(o => o.Category == "Foundation") != 1)
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CustomDrug_MissingFoundation"), await LanguageManager.GetStringAsync("MessageTitle_CustomDrug_Foundation"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CustomDrug_MissingFoundation", token: token), await LanguageManager.GetStringAsync("MessageTitle_CustomDrug_Foundation", token: token), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -194,7 +194,7 @@ namespace Chummer
                 objNodeData.DrugComponent.Limit && objNodeData.DrugComponent.Limit != 0)
             {
                 Program.ShowMessageBox(this,
-                    string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_DuplicateDrugComponentWarning"),
+                    string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_DuplicateDrugComponentWarning", token: token),
                         objNodeData.DrugComponent.Limit));
                 return;
             }
@@ -202,15 +202,15 @@ namespace Chummer
             //drug can have only one foundation
             if (objNodeData.DrugComponent.Category == "Foundation" && _lstSelectedDrugComponents.Any(c => c.DrugComponent.Category == "Foundation"))
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_DuplicateDrugFoundationWarning"));
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_DuplicateDrugFoundationWarning", token: token));
                 return;
             }
 
-            string strSpaceString = await LanguageManager.GetStringAsync("String_Space");
+            string strSpaceString = await LanguageManager.GetStringAsync("String_Space", token: token);
             //restriction for maximum level of block (CF 191)
             if (objNodeData.Level + 1 > 2)
             {
-                string strColonString = await LanguageManager.GetStringAsync("String_Colon");
+                string strColonString = await LanguageManager.GetStringAsync("String_Colon", token: token);
                 foreach (DrugComponent objFoundationComponent in _lstSelectedDrugComponents.Select(x => x.DrugComponent))
                 {
                     if (objFoundationComponent.Category != "Foundation")
@@ -223,7 +223,7 @@ namespace Chummer
                             dctBlockAttributes.TryGetValue(objItem.Key, out decimal decBlockAttrValue) &&
                             decBlockAttrValue > 0)
                         {
-                            string strMessage = await LanguageManager.GetStringAsync("String_MaximumDrugBlockLevel") +
+                            string strMessage = await LanguageManager.GetStringAsync("String_MaximumDrugBlockLevel", token: token) +
                                                 Environment.NewLine + Environment.NewLine +
                                                 objFoundationComponent.CurrentDisplayName + strColonString +
                                                 strSpaceString + objItem.Key +
@@ -240,7 +240,7 @@ namespace Chummer
 
             string strNodeText = objNodeData.DrugComponent.CurrentDisplayName;
             if (objNodeData.DrugComponent.Level <= 0 && objNodeData.DrugComponent.DrugEffects.Count > 1)
-                strNodeText += strSpaceString + '(' + await LanguageManager.GetStringAsync("String_Level") + strSpaceString + (objNodeData.Level + 1).ToString(GlobalSettings.CultureInfo) + ')';
+                strNodeText += strSpaceString + '(' + await LanguageManager.GetStringAsync("String_Level", token: token) + strSpaceString + (objNodeData.Level + 1).ToString(GlobalSettings.CultureInfo) + ')';
             await treChosenComponents.DoThreadSafeAsync(() =>
             {
                 TreeNode objNewNode = nodCategoryNode.Nodes.Add(strNodeText);

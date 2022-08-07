@@ -565,10 +565,10 @@ namespace Chummer
                 foreach (ExportCharacter objForm in e.OldItems)
                 {
                     if (await GlobalSettings.FavoriteCharacters.ContainsAsync(
-                            objForm.CharacterObject.FileName))
+                            objForm.CharacterObject.FileName, token: _objGenericToken))
                         continue;
                     if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
-                            objForm.CharacterObject.FileName))
+                            objForm.CharacterObject.FileName, token: _objGenericToken))
                         continue;
                     blnRefreshMru = true;
                     break;
@@ -607,10 +607,10 @@ namespace Chummer
                             foreach (ExportCharacter objForm in e.OldItems)
                             {
                                 if (await GlobalSettings.FavoriteCharacters.ContainsAsync(
-                                        objForm.CharacterObject.FileName))
+                                        objForm.CharacterObject.FileName, token: _objGenericToken))
                                     continue;
                                 if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
-                                        objForm.CharacterObject.FileName))
+                                        objForm.CharacterObject.FileName, token: _objGenericToken))
                                     continue;
                                 blnRefreshMru = true;
                                 break;
@@ -737,10 +737,10 @@ namespace Chummer
                 foreach (CharacterShared objForm in e.OldItems)
                 {
                     if (await GlobalSettings.FavoriteCharacters.ContainsAsync(
-                            objForm.CharacterObject.FileName))
+                            objForm.CharacterObject.FileName, token: _objGenericToken))
                         continue;
                     if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
-                            objForm.CharacterObject.FileName))
+                            objForm.CharacterObject.FileName, token: _objGenericToken))
                         continue;
                     blnRefreshMru = true;
                     break;
@@ -779,10 +779,10 @@ namespace Chummer
                         foreach (CharacterShared objForm in e.OldItems)
                         {
                             if (await GlobalSettings.FavoriteCharacters.ContainsAsync(
-                                    objForm.CharacterObject.FileName))
+                                    objForm.CharacterObject.FileName, token: _objGenericToken))
                                 continue;
                             if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
-                                    objForm.CharacterObject.FileName))
+                                    objForm.CharacterObject.FileName, token: _objGenericToken))
                                 continue;
                             blnRefreshMru = true;
                             break;
@@ -813,8 +813,8 @@ namespace Chummer
             if (!IsFinishedLoading)
                 return;
 
-            string strErrorPrefix = await LanguageManager.GetStringAsync("String_Error")
-                                    + await LanguageManager.GetStringAsync("String_Colon") + Environment.NewLine;
+            string strErrorPrefix = await LanguageManager.GetStringAsync("String_Error", token: token)
+                                    + await LanguageManager.GetStringAsync("String_Colon", token: token) + Environment.NewLine;
             Color objWindowTextColor = await ColorManager.WindowTextAsync;
             await treCharacterList.DoThreadSafeAsync(x =>
             {
@@ -852,7 +852,7 @@ namespace Chummer
             TreeNode objFavoriteNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.FindNode("Favorite", false), token);
             if (objFavoriteNode == null && blnRefreshFavorites)
             {
-                objFavoriteNode = new TreeNode(await LanguageManager.GetStringAsync("Treenode_Roster_FavoriteCharacters"))
+                objFavoriteNode = new TreeNode(await LanguageManager.GetStringAsync("Treenode_Roster_FavoriteCharacters", token: token))
                     {Tag = "Favorite"};
                 blnAddFavoriteNode = true;
             }
@@ -876,7 +876,7 @@ namespace Chummer
             TreeNode objRecentNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.FindNode("Recent", false), token);
             if (objRecentNode == null && lstRecents.Count > 0)
             {
-                objRecentNode = new TreeNode(await LanguageManager.GetStringAsync("Treenode_Roster_RecentCharacters"))
+                objRecentNode = new TreeNode(await LanguageManager.GetStringAsync("Treenode_Roster_RecentCharacters", token: token))
                     {Tag = "Recent"};
                 blnAddRecentNode = true;
             }
@@ -1077,7 +1077,7 @@ namespace Chummer
                 if (objWatchNode != null)
                     objWatchNode.Nodes.Clear();
                 else
-                    objWatchNode = new TreeNode(await LanguageManager.GetStringAsync("Treenode_Roster_WatchFolder")) { Tag = "Watch" };
+                    objWatchNode = new TreeNode(await LanguageManager.GetStringAsync("Treenode_Roster_WatchFolder", token: token)) { Tag = "Watch" };
             }
             else
                 objWatchNode?.Remove();
@@ -1359,7 +1359,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (objCache == null)
                 return new TreeNode
-                    {Text = await LanguageManager.GetStringAsync("String_Error"), ForeColor = ColorManager.ErrorColor};
+                    {Text = await LanguageManager.GetStringAsync("String_Error", token: token), ForeColor = ColorManager.ErrorColor};
             token.ThrowIfCancellationRequested();
             TreeNode objNode = new TreeNode
             {
@@ -1373,8 +1373,8 @@ namespace Chummer
                 objNode.ForeColor = ColorManager.ErrorColor;
                 if (!string.IsNullOrEmpty(objNode.ToolTipText))
                     objNode.ToolTipText += Environment.NewLine + Environment.NewLine;
-                objNode.ToolTipText += await LanguageManager.GetStringAsync("String_Error") +
-                                       await LanguageManager.GetStringAsync("String_Colon") + Environment.NewLine +
+                objNode.ToolTipText += await LanguageManager.GetStringAsync("String_Error", token: token) +
+                                       await LanguageManager.GetStringAsync("String_Colon", token: token) + Environment.NewLine +
                                        objCache.ErrorText;
             }
 
@@ -1398,7 +1398,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (objCache != null)
                     {
-                        string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
+                        string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token);
                         await objCache.Description.RtfToPlainTextAsync(token)
                                       .ContinueWith(
                                           y => txtCharacterBio.DoThreadSafeAsync(x => x.Text = y.Result, token), token)
@@ -1424,7 +1424,7 @@ namespace Chummer
                                       .Unwrap();
                         string strText = objCache.Karma;
                         if (string.IsNullOrEmpty(strText) || strText == 0.ToString(GlobalSettings.CultureInfo))
-                            strText = await LanguageManager.GetStringAsync("String_None");
+                            strText = await LanguageManager.GetStringAsync("String_None", token: token);
                         await lblCareerKarma.DoThreadSafeAsync(x => x.Text = strText, token);
                         await lblPlayerName.DoThreadSafeAsync(x =>
                         {
@@ -1452,7 +1452,7 @@ namespace Chummer
                         }, token);
                         string strText2 = objCache.FileName;
                         if (string.IsNullOrEmpty(strText2))
-                            strText2 = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound");
+                            strText2 = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token);
                         await lblFilePath.DoThreadSafeAsync(x => x.Text = strText2, token);
                         await lblSettings.DoThreadSafeAsync(x =>
                         {
@@ -1491,7 +1491,7 @@ namespace Chummer
                                 objMetatypeNode = objMetatypeNode?.SelectSingleNode(
                                     "metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + ']');
 
-                                strMetatype += await LanguageManager.GetStringAsync("String_Space") + '('
+                                strMetatype += await LanguageManager.GetStringAsync("String_Space", token: token) + '('
                                     + (objMetatypeNode != null
                                         ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))
                                           ?.Value
@@ -1503,7 +1503,7 @@ namespace Chummer
                         }
                         else
                         {
-                            await LanguageManager.GetStringAsync("String_MetatypeLoadError")
+                            await LanguageManager.GetStringAsync("String_MetatypeLoadError", token: token)
                                                  .ContinueWith(
                                                      y => lblMetatype.DoThreadSafeAsync(x => x.Text = y.Result, token),
                                                      token)
@@ -2041,12 +2041,12 @@ namespace Chummer
             }
         }
 
-        public ContextMenuStrip CreateContextMenuStrip(bool blnIncludeCloseOpenCharacter)
+        public ContextMenuStrip CreateContextMenuStrip(bool blnIncludeCloseOpenCharacter, CancellationToken token = default)
         {
             int intToolStripWidth = 180;
             int intToolStripHeight = 22;
 
-            return this.DoThreadSafeFunc(() =>
+            return this.DoThreadSafeFunc(x =>
             {
                 using (Graphics g = CreateGraphics())
                 {
@@ -2143,12 +2143,12 @@ namespace Chummer
                     tsDelete
                 });
 
-                tsToggleFav.TranslateToolStripItemsRecursively();
-                tsSort.TranslateToolStripItemsRecursively();
-                tsOpen.TranslateToolStripItemsRecursively();
-                tsOpenForPrinting.TranslateToolStripItemsRecursively();
-                tsOpenForExport.TranslateToolStripItemsRecursively();
-                tsDelete.TranslateToolStripItemsRecursively();
+                tsToggleFav.TranslateToolStripItemsRecursively(token: x);
+                tsSort.TranslateToolStripItemsRecursively(token: x);
+                tsOpen.TranslateToolStripItemsRecursively(token: x);
+                tsOpenForPrinting.TranslateToolStripItemsRecursively(token: x);
+                tsOpenForExport.TranslateToolStripItemsRecursively(token: x);
+                tsDelete.TranslateToolStripItemsRecursively(token: x);
 
                 if (blnIncludeCloseOpenCharacter)
                 {
@@ -2165,12 +2165,12 @@ namespace Chummer
                     };
                     tsCloseOpenCharacter.Click += tsCloseOpenCharacter_Click;
                     cmsRoster.Items.Add(tsCloseOpenCharacter);
-                    tsCloseOpenCharacter.TranslateToolStripItemsRecursively();
+                    tsCloseOpenCharacter.TranslateToolStripItemsRecursively(token: x);
                 }
 
-                cmsRoster.UpdateLightDarkMode();
+                cmsRoster.UpdateLightDarkMode(x);
                 return cmsRoster;
-            });
+            }, token);
         }
 
         /// <summary>

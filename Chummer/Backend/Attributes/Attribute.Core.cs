@@ -655,7 +655,7 @@ namespace Chummer.Backend.Attributes
         {
             int intValue = await GetValueAsync(token);
             return await HasModifiersAsync(token)
-                ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", intValue, await LanguageManager.GetStringAsync("String_Space"), await GetTotalValueAsync(token))
+                ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", intValue, await LanguageManager.GetStringAsync("String_Space", token: token), await GetTotalValueAsync(token))
                 : intValue.ToString(GlobalSettings.CultureInfo);
         }
 
@@ -1320,7 +1320,7 @@ namespace Chummer.Backend.Attributes
         {
             token.ThrowIfCancellationRequested();
             return string.Format(GlobalSettings.CultureInfo, "{1}{0}/{0}{2}{0}({3})",
-                                 await LanguageManager.GetStringAsync("String_Space"), await GetTotalMinimumAsync(token),
+                                 await LanguageManager.GetStringAsync("String_Space", token: token), await GetTotalMinimumAsync(token),
                                  await GetTotalMaximumAsync(token), await GetTotalAugmentedMaximumAsync(token));
         }
 

@@ -30,7 +30,7 @@ using System.Xml.XPath;
 namespace Chummer
 {
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class StoryModule : IHasName, IHasInternalId, IHasXmlDataNode, IDisposable, IAsyncDisposable
+    public sealed class StoryModule : IHasName, IHasInternalId, IHasXmlDataNode, IDisposable, IAsyncDisposable
     {
         private readonly LockingDictionary<string, string> _dicEnglishTexts = new LockingDictionary<string, string>();
         private readonly Guid _guiInternalId;
@@ -328,14 +328,14 @@ namespace Chummer
             {
                 case "$ReverseTranslateExtra":
                     {
-                        return await _objCharacter.ReverseTranslateExtraAsync(strArguments);
+                        return await _objCharacter.ReverseTranslateExtraAsync(strArguments, token: token);
                     }
                 case "$XmlNameFriendly":
                 {
                     return strArguments
                            .FastEscape(' ', '$', '/', '?', ',', '\'', '\"', ';', ':', '(', ')', '[', ']', '|', '\\',
                                        '+', '=', '`', '~', '!', '@', '#', '%', '^', '&', '*')
-                           .FastEscape((await LanguageManager.GetStringAsync("String_NuyenSymbol", strLanguage))
+                           .FastEscape((await LanguageManager.GetStringAsync("String_NuyenSymbol", strLanguage, token: token))
                                        .ToCharArray()).ToLower(objCulture);
                 }
                 case "$CharacterName":
@@ -380,7 +380,7 @@ namespace Chummer
                     }
                 case "$Alias":
                     {
-                        return !string.IsNullOrEmpty(_objCharacter.Alias) ? _objCharacter.Alias : await LanguageManager.GetStringAsync("String_Unknown", strLanguage);
+                        return !string.IsNullOrEmpty(_objCharacter.Alias) ? _objCharacter.Alias : await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token);
                     }
                 case "$Name":
                     {
@@ -394,7 +394,7 @@ namespace Chummer
 
                             return _objCharacter.Name;
                         }
-                        return await LanguageManager.GetStringAsync("String_Unknown", strLanguage);
+                        return await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token);
                     }
                 case "$Year":
                     {
@@ -409,16 +409,16 @@ namespace Chummer
                             return intBirthYear.ToString(objCulture);
                         }
 
-                        return await LanguageManager.GetStringAsync("String_Unknown", strLanguage);
+                        return await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token);
                     }
                 case "$GetString":
                     {
-                        return await LanguageManager.GetStringAsync(strArguments, strLanguage);
+                        return await LanguageManager.GetStringAsync(strArguments, strLanguage, token: token);
                     }
                 case "$XPath":
                     {
                         (bool blnSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strArguments, token);
-                        return blnSuccess ? objProcess.ToString() : await LanguageManager.GetStringAsync("String_Unknown", strLanguage);
+                        return blnSuccess ? objProcess.ToString() : await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token);
                     }
                 case "$Index":
                     {
@@ -429,7 +429,7 @@ namespace Chummer
                             return strArgumentsSplit[Math.Max(0, Math.Min(intArgumentsCount - 1, intIndex + 1))];
                         }
 
-                        return await LanguageManager.GetStringAsync("String_Unknown", strLanguage);
+                        return await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token);
                     }
                 case "$LookupExtra":
                     {
@@ -444,7 +444,7 @@ namespace Chummer
                             _objCharacter.Spells.FirstOrDefault(x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra;
                         if (!string.IsNullOrEmpty(strExtra))
                         {
-                            return await _objCharacter.TranslateExtraAsync(strExtra, strLanguage);
+                            return await _objCharacter.TranslateExtraAsync(strExtra, strLanguage, token: token);
                         }
 
                         return string.Empty;
@@ -455,7 +455,7 @@ namespace Chummer
                         if (intArgumentPipeIndex != -1)
                         {
                             string strMainOutput = strArguments.Substring(0, intArgumentPipeIndex);
-                            if (!string.IsNullOrEmpty(strMainOutput) && strMainOutput != await LanguageManager.GetStringAsync("String_Error", strLanguage) && strMainOutput != await LanguageManager.GetStringAsync("String_Unknown", strLanguage))
+                            if (!string.IsNullOrEmpty(strMainOutput) && strMainOutput != await LanguageManager.GetStringAsync("String_Error", strLanguage, token: token) && strMainOutput != await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token))
                                 return strMainOutput;
                             if (intArgumentPipeIndex + 1 < strArguments.Length)
                                 return strArguments.Substring(intArgumentPipeIndex + 1);
@@ -482,7 +482,7 @@ namespace Chummer
                     return await ResolveMacros(await objInnerModule.DisplayTextAsync(strArguments, strLanguage, token), objCulture, strLanguage, token: token);
             }
 
-            return await LanguageManager.GetStringAsync("String_Error", strLanguage);
+            return await LanguageManager.GetStringAsync("String_Error", strLanguage, token: token);
         }
 
         public string InternalId => _guiInternalId == Guid.Empty ? string.Empty : _guiInternalId.ToString("D", GlobalSettings.InvariantCultureInfo);

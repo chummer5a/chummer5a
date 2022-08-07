@@ -47,9 +47,16 @@ namespace Chummer
 
         private async void PrintMultipleCharacters_Load(object sender, EventArgs e)
         {
-            dlgOpenFile.Title = await LanguageManager.GetStringAsync("Title_PrintMultiple");
-            dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
-                                 await LanguageManager.GetStringAsync("DialogFilter_All");
+            try
+            {
+                dlgOpenFile.Title = await LanguageManager.GetStringAsync("Title_PrintMultiple", token: _objGenericToken);
+                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: _objGenericToken) + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_All", token: _objGenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void PrintMultipleCharacters_FormClosing(object sender, FormClosingEventArgs e)
@@ -89,7 +96,7 @@ namespace Chummer
                 {
                     TreeNode objNode = new TreeNode
                     {
-                        Text = Path.GetFileName(strFileName) ?? await LanguageManager.GetStringAsync("String_Unknown"),
+                        Text = Path.GetFileName(strFileName) ?? await LanguageManager.GetStringAsync("String_Unknown", token: _objGenericToken),
                         Tag = strFileName
                     };
                     await treCharacters.DoThreadSafeAsync(x => x.Nodes.Add(objNode), _objGenericToken);
@@ -235,7 +242,7 @@ namespace Chummer
 
                         Character objReturn;
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                               = await Program.CreateAndShowProgressBarAsync(strLoopFile, Character.NumLoadingSections))
+                               = await Program.CreateAndShowProgressBarAsync(strLoopFile, Character.NumLoadingSections, token: innerToken))
                             objReturn = await Program.LoadCharacterAsync(
                                 strLoopFile, string.Empty, false, false, frmLoadingBar.MyForm, innerToken);
                         bool blnLoadSuccessful = objReturn != null;
@@ -293,12 +300,12 @@ namespace Chummer
                 blnAnyChanges = false;
                 foreach (Character objCharacter in _aobjCharacters)
                 {
-                    if (!await Program.OpenCharacters.ContainsAsync(objCharacter)
+                    if (!await Program.OpenCharacters.ContainsAsync(objCharacter, token: token)
                         || await Program.OpenCharacters.AnyAsync(x => x.LinkedCharacters.Contains(objCharacter), token)
                         || Program.MainForm.OpenFormsWithCharacters.Any(x => x.CharacterObjects.Contains(objCharacter)))
                         continue;
                     blnAnyChanges = true;
-                    await Program.OpenCharacters.RemoveAsync(objCharacter);
+                    await Program.OpenCharacters.RemoveAsync(objCharacter, token: token);
                     token.ThrowIfCancellationRequested();
                 }
             }

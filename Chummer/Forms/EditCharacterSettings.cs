@@ -1027,7 +1027,7 @@ namespace Chummer
             await treCustomDataDirectories.DoThreadSafeAsync(x => x.BeginUpdate(), token);
             try
             {
-                string strFileNotFound = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound");
+                string strFileNotFound = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token);
                 Color objGrayTextColor = await ColorManager.GrayTextAsync;
                 if (_dicCharacterCustomDataDirectoryInfos.Count != treCustomDataDirectories.Nodes.Count)
                 {

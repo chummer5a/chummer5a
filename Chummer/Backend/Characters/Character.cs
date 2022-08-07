@@ -2201,7 +2201,7 @@ namespace Chummer
                     Weapon objWeapon = new Weapon(this)
                     {
                         Name = objXmlNaturalWeapon["name"].InnerText,
-                        Category = LanguageManager.GetString("Tab_Critter"),
+                        Category = LanguageManager.GetString("Tab_Critter", token: token),
                         RangeType = "Melee",
                         Reach =
                             CommonFunctions.ExpressionToInt(objXmlNaturalWeapon["reach"]?.InnerText, intForce, 0, 0),
@@ -3376,7 +3376,7 @@ namespace Chummer
                             if (Utils.IsUnitTest)
                                 throw;
                             // ReSharper disable once MethodHasAsyncOverload
-                            Program.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
+                            Program.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning", token: token));
                             blnErrorFree = false;
                         }
                         catch (XmlException ex)
@@ -3385,13 +3385,13 @@ namespace Chummer
                             if (Utils.IsUnitTest)
                                 throw;
                             // ReSharper disable once MethodHasAsyncOverload
-                            Program.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
+                            Program.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning", token: token));
                             blnErrorFree = false;
                         }
                         catch (UnauthorizedAccessException) when (!Utils.IsUnitTest)
                         {
                             // ReSharper disable once MethodHasAsyncOverload
-                            Program.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
+                            Program.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning", token: token));
                             blnErrorFree = false;
                         }
                     }
@@ -4121,7 +4121,7 @@ namespace Chummer
                             Log.Error(e);
                             if (Utils.IsUnitTest)
                                 throw;
-                            Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_Save_Error_Warning"));
+                            Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_Save_Error_Warning", token: innerToken));
                             blnErrorFree = false;
                         }
                         catch (XmlException ex)
@@ -4129,12 +4129,12 @@ namespace Chummer
                             Log.Warn(ex);
                             if (Utils.IsUnitTest)
                                 throw;
-                            Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_Save_Error_Warning"));
+                            Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_Save_Error_Warning", token: innerToken));
                             blnErrorFree = false;
                         }
                         catch (UnauthorizedAccessException) when (!Utils.IsUnitTest)
                         {
-                            Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_Save_Error_Warning"));
+                            Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_Save_Error_Warning", token: innerToken));
                             blnErrorFree = false;
                         }
                     }
@@ -4515,8 +4515,8 @@ namespace Chummer
                                             If yes, restart the load, explicitly ignoring invalid characters.*/
 
                                             if (Program.ShowMessageBox(
-                                                    LanguageManager.GetString("Message_InvalidTextFound"),
-                                                    LanguageManager.GetString("Message_InvalidTextFound_Title"),
+                                                    LanguageManager.GetString("Message_InvalidTextFound", token: token),
+                                                    LanguageManager.GetString("Message_InvalidTextFound_Title", token: token),
                                                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) ==
                                                 DialogResult.No)
                                             {
@@ -4531,10 +4531,10 @@ namespace Chummer
                                             {
                                                 Program.ShowMessageBox(
                                                     string.Format(GlobalSettings.CultureInfo,
-                                                                  LanguageManager.GetString("Message_FailedLoad"),
+                                                                  LanguageManager.GetString("Message_FailedLoad", token: token),
                                                                   ex.Message),
                                                     string.Format(GlobalSettings.CultureInfo,
-                                                                  LanguageManager.GetString("MessageTitle_FailedLoad"),
+                                                                  LanguageManager.GetString("MessageTitle_FailedLoad", token: token),
                                                                   ex.Message),
                                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                                             }
@@ -4570,8 +4570,8 @@ namespace Chummer
                                             If yes, restart the load, explicitly ignoring invalid characters.*/
 
                                             if (Program.ShowMessageBox(
-                                                    await LanguageManager.GetStringAsync("Message_InvalidTextFound"),
-                                                    await LanguageManager.GetStringAsync("Message_InvalidTextFound_Title"),
+                                                    await LanguageManager.GetStringAsync("Message_InvalidTextFound", token: token),
+                                                    await LanguageManager.GetStringAsync("Message_InvalidTextFound_Title", token: token),
                                                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) ==
                                                 DialogResult.No)
                                             {
@@ -4586,10 +4586,10 @@ namespace Chummer
                                             {
                                                 Program.ShowMessageBox(
                                                     string.Format(GlobalSettings.CultureInfo,
-                                                                  await LanguageManager.GetStringAsync("Message_FailedLoad"),
+                                                                  await LanguageManager.GetStringAsync("Message_FailedLoad", token: token),
                                                                   ex.Message),
                                                     string.Format(GlobalSettings.CultureInfo,
-                                                                  await LanguageManager.GetStringAsync("MessageTitle_FailedLoad"),
+                                                                  await LanguageManager.GetStringAsync("MessageTitle_FailedLoad", token: token),
                                                                   ex.Message),
                                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                                             }
@@ -4622,10 +4622,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Settings"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Settings", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("String_Settings"), token: token);
+                                        await LanguageManager.GetStringAsync("String_Settings", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -4651,14 +4651,14 @@ namespace Chummer
                                     Program.ShowMessageBox(
                                         blnSync
                                             // ReSharper disable once MethodHasAsyncOverload
-                                            ? LanguageManager.GetString("Message_IncorrectGameVersion_SR4")
+                                            ? LanguageManager.GetString("Message_IncorrectGameVersion_SR4", token: token)
                                             : await LanguageManager.GetStringAsync(
-                                                "Message_IncorrectGameVersion_SR4"),
+                                                "Message_IncorrectGameVersion_SR4", token: token),
                                         blnSync
                                             // ReSharper disable once MethodHasAsyncOverload
-                                            ? LanguageManager.GetString("MessageTitle_IncorrectGameVersion")
+                                            ? LanguageManager.GetString("MessageTitle_IncorrectGameVersion", token: token)
                                             : await LanguageManager.GetStringAsync(
-                                                "MessageTitle_IncorrectGameVersion"),
+                                                "MessageTitle_IncorrectGameVersion", token: token),
                                         MessageBoxButtons.YesNo,
                                         MessageBoxIcon.Error);
                                     return false;
@@ -4898,16 +4898,16 @@ namespace Chummer
                                                                   blnSync
                                                                       // ReSharper disable once MethodHasAsyncOverload
                                                                       ? LanguageManager.GetString(
-                                                                          "Message_CharacterOptions_CannotLoadSetting")
+                                                                          "Message_CharacterOptions_CannotLoadSetting", token: token)
                                                                       : await LanguageManager.GetStringAsync(
-                                                                          "Message_CharacterOptions_CannotLoadSetting"),
+                                                                          "Message_CharacterOptions_CannotLoadSetting", token: token),
                                                                   Path.GetFileNameWithoutExtension(_strSettingsKey)),
                                                     blnSync
                                                         // ReSharper disable once MethodHasAsyncOverload
                                                         ? LanguageManager.GetString(
-                                                            "MessageTitle_CharacterOptions_CannotLoadSetting")
+                                                            "MessageTitle_CharacterOptions_CannotLoadSetting", token: token)
                                                         : await LanguageManager.GetStringAsync(
-                                                            "MessageTitle_CharacterOptions_CannotLoadSetting"),
+                                                            "MessageTitle_CharacterOptions_CannotLoadSetting", token: token),
                                                     MessageBoxButtons.YesNo) == DialogResult.No)
                                             {
                                                 return false;
@@ -4974,30 +4974,30 @@ namespace Chummer
                                                                   blnSync
                                                                       // ReSharper disable once MethodHasAsyncOverload
                                                                       ? LanguageManager.GetString(
-                                                                          "Message_CharacterOptions_DesyncBuildMethod")
+                                                                          "Message_CharacterOptions_DesyncBuildMethod", token: token)
                                                                       : await LanguageManager.GetStringAsync(
-                                                                          "Message_CharacterOptions_DesyncBuildMethod"),
+                                                                          "Message_CharacterOptions_DesyncBuildMethod", token: token),
                                                                   Path.GetFileNameWithoutExtension(_strSettingsKey),
                                                                   blnSync
                                                                       // ReSharper disable once MethodHasAsyncOverload
                                                                       ? LanguageManager.GetString(
                                                                           "String_" + objProspectiveSettings
-                                                                              .BuildMethod)
+                                                                              .BuildMethod, token: token)
                                                                       : await LanguageManager.GetStringAsync(
                                                                           "String_" + objProspectiveSettings
-                                                                              .BuildMethod),
+                                                                              .BuildMethod, token: token),
                                                                   blnSync
                                                                       // ReSharper disable once MethodHasAsyncOverload
                                                                       ? LanguageManager.GetString(
-                                                                          "String_" + eSavedBuildMethod)
+                                                                          "String_" + eSavedBuildMethod, token: token)
                                                                       : await LanguageManager.GetStringAsync(
-                                                                          "String_" + eSavedBuildMethod)),
+                                                                          "String_" + eSavedBuildMethod, token: token)),
                                                     blnSync
                                                         // ReSharper disable once MethodHasAsyncOverload
                                                         ? LanguageManager.GetString(
-                                                            "MessageTitle_CharacterOptions_DesyncBuildMethod")
+                                                            "MessageTitle_CharacterOptions_DesyncBuildMethod", token: token)
                                                         : await LanguageManager.GetStringAsync(
-                                                            "MessageTitle_CharacterOptions_DesyncBuildMethod"),
+                                                            "MessageTitle_CharacterOptions_DesyncBuildMethod", token: token),
                                                     MessageBoxButtons.YesNo) == DialogResult.No)
                                             {
                                                 return false;
@@ -5095,16 +5095,16 @@ namespace Chummer
                                                     blnSync
                                                         // ReSharper disable once MethodHasAsyncOverload
                                                         ? LanguageManager.GetString(
-                                                            "Message_CharacterOptions_DesyncBooksOrCustomData")
+                                                            "Message_CharacterOptions_DesyncBooksOrCustomData", token: token)
                                                         : await LanguageManager.GetStringAsync(
-                                                            "Message_CharacterOptions_DesyncBooksOrCustomData"),
+                                                            "Message_CharacterOptions_DesyncBooksOrCustomData", token: token),
                                                     objCurrentlyLoadedSettings.Name),
                                                 blnSync
                                                     // ReSharper disable once MethodHasAsyncOverload
                                                     ? LanguageManager.GetString(
-                                                        "MessageTitle_CharacterOptions_DesyncBooksOrCustomData")
+                                                        "MessageTitle_CharacterOptions_DesyncBooksOrCustomData", token: token)
                                                     : await LanguageManager.GetStringAsync(
-                                                        "MessageTitle_CharacterOptions_DesyncBooksOrCustomData"),
+                                                        "MessageTitle_CharacterOptions_DesyncBooksOrCustomData", token: token),
                                                 MessageBoxButtons.YesNoCancel);
                                             if (eShowBPResult == DialogResult.Cancel)
                                             {
@@ -5271,7 +5271,7 @@ namespace Chummer
                                                                                ref _strPriorityTalent);
 
                                 if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     _lstPrioritySkills.Clear();
                                 else
                                     await _lstPrioritySkills.ClearAsync(token);
@@ -5283,7 +5283,7 @@ namespace Chummer
                                                  "priorityskills/priorityskill")))
                                 {
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstPrioritySkills.Add(xmlSkillName.Value);
                                     else
                                         await _lstPrioritySkills.AddAsync(xmlSkillName.Value, token);
@@ -5296,7 +5296,7 @@ namespace Chummer
                                     !string.IsNullOrEmpty(strSkill1))
                                 {
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstPrioritySkills.Add(strSkill1);
                                     else
                                         await _lstPrioritySkills.AddAsync(strSkill1, token);
@@ -5307,7 +5307,7 @@ namespace Chummer
                                     !string.IsNullOrEmpty(strSkill2))
                                 {
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstPrioritySkills.Add(strSkill2);
                                     else
                                         await _lstPrioritySkills.AddAsync(strSkill2, token);
@@ -5398,10 +5398,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_MentorSpirit"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_MentorSpirit", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("String_MentorSpirit"), token: token);
+                                        await LanguageManager.GetStringAsync("String_MentorSpirit", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -5416,7 +5416,7 @@ namespace Chummer
                                     MentorSpirit objMentor = new MentorSpirit(this, objXmlMentor);
                                     objMentor.Load(objXmlMentor);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstMentorSpirits.Add(objMentor);
                                     else
                                         await _lstMentorSpirits.AddAsync(objMentor, token);
@@ -5429,7 +5429,7 @@ namespace Chummer
                                 new List<Improvement>(InitiationGrades.Count);
 
                             if (blnSync)
-                                // ReSharper disable once MethodHasAsyncOverload
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 _lstInternalIdsNeedingReapplyImprovements.Clear();
                             else
                                 await _lstInternalIdsNeedingReapplyImprovements.ClearAsync(token);
@@ -5439,10 +5439,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Improvements"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Improvements", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Tab_Improvements"), token: token);
+                                        await LanguageManager.GetStringAsync("Tab_Improvements", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -5517,15 +5517,15 @@ namespace Chummer
                                                         blnSync
                                                             // ReSharper disable once MethodHasAsyncOverload
                                                             ? LanguageManager.GetString(
-                                                                "Message_OrphanedImprovements")
+                                                                "Message_OrphanedImprovements", token: token)
                                                             : await LanguageManager.GetStringAsync(
-                                                                "Message_OrphanedImprovements"),
+                                                                "Message_OrphanedImprovements", token: token),
                                                         blnSync
                                                             // ReSharper disable once MethodHasAsyncOverload
                                                             ? LanguageManager.GetString(
-                                                                "MessageTitle_OrphanedImprovements")
+                                                                "MessageTitle_OrphanedImprovements", token: token)
                                                             : await LanguageManager.GetStringAsync(
-                                                                "MessageTitle_OrphanedImprovements"),
+                                                                "MessageTitle_OrphanedImprovements", token: token),
                                                         MessageBoxButtons.YesNo, MessageBoxIcon.Error) ==
                                                     DialogResult.Yes))
                                             {
@@ -5544,7 +5544,7 @@ namespace Chummer
                                         // This is initially set to false make sure no property changers are triggered
                                         objImprovement.SetupComplete = true;
                                         if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstImprovements.Add(objImprovement);
                                         else
                                             await _lstImprovements.AddAsync(objImprovement, token);
@@ -5554,7 +5554,7 @@ namespace Chummer
                                             objImprovement.Value == 0)
                                         {
                                             if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverload
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstInternalIdsNeedingReapplyImprovements.Add(objImprovement
                                                     .SourceName);
                                             else
@@ -5575,7 +5575,7 @@ namespace Chummer
                                             if (Settings.SpecialKarmaCostBasedOnShownValue)
                                             {
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     _lstImprovements.Remove(objImprovement);
                                                 else
                                                     await _lstImprovements.RemoveAsync(objImprovement, token);
@@ -5587,7 +5587,7 @@ namespace Chummer
                                     catch (ArgumentException)
                                     {
                                         if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstInternalIdsNeedingReapplyImprovements.Add(
                                                 objXmlImprovement["sourcename"]?.InnerText);
                                         else
@@ -5604,10 +5604,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_Contacts"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_Contacts", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Label_Contacts"), token: token);
+                                        await LanguageManager.GetStringAsync("Label_Contacts", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -5626,7 +5626,7 @@ namespace Chummer
                                     Contact objContact = new Contact(this);
                                     objContact.Load(xmlContact);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstContacts.Add(objContact);
                                     else
                                         await _lstContacts.AddAsync(objContact, token);
@@ -5640,10 +5640,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Qualities"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Qualities", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("String_Qualities"), token: token);
+                                        await LanguageManager.GetStringAsync("String_Qualities", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -5673,7 +5673,7 @@ namespace Chummer
                                             if (_lstQualities.Any(x => x.InternalId == objQuality.InternalId))
                                                 objQuality.SetGUID(Guid.NewGuid());
                                             if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverload
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstQualities.Add(objQuality);
                                             else
                                                 await _lstQualities.AddAsync(objQuality, token);
@@ -5778,7 +5778,7 @@ namespace Chummer
                                                 {
                                                     // Failed to re-apply the improvements immediately, so let's just add it for processing when the character is opened
                                                     if (blnSync)
-                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                         _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
                                                     else
                                                         await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objQuality.InternalId, token);
@@ -5946,7 +5946,7 @@ namespace Chummer
                                                 // Since SASS' Inspired requires the player to choose a specialization, we always need a prompt,
                                                 // so add the quality to the list for processing when the character is opened.
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
                                                 else
                                                     await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objQuality.InternalId, token);
@@ -5958,7 +5958,7 @@ namespace Chummer
                                             {
                                                 // Chain Breaker bonus requires manual selection of two spirit types, so we need a prompt.
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
                                                 else
                                                     await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objQuality.InternalId, token);
@@ -6016,10 +6016,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_Attributes"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_Attributes", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Label_Attributes"), token: token);
+                                        await LanguageManager.GetStringAsync("Label_Attributes", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -6035,10 +6035,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Tradition"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Tradition", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("String_Tradition"), token: token);
+                                        await LanguageManager.GetStringAsync("String_Tradition", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -6169,10 +6169,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Skills"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Skills", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Tab_Skills"), token: token);
+                                        await LanguageManager.GetStringAsync("Tab_Skills", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -6201,10 +6201,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Locations"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Locations", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("String_Locations"), token: token);
+                                        await LanguageManager.GetStringAsync("String_Locations", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -6328,7 +6328,7 @@ namespace Chummer
                                     StackedFocus objStack = new StackedFocus(this);
                                     objStack.Load(objXmlStack);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstStackedFoci.Add(objStack);
                                     else
                                         await _lstStackedFoci.AddAsync(objStack, token);
@@ -6342,10 +6342,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Armor"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Armor", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Tab_Armor"), token: token);
+                                        await LanguageManager.GetStringAsync("Tab_Armor", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -6360,7 +6360,7 @@ namespace Chummer
                                     Armor objArmor = new Armor(this);
                                     objArmor.Load(objXmlArmor);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstArmor.Add(objArmor);
                                     else
                                         await _lstArmor.AddAsync(objArmor, token);
@@ -6374,10 +6374,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Drugs"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Drugs", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Tab_Drugs"), token: token);
+                                        await LanguageManager.GetStringAsync("Tab_Drugs", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -6392,7 +6392,7 @@ namespace Chummer
                                     Drug objDrug = new Drug(this);
                                     objDrug.Load(objXmlDrug);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstDrugs.Add(objDrug);
                                     else
                                         await _lstDrugs.AddAsync(objDrug, token);
@@ -6406,10 +6406,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Cyberware"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Cyberware", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Tab_Cyberware"), token: token);
+                                        await LanguageManager.GetStringAsync("Tab_Cyberware", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -6427,7 +6427,7 @@ namespace Chummer
                                     Cyberware objCyberware = new Cyberware(this);
                                     objCyberware.Load(objXmlCyberware);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstCyberware.Add(objCyberware);
                                     else
                                         await _lstCyberware.AddAsync(objCyberware, token);
@@ -6521,7 +6521,7 @@ namespace Chummer
                                             }
                                         }
                                         else if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
                                         else
                                             await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objCyberware.InternalId, token);
@@ -6628,7 +6628,7 @@ namespace Chummer
                                                 }
                                             }
                                             else if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverload
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
                                             else
                                                 await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objCyberware.InternalId, token);
@@ -6710,10 +6710,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_SelectedSpells"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_SelectedSpells", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Label_SelectedSpells"), token: token);
+                                        await LanguageManager.GetStringAsync("Label_SelectedSpells", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -6728,7 +6728,7 @@ namespace Chummer
                                     Spell objSpell = new Spell(this);
                                     objSpell.Load(objXmlSpell);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstSpells.Add(objSpell);
                                     else
                                         await _lstSpells.AddAsync(objSpell, token);
@@ -6741,10 +6741,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Adept"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Adept", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Tab_Adept"), token: token);
+                                        await LanguageManager.GetStringAsync("Tab_Adept", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -6770,7 +6770,7 @@ namespace Chummer
                                                 && strPowerName == "Enhanced Accuracy (skill)")
                                             {
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     _lstInternalIdsNeedingReapplyImprovements.Add(strGuid);
                                                 else
                                                     await _lstInternalIdsNeedingReapplyImprovements.AddAsync(strGuid, token);
@@ -6823,10 +6823,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_Spirits"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_Spirits", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Label_Spirits"), token: token);
+                                        await LanguageManager.GetStringAsync("Label_Spirits", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -6844,7 +6844,7 @@ namespace Chummer
                                     Spirit objSpirit = new Spirit(this);
                                     objSpirit.Load(xmlSpirit);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstSpirits.Add(objSpirit);
                                     else
                                         await _lstSpirits.AddAsync(objSpirit, token);
@@ -6871,10 +6871,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_ComplexForms"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_ComplexForms", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Label_ComplexForms"), token: token);
+                                        await LanguageManager.GetStringAsync("Label_ComplexForms", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -6889,7 +6889,7 @@ namespace Chummer
                                     ComplexForm objComplexForm = new ComplexForm(this);
                                     objComplexForm.Load(objXmlComplexForm);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstComplexForms.Add(objComplexForm);
                                     else
                                         await _lstComplexForms.AddAsync(objComplexForm, token);
@@ -6903,10 +6903,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_AdvancedPrograms"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_AdvancedPrograms", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Tab_AdvancedPrograms"), token: token);
+                                        await LanguageManager.GetStringAsync("Tab_AdvancedPrograms", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -6921,7 +6921,7 @@ namespace Chummer
                                     AIProgram objProgram = new AIProgram(this);
                                     objProgram.Load(objXmlProgram);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstAIPrograms.Add(objProgram);
                                     else
                                         await _lstAIPrograms.AddAsync(objProgram, token);
@@ -6935,10 +6935,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_MartialArts"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_MartialArts", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Tab_MartialArts"), token: token);
+                                        await LanguageManager.GetStringAsync("Tab_MartialArts", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -6953,7 +6953,7 @@ namespace Chummer
                                     MartialArt objMartialArt = new MartialArt(this);
                                     objMartialArt.Load(objXmlArt);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstMartialArts.Add(objMartialArt);
                                     else
                                         await _lstMartialArts.AddAsync(objMartialArt, token);
@@ -6967,10 +6967,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Limits"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Limits", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Tab_Limits"), token: token);
+                                        await LanguageManager.GetStringAsync("Tab_Limits", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -6985,7 +6985,7 @@ namespace Chummer
                                     LimitModifier obLimitModifier = new LimitModifier(this);
                                     obLimitModifier.Load(objXmlLimit);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstLimitModifiers.Add(obLimitModifier);
                                     else
                                         await _lstLimitModifiers.AddAsync(obLimitModifier, token);
@@ -6999,10 +6999,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_SelectPACKSKit_Lifestyles"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_SelectPACKSKit_Lifestyles", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("String_SelectPACKSKit_Lifestyles"), token: token);
+                                        await LanguageManager.GetStringAsync("String_SelectPACKSKit_Lifestyles", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -7017,7 +7017,7 @@ namespace Chummer
                                     Lifestyle objLifestyle = new Lifestyle(this);
                                     objLifestyle.Load(objXmlLifestyle);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstLifestyles.Add(objLifestyle);
                                     else
                                         await _lstLifestyles.AddAsync(objLifestyle, token);
@@ -7031,10 +7031,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Gear"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Gear", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Tab_Gear"), token: token);
+                                        await LanguageManager.GetStringAsync("Tab_Gear", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -7049,7 +7049,7 @@ namespace Chummer
                                     Gear objGear = new Gear(this);
                                     objGear.Load(objXmlGear);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstGear.Add(objGear);
                                     else
                                         await _lstGear.AddAsync(objGear, token);
@@ -7147,7 +7147,7 @@ namespace Chummer
                                     {
                                         // Failed to re-apply the improvements immediately, so let's just add it for processing when the character is opened
                                         if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstInternalIdsNeedingReapplyImprovements.Add(objLivingPersonaQuality.InternalId);
                                         else
                                             await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objLivingPersonaQuality.InternalId, token);
@@ -7187,10 +7187,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_Vehicles"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_Vehicles", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Label_Vehicles"), token: token);
+                                        await LanguageManager.GetStringAsync("Label_Vehicles", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -7205,7 +7205,7 @@ namespace Chummer
                                     Vehicle objVehicle = new Vehicle(this);
                                     objVehicle.Load(objXmlVehicle);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstVehicles.Add(objVehicle);
                                     else
                                         await _lstVehicles.AddAsync(objVehicle, token);
@@ -7219,10 +7219,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Weapons"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Weapons", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Tab_Weapons"), token: token);
+                                        await LanguageManager.GetStringAsync("Tab_Weapons", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -7237,7 +7237,7 @@ namespace Chummer
                                     Weapon objWeapon = new Weapon(this);
                                     objWeapon.Load(objXmlWeapon);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstWeapons.Add(objWeapon);
                                     else
                                         await _lstWeapons.AddAsync(objWeapon, token);
@@ -7251,10 +7251,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Metamagics"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Metamagics", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("String_Metamagics"), token: token);
+                                        await LanguageManager.GetStringAsync("String_Metamagics", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -7269,7 +7269,7 @@ namespace Chummer
                                     Metamagic objMetamagic = new Metamagic(this);
                                     objMetamagic.Load(objXmlMetamagic);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstMetamagics.Add(objMetamagic);
                                     else
                                         await _lstMetamagics.AddAsync(objMetamagic, token);
@@ -7283,10 +7283,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Arts"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Arts", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("String_Arts"), token: token);
+                                        await LanguageManager.GetStringAsync("String_Arts", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -7301,7 +7301,7 @@ namespace Chummer
                                     Art objArt = new Art(this);
                                     objArt.Load(objXmlArt);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstArts.Add(objArt);
                                     else
                                         await _lstArts.AddAsync(objArt, token);
@@ -7315,10 +7315,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Enhancements"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Enhancements", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("String_Enhancements"), token: token);
+                                        await LanguageManager.GetStringAsync("String_Enhancements", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -7333,7 +7333,7 @@ namespace Chummer
                                     Enhancement objEnhancement = new Enhancement(this);
                                     objEnhancement.Load(objXmlEnhancement);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstEnhancements.Add(objEnhancement);
                                     else
                                         await _lstEnhancements.AddAsync(objEnhancement, token);
@@ -7347,10 +7347,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Critter"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Critter", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Tab_Critter"), token: token);
+                                        await LanguageManager.GetStringAsync("Tab_Critter", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -7365,7 +7365,7 @@ namespace Chummer
                                     CritterPower objPower = new CritterPower(this);
                                     objPower.Load(objXmlPower);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstCritterPowers.Add(objPower);
                                     else
                                         await _lstCritterPowers.AddAsync(objPower, token);
@@ -7379,10 +7379,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_SummaryFoci"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_SummaryFoci", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Label_SummaryFoci"), token: token);
+                                        await LanguageManager.GetStringAsync("Label_SummaryFoci", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -7397,7 +7397,7 @@ namespace Chummer
                                     Focus objFocus = new Focus(this);
                                     objFocus.Load(objXmlFocus);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstFoci.Add(objFocus);
                                     else
                                         await _lstFoci.AddAsync(objFocus, token);
@@ -7411,10 +7411,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_SummaryInitiation"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Label_SummaryInitiation", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Label_SummaryInitiation"), token: token);
+                                        await LanguageManager.GetStringAsync("Label_SummaryInitiation", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -7429,7 +7429,7 @@ namespace Chummer
                                     InitiationGrade objGrade = new InitiationGrade(this);
                                     objGrade.Load(objXmlGrade);
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstInitiationGrades.Add(objGrade);
                                     else
                                         await _lstInitiationGrades.AddAsync(objGrade, token);
@@ -7443,10 +7443,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Expenses"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_Expenses", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("String_Expenses"), token: token);
+                                        await LanguageManager.GetStringAsync("String_Expenses", token: token), token: token);
                             }
 
                             // While expenses are to be saved in create mode due to starting nuyen and starting karma being logged as expense log entries,
@@ -7486,10 +7486,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tip_Skill_Sustain"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tip_Skill_Sustain", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Tip_Skill_Sustain"), token: token);
+                                        await LanguageManager.GetStringAsync("Tip_Skill_Sustain", token: token), token: token);
                             }
 
                             // Need to load these after everything else so that we can properly link them up during loading
@@ -7507,7 +7507,7 @@ namespace Chummer
                                         Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo))
                                     {
                                         if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstSustainedObjects.Add(objSustained);
                                         else
                                             await _lstSustainedObjects.AddAsync(objSustained, token);
@@ -7520,10 +7520,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Improvements"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Improvements", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Tab_Improvements"), token: token);
+                                        await LanguageManager.GetStringAsync("Tab_Improvements", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -7538,7 +7538,7 @@ namespace Chummer
                                 {
                                     foreach (XmlNode objXmlGroup in objXmlGroupList)
                                     {
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstImprovementGroups.Add(objXmlGroup.InnerText);
                                     }
                                 }
@@ -7558,10 +7558,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Calendar"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Calendar", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Tab_Calendar"), token: token);
+                                        await LanguageManager.GetStringAsync("Tab_Calendar", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -7586,10 +7586,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_LegacyFixes"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_LegacyFixes", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("String_LegacyFixes"), token: token);
+                                        await LanguageManager.GetStringAsync("String_LegacyFixes", token: token), token: token);
                             }
 
                             using (_ = blnSync
@@ -7624,7 +7624,7 @@ namespace Chummer
                                         objWeapon.Create(objXmlWeapon, _lstWeapons);
                                         objWeapon.IncludedInWeapon = true; // Unarmed attack can never be removed
                                         if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstWeapons.Add(objWeapon);
                                         else
                                             await _lstWeapons.AddAsync(objWeapon, token);
@@ -7671,9 +7671,9 @@ namespace Chummer
                                             if (blnSync)
                                             {
                                                 foreach (Weapon objWeapon in lstWeapons)
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     Weapons.Add(objWeapon);
-                                                // ReSharper disable once MethodHasAsyncOverload
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 Qualities.Add(objQuality);
                                             }
                                             else
@@ -7723,7 +7723,7 @@ namespace Chummer
                                             objCyberadeptImprovement.SourceName = objBestGradeMatch.InternalId;
                                         }
                                         else if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstImprovements.Remove(objCyberadeptImprovement);
                                         else
                                             await _lstImprovements.RemoveAsync(objCyberadeptImprovement, token);
@@ -7746,7 +7746,7 @@ namespace Chummer
                                 {
                                     // Selecting bonuses for a mentor spirit mid-load is confusing, so just show the error and let the player manually re-apply
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstInternalIdsNeedingReapplyImprovements.Add(objMentorQuality.InternalId);
                                     else
                                         await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objMentorQuality.InternalId, token);
@@ -7802,10 +7802,10 @@ namespace Chummer
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Options_Plugins"));
+                                    frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Options_Plugins", token: token));
                                 else
                                     await frmLoadingForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("Tab_Options_Plugins"), token: token);
+                                        await LanguageManager.GetStringAsync("Tab_Options_Plugins", token: token), token: token);
                             }
 
                             //Plugins
@@ -7836,10 +7836,10 @@ namespace Chummer
                             if (blnSync)
                                 // ReSharper disable once MethodHasAsyncOverload
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                frmLoadingForm.PerformStep(LanguageManager.GetString("String_GeneratedImprovements"));
+                                frmLoadingForm.PerformStep(LanguageManager.GetString("String_GeneratedImprovements", token: token));
                             else
                                 await frmLoadingForm.PerformStepAsync(
-                                    await LanguageManager.GetStringAsync("String_GeneratedImprovements"), token: token);
+                                    await LanguageManager.GetStringAsync("String_GeneratedImprovements", token: token), token: token);
                         }
 
                         // Refresh certain improvements
@@ -7896,7 +7896,7 @@ namespace Chummer
                             RefreshDealerConnectionDiscounts();
                             // Refresh permanent attribute changes due to essence loss
                             if (blnSync)
-                                // ReSharper disable once MethodHasAsyncOverload
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 RefreshEssenceLossImprovements();
                             else
                                 await RefreshEssenceLossImprovementsAsync(token);
@@ -8099,20 +8099,20 @@ namespace Chummer
                     {
                         await objWriter.WriteElementStringAsync("primaryarm",
                                                                 await LanguageManager.GetStringAsync(
-                                                                    "String_Ambidextrous", strLanguageToPrint), token: token);
+                                                                    "String_Ambidextrous", strLanguageToPrint, token: token), token: token);
                     }
                     else if (PrimaryArm == "Left")
                     {
                         await objWriter.WriteElementStringAsync("primaryarm",
                                                                 await LanguageManager.GetStringAsync(
-                                                                    "String_Improvement_SideLeft", strLanguageToPrint), token: token);
+                                                                    "String_Improvement_SideLeft", strLanguageToPrint, token: token), token: token);
                     }
                     else
                     {
                         await objWriter.WriteElementStringAsync("primaryarm",
                                                                 await LanguageManager.GetStringAsync(
                                                                     "String_Improvement_SideRight",
-                                                                    strLanguageToPrint), token: token);
+                                                                    strLanguageToPrint, token: token), token: token);
                     }
 
                     // If the character does not have a name, call them Unnamed Character. This prevents a transformed document from
@@ -8122,7 +8122,7 @@ namespace Chummer
                                                             !string.IsNullOrEmpty(Name)
                                                                 ? Name
                                                                 : await LanguageManager.GetStringAsync(
-                                                                    "String_UnnamedCharacter", strLanguageToPrint), token: token);
+                                                                    "String_UnnamedCharacter", strLanguageToPrint, token: token), token: token);
 
                     await PrintMugshots(objWriter, token);
 
@@ -8130,40 +8130,40 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("gender",
                                                             await TranslateExtraAsync(
                                                                 await ReverseTranslateExtraAsync(
-                                                                    Gender, GlobalSettings.Language, "contacts.xml"),
-                                                                strLanguageToPrint, "contacts.xml"), token: token);
+                                                                    Gender, GlobalSettings.Language, "contacts.xml", token: token),
+                                                                strLanguageToPrint, "contacts.xml", token: token), token: token);
                     // <age />
                     await objWriter.WriteElementStringAsync("age",
                                                             await TranslateExtraAsync(
                                                                 await ReverseTranslateExtraAsync(
-                                                                    Age, GlobalSettings.Language, "contacts.xml"),
+                                                                    Age, GlobalSettings.Language, "contacts.xml", token: token),
                                                                 strLanguageToPrint,
-                                                                "contacts.xml"), token: token);
+                                                                "contacts.xml", token: token), token: token);
                     // <eyes />
                     await objWriter.WriteElementStringAsync("eyes",
                                                             await TranslateExtraAsync(
-                                                                await ReverseTranslateExtraAsync(Eyes),
-                                                                strLanguageToPrint), token: token);
+                                                                await ReverseTranslateExtraAsync(Eyes, token: token),
+                                                                strLanguageToPrint, token: token), token: token);
                     // <height />
                     await objWriter.WriteElementStringAsync("height",
                                                             await TranslateExtraAsync(
-                                                                await ReverseTranslateExtraAsync(Height),
-                                                                strLanguageToPrint), token: token);
+                                                                await ReverseTranslateExtraAsync(Height, token: token),
+                                                                strLanguageToPrint, token: token), token: token);
                     // <weight />
                     await objWriter.WriteElementStringAsync("weight",
                                                             await TranslateExtraAsync(
-                                                                await ReverseTranslateExtraAsync(Weight),
-                                                                strLanguageToPrint), token: token);
+                                                                await ReverseTranslateExtraAsync(Weight, token: token),
+                                                                strLanguageToPrint, token: token), token: token);
                     // <skin />
                     await objWriter.WriteElementStringAsync("skin",
                                                             await TranslateExtraAsync(
-                                                                await ReverseTranslateExtraAsync(Skin),
-                                                                strLanguageToPrint), token: token);
+                                                                await ReverseTranslateExtraAsync(Skin, token: token),
+                                                                strLanguageToPrint, token: token), token: token);
                     // <hair />
                     await objWriter.WriteElementStringAsync("hair",
                                                             await TranslateExtraAsync(
-                                                                await ReverseTranslateExtraAsync(Hair),
-                                                                strLanguageToPrint), token: token);
+                                                                await ReverseTranslateExtraAsync(Hair, token: token),
+                                                                strLanguageToPrint, token: token), token: token);
                     // <description />
                     await objWriter.WriteElementStringAsync("description", await Description.RtfToHtmlAsync(token), token: token);
                     // <background />
@@ -8655,14 +8655,14 @@ namespace Chummer
                             string strName = await GetObjectNameAsync(objImprovement, strLanguageToPrint, token);
                             if (strName == objImprovement.SourceName)
                                 strName = objImprovement.UniqueName;
-                            strName += await LanguageManager.GetStringAsync("String_Colon", strLanguageToPrint) +
-                                       await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint);
+                            strName += await LanguageManager.GetStringAsync("String_Colon", strLanguageToPrint, token: token) +
+                                       await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint, token: token);
                             if (objImprovement.Value > 0)
                                 strName += '+';
                             strName += objImprovement.Value.ToString(objCulture);
 
                             if (!string.IsNullOrEmpty(objImprovement.Condition))
-                                strName += ',' + await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint) +
+                                strName += ',' + await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint, token: token) +
                                            objImprovement.Condition;
 
                             // <limitmodifier>
@@ -8702,14 +8702,14 @@ namespace Chummer
                             string strName = await GetObjectNameAsync(objImprovement, strLanguageToPrint, token);
                             if (strName == objImprovement.SourceName)
                                 strName = objImprovement.UniqueName;
-                            strName += await LanguageManager.GetStringAsync("String_Colon", strLanguageToPrint) +
-                                       await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint);
+                            strName += await LanguageManager.GetStringAsync("String_Colon", strLanguageToPrint, token: token) +
+                                       await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint, token: token);
                             if (objImprovement.Value > 0)
                                 strName += '+';
                             strName += objImprovement.Value.ToString(objCulture);
 
                             if (!string.IsNullOrEmpty(objImprovement.Condition))
-                                strName += ',' + await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint) +
+                                strName += ',' + await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint, token: token) +
                                            objImprovement.Condition;
 
                             // <limitmodifier>
@@ -8749,14 +8749,14 @@ namespace Chummer
                             string strName = await GetObjectNameAsync(objImprovement, strLanguageToPrint, token);
                             if (strName == objImprovement.SourceName)
                                 strName = objImprovement.UniqueName;
-                            strName += await LanguageManager.GetStringAsync("String_Colon", strLanguageToPrint) +
-                                       await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint);
+                            strName += await LanguageManager.GetStringAsync("String_Colon", strLanguageToPrint, token: token) +
+                                       await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint, token: token);
                             if (objImprovement.Value > 0)
                                 strName += '+';
                             strName += objImprovement.Value.ToString(objCulture);
 
                             if (!string.IsNullOrEmpty(objImprovement.Condition))
-                                strName += ',' + await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint) +
+                                strName += ',' + await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint, token: token) +
                                            objImprovement.Condition;
 
                             // <limitmodifier>
@@ -9620,7 +9620,7 @@ namespace Chummer
                 return string.Empty;
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage, token: token);
             string strImprovedSourceName = objImprovement.SourceName.TrimEndOnce("Pair");
             bool blnWireless = false;
 
@@ -9648,7 +9648,7 @@ namespace Chummer
                                 strWareReturn += strSpace + '(' + objCyberware.Parent.DisplayNameShort(strLanguage)
                                                  + ')';
                             if (blnWireless)
-                                strWareReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                                strWareReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
                             return strWareReturn;
                         }
 
@@ -9670,7 +9670,7 @@ namespace Chummer
                                     strWareReturn += ')';
                                     if (blnWireless)
                                         strWareReturn
-                                            += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                                            += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
                                     return strWareReturn;
                                 }
                             }
@@ -9695,7 +9695,7 @@ namespace Chummer
                                         if (blnWireless)
                                             strWareReturn += strSpace
                                                              + LanguageManager.GetString(
-                                                                 "String_Wireless", strLanguage);
+                                                                 "String_Wireless", strLanguage, token: token);
                                         return strWareReturn;
                                     }
                                 }
@@ -9714,7 +9714,7 @@ namespace Chummer
                             if (objReturnGear.Parent is Gear parent)
                                 strGearReturn += strSpace + '(' + parent.DisplayNameShort(strLanguage) + ')';
                             if (blnWireless)
-                                strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                                strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
                             return strGearReturn;
                         }
 
@@ -9736,7 +9736,7 @@ namespace Chummer
                                                  + strSpace + objGearAccessory.DisplayNameShort(strLanguage) + ')';
                             if (blnWireless)
                                 strGearReturn
-                                    += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                                    += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
                             return strGearReturn;
                         }
 
@@ -9760,7 +9760,7 @@ namespace Chummer
                                 strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage) + ')';
 
                             if (blnWireless)
-                                strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                                strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
                             return strGearReturn;
                         }
 
@@ -9777,7 +9777,7 @@ namespace Chummer
                             else
                                 strGearReturn += strSpace + '(' + objGearCyberware.DisplayNameShort(strLanguage) + ')';
                             if (blnWireless)
-                                strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                                strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
                             return strGearReturn;
                         }
 
@@ -9796,7 +9796,7 @@ namespace Chummer
                                     strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ')';
                                 if (blnWireless)
                                     strGearReturn
-                                        += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                                        += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
                                 return strGearReturn;
                             }
 
@@ -9826,7 +9826,7 @@ namespace Chummer
                                         if (blnWireless)
                                             strGearReturn += strSpace
                                                              + LanguageManager.GetString(
-                                                                 "String_Wireless", strLanguage);
+                                                                 "String_Wireless", strLanguage, token: token);
                                         return strGearReturn;
                                     }
                                 }
@@ -9860,7 +9860,7 @@ namespace Chummer
                                             if (blnWireless)
                                                 strGearReturn += strSpace
                                                                  + LanguageManager.GetString(
-                                                                     "String_Wireless", strLanguage);
+                                                                     "String_Wireless", strLanguage, token: token);
                                             return strGearReturn;
                                         }
                                     }
@@ -9888,7 +9888,7 @@ namespace Chummer
                                         if (blnWireless)
                                             strGearReturn += strSpace
                                                              + LanguageManager.GetString(
-                                                                 "String_Wireless", strLanguage);
+                                                                 "String_Wireless", strLanguage, token: token);
                                         return strGearReturn;
                                     }
                                 }
@@ -9933,7 +9933,7 @@ namespace Chummer
                                                 if (blnWireless)
                                                     strGearReturn += strSpace
                                                                      + LanguageManager.GetString(
-                                                                         "String_Wireless", strLanguage);
+                                                                         "String_Wireless", strLanguage, token: token);
                                                 return strGearReturn;
                                             }
                                         }
@@ -9968,7 +9968,7 @@ namespace Chummer
                                             if (blnWireless)
                                                 strGearReturn += strSpace
                                                                  + LanguageManager.GetString(
-                                                                     "String_Wireless", strLanguage);
+                                                                     "String_Wireless", strLanguage, token: token);
                                             return strGearReturn;
                                         }
                                     }
@@ -10059,7 +10059,7 @@ namespace Chummer
                                 string strReturnArmor = objArmor.DisplayNameShort(strLanguage);
                                 if (blnWireless)
                                     strReturnArmor
-                                        += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                                        += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
                                 return strReturnArmor;
                             }
                         }
@@ -10078,7 +10078,7 @@ namespace Chummer
                                                                + objArmor.DisplayNameShort(strLanguage) + ')';
                                     if (blnWireless)
                                         strReturnArmorMod
-                                            += strSpace + LanguageManager.GetString("String_Wireless", strLanguage);
+                                            += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
                                     return strReturnArmorMod;
                                 }
                             }
@@ -10149,19 +10149,19 @@ namespace Chummer
 
                         break;
                     case Improvement.ImprovementSource.Heritage:
-                        return LanguageManager.GetString("String_Priority", strLanguage);
+                        return LanguageManager.GetString("String_Priority", strLanguage, token: token);
                     case Improvement.ImprovementSource.Initiation:
-                        return LanguageManager.GetString("Tab_Initiation", strLanguage);
+                        return LanguageManager.GetString("Tab_Initiation", strLanguage, token: token);
                     case Improvement.ImprovementSource.Submersion:
-                        return LanguageManager.GetString("Tab_Submersion", strLanguage);
+                        return LanguageManager.GetString("Tab_Submersion", strLanguage, token: token);
                     case Improvement.ImprovementSource.Encumbrance:
-                        return LanguageManager.GetString("String_Encumbrance", strLanguage);
+                        return LanguageManager.GetString("String_Encumbrance", strLanguage, token: token);
                     case Improvement.ImprovementSource.ArmorEncumbrance:
-                        return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage);
+                        return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage, token: token);
                     case Improvement.ImprovementSource.Tradition:
-                        return LanguageManager.GetString("String_Tradition", strLanguage);
+                        return LanguageManager.GetString("String_Tradition", strLanguage, token: token);
                     case Improvement.ImprovementSource.AstralReputation:
-                        return LanguageManager.GetString("String_AstralReputation", strLanguage);
+                        return LanguageManager.GetString("String_AstralReputation", strLanguage, token: token);
                     case Improvement.ImprovementSource.CyberadeptDaemon:
                         return LoadDataXPath("qualities.xml", strLanguage, token: token)
                                .SelectSingleNode(
@@ -10169,7 +10169,7 @@ namespace Chummer
                                ?.Value ?? "Resonant Stream: Cyberadept";
                     default:
                         if (objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
-                            return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage);
+                            return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage, token: token);
                         // If this comes from a custom Improvement, use the name the player gave it instead of showing a GUID.
                         if (!string.IsNullOrEmpty(objImprovement.CustomName))
                             return objImprovement.CustomName;
@@ -10177,7 +10177,7 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strReturn) || strReturn.IsGuid())
                         {
                             string strTemp = LanguageManager.GetString("String_" + objImprovement.ImproveSource,
-                                                                       strLanguage, false);
+                                                                       strLanguage, false, token: token);
                             if (!string.IsNullOrEmpty(strTemp))
                                 strReturn = strTemp;
                         }
@@ -10201,7 +10201,7 @@ namespace Chummer
                 return string.Empty;
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
             string strImprovedSourceName = objImprovement.SourceName.TrimEndOnce("Pair");
             bool blnWireless = false;
 
@@ -10229,7 +10229,7 @@ namespace Chummer
                                     strWareReturn += strSpace + '(' + await objCyberware.Parent.DisplayNameShortAsync(strLanguage)
                                                      + ')';
                                 if (blnWireless)
-                                    strWareReturn += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage);
+                                    strWareReturn += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token);
                                 return strWareReturn;
                             }
 
@@ -10251,7 +10251,7 @@ namespace Chummer
                                         strWareReturn += ')';
                                         if (blnWireless)
                                             strWareReturn
-                                                += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage);
+                                                += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token);
                                         return strWareReturn;
                                     }
                                 }
@@ -10276,7 +10276,7 @@ namespace Chummer
                                             if (blnWireless)
                                                 strWareReturn += strSpace
                                                                  + await LanguageManager.GetStringAsync(
-                                                                     "String_Wireless", strLanguage);
+                                                                     "String_Wireless", strLanguage, token: token);
                                             return strWareReturn;
                                         }
                                     }
@@ -10295,7 +10295,7 @@ namespace Chummer
                                 if (objReturnGear.Parent is Gear parent)
                                     strGearReturn += strSpace + '(' + await parent.DisplayNameShortAsync(strLanguage) + ')';
                                 if (blnWireless)
-                                    strGearReturn += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage);
+                                    strGearReturn += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token);
                                 return strGearReturn;
                             }
 
@@ -10317,7 +10317,7 @@ namespace Chummer
                                                      + strSpace + await objGearAccessory.DisplayNameShortAsync(strLanguage) + ')';
                                 if (blnWireless)
                                     strGearReturn
-                                        += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage);
+                                        += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token);
                                 return strGearReturn;
                             }
 
@@ -10341,7 +10341,7 @@ namespace Chummer
                                     strGearReturn += strSpace + '(' + await objArmor.DisplayNameShortAsync(strLanguage) + ')';
 
                                 if (blnWireless)
-                                    strGearReturn += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage);
+                                    strGearReturn += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token);
                                 return strGearReturn;
                             }
 
@@ -10358,7 +10358,7 @@ namespace Chummer
                                 else
                                     strGearReturn += strSpace + '(' + await objGearCyberware.DisplayNameShortAsync(strLanguage) + ')';
                                 if (blnWireless)
-                                    strGearReturn += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage);
+                                    strGearReturn += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token);
                                 return strGearReturn;
                             }
 
@@ -10377,7 +10377,7 @@ namespace Chummer
                                         strGearReturn += strSpace + '(' + objVehicle.DisplayNameShort(strLanguage) + ')';
                                     if (blnWireless)
                                         strGearReturn
-                                            += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage);
+                                            += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token);
                                     return strGearReturn;
                                 }
 
@@ -10407,7 +10407,7 @@ namespace Chummer
                                             if (blnWireless)
                                                 strGearReturn += strSpace
                                                                  + await LanguageManager.GetStringAsync(
-                                                                     "String_Wireless", strLanguage);
+                                                                     "String_Wireless", strLanguage, token: token);
                                             return strGearReturn;
                                         }
                                     }
@@ -10441,7 +10441,7 @@ namespace Chummer
                                                 if (blnWireless)
                                                     strGearReturn += strSpace
                                                                      + await LanguageManager.GetStringAsync(
-                                                                         "String_Wireless", strLanguage);
+                                                                         "String_Wireless", strLanguage, token: token);
                                                 return strGearReturn;
                                             }
                                         }
@@ -10469,7 +10469,7 @@ namespace Chummer
                                             if (blnWireless)
                                                 strGearReturn += strSpace
                                                                  + await LanguageManager.GetStringAsync(
-                                                                     "String_Wireless", strLanguage);
+                                                                     "String_Wireless", strLanguage, token: token);
                                             return strGearReturn;
                                         }
                                     }
@@ -10514,7 +10514,7 @@ namespace Chummer
                                                     if (blnWireless)
                                                         strGearReturn += strSpace
                                                                          + await LanguageManager.GetStringAsync(
-                                                                             "String_Wireless", strLanguage);
+                                                                             "String_Wireless", strLanguage, token: token);
                                                     return strGearReturn;
                                                 }
                                             }
@@ -10549,7 +10549,7 @@ namespace Chummer
                                                 if (blnWireless)
                                                     strGearReturn += strSpace
                                                                      + await LanguageManager.GetStringAsync(
-                                                                         "String_Wireless", strLanguage);
+                                                                         "String_Wireless", strLanguage, token: token);
                                                 return strGearReturn;
                                             }
                                         }
@@ -10640,7 +10640,7 @@ namespace Chummer
                                     string strReturnArmor = await objArmor.DisplayNameShortAsync(strLanguage);
                                     if (blnWireless)
                                         strReturnArmor
-                                            += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage);
+                                            += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token);
                                     return strReturnArmor;
                                 }
                             }
@@ -10659,7 +10659,7 @@ namespace Chummer
                                                                    + await objArmor.DisplayNameShortAsync(strLanguage) + ')';
                                         if (blnWireless)
                                             strReturnArmorMod
-                                                += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage);
+                                                += strSpace + await LanguageManager.GetStringAsync("String_Wireless", strLanguage, token: token);
                                         return strReturnArmorMod;
                                     }
                                 }
@@ -10730,19 +10730,19 @@ namespace Chummer
 
                         break;
                     case Improvement.ImprovementSource.Heritage:
-                        return await LanguageManager.GetStringAsync("String_Priority", strLanguage);
+                        return await LanguageManager.GetStringAsync("String_Priority", strLanguage, token: token);
                     case Improvement.ImprovementSource.Initiation:
-                        return await LanguageManager.GetStringAsync("Tab_Initiation", strLanguage);
+                        return await LanguageManager.GetStringAsync("Tab_Initiation", strLanguage, token: token);
                     case Improvement.ImprovementSource.Submersion:
-                        return await LanguageManager.GetStringAsync("Tab_Submersion", strLanguage);
+                        return await LanguageManager.GetStringAsync("Tab_Submersion", strLanguage, token: token);
                     case Improvement.ImprovementSource.Encumbrance:
-                        return await LanguageManager.GetStringAsync("String_Encumbrance", strLanguage);
+                        return await LanguageManager.GetStringAsync("String_Encumbrance", strLanguage, token: token);
                     case Improvement.ImprovementSource.ArmorEncumbrance:
-                        return await LanguageManager.GetStringAsync("String_ArmorEncumbrance", strLanguage);
+                        return await LanguageManager.GetStringAsync("String_ArmorEncumbrance", strLanguage, token: token);
                     case Improvement.ImprovementSource.Tradition:
-                        return await LanguageManager.GetStringAsync("String_Tradition", strLanguage);
+                        return await LanguageManager.GetStringAsync("String_Tradition", strLanguage, token: token);
                     case Improvement.ImprovementSource.AstralReputation:
-                        return await LanguageManager.GetStringAsync("String_AstralReputation", strLanguage);
+                        return await LanguageManager.GetStringAsync("String_AstralReputation", strLanguage, token: token);
                     case Improvement.ImprovementSource.CyberadeptDaemon:
                         return (await LoadDataXPathAsync("qualities.xml", strLanguage, token: token))
                                .SelectSingleNode(
@@ -10750,7 +10750,7 @@ namespace Chummer
                                ?.Value ?? "Resonant Stream: Cyberadept";
                     default:
                         if (objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
-                            return await LanguageManager.GetStringAsync("String_ArmorEncumbrance", strLanguage);
+                            return await LanguageManager.GetStringAsync("String_ArmorEncumbrance", strLanguage, token: token);
                         // If this comes from a custom Improvement, use the name the player gave it instead of showing a GUID.
                         if (!string.IsNullOrEmpty(objImprovement.CustomName))
                             return objImprovement.CustomName;
@@ -10758,7 +10758,7 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strReturn) || strReturn.IsGuid())
                         {
                             string strTemp = await LanguageManager.GetStringAsync("String_" + objImprovement.ImproveSource,
-                                strLanguage, false);
+                                strLanguage, false, token: token);
                             if (!string.IsNullOrEmpty(strTemp))
                                 strReturn = strTemp;
                         }
@@ -10791,7 +10791,7 @@ namespace Chummer
         {
             if (sbdToolTip == null)
                 return;
-            sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Tip_Modifiers"));
+            sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Tip_Modifiers", token: token));
             bool blnFirstModifier = true;
             using (EnterReadLock.Enter(LockObject, token))
             {
@@ -10803,7 +10803,7 @@ namespace Chummer
                         if (blnFirstModifier)
                         {
                             blnFirstModifier = false;
-                            sbdToolTip.Append(LanguageManager.GetString("String_Colon"));
+                            sbdToolTip.Append(LanguageManager.GetString("String_Colon", token: token));
                         }
                         else
                             sbdToolTip.Append(',');
@@ -10937,7 +10937,7 @@ namespace Chummer
         /// </summary>
         public string CalculateFreeSpiritPowerPoints(CancellationToken token = default)
         {
-            string strSpace = LanguageManager.GetString("String_Space");
+            string strSpace = LanguageManager.GetString("String_Space", token: token);
 
             using (EnterReadLock.Enter(LockObject, token))
             {
@@ -10964,7 +10964,7 @@ namespace Chummer
 
                     return intPowerPoints.ToString(GlobalSettings.CultureInfo) + strSpace + '('
                            + (intPowerPoints - decPowerPoints).ToString(GlobalSettings.CultureInfo) + strSpace
-                           + LanguageManager.GetString("String_Remaining") + ')';
+                           + LanguageManager.GetString("String_Remaining", token: token) + ')';
                 }
                 else
                 {
@@ -10996,7 +10996,7 @@ namespace Chummer
 
                     return intPowerPoints.ToString(GlobalSettings.CultureInfo) + strSpace + '('
                            + (intPowerPoints - intUsed).ToString(GlobalSettings.CultureInfo) + strSpace
-                           + LanguageManager.GetString("String_Remaining") + ')';
+                           + LanguageManager.GetString("String_Remaining", token: token) + ')';
                 }
             }
         }
@@ -11021,11 +11021,11 @@ namespace Chummer
                                                       .ValueOf(this, Improvement.ImprovementType.FreeSpiritPowerPoints, token: token)
                                                       .StandardRound();
 
-                string strSpace = LanguageManager.GetString("String_Space");
+                string strSpace = LanguageManager.GetString("String_Space", token: token);
 
                 return intPowerPoints.ToString(GlobalSettings.CultureInfo) + strSpace + '('
                        + (intPowerPoints - intUsedPowerPoints).ToString(GlobalSettings.CultureInfo)
-                       + strSpace + LanguageManager.GetString("String_Remaining") + ')';
+                       + strSpace + LanguageManager.GetString("String_Remaining", token: token) + ')';
             }
         }
 
@@ -11036,9 +11036,9 @@ namespace Chummer
         /// <param name="token">CancellationToken to listen to.</param>
         public IEnumerable<ListItem> ConstructModularCyberlimbList([NotNull] Cyberware objModularCyberware, CancellationToken token = default)
         {
-            yield return new ListItem("None", LanguageManager.GetString("String_None"));
+            yield return new ListItem("None", LanguageManager.GetString("String_None", token: token));
 
-            string strSpace = LanguageManager.GetString("String_Space");
+            string strSpace = LanguageManager.GetString("String_Space", token: token);
 
             using (EnterReadLock.Enter(LockObject, token))
             {
@@ -11554,9 +11554,10 @@ namespace Chummer
         /// <param name="strExtra">Extra string to translate.</param>
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
-        public string TranslateExtra(string strExtra, string strIntoLanguage = "", string strPreferFile = "")
+        /// <param name="token">CancellationToken to use.</param>
+        public string TranslateExtra(string strExtra, string strIntoLanguage = "", string strPreferFile = "", CancellationToken token = default)
         {
-            return LanguageManager.TranslateExtra(strExtra, strIntoLanguage, this, strPreferFile);
+            return LanguageManager.TranslateExtra(strExtra, strIntoLanguage, this, strPreferFile, token);
         }
 
         /// <summary>
@@ -11565,9 +11566,10 @@ namespace Chummer
         /// <param name="strExtra">Extra string to translate.</param>
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
-        public Task<string> TranslateExtraAsync(string strExtra, string strIntoLanguage = "", string strPreferFile = "")
+        /// <param name="token">CancellationToken to use.</param>
+        public Task<string> TranslateExtraAsync(string strExtra, string strIntoLanguage = "", string strPreferFile = "", CancellationToken token = default)
         {
-            return LanguageManager.TranslateExtraAsync(strExtra, strIntoLanguage, this, strPreferFile);
+            return LanguageManager.TranslateExtraAsync(strExtra, strIntoLanguage, this, strPreferFile, token);
         }
 
         /// <summary>
@@ -11576,9 +11578,10 @@ namespace Chummer
         /// <param name="strExtra">Extra string to translate.</param>
         /// <param name="strFromLanguage">Language from which the string should be translated</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
-        public string ReverseTranslateExtra(string strExtra, string strFromLanguage = "", string strPreferFile = "")
+        /// <param name="token">CancellationToken to use.</param>
+        public string ReverseTranslateExtra(string strExtra, string strFromLanguage = "", string strPreferFile = "", CancellationToken token = default)
         {
-            return LanguageManager.ReverseTranslateExtra(strExtra, strFromLanguage, this, strPreferFile);
+            return LanguageManager.ReverseTranslateExtra(strExtra, strFromLanguage, this, strPreferFile, token);
         }
 
         /// <summary>
@@ -11587,9 +11590,10 @@ namespace Chummer
         /// <param name="strExtra">Extra string to translate.</param>
         /// <param name="strFromLanguage">Language from which the string should be translated</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
-        public Task<string> ReverseTranslateExtraAsync(string strExtra, string strFromLanguage = "", string strPreferFile = "")
+        /// <param name="token">CancellationToken to use.</param>
+        public Task<string> ReverseTranslateExtraAsync(string strExtra, string strFromLanguage = "", string strPreferFile = "", CancellationToken token = default)
         {
-            return LanguageManager.ReverseTranslateExtraAsync(strExtra, strFromLanguage, this, strPreferFile);
+            return LanguageManager.ReverseTranslateExtraAsync(strExtra, strFromLanguage, this, strPreferFile, token);
         }
         #endregion
 
@@ -12207,10 +12211,10 @@ namespace Chummer
                         .Find(x => x.UniqueName == "disabletab");
                     if (objDisablingImprovement != null)
                     {
-                        strDisabledSource = LanguageManager.GetString("String_Space") +
+                        strDisabledSource = LanguageManager.GetString("String_Space", token: token) +
                                             '(' + GetObjectName(objDisablingImprovement, GlobalSettings.Language, token: token) +
                                             ')' +
-                                            LanguageManager.GetString("String_Space");
+                                            LanguageManager.GetString("String_Space", token: token);
                     }
                 }
 
@@ -12238,7 +12242,7 @@ namespace Chummer
                             string strEntry = LanguageManager.GetString(
                                 objCyberware.SourceType == Improvement.ImprovementSource.Cyberware
                                     ? "String_ExpenseSoldCyberware"
-                                    : "String_ExpenseSoldBioware");
+                                    : "String_ExpenseSoldBioware", token: token);
                             objExpense.Create(0,
                                 strEntry + strDisabledSource
                                          + objCyberware.CurrentDisplayNameShort,
@@ -12659,7 +12663,7 @@ namespace Chummer
                         catch (UnauthorizedAccessException)
                         {
                             Program.ShowMessageBox(
-                                await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
+                                await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token));
                         }
                     }
 
@@ -30514,14 +30518,14 @@ namespace Chummer
             using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 bool blnEssence = true;
-                string strMessage = await LanguageManager.GetStringAsync("Message_CyberzombieRequirements");
+                string strMessage = await LanguageManager.GetStringAsync("Message_CyberzombieRequirements", token: token);
 
                 // Make sure the character has an Essence lower than 0.
                 decimal decEssence = await EssenceAsync(token: token);
                 if (decEssence >= 0)
                 {
                     strMessage += Environment.NewLine + '\t' +
-                                  await LanguageManager.GetStringAsync("Message_CyberzombieRequirementsEssence");
+                                  await LanguageManager.GetStringAsync("Message_CyberzombieRequirementsEssence", token: token);
                     blnEssence = false;
                 }
 
@@ -30530,24 +30534,24 @@ namespace Chummer
 
                 if (!blnEnabled)
                     strMessage += Environment.NewLine + '\t' +
-                                  await LanguageManager.GetStringAsync("Message_CyberzombieRequirementsImprovement");
+                                  await LanguageManager.GetStringAsync("Message_CyberzombieRequirementsImprovement", token: token);
 
                 if (!blnEssence || !blnEnabled)
                 {
                     Program.ShowMessageBox(strMessage,
-                        await LanguageManager.GetStringAsync("MessageTitle_CyberzombieRequirements"),
+                        await LanguageManager.GetStringAsync("MessageTitle_CyberzombieRequirements", token: token),
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
 
-                if (Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_CyberzombieConfirm"),
-                        await LanguageManager.GetStringAsync("MessageTitle_CyberzombieConfirm"),
+                if (Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_CyberzombieConfirm", token: token),
+                        await LanguageManager.GetStringAsync("MessageTitle_CyberzombieConfirm", token: token),
                         MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     return false;
 
                 int intWILResult;
-                string strText = await LanguageManager.GetStringAsync("String_CyberzombieWILText");
-                string strDescription = await LanguageManager.GetStringAsync("String_CyberzombieWILDescription");
+                string strText = await LanguageManager.GetStringAsync("String_CyberzombieWILText", token: token);
+                string strDescription = await LanguageManager.GetStringAsync("String_CyberzombieWILDescription", token: token);
                 int intDice = await WIL.GetTotalValueAsync(token);
                 // Get the player to roll Dice to make a WIL Test and record the result.
                 using (ThreadSafeForm<SelectDiceHits> frmWILHits = await ThreadSafeForm<SelectDiceHits>.GetAsync(() => new SelectDiceHits

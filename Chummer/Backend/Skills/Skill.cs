@@ -150,8 +150,8 @@ namespace Chummer.Backend.Skills
                                                         SkillGroupObject != null
                                                             ? await SkillGroupObject.DisplayNameAsync(strLanguageToPrint)
                                                             : await LanguageManager.GetStringAsync(
-                                                                "String_None", strLanguageToPrint), token: token);
-                await objWriter.WriteElementStringAsync("skillgroup_english", SkillGroupObject?.Name ?? await LanguageManager.GetStringAsync("String_None", strLanguageToPrint), token: token);
+                                                                "String_None", strLanguageToPrint, token: token), token: token);
+                await objWriter.WriteElementStringAsync("skillgroup_english", SkillGroupObject?.Name ?? await LanguageManager.GetStringAsync("String_None", strLanguageToPrint, token: token), token: token);
                 await objWriter.WriteElementStringAsync("skillcategory", await DisplayCategoryAsync(strLanguageToPrint), token: token);
                 await objWriter.WriteElementStringAsync("skillcategory_english", SkillCategory, token: token);  //Might exist legacy but not existing atm, will see if stuff breaks
                 await objWriter.WriteElementStringAsync(

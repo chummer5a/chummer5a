@@ -102,8 +102,15 @@ namespace Chummer
 
         private async void OnLoad(object sender, EventArgs e)
         {
-            dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
-                + await LanguageManager.GetStringAsync("DialogFilter_All");
+            try
+            {
+                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: GenericToken) + '|'
+                    + await LanguageManager.GetStringAsync("DialogFilter_All", token: GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         protected virtual void LiveUpdateFromCharacterFile(object sender, FileSystemEventArgs e)
@@ -303,7 +310,7 @@ namespace Chummer
                         catch (UnauthorizedAccessException)
                         {
                             Program.ShowMessageBox(
-                                this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
+                                this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token));
                             return;
                         }
                     }
@@ -361,7 +368,7 @@ namespace Chummer
                 //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
                 if (objLimitModifier == null)
                 {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Warning_NoLimitFound"));
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Warning_NoLimitFound", token: token));
                     return;
                 }
 
@@ -819,7 +826,7 @@ namespace Chummer
                             objCombatNode = new TreeNode
                             {
                                 Tag = "Node_SelectedCombatSpells",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedCombatSpells")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedCombatSpells", token: GenericToken)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -837,7 +844,7 @@ namespace Chummer
                             objDetectionNode = new TreeNode
                             {
                                 Tag = "Node_SelectedDetectionSpells",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedDetectionSpells")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedDetectionSpells", token: GenericToken)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -855,7 +862,7 @@ namespace Chummer
                             objHealthNode = new TreeNode
                             {
                                 Tag = "Node_SelectedHealthSpells",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedHealthSpells")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedHealthSpells", token: GenericToken)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -874,7 +881,7 @@ namespace Chummer
                             objIllusionNode = new TreeNode
                             {
                                 Tag = "Node_SelectedIllusionSpells",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedIllusionSpells")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedIllusionSpells", token: GenericToken)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -894,7 +901,7 @@ namespace Chummer
                             objManipulationNode = new TreeNode
                             {
                                 Tag = "Node_SelectedManipulationSpells",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedManipulationSpells")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedManipulationSpells", token: GenericToken)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -915,7 +922,7 @@ namespace Chummer
                             objRitualsNode = new TreeNode
                             {
                                 Tag = "Node_SelectedGeomancyRituals",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedGeomancyRituals")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedGeomancyRituals", token: GenericToken)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -937,7 +944,7 @@ namespace Chummer
                             objEnchantmentsNode = new TreeNode
                             {
                                 Tag = "Node_SelectedEnchantments",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedEnchantments")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedEnchantments", token: GenericToken)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -1118,7 +1125,7 @@ namespace Chummer
                     objParentNode = new TreeNode
                     {
                         Tag = "Node_SelectedAIPrograms",
-                        Text = await LanguageManager.GetStringAsync("Node_SelectedAIPrograms")
+                        Text = await LanguageManager.GetStringAsync("Node_SelectedAIPrograms", token: GenericToken)
                     };
                     await treAIPrograms.DoThreadSafeAsync(x =>
                     {
@@ -1292,7 +1299,7 @@ namespace Chummer
                     objParentNode = new TreeNode
                     {
                         Tag = "Node_SelectedAdvancedComplexForms",
-                        Text = await LanguageManager.GetStringAsync("Node_SelectedAdvancedComplexForms")
+                        Text = await LanguageManager.GetStringAsync("Node_SelectedAdvancedComplexForms", token: GenericToken)
                     };
                     await treComplexForms.DoThreadSafeAsync(x =>
                     {
@@ -2127,7 +2134,7 @@ namespace Chummer
                             objWeaknessesNode = new TreeNode
                             {
                                 Tag = "Node_CritterWeaknesses",
-                                Text = await LanguageManager.GetStringAsync("Node_CritterWeaknesses")
+                                Text = await LanguageManager.GetStringAsync("Node_CritterWeaknesses", token: GenericToken)
                             };
                             await treCritterPowers.DoThreadSafeAsync(x =>
                             {
@@ -2145,7 +2152,7 @@ namespace Chummer
                             objPowersNode = new TreeNode
                             {
                                 Tag = "Node_CritterPowers",
-                                Text = await LanguageManager.GetStringAsync("Node_CritterPowers")
+                                Text = await LanguageManager.GetStringAsync("Node_CritterPowers", token: GenericToken)
                             };
                             await treCritterPowers.DoThreadSafeAsync(x =>
                             {
@@ -2362,7 +2369,7 @@ namespace Chummer
                             objPositiveQualityRoot = new TreeNode
                             {
                                 Tag = "Node_SelectedPositiveQualities",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedPositiveQualities")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedPositiveQualities", token: GenericToken)
                             };
                             await treQualities.DoThreadSafeAsync(x =>
                             {
@@ -2380,7 +2387,7 @@ namespace Chummer
                             objNegativeQualityRoot = new TreeNode
                             {
                                 Tag = "Node_SelectedNegativeQualities",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedNegativeQualities")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedNegativeQualities", token: GenericToken)
                             };
                             await treQualities.DoThreadSafeAsync(x =>
                             {
@@ -2402,7 +2409,7 @@ namespace Chummer
                             objLifeModuleRoot = new TreeNode
                             {
                                 Tag = "String_LifeModules",
-                                Text = await LanguageManager.GetStringAsync("String_LifeModules")
+                                Text = await LanguageManager.GetStringAsync("String_LifeModules", token: GenericToken)
                             };
                             await treQualities.DoThreadSafeAsync(x =>
                             {
@@ -2719,7 +2726,7 @@ namespace Chummer
                                         nodRoot = new TreeNode
                                         {
                                             Tag = "Node_SelectedImprovements",
-                                            Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements")
+                                            Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements", token: GenericToken)
                                         };
                                         await treImprovements.DoThreadSafeAsync(
                                             x => x.Nodes.Insert(0, nodRoot), GenericToken);
@@ -2815,7 +2822,7 @@ namespace Chummer
                                         nodRoot = new TreeNode
                                         {
                                             Tag = "Node_SelectedImprovements",
-                                            Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements")
+                                            Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements", token: GenericToken)
                                         };
                                         await treImprovements.DoThreadSafeAsync(
                                             x => x.Nodes.Insert(0, nodRoot), GenericToken);
@@ -2901,7 +2908,7 @@ namespace Chummer
                                     nodRoot = new TreeNode
                                     {
                                         Tag = strNodeName,
-                                        Text = await LanguageManager.GetStringAsync(strNodeName)
+                                        Text = await LanguageManager.GetStringAsync(strNodeName, token: GenericToken)
                                     };
                                     await treSelected.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), GenericToken);
                                 }
@@ -3006,7 +3013,7 @@ namespace Chummer
                                     nodRoot = new TreeNode
                                     {
                                         Tag = strNodeName,
-                                        Text = await LanguageManager.GetStringAsync(strNodeName)
+                                        Text = await LanguageManager.GetStringAsync(strNodeName, token: GenericToken)
                                     };
                                     await treSelected.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), GenericToken);
                                 }
@@ -3202,7 +3209,7 @@ namespace Chummer
                             nodRoot = new TreeNode
                             {
                                 Tag = "Node_SelectedWeapons",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedWeapons")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedWeapons", token: GenericToken)
                             };
                             // ReSharper disable once AssignNullToNotNullAttribute
                             await treWeapons.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), GenericToken);
@@ -3512,7 +3519,7 @@ namespace Chummer
                             nodRoot = new TreeNode
                             {
                                 Tag = "Node_SelectedArmor",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedArmor")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedArmor", token: GenericToken)
                             };
                             // ReSharper disable once AssignNullToNotNullAttribute
                             await treArmor.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), GenericToken);
@@ -3844,7 +3851,7 @@ namespace Chummer
                             nodRoot = new TreeNode
                             {
                                 Tag = "Node_SelectedGear",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedGear")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedGear", token: GenericToken)
                             };
                             // ReSharper disable once AssignNullToNotNullAttribute
                             await treGear.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), GenericToken);
@@ -3972,7 +3979,7 @@ namespace Chummer
                         nodRoot = new TreeNode
                         {
                             Tag = "Node_SelectedDrugs",
-                            Text = await LanguageManager.GetStringAsync("Node_SelectedDrugs")
+                            Text = await LanguageManager.GetStringAsync("Node_SelectedDrugs", token: GenericToken)
                         };
                         // ReSharper disable once AssignNullToNotNullAttribute
                         await treGear.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), GenericToken);
@@ -4179,7 +4186,7 @@ namespace Chummer
                                 objCyberwareRoot = new TreeNode
                                 {
                                     Tag = "Node_SelectedCyberware",
-                                    Text = await LanguageManager.GetStringAsync("Node_SelectedCyberware")
+                                    Text = await LanguageManager.GetStringAsync("Node_SelectedCyberware", token: GenericToken)
                                 };
                                 await treCyberware.DoThreadSafeAsync(x =>
                                 {
@@ -4199,7 +4206,7 @@ namespace Chummer
                                 objModularRoot = new TreeNode
                                 {
                                     Tag = "Node_UnequippedModularCyberware",
-                                    Text = await LanguageManager.GetStringAsync("Node_UnequippedModularCyberware")
+                                    Text = await LanguageManager.GetStringAsync("Node_UnequippedModularCyberware", token: GenericToken)
                                 };
                                 int intIndex = 0;
                                 if (objBiowareRoot != null || objCyberwareRoot != null)
@@ -4222,7 +4229,7 @@ namespace Chummer
                                 objBiowareRoot = new TreeNode
                                 {
                                     Tag = "Node_SelectedBioware",
-                                    Text = await LanguageManager.GetStringAsync("Node_SelectedBioware")
+                                    Text = await LanguageManager.GetStringAsync("Node_SelectedBioware", token: GenericToken)
                                 };
                                 await treCyberware.DoThreadSafeAsync(x =>
                                 {
@@ -4962,7 +4969,7 @@ namespace Chummer
                             nodRoot = new TreeNode
                             {
                                 Tag = "Node_SelectedVehicles",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedVehicles")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedVehicles", token: GenericToken)
                             };
                             await treVehicles.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), GenericToken);
                         }
@@ -5024,8 +5031,8 @@ namespace Chummer
                                     if (objNode == null)
                                         continue;
                                     objNode.Text = await objNode.Text.CheapReplaceAsync(
-                                        await LanguageManager.GetStringAsync("String_Rating"),
-                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel));
+                                        await LanguageManager.GetStringAsync("String_Rating", token: GenericToken),
+                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: GenericToken));
                                     for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
                                     {
                                         if (i < CharacterObject.Foci.Count)
@@ -5038,7 +5045,7 @@ namespace Chummer
                                                 if (intFociTotal > intMaxFocusTotal && !CharacterObject.IgnoreRules)
                                                 {
                                                     objGear.Bonded = false;
-                                                    await CharacterObject.Foci.RemoveAtAsync(i);
+                                                    await CharacterObject.Foci.RemoveAtAsync(i, token: GenericToken);
                                                     objNode.Checked = false;
                                                 }
                                                 else
@@ -5126,8 +5133,8 @@ namespace Chummer
                                         if (objNode == null)
                                             continue;
                                         objNode.Text = await objNode.Text.CheapReplaceAsync(
-                                            await LanguageManager.GetStringAsync("String_Rating"),
-                                            () => LanguageManager.GetStringAsync("String_Force"));
+                                            await LanguageManager.GetStringAsync("String_Rating", token: GenericToken),
+                                            () => LanguageManager.GetStringAsync("String_Force", token: GenericToken));
                                         for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
                                         {
                                             if (i < CharacterObject.Foci.Count)
@@ -5141,15 +5148,15 @@ namespace Chummer
                                                     {
                                                         // Mark the Gear a Bonded.
                                                         objGear.Bonded = false;
-                                                        await CharacterObject.Foci.RemoveAtAsync(i);
+                                                        await CharacterObject.Foci.RemoveAtAsync(i, token: GenericToken);
                                                         objNode.Checked = false;
                                                         if (!blnWarned)
                                                         {
                                                             Program.ShowMessageBox(this,
                                                                 await LanguageManager.GetStringAsync(
-                                                                    "Message_FocusMaximumForce"),
+                                                                    "Message_FocusMaximumForce", token: GenericToken),
                                                                 await LanguageManager.GetStringAsync(
-                                                                    "MessageTitle_FocusMaximum"),
+                                                                    "MessageTitle_FocusMaximum", token: GenericToken),
                                                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                                                             blnWarned = true;
                                                             break;
@@ -5223,7 +5230,7 @@ namespace Chummer
                                                 Focus objFocus = CharacterObject.Foci[i];
                                                 if (objFocus.GearObject == objGear)
                                                 {
-                                                    await CharacterObject.Foci.RemoveAtAsync(i);
+                                                    await CharacterObject.Foci.RemoveAtAsync(i, token: GenericToken);
                                                 }
                                             }
                                         }
@@ -5242,7 +5249,7 @@ namespace Chummer
                                                 StackedFocus objStack = CharacterObject.StackedFoci[i];
                                                 if (objStack.GearId == objGear.InternalId)
                                                 {
-                                                    await CharacterObject.StackedFoci.RemoveAtAsync(i);
+                                                    await CharacterObject.StackedFoci.RemoveAtAsync(i, token: GenericToken);
                                                     await treFoci.DoThreadSafeAsync(
                                                         x => x.FindNodeByTag(objStack)?.Remove(), GenericToken);
                                                     objStack.Dispose();
@@ -5272,7 +5279,7 @@ namespace Chummer
                                                 Focus objFocus = CharacterObject.Foci[i];
                                                 if (objFocus.GearObject == objGear)
                                                 {
-                                                    await CharacterObject.Foci.RemoveAtAsync(i);
+                                                    await CharacterObject.Foci.RemoveAtAsync(i, token: GenericToken);
                                                 }
                                             }
                                         }
@@ -5291,7 +5298,7 @@ namespace Chummer
                                                 StackedFocus objStack = CharacterObject.StackedFoci[i];
                                                 if (objStack.GearId == objGear.InternalId)
                                                 {
-                                                    await CharacterObject.StackedFoci.RemoveAtAsync(i);
+                                                    await CharacterObject.StackedFoci.RemoveAtAsync(i, token: GenericToken);
                                                     await treFoci.DoThreadSafeAsync(
                                                         x => x.FindNodeByTag(objStack)?.Remove(), GenericToken);
                                                     objStack.Dispose();
@@ -5326,8 +5333,8 @@ namespace Chummer
                                         if (objNode == null)
                                             continue;
                                         objNode.Text = await objNode.Text.CheapReplaceAsync(
-                                            await LanguageManager.GetStringAsync("String_Rating"),
-                                            () => LanguageManager.GetString("String_Force"));
+                                            await LanguageManager.GetStringAsync("String_Rating", token: GenericToken),
+                                            () => LanguageManager.GetString("String_Force", token: GenericToken));
                                         for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
                                         {
                                             if (i < CharacterObject.Foci.Count)
@@ -5341,15 +5348,15 @@ namespace Chummer
                                                     {
                                                         // Mark the Gear a Bonded.
                                                         objGear.Bonded = false;
-                                                        await CharacterObject.Foci.RemoveAtAsync(i);
+                                                        await CharacterObject.Foci.RemoveAtAsync(i, token: GenericToken);
                                                         objNode.Checked = false;
                                                         if (!blnWarned)
                                                         {
                                                             Program.ShowMessageBox(this,
                                                                 await LanguageManager.GetStringAsync(
-                                                                    "Message_FocusMaximumForce"),
+                                                                    "Message_FocusMaximumForce", token: GenericToken),
                                                                 await LanguageManager.GetStringAsync(
-                                                                    "MessageTitle_FocusMaximum"),
+                                                                    "MessageTitle_FocusMaximum", token: GenericToken),
                                                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                                                             blnWarned = true;
                                                             break;
@@ -5585,7 +5592,7 @@ namespace Chummer
                             objQualityNode = new TreeNode
                             {
                                 Tag = "Node_SelectedQualities",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedQualities")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedQualities", token: GenericToken)
                             };
                             await treMartialArts.DoThreadSafeAsync(x =>
                             {
@@ -5604,7 +5611,7 @@ namespace Chummer
                             objMartialArtsParentNode = new TreeNode
                             {
                                 Tag = "Node_SelectedMartialArts",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedMartialArts")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedMartialArts", token: GenericToken)
                             };
                             await treMartialArts.DoThreadSafeAsync(x =>
                             {
@@ -5783,7 +5790,7 @@ namespace Chummer
                         objRoot = new TreeNode
                         {
                             Tag = "Node_SelectedImprovements",
-                            Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements")
+                            Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements", token: GenericToken)
                         };
                         await treImprovements.DoThreadSafeAsync(x => x.Nodes.Add(objRoot), GenericToken);
 
@@ -5972,7 +5979,7 @@ namespace Chummer
                                         objParentNode = new TreeNode
                                         {
                                             Tag = "Node_Physical",
-                                            Text = await LanguageManager.GetStringAsync("Node_Physical")
+                                            Text = await LanguageManager.GetStringAsync("Node_Physical", token: GenericToken)
                                         };
                                         await treLimit.DoThreadSafeAsync(
                                             x => x.Nodes.Insert(0, objParentNode), GenericToken);
@@ -5982,7 +5989,7 @@ namespace Chummer
                                         objParentNode = new TreeNode
                                         {
                                             Tag = "Node_Mental",
-                                            Text = await LanguageManager.GetStringAsync("Node_Mental")
+                                            Text = await LanguageManager.GetStringAsync("Node_Mental", token: GenericToken)
                                         };
                                         await treLimit.DoThreadSafeAsync(
                                             x => x.Nodes.Insert(aobjLimitNodes[0] == null ? 0 : 1, objParentNode),
@@ -5993,7 +6000,7 @@ namespace Chummer
                                         objParentNode = new TreeNode
                                         {
                                             Tag = "Node_Social",
-                                            Text = await LanguageManager.GetStringAsync("Node_Social")
+                                            Text = await LanguageManager.GetStringAsync("Node_Social", token: GenericToken)
                                         };
                                         await treLimit.DoThreadSafeAsync(x => x.Nodes.Insert(
                                                                              (aobjLimitNodes[0] == null ? 0 : 1)
@@ -6005,7 +6012,7 @@ namespace Chummer
                                         objParentNode = new TreeNode
                                         {
                                             Tag = "Node_Astral",
-                                            Text = await LanguageManager.GetStringAsync("Node_Astral")
+                                            Text = await LanguageManager.GetStringAsync("Node_Astral", token: GenericToken)
                                         };
                                         await treLimit.DoThreadSafeAsync(x => x.Nodes.Add(objParentNode), GenericToken);
                                         break;
@@ -6016,13 +6023,13 @@ namespace Chummer
                             }
 
                             string strName = objImprovement.UniqueName
-                                             + await LanguageManager.GetStringAsync("String_Colon") +
-                                             await LanguageManager.GetStringAsync("String_Space");
+                                             + await LanguageManager.GetStringAsync("String_Colon", token: GenericToken) +
+                                             await LanguageManager.GetStringAsync("String_Space", token: GenericToken);
                             if (objImprovement.Value > 0)
                                 strName += '+';
                             strName += objImprovement.Value.ToString(GlobalSettings.CultureInfo);
                             if (!string.IsNullOrEmpty(objImprovement.Condition))
-                                strName += ',' + await LanguageManager.GetStringAsync("String_Space")
+                                strName += ',' + await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
                                                + objImprovement.Condition;
                             if (objParentNode?.Nodes.ContainsKey(strName) == false)
                             {
@@ -6102,7 +6109,7 @@ namespace Chummer
                             objParentNode = new TreeNode
                             {
                                 Tag = "Node_SelectedImprovements",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedImprovements", token: GenericToken)
                             };
                             await treImprovements.DoThreadSafeAsync(x => x.Nodes.Add(objParentNode), GenericToken);
                         }
@@ -6256,7 +6263,7 @@ namespace Chummer
                         objParentNode = new TreeNode
                         {
                             Tag = "Node_SelectedLifestyles",
-                            Text = await LanguageManager.GetStringAsync("Node_SelectedLifestyles")
+                            Text = await LanguageManager.GetStringAsync("Node_SelectedLifestyles", token: GenericToken)
                         };
                         await treLifestyles.DoThreadSafeAsync(x =>
                         {
@@ -7638,27 +7645,34 @@ namespace Chummer
                 source.DoDragDrop(new TransportWrapper(source), DragDropEffects.Move);
         }
 
-        protected async ValueTask AddContact()
+        protected async ValueTask AddContact(CancellationToken token = default)
         {
             Contact objContact = new Contact(CharacterObject)
             {
                 EntityType = ContactType.Contact
             };
-            await CharacterObject.Contacts.AddAsync(objContact);
+            await CharacterObject.Contacts.AddAsync(objContact, token: token);
             await RequestCharacterUpdate();
             await SetDirty(true);
         }
 
         protected async void DeleteContact(object sender, EventArgs e)
         {
-            if (sender is ContactControl objSender)
+            try
             {
-                if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteContact")))
-                    return;
+                if (sender is ContactControl objSender)
+                {
+                    if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteContact", token: GenericToken)))
+                        return;
 
-                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject);
-                await RequestCharacterUpdate();
-                await SetDirty(true);
+                    await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken);
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -7666,28 +7680,35 @@ namespace Chummer
 
         #region PetControl Events
 
-        protected async ValueTask AddPet()
+        protected async ValueTask AddPet(CancellationToken token = default)
         {
             Contact objContact = new Contact(CharacterObject)
             {
                 EntityType = ContactType.Pet
             };
 
-            await CharacterObject.Contacts.AddAsync(objContact);
+            await CharacterObject.Contacts.AddAsync(objContact, token: token);
             await RequestCharacterUpdate();
             await SetDirty(true);
         }
 
         protected async void DeletePet(object sender, EventArgs e)
         {
-            if (sender is PetControl objSender)
+            try
             {
-                if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteContact")))
-                    return;
+                if (sender is PetControl objSender)
+                {
+                    if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteContact", token: GenericToken)))
+                        return;
 
-                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject);
-                await RequestCharacterUpdate();
-                await SetDirty(true);
+                    await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken);
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -7695,7 +7716,7 @@ namespace Chummer
 
         #region EnemyControl Events
 
-        protected async ValueTask AddEnemy()
+        protected async ValueTask AddEnemy(CancellationToken token = default)
         {
             // Handle the ConnectionRatingChanged Event for the ContactControl object.
             Contact objContact = new Contact(CharacterObject)
@@ -7703,21 +7724,28 @@ namespace Chummer
                 EntityType = ContactType.Enemy
             };
 
-            await CharacterObject.Contacts.AddAsync(objContact);
+            await CharacterObject.Contacts.AddAsync(objContact, token: token);
             await RequestCharacterUpdate();
             await SetDirty(true);
         }
 
         protected async void DeleteEnemy(object sender, EventArgs e)
         {
-            if (sender is ContactControl objSender)
+            try
             {
-                if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteEnemy")))
-                    return;
+                if (sender is ContactControl objSender)
+                {
+                    if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteEnemy", token: GenericToken)))
+                        return;
 
-                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject);
-                await RequestCharacterUpdate();
-                await SetDirty(true);
+                    await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken);
+                    await RequestCharacterUpdate();
+                    await SetDirty(true);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -7734,8 +7762,8 @@ namespace Chummer
                 // Displays an OpenFileDialog so the user can select the XML to read.
                 using (OpenFileDialog dlgOpenFile = await this.DoThreadSafeFuncAsync(() => new OpenFileDialog(), token))
                 {
-                    dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml") + '|' +
-                                         await LanguageManager.GetStringAsync("DialogFilter_All");
+                    dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml", token: token) + '|' +
+                                         await LanguageManager.GetStringAsync("DialogFilter_All", token: token);
                     // Show the Dialog.
                     // If the user cancels out, return early.
                     if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), token) != DialogResult.OK)
@@ -8099,16 +8127,16 @@ namespace Chummer
 
         #region SpiritControl Events
 
-        protected async ValueTask AddSpirit()
+        protected async ValueTask AddSpirit(CancellationToken token = default)
         {
             // The number of bound Spirits cannot exceed the character's CHA.
             if (!CharacterObject.IgnoreRules && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Spirit && x.Bound && !x.Fettered) >= CharacterObject.BoundSpiritLimit)
             {
                 Program.ShowMessageBox(
                     this,
-                    string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_BoundSpiritLimit"),
+                    string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_BoundSpiritLimit", token: token),
                                   CharacterObject.Settings.BoundSpiritExpression, CharacterObject.BoundSpiritLimit),
-                    await LanguageManager.GetStringAsync("MessageTitle_BoundSpiritLimit"),
+                    await LanguageManager.GetStringAsync("MessageTitle_BoundSpiritLimit", token: token),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -8118,12 +8146,12 @@ namespace Chummer
                 EntityType = SpiritType.Spirit,
                 Force = CharacterObject.MaxSpiritForce
             };
-            await CharacterObject.Spirits.AddAsync(objSpirit);
+            await CharacterObject.Spirits.AddAsync(objSpirit, token: token);
             await RequestCharacterUpdate();
             await SetDirty(true);
         }
 
-        protected async ValueTask AddSprite()
+        protected async ValueTask AddSprite(CancellationToken token = default)
         {
             // In create, all sprites are added as Bound/Registered. The number of registered Sprites cannot exceed the character's LOG.
             if (!CharacterObject.IgnoreRules &&
@@ -8133,10 +8161,10 @@ namespace Chummer
                 Program.ShowMessageBox(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
-                                  await LanguageManager.GetStringAsync("Message_RegisteredSpriteLimit"),
+                                  await LanguageManager.GetStringAsync("Message_RegisteredSpriteLimit", token: token),
                                   CharacterObject.Settings.RegisteredSpriteExpression,
                                   CharacterObject.RegisteredSpriteLimit),
-                    await LanguageManager.GetStringAsync("MessageTitle_RegisteredSpriteLimit"),
+                    await LanguageManager.GetStringAsync("MessageTitle_RegisteredSpriteLimit", token: token),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -8146,23 +8174,30 @@ namespace Chummer
                 EntityType = SpiritType.Sprite,
                 Force = CharacterObject.MaxSpriteLevel
             };
-            await CharacterObject.Spirits.AddAsync(objSprite);
+            await CharacterObject.Spirits.AddAsync(objSprite, token: token);
             await RequestCharacterUpdate();
             await SetDirty(true);
         }
 
         protected async void DeleteSpirit(object sender, EventArgs e)
         {
-            if (!(sender is SpiritControl objSender))
-                return;
-            Spirit objSpirit = objSender.SpiritObject;
-            bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
-            if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite")))
-                return;
-            objSpirit.Fettered = false; // Fettered spirits consume MAG.
-            await CharacterObject.Spirits.RemoveAsync(objSpirit);
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+            try
+            {
+                if (!(sender is SpiritControl objSender))
+                    return;
+                Spirit objSpirit = objSender.SpiritObject;
+                bool blnIsSpirit = objSpirit.EntityType == SpiritType.Spirit;
+                if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync(blnIsSpirit ? "Message_DeleteSpirit" : "Message_DeleteSprite", token: GenericToken)))
+                    return;
+                objSpirit.Fettered = false; // Fettered spirits consume MAG.
+                await CharacterObject.Spirits.RemoveAsync(objSpirit, token: GenericToken);
+                await RequestCharacterUpdate();
+                await SetDirty(true);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         #endregion SpiritControl Events
@@ -8186,11 +8221,11 @@ namespace Chummer
                     // Prompt the user to select an image to associate with this character.
 
                     ImageCodecInfo[] lstCodecs = ImageCodecInfo.GetImageEncoders();
-                    string strFormat = "{0}" + await LanguageManager.GetStringAsync("String_Space") + "({1})|{1}";
+                    string strFormat = "{0}" + await LanguageManager.GetStringAsync("String_Space", token: token) + "({1})|{1}";
                     dlgOpenFile.Filter = string.Format(
                         GlobalSettings.InvariantCultureInfo,
-                        await LanguageManager.GetStringAsync("DialogFilter_ImagesPrefix") + "({1})|{1}|{0}|" +
-                        await LanguageManager.GetStringAsync("DialogFilter_All"),
+                        await LanguageManager.GetStringAsync("DialogFilter_ImagesPrefix", token: token) + "({1})|{1}|{0}|" +
+                        await LanguageManager.GetStringAsync("DialogFilter_All", token: token),
                         string.Join("|",
                                     lstCodecs.Select(codec => string.Format(GlobalSettings.CultureInfo,
                                                                             strFormat, codec.CodecName,
@@ -8208,7 +8243,7 @@ namespace Chummer
                         {
                             Program.ShowMessageBox(string.Format(
                                                        await LanguageManager.GetStringAsync(
-                                                           "Message_File_Cannot_Be_Read_Accessed"),
+                                                           "Message_File_Cannot_Be_Read_Accessed", token: token),
                                                        dlgOpenFile.FileName));
                             blnMakeLoop = true;
                         }
@@ -8710,7 +8745,7 @@ namespace Chummer
             if (Text.EndsWith('*') == _blnIsDirty && blnCanSkip)
                 return;
 
-            string strSpace = await LanguageManager.GetStringAsync("String_Space");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
             string strTitle = CharacterObject.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '(' + CharacterObjectSettings.Name + ')';
             if (_blnIsDirty)
                 strTitle += '*';
@@ -8934,9 +8969,9 @@ namespace Chummer
                                 {
                                     Program.ShowMessageBox(this,
                                                            await LanguageManager.GetStringAsync(
-                                                               "Message_NotEnoughNuyen"),
+                                                               "Message_NotEnoughNuyen", token: token),
                                                            await LanguageManager.GetStringAsync(
-                                                               "MessageTitle_NotEnoughNuyen"),
+                                                               "MessageTitle_NotEnoughNuyen", token: token),
                                                            MessageBoxButtons.OK,
                                                            MessageBoxIcon.Information);
                                     continue;
@@ -8946,8 +8981,8 @@ namespace Chummer
                                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                 objExpense.Create(decCost * -1,
                                                   await LanguageManager.GetStringAsync(
-                                                      "String_ExpensePurchaseVehicleGear") +
-                                                  await LanguageManager.GetStringAsync("String_Space") +
+                                                      "String_ExpensePurchaseVehicleGear", token: token) +
+                                                  await LanguageManager.GetStringAsync("String_Space", token: token) +
                                                   objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
                                                   DateTime.Now);
                                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);

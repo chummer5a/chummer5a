@@ -1114,7 +1114,7 @@ namespace Chummer.Backend.Attributes
                 objCultureInfo = GlobalSettings.CultureInfo;
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage, token: token);
             string strReturn = strInput;
             using (EnterReadLock.Enter(LockObject, token))
             {
@@ -1191,7 +1191,7 @@ namespace Chummer.Backend.Attributes
                 objCultureInfo = GlobalSettings.CultureInfo;
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage, token: token);
             using (EnterReadLock.Enter(LockObject, token))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
@@ -1256,7 +1256,7 @@ namespace Chummer.Backend.Attributes
                 objCultureInfo = GlobalSettings.CultureInfo;
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
             string strReturn = strInput;
             using (await EnterReadLock.EnterAsync(LockObject, token))
             {
@@ -1299,7 +1299,7 @@ namespace Chummer.Backend.Attributes
 
                                           return string.Format(objCultureInfo,
                                                                await LanguageManager.GetStringAsync(
-                                                                   "String_NaturalAttribute", strLanguage),
+                                                                   "String_NaturalAttribute", strLanguage, token: token),
                                                                strInnerReturn);
                                       })
                                       .CheapReplaceAsync('{' + strCharAttributeName + "Base}", async () =>
@@ -1320,7 +1320,7 @@ namespace Chummer.Backend.Attributes
 
                                           return string.Format(objCultureInfo,
                                                                await LanguageManager.GetStringAsync(
-                                                                   "String_BaseAttribute", strLanguage),
+                                                                   "String_BaseAttribute", strLanguage, token: token),
                                                                strInnerReturn);
                                       });
                 }
@@ -1339,7 +1339,7 @@ namespace Chummer.Backend.Attributes
                 objCultureInfo = GlobalSettings.CultureInfo;
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token);
             using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
@@ -1372,7 +1372,7 @@ namespace Chummer.Backend.Attributes
                         }
 
                         return string.Format(objCultureInfo,
-                                             await LanguageManager.GetStringAsync("String_NaturalAttribute", strLanguage),
+                                             await LanguageManager.GetStringAsync("String_NaturalAttribute", strLanguage, token: token),
                                              strInnerReturn);
                     });
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Base}", async () =>
@@ -1389,7 +1389,7 @@ namespace Chummer.Backend.Attributes
                         }
 
                         return string.Format(objCultureInfo,
-                                             await LanguageManager.GetStringAsync("String_BaseAttribute", strLanguage),
+                                             await LanguageManager.GetStringAsync("String_BaseAttribute", strLanguage, token: token),
                                              strInnerReturn);
                     });
                 }

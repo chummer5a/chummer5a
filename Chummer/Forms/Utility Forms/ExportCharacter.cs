@@ -72,37 +72,37 @@ namespace Chummer
 
         private async void ExportCharacter_Load(object sender, EventArgs e)
         {
-            _objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;
-            _objCharacter.SettingsPropertyChanged += ObjCharacterOnSettingsPropertyChanged;
-            await LanguageManager.PopulateSheetLanguageListAsync(cboLanguage, GlobalSettings.DefaultCharacterSheet, _objCharacter.Yield(), _objExportCulture);
-            using (new FetchSafelyFromPool<List<ListItem>>(
-                       Utils.ListItemListPool, out List<ListItem> lstExportMethods))
-            {
-                // Populate the XSLT list with all of the XSL files found in the sheets directory.
-                foreach (string strFile in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "export")))
-                {
-                    // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
-                    if (!strFile.EndsWith(".xslt", StringComparison.OrdinalIgnoreCase)
-                        && strFile.EndsWith(".xsl", StringComparison.OrdinalIgnoreCase))
-                    {
-                        string strFileName = Path.GetFileNameWithoutExtension(strFile);
-                        lstExportMethods.Add(new ListItem(strFileName, strFileName));
-                    }
-                }
-                lstExportMethods.Sort();
-                lstExportMethods.Insert(0, new ListItem("JSON", string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Export_Blank"), "JSON")));
-
-                await cboXSLT.PopulateWithListItemsAsync(lstExportMethods, _objGenericToken);
-                await cboXSLT.DoThreadSafeAsync(x =>
-                {
-                    if (x.Items.Count > 0)
-                        x.SelectedIndex = 0;
-                }, _objGenericToken);
-            }
-
-            _blnLoading = false;
             try
             {
+                _objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;
+                _objCharacter.SettingsPropertyChanged += ObjCharacterOnSettingsPropertyChanged;
+                await LanguageManager.PopulateSheetLanguageListAsync(cboLanguage, GlobalSettings.DefaultCharacterSheet, _objCharacter.Yield(), _objExportCulture, token: _objGenericToken);
+                using (new FetchSafelyFromPool<List<ListItem>>(
+                           Utils.ListItemListPool, out List<ListItem> lstExportMethods))
+                {
+                    // Populate the XSLT list with all of the XSL files found in the sheets directory.
+                    foreach (string strFile in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "export")))
+                    {
+                        // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
+                        if (!strFile.EndsWith(".xslt", StringComparison.OrdinalIgnoreCase)
+                            && strFile.EndsWith(".xsl", StringComparison.OrdinalIgnoreCase))
+                        {
+                            string strFileName = Path.GetFileNameWithoutExtension(strFile);
+                            lstExportMethods.Add(new ListItem(strFileName, strFileName));
+                        }
+                    }
+                    lstExportMethods.Sort();
+                    lstExportMethods.Insert(0, new ListItem("JSON", string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Export_Blank", token: _objGenericToken), "JSON")));
+
+                    await cboXSLT.PopulateWithListItemsAsync(lstExportMethods, _objGenericToken);
+                    await cboXSLT.DoThreadSafeAsync(x =>
+                    {
+                        if (x.Items.Count > 0)
+                            x.SelectedIndex = 0;
+                    }, _objGenericToken);
+                }
+
+                _blnLoading = false;
                 await Task.WhenAll(
                     UpdateWindowTitleAsync(_objGenericToken),
                     DoLanguageUpdate(_objGenericToken));
@@ -296,7 +296,7 @@ namespace Chummer
                         try
                         {
                             token.ThrowIfCancellationRequested();
-                            string strText = await LanguageManager.GetStringAsync("String_Generating_Data");
+                            string strText = await LanguageManager.GetStringAsync("String_Generating_Data", token: token);
                             await txtText.DoThreadSafeAsync(x => x.Text = strText, token);
                             (bool blnSuccess, Tuple<string, string> strBoxText)
                                 = await _dicCache.TryGetValueAsync(
@@ -430,7 +430,7 @@ namespace Chummer
             {
                 await Task.WhenAll(cmdExport.DoThreadSafeAsync(x => x.Enabled = false, token),
                                    cmdExportClose.DoThreadSafeAsync(x => x.Enabled = false, token),
-                                   LanguageManager.GetStringAsync("String_Generating_Data")
+                                   LanguageManager.GetStringAsync("String_Generating_Data", token: token)
                                                   .ContinueWith(
                                                       y => txtText.DoThreadSafeAsync(x => x.Text = y.Result, token),
                                                       token).Unwrap());
@@ -454,11 +454,11 @@ namespace Chummer
         /// </summary>
         protected async Task UpdateWindowTitleAsync(CancellationToken token = default)
         {
-            string strSpace = await LanguageManager.GetStringAsync("String_Space");
-            string strTitle = await LanguageManager.GetStringAsync("Title_ExportCharacter") + ':' + strSpace
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
+            string strTitle = await LanguageManager.GetStringAsync("Title_ExportCharacter", token: token) + ':' + strSpace
                               + CharacterObject.CharacterName + strSpace + '-' + strSpace
                               + await LanguageManager.GetStringAsync(
-                                  CharacterObject.Created ? "Title_CareerMode" : "Title_CreateNewCharacter") + strSpace
+                                  CharacterObject.Created ? "Title_CareerMode" : "Title_CreateNewCharacter", token: token) + strSpace
                               + '(' + CharacterObject.Settings.Name + ')';
             await this.DoThreadSafeAsync(x => x.Text = strTitle, token);
         }
@@ -486,14 +486,14 @@ namespace Chummer
                 }
 
                 if (strExtension.Equals("XML", StringComparison.OrdinalIgnoreCase))
-                    dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml");
+                    dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml", token: token);
                 else if (strExtension.Equals("JSON", StringComparison.OrdinalIgnoreCase))
-                    dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Json");
+                    dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Json", token: token);
                 else if (strExtension.Equals("HTM", StringComparison.OrdinalIgnoreCase) || strExtension.Equals("HTML", StringComparison.OrdinalIgnoreCase))
-                    dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Html");
+                    dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Html", token: token);
                 else
                     dlgSaveFile.Filter = strExtension.ToUpper(GlobalSettings.CultureInfo) + "|*." + strExtension.ToLowerInvariant();
-                dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Viewer_SaveAsHtml");
+                dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Viewer_SaveAsHtml", token: token);
                 if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token) != DialogResult.OK)
                     return;
                 strSaveFile = dlgSaveFile.FileName;
@@ -675,8 +675,8 @@ namespace Chummer
             {
                 dlgSaveFile.AddExtension = true;
                 dlgSaveFile.DefaultExt = "json";
-                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Json") + '|' + await LanguageManager.GetStringAsync("DialogFilter_All");
-                dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Export_SaveJsonAs");
+                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Json", token: token) + '|' + await LanguageManager.GetStringAsync("DialogFilter_All", token: token);
+                dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Export_SaveJsonAs", token: token);
                 if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token) != DialogResult.OK)
                     return;
                 strSaveFile = dlgSaveFile.FileName;

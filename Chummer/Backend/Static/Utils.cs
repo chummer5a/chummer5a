@@ -479,9 +479,9 @@ namespace Chummer
                                     string.Format(GlobalSettings.CultureInfo,
                                                   blnSync
                                                       // ReSharper disable once MethodHasAsyncOverload
-                                                      ? LanguageManager.GetString("Message_Prompt_Delete_Existing_File")
+                                                      ? LanguageManager.GetString("Message_Prompt_Delete_Existing_File", token: token)
                                                       : await LanguageManager.GetStringAsync(
-                                                          "Message_Prompt_Delete_Existing_File"), strPath),
+                                                          "Message_Prompt_Delete_Existing_File", token: token), strPath),
                                     buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning) != DialogResult.Yes)
                                 return false;
                         }
@@ -509,8 +509,8 @@ namespace Chummer
                     if (blnShowUnauthorizedAccess)
                         Program.ShowMessageBox(blnSync
                             // ReSharper disable once MethodHasAsyncOverload
-                            ? LanguageManager.GetString("Message_Insufficient_Permissions_Warning")
-                            : await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
+                            ? LanguageManager.GetString("Message_Insufficient_Permissions_Warning", token: token)
+                            : await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token));
                     return false;
                 }
                 catch (DirectoryNotFoundException)
@@ -615,9 +615,9 @@ namespace Chummer
                                     string.Format(GlobalSettings.CultureInfo,
                                         blnSync
                                             // ReSharper disable once MethodHasAsyncOverload
-                                            ? LanguageManager.GetString("Message_Prompt_Delete_Existing_File")
+                                            ? LanguageManager.GetString("Message_Prompt_Delete_Existing_File", token: token)
                                             : await LanguageManager.GetStringAsync(
-                                                "Message_Prompt_Delete_Existing_File"), strPath),
+                                                "Message_Prompt_Delete_Existing_File", token: token), strPath),
                                     buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning) != DialogResult.Yes)
                                 return false;
                         }
@@ -644,8 +644,8 @@ namespace Chummer
                     if (blnShowUnauthorizedAccess)
                         Program.ShowMessageBox(blnSync
                             // ReSharper disable once MethodHasAsyncOverload
-                            ? LanguageManager.GetString("Message_Insufficient_Permissions_Warning")
-                            : await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
+                            ? LanguageManager.GetString("Message_Insufficient_Permissions_Warning", token: token)
+                            : await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token));
                     return false;
                 }
                 catch (DirectoryNotFoundException)
@@ -739,8 +739,8 @@ namespace Chummer
                             string.Format(GlobalSettings.Language,
                                 blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    ? LanguageManager.GetString("Message_Prompt_Delete_Existing_File")
-                                    : await LanguageManager.GetStringAsync("Message_Prompt_Delete_Existing_File"),
+                                    ? LanguageManager.GetString("Message_Prompt_Delete_Existing_File", token: token)
+                                    : await LanguageManager.GetStringAsync("Message_Prompt_Delete_Existing_File", token: token),
                                 strPath),
                             buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning)
                         != DialogResult.Yes)
@@ -796,9 +796,9 @@ namespace Chummer
                 strLanguage = GlobalSettings.Language;
             if (!string.IsNullOrEmpty(strText))
             {
-                string text = await LanguageManager.GetStringAsync(strText, strLanguage);
+                string text = await LanguageManager.GetStringAsync(strText, strLanguage, token: token);
                 string caption
-                    = await LanguageManager.GetStringAsync("MessageTitle_Options_CloseForms", strLanguage);
+                    = await LanguageManager.GetStringAsync("MessageTitle_Options_CloseForms", strLanguage, token: token);
                 token.ThrowIfCancellationRequested();
                 if (Program.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                     != DialogResult.Yes)
@@ -817,8 +817,8 @@ namespace Chummer
                     switch (Program.ShowMessageBox(
                                 string.Format(GlobalSettings.CultureInfo,
                                               await LanguageManager.GetStringAsync(
-                                                  "Message_UnsavedChanges", strLanguage), strCharacterName),
-                                await LanguageManager.GetStringAsync("MessageTitle_UnsavedChanges", strLanguage),
+                                                  "Message_UnsavedChanges", strLanguage, token: token), strCharacterName),
+                                await LanguageManager.GetStringAsync("MessageTitle_UnsavedChanges", strLanguage, token: token),
                                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
                     {
                         case DialogResult.Yes:
@@ -830,7 +830,7 @@ namespace Chummer
                                 // We saved a character as created, which closed the current form and added a new one
                                 // This works regardless of dispose, because dispose would just set the objOpenCharacterForm pointer to null, so OpenCharacterEditorForms would never contain it
                                 if (!await Program.MainForm.OpenCharacterEditorForms
-                                                  .ContainsAsync(objOpenCharacterForm))
+                                                  .ContainsAsync(objOpenCharacterForm, token: token))
                                     --i;
                                 break;
                             }

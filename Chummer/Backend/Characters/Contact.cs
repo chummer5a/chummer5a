@@ -496,7 +496,7 @@ namespace Chummer
                 if (!IsGroup)
                     await objWriter.WriteElementStringAsync("connection", Connection.ToString(objCulture), token: token);
                 else
-                    await objWriter.WriteElementStringAsync("connection", await LanguageManager.GetStringAsync("String_Group", strLanguageToPrint) + '(' + Connection.ToString(objCulture) + ')', token: token);
+                    await objWriter.WriteElementStringAsync("connection", await LanguageManager.GetStringAsync("String_Group", strLanguageToPrint, token: token) + '(' + Connection.ToString(objCulture) + ')', token: token);
                 await objWriter.WriteElementStringAsync("loyalty", Loyalty.ToString(objCulture), token: token);
                 await objWriter.WriteElementStringAsync("metatype", await DisplayMetatypeMethodAsync(strLanguageToPrint), token: token);
                 await objWriter.WriteElementStringAsync("gender", await DisplayGenderMethodAsync(strLanguageToPrint), token: token);
@@ -505,7 +505,7 @@ namespace Chummer
                 await objWriter.WriteElementStringAsync("preferredpayment", await DisplayPreferredPaymentMethodAsync(strLanguageToPrint), token: token);
                 await objWriter.WriteElementStringAsync("hobbiesvice", await DisplayHobbiesViceMethodAsync(strLanguageToPrint), token: token);
                 await objWriter.WriteElementStringAsync("personallife", await DisplayPersonalLifeMethodAsync(strLanguageToPrint), token: token);
-                await objWriter.WriteElementStringAsync("type", await LanguageManager.GetStringAsync("String_" + EntityType, strLanguageToPrint), token: token);
+                await objWriter.WriteElementStringAsync("type", await LanguageManager.GetStringAsync("String_" + EntityType, strLanguageToPrint, token: token), token: token);
                 await objWriter.WriteElementStringAsync("forcedloyalty", ForcedLoyalty.ToString(objCulture), token: token);
                 await objWriter.WriteElementStringAsync("blackmail", Blackmail.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                 await objWriter.WriteElementStringAsync("family", Family.ToString(GlobalSettings.InvariantCultureInfo), token: token);
@@ -1508,7 +1508,7 @@ namespace Chummer
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
+                        Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token));
                     }
                 }
                 Guid guiImage = Guid.NewGuid();

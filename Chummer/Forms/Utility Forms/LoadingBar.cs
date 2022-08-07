@@ -88,7 +88,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (this.IsNullOrDisposed())
                 return;
-            await LanguageManager.GetStringAsync("String_Initializing")
+            await LanguageManager.GetStringAsync("String_Initializing", token: token)
                                  .ContinueWith(y => lblLoadingInfo.DoThreadSafeAsync(x => x.Text = y.Result, token),
                                                token).Unwrap();
             await pgbLoadingProgress.DoThreadSafeAsync(x =>
@@ -176,41 +176,41 @@ namespace Chummer
             {
                 case ProgressBarTextPatterns.Saving:
                     if (string.IsNullOrEmpty(strStepName))
-                        strNewText = await LanguageManager.GetStringAsync("String_Saving");
+                        strNewText = await LanguageManager.GetStringAsync("String_Saving", token: token);
                     else
                         strNewText = string.Format(GlobalSettings.CultureInfo,
-                                                   await LanguageManager.GetStringAsync("String_Saving_Pattern"),
+                                                   await LanguageManager.GetStringAsync("String_Saving_Pattern", token: token),
                                                    strStepName);
                     break;
                 case ProgressBarTextPatterns.Loading:
                     if (string.IsNullOrEmpty(strStepName))
-                        strNewText = await LanguageManager.GetStringAsync("String_Loading");
+                        strNewText = await LanguageManager.GetStringAsync("String_Loading", token: token);
                     else
                         strNewText = string.Format(GlobalSettings.CultureInfo,
-                                                   await LanguageManager.GetStringAsync("String_Loading_Pattern"),
+                                                   await LanguageManager.GetStringAsync("String_Loading_Pattern", token: token),
                                                    strStepName);
                     break;
                 case ProgressBarTextPatterns.Scanning:
                     if (string.IsNullOrEmpty(strStepName))
-                        strNewText = await LanguageManager.GetStringAsync("String_Scanning");
+                        strNewText = await LanguageManager.GetStringAsync("String_Scanning", token: token);
                     else
                         strNewText = string.Format(GlobalSettings.CultureInfo,
-                                                   await LanguageManager.GetStringAsync("String_Scanning_Pattern"),
+                                                   await LanguageManager.GetStringAsync("String_Scanning_Pattern", token: token),
                                                    strStepName);
                     break;
                 case ProgressBarTextPatterns.Initializing:
                     if (string.IsNullOrEmpty(strStepName))
-                        strNewText = await LanguageManager.GetStringAsync("String_Initializing");
+                        strNewText = await LanguageManager.GetStringAsync("String_Initializing", token: token);
                     else
                         strNewText = string.Format(GlobalSettings.CultureInfo,
-                                                   await LanguageManager.GetStringAsync("String_Initializing_Pattern"),
+                                                   await LanguageManager.GetStringAsync("String_Initializing_Pattern", token: token),
                                                    strStepName);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(eUseTextPattern), eUseTextPattern, null);
             }
 
-            string strSpace = await LanguageManager.GetStringAsync("String_Space");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token);
             await pgbLoadingProgress.DoThreadSafeAsync(x =>
             {
                 int intLoadingMaximum = x.Maximum;

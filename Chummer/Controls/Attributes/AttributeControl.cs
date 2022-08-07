@@ -332,9 +332,9 @@ namespace Chummer.UI.Attributes
                 return true;
 
             Program.ShowMessageBox(
-                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_AttributeMaximum"),
+                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_AttributeMaximum", token: token),
                               _objCharacter.Settings.MaxNumberMaxAttributesCreate),
-                await LanguageManager.GetStringAsync("MessageTitle_Attribute"), MessageBoxButtons.OK,
+                await LanguageManager.GetStringAsync("MessageTitle_Attribute", token: token), MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
             return false;
         }

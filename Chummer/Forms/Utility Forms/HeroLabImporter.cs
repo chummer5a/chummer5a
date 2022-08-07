@@ -596,7 +596,7 @@ namespace Chummer
                 Character objCharacter = new Character();
                 try
                 {
-                    await Program.OpenCharacters.AddAsync(objCharacter);
+                    await Program.OpenCharacters.AddAsync(objCharacter, token: token);
 
                     CharacterSettings objHeroLabSettings =
                         SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(
@@ -664,7 +664,7 @@ namespace Chummer
                     await cmdImport.DoThreadSafeAsync(x => x.Enabled = true, token);
                     await cmdSelectFile.DoThreadSafeAsync(x => x.Enabled = true, token);
                     if (!blnLoaded)
-                        await Program.OpenCharacters.RemoveAsync(objCharacter);
+                        await Program.OpenCharacters.RemoveAsync(objCharacter, token: token);
                 }
             }
             finally
