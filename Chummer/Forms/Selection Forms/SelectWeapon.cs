@@ -58,9 +58,24 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            lblMarkupLabel.Visible = objCharacter.Created;
-            nudMarkup.Visible = objCharacter.Created;
-            lblMarkupPercentLabel.Visible = objCharacter.Created;
+            if (objCharacter.Created)
+            {
+                lblMarkupLabel.Visible = true;
+                nudMarkup.Visible = true;
+                lblMarkupPercentLabel.Visible = true;
+                chkHideOverAvailLimit.Visible = false;
+                chkHideOverAvailLimit.Checked = false;
+            }
+            else
+            {
+                lblMarkupLabel.Visible = false;
+                nudMarkup.Visible = false;
+                lblMarkupPercentLabel.Visible = false;
+                chkHideOverAvailLimit.Text = string.Format(
+                    GlobalSettings.CultureInfo, chkHideOverAvailLimit.Text,
+                    objCharacter.Settings.MaximumAvailability);
+                chkHideOverAvailLimit.Checked = GlobalSettings.HideItemsOverAvailLimit;
+            }
             _objCharacter = objCharacter;
             // Load the Weapon information.
             _objXmlDocument = _objCharacter.LoadData("weapons.xml");
@@ -76,25 +91,6 @@ namespace Chummer
                 NullValue = null
             };
             dgvc_Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
-
-            if (_objCharacter.Created)
-            {
-                await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
-                {
-                    x.Visible = false;
-                    x.Checked = false;
-                });
-            }
-            else
-            {
-                await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
-                {
-                    x.Text = string.Format(
-                        GlobalSettings.CultureInfo, x.Text,
-                        _objCharacter.Settings.MaximumAvailability);
-                    x.Checked = GlobalSettings.HideItemsOverAvailLimit;
-                });
-            }
 
             // Populate the Weapon Category list.
             // Populate the Category list.
