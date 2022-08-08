@@ -1148,8 +1148,8 @@ namespace Chummer
 
         private void ResetChummerUpdater(object sender, EventArgs e)
         {
-            _frmUpdate?.Close();
-            _frmUpdate = null;
+            ChummerUpdater frmUpdate = Interlocked.Exchange(ref _frmUpdate, null);
+            frmUpdate?.Close();
         }
 
         private async void aboutToolStripMenuItem_Click(object sender, EventArgs e)
