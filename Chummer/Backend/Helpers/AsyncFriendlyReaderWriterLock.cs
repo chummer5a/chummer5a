@@ -63,6 +63,8 @@ namespace Chummer
             DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
             // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
             // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
+            // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
+            // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
             while (objNextSemaphore == objCurrentSemaphore || objNextSemaphore == objLastSemaphore)
                 objNextSemaphore = Utils.SemaphorePool.Get();
             _objCurrentWriterSemaphore.Value = new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(objCurrentSemaphore, objNextSemaphore);
@@ -135,6 +137,8 @@ namespace Chummer
             DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
             // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
             // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
+            // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
+            // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
             while (objNextSemaphore == objCurrentSemaphore || objNextSemaphore == objLastSemaphore)
                 objNextSemaphore = Utils.SemaphorePool.Get();
             _objCurrentWriterSemaphore.Value = new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(objCurrentSemaphore, objNextSemaphore);
@@ -158,6 +162,8 @@ namespace Chummer
             DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
             // Extremely hacky solution to buggy semaphore (re)cycling in AsyncLocal
             // TODO: Fix this properly. The problem is that after an AsyncLocal shallow-copy in a different context, the semaphores can get returned in the copy without altering the original AsyncLocal
+            // This problem happens when the UI thread is safe-waiting on a semaphore and then gets an Application.DoEvents call (from a Utils.RunWithoutThreadLock) that includes a semaphore release.
+            // The ideal solution *should* be to refactor the entire codebase so that those kinds of situations can't happen in the first place, but that requires monstrous effort, and I'm too tired to fix that properly.
             while (objNextSemaphore == objCurrentSemaphore || objNextSemaphore == objLastSemaphore)
                 objNextSemaphore = Utils.SemaphorePool.Get();
             _objCurrentWriterSemaphore.Value = new Tuple<DebuggableSemaphoreSlim, DebuggableSemaphoreSlim>(objCurrentSemaphore, objNextSemaphore);
