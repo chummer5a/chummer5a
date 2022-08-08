@@ -1005,6 +1005,12 @@ namespace Chummer
         }
         */
 
+        private void closeWindowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (tabForms.SelectedTab.Tag is Form frmCurrentForm)
+                frmCurrentForm.Close();
+        }
+
         private void CloseAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             foreach (Form childForm in MdiChildren)

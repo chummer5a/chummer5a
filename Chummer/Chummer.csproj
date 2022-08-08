@@ -2557,6 +2557,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\application.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\application_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\application_cascade.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\application_cascade_delete.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\application_control_bar.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\application_delete.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\application_double.png" />
@@ -10432,6 +10433,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\application.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\application_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\application_cascade.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\application_cascade_delete.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\application_control_bar.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\application_delete.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\application_double.png" />

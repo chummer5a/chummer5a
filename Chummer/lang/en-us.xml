@@ -1491,6 +1491,10 @@
       <text>&amp;New Window</text>
     </string>
     <string>
+      <key>Menu_Main_CloseWindow</key>
+      <text>&amp;Close Window</text>
+    </string>
+    <string>
       <key>Menu_Main_CloseAll</key>
       <text>C&amp;lose All</text>
     </string>
