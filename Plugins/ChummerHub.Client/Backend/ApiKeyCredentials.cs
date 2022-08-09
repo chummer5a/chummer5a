@@ -18,18 +18,30 @@
  */
 using Microsoft.Rest;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ChummerHub.Client.Backend
 {
-    class MyCredentials : ServiceClientCredentials
-    {
-        public override Task ProcessHttpRequestAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            if (!string.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.AccessToken))
-                request.Headers.Add("Bearer", ChummerHub.Client.Properties.Settings.Default.AccessToken);
-            return base.ProcessHttpRequestAsync(request, cancellationToken);
-        }
-    }
+    //class MyCredentials : ServiceClientCredentials
+    //{
+    //    public override Task ProcessHttpRequestAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    //    {
+    //        if (!string.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.BearerToken))
+    //        {
+    //            AuthenticationHeaderValue auth = new AuthenticationHeaderValue("Bearer", ChummerHub.Client.Properties.Settings.Default.BearerToken);
+    //            request.Headers.Authorization = auth;
+    //            //request.Headers.Add("Authorization", "Bearer " + ChummerHub.Client.Properties.Settings.Default.BearerToken);
+    //        }
+    //        else if (!string.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.AccessToken))
+    //        {
+    //            AuthenticationHeaderValue auth = new AuthenticationHeaderValue("Bearer", ChummerHub.Client.Properties.Settings.Default.AccessToken);
+    //            request.Headers.Authorization = auth;
+    //            //request.Headers.Add("Authorization", "Bearer " + ChummerHub.Client.Properties.Settings.Default.AccessToken);
+    //        }
+                
+    //        return base.ProcessHttpRequestAsync(request, cancellationToken);
+    //    }
+    //}
 }

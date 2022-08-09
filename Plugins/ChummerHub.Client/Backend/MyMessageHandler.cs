@@ -61,6 +61,11 @@ namespace ChummerHub.Client.Backend
                     request.Headers.Authorization = auth;
                     //request.Headers.Add("Bearer", ChummerHub.Client.Properties.Settings.Default.AccessToken);
                 }
+                else if (!String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.IdentityToken))
+                {
+                    AuthenticationHeaderValue auth = new AuthenticationHeaderValue("Bearer", ChummerHub.Client.Properties.Settings.Default.IdentityToken);
+                    request.Headers.Authorization = auth;
+                }
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
                 // Call the inner handler.

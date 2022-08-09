@@ -391,19 +391,19 @@ namespace ChummerHub.Client.Backend
                 ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
                 Uri baseUri = new Uri(Settings.Default.SINnerUrl);
-                ServiceClientCredentials mycredentials;
-                try
-                {
-                    mycredentials = new MyCredentials();
-                }
-                catch (Exception e)
-                {
-                    ExceptionTelemetry et = new ExceptionTelemetry(e);
-                    TelemetryClient ct = new TelemetryClient();
-                    ct.TrackException(et);
-                    Log.Error(e);
-                }
-
+                //ServiceClientCredentials mycredentials = null;
+                //try
+                //{
+                //    mycredentials = new MyCredentials();
+                //}
+                //catch (Exception e)
+                //{
+                //    ExceptionTelemetry et = new ExceptionTelemetry(e);
+                //    TelemetryClient ct = new TelemetryClient();
+                //    ct.TrackException(et);
+                //    Log.Error(e);
+                //}
+                
                 HttpClientHandler delegatingHandler = new MyMessageHandler();
                 //HttpClientHandler httpClientHandler = new HttpClientHandler();
                 CookieContainer temp = AuthorizationCookieContainer;
@@ -411,6 +411,7 @@ namespace ChummerHub.Client.Backend
                     delegatingHandler.CookieContainer = temp;
                 HttpClient httpClient = new HttpClient(delegatingHandler);
                 client = new SinnersClient(baseUri.ToString(), httpClient);
+                
             }
             catch (Exception ex)
             {
