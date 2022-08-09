@@ -415,7 +415,11 @@ namespace Chummer.Plugins
             ucSINnersUserControl uc = new ucSINnersUserControl();
             try
             {
-                await uc.SetCharacterFrom(input);
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                var ce = await uc.SetCharacterFrom(input);
+                sw.Stop();
+                Log.Trace("ucSINnersUserControl SetCharacterFrom finished in " + sw.ElapsedMilliseconds + "ms.");
             }
             catch (Exception e)
             {
@@ -803,7 +807,14 @@ namespace Chummer.Plugins
                             try
                             {
                                 client = StaticUtils.GetClient();
-                                ret = await client.GetSINnersByAuthorizationAsync();
+                                if (String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.BearerToken))
+                                {
+                                    ret = await client.GetSINnersByTokenAsync(ChummerHub.Client.Properties.Settings.Default.IdentityToken);
+                                    ChummerHub.Client.Properties.Settings.Default.BearerToken = ret.BearerToken;
+                                    ChummerHub.Client.Properties.Settings.Default.Save();
+                                }
+                                else
+                                    ret = await client.GetSINnersByAuthorizationAsync();
                                 return ret;
                             }
                             catch (Exception)

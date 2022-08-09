@@ -138,6 +138,7 @@ namespace ChummerHub
                     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                     logging.AddConsole();
                     logging.AddDebug();
+                    
                     logging.AddApplicationInsights("95c486ab-aeb7-4361-8667-409b7bf62713");
                     logging.AddFilter<ApplicationInsightsLoggerProvider>("", LogLevel.Trace);
                     // Additional filtering For category starting in "Microsoft",

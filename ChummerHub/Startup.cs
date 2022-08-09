@@ -61,6 +61,7 @@ using System.Text;
 using Microsoft.Net.Http.Headers;
 using Duende.IdentityServer.Configuration;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Duende.IdentityServer.Models;
 
 namespace ChummerHub
 {
@@ -139,7 +140,7 @@ namespace ChummerHub
             //ConnectionStringToMasterSqlDb = keys.GetSecret("MasterSqlConnection");
             //ConnectionStringSinnersDb = keys.GetSecret("DefaultConnection");
 
-            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+          
 
             // Use this if MyCustomTelemetryInitializer can be constructed without DI injected parameters
             services.AddSingleton<ITelemetryInitializer>(new MyTelemetryInitializer());
@@ -173,6 +174,7 @@ namespace ChummerHub
             //services.AddSingleton<ITelemetryProcessorFactory>(sp => new SnapshotCollectorTelemetryProcessorFactory(sp));
             Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions aiOptions
                 = new Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions();
+            aiOptions.InstrumentationKey = Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"];
             // Disables adaptive sampling.
             aiOptions.EnableAdaptiveSampling = false;
 
@@ -229,11 +231,11 @@ namespace ChummerHub
                 var helper = new JwtHelper(Program.logger, Configuration);
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = true,
+                    ValidateIssuer = false,
                     ValidIssuer = helper.jwtToken.Issuer,
                     ValidateAudience = false,
                     ValidAudience = helper.jwtToken.Audience,
-                    ValidateIssuerSigningKey = true,
+                    ValidateIssuerSigningKey = false,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(helper.jwtToken.SigningKey)),
                 };
                 options.SaveToken = true;
@@ -487,7 +489,8 @@ namespace ChummerHub
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.Http,
                     Scheme = "bearer",
-                });
+                    //Flows = new OpenApiOAuthFlows() { new AuthorizationCode }
+                }) ;
 
 
                 //options.AddSecurityDefinition(jwtSecurityScheme.Scheme, jwtSecurityScheme);

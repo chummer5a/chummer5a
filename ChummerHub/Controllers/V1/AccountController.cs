@@ -55,7 +55,7 @@ namespace ChummerHub.Controllers
     [ApiController]
     [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
-    [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
     public class AccountController : Controller
     {
 
@@ -90,7 +90,6 @@ namespace ChummerHub.Controllers
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        [AllowAnonymous]
         [HttpPost]
         public async Task<string> Authenticate()
         {
@@ -105,8 +104,14 @@ namespace ChummerHub.Controllers
                     throw new ArgumentNullException(nameof(user));
                 roles = await _userManager.GetRolesAsync(user);
             }
+            tokenstring = await getBearerToken(user, roles);
+            return tokenstring;
+        }
+
+        private async Task<string> getBearerToken(ApplicationUser user, IList<string> roles)
+        {
             var helper = new JwtHelper(_logger, _configuration);
-            token = helper.GenerateJwTSecurityToken(user, roles);
+            var token = helper.GenerateJwTSecurityToken(user, roles);
             if (User != null)
             {
                 // also add cookie auth for Swagger Access
@@ -127,11 +132,9 @@ namespace ChummerHub.Controllers
                     });
             }
             //return the token to API client
-            tokenstring = new JwtSecurityTokenHandler().WriteToken(token);
+            string tokenstring = new JwtSecurityTokenHandler().WriteToken(token);
             return tokenstring;
         }
-
-     
 
         [HttpGet]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
@@ -570,7 +573,7 @@ namespace ChummerHub.Controllers
         {
             try
             {
-                var res = await GetSINnersByAuthorizationInternal();
+                var res = await GetSINnersByAuthorizationInternal(null);
                 return res;
             }
             catch (Exception e)
@@ -580,9 +583,33 @@ namespace ChummerHub.Controllers
             }
         }
 
-        
+        /// <summary>
+        /// Search for Sinners for one user
+        /// </summary>
+        /// <returns>SINSearchGroupResult</returns>
+        [HttpGet]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse(StatusCodes.Status200OK)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse(StatusCodes.Status400BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetSinnersByToken")]
+        [AllowAnonymous]
+        //[Authorize(Roles = API.Authorization.Constants.UserRoleRegistered, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        public async Task<ActionResult<ResultAccountGetSinnersByAuthorization>> GetSINnersByToken(string token)
+        {
+            try
+            {
+                var res = await GetSINnersByAuthorizationInternal(token);
+                return res;
+            }
+            catch (Exception e)
+            {
+                ResultAccountGetSinnersByAuthorization error = new ResultAccountGetSinnersByAuthorization(e);
+                return error;
+            }
+        }
 
-        private async Task<ActionResult<ResultAccountGetSinnersByAuthorization>> GetSINnersByAuthorizationInternal()
+
+
+        private async Task<ActionResult<ResultAccountGetSinnersByAuthorization>> GetSINnersByAuthorizationInternal(string token)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -592,7 +619,20 @@ namespace ChummerHub.Controllers
             SINSearchGroupResult ret = new SINSearchGroupResult();
             res = new ResultAccountGetSinnersByAuthorization(ret);
             SINnerGroup sg = new SINnerGroup();
-            ApplicationUser user = await JwtHelper.GetApplicationUserAsync(User, _userManager);
+            ApplicationUser user = null;
+            if (String.IsNullOrEmpty(token))
+            {
+                user = await JwtHelper.GetApplicationUserAsync(User, _userManager);
+            }
+            else
+            {
+                JwtSecurityTokenHandler jwtSecurityToken = new JwtSecurityTokenHandler();
+                var jwtToken = jwtSecurityToken.ReadJwtToken(token);
+                var name = jwtToken.Claims.FirstOrDefault(x => x.Type == "name")?.Value;
+                if (String.IsNullOrEmpty(name))
+                    name = jwtToken.Subject;
+                user = await _userManager.FindByNameAsync(name);
+            }
             if (user == null)
             {
                 var e = new AuthenticationException("User is not authenticated.");
@@ -602,6 +642,16 @@ namespace ChummerHub.Controllers
                 };
                 return BadRequest(res);
             }
+            IList<string> roles = new List<string>();
+            if (user == null && User != null)
+            {
+                user = await JwtHelper.GetApplicationUserAsync(User, _userManager);
+                if (user == null)
+                    throw new ArgumentNullException(nameof(user));
+            }
+            roles = await _userManager.GetRolesAsync(user);
+            res.BearerToken = await getBearerToken(user, roles);
+          
             res.UserEmail = user.Email;
             user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
 
@@ -618,7 +668,7 @@ namespace ChummerHub.Controllers
             {
                 try
                 {
-                    var roles = await _userManager.GetRolesAsync(user);
+                    //var roles = await _userManager.GetRolesAsync(user);
                     ret.Roles = roles.ToList();
                     ssg.Groupname = user.UserName;
                     ssg.Id = Guid.Empty;
@@ -664,7 +714,7 @@ namespace ChummerHub.Controllers
 
                     await _context.SaveChangesAsync();
                     ret.SINGroups.Add(ssg);
-                    res = new ResultAccountGetSinnersByAuthorization(ret);
+                    res.MySINSearchGroupResult = ret;
                     return Ok(res);
                 }
                 catch (Exception e)

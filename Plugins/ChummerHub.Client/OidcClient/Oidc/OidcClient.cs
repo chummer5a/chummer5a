@@ -95,7 +95,7 @@ namespace IdentityModel.OidcClient
 
             if (!result.IsError)
             {
-                SetCookieContainer();
+               
                 ChummerHub.Client.Properties.Settings.Default.IdentityToken = result.IdentityToken;
                 ChummerHub.Client.Properties.Settings.Default.AccessToken = result.AccessToken;
                 //BearerToken
@@ -105,16 +105,27 @@ namespace IdentityModel.OidcClient
             return result;
         }
 
-        private void SetCookieContainer()
+        public static void SetCookieContainer(string cookiestring = null)
         {
             try
             {
-                Settings.Default.CookieData = null;
-                Settings.Default.Save();
-                CookieCollection cookies =
-                    StaticUtils.AuthorizationCookieContainer?.GetCookies(new Uri(Settings.Default
-                        .SINnerUrl));
-                //return StaticUtils.GetClient(true);
+                if (String.IsNullOrEmpty(cookiestring))
+                {
+                    Settings.Default.CookieData = null;
+                    Settings.Default.Save();
+                    CookieCollection cookies = StaticUtils.AuthorizationCookieContainer?.GetCookies(new Uri(Settings.Default.SINnerUrl));
+                }
+                else
+                {
+                    //CookieCollection collection = new CookieCollection();
+                    Settings.Default.CookieData = cookiestring;
+                    Settings.Default.Save();
+                    //collection.Add(cookie);
+                    StaticUtils.AuthorizationCookieContainer?.SetCookies(new Uri(Settings.Default.SINnerUrl), cookiestring);
+                    //StaticUtils.AuthorizationCookieContainer?.GetCookies(new Uri(Settings.Default.SINnerUrl));
+                    //Cookie cookie = new Cookie("Cookie", cookiestring, "", Settings.Default.SINnerUrl);
+                    //StaticUtils.AuthorizationCookieContainer.Add(cookie);
+                }
             }
             catch (Exception ex)
             {
