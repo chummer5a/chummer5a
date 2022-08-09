@@ -58,7 +58,12 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            if (objCharacter.Created)
+            _objCharacter = objCharacter;
+            // Load the Weapon information.
+            _objXmlDocument = _objCharacter.LoadData("weapons.xml");
+            _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_objCharacter.LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer")));
+
+            if (_objCharacter.Created)
             {
                 lblMarkupLabel.Visible = true;
                 nudMarkup.Visible = true;
@@ -73,13 +78,9 @@ namespace Chummer
                 lblMarkupPercentLabel.Visible = false;
                 chkHideOverAvailLimit.Text = string.Format(
                     GlobalSettings.CultureInfo, chkHideOverAvailLimit.Text,
-                    objCharacter.Settings.MaximumAvailability);
+                    _objCharacter.Settings.MaximumAvailability);
                 chkHideOverAvailLimit.Checked = GlobalSettings.HideItemsOverAvailLimit;
             }
-            _objCharacter = objCharacter;
-            // Load the Weapon information.
-            _objXmlDocument = _objCharacter.LoadData("weapons.xml");
-            _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_objCharacter.LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer")));
         }
 
         private async void SelectWeapon_Load(object sender, EventArgs e)
