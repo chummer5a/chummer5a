@@ -36,6 +36,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
 using System;
@@ -627,7 +628,29 @@ namespace ChummerHub.Controllers
             else
             {
                 JwtSecurityTokenHandler jwtSecurityToken = new JwtSecurityTokenHandler();
+                TokenValidationParameters param = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                   
+                };
+                SecurityToken secToken;
+                try
+                {
+                    var claims = jwtSecurityToken.ValidateToken(token, param, out secToken);
+                }
+                catch(Exception e)
+                {
+                    _logger.LogWarning("Token not validated: " + e.Message);
+                    res = new ResultAccountGetSinnersByAuthorization(e)
+                    {
+                        ErrorText = "Unauthorized"
+                    };
+                    return BadRequest(res);
+                }
                 var jwtToken = jwtSecurityToken.ReadJwtToken(token);
+                
                 var name = jwtToken.Claims.FirstOrDefault(x => x.Type == "name")?.Value;
                 if (String.IsNullOrEmpty(name))
                     name = jwtToken.Subject;

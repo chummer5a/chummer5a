@@ -231,15 +231,17 @@ namespace ChummerHub
                 var helper = new JwtHelper(Program.logger, Configuration);
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = false,
+                    ValidateIssuer = true,
                     ValidIssuer = helper.jwtToken.Issuer,
                     ValidateAudience = false,
                     ValidAudience = helper.jwtToken.Audience,
-                    ValidateIssuerSigningKey = false,
+                    ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(helper.jwtToken.SigningKey)),
+                    SaveSigninToken = true,
                 };
                 options.SaveToken = true;
                 options.ClaimsIssuer = helper.jwtToken.Issuer;
+                options.RequireHttpsMetadata = false;
             })
             // this is the key piece!
             .AddPolicyScheme("JWT_OR_COOKIE", "JWT_OR_COOKIE", options =>

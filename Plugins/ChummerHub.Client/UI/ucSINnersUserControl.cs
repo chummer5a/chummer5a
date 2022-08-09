@@ -46,7 +46,8 @@ namespace ChummerHub.Client.UI
             InitializeComponent();
             _mySINner = mySINner ?? throw new ArgumentNullException(nameof(mySINner));
             MyCE = new CharacterExtended(mySINner.CharacterObject, PluginHandler.MySINnerLoading);
-            MyCE.ZipFilePath = await MyCE.PrepareModelAsync();
+            MyCE.ZipFilePath = MyCE.PrepareModel();
+            //MyCE.ZipFilePath = await MyCE.PrepareModelAsync();
 
             TabSINnersBasic = new ucSINnersBasic(this)
             {
