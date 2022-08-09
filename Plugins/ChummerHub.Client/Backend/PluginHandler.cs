@@ -394,7 +394,7 @@ namespace Chummer.Plugins
         {
             if (!Settings.Default.UserModeRegistered)
                 yield break;
-            TabPage objReturn = Utils.RunWithoutThreadLock(() => GetTabPagesCommon(input));
+            TabPage objReturn = GetTabPagesCommon(input); //Utils.RunWithoutThreadLock(() => GetTabPagesCommon(input));
             if (objReturn == null)
                 yield break;
             yield return objReturn;
@@ -410,14 +410,14 @@ namespace Chummer.Plugins
             yield return objReturn;
         }
 
-        private static async Task<TabPage> GetTabPagesCommon(CharacterShared input)
+        private static /* async Task<*/TabPage/*>*/ GetTabPagesCommon(CharacterShared input)
         {
             ucSINnersUserControl uc = new ucSINnersUserControl();
             try
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                var ce = await uc.SetCharacterFrom(input);
+                var ce = /*await*/ uc.SetCharacterFrom(input).Result;
                 sw.Stop();
                 Log.Trace("ucSINnersUserControl SetCharacterFrom finished in " + sw.ElapsedMilliseconds + "ms.");
             }

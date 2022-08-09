@@ -823,7 +823,7 @@ namespace ChummerHub.Client.Backend
             foreach (SINnerSearchGroupMember member in ssg.MyMembers.OrderBy(a => a.Display))
             {
                 SINner sinner = member.MySINner;
-                sinner.DownloadedFromSINnersTime = DateTime.Now.ToUniversalTime();
+                //sinner.DownloadedFromSINnersTime = DateTime.Now.ToUniversalTime();
                 CharacterCache objCache = (blnSync
                                               // ReSharper disable once MethodHasAsyncOverload
                                               ? sinner.GetCharacterCache()
