@@ -53,6 +53,8 @@ namespace Chummer
         private int _intDragLevel;
         private StoryBuilder _objStoryBuilder;
 
+        private decimal _decStartingLifestyleNuyen;
+
         public TabControl TabCharacterTabs => tabCharacterTabs;
 
         #region Form Events
@@ -11404,7 +11406,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
 
             CharacterObject.StolenNuyen = decStolenNuyenAllowance - decStolenDeductions;
-            return CharacterObject.Nuyen = CharacterObject.TotalStartingNuyen - decDeductions;
+            return CharacterObject.Nuyen = CharacterObject.TotalStartingNuyen - decDeductions + _decStartingLifestyleNuyen;
         }
 
         /// <summary>
@@ -16355,6 +16357,8 @@ namespace Chummer
                         decStartingNuyen = 0;
                     if (CharacterObject.Nuyen > 5000)
                         CharacterObject.Nuyen = 5000;
+                    _decStartingLifestyleNuyen = decStartingNuyen;
+                    //This needs to be added to Character.Nuyen to ensure that the ExpanseEntries are created accurately
                     CharacterObject.Nuyen += decStartingNuyen;
                     // See if the character has any Karma remaining.
                     if (intBuildPoints > CharacterObjectSettings.KarmaCarryover)
