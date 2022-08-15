@@ -166,7 +166,7 @@ namespace Chummer
             return objReturn;
         }
 
-        private CursorWait(Control objControl = null, bool blnAppStarting = false)
+        public CursorWait(Control objControl = null, bool blnAppStarting = false)
         {
             _objControl = objControl;
             _blnAppStartingCursor = blnAppStarting;

@@ -61,6 +61,7 @@ using System.Text;
 using Microsoft.Net.Http.Headers;
 using Duende.IdentityServer.Configuration;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Duende.IdentityServer.Models;
 
 namespace ChummerHub
 {
@@ -139,7 +140,7 @@ namespace ChummerHub
             //ConnectionStringToMasterSqlDb = keys.GetSecret("MasterSqlConnection");
             //ConnectionStringSinnersDb = keys.GetSecret("DefaultConnection");
 
-            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+          
 
             // Use this if MyCustomTelemetryInitializer can be constructed without DI injected parameters
             services.AddSingleton<ITelemetryInitializer>(new MyTelemetryInitializer());
@@ -173,6 +174,7 @@ namespace ChummerHub
             //services.AddSingleton<ITelemetryProcessorFactory>(sp => new SnapshotCollectorTelemetryProcessorFactory(sp));
             Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions aiOptions
                 = new Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions();
+            aiOptions.InstrumentationKey = Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"];
             // Disables adaptive sampling.
             aiOptions.EnableAdaptiveSampling = false;
 
@@ -235,9 +237,11 @@ namespace ChummerHub
                     ValidAudience = helper.jwtToken.Audience,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(helper.jwtToken.SigningKey)),
+                    SaveSigninToken = true,
                 };
                 options.SaveToken = true;
                 options.ClaimsIssuer = helper.jwtToken.Issuer;
+                options.RequireHttpsMetadata = false;
             })
             // this is the key piece!
             .AddPolicyScheme("JWT_OR_COOKIE", "JWT_OR_COOKIE", options =>
@@ -487,7 +491,8 @@ namespace ChummerHub
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.Http,
                     Scheme = "bearer",
-                });
+                    //Flows = new OpenApiOAuthFlows() { new AuthorizationCode }
+                }) ;
 
 
                 //options.AddSecurityDefinition(jwtSecurityScheme.Scheme, jwtSecurityScheme);

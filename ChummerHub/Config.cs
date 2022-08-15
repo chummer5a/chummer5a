@@ -85,7 +85,8 @@ namespace ChummerHub
                     {
                         JwtClaimTypes.Email,
                         JwtClaimTypes.EmailVerified,
-                        JwtClaimTypes.IdentityProvider
+                        JwtClaimTypes.IdentityProvider,
+                        JwtClaimTypes.Role,
                     }
                 },
                 new IdentityResource("roles", "Your role(s)", new List<string>() { API.Authorization.Constants.UserRolePublicAccess })

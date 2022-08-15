@@ -1,6 +1,7 @@
 // Copyright (C) 2016 by David Jeske, Barend Erasmus and donated to the public domain
 
 
+using IdentityModel.OidcClient;
 using NLog;
 using SimpleHttpServer.Models;
 using System;
@@ -59,6 +60,12 @@ namespace SimpleHttpServer
                 if (response.StatusCode != "200") {
                     response.ContentAsUTF8 = string.Format("{0} {1} <p> {2}", response.StatusCode, request.Url, response.ReasonPhrase);
                 }
+            }
+            else
+            {
+               string cookiestring;
+               if (request.Headers.TryGetValue("Cookie", out cookiestring))
+                    OidcClient.SetCookieContainer(cookiestring);
             }
 
             WriteResponse(outputStream, response);

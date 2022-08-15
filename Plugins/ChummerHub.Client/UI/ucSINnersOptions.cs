@@ -501,7 +501,20 @@ namespace ChummerHub.Client.UI
                 Settings.Default.Save();
                 try
                 {
-                    await SignIn();
+                    using (CursorWait objCursorWait = await CursorWait.NewAsync(frmWebBrowser, default))
+                    {
+                        await SignIn();
+                        SinnersClient client = StaticUtils.GetClient(true);
+                        if (!String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.AccessToken)
+                            && String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.BearerToken))
+                        {
+                            ChummerHub.Client.Properties.Settings.Default.BearerToken =
+                                await client.AuthenticateAsync(default);
+                            ChummerHub.Client.Properties.Settings.Default.Save();
+                        }
+                        var roles = await GetRolesStatusAsync(this);
+                        await UpdateDisplayAsync();
+                    }
                 }
                 catch(Exception ex)
                 {

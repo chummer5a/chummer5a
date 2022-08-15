@@ -26,6 +26,9 @@ namespace ChummerHub.Models.V1
 
         public SINSearchGroupResult MySINSearchGroupResult { get; set; }
 
+
+        public string BearerToken { get;  set; }
+
         public ResultAccountGetSinnersByAuthorization()
         {
             MySINSearchGroupResult = new SINSearchGroupResult();

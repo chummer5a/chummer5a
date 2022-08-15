@@ -394,7 +394,7 @@ namespace Chummer.Plugins
         {
             if (!Settings.Default.UserModeRegistered)
                 yield break;
-            TabPage objReturn = Utils.RunWithoutThreadLock(() => GetTabPagesCommon(input));
+            TabPage objReturn = GetTabPagesCommon(input); //Utils.RunWithoutThreadLock(() => GetTabPagesCommon(input));
             if (objReturn == null)
                 yield break;
             yield return objReturn;
@@ -410,12 +410,16 @@ namespace Chummer.Plugins
             yield return objReturn;
         }
 
-        private static async Task<TabPage> GetTabPagesCommon(CharacterShared input)
+        private static /* async Task<*/TabPage/*>*/ GetTabPagesCommon(CharacterShared input)
         {
             ucSINnersUserControl uc = new ucSINnersUserControl();
             try
             {
-                await uc.SetCharacterFrom(input);
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                var ce = /*await*/ uc.SetCharacterFrom(input).Result;
+                sw.Stop();
+                Log.Trace("ucSINnersUserControl SetCharacterFrom finished in " + sw.ElapsedMilliseconds + "ms.");
             }
             catch (Exception e)
             {
@@ -803,7 +807,14 @@ namespace Chummer.Plugins
                             try
                             {
                                 client = StaticUtils.GetClient();
-                                ret = await client.GetSINnersByAuthorizationAsync();
+                                if (String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.BearerToken))
+                                {
+                                    ret = await client.GetSINnersByTokenAsync(ChummerHub.Client.Properties.Settings.Default.IdentityToken);
+                                    ChummerHub.Client.Properties.Settings.Default.BearerToken = ret.BearerToken;
+                                    ChummerHub.Client.Properties.Settings.Default.Save();
+                                }
+                                else
+                                    ret = await client.GetSINnersByAuthorizationAsync();
                                 return ret;
                             }
                             catch (Exception)

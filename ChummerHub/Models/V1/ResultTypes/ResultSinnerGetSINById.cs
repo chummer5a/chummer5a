@@ -32,6 +32,13 @@ namespace ChummerHub.Models.V1
         public ResultSinnerGetSINById(SINner sinner)
         {
             MySINner = sinner;
+            if (MySINner.MyGroup == null)
+            {
+                MySINner.MyGroup = new SINnerGroup()
+                {
+                    Id = Guid.Empty
+                };
+            }
         }
 
         public ResultSinnerGetSINById(Exception e) : base(e)
