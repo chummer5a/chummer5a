@@ -70,6 +70,7 @@ Data Changes:
 - Removed legacy custom_ranges.xml file from Neon Anarchy House Rules customdata.
 - Fixed the Krime Pack not requiring a parent weapon with (belt) ammo.
 - No Future and Krime Katalog content can now properly show up when using the Shadowrun Missions Rules custom dataset.
+- Fixed IG2 Red Magic tradition not being able to buy Attune Animal spell.
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups

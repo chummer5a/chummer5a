@@ -2945,6 +2945,10 @@
       </bonus>
       <required>
         <oneof>
+          <group>
+            <initiategrade>2</initiategrade>
+            <tradition>Red Magic</tradition>
+          </group>
           <quality>Adept</quality>
           <quality>Mystic Adept</quality>
         </oneof>
