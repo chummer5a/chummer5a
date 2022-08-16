@@ -7119,6 +7119,7 @@
         </OR>
       </required>
       <useskill>Heavy Weapons</useskill>
+      <useskillspec>Grenade Launchers</useskillspec>
       <weapontype>glauncher</weapontype>
     </weapon>
     <weapon>
@@ -7217,6 +7218,7 @@
       <range>Shotguns</range>
       <spec>Shotguns</spec>
       <useskill>Longarms</useskill>
+      <useskillspec>Shotguns</useskillspec>
     </weapon>
     <!-- End Region -->
     <!-- Region Sail Away, Sweet Sister -->
@@ -8482,7 +8484,7 @@
         </OR>
       </required>
       <useskill>Archery</useskill>
-      <spec>Crossbow</spec>
+      <useskillspec>Crossbow</useskillspec>
     </weapon>
     <weapon>
       <id>7914b526-90a1-4691-93bf-1eace51b914f</id>
@@ -8528,6 +8530,7 @@
         </OR>
       </required>
       <useskill>Longarms</useskill>
+      <useskillspec>Shotguns</useskillspec>
     </weapon>
     <weapon>
       <id>fafa3c46-6ced-4cbd-b236-2c5abbae141e</id>
@@ -10189,6 +10192,7 @@
       <hide />
       <range>Grenade Launchers</range>
       <useskill>Heavy Weapons</useskill>
+      <useskillspec>Grenade Launchers</useskillspec>
       <weapontype>glauncher</weapontype>
     </weapon>
     <weapon>
@@ -11468,6 +11472,7 @@
       <hide />
       <range>Grenade Launchers</range>
       <useskill>Heavy Weapons</useskill>
+      <useskillspec>Grenade Launchers</useskillspec>
       <weapontype>glauncher</weapontype>
     </weapon>
     <weapon>
@@ -11711,6 +11716,7 @@
       <hide />
       <range>Grenade Launchers</range>
       <useskill>Heavy Weapons</useskill>
+      <useskillspec>Grenade Launchers</useskillspec>
       <weapontype>glauncher</weapontype>
     </weapon>
     <weapon>
@@ -11778,6 +11784,7 @@
       <hide />
       <range>Shotguns</range>
       <useskill>Longarms</useskill>
+      <useskillspec>Shotguns</useskillspec>
     </weapon>
     <weapon>
       <id>97cc2f2e-4f39-4cd2-9cdb-0a725619dfed</id>

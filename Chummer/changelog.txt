@@ -71,6 +71,7 @@ Data Changes:
 - Fixed the Krime Pack not requiring a parent weapon with (belt) ammo.
 - No Future and Krime Katalog content can now properly show up when using the Shadowrun Missions Rules custom dataset.
 - Fixed IG2 Red Magic tradition not being able to buy Attune Animal spell.
+- Fixed incorrect weapon specialisations for some underbarrel weapons.
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups
