@@ -2419,6 +2419,13 @@
       <action />
       <range />
       <duration />
+      <bonus>
+        <specificskill>
+          <name>Free-Fall</name>
+          <bonus>1</bonus>
+          <applytorating />
+        </specificskill>
+      </bonus>
       <source>HS</source>
       <page>186</page>
     </power>
@@ -4351,7 +4358,7 @@
         <specificskill>
           <name>Free-Fall</name>
           <bonus>1</bonus>
-          <affectbase />
+          <applytorating>True</applytorating>
         </specificskill>
       </bonus>
       <source>HS</source>
