@@ -4509,7 +4509,7 @@
       <duration />
       <bonus>
         <naturalweapon>
-          <name>sProboscis</name>
+          <name>Proboscis</name>
           <reach>0</reach>
           <damage>({STR}-1)P</damage>
           <ap>+1</ap>
