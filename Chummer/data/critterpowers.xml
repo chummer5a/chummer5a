@@ -2423,7 +2423,7 @@
         <specificskill>
           <name>Free-Fall</name>
           <bonus>1</bonus>
-          <applytorating />
+          <applytorating>True</applytorating>
         </specificskill>
       </bonus>
       <source>HS</source>
