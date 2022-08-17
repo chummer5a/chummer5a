@@ -3913,6 +3913,8 @@
         <specificattribute>
           <name>BOD</name>
           <val>Rating</val>
+          <max>Rating</max>
+          <affectbase />
         </specificattribute>
       </bonus>
       <source>HS</source>
@@ -3931,6 +3933,8 @@
         <specificattribute>
           <name>AGI</name>
           <val>Rating</val>
+          <max>Rating</max>
+          <affectbase />
         </specificattribute>
       </bonus>
       <source>HS</source>
@@ -3949,6 +3953,8 @@
         <specificattribute>
           <name>REA</name>
           <val>Rating</val>
+          <max>Rating</max>
+          <affectbase />
         </specificattribute>
       </bonus>
       <source>HS</source>
@@ -3967,6 +3973,8 @@
         <specificattribute>
           <name>STR</name>
           <val>Rating</val>
+          <max>Rating</max>
+          <affectbase />
         </specificattribute>
       </bonus>
       <source>HS</source>
@@ -3985,6 +3993,8 @@
         <specificattribute>
           <name>CHA</name>
           <val>Rating</val>
+          <max>Rating</max>
+          <affectbase />
         </specificattribute>
       </bonus>
       <source>HS</source>
@@ -4003,6 +4013,8 @@
         <specificattribute>
           <name>INT</name>
           <val>Rating</val>
+          <max>Rating</max>
+          <affectbase />
         </specificattribute>
       </bonus>
       <source>HS</source>
@@ -4021,6 +4033,8 @@
         <specificattribute>
           <name>LOG</name>
           <val>Rating</val>
+          <max>Rating</max>
+          <affectbase />
         </specificattribute>
       </bonus>
       <source>HS</source>
@@ -4039,6 +4053,8 @@
         <specificattribute>
           <name>WIL</name>
           <val>Rating</val>
+          <max>Rating</max>
+          <affectbase />
         </specificattribute>
       </bonus>
       <source>HS</source>
