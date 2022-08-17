@@ -1098,8 +1098,18 @@ namespace Chummer
         /// </summary>
         private async void wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            if (int.TryParse((e.BytesReceived * 100 / e.TotalBytesToReceive).ToString(GlobalSettings.InvariantCultureInfo), out int intTmp))
-                await pgbOverallProgress.DoThreadSafeAsync(x => x.Value = intTmp, _objGenericToken);
+            try
+            {
+                if (int.TryParse(
+                        (e.BytesReceived * 100 / e.TotalBytesToReceive).ToString(GlobalSettings.InvariantCultureInfo),
+                        out int intTmp))
+
+                    await pgbOverallProgress.DoThreadSafeAsync(x => x.Value = intTmp, _objGenericToken);
+            }
+            catch (TaskCanceledException)
+            {
+                //Swallow this. Closing the form cancels the download which is a change of download progress so token is already cancelled. 
+            }
         }
 
         /// <summary>
