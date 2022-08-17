@@ -4311,7 +4311,7 @@
       <action />
       <range />
       <duration />
-      <rating>True</rating>
+      <rating>2</rating>
       <bonus>
         <specificskill>
           <name>Perception</name>
