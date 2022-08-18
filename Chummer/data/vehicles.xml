@@ -13216,6 +13216,25 @@
         </vehicledetails>
       </required>
     </mod>
+    <mod>
+      <id>477b7088-98c3-4314-8f5a-c46177dc2b34</id>
+      <name>Interchangeable Bed: Custom</name>
+      <page>54</page>
+      <source>R5</source>
+      <avail></avail>
+      <category>All</category>
+      <cost>Variable(0-1000000)</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <required>
+        <vehicledetails>
+          <name>GMC Armadillo</name>
+        </vehicledetails>
+      </required>
+    </mod>
     <!-- End Region -->
     <!-- Region Drone Attribute Modifications -->
     <mod>
