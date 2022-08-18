@@ -3907,7 +3907,6 @@
     </power>
     <!-- End Region -->
     <!-- Region Chimeric Modifications -->
-    
     <power>
       <id>227fa369-eaf5-400f-ab50-eb6e095684f7</id>
       <name>All-Around Sight</name>
@@ -4513,8 +4512,9 @@
           <reach>0</reach>
           <damage>({STR}-1)P</damage>
           <ap>+1</ap>
-          <useskill>Exotic Melee Weapon (Trunk)</useskill>
-          <accuracy>Physical</accuracy>
+            <useskill>Exotic Melee Weapon</useskill>
+            <useskillspec>Trunk</useskillspec>          
+            <accuracy>Physical</accuracy>
           <source>HS</source>
           <page>172</page>
         </naturalweapon>
@@ -4547,7 +4547,8 @@
           <reach>0</reach>
           <damage>({STR}+1)P</damage>
           <ap>+1</ap>
-          <useskill>Exotic Melee Weapon (Quills)</useskill>
+            <useskill>Exotic Melee Weapon</useskill>
+            <useskillspec>Quills</useskillspec>
           <accuracy>Physical</accuracy>
           <source>HS</source>
           <page>172</page>
@@ -4673,7 +4674,7 @@
       <duration />
       <source>HS</source>
       <page>173</page>
-    </power> 
+    </power>
     <!-- End Region -->
   </powers>
 </chummer>
