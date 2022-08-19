@@ -46739,9 +46739,9 @@
       <edgmin>3</edgmin>
       <edgmax>6</edgmax>
       <edgaug>6</edgaug>
-      <magmin>6</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
       <resmin>4</resmin>
       <resmax>6</resmax>
       <resaug>6</resaug>
