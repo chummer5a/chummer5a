@@ -101,7 +101,9 @@
       <advantage>+1 bonus to dice pool and limit in cybercombat, +1 to firewall.</advantage>
       <disadvantage> –1 dice pool penalty when attacking IC in cybercombat.</disadvantage>
         <bonus>
-          <livingpersonafirewall>1</livingpersonafirewall>
+          <livingpersona>
+            <firewall>1</firewall>
+          </livingpersona>
           <specificskill>
               <name>Cybercombat</name>
               <bonus>1</bonus>
