@@ -31037,6 +31037,13 @@
       <source>SHB3</source>
       <page>207</page>
     </metatype>
+
+
+
+
+
+
+
     <metatype>
       <id>437f4122-d0a7-450f-b33b-fe44a3b1a628</id>
       <name>Razorcat (small)</name>
@@ -46610,6 +46617,91 @@
       <source>SOX</source>
       <page>64</page>
     </metatype>
+    <metatype>
+      <id>61eae0b1-72fe-4624-90d9-a0d9ac33902d</id>
+      <name>Kokoro Cobra</name>
+      <category>Toxic Critters</category>
+      <karma>0</karma>
+      <bodmin>11</bodmin>
+      <bodmax>11</bodmax>
+      <bodaug>11</bodaug>
+      <agimin>8</agimin>
+      <agimax>8</agimax>
+      <agiaug>8</agiaug>
+      <reamin>9</reamin>
+      <reamax>9</reamax>
+      <reaaug>9</reaaug>
+      <strmin>5</strmin>
+      <strmax>5</strmax>
+      <straug>5</straug>
+      <chamin>2</chamin>
+      <chamax>2</chamax>
+      <chaaug>2</chaaug>
+      <intmin>6</intmin>
+      <intmax>6</intmax>
+      <intaug>6</intaug>
+      <logmin>2</logmin>
+      <logmax>2</logmax>
+      <logaug>2</logaug>
+      <wilmin>6</wilmin>
+      <wilmax>6</wilmax>
+      <wilaug>6</wilaug>
+      <inimin>15</inimin>
+      <inimax>15</inimax>
+      <iniaug>15</iniaug>
+      <edgmin>2</edgmin>
+      <edgmax>2</edgmax>
+      <edgaug>2</edgaug>
+      <magmin>6</magmin>
+      <magmax>6</magmax>
+      <magaug>6</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>6</essmax>
+      <essaug>6</essaug>
+      <walk>1/0/0</walk>
+      <run>4/0/0</run>
+      <sprint>1/0/0</sprint>
+      <qualities />
+      <bonus>
+        <reach>-1</reach>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass>2</initiativepass>
+      </bonus>
+      <powers>
+        <power rating="8">Armor</power>
+        <power select="Hearing, Smell, Motion Detection, Thermosense">Enhanced Senses</power>
+        <power select="Toxins">Immunity</power>
+        <power select="Bite: (STR+4)P, AP -6">Natural Weapon</power>
+        <power select="Spit">Substance Extrusion</power>
+        <power>Venom</power>
+        <power select="Cold">Vulnerability</power>
+      </powers>
+      <optionalpowers />
+      <skills>
+        <skill rating="6" spec="Spit">Exotic Ranged Weapon</skill>
+        <skill rating="8">Perception</skill>
+        <skill rating="6">Sneaking</skill>
+        <skill rating="8">Unarmed Combat</skill>
+      </skills>
+      <source>HS</source>
+      <page>98</page>
+    </metatype>
+
+
+
+
+
+
+
+
     <!-- End Region -->
     <!-- Region Technocritters -->
     <metatype>
@@ -46647,9 +46739,9 @@
       <edgmin>3</edgmin>
       <edgmax>6</edgmax>
       <edgaug>6</edgaug>
-      <magmin>0</magmin>
-      <magmax>0</magmax>
-      <magaug>0</magaug>
+      <magmin>6</magmin>
+      <magmax>6</magmax>
+      <magaug>6</magaug>
       <resmin>4</resmin>
       <resmax>6</resmax>
       <resaug>6</resaug>
