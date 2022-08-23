@@ -31037,13 +31037,6 @@
       <source>SHB3</source>
       <page>207</page>
     </metatype>
-
-
-
-
-
-
-
     <metatype>
       <id>437f4122-d0a7-450f-b33b-fe44a3b1a628</id>
       <name>Razorcat (small)</name>
@@ -46681,8 +46674,8 @@
         <power select="Toxins">Immunity</power>
         <power select="Bite: (STR+4)P, AP -6">Natural Weapon</power>
         <power select="Spit">Substance Extrusion</power>
-        <power>Venom</power>
-        <power select="Cold">Vulnerability</power>
+        <power select="Spit">Venom</power>
+        <power select="Vector: Contact, Injection, Speed: Instant, Penetration: –6, Power: 12, Effect: Agony, Nausea, Disorientation, Physical Damage">Vulnerability</power>
       </powers>
       <optionalpowers />
       <skills>
@@ -46694,10 +46687,166 @@
       <source>HS</source>
       <page>98</page>
     </metatype>
-
-
-
-
+    <metatype>
+      <id>5975b592-7d3b-4b8f-9d7b-86720da9b5c0</id>
+      <name>Montauk</name>
+      <category>Toxic Critters</category>
+      <karma>0</karma>
+      <bodmin>2</bodmin>
+      <bodmax>2</bodmax>
+      <bodaug>2</bodaug>
+      <agimin>4</agimin>
+      <agimax>4</agimax>
+      <agiaug>4</agiaug>
+      <reamin>3</reamin>
+      <reamax>3</reamax>
+      <reaaug>3</reaaug>
+      <strmin>2</strmin>
+      <strmax>2</strmax>
+      <straug>2</straug>
+      <chamin>3</chamin>
+      <chamax>3</chamax>
+      <chaaug>3</chaaug>
+      <intmin>3</intmin>
+      <intmax>3</intmax>
+      <intaug>3</intaug>
+      <logmin>5</logmin>
+      <logmax>5</logmax>
+      <logaug>5</logaug>
+      <wilmin>3</wilmin>
+      <wilmax>3</wilmax>
+      <wilaug>3</wilaug>
+      <inimin>6</inimin>
+      <inimax>6</inimax>
+      <iniaug>6</iniaug>
+      <edgmin>2</edgmin>
+      <edgmax>2</edgmax>
+      <edgaug>2</edgaug>
+      <magmin>4</magmin>
+      <magmax>4</magmax>
+      <magaug>4</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>6</essmax>
+      <essaug>6</essaug>
+      <walk>2/0/0</walk>
+      <run>8/0/0</run>
+      <sprint>4/0/0</sprint>
+      <qualities />
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Accident</power>
+        <power>Animal Control</power>
+        <power rating="4">Armor</power>
+        <power select="Hearing, Low-Light Vision, Smell">Enhanced Senses</power>
+        <power select="Claws/Bite: (STR+2)P">Natural Weapon</power>
+        <power select="Spit">Substance Extrusion</power>
+        <power select="Vector: Injection, Speed: 1 Combat Turn, Penetration: 0, Power: 6, Effect: Malaise, Physical Damage">Venom</power>
+        <power select="Sunlight, Mild">Allergy</power>
+      </powers>
+      <optionalpowers />
+      <skills>
+        <group rating="4">Athletics</group>
+        <skill rating="3">Locksmith</skill>
+        <skill rating="6">Palming</skill>
+        <skill rating="6">Perception</skill>
+        <skill rating="5">Sneaking</skill>
+        <skill rating="3">Unarmed Combat</skill>
+      </skills>
+      <source>HS</source>
+      <page>99</page>
+    </metatype>
+    <metatype>
+      <id>4d01c80d-401f-43e7-833f-ebb994ceb445</id>
+      <name>Pandamonium</name>
+      <category>Toxic Critters</category>
+      <karma>0</karma>
+      <bodmin>6</bodmin>
+      <bodmax>6</bodmax>
+      <bodaug>6</bodaug>
+      <agimin>4</agimin>
+      <agimax>4</agimax>
+      <agiaug>4</agiaug>
+      <reamin>5</reamin>
+      <reamax>5</reamax>
+      <reaaug>3</reaaug>
+      <strmin>8</strmin>
+      <strmax>8</strmax>
+      <straug>8</straug>
+      <chamin>4</chamin>
+      <chamax>4</chamax>
+      <chaaug>4</chaaug>
+      <intmin>5</intmin>
+      <intmax>5</intmax>
+      <intaug>5</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>1</logaug>
+      <wilmin>3</wilmin>
+      <wilmax>3</wilmax>
+      <wilaug>3</wilaug>
+      <inimin>9</inimin>
+      <inimax>9</inimax>
+      <iniaug>9</iniaug>
+      <edgmin>3</edgmin>
+      <edgmax>3</edgmax>
+      <edgaug>3</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>6</essmax>
+      <essaug>6</essaug>
+      <walk>2/0/0</walk>
+      <run>4/0/0</run>
+      <sprint>1/0/0</sprint>
+      <qualities>
+        <positive>
+          <quality>Toughness</quality>
+          <quality>Toughness</quality>
+          <quality>Toughness</quality>
+        </positive>
+      </qualities>
+      <bonus>
+        <reach>1</reach>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Adaptive Coloration</power>
+        <power rating="8">Armor</power>
+        <power select="Hearing, Low-Light Vision, Smell">Enhanced Senses</power>
+        <power select="Pathogens, Radiation, Toxins">Immunity</power>
+        <power select="Claws: (STR+2)P, AP -2">Natural Weapon</power>
+        <power rating="3">Toughness</power>
+      </powers>
+      <optionalpowers />
+      <skills>
+        <skill rating="6">Perception</skill>
+        <skill rating="4">Running</skill>
+        <skill rating="5">Sneaking</skill>
+        <skill rating="6">Tracking</skill>
+        <skill rating="6">Unarmed Combat</skill>
+      </skills>
+      <source>HS</source>
+      <page>100</page>
+    </metatype>
 
 
 
