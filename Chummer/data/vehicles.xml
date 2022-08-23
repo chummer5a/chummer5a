@@ -12938,6 +12938,303 @@
       <slots>0</slots>
       <hide />
     </mod>
+    <mod>
+      <id>2f33f2b3-b57b-4abc-ba33-2ac8ecc2d476</id>
+      <name>Interchangeable Bed: Armory</name>
+      <page>54</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>Variable(0-1000000)</cost>
+      <!-- TODO: Add an actual cost as soon as Errata comes out for GMC Armadillo Beds -->
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>GMC Armadillo</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>65ca6542-7343-4806-aec0-f00e418a482f</id>
+      <name>Interchangeable Bed: Cargo Pod</name>
+      <page>54</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>Variable(0-1000000)</cost>
+      <!-- TODO: Add an actual cost as soon as Errata comes out for GMC Armadillo Beds -->
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>GMC Armadillo</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>22a0147c-ef81-4851-8cd3-9929a41d21d1</id>
+      <name>Interchangeable Bed: Food Truck</name>
+      <page>54</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>Variable(0-1000000)</cost>
+      <!-- TODO: Add an actual cost as soon as Errata comes out for GMC Armadillo Beds -->
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>GMC Armadillo</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>9ffbd513-f943-48d6-9a34-3474427eda63</id>
+      <name>Interchangeable Bed: Sleeper Command Cabin</name>
+      <page>54</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>Variable(0-1000000)</cost>
+      <!-- TODO: Add an actual cost as soon as Errata comes out for GMC Armadillo Beds -->
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>GMC Armadillo</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>30588b4a-8cec-4a7f-81ce-cfd28fcdd26c</id>
+      <name>Interchangeable Bed: Transport</name>
+      <page>54</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>Variable(0-1000000)</cost>
+      <!-- TODO: Add an actual cost as soon as Errata comes out for GMC Armadillo Beds. Also, I'm assuming this means like, "Troop Transport" like it's supposed to add extra seating, but I'm not touching that without the aforementioned required errata to tell us by how much. If you're reading this trying to figure out why it doesn't increase seating, that's why. I suggest changing that in an amends file if you'd like that behavior. -->
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>GMC Armadillo</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <!-- The following GMC Armadillo Interchangeable Beds are using the same price and availability as the existing vehicle modifications of the same names. Once again, if an errata ever gives us anything specific for the GMC Armadillo, this will need updated. -->
+    <mod>
+      <id>d1de1fca-fd08-4ef8-af15-bbee4e156799</id>
+      <name>Interchangeable Bed: Standard Drone Rack (Micro)</name>
+      <page>54</page>
+      <source>R5</source>
+      <avail>4</avail>
+      <category>All</category>
+      <cost>350</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>GMC Armadillo</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>c3777b91-ed54-45b0-90a9-a4282b82acda</id>
+      <name>Interchangeable Bed: Standard Drone Rack (Mini)</name>
+      <page>54</page>
+      <source>R5</source>
+      <avail>4</avail>
+      <category>All</category>
+      <cost>500</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>GMC Armadillo</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>053e639e-bc13-4716-82d4-94007dcdddae</id>
+      <name>Interchangeable Bed: Standard Drone Rack (Small)</name>
+      <page>54</page>
+      <source>R5</source>
+      <avail>4</avail>
+      <category>All</category>
+      <cost>1000</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>GMC Armadillo</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>8389a908-1e33-40f1-bdde-c5de3e61980a</id>
+      <name>Interchangeable Bed: Standard Drone Rack (Medium)</name>
+      <page>54</page>
+      <source>R5</source>
+      <avail>6</avail>
+      <category>All</category>
+      <cost>2000</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>GMC Armadillo</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>87f728c1-2fa6-4cbc-a8e3-380fb513b162</id>
+      <name>Interchangeable Bed: Standard Drone Rack (Large)</name>
+      <page>54</page>
+      <source>R5</source>
+      <avail>8</avail>
+      <category>All</category>
+      <cost>4000</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>GMC Armadillo</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>573ad21d-f6ab-4aae-9b89-ebf059490d1b</id>
+      <name>Interchangeable Bed: Landing Drone Rack (Micro)</name>
+      <page>54</page>
+      <source>R5</source>
+      <avail>6</avail>
+      <category>All</category>
+      <cost>750</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>GMC Armadillo</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>7528dd6d-665d-4361-be15-b18aa54350b2</id>
+      <name>Interchangeable Bed: Landing Drone Rack (Mini)</name>
+      <page>54</page>
+      <source>R5</source>
+      <avail>6</avail>
+      <category>All</category>
+      <cost>1000</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>GMC Armadillo</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>88422a66-0030-412b-9fc9-a57c89ec6777</id>
+      <name>Interchangeable Bed: Landing Drone Rack (Small)</name>
+      <page>54</page>
+      <source>R5</source>
+      <avail>6</avail>
+      <category>All</category>
+      <cost>4000</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>GMC Armadillo</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>6dd65053-acc0-44af-b59f-465ac1504b70</id>
+      <name>Interchangeable Bed: Landing Drone Rack (Medium)</name>
+      <page>54</page>
+      <source>R5</source>
+      <avail>8</avail>
+      <category>All</category>
+      <cost>10000</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>GMC Armadillo</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>2ad4f5e4-ac50-494b-92b5-da1cd385a6e2</id>
+      <name>Interchangeable Bed: Landing Drone Rack (Large)</name>
+      <page>54</page>
+      <source>R5</source>
+      <avail>12</avail>
+      <category>All</category>
+      <cost>20000</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>GMC Armadillo</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>4252c6a3-a713-45a8-98cd-3a9438f2a08b</id>
+      <name>Interchangeable Bed: Workshop</name>
+      <page>54</page>
+      <source>R5</source>
+      <avail>8</avail>
+      <category>All</category>
+      <cost>5000</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>GMC Armadillo</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>4f909435-6258-45e9-a711-fbcd42e3aca6</id>
+      <name>Interchangeable Bed: Rigger Cocoon</name>
+      <page>54</page>
+      <source>R5</source>
+      <avail>8</avail>
+      <category>All</category>
+      <cost>1500</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <name>GMC Armadillo</name>
+        </vehicledetails>
+      </required>
+    </mod>
+    <mod>
+      <id>477b7088-98c3-4314-8f5a-c46177dc2b34</id>
+      <name>Interchangeable Bed: Custom</name>
+      <page>54</page>
+      <source>R5</source>
+      <avail></avail>
+      <category>All</category>
+      <cost>Variable(0-1000000)</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <required>
+        <vehicledetails>
+          <name>GMC Armadillo</name>
+        </vehicledetails>
+      </required>
+    </mod>
     <!-- End Region -->
     <!-- Region Drone Attribute Modifications -->
     <mod>
