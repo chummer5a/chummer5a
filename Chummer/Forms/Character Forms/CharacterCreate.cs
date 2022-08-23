@@ -6632,9 +6632,6 @@ namespace Chummer
                             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                             out HashSet<string> setHasMounts))
                             {
-                                foreach (string strLoop in objCyberwareParent.BlocksMounts.SplitNoAlloc(
-                                             ',', StringSplitOptions.RemoveEmptyEntries))
-                                    setDisallowedMounts.Add(strLoop + objCyberwareParent.Location);
                                 string strLoopHasModularMount = objCyberwareParent.HasModularMount;
                                 if (!string.IsNullOrEmpty(strLoopHasModularMount))
                                     setHasMounts.Add(strLoopHasModularMount);
@@ -13453,13 +13450,6 @@ namespace Chummer
                     if (!objSelectedCyberware.Capacity.Contains('['))
                     {
                         frmPickCyberware.MyForm.MaximumCapacity = objSelectedCyberware.CapacityRemaining;
-                    }
-
-                    foreach (string strLoop in objSelectedCyberware.BlocksMounts.SplitNoAlloc(',',
-                        StringSplitOptions.RemoveEmptyEntries))
-                    {
-                        if (!dicDisallowedMounts.ContainsKey(strLoop))
-                            dicDisallowedMounts.Add(strLoop, int.MaxValue);
                     }
                     string strLoopHasModularMount = objSelectedCyberware.HasModularMount;
                     if (!string.IsNullOrEmpty(strLoopHasModularMount) && !dicHasMounts.ContainsKey(strLoopHasModularMount))

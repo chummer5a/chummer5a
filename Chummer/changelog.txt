@@ -46,6 +46,7 @@ Application Changes:
 - Refactor of Vehicle Sensor, Accel, Handling, Body and Armor ratings to perform in closer to identical fashion. Resolves Sensor Arrays not properly losing their linked Rating if a Sensor Downgrade is equipped to a vehicle. Closes #4813
 - Resolved an issue with skill groups that were purchased in career mode not being properly able to be refunded.
 - Added a Close Window option under Window that can always be used to close the current window if no other option is convenient or visible. Fixes #4845.
+- Removed behaviour that prevented cyberware child objects from consuming a mount location that was blocked by the parent. This, for example, allows an elbow modular connector to be installed inside a cyberlimb arm. If you have custom content that depends on this current behaviour, please contact the dev team.
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.
