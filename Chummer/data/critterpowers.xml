@@ -2419,6 +2419,13 @@
       <action />
       <range />
       <duration />
+      <bonus>
+        <specificskill>
+          <name>Free-Fall</name>
+          <bonus>1</bonus>
+          <applytorating>True</applytorating>
+        </specificskill>
+      </bonus>
       <source>HS</source>
       <page>186</page>
     </power>
@@ -3901,6 +3908,34 @@
     <!-- End Region -->
     <!-- Region Chimeric Modifications -->
     <power>
+      <id>227fa369-eaf5-400f-ab50-eb6e095684f7</id>
+      <name>All-Around Sight</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>170</page>
+    </power>
+    <power>
+      <id>1aa8fb12-6f00-42df-96c9-3c5b60ddf9b3</id>
+      <name>Aquatic Adaptation</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <bonus>
+        <specificattribute>
+          <name>Swimming</name>
+          <val>2</val>
+        </specificattribute>
+      </bonus>
+      <source>HS</source>
+      <page>170</page>
+    </power>
+    <power>
       <id>24d6d5c2-8459-4f9e-8a76-dd9a07a49f9c</id>
       <name>Attribute Enhancement (Body)</name>
       <category>Chimeric Modification</category>
@@ -3910,15 +3945,13 @@
       <duration />
       <rating>True</rating>
       <bonus>
-        <specificattribute>
+        <specificskill>
           <name>BOD</name>
           <val>Rating</val>
-          <max>Rating</max>
-          <affectbase />
-        </specificattribute>
+        </specificskill>
       </bonus>
       <source>HS</source>
-      <page>166</page>
+      <page>170</page>
     </power>
     <power>
       <id>78be96f2-43e5-444a-b255-0e7528813b4a</id>
@@ -3933,12 +3966,10 @@
         <specificattribute>
           <name>AGI</name>
           <val>Rating</val>
-          <max>Rating</max>
-          <affectbase />
         </specificattribute>
       </bonus>
       <source>HS</source>
-      <page>166</page>
+      <page>170</page>
     </power>
     <power>
       <id>95240c3e-99c1-43d9-adf0-6a83b792091b</id>
@@ -3953,12 +3984,10 @@
         <specificattribute>
           <name>REA</name>
           <val>Rating</val>
-          <max>Rating</max>
-          <affectbase />
         </specificattribute>
       </bonus>
       <source>HS</source>
-      <page>166</page>
+      <page>170</page>
     </power>
     <power>
       <id>26ad4ce7-439b-48d1-a870-bb1e2b2a54ad</id>
@@ -3973,12 +4002,10 @@
         <specificattribute>
           <name>STR</name>
           <val>Rating</val>
-          <max>Rating</max>
-          <affectbase />
         </specificattribute>
       </bonus>
       <source>HS</source>
-      <page>166</page>
+      <page>170</page>
     </power>
     <power>
       <id>81aab9fb-30ef-4c91-b296-b85dc2860fee</id>
@@ -3993,12 +4020,10 @@
         <specificattribute>
           <name>CHA</name>
           <val>Rating</val>
-          <max>Rating</max>
-          <affectbase />
         </specificattribute>
       </bonus>
       <source>HS</source>
-      <page>166</page>
+      <page>170</page>
     </power>
     <power>
       <id>cf88125a-c129-4e77-8813-cc4d2368e077</id>
@@ -4013,12 +4038,10 @@
         <specificattribute>
           <name>INT</name>
           <val>Rating</val>
-          <max>Rating</max>
-          <affectbase />
         </specificattribute>
       </bonus>
       <source>HS</source>
-      <page>166</page>
+      <page>170</page>
     </power>
     <power>
       <id>7af7bc12-b671-4dbf-bfb7-fb58e9ee28a4</id>
@@ -4033,12 +4056,10 @@
         <specificattribute>
           <name>LOG</name>
           <val>Rating</val>
-          <max>Rating</max>
-          <affectbase />
         </specificattribute>
       </bonus>
       <source>HS</source>
-      <page>166</page>
+      <page>170</page>
     </power>
     <power>
       <id>95307494-6a99-4b66-aaaf-a417fa607632</id>
@@ -4053,44 +4074,97 @@
         <specificattribute>
           <name>WIL</name>
           <val>Rating</val>
-          <max>Rating</max>
-          <affectbase />
         </specificattribute>
       </bonus>
       <source>HS</source>
-      <page>166</page>
+      <page>170</page>
     </power>
     <power>
-      <id>3d4dec14-3a44-41b6-9f78-1d6bd42e15fe</id>
-      <name>Thicker Skin</name>
-      <category>Chimeric Modification</category>
-      <type />
-      <action />
-      <range />
-      <duration />
-      <rating>True</rating>
-      <bonus>
-        <armor>Rating</armor>
-      </bonus>
-      <source>HS</source>
-      <page>173</page>
-    </power>
-    <power>
-      <id>510fc5a4-d475-4a31-b1f5-484bf96eeff1</id>
-      <name>Skill Enhancement</name>
+      <id>9c315cb9-5962-44e6-ba2a-0be99cbd48ea</id>
+      <name>Balance Tail</name>
       <category>Chimeric Modification</category>
       <type />
       <action />
       <range />
       <duration />
       <bonus>
-        <selectskill>
-          <val>2</val>
-          <applytorating>True</applytorating>
-        </selectskill>
+        <specificskill>
+          <name>Gymnastics</name>
+          <bonus>1</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Free-Fall</name>
+          <bonus>1</bonus>
+        </specificskill>
       </bonus>
       <source>HS</source>
-      <page>173</page>
+      <page>170</page>
+    </power>
+    <power>
+      <id>ef6fd1c5-3403-46eb-910a-5130e2c5bca9</id>
+      <name>Bioluminescence</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>170</page>
+    </power>
+    <power>
+      <id>97dd1f9c-22fa-4b2c-b10c-626c7db026c2</id>
+      <name>Biotoxin Alteration (Anesthetic)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>170</page>
+    </power>
+    <power>
+      <id>a429197f-d371-4190-b43b-53fda9d5764e</id>
+      <name>Biotoxin Alteration (Formic Acid)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>170</page>
+    </power>
+    <power>
+      <id>73880be6-7395-4d27-8511-3d3722ab2865</id>
+      <name>Biotoxin Alteration (Hallucinogen)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>170</page>
+    </power>
+    <power>
+      <id>f7cf732c-40f6-4f4f-8e5a-316cef4f5ac8</id>
+      <name>Biotoxin Alteration (Nauseating)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>170</page>
+    </power>
+    <power>
+      <id>c74444bf-7707-4eb2-b076-ccb883bd2344</id>
+      <name>Camouflage</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>171</page>
     </power>
     <power>
       <id>d0f88641-ff0f-448f-93d3-0d67068939c2</id>
@@ -4118,8 +4192,481 @@
       <page>171</page>
     </power>
     <power>
+      <id>411964a6-09c3-40c1-be47-5a4627532071</id>
+      <name>Climate Adaptation</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>171</page>
+    </power>
+    <power>
+      <id>2d89a28c-d407-4a0e-a636-0a44359e523c</id>
+      <name>Defensive Secretion</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>171</page>
+    </power>
+    <power>
+      <id>c666f1f1-f157-4a95-a22d-10e962cfc90c</id>
+      <name>Dynamic Coloration</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>171</page>
+    </power>
+    <power>
+      <id>f53310ed-9c07-4813-910e-5384cfaeaa43</id>
+      <name>Echolocation</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>171</page>
+    </power>
+    <power>
+      <id>3d6429c4-fe8e-4d2b-ba47-2ac1fa0d65b0</id>
+      <name>Electrocytes</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range>Touch</range>
+      <duration />
+      <bonus>
+        <naturalweapon>
+          <name>Electrocytes</name>
+          <reach>0</reach>
+          <damage>{BOD}S(e)</damage>
+          <ap>-6</ap>
+          <useskill>Unarmed Combat</useskill>
+          <accuracy>Physical</accuracy>
+          <source>HS</source>
+          <page>171</page>
+        </naturalweapon>
+      </bonus>
+      <source>HS</source>
+      <page>171</page>
+    </power>
+    <power>
+      <id>048c7ca6-d626-415e-baae-80246091b8e1</id>
+      <name>Enhanced Sense (Low Light Vision)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>171</page>
+    </power>
+    <power>
+      <id>383f5fa7-b15c-4cc9-bac8-d125df72df19</id>
+      <name>Enhanced Sense (Thermographic Vision)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>171</page>
+    </power>
+    <power>
+      <id>691aa349-e936-4352-9901-f119d07893a5</id>
+      <name>Enhanced Sense (Scent)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>171</page>
+    </power>
+    <power>
+      <id>faa6681f-04e2-4065-82c5-bb90ad2d3b7c</id>
+      <name>Enhanced Sense (Broadened Auditory Spectrum)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>171</page>
+    </power>
+    <power>
+      <id>be0645f8-7a50-416e-82cb-2ed73b86a78a</id>
+      <name>Extra Head</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <rating>2</rating>
+      <bonus>
+        <specificskill>
+          <name>Perception</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+        <conditionmonitor>
+          <physical>Rating</physical>
+        </conditionmonitor>
+      </bonus>
+      <source>HS</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>5a3ac03e-dd4a-441e-83b0-194af9f6e594</id>
+      <name>Frog Tongue</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>717db6d5-fb7c-405c-aa9c-ab4ad5388c19</id>
+      <name>Gills</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>dfc5c73c-fd31-476f-9d68-78ac9a9f57e3</id>
+      <name>Gliding</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <bonus>
+        <specificskill>
+          <name>Free-Fall</name>
+          <bonus>1</bonus>
+          <applytorating>True</applytorating>
+        </specificskill>
+      </bonus>
+      <source>HS</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>c34c4c75-fdd2-4fa3-9e62-e37f2f57ea36</id>
+      <name>Ink Extrusion</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>30123d64-845f-4375-9b2a-87c9a3a44c74</id>
+      <name>Magnetoception</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>f91bb1fa-3bb6-448d-b7e4-98d4473d5a12</id>
+      <name>Natural Weapon (Bite)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <bonus>
+        <naturalweapon>
+          <name>Bite</name>
+          <reach>-1</reach>
+          <damage>({STR}+2)P</damage>
+          <ap>-2</ap>
+          <useskill>Unarmed Combat</useskill>
+          <accuracy>Physical</accuracy>
+          <source>HS</source>
+          <page>172</page>
+        </naturalweapon>
+      </bonus>
+      <source>HS</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>dd7e6d25-53f1-41bb-8626-ef7413e9c3b6</id>
+      <name>Natural Weapon (Claws)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <bonus>
+        <naturalweapon>
+          <name>Claws</name>
+          <reach>0</reach>
+          <damage>({STR}+1)P</damage>
+          <ap>-1</ap>
+          <useskill>Unarmed Combat</useskill>
+          <accuracy>Physical</accuracy>
+          <source>HS</source>
+          <page>172</page>
+        </naturalweapon>
+      </bonus>
+      <source>HS</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>fb8f1a20-892b-4946-a4c8-5cc817e55167</id>
+      <name>Natural Weapon (Horns)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <bonus>
+        <naturalweapon>
+          <name>Horns</name>
+          <reach>0</reach>
+          <damage>({STR}+2)P</damage>
+          <ap>-1</ap>
+          <useskill>Unarmed Combat</useskill>
+          <accuracy>Physical</accuracy>
+          <source>HS</source>
+          <page>172</page>
+        </naturalweapon>
+      </bonus>
+      <source>HS</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>6ff500ab-0691-4310-8e42-65623e289739</id>
+      <name>Natural Weapon (Tail)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <bonus>
+        <naturalweapon>
+          <name>Tail</name>
+          <reach>1</reach>
+          <damage>({STR}+3)P</damage>
+          <useskill>Unarmed Combat</useskill>
+          <accuracy>Physical</accuracy>
+          <source>HS</source>
+          <page>172</page>
+        </naturalweapon>
+      </bonus>
+      <source>HS</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>c004510b-b5a8-4a34-b442-7353ef4599b5</id>
+      <name>Natural Weapon (Tusk)</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <bonus>
+        <naturalweapon>
+          <name>Tusk</name>
+          <reach>0</reach>
+          <damage>({STR}+2)P</damage>
+          <useskill>Unarmed Combat</useskill>
+          <accuracy>Physical</accuracy>
+          <source>HS</source>
+          <page>172</page>
+        </naturalweapon>
+      </bonus>
+      <source>HS</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>4f261e65-bd90-400c-92d7-97b1dd0135ca</id>
+      <name>Proboscis</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <bonus>
+        <naturalweapon>
+          <name>Proboscis</name>
+          <reach>0</reach>
+          <damage>({STR}-1)P</damage>
+          <ap>+1</ap>
+            <useskill>Exotic Melee Weapon</useskill>
+            <useskillspec>Trunk</useskillspec>          
+            <accuracy>Physical</accuracy>
+          <source>HS</source>
+          <page>172</page>
+        </naturalweapon>
+      </bonus>
+      <source>HS</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>c704a705-ac65-4659-b555-babdc1edc7af</id>
+      <name>Potent Venom</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>4eeb2045-6690-470a-8926-4626ba0317eb</id>
+      <name>Quills</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <bonus>
+        <naturalweapon>
+          <name>Quills</name>
+          <reach>0</reach>
+          <damage>({STR}+1)P</damage>
+          <ap>+1</ap>
+            <useskill>Exotic Melee Weapon</useskill>
+            <useskillspec>Quills</useskillspec>
+          <accuracy>Physical</accuracy>
+          <source>HS</source>
+          <page>172</page>
+        </naturalweapon>
+      </bonus>
+      <source>HS</source>
+      <page>172</page>
+    </power>
+    <power>
+      <id>2689dca6-ad15-46df-a2b0-fa9cb342cff2</id>
+      <name>Scent Spray</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>173</page>
+    </power>
+    <power>
+      <id>2e9dcaba-10e6-4ed1-b5b4-aba4a7a99a47</id>
+      <name>Skill Enhancement</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <bonus>
+        <selectskill>
+          <val>2</val>
+          <applytorating>True</applytorating>
+        </selectskill>
+      </bonus>
+      <source>HS</source>
+      <page>173</page>
+    </power>
+    <power>
+      <id>eba7c531-84ab-477a-86f1-69400f2deb22</id>
+      <name>Sturdiness</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <bonus>
+        <physicallimit>1</physicallimit>
+      </bonus>
+      <source>HS</source>
+      <page>173</page>
+    </power>
+    <power>
+      <id>e2036d44-b991-4339-a1ae-108272d405db</id>
+      <name>Thermosense</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>173</page>
+    </power>
+    <power>
+      <id>3d4dec14-3a44-41b6-9f78-1d6bd42e15fe</id>
+      <name>Thicker Skin</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <rating>True</rating>
+      <bonus>
+        <armor>Rating</armor>
+      </bonus>
+      <source>HS</source>
+      <page>173</page>
+    </power>
+    <power>
+      <id>e0b4c953-efef-4162-bd92-4ee8988c6853</id>
+      <name>Venom</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>173</page>
+    </power>
+    <power>
+      <id>0b2e5718-908e-4301-b185-71371d8bb184</id>
+      <name>Vestigial Wings</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <bonus>
+        <specificskill>
+          <name>Gymnastics</name>
+          <bonus>2</bonus>
+        </specificskill>
+      </bonus>
+      <source>HS</source>
+      <page>173</page>
+    </power>
+    <power>
       <id>221bd655-f6a4-4b41-9f53-c147fff93e40</id>
       <name>Wall Climbing</name>
+      <category>Chimeric Modification</category>
+      <type />
+      <action />
+      <range />
+      <duration />
+      <source>HS</source>
+      <page>173</page>
+    </power>
+    <power>
+      <id>65f530b0-c124-483d-a18a-a1cf8cbebf9b</id>
+      <name>Web Extrusion</name>
       <category>Chimeric Modification</category>
       <type />
       <action />
