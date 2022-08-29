@@ -74,6 +74,7 @@ Data Changes:
 - Fixed IG2 Red Magic tradition not being able to buy Attune Animal spell.
 - Fixed incorrect weapon specialisations for some underbarrel weapons.
 - Fixed incorrect bonus for the Intrusion Countermeasure Paragon.
+- Fixed pricing of the Máquina Conversion from Hard Targets.
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups

@@ -11951,7 +11951,7 @@
       <source>HT</source>
       <avail>0</avail>
       <category>Cosmetic</category>
-      <cost>number(Body = 0) + Body * 2</cost>
+      <cost>Body * 500</cost>
       <rating>0</rating>
       <slots>0</slots>
     </mod>
