@@ -1876,6 +1876,10 @@ namespace Chummer.Backend.Equipment
 
                             if ((intCount & 1) == 1)
                             {
+                                if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
+                                    ImprovementManager.ForcedValue = _strForced;
+                                else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
+                                    ImprovementManager.ForcedValue = _strExtra;
                                 ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId + "Pair",
                                     PairBonus, Rating, CurrentDisplayNameShort);
                             }
@@ -2901,6 +2905,10 @@ namespace Chummer.Backend.Equipment
 
                     if ((intCount & 1) == 1)
                     {
+                        if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
+                            ImprovementManager.ForcedValue = _strForced;
+                        else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
+                            ImprovementManager.ForcedValue = _strExtra;
                         ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId + "Pair", PairBonus,
                             Rating, CurrentDisplayNameShort);
                     }
@@ -2945,6 +2953,10 @@ namespace Chummer.Backend.Equipment
                         // Go down the list and create pair bonuses for every second item
                         if (intCount > 0 && (intCount & 1) == 0)
                         {
+                            if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
+                                ImprovementManager.ForcedValue = _strForced;
+                            else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
+                                ImprovementManager.ForcedValue = _strExtra;
                             ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType,
                                 objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, objLoopCyberware.Rating,
                                 objLoopCyberware.CurrentDisplayNameShort);
@@ -3117,6 +3129,10 @@ namespace Chummer.Backend.Equipment
 
                                 if ((intCount & 1) == 1)
                                 {
+                                    if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
+                                        ImprovementManager.ForcedValue = _strForced;
+                                    else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
+                                        ImprovementManager.ForcedValue = _strExtra;
                                     ImprovementManager.CreateImprovements(_objCharacter, SourceType, InternalId + "Pair",
                                         PairBonus, Rating, CurrentDisplayNameShort);
                                 }
@@ -5251,6 +5267,10 @@ namespace Chummer.Backend.Equipment
                     // Go down the list and create pair bonuses for every second item
                     if (intCount > 0 && (intCount & 1) == 0)
                     {
+                        if (!string.IsNullOrEmpty(objLoopCyberware.Forced) && objLoopCyberware.Forced != "Left" && objLoopCyberware.Forced != "Right")
+                            ImprovementManager.ForcedValue = objLoopCyberware.Forced;
+                        else if (objLoopCyberware.Bonus != null && !string.IsNullOrEmpty(objLoopCyberware.Extra))
+                            ImprovementManager.ForcedValue = objLoopCyberware.Extra;
                         ImprovementManager.CreateImprovements(_objCharacter, objLoopCyberware.SourceType,
                             objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, objLoopCyberware.Rating,
                             objLoopCyberware.CurrentDisplayNameShort);
