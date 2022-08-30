@@ -2253,7 +2253,14 @@ namespace Chummer
                     }
 
                     string strSkill = xmlSkill.InnerText;
+                    string strSpec = xmlSkill.Attributes?["spec"]?.InnerText ?? string.Empty;
                     Skill objSkill = SkillsSection.GetActiveSkill(strSkill);
+                    
+                    if (objSkill == null && ExoticSkill.IsExoticSkillName(strSkill))
+                    {
+                        SkillsSection.AddExoticSkill(strSkill, strSpec);
+                        continue;
+                    }
                     if (objSkill == null)
                     {
                         if (!bImprovementAdded)
@@ -2267,7 +2274,6 @@ namespace Chummer
 
                     if (objSkill != null) //More or less a safeguard only. Should not be empty at that point any longer.
                     {
-                        string strSpec = xmlSkill.Attributes?["spec"]?.InnerText ?? string.Empty;
                         if (string.IsNullOrEmpty(strSpec)) continue;
                         if (objSkill.Specializations.All(x => x.Name != strSpec))
                         {
