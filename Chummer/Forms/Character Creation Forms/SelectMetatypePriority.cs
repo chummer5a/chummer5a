@@ -525,7 +525,11 @@ namespace Chummer
                                 int intOldSelectedIndex = await cboSkill1.DoThreadSafeFuncAsync(x => x.SelectedIndex, token);
                                 int intOldDataSourceSize = await cboSkill1.DoThreadSafeFuncAsync(x => x.Items.Count, token);
                                 await cboSkill1.PopulateWithListItemsAsync(lstSkills, token);
-                                await cboSkill1.DoThreadSafeAsync(x => x.Visible = true, token);
+                                await cboSkill1.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Enabled = lstSkills.Count > 1;
+                                }, token);
                                 if (intOldDataSourceSize == cboSkill1.Items.Count)
                                 {
                                     _blnLoading = true;
@@ -538,7 +542,11 @@ namespace Chummer
                                     intOldSelectedIndex = await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token);
                                     intOldDataSourceSize = await cboSkill2.DoThreadSafeFuncAsync(x => x.Items.Count, token);
                                     await cboSkill2.PopulateWithListItemsAsync(lstSkills, token);
-                                    await cboSkill2.DoThreadSafeAsync(x => x.Visible = true, token);
+                                    await cboSkill2.DoThreadSafeAsync(x =>
+                                    {
+                                        x.Visible = true;
+                                        x.Enabled = lstSkills.Count > 2;
+                                    }, token);
                                     if (intOldDataSourceSize == cboSkill2.Items.Count)
                                     {
                                         _blnLoading = true;
@@ -565,7 +573,11 @@ namespace Chummer
                                         intOldSelectedIndex = await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedIndex, token);
                                         intOldDataSourceSize = await cboSkill3.DoThreadSafeFuncAsync(x => x.Items.Count, token);
                                         await cboSkill3.PopulateWithListItemsAsync(lstSkills, token);
-                                        await cboSkill3.DoThreadSafeAsync(x => x.Visible = true, token);
+                                        await cboSkill3.DoThreadSafeAsync(x =>
+                                        {
+                                            x.Visible = true;
+                                            x.Enabled = lstSkills.Count > 3;
+                                        }, token);
                                         if (intOldDataSourceSize == cboSkill3.Items.Count)
                                         {
                                             _blnLoading = true;
@@ -923,9 +935,9 @@ namespace Chummer
                 return;
             }
 
-            string strSkill1 = await cboSkill1.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
-            string strSkill2 = await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
-            string strSkill3 = await cboSkill3.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token);
+            string strSkill1 = await cboSkill1.DoThreadSafeFuncAsync(x => x.Visible ? x.SelectedValue?.ToString() : string.Empty, token);
+            string strSkill2 = await cboSkill2.DoThreadSafeFuncAsync(x => x.Visible ? x.SelectedValue?.ToString() : string.Empty, token);
+            string strSkill3 = await cboSkill3.DoThreadSafeFuncAsync(x => x.Visible ? x.SelectedValue?.ToString() : string.Empty, token);
 
             if ((await cboSkill1.DoThreadSafeFuncAsync(x => x.Visible, token) && string.IsNullOrEmpty(strSkill1))
                 || (await cboSkill2.DoThreadSafeFuncAsync(x => x.Visible, token) && string.IsNullOrEmpty(strSkill2))
@@ -972,9 +984,8 @@ namespace Chummer
                 }
             }
 
-            if ((await cboSkill1.DoThreadSafeFuncAsync(x => x.Visible, token) && await cboSkill2.DoThreadSafeFuncAsync(x => x.Visible && strSkill1 == strSkill2, token))
-                || (await cboSkill1.DoThreadSafeFuncAsync(x => x.Visible, token) && await cboSkill3.DoThreadSafeFuncAsync(x => x.Visible && strSkill1 == strSkill3, token))
-                || (await cboSkill2.DoThreadSafeFuncAsync(x => x.Visible, token) && await cboSkill3.DoThreadSafeFuncAsync(x => x.Visible && strSkill2 == strSkill3, token)))
+            if ((!string.IsNullOrEmpty(strSkill1) && (strSkill1 == strSkill2 || strSkill1 == strSkill3))
+                || (!string.IsNullOrEmpty(strSkill2) && strSkill2 == strSkill3))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_Duplicate", token: token), await LanguageManager.GetStringAsync("MessageTitle_Metatype_Duplicate", token: token), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -1089,11 +1100,11 @@ namespace Chummer
                 _objCharacter.ResourcesPriority = await cboResources.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token);
                 _objCharacter.TalentPriority = await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token);
                 await _objCharacter.PriorityBonusSkillList.ClearAsync(token);
-                if (await cboSkill1.DoThreadSafeFuncAsync(x => x.Visible, token))
+                if (!string.IsNullOrEmpty(strSkill1))
                     await _objCharacter.PriorityBonusSkillList.AddAsync(strSkill1, token: token);
-                if (await cboSkill2.DoThreadSafeFuncAsync(x => x.Visible, token))
+                if (!string.IsNullOrEmpty(strSkill2))
                     await _objCharacter.PriorityBonusSkillList.AddAsync(strSkill2, token: token);
-                if (await cboSkill3.DoThreadSafeFuncAsync(x => x.Visible, token))
+                if (!string.IsNullOrEmpty(strSkill3))
                     await _objCharacter.PriorityBonusSkillList.AddAsync(strSkill3, token: token);
 
                 // Set starting nuyen

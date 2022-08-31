@@ -49,6 +49,7 @@ Application Changes:
 - Removed behaviour that prevented cyberware child objects from consuming a mount location that was blocked by the parent. This, for example, allows an elbow modular connector to be installed inside a cyberlimb arm. If you have custom content that depends on this current behaviour, please contact the dev team.
 - Fixed pair bonuses on modular gear not properly retaining Forced values. Closes #4893
 - Fixes critter creation not getting Exotic skill ratings.
+- Switching between different talent priority options can no longer cause a character to gain one or two extra priority-given skills.
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.
