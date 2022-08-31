@@ -2380,14 +2380,20 @@ namespace Chummer.Backend.Skills
                     new DependencyGraphNode<string, Skill>(nameof(BuyWithKarma))
                 ),
                 new DependencyGraphNode<string, Skill>(nameof(CurrentKarmaCost),
-                    new DependencyGraphNode<string, Skill>(nameof(RangeCost)),
+                    new DependencyGraphNode<string, Skill>(nameof(RangeCost),
+                        new DependencyGraphNode<string, Skill>(nameof(SkillGroupObject), x => x.CharacterObject.Settings.CompensateSkillGroupKarmaDifference && x.Enabled),
+                        new DependencyGraphNode<string, Skill>(nameof(Enabled), x => x.CharacterObject.Settings.CompensateSkillGroupKarmaDifference && x.SkillGroupObject != null)
+                    ),
                     new DependencyGraphNode<string, Skill>(nameof(TotalBaseRating)),
                     new DependencyGraphNode<string, Skill>(nameof(Base)),
                     new DependencyGraphNode<string, Skill>(nameof(FreeKarma)),
                     new DependencyGraphNode<string, Skill>(nameof(Specializations))
                 ),
                 new DependencyGraphNode<string, Skill>(nameof(CanUpgradeCareer),
-                    new DependencyGraphNode<string, Skill>(nameof(UpgradeKarmaCost)),
+                    new DependencyGraphNode<string, Skill>(nameof(UpgradeKarmaCost),
+                        new DependencyGraphNode<string, Skill>(nameof(SkillGroupObject), x => x.CharacterObject.Settings.CompensateSkillGroupKarmaDifference && x.Enabled),
+                        new DependencyGraphNode<string, Skill>(nameof(Enabled), x => x.CharacterObject.Settings.CompensateSkillGroupKarmaDifference && x.SkillGroupObject != null)
+                    ),
                     new DependencyGraphNode<string, Skill>(nameof(RatingMaximum)),
                     new DependencyGraphNode<string, Skill>(nameof(TotalBaseRating))
                 ),
@@ -2518,6 +2524,16 @@ namespace Chummer.Backend.Skills
                 // Do this after firing all property changers. Not part of the dependency graph because dependency is very complicated
                 if (setNamesOfChangedProperties.Contains(nameof(DefaultAttribute)))
                     RecacheAttribute();
+                if (setNamesOfChangedProperties.Contains(nameof(Enabled))
+                    && CharacterObject.Settings.CompensateSkillGroupKarmaDifference && SkillGroupObject != null)
+                {
+                    foreach (Skill objSkill in SkillGroupObject.SkillList)
+                    {
+                        if (objSkill == this)
+                            continue;
+                        objSkill.OnMultiplePropertyChanged(nameof(UpgradeKarmaCost), nameof(RangeCost));
+                    }
+                }
             }
             finally
             {
@@ -2557,6 +2573,15 @@ namespace Chummer.Backend.Skills
 
                         break;
                     }
+                case nameof(Skills.SkillGroup.SkillList) when CharacterObject.Settings.CompensateSkillGroupKarmaDifference:
+                {
+                    if (Enabled)
+                    {
+                        this.OnMultiplePropertyChanged(nameof(RangeCost), nameof(UpgradeKarmaCost));
+                    }
+
+                    break;
+                }
             }
         }
 
@@ -2683,18 +2708,18 @@ namespace Chummer.Backend.Skills
                     }
                 case nameof(CharacterSettings.CompensateSkillGroupKarmaDifference):
                     {
-                        if (SkillGroupObject != null)
+                        if (SkillGroupObject != null && Enabled)
                         {
-                            OnPropertyChanged(nameof(CurrentKarmaCost));
+                            this.OnMultiplePropertyChanged(nameof(RangeCost), nameof(UpgradeKarmaCost));
                         }
                         break;
                     }
                 case nameof(CharacterSettings.KarmaNewSkillGroup):
                 case nameof(CharacterSettings.KarmaImproveSkillGroup):
                     {
-                        if (SkillGroupObject != null && CharacterObject.Settings.CompensateSkillGroupKarmaDifference)
+                        if (SkillGroupObject != null && CharacterObject.Settings.CompensateSkillGroupKarmaDifference && Enabled)
                         {
-                            OnPropertyChanged(nameof(CurrentKarmaCost));
+                            this.OnMultiplePropertyChanged(nameof(RangeCost), nameof(UpgradeKarmaCost));
                         }
                         break;
                     }
@@ -2813,7 +2838,7 @@ namespace Chummer.Backend.Skills
                 int intSkillGroupUpper = int.MaxValue;
                 foreach (Skill objSkillGroupMember in SkillGroupObject.SkillList)
                 {
-                    if (objSkillGroupMember != this)
+                    if (objSkillGroupMember != this && objSkillGroupMember.Enabled)
                     {
                         int intLoopTotalBaseRating = objSkillGroupMember.TotalBaseRating;
                         if (intLoopTotalBaseRating < intSkillGroupUpper)
@@ -2824,22 +2849,19 @@ namespace Chummer.Backend.Skills
                 {
                     if (intSkillGroupUpper > upper)
                         intSkillGroupUpper = upper;
-                    int intGroupLevelsModded = intSkillGroupUpper * (intSkillGroupUpper + 1); //cost if nothing else was there
-                    intGroupLevelsModded -= lower * (lower + 1); //remove "karma" costs from base + free
-
-                    intGroupLevelsModded /= 2; //we get square, we need triangle
-
                     int intGroupCost;
-                    int intNakedSkillCost = SkillGroupObject.SkillList.Count;
+                    int intNakedSkillCost = SkillGroupObject.SkillList.Count(x => x == this || x.Enabled);
                     if (lower == 0)
                     {
-                        intGroupCost = (intGroupLevelsModded - 1) * CharacterObject.Settings.KarmaImproveSkillGroup + CharacterObject.Settings.KarmaNewSkillGroup;
-                        intNakedSkillCost *= (intGroupLevelsModded - 1) * CharacterObject.Settings.KarmaImproveActiveSkill + CharacterObject.Settings.KarmaNewActiveSkill;
+                        int intExtraLevels = (intSkillGroupUpper - 1) * intSkillGroupUpper;
+                        intGroupCost = intExtraLevels * CharacterObject.Settings.KarmaImproveSkillGroup / 2 + CharacterObject.Settings.KarmaNewSkillGroup;
+                        intNakedSkillCost *= intExtraLevels * CharacterObject.Settings.KarmaImproveActiveSkill / 2 + CharacterObject.Settings.KarmaNewActiveSkill;
                     }
                     else
                     {
-                        intGroupCost = intGroupLevelsModded * CharacterObject.Settings.KarmaImproveSkillGroup;
-                        intNakedSkillCost *= intGroupLevelsModded * CharacterObject.Settings.KarmaImproveActiveSkill;
+                        int intExtraLevels = intSkillGroupUpper * (intSkillGroupUpper + 1) - lower * (lower + 1);
+                        intGroupCost = intExtraLevels * CharacterObject.Settings.KarmaImproveSkillGroup / 2;
+                        intNakedSkillCost *= intExtraLevels * CharacterObject.Settings.KarmaImproveActiveSkill / 2;
                     }
 
                     intSkillGroupCostAdjustment = intGroupCost - intNakedSkillCost;
@@ -2924,7 +2946,7 @@ namespace Chummer.Backend.Skills
                     int intSkillGroupUpper = int.MaxValue;
                     foreach (Skill objSkillGroupMember in SkillGroupObject.SkillList)
                     {
-                        if (objSkillGroupMember != this)
+                        if (objSkillGroupMember != this && objSkillGroupMember.Enabled)
                         {
                             int intLoopTotalBaseRating = objSkillGroupMember.TotalBaseRating;
                             if (intLoopTotalBaseRating < intSkillGroupUpper)
@@ -2934,7 +2956,7 @@ namespace Chummer.Backend.Skills
                     if (intSkillGroupUpper != int.MaxValue && intSkillGroupUpper > intTotalBaseRating)
                     {
                         int intGroupCost;
-                        int intNakedSkillCost = SkillGroupObject.SkillList.Count;
+                        int intNakedSkillCost = SkillGroupObject.SkillList.Count(x => x == this || x.Enabled);
                         if (intTotalBaseRating == 0)
                         {
                             intGroupCost = CharacterObject.Settings.KarmaNewSkillGroup;
