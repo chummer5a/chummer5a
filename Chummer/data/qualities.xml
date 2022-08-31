@@ -19035,9 +19035,6 @@
       <name>Prototype Materials</name>
       <karma>5</karma>
       <category>Positive</category>
-      <bonus>
-        <specialmodificationlimit>2</specialmodificationlimit>
-      </bonus>
       <forbidden>
         <oneof>
           <magenabled />
@@ -19077,6 +19074,29 @@
       </forbidden>
       <source>BTB</source>
       <page>161</page>
+    </quality>
+    <quality>
+      <id>56815ed4-4093-471a-a0a3-8f5b23675629</id>
+      <name>Special Modifications (Prototype Materials)</name>
+      <karma>5</karma>
+      <category>Positive</category>
+      <bonus>
+        <specialmodificationlimit>2</specialmodificationlimit>
+      </bonus>
+      <forbidden>
+        <oneof>
+          <magenabled />
+          <resenabled />
+        </oneof>
+      </forbidden>
+      <required>
+        <oneof>
+          <quality>Prototype Materials</quality>
+        </oneof>
+      </required>
+      <source>BTB</source>
+      <page>161</page>
+      <nameonpage>Special Modifications</nameonpage>
     </quality>
     <!-- End Region -->
     <!-- Region Mastery Qualities -->
