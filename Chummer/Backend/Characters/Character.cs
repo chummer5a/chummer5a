@@ -22227,7 +22227,7 @@ namespace Chummer
                 if (decSprint != 0)
                 {
                     if (!string.IsNullOrEmpty(strReturn))
-                        strReturn += ',' + LanguageManager.GetString("String_Space", strLanguage);
+                        strReturn += ';' + LanguageManager.GetString("String_Space", strLanguage);
                     strReturn += decSprint.ToString("#,0.##", objCulture)
                                  + LanguageManager.GetString("String_MetersPerHit", strLanguage);
                 }

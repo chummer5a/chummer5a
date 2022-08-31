@@ -52,6 +52,7 @@ Application Changes:
 - Switching between different talent priority options can no longer cause a character to gain one or two extra priority-given skills.
 - The house rule to compensate the karma cost of raising the last skill in a skill group now works properly for skill groups containing disabled skills, and miscalculated total karma costs at character creation with this house rule enabled are now fixed. Fixes #4863.
 - Skills that are not part of a skill group are no longer printed or exported as being part of a skill group.
+- Fixed minor formatting issues when printing movement speeds in non-English languages.
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.
