@@ -157,10 +157,9 @@ namespace Chummer.Backend.Skills
                 await objWriter.WriteElementStringAsync(
                     "grouped",
                     CharacterObject.Created
-                        ? (SkillGroupObject == null || (!SkillGroupObject.IsBroken && SkillGroupObject.Rating > 0))
+                        ? (SkillGroupObject != null && !SkillGroupObject.IsBroken && SkillGroupObject.Rating > 0)
                         .ToString(GlobalSettings.InvariantCultureInfo)
-                        : (SkillGroupObject == null
-                           || (!SkillGroupObject.HasAnyBreakingSkills && SkillGroupObject.Rating > 0))
+                        : (SkillGroupObject != null && !SkillGroupObject.HasAnyBreakingSkills && SkillGroupObject.Rating > 0)
                         .ToString(GlobalSettings.InvariantCultureInfo), token: token);
                 await objWriter.WriteElementStringAsync("default", Default.ToString(GlobalSettings.InvariantCultureInfo), token: token);
                 await objWriter.WriteElementStringAsync("requiresgroundmovement", RequiresGroundMovement.ToString(GlobalSettings.InvariantCultureInfo), token: token);
