@@ -4816,14 +4816,13 @@ namespace Chummer
                                     // Settings with a negative score should not be considered suitable at all
                                     int CalculateCharacterSettingsMatchScore(CharacterSettings objOptionsToCheck)
                                     {
-                                        int intBaseline
-                                            = ((intLegacyMaxKarma - objOptionsToCheck.BuildKarma).RaiseToPower(2)
-                                               + (decLegacyMaxNuyen - objOptionsToCheck.NuyenMaximumBP).RaiseToPower(2))
-                                              .RaiseToPower(0.5m).StandardRound();
-                                        if (objOptionsToCheck.BuiltInOption)
-                                            ++intBaseline;
+                                        int intReturn = int.MaxValue - ((intLegacyMaxKarma - objOptionsToCheck.BuildKarma).RaiseToPower(2)
+                                                                 + (decLegacyMaxNuyen - objOptionsToCheck.NuyenMaximumBP)
+                                                                 .RaiseToPower(2))
+                                                       .RaiseToPower(0.5m).StandardRound();
 
-                                        int intReturn = int.MaxValue;
+                                        int intBaseline = objOptionsToCheck.BuiltInOption ? 5 : 4;
+                                        
                                         if (Created && eSavedBuildMethod != CharacterBuildMethod.LifeModule)
                                         {
                                             if (objOptionsToCheck.BuildMethod != eSavedBuildMethod)
@@ -4839,33 +4838,55 @@ namespace Chummer
                                         {
                                             if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
                                                 eSavedBuildMethod.UsesPriorityTables())
-                                                intReturn -= intBaseline.RaiseToPower(2) / 2;
+                                            {
+                                                intBaseline += 2;
+                                                intReturn -= int.MaxValue / 2;
+                                            }
                                             else
-                                                intReturn -= intBaseline.RaiseToPower(2);
+                                            {
+                                                intBaseline += 4;
+                                                intReturn -= int.MaxValue;
+                                            }
                                         }
 
-                                        int intBaselineCustomDataCount = Math.Max(
-                                            objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count,
-                                            lstSavedCustomDataDirectoryNames.Count);
-                                        for (int i = 0;
-                                             i < objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count;
-                                             ++i)
+                                        int intBaselineCustomDataCount = objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count;
+                                        if (intBaselineCustomDataCount == 0)
                                         {
-                                            string strLoopCustomDataName =
-                                                objOptionsToCheck.EnabledCustomDataDirectoryInfos[i].Name;
-                                            int intLoopIndex =
-                                                lstSavedCustomDataDirectoryNames.IndexOf(strLoopCustomDataName);
-                                            if (intLoopIndex < 0)
+                                            intBaselineCustomDataCount = lstSavedCustomDataDirectoryNames.Count;
+                                            if (intBaselineCustomDataCount > 0)
+                                            {
                                                 intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
-                                            else
-                                                intReturn -= (i - intLoopIndex).RaiseToPower(2) * intBaseline;
+                                            }
                                         }
-
-                                        foreach (string strLoopCustomDataName in lstSavedCustomDataDirectoryNames)
+                                        else if (lstSavedCustomDataDirectoryNames.Count == 0)
                                         {
-                                            if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(
-                                                    x => x.Name != strLoopCustomDataName))
-                                                intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
+                                            intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
+                                        }
+                                        else
+                                        {
+                                            intBaselineCustomDataCount
+                                                = Math.Max(lstSavedCustomDataDirectoryNames.Count,
+                                                           intBaselineCustomDataCount);
+                                            for (int i = 0;
+                                                 i < objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count;
+                                                 ++i)
+                                            {
+                                                string strLoopCustomDataName =
+                                                    objOptionsToCheck.EnabledCustomDataDirectoryInfos[i].Name;
+                                                int intLoopIndex =
+                                                    lstSavedCustomDataDirectoryNames.IndexOf(strLoopCustomDataName);
+                                                if (intLoopIndex < 0)
+                                                    intReturn -= intBaselineCustomDataCount * intBaseline;
+                                                else
+                                                    intReturn -= Math.Abs(i - intLoopIndex) * intBaseline;
+                                            }
+
+                                            foreach (string strLoopCustomDataName in lstSavedCustomDataDirectoryNames)
+                                            {
+                                                if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(
+                                                        x => x.Name != strLoopCustomDataName))
+                                                    intReturn -= intBaselineCustomDataCount * intBaseline;
+                                            }
                                         }
 
                                         using (new FetchSafelyFromPool<HashSet<string>>(
@@ -4879,8 +4900,8 @@ namespace Chummer
                                                     ++intExtraBooks;
                                             }
                                             setDummyBooks.IntersectWith(objOptionsToCheck.Books);
-                                            intReturn -= (setDummyBooks.Count.RaiseToPower(2) * (intBaselineCustomDataCount + 1)
-                                                          + intExtraBooks.RaiseToPower(2)) * intBaseline;
+                                            intReturn -= (setDummyBooks.Count * (intBaselineCustomDataCount + 1)
+                                                          + intExtraBooks) * intBaseline;
                                         }
 
                                         return intReturn;
@@ -4924,7 +4945,7 @@ namespace Chummer
 
                                         // Set up interim options for selection by build method
                                         string strReplacementSettingsKey = string.Empty;
-                                        int intMostSuitable = 0;
+                                        int intMostSuitable = int.MinValue;
                                         foreach (KeyValuePair<string, CharacterSettings> kvpLoopOptions in
                                                  SettingsManager
                                                      .LoadedCharacterSettings)
@@ -5014,7 +5035,7 @@ namespace Chummer
 
                                         // Set up interim options for selection by build method
                                         string strReplacementSettingsKey = string.Empty;
-                                        int intMostSuitable = 0;
+                                        int intMostSuitable = int.MinValue;
                                         foreach (KeyValuePair<string, CharacterSettings> kvpLoopOptions in
                                                  SettingsManager
                                                      .LoadedCharacterSettings)

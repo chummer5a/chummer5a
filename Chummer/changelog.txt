@@ -53,6 +53,7 @@ Application Changes:
 - The house rule to compensate the karma cost of raising the last skill in a skill group now works properly for skill groups containing disabled skills, and miscalculated total karma costs at character creation with this house rule enabled are now fixed. Fixes #4863.
 - Skills that are not part of a skill group are no longer printed or exported as being part of a skill group.
 - Fixed minor formatting issues when printing movement speeds in non-English languages.
+- Loading a character with an unavailable settings file is now overwhelmingly more likely to pick a default setting whose build method matches the one that the character was made with. Fixes #4889.
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.
