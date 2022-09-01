@@ -1096,7 +1096,7 @@ namespace Chummer
                                 // Stupid hack to get the MDI icon to show up properly.
                                 await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon, GenericToken);
 
-                                Program.PluginLoader.CallPlugins(this, op_load_frm_create);
+                                await Program.PluginLoader.CallPlugins(this, op_load_frm_create);
                             }
 
                             if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0

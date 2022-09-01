@@ -244,7 +244,7 @@ namespace Chummer.Plugins
                     newFavorite.TranslateToolStripItemsRecursively();
                     cmsRoster.Items.Add(newFavorite);
                 }
-                var workItems = cmsRoster.Items.OfType<DpiFriendlyToolStripMenuItem>().ToArray();
+                DpiFriendlyToolStripMenuItem[] workItems = cmsRoster.Items.OfType<DpiFriendlyToolStripMenuItem>().ToArray();
                 foreach (DpiFriendlyToolStripMenuItem item in workItems)
                 {
                     switch (item.Name)
@@ -281,12 +281,9 @@ namespace Chummer.Plugins
 
         public ITelemetry SetTelemetryInitialize(ITelemetry telemetry)
         {
-            if (!string.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.UserEmail))
+            if (!string.IsNullOrEmpty(Settings.Default.UserEmail) && telemetry?.Context?.User != null)
             {
-                if (telemetry?.Context?.User != null)
-                {
-                    telemetry.Context.User.AccountId = ChummerHub.Client.Properties.Settings.Default.UserEmail;
-                }
+                telemetry.Context.User.AccountId = Settings.Default.UserEmail;
             }
             return telemetry;
         }
@@ -390,34 +387,28 @@ namespace Chummer.Plugins
             return true;
         }
 
-        public IEnumerable<TabPage> GetTabPages(CharacterCareer input)
+        public Task<ICollection<TabPage>> GetTabPages(CharacterCareer input)
         {
-            if (!Settings.Default.UserModeRegistered)
-                yield break;
-            TabPage objReturn = GetTabPagesCommon(input); //Utils.RunWithoutThreadLock(() => GetTabPagesCommon(input));
-            if (objReturn == null)
-                yield break;
-            yield return objReturn;
+            return !Settings.Default.UserModeRegistered
+                ? Task.FromResult<ICollection<TabPage>>(null)
+                : GetTabPagesCommon(input).ContinueWith(x => (ICollection<TabPage>) x.Result.Yield().ToArray());
         }
 
-        public IEnumerable<TabPage> GetTabPages(CharacterCreate input)
+        public Task<ICollection<TabPage>> GetTabPages(CharacterCreate input)
         {
-            if (!Settings.Default.UserModeRegistered)
-                yield break;
-            TabPage objReturn = Utils.RunWithoutThreadLock(() => GetTabPagesCommon(input));
-            if (objReturn == null)
-                yield break;
-            yield return objReturn;
+            return !Settings.Default.UserModeRegistered
+                ? Task.FromResult<ICollection<TabPage>>(null)
+                : GetTabPagesCommon(input).ContinueWith(x => (ICollection<TabPage>)x.Result.Yield().ToArray());
         }
 
-        private static /* async Task<*/TabPage/*>*/ GetTabPagesCommon(CharacterShared input)
+        private static async Task<TabPage> GetTabPagesCommon(CharacterShared input)
         {
             ucSINnersUserControl uc = new ucSINnersUserControl();
             try
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                var ce = /*await*/ uc.SetCharacterFrom(input).Result;
+                await uc.SetCharacterFrom(input);
                 sw.Stop();
                 Log.Trace("ucSINnersUserControl SetCharacterFrom finished in " + sw.ElapsedMilliseconds + "ms.");
             }
@@ -604,8 +595,9 @@ namespace Chummer.Plugins
             }
         }
 
-        public IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem menu)
+        public Task<ICollection<ToolStripMenuItem>> GetMenuItems(ToolStripMenuItem menu)
         {
+            List<ToolStripMenuItem> lstReturn = new List<ToolStripMenuItem>(3);
 #if DEBUG
             if (Settings.Default.UserModeRegistered)
             {
@@ -622,7 +614,7 @@ namespace Chummer.Plugins
                 mnuSINnerSearchs.Click += mnuSINnerSearchs_Click;
                 mnuSINnerSearchs.UpdateLightDarkMode();
                 mnuSINnerSearchs.TranslateToolStripItemsRecursively();
-                yield return mnuSINnerSearchs;
+                lstReturn.Add(mnuSINnerSearchs);
             }
 
             DpiFriendlyToolStripMenuItem mnuSINnersArchetypes = new DpiFriendlyToolStripMenuItem
@@ -638,7 +630,7 @@ namespace Chummer.Plugins
             mnuSINnersArchetypes.Click += mnuSINnersArchetypes_Click;
             mnuSINnersArchetypes.UpdateLightDarkMode();
             mnuSINnersArchetypes.TranslateToolStripItemsRecursively();
-            yield return mnuSINnersArchetypes;
+            lstReturn.Add(mnuSINnersArchetypes);
 #endif
             if (Settings.Default.UserModeRegistered)
             {
@@ -655,8 +647,10 @@ namespace Chummer.Plugins
                 mnuSINners.Click += mnuSINners_Click;
                 mnuSINners.UpdateLightDarkMode();
                 mnuSINners.TranslateToolStripItemsRecursively();
-                yield return mnuSINners;
+                lstReturn.Add(mnuSINners);
             }
+
+            return Task.FromResult<ICollection<ToolStripMenuItem>>(lstReturn);
         }
 
         private void mnuSINnerSearchs_Click(object sender, EventArgs e)
@@ -807,11 +801,11 @@ namespace Chummer.Plugins
                             try
                             {
                                 client = StaticUtils.GetClient();
-                                if (String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.BearerToken))
+                                if (String.IsNullOrEmpty(Settings.Default.BearerToken))
                                 {
-                                    ret = await client.GetSINnersByTokenAsync(ChummerHub.Client.Properties.Settings.Default.IdentityToken);
-                                    ChummerHub.Client.Properties.Settings.Default.BearerToken = ret.BearerToken;
-                                    ChummerHub.Client.Properties.Settings.Default.Save();
+                                    ret = await client.GetSINnersByTokenAsync(Settings.Default.IdentityToken);
+                                    Settings.Default.BearerToken = ret.BearerToken;
+                                    Settings.Default.Save();
                                 }
                                 else
                                     ret = await client.GetSINnersByAuthorizationAsync();
@@ -942,7 +936,7 @@ namespace Chummer.Plugins
         {
             try
             {
-                SINnerGroup g = await ChummerHub.Client.Backend.Utils.CreateGroupOnClickAsync();
+                await ChummerHub.Client.Backend.Utils.CreateGroupOnClickAsync();
                 await ShowMySINners();
             }
             catch (Exception ex)
@@ -1262,7 +1256,7 @@ namespace Chummer.Plugins
                 {
                     await MainForm.DoThreadSafeAsync(x =>
                     {
-                        ChummerMainForm objMainForm = (ChummerMainForm) x;
+                        ChummerMainForm objMainForm = x;
                         if (objMainForm.WindowState == FormWindowState.Minimized)
                             objMainForm.WindowState = FormWindowState.Normal;
                     });
@@ -1270,7 +1264,7 @@ namespace Chummer.Plugins
 
                 await MainForm.DoThreadSafeAsync(x =>
                 {
-                    ChummerMainForm objMainForm = (ChummerMainForm)x;
+                    ChummerMainForm objMainForm = x;
                     objMainForm.Activate();
                     objMainForm.BringToFront();
                 });
@@ -1290,15 +1284,13 @@ namespace Chummer.Plugins
                         if (transactionInt != -1)
                         {
                             string transaction = SINnerIdvalue.Substring(transactionInt);
-                            SINnerIdvalue = SINnerIdvalue.Substring(0, transactionInt);
-                            SINnerIdvalue = SINnerIdvalue.TrimEnd(':');
+                            SINnerIdvalue = SINnerIdvalue.Substring(0, transactionInt).TrimEnd(':');
                             transaction = transaction.TrimStart(':');
                             int callbackInt = transaction.IndexOf(':');
                             if (callbackInt != -1)
                             {
                                 callback = transaction.Substring(callbackInt);
-                                transaction = transaction.Substring(0, callbackInt);
-                                transaction = transaction.TrimEnd(':');
+                                transaction = transaction.Substring(0, callbackInt).TrimEnd(':');
                                 callback = callback.TrimStart(':');
                                 callback = WebUtility.UrlDecode(callback);
                             }

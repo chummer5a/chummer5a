@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Chummer;
 using Chummer.Plugins;
 using Newtonsoft.Json;
@@ -69,25 +70,28 @@ namespace SamplePlugin
             GC.SuppressFinalize(this);
         }
 
-        public async Task<bool> DoCharacterList_DragDrop(object sender, System.Windows.Forms.DragEventArgs dragEventArgs, System.Windows.Forms.TreeView treCharacterList)
+        public Task<bool> DoCharacterList_DragDrop(object sender, DragEventArgs dragEventArgs, TreeView treCharacterList)
         {
             //if we don't want to use the dragdrop-feature, just return true
-            return true;
+            // If you do this all synchronously, just make sure you return the final result wrapped in a task
+            return Task.FromResult(true);
         }
 
-        public async Task<ICollection<System.Windows.Forms.TreeNode>> GetCharacterRosterTreeNode(CharacterRoster frmCharRoster, bool forceUpdate)
+        public Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(CharacterRoster frmCharRoster, bool forceUpdate)
         {
             //here you can add nodes to the character roster.
-            return null;
+            // If you do this all synchronously, just make sure you return the final result wrapped in a task
+            return Task.FromResult<ICollection<TreeNode>>(null);
         }
 
-        public IEnumerable<System.Windows.Forms.ToolStripMenuItem> GetMenuItems(System.Windows.Forms.ToolStripMenuItem menu)
+        public Task<ICollection<ToolStripMenuItem>> GetMenuItems(ToolStripMenuItem menu)
         {
             //here you could add menu items to the chummer menu
-            yield break;
+            // If you do this all synchronously, just make sure you return the final result wrapped in a task
+            return Task.FromResult<ICollection<ToolStripMenuItem>>(null);
         }
 
-        public System.Windows.Forms.UserControl GetOptionsControl()
+        public UserControl GetOptionsControl()
         {
             try
             {
@@ -107,7 +111,7 @@ namespace SamplePlugin
             {
                 //this is the first thing needed for reflection in Chummer Main. Please don't return null, but your assembly
                 //that is probably bad coding AND we should change it, but for now, just stick with it...
-                return this.GetType().Assembly;
+                return GetType().Assembly;
             }
             catch (Exception e)
             {
@@ -133,17 +137,18 @@ namespace SamplePlugin
             return null;
         }
 
-        public IEnumerable<System.Windows.Forms.TabPage> GetTabPages(CharacterCareer input)
+        public Task<ICollection<TabPage>> GetTabPages(CharacterCareer input)
         {
             //here you can add (or remove!) tabs from frmCareer
             //as well as manipulate every single tab
-            yield break;
+            // If you do this all synchronously, just make sure you return the final result wrapped in a task
+            return Task.FromResult<ICollection<TabPage>>(null);
         }
 
-        public IEnumerable<System.Windows.Forms.TabPage> GetTabPages(CharacterCreate input)
+        public Task<ICollection<TabPage>> GetTabPages(CharacterCreate input)
         {
             //the same goes for the frmCreate
-            yield break;
+            return Task.FromResult<ICollection<TabPage>>(null);
         }
 
         public void LoadFileElement(Character input, string fileElement)
@@ -160,7 +165,7 @@ namespace SamplePlugin
             return true;
         }
 
-        public bool SetCharacterRosterNode(System.Windows.Forms.TreeNode objNode)
+        public bool SetCharacterRosterNode(TreeNode objNode)
         {
             //here you can tweak the nodes from the char-roster. Add onclickevents, change texts, reorder them - whatever you want...
 

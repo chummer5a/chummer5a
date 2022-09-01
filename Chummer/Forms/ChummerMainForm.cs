@@ -633,7 +633,7 @@ namespace Chummer
                                     await frmTestData.DoThreadSafeAsync(x => x.Show());
                                 }
 
-                                Program.PluginLoader.CallPlugins(toolsMenu, opFrmChummerMain);
+                                await Program.PluginLoader.CallPlugins(toolsMenu, opFrmChummerMain);
 
                                 // Set the Tag for each ToolStrip item so it can be translated.
                                 await menuStrip.DoThreadSafeAsync(x =>

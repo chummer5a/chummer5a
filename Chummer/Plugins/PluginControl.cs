@@ -40,11 +40,11 @@ namespace Chummer.Plugins
         //only very rudimentary initialization should take place here. Make it QUICK.
         void CustomInitialize(ChummerMainForm mainControl);
 
-        IEnumerable<TabPage> GetTabPages(CharacterCareer input);
+        Task<ICollection<TabPage>> GetTabPages(CharacterCareer input);
 
-        IEnumerable<TabPage> GetTabPages(CharacterCreate input);
+        Task<ICollection<TabPage>> GetTabPages(CharacterCreate input);
 
-        IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem menu);
+        Task<ICollection<ToolStripMenuItem>> GetMenuItems(ToolStripMenuItem menu);
 
         [CLSCompliant(false)]
 #pragma warning disable CS3010 // CLS-compliant interfaces must have only CLS-compliant members
@@ -456,14 +456,14 @@ namespace Chummer.Plugins
             }
         }
 
-        internal void CallPlugins(CharacterCareer frmCareer, CustomActivity parentActivity)
+        internal async Task CallPlugins(CharacterCareer frmCareer, CustomActivity parentActivity)
         {
             foreach (IPlugin plugin in MyActivePlugins)
             {
-                using (_ = Timekeeper.StartSyncron("load_plugin_GetTabPage_Career_" + plugin,
-                    parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
+                using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetTabPage_Career_" + plugin,
+                                                              parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
                 {
-                    IEnumerable<TabPage> pages = plugin.GetTabPages(frmCareer);
+                    ICollection<TabPage> pages = await plugin.GetTabPages(frmCareer);
                     if (pages == null)
                         continue;
                     foreach (TabPage page in pages)
@@ -477,13 +477,13 @@ namespace Chummer.Plugins
             }
         }
 
-        internal void CallPlugins(CharacterCreate frmCreate, CustomActivity parentActivity)
+        internal async Task CallPlugins(CharacterCreate frmCreate, CustomActivity parentActivity)
         {
             foreach (IPlugin plugin in MyActivePlugins)
             {
-                using (_ = Timekeeper.StartSyncron("load_plugin_GetTabPage_Create_" + plugin, parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
+                using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetTabPage_Create_" + plugin, parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
                 {
-                    IEnumerable<TabPage> pages = plugin.GetTabPages(frmCreate);
+                    ICollection<TabPage> pages = await plugin.GetTabPages(frmCreate);
                     if (pages == null)
                         continue;
                     foreach (TabPage page in pages)
@@ -497,14 +497,14 @@ namespace Chummer.Plugins
             }
         }
 
-        internal void CallPlugins(ToolStripMenuItem menu, CustomActivity parentActivity)
+        internal async Task CallPlugins(ToolStripMenuItem menu, CustomActivity parentActivity)
         {
             foreach (IPlugin plugin in MyActivePlugins)
             {
-                using (_ = Timekeeper.StartSyncron("load_plugin_GetMenuItems_" + plugin,
-                    parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
+                using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetMenuItems_" + plugin,
+                                                              parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
                 {
-                    IEnumerable<ToolStripMenuItem> menuitems = plugin.GetMenuItems(menu);
+                    ICollection<ToolStripMenuItem> menuitems = await plugin.GetMenuItems(menu);
                     if (menuitems == null)
                         continue;
                     foreach (ToolStripMenuItem plugInMenu in menuitems)
