@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2016 by Barend Erasmus, David Jeske and donated to the public domain
+// Copyright (C) 2016 by Barend Erasmus, David Jeske and donated to the public domain
 
 using SimpleHttpServer.Models;
 using System;
@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SimpleHttpServer.RouteHandlers
 {
@@ -16,62 +15,77 @@ namespace SimpleHttpServer.RouteHandlers
         public string BasePath { get; set; }
         public bool ShowDirectories { get; set; }
 
-        public HttpResponse Handle(HttpRequest request) {
-            var url_part = request.Path;
+        public HttpResponse Handle(HttpRequest request)
+        {
+            string urlPart = request.Path;
 
             // do some basic sanitization of the URL, attempting to make sure they can't read files outside the basepath
             // NOTE: this is probably not bulletproof/secure
-            url_part = url_part.Replace("\\..\\", "\\");
-            url_part = url_part.Replace("/../", "/");
-            url_part = url_part.Replace("//","/");
-            url_part = url_part.Replace(@"\\",@"\");
-            url_part = url_part.Replace(":","");           
-            url_part = url_part.Replace("/",Path.DirectorySeparatorChar.ToString());
+            urlPart = urlPart.Replace("\\..\\", "\\");
+            urlPart = urlPart.Replace("/../", "/");
+            urlPart = urlPart.Replace("//","/");
+            urlPart = urlPart.Replace(@"\\",@"\");
+            urlPart = urlPart.Replace(":","");           
+            urlPart = urlPart.Replace("/",Path.DirectorySeparatorChar.ToString());
            
             // make sure the first part of the path is not 
-            if (url_part.Length > 0) {
-                var first_char = url_part.ElementAt(0);
-                if (first_char == '/' || first_char == '\\') {
-                    url_part = "." + url_part;
+            if (urlPart.Length > 0)
+            {
+                char firstChar = urlPart.ElementAt(0);
+                if (firstChar == '/' || firstChar == '\\') {
+                    urlPart = "." + urlPart;
                 }
             }
-            var local_path = Path.Combine(this.BasePath, url_part);
+            string localPath = Path.Combine(BasePath, urlPart);
                 
-            if (ShowDirectories && Directory.Exists(local_path)) {
+            if (ShowDirectories && Directory.Exists(localPath))
+            {
                 // Console.WriteLine("FileSystemRouteHandler Dir {0}",local_path);
-                return Handle_LocalDir(request, local_path);
-            } else if (File.Exists(local_path)) {
-                // Console.WriteLine("FileSystemRouteHandler File {0}", local_path);
-                return Handle_LocalFile(request, local_path);
-            } else {
-                return new HttpResponse {
-                    StatusCode = "404",
-                    ReasonPhrase = string.Format("Not Found ({0}) handler({1})",local_path,request.Route.Name),
-                };
+                return Handle_LocalDir(request, localPath);
             }
+
+            if (File.Exists(localPath))
+            {
+                // Console.WriteLine("FileSystemRouteHandler File {0}", local_path);
+                return HandleLocalFile(request, localPath);
+            }
+
+            return new HttpResponse
+            {
+                StatusCode = "404",
+                ReasonPhrase = $"Not Found ({localPath}) handler({request.Route.Name})",
+            };
         }
 
-        HttpResponse Handle_LocalFile(HttpRequest request, string local_path) {        
-            var file_extension = Path.GetExtension(local_path);
+        private static HttpResponse HandleLocalFile(HttpRequest request, string localPath)
+        {        
+            string fileExtension = Path.GetExtension(localPath);
 
-            var response = new HttpResponse();
-            response.StatusCode = "200";
-            response.ReasonPhrase = "Ok";
-            response.Headers["Content-Type"] = QuickMimeTypeMapper.GetMimeType(file_extension);
-            response.Content = File.ReadAllBytes(local_path);
+            HttpResponse response = new HttpResponse
+            {
+                StatusCode = "200",
+                ReasonPhrase = "Ok",
+                Headers =
+                {
+                    ["Content-Type"] = QuickMimeTypeMapper.GetMimeType(fileExtension)
+                },
+                Content = File.ReadAllBytes(localPath)
+            };
 
             return response;
         }
 
-        HttpResponse Handle_LocalDir(HttpRequest request, string local_path) {
-            var output = new StringBuilder();
-            output.Append(string.Format("<h1> Directory: {0} </h1>",request.Url));
+        HttpResponse Handle_LocalDir(HttpRequest request, string localPath)
+        {
+            StringBuilder output = new StringBuilder();
+            output.Append($"<h1> Directory: {request.Url} </h1>");
                         
-            foreach (var entry in Directory.GetFiles(local_path)) {                
-                var file_info = new System.IO.FileInfo(entry);
+            foreach (string entry in Directory.GetFiles(localPath))
+            {                
+                FileInfo fileInfo = new FileInfo(entry);
 
-                var filename = file_info.Name;
-                output.Append(string.Format("<a href=\"{1}\">{1}</a> <br>",filename,filename));                
+                string filename = fileInfo.Name;
+                output.Append(string.Format("<a href=\"{0}\">{0}</a> <br>",filename));                
             }            
 
             return new HttpResponse() {
@@ -90,22 +104,22 @@ namespace SimpleHttpServer.RouteHandlers
     public class QuickMimeTypeMapper
     {
 
-        public static string GetMimeType(string extension) {
+        public static string GetMimeType(string extension)
+        {
             if (extension == null) {
-                throw new ArgumentNullException("extension");
+                throw new ArgumentNullException(nameof(extension));
             }
 
             if (!extension.StartsWith(".")) {
                 extension = "." + extension;
             }
 
-            string mime;
-
-            return _mappings.TryGetValue(extension, out mime) ? mime : "application/octet-stream";
+            return _mappings.TryGetValue(extension, out string mime) ? mime : "application/octet-stream";
         }
 
 
-        private static IDictionary<string, string> _mappings = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase) {
+        private static IDictionary<string, string> _mappings = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
+        {
 
         #region Big freaking list of mime types
 

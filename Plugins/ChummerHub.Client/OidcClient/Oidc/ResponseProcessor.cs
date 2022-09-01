@@ -7,8 +7,8 @@ using IdentityModel.OidcClient.Infrastructure;
 using IdentityModel.OidcClient.Results;
 using NLog;
 using System;
-using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -74,7 +74,7 @@ namespace IdentityModel.OidcClient
             //////////////////////////////////////////////////////
 
             // redeem code for tokens
-            var tokenResponse = await RedeemCodeAsync(authorizeResponse.Code, state, backChannelParameters, cancellationToken);
+            TokenResponse tokenResponse = await RedeemCodeAsync(authorizeResponse.Code, state, backChannelParameters, cancellationToken);
             if (tokenResponse.IsError)
             {
                 return new ResponseValidationResult($"Error redeeming code: {tokenResponse.Error ?? "no error code"} / {tokenResponse.ErrorDescription ?? "no description"}");
@@ -85,7 +85,7 @@ namespace IdentityModel.OidcClient
             }
 
             // validate token response
-            var tokenResponseValidationResult = await ValidateTokenResponseAsync(tokenResponse, state, requireIdentityToken:false, cancellationToken: cancellationToken);
+            TokenResponseValidationResult tokenResponseValidationResult = await ValidateTokenResponseAsync(tokenResponse, state, requireIdentityToken:false, cancellationToken: cancellationToken);
             if (tokenResponseValidationResult.IsError)
             {
                 return new ResponseValidationResult($"Error validating token response: {tokenResponseValidationResult.Error}");
@@ -95,7 +95,7 @@ namespace IdentityModel.OidcClient
             {
                 AuthorizeResponse = authorizeResponse,
                 TokenResponse = tokenResponse,
-                User = tokenResponseValidationResult?.IdentityTokenValidationResult?.User ?? Principal.Create(_options.Authority)
+                User = tokenResponseValidationResult.IdentityTokenValidationResult?.User ?? Principal.Create(_options.Authority)
             };
         }
 
@@ -137,23 +137,25 @@ namespace IdentityModel.OidcClient
                     validator = _options.IdentityTokenValidator;
                 }
                 
-                var validationResult = await validator.ValidateAsync(response.IdentityToken, _options, cancellationToken);
+                IdentityTokenValidationResult validationResult = await validator.ValidateAsync(response.IdentityToken, _options, cancellationToken);
 
                 if (validationResult.Error == "invalid_signature")
                 {
                     await _refreshKeysAsync(cancellationToken);
-                    validationResult = await _options.IdentityTokenValidator.ValidateAsync(response.IdentityToken, _options, cancellationToken);
+                    validationResult = _options.IdentityTokenValidator != null
+                        ? await _options.IdentityTokenValidator.ValidateAsync(response.IdentityToken, _options, cancellationToken)
+                        : default;
                 }
                 
-                if (validationResult.IsError)
+                if (validationResult?.IsError != false)
                 {
-                    return new TokenResponseValidationResult(validationResult.Error ?? "Identity token validation error");
+                    return new TokenResponseValidationResult(validationResult?.Error ?? "Identity token validation error");
                 }
 
                 // validate at_hash
                 if (!string.Equals(validationResult.SignatureAlgorithm, "none", StringComparison.OrdinalIgnoreCase))
                 {
-                    var atHash = validationResult.User.FindFirst(JwtClaimTypes.AccessTokenHash);
+                    Claim atHash = validationResult.User.FindFirst(JwtClaimTypes.AccessTokenHash);
                     if (atHash == null)
                     {
                         if (_options.Policy.RequireAccessTokenHash)
@@ -180,8 +182,8 @@ namespace IdentityModel.OidcClient
         {
             _logger.Trace("RedeemCodeAsync");
 
-            var client = _options.CreateClient();
-            var tokenResult = await client.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
+            HttpClient client = _options.CreateClient();
+            TokenResponse tokenResult = await client.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
             {
                 Address = _options.ProviderInformation.TokenEndpoint,
 

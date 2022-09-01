@@ -90,7 +90,8 @@ namespace ChummerHub.Client.Backend
                 urlReq = (HttpWebRequest)WebRequest.Create(url);
                 urlRes = (HttpWebResponse)urlReq.GetResponse();
                 sStream = urlRes.GetResponseStream();
-
+                if (sStream == null)
+                    return false;
                 string read = new StreamReader(sStream).ReadToEnd();
                 return true;
 

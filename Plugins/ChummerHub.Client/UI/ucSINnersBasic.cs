@@ -177,7 +177,7 @@ namespace ChummerHub.Client.UI
                     cbTag.CheckState = CheckState.Unchecked;
             }
 
-            if (myUC.MyCE?.MySINnerFile != null)
+            if (myUC?.MyCE?.MySINnerFile != null)
             {
                 foreach (Tag tag in myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags)
                 {

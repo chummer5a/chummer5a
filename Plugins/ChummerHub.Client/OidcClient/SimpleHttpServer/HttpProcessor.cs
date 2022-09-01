@@ -1,9 +1,6 @@
 // Copyright (C) 2016 by David Jeske, Barend Erasmus and donated to the public domain
 
 
-using IdentityModel.OidcClient;
-using NLog;
-using SimpleHttpServer.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,6 +9,10 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using ChummerHub.Client.Properties;
+using IdentityModel.OidcClient;
+using NLog;
+using SimpleHttpServer.Models;
 
 namespace SimpleHttpServer
 {
@@ -20,67 +21,60 @@ namespace SimpleHttpServer
 
         #region Fields
 
-        private static int MAX_POST_SIZE = 10 * 1024 * 1024; // 10MB
+        private const int MaxPostSize = 10 * 1024 * 1024; // 10MB
 
-        private List<Route> Routes = new List<Route>();
+        private readonly List<Route> _routes = new List<Route>();
 
-        private static readonly Logger log = LogManager.GetCurrentClassLogger();
+        private static readonly Logger s_LOG = LogManager.GetCurrentClassLogger();
 
         #endregion
 
         #region Constructors
-
-        public HttpProcessor()
-        {
-        }
 
         #endregion
 
         #region Public Methods
         public void HandleClient(TcpClient tcpClient)
         {
-            Stream inputStream = GetInputStream(tcpClient);
-            Stream outputStream = GetOutputStream(tcpClient);
-            HttpRequest request = GetRequest(inputStream, outputStream);
-
-            // route and handle the request...
-            HttpResponse response = RouteRequest(inputStream, outputStream, request);
-
-            string token = null;
-            if (response.Headers.TryGetValue("Autorization", out token))
+            using (Stream inputStream = GetInputStream(tcpClient))
+            using (Stream outputStream = GetOutputStream(tcpClient))
             {
-                string puretoken = token.TrimStart("Bearer ".ToCharArray());
-                ChummerHub.Client.Properties.Settings.Default.BearerToken = puretoken;
-                ChummerHub.Client.Properties.Settings.Default.Save();
-            }
-          
-            log.Info("{0} {1}",response.StatusCode,request.Url);
-            // build a default response for errors
-            if (response.Content == null) {
-                if (response.StatusCode != "200") {
-                    response.ContentAsUTF8 = string.Format("{0} {1} <p> {2}", response.StatusCode, request.Url, response.ReasonPhrase);
+                HttpRequest request = GetRequest(inputStream, outputStream);
+
+                // route and handle the request...
+                HttpResponse response = RouteRequest(inputStream, outputStream, request);
+
+                if (response.Headers.TryGetValue("Autorization", out string token))
+                {
+                    string pureToken = token.TrimStart("Bearer ".ToCharArray());
+                    Settings.Default.BearerToken = pureToken;
+                    Settings.Default.Save();
                 }
+
+                s_LOG.Info("{0} {1}", response.StatusCode, request.Url);
+                // build a default response for errors
+                if (response.Content == null)
+                {
+                    if (response.StatusCode != "200")
+                    {
+                        response.ContentAsUTF8 = $"{response.StatusCode} {request.Url} <p> {response.ReasonPhrase}";
+                    }
+                }
+                else
+                {
+                    if (request.Headers.TryGetValue("Cookie", out string cookiestring))
+                        OidcClient.SetCookieContainer(cookiestring);
+                }
+
+                WriteResponse(outputStream, response);
+
+                outputStream.Flush();
             }
-            else
-            {
-               string cookiestring;
-               if (request.Headers.TryGetValue("Cookie", out cookiestring))
-                    OidcClient.SetCookieContainer(cookiestring);
-            }
-
-            WriteResponse(outputStream, response);
-
-            outputStream.Flush();
-            outputStream.Close();
-            outputStream = null;
-
-            inputStream.Close();
-            inputStream = null;
-
         }
 
         // this formats the HTTP response...
-        private static void WriteResponse(Stream stream, HttpResponse response) {            
+        private static void WriteResponse(Stream stream, HttpResponse response)
+        {            
             if (response.Content == null) {           
                 response.Content = new byte[]{};
             }
@@ -92,8 +86,8 @@ namespace SimpleHttpServer
 
             response.Headers["Content-Length"] = response.Content.Length.ToString();
 
-            Write(stream, string.Format("HTTP/1.0 {0} {1}\r\n",response.StatusCode,response.ReasonPhrase));
-            Write(stream, string.Join("\r\n", response.Headers.Select(x => string.Format("{0}: {1}", x.Key, x.Value))));
+            Write(stream, $"HTTP/1.0 {response.StatusCode} {response.ReasonPhrase}\r\n");
+            Write(stream, string.Join("\r\n", response.Headers.Select(x => $"{x.Key}: {x.Value}")));
             Write(stream, "\r\n\r\n");
 
             stream.Write(response.Content, 0, response.Content.Length);       
@@ -101,7 +95,7 @@ namespace SimpleHttpServer
 
         public void AddRoute(Route route)
         {
-            this.Routes.Add(route);
+            _routes.Add(route);
         }
 
         #endregion
@@ -110,15 +104,22 @@ namespace SimpleHttpServer
 
         private static string Readline(Stream stream)
         {
-            int next_char;
             string data = "";
             while (true)
             {
-                next_char = stream.ReadByte();
-                if (next_char == '\n') { break; }
-                if (next_char == '\r') { continue; }
-                if (next_char == -1) { Thread.Sleep(1); continue; };
-                data += Convert.ToChar(next_char);
+                int nextChar = stream.ReadByte();
+                if (nextChar == '\n') { break; }
+                switch (nextChar)
+                {
+                    case '\r':
+                        continue;
+                    case -1:
+                        Thread.Sleep(1);
+                        continue;
+                    default:
+                        data += Convert.ToChar(nextChar);
+                        break;
+                }
             }
             return data;
         }
@@ -143,20 +144,22 @@ namespace SimpleHttpServer
         {
             try
             {
-                List<Route> routes = this.Routes.Where(x => x.UrlRegex  == null || Regex.Match(request.Url, x.UrlRegex).Success).ToList();
+                List<Route> routes = _routes.Where(x => x.UrlRegex  == null || Regex.Match(request.Url, x.UrlRegex).Success).ToList();
 
-                if (!routes.Any())
+                if (routes.Count == 0)
                     return HttpBuilder.NotFound();
 
                 Route route = routes.SingleOrDefault(x => x.Method == request.Method);
 
                 if (route == null)
-                    return new HttpResponse()
+                {
+                    return new HttpResponse
                     {
                         ReasonPhrase = "Method Not Allowed",
-                        StatusCode = "405",
-
+                        StatusCode = "405"
                     };
+                }
+
                 if (route.UrlRegex == null)
                 {
                     request.Path = request.Url;
@@ -164,15 +167,8 @@ namespace SimpleHttpServer
                 else
                 {
                     // extract the path if there is one
-                    var match = Regex.Match(request.Url, route.UrlRegex);
-                    if (match.Groups.Count > 1)
-                    {
-                        request.Path = match.Groups[1].Value;
-                    }
-                    else
-                    {
-                        request.Path = request.Url;
-                    }
+                    Match match = Regex.Match(request.Url, route.UrlRegex);
+                    request.Path = match.Groups.Count > 1 ? match.Groups[1].Value : request.Url;
                 }
 
                 // trigger the route handler...
@@ -183,13 +179,13 @@ namespace SimpleHttpServer
                 }
                 catch (Exception ex)
                 {
-                    log.Error(ex);
+                    s_LOG.Error(ex);
                     return HttpBuilder.InternalServerError();
                 }
             }
             catch(Exception ex2)
             {
-                log.Error(ex2);
+                s_LOG.Error(ex2);
                 return HttpBuilder.InternalServerError();
             }
         }
@@ -254,7 +250,7 @@ namespace SimpleHttpServer
             }
 
 
-            return new HttpRequest()
+            return new HttpRequest
             {
                 Method = method,
                 Url = url,

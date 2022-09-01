@@ -41,6 +41,8 @@ using System.Web;
 using System.Diagnostics;
 using System.Net;
 using IdentityModel;
+using IdentityModel.OidcClient.Results;
+using Claim = System.Security.Claims.Claim;
 
 //using Nemiro.OAuth;
 //using Nemiro.OAuth.LoginForms;
@@ -501,19 +503,25 @@ namespace ChummerHub.Client.UI
                 Settings.Default.Save();
                 try
                 {
-                    using (CursorWait objCursorWait = await CursorWait.NewAsync(frmWebBrowser, default))
+                    CursorWait objCursorWait = await CursorWait.NewAsync(frmWebBrowser);
+                    try
                     {
                         await SignIn();
                         SinnersClient client = StaticUtils.GetClient(true);
-                        if (!String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.AccessToken)
-                            && String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.BearerToken))
+                        if (!string.IsNullOrEmpty(Settings.Default.AccessToken)
+                            && string.IsNullOrEmpty(Settings.Default.BearerToken))
                         {
-                            ChummerHub.Client.Properties.Settings.Default.BearerToken =
+                            Settings.Default.BearerToken =
                                 await client.AuthenticateAsync(default);
-                            ChummerHub.Client.Properties.Settings.Default.Save();
+                            Settings.Default.Save();
                         }
-                        var roles = await GetRolesStatusAsync(this);
+
+                        IList<string> roles = await GetRolesStatusAsync(this);
                         await UpdateDisplayAsync();
+                    }
+                    finally
+                    {
+                        await objCursorWait.DisposeAsync();
                     }
                 }
                 catch(Exception ex)
@@ -526,13 +534,7 @@ namespace ChummerHub.Client.UI
         
 
 
-        private static string _authority
-        {
-            get
-            {
-                return StaticUtils.GetClient().BaseUrl;
-            }
-        }
+        private static string _authority => StaticUtils.GetClient().BaseUrl;
 
         private static string _api
         {
@@ -551,10 +553,10 @@ namespace ChummerHub.Client.UI
         {
             // create a redirect URI using an available port on the loopback address.
             // requires the OP to allow random ports on 127.0.0.1 - otherwise set a static port
-            var browser = new SystemBrowser();
+            SystemBrowser browser = new SystemBrowser();
             string redirectUri = string.Format($"http://localhost:{browser.Port}/signin-oidc");
 
-            var options = new OidcClientOptions
+            OidcClientOptions options = new OidcClientOptions
             {
                 Authority = _authority,
                 ClientId = "Chummer5a",
@@ -564,7 +566,7 @@ namespace ChummerHub.Client.UI
                 Browser = browser,
                 TokenClientCredentialStyle = IdentityModel.Client.ClientCredentialStyle.AuthorizationHeader,
                 ClientSecret = "secret".ToSha256(),
-                IdentityTokenValidator = new IdentityModel.OidcClient.JwtHandlerIdentityTokenValidator(),
+                IdentityTokenValidator = new JwtHandlerIdentityTokenValidator(),
                 RefreshTokenInnerHttpHandler = new HttpClientHandler(),
                 //ProviderInformation = new ProviderInformation()
                 //{
@@ -574,7 +576,7 @@ namespace ChummerHub.Client.UI
             };
 
             _oidcClient = new IdentityModel.OidcClient.OidcClient(options);
-            var result = await _oidcClient.LoginAsync(new LoginRequest());
+            LoginResult result = await _oidcClient.LoginAsync(new LoginRequest());
 
             if (result == null || result.IsError == true)
             {
@@ -604,17 +606,19 @@ namespace ChummerHub.Client.UI
             }
 
             show += "\n\nClaims:";
-            foreach (var claim in result.User.Claims)
+            foreach (Claim claim in result.User.Claims)
             {
-                show += String.Format("\r\n{0}: {1}", claim.Type, claim.Value);
+                show += $"\r\n{claim.Type}: {claim.Value}";
             }
 
-            var values = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(result.TokenResponse.Raw);
-
-            show += $"\r\ntoken response...";
-            foreach (var item in values)
+            Dictionary<string, JsonElement> values = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(result.TokenResponse.Raw);
+            if (values != null)
             {
-                show += $"\r\n{item.Key}: {item.Value}";
+                show += "\r\ntoken response...";
+                foreach (KeyValuePair<string, JsonElement> item in values)
+                {
+                    show += $"\r\n{item.Key}: {item.Value}";
+                }
             }
 
             Log.Info(show);
@@ -623,10 +627,10 @@ namespace ChummerHub.Client.UI
         private static async Task NextSteps(LoginResult result)
         {
             return;
-            var currentAccessToken = result.AccessToken;
-            var currentRefreshToken = result.RefreshToken;
+            string currentAccessToken = result.AccessToken;
+            string currentRefreshToken = result.RefreshToken;
 
-            var menu = "  x...exit  c...call api   ";
+            string menu = "  x...exit  c...call api   ";
             if (currentRefreshToken != null) menu += "r...refresh token   ";
 
             while (true)
@@ -634,13 +638,13 @@ namespace ChummerHub.Client.UI
                 Console.WriteLine("\n\n");
 
                 Console.Write(menu);
-                var key = Console.ReadKey();
+                ConsoleKeyInfo key = Console.ReadKey();
 
                 if (key.Key == ConsoleKey.X) return;
                 if (key.Key == ConsoleKey.C) await CallApi();
                 if (key.Key == ConsoleKey.R)
                 {
-                    var refreshResult = await _oidcClient.RefreshTokenAsync(currentRefreshToken);
+                    RefreshTokenResult refreshResult = await _oidcClient.RefreshTokenAsync(currentRefreshToken);
                     if (refreshResult.IsError)
                     {
                         Console.WriteLine($"Error: {refreshResult.Error}");
@@ -660,11 +664,11 @@ namespace ChummerHub.Client.UI
 
         private static async Task CallApi()
         {
-            var response = await _apiClient.GetAsync("");
+            HttpResponseMessage response = await _apiClient.GetAsync("");
 
             if (response.IsSuccessStatusCode)
             {
-                var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+                JsonDocument json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
                 Console.WriteLine("\n\n");
                 Console.WriteLine(json.RootElement);
             }

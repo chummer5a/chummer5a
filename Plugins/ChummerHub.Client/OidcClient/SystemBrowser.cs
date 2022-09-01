@@ -4,14 +4,13 @@ using SimpleHttpServer.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using HttpResponse = SimpleHttpServer.Models.HttpResponse;
 
 namespace ChummerHub.Client.OidcClient
 {
@@ -24,35 +23,30 @@ namespace ChummerHub.Client.OidcClient
         {
             _path = path;
 
-            if (!port.HasValue)
-            {
-                Port = GetPsydoRandomUnusedPort();
-            }
-            else
-            {
-                Port = port.Value;
-            }
+            Port = port ?? GetPseudoRandomUnusedPort();
         }
 
-        private int GetPsydoRandomUnusedPort()
+        private static int GetPseudoRandomUnusedPort()
         {
-            int[] allowedports = new int[3] { 5013, 64888, 62777 };
-            int port = -1;
-            int counter = -1;
-            while (port == -1 && counter < 3)
+            int[] allowedports = { 5013, 64888, 62777 };
+            for (int counter = 0; counter < 3; counter++)
             {
-                counter++;
                 try
                 {
-                    var listener = new TcpListener(IPAddress.Loopback, allowedports[counter]);
+                    TcpListener listener = new TcpListener(IPAddress.Loopback, allowedports[counter]);
                     listener.Start();
-                    port = ((IPEndPoint)listener.LocalEndpoint).Port;
-                    listener.Stop();
-                    return port;
+                    try
+                    {
+                        return ((IPEndPoint)listener.LocalEndpoint).Port;
+                    }
+                    finally
+                    {
+                        listener.Stop();
+                    }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    port = -1;
+                    // ignored
                 }
             }
             return -1;
@@ -62,14 +56,14 @@ namespace ChummerHub.Client.OidcClient
 
         public async Task<BrowserResult> InvokeAsync(BrowserOptions options, CancellationToken cancellationToken)
         {
-            using (var listener = new LoopbackHttpListener(Port, _path))
+            using (LoopbackHttpListener listener = new LoopbackHttpListener(Port, _path))
             {
                 OpenBrowser(options.StartUrl);
 
                 try
                 {
-                    var result = await listener.WaitForCallbackAsync();
-                    if (String.IsNullOrWhiteSpace(result))
+                    string result = await listener.WaitForCallbackAsync();
+                    if (string.IsNullOrWhiteSpace(result))
                     {
                         return new BrowserResult { ResultType = BrowserResultType.UnknownError, Error = "Empty response." };
                     }
@@ -122,9 +116,8 @@ namespace ChummerHub.Client.OidcClient
     {
         const int DefaultTimeout = 60 * 5; // 5 mins (in seconds)
 
-        
 
-        string _url;
+        private string _url;
 
         public string Url => _url;
 
@@ -136,23 +129,23 @@ namespace ChummerHub.Client.OidcClient
                 return;
             }
 
-            List<SimpleHttpServer.Models.Route> route_config = new List<SimpleHttpServer.Models.Route>() {
+            List<Route> routeConfig = new List<Route>
+            {
                 new Route {
                     Name = "Hello Handler",
                     UrlRegex = null,//@"^/$",
                     Method = "GET",
                     
-                    Callable = (SimpleHttpServer.Models.HttpRequest request) =>
+                    Callable = request =>
                     {
                         _source.TrySetResult(request.Path);
-                        var result = new SimpleHttpServer.Models.HttpResponse()
+                        HttpResponse result = new HttpResponse
                         {
                             ContentAsUTF8 = "Authentication complete. You may close this window now.",
                             ReasonPhrase = "OK",
                             StatusCode = "200"
                         };
-                        string token;
-                        if (request.Headers.TryGetValue("Authorization", out token))
+                        if (request.Headers.TryGetValue("Authorization", out string token))
                         {
                             result.Headers.Add("Authorization", token);
                         }
@@ -169,17 +162,18 @@ namespace ChummerHub.Client.OidcClient
                 //    },
             };
 
-            httpServer = new HttpServer(port, route_config);
+            _httpServer = new HttpServer(port, routeConfig);
 
-            Thread thread = new Thread(new ThreadStart(httpServer.Listen));
+            Thread thread = new Thread(_httpServer.Listen);
             thread.Start();
             //wait a bit for the httplistener to spin up
-            System.Threading.Thread.Sleep(100);
+            Thread.Sleep(100);
 
         }
 
-        private HttpServer httpServer;
-        TaskCompletionSource<string> _source = new TaskCompletionSource<string>();
+        private readonly HttpServer _httpServer;
+
+        readonly TaskCompletionSource<string> _source = new TaskCompletionSource<string>();
         //string _url;
 
         //public string Url => _url;

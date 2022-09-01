@@ -1,9 +1,7 @@
-﻿// Copyright (C) 2016 by Barend Erasmus and donated to the public domain
+// Copyright (C) 2016 by Barend Erasmus and donated to the public domain
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SimpleHttpServer.Models
 {
@@ -18,16 +16,17 @@ namespace SimpleHttpServer.Models
 
         public HttpRequest()
         {
-            this.Headers = new Dictionary<string, string>();
+            Headers = new Dictionary<string, string>();
         }
 
         public override string ToString()
         {
-            if (!string.IsNullOrWhiteSpace(this.Content))
-                if (!this.Headers.ContainsKey("Content-Length"))
-                    this.Headers.Add("Content-Length", this.Content.Length.ToString());
+            if (!string.IsNullOrWhiteSpace(Content))
+                if (!Headers.ContainsKey("Content-Length"))
+                    Headers.Add("Content-Length", Content.Length.ToString());
 
-            return string.Format("{0} {1} HTTP/1.0\r\n{2}\r\n\r\n{3}", this.Method, this.Url, string.Join("\r\n", this.Headers.Select(x => string.Format("{0}: {1}", x.Key, x.Value))), this.Content);
+            return
+                $"{Method} {Url} HTTP/1.0\r\n{string.Join("\r\n", Headers.Select(x => $"{x.Key}: {x.Value}"))}\r\n\r\n{Content}";
         }
     }
 }

@@ -736,7 +736,7 @@ namespace ChummerHub.Client.Sinners
                     MyCharacter.Save(MyCharacter.FileName, false, false);
                 else
                     await MyCharacter.SaveAsync(MyCharacter.FileName, false, false);
-                }
+            }
             else
             {
                 if (blnSync)

@@ -1,8 +1,6 @@
-﻿// Copyright (C) 2016 by Barend Erasmus and donated to the public domain
+// Copyright (C) 2016 by Barend Erasmus and donated to the public domain
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 // NOTE: two consequences of this simplified response model are:
@@ -44,10 +42,7 @@ namespace SimpleHttpServer.Models
 
         public string ContentAsUTF8
         {
-            set
-            {
-                this.setContent(value, encoding: Encoding.UTF8);
-            }
+            set => setContent(value, encoding: Encoding.UTF8);
         }
         public void setContent(string content, Encoding encoding = null)
         {
@@ -60,13 +55,13 @@ namespace SimpleHttpServer.Models
 
         public HttpResponse()
         {
-            this.Headers = new Dictionary<string, string>();
+            Headers = new Dictionary<string, string>();
         }
 
         // informational only tostring...
         public override string ToString()
         {
-            return string.Format("HTTP status {0} {1}", this.StatusCode, this.ReasonPhrase);
+            return $"HTTP status {StatusCode} {ReasonPhrase}";
         }
     }
 }

@@ -1,9 +1,6 @@
-﻿// Copyright (C) 2016 by Barend Erasmus and donated to the public domain
+// Copyright (C) 2016 by Barend Erasmus and donated to the public domain
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace SimpleHttpServer.Models
 {

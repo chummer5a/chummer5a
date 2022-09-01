@@ -14,10 +14,10 @@ namespace IdentityModel.OidcClient
         /// <inheritdoc />
         public Task<IdentityTokenValidationResult> ValidateAsync(string identityToken, OidcClientOptions options, CancellationToken cancellationToken = default)
         {
-            var parts = identityToken.Split('.');
+            string[] parts = identityToken.Split('.');
             if (parts.Length != 3)
             {
-                var error = new IdentityTokenValidationResult
+                IdentityTokenValidationResult error = new IdentityTokenValidationResult
                 {
                     Error = "invalid_jwt"
                 };
@@ -25,29 +25,32 @@ namespace IdentityModel.OidcClient
                 return Task.FromResult(error);
             }
 
-            var payload = Encoding.UTF8.GetString((Base64Url.Decode(parts[1])));
+            string payload = Encoding.UTF8.GetString((Base64Url.Decode(parts[1])));
 
-            var values =
+            Dictionary<string, JsonElement> values =
                 JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(payload);
             
-            var claims = new List<Claim>();
-            foreach (var element in values)
+            List<Claim> claims = new List<Claim>();
+            if (values != null)
             {
-                if (element.Value.ValueKind == JsonValueKind.Array)
+                foreach (KeyValuePair<string, JsonElement> element in values)
                 {
-                    foreach (var item in element.Value.EnumerateArray())
+                    if (element.Value.ValueKind == JsonValueKind.Array)
                     {
-                        claims.Add(new Claim(element.Key, item.ToString()));
+                        foreach (JsonElement item in element.Value.EnumerateArray())
+                        {
+                            claims.Add(new Claim(element.Key, item.ToString()));
+                        }
                     }
-                }
-                else
-                {
-                    claims.Add(new Claim(element.Key, element.Value.ToString()));
-                    
+                    else
+                    {
+                        claims.Add(new Claim(element.Key, element.Value.ToString()));
+
+                    }
                 }
             }
 
-            var result = new IdentityTokenValidationResult
+            IdentityTokenValidationResult result = new IdentityTokenValidationResult
             {
                 SignatureAlgorithm = "none",
                 User = new ClaimsPrincipal(new ClaimsIdentity(claims, "none", "name", "role"))

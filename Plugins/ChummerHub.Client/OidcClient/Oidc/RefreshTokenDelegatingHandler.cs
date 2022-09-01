@@ -1,4 +1,4 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using IdentityModel.OidcClient.Results;
 
 namespace IdentityModel.OidcClient
 {
@@ -111,7 +112,7 @@ namespace IdentityModel.OidcClient
         /// </returns>
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var accessToken = await GetAccessTokenAsync(cancellationToken);
+            string accessToken = await GetAccessTokenAsync(cancellationToken);
             if (accessToken.IsMissing())
             {
                 if (await RefreshTokensAsync(cancellationToken) == false)
@@ -121,7 +122,7 @@ namespace IdentityModel.OidcClient
             }
 
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
-            var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            HttpResponseMessage response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
             if (response.StatusCode != HttpStatusCode.Unauthorized)
             {
@@ -165,7 +166,7 @@ namespace IdentityModel.OidcClient
 
                 try
                 {
-                    var response = await _oidcClient.RefreshTokenAsync(_refreshToken, cancellationToken: cancellationToken).ConfigureAwait(false);
+                    RefreshTokenResult response = await _oidcClient.RefreshTokenAsync(_refreshToken, cancellationToken: cancellationToken).ConfigureAwait(false);
 
                     if (!response.IsError)
                     {
@@ -175,19 +176,23 @@ namespace IdentityModel.OidcClient
                             _refreshToken = response.RefreshToken;
                         }
 
-#pragma warning disable 4014
+                        // This task definitely should not be left unawaited in case there's an exception that needs to be gotten,
+                        // but the original code was set up this way so and I have no time to look at how to actually make this safe.
+                        // There was a pragma here before that removed the Warning, but I removed it because this is a warning that should not be ignored.
                         Task.Run(() =>
                         {
                             foreach (EventHandler<TokenRefreshedEventArgs> del in TokenRefreshed.GetInvocationList())
                             {
                                 try
                                 {
-                                    del(this, new TokenRefreshedEventArgs(response.AccessToken, response.RefreshToken, (int)response.ExpiresIn));
+                                    del(this, new TokenRefreshedEventArgs(response.AccessToken, response.RefreshToken, response.ExpiresIn));
                                 }
-                                catch { }
+                                catch
+                                {
+                                    // ignored
+                                }
                             }
                         }).ConfigureAwait(false);
-#pragma warning restore 4014
 
                         return true;
                     }

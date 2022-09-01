@@ -2,20 +2,21 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using Chummer;
-using ChummerHub.Client.Backend;
-using ChummerHub.Client.Properties;
-using IdentityModel.Client;
-using IdentityModel.OidcClient.Infrastructure;
-using IdentityModel.OidcClient.Results;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using ChummerHub.Client.Backend;
+using ChummerHub.Client.Properties;
+using IdentityModel.Client;
+using IdentityModel.OidcClient.Browser;
+using IdentityModel.OidcClient.Infrastructure;
+using IdentityModel.OidcClient.Results;
+using NLog;
 
 namespace IdentityModel.OidcClient
 {
@@ -75,7 +76,7 @@ namespace IdentityModel.OidcClient
 
             await EnsureConfigurationAsync(cancellationToken);
 
-            var authorizeResult = await _authorizeClient.AuthorizeAsync(new AuthorizeRequest
+            AuthorizeResult authorizeResult = await _authorizeClient.AuthorizeAsync(new AuthorizeRequest
             {
                 DisplayMode = request.BrowserDisplayMode,
                 Timeout = request.BrowserTimeout,
@@ -87,7 +88,7 @@ namespace IdentityModel.OidcClient
                 return new LoginResult(authorizeResult.Error, authorizeResult.ErrorDescription);
             }
 
-            var result = await ProcessResponseAsync(
+            LoginResult result = await ProcessResponseAsync(
                 authorizeResult.Data,
                 authorizeResult.State,
                 request.BackChannelExtraParameters,
@@ -96,10 +97,10 @@ namespace IdentityModel.OidcClient
             if (!result.IsError)
             {
                
-                ChummerHub.Client.Properties.Settings.Default.IdentityToken = result.IdentityToken;
-                ChummerHub.Client.Properties.Settings.Default.AccessToken = result.AccessToken;
+                Settings.Default.IdentityToken = result.IdentityToken;
+                Settings.Default.AccessToken = result.AccessToken;
                 //BearerToken
-                ChummerHub.Client.Properties.Settings.Default.Save();
+                Settings.Default.Save();
             }
 
             return result;
@@ -109,7 +110,7 @@ namespace IdentityModel.OidcClient
         {
             try
             {
-                if (String.IsNullOrEmpty(cookiestring))
+                if (string.IsNullOrEmpty(cookiestring))
                 {
                     Settings.Default.CookieData = null;
                     Settings.Default.Save();
@@ -131,7 +132,6 @@ namespace IdentityModel.OidcClient
             {
                 Log.Warn(ex);
             }
-            return;
         }
 
 
@@ -160,7 +160,7 @@ namespace IdentityModel.OidcClient
         {
             await EnsureConfigurationAsync(cancellationToken);
 
-            var endpoint = Options.ProviderInformation.EndSessionEndpoint;
+            string endpoint = Options.ProviderInformation.EndSessionEndpoint;
             if (endpoint.IsMissing())
             {
                 throw new InvalidOperationException("Discovery document has no end session endpoint");
@@ -181,22 +181,20 @@ namespace IdentityModel.OidcClient
 
             await EnsureConfigurationAsync(cancellationToken);
 
-            var result = await _authorizeClient.EndSessionAsync(request, cancellationToken);
+            BrowserResult result = await _authorizeClient.EndSessionAsync(request, cancellationToken);
 
-            if (result.ResultType != Browser.BrowserResultType.Success)
+            if (result.ResultType != BrowserResultType.Success)
             {
                 return new LogoutResult(result.ResultType.ToString())
                 {
                     Response = result.Response
                 };
             }
-            else
+
+            return new LogoutResult
             {
-                return new LogoutResult
-                {
-                    Response = result.Response
-                };
-            }
+                Response = result.Response
+            };
         }
 
         /// <summary>
@@ -222,7 +220,7 @@ namespace IdentityModel.OidcClient
             await EnsureConfigurationAsync(cancellationToken);
 
             //_logger.LogDebug("Authorize response: {response}", data);
-            var authorizeResponse = new AuthorizeResponse(data);
+            AuthorizeResponse authorizeResponse = new AuthorizeResponse(data);
 
             if (authorizeResponse.IsError)
             {
@@ -230,20 +228,20 @@ namespace IdentityModel.OidcClient
                 return new LoginResult(authorizeResponse.Error, authorizeResponse.ErrorDescription);
             }
 
-            var result = await _processor.ProcessResponseAsync(authorizeResponse, state, backChannelParameters, cancellationToken);
+            ResponseValidationResult result = await _processor.ProcessResponseAsync(authorizeResponse, state, backChannelParameters, cancellationToken);
             if (result.IsError)
             {
                 //_logger.LogError(result.Error);
                 return new LoginResult(result.Error, result.ErrorDescription);
             }
 
-            var userInfoClaims = Enumerable.Empty<Claim>();
+            IEnumerable<Claim> userInfoClaims = Enumerable.Empty<Claim>();
             if (Options.LoadProfile)
             {
-                var userInfoResult = await GetUserInfoAsync(result.TokenResponse.AccessToken, cancellationToken);
+                UserInfoResult userInfoResult = await GetUserInfoAsync(result.TokenResponse.AccessToken, cancellationToken);
                 if (userInfoResult.IsError)
                 {
-                    var error = $"Error contacting userinfo endpoint: {userInfoResult.Error}";
+                    string error = $"Error contacting userinfo endpoint: {userInfoResult.Error}";
                     //_logger.LogError(error);
 
                     return new LoginResult(error);
@@ -251,10 +249,10 @@ namespace IdentityModel.OidcClient
 
                 userInfoClaims = userInfoResult.Claims;
 
-                var userInfoSub = userInfoClaims.FirstOrDefault(c => c.Type == JwtClaimTypes.Subject);
+                Claim userInfoSub = userInfoResult.Claims.FirstOrDefault(c => c.Type == JwtClaimTypes.Subject);
                 if (userInfoSub == null)
                 {
-                    var error = "sub claim is missing from userinfo endpoint";
+                    string error = "sub claim is missing from userinfo endpoint";
                     //_logger.LogError(error);
 
                     return new LoginResult(error);
@@ -264,7 +262,7 @@ namespace IdentityModel.OidcClient
                 {
                     if (!string.Equals(userInfoSub.Value, result.User.FindFirst(JwtClaimTypes.Subject).Value))
                     {
-                        var error = "sub claim from userinfo endpoint is different than sub claim from identity token.";
+                        string error = "sub claim from userinfo endpoint is different than sub claim from identity token.";
                         //_logger.LogError(error);
 
                         return new LoginResult(error);
@@ -272,7 +270,7 @@ namespace IdentityModel.OidcClient
                 }
             }
 
-            var authTimeValue = result.User.FindFirst(JwtClaimTypes.AuthenticationTime)?.Value;
+            string authTimeValue = result.User.FindFirst(JwtClaimTypes.AuthenticationTime)?.Value;
             DateTimeOffset? authTime = null;
 
             if (authTimeValue.IsPresent() && long.TryParse(authTimeValue, out long seconds))
@@ -280,9 +278,9 @@ namespace IdentityModel.OidcClient
                 authTime = DateTimeOffset.FromUnixTimeSeconds(seconds);
             }
 
-            var user = ProcessClaims(result.User, userInfoClaims);
+            ClaimsPrincipal user = ProcessClaims(result.User, userInfoClaims);
 
-            var loginResult = new LoginResult
+            LoginResult loginResult = new LoginResult
             {
                 User = user,
                 AccessToken = result.TokenResponse.AccessToken,
@@ -324,9 +322,9 @@ namespace IdentityModel.OidcClient
             if (accessToken.IsMissing()) throw new ArgumentNullException(nameof(accessToken));
             if (!Options.ProviderInformation.SupportsUserInfo) throw new InvalidOperationException("No userinfo endpoint specified");
 
-            var userInfoClient = Options.CreateClient();
+            HttpClient userInfoClient = Options.CreateClient();
 
-            var userInfoResponse = await userInfoClient.GetUserInfoAsync(new UserInfoRequest
+            UserInfoResponse userInfoResponse = await userInfoClient.GetUserInfoAsync(new UserInfoRequest
             {
                 Address = Options.ProviderInformation.UserInfoEndpoint,
                 Token = accessToken
@@ -365,9 +363,9 @@ namespace IdentityModel.OidcClient
             await EnsureConfigurationAsync(cancellationToken);
             backChannelParameters = backChannelParameters ?? new Parameters();
             
-            var client = Options.CreateClient();
+            HttpClient client = Options.CreateClient();
 
-            var response = await client.RequestRefreshTokenAsync(new RefreshTokenRequest
+            TokenResponse response = await client.RequestRefreshTokenAsync(new RefreshTokenRequest
             {
                 Address = Options.ProviderInformation.TokenEndpoint,
                 ClientId = Options.ClientId,
@@ -388,7 +386,7 @@ namespace IdentityModel.OidcClient
             }
 
             // validate token response
-            var validationResult = await _processor.ValidateTokenResponseAsync(response, null, requireIdentityToken: Options.Policy.RequireIdentityTokenOnRefreshTokenResponse,
+            TokenResponseValidationResult validationResult = await _processor.ValidateTokenResponseAsync(response, null, requireIdentityToken: Options.Policy.RequireIdentityTokenOnRefreshTokenResponse,
                 cancellationToken: cancellationToken);
             if (validationResult.IsError)
             {
@@ -429,8 +427,8 @@ namespace IdentityModel.OidcClient
                     }
                 }
 
-                var discoveryClient = Options.CreateClient();
-                var disco = await discoveryClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
+                HttpClient discoveryClient = Options.CreateClient();
+                DiscoveryDocumentResponse disco = await discoveryClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
                 {
                     Address = Options.Authority,
                     Policy = Options.Policy.Discovery
@@ -450,7 +448,7 @@ namespace IdentityModel.OidcClient
 
                 Log.Debug("Successfully loaded discovery document");
                 Log.Debug("Loaded keyset from {jwks_uri}", disco.JwksUri);
-                var kids = disco.KeySet?.Keys?.Select(k => k.Kid);
+                IEnumerable<string> kids = disco.KeySet?.Keys?.Select(k => k.Kid);
                 if (kids != null)
                 {
                     //_logger.LogDebug($"Keyset contains the following kids: {string.Join(",", kids)}");
@@ -471,7 +469,7 @@ namespace IdentityModel.OidcClient
 
             if (Options.ProviderInformation.IssuerName.IsMissing())
             {
-                var error = "Issuer name is missing in provider information";
+                string error = "Issuer name is missing in provider information";
 
                 Log.Error(error);
                 throw new InvalidOperationException(error);
@@ -479,7 +477,7 @@ namespace IdentityModel.OidcClient
 
             if (Options.ProviderInformation.AuthorizeEndpoint.IsMissing())
             {
-                var error = "Authorize endpoint is missing in provider information";
+                string error = "Authorize endpoint is missing in provider information";
 
                 Log.Error(error);
                 throw new InvalidOperationException(error);
@@ -487,7 +485,7 @@ namespace IdentityModel.OidcClient
 
             if (Options.ProviderInformation.TokenEndpoint.IsMissing())
             {
-                var error = "Token endpoint is missing in provider information";
+                string error = "Token endpoint is missing in provider information";
 
                 Log.Error(error);
                 throw new InvalidOperationException(error);
@@ -497,7 +495,7 @@ namespace IdentityModel.OidcClient
             {
                 if (Options.Policy.Discovery.RequireKeySet)
                 {
-                    var error = "Key set is missing in provider information";
+                    string error = "Key set is missing in provider information";
 
                     Log.Error(error);
                     throw new InvalidOperationException(error);
@@ -509,20 +507,14 @@ namespace IdentityModel.OidcClient
         {
             //_logger.LogTrace("ProcessClaims");
 
-            var combinedClaims = new HashSet<Claim>(new ClaimComparer(new ClaimComparer.Options { IgnoreIssuer = true }));
+            HashSet<Claim> combinedClaims = new HashSet<Claim>(new ClaimComparer(new ClaimComparer.Options { IgnoreIssuer = true }));
 
             user.Claims.ToList().ForEach(c => combinedClaims.Add(c));
             userInfoClaims.ToList().ForEach(c => combinedClaims.Add(c));
 
-            List<Claim> userClaims;
-            if (Options.FilterClaims)
-            {
-                userClaims = combinedClaims.Where(c => !Options.FilteredClaims.Contains(c.Type)).ToList();
-            }
-            else
-            {
-                userClaims = combinedClaims.ToList();
-            }
+            List<Claim> userClaims = Options.FilterClaims
+                ? combinedClaims.Where(c => !Options.FilteredClaims.Contains(c.Type)).ToList()
+                : combinedClaims.ToList();
 
             return new ClaimsPrincipal(new ClaimsIdentity(userClaims, user.Identity.AuthenticationType, user.Identities.First().NameClaimType, user.Identities.First().RoleClaimType));
         }
