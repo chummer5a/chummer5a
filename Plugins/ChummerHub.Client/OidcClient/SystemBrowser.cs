@@ -44,7 +44,7 @@ namespace ChummerHub.Client.OidcClient
                         listener.Stop();
                     }
                 }
-                catch (Exception)
+                catch
                 {
                     // ignored
                 }

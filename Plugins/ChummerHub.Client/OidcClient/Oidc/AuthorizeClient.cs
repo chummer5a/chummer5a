@@ -8,7 +8,7 @@ using IdentityModel.OidcClient.Infrastructure;
 using IdentityModel.OidcClient.Results;
 using NLog;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -46,14 +46,14 @@ namespace IdentityModel.OidcClient
                 State = CreateAuthorizeState(request.ExtraParameters)
             };
 
-            var browserOptions = new BrowserOptions(result.State.StartUrl, _options.RedirectUri)
+            BrowserOptions browserOptions = new BrowserOptions(result.State.StartUrl, _options.RedirectUri)
             {
                 Timeout = TimeSpan.FromSeconds(request.Timeout),
                 DisplayMode = request.DisplayMode,
                 
             };
 
-            var browserResult = await _options.Browser.InvokeAsync(browserOptions, cancellationToken);
+            BrowserResult browserResult = await _options.Browser.InvokeAsync(browserOptions, cancellationToken);
 
             if (browserResult.ResultType == BrowserResultType.Success)
             {
@@ -65,33 +65,33 @@ namespace IdentityModel.OidcClient
             return result;
         }
 
-        public async Task<BrowserResult> EndSessionAsync(LogoutRequest request,
+        public Task<BrowserResult> EndSessionAsync(LogoutRequest request,
             CancellationToken cancellationToken = default)
         {
-            var endpoint = _options.ProviderInformation.EndSessionEndpoint;
+            string endpoint = _options.ProviderInformation.EndSessionEndpoint;
             if (endpoint.IsMissing())
             {
                 throw new InvalidOperationException("Discovery document has no end session endpoint");
             }
 
-            var url = CreateEndSessionUrl(endpoint, request);
+            string url = CreateEndSessionUrl(endpoint, request);
 
-            var browserOptions = new BrowserOptions(url, _options.PostLogoutRedirectUri ?? string.Empty)
+            BrowserOptions browserOptions = new BrowserOptions(url, _options.PostLogoutRedirectUri ?? string.Empty)
             {
                 Timeout = TimeSpan.FromSeconds(request.BrowserTimeout),
                 DisplayMode = request.BrowserDisplayMode
             };
 
-            return await _options.Browser.InvokeAsync(browserOptions, cancellationToken);
+            return _options.Browser.InvokeAsync(browserOptions, cancellationToken);
         }
 
         public AuthorizeState CreateAuthorizeState(Parameters frontChannelParameters)
         {
             _logger.Trace("CreateAuthorizeStateAsync");
 
-            var pkce = _crypto.CreatePkceData();
+            CryptoHelper.Pkce pkce = _crypto.CreatePkceData();
 
-            var state = new AuthorizeState
+            AuthorizeState state = new AuthorizeState
             {
                 State = _crypto.CreateState(_options.StateLength),
                 RedirectUri = _options.RedirectUri,
@@ -110,8 +110,8 @@ namespace IdentityModel.OidcClient
         {
             _logger.Trace("CreateAuthorizeUrl");
 
-            var parameters = CreateAuthorizeParameters(state, codeChallenge, frontChannelParameters);
-            var request = new RequestUrl(_options.ProviderInformation.AuthorizeEndpoint);
+            Parameters parameters = CreateAuthorizeParameters(state, codeChallenge, frontChannelParameters);
+            RequestUrl request = new RequestUrl(_options.ProviderInformation.AuthorizeEndpoint);
 
             return request.Create(parameters);
         }
@@ -133,7 +133,7 @@ namespace IdentityModel.OidcClient
         {
             _logger.Trace("CreateAuthorizeParameters");
 
-            var parameters = new Parameters
+            Parameters parameters = new Parameters
             {
                 { OidcConstants.AuthorizeRequest.ResponseType, OidcConstants.ResponseTypes.Code },
                 { OidcConstants.AuthorizeRequest.State, state },
@@ -151,9 +151,9 @@ namespace IdentityModel.OidcClient
                 parameters.Add(OidcConstants.AuthorizeRequest.Scope, _options.Scope);
             }
 
-            if (_options.Resource.Any())
+            if (_options.Resource.Count > 0)
             {
-                foreach (var resource in _options.Resource)
+                foreach (string resource in _options.Resource)
                 {
                     parameters.Add(OidcConstants.AuthorizeRequest.Resource, resource);
                 }
@@ -166,7 +166,7 @@ namespace IdentityModel.OidcClient
 
             if (frontChannelParameters != null)
             {
-                foreach (var entry in frontChannelParameters)
+                foreach (KeyValuePair<string, string> entry in frontChannelParameters)
                 {
                     parameters.Add(entry.Key, entry.Value);
                 }

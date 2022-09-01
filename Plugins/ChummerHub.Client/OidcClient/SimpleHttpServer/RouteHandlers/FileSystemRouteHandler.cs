@@ -101,7 +101,7 @@ namespace SimpleHttpServer.RouteHandlers
 
     // http://stackoverflow.com/questions/1029740/get-mime-type-from-filename-extension
 
-    public class QuickMimeTypeMapper
+    public static class QuickMimeTypeMapper
     {
 
         public static string GetMimeType(string extension)
