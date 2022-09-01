@@ -686,11 +686,9 @@ namespace ChummerHub.Client.UI
                         ResultGroupPutGroupInGroup res = await client.PutGroupInGroupAsync(draggedGroup.Id,
                             draggedGroup.Groupname, targetGroup?.Id,
                             draggedGroup.MyAdminIdentityRole, draggedGroup.IsPublic);
+                        if (res != null)
                         {
-                            if (res != null)
-                            {
-                                MoveNode(draggedNode, targetNode);
-                            }
+                            MoveNode(draggedNode, targetNode);
                         }
                     }
                     if (draggedSINner?.MySINner?.MyGroup != null && targetGroup != null)
@@ -758,7 +756,7 @@ namespace ChummerHub.Client.UI
 
         }
 
-        private void MoveNode(TreeNode draggedNode, TreeNode targetNode)
+        private static void MoveNode(TreeNode draggedNode, TreeNode targetNode)
         {
             draggedNode.Remove();
             if (targetNode != null)

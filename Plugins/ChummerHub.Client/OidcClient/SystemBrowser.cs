@@ -54,7 +54,7 @@ namespace ChummerHub.Client.OidcClient
             
         }
 
-        public async Task<BrowserResult> InvokeAsync(BrowserOptions options, CancellationToken cancellationToken)
+        public async Task<BrowserResult> InvokeAsync(BrowserOptions options, CancellationToken cancellationToken = default)
         {
             using (LoopbackHttpListener listener = new LoopbackHttpListener(Port, _path))
             {
@@ -112,9 +112,9 @@ namespace ChummerHub.Client.OidcClient
     }
 
 
-    public class LoopbackHttpListener : IDisposable
+    public sealed class LoopbackHttpListener : IDisposable
     {
-        const int DefaultTimeout = 60 * 5; // 5 mins (in seconds)
+        private const int DefaultTimeout = 60 * 5; // 5 mins (in seconds)
 
 
         private string _url;

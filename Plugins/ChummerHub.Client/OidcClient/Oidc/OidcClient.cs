@@ -258,15 +258,12 @@ namespace IdentityModel.OidcClient
                     return new LoginResult(error);
                 }
 
-                if (result.TokenResponse.IdentityToken != null)
+                if (result.TokenResponse.IdentityToken != null && !string.Equals(userInfoSub.Value, result.User.FindFirst(JwtClaimTypes.Subject).Value))
                 {
-                    if (!string.Equals(userInfoSub.Value, result.User.FindFirst(JwtClaimTypes.Subject).Value))
-                    {
-                        string error = "sub claim from userinfo endpoint is different than sub claim from identity token.";
-                        //_logger.LogError(error);
+                    string error = "sub claim from userinfo endpoint is different than sub claim from identity token.";
+                    //_logger.LogError(error);
 
-                        return new LoginResult(error);
-                    }
+                    return new LoginResult(error);
                 }
             }
 
@@ -416,15 +413,12 @@ namespace IdentityModel.OidcClient
 
             if (_useDiscovery)
             {
-                if (Options.RefreshDiscoveryDocumentForLogin == false)
+                if (Options.RefreshDiscoveryDocumentForLogin == false && Options.ProviderInformation != null)
                 {
                     // discovery document has been loaded before - skip reload
-                    if (Options.ProviderInformation != null)
-                    {
-                        Log.Debug("Skipping refresh of discovery document.");
+                    Log.Debug("Skipping refresh of discovery document.");
 
-                        return;
-                    }
+                    return;
                 }
 
                 HttpClient discoveryClient = Options.CreateClient();
@@ -491,15 +485,12 @@ namespace IdentityModel.OidcClient
                 throw new InvalidOperationException(error);
             }
 
-            if (Options.ProviderInformation.KeySet == null)
+            if (Options.ProviderInformation.KeySet == null && Options.Policy.Discovery.RequireKeySet)
             {
-                if (Options.Policy.Discovery.RequireKeySet)
-                {
-                    string error = "Key set is missing in provider information";
+                string error = "Key set is missing in provider information";
 
-                    Log.Error(error);
-                    throw new InvalidOperationException(error);
-                }
+                Log.Error(error);
+                throw new InvalidOperationException(error);
             }
         }
 

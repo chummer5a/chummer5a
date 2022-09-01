@@ -81,7 +81,7 @@ namespace IdentityModel.OidcClient
             }
 
             TokenValidationResult result = ValidateSignature(identityToken, handler, parameters, options, s_Logger);
-            if (result.IsValid == false)
+            if (!result.IsValid)
             {
                 if (result.Exception is SecurityTokenSignatureKeyNotFoundException)
                 {

@@ -198,7 +198,7 @@ namespace SimpleHttpServer
             string[] tokens = request.Split(' ');
             if (tokens.Length != 3)
             {
-                throw new Exception("invalid http request line");
+                throw new InvalidOperationException("invalid http request line");
             }
             string method = tokens[0].ToUpper();
             string url = tokens[1];
@@ -217,7 +217,7 @@ namespace SimpleHttpServer
                 int separator = line.IndexOf(':');
                 if (separator == -1)
                 {
-                    throw new Exception("invalid http header line: " + line);
+                    throw new InvalidOperationException("invalid http header line: " + line);
                 }
                 string name = line.Substring(0, separator);
                 int pos = separator + 1;

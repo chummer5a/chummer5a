@@ -43,6 +43,8 @@ using System.Net;
 using IdentityModel;
 using IdentityModel.OidcClient.Results;
 using Claim = System.Security.Claims.Claim;
+using System.Text;
+using System.Security.Claims;
 
 //using Nemiro.OAuth;
 //using Nemiro.OAuth.LoginForms;
@@ -578,7 +580,7 @@ namespace ChummerHub.Client.UI
             _oidcClient = new IdentityModel.OidcClient.OidcClient(options);
             LoginResult result = await _oidcClient.LoginAsync(new LoginRequest());
 
-            if (result == null || result.IsError == true)
+            if (result == null || result.IsError)
             {
                 Log.Error("LoginAsync failed!");
                 return;
@@ -598,30 +600,34 @@ namespace ChummerHub.Client.UI
 
         private static void ShowResult(LoginResult result)
         {
-            string show = "";
-            if (result.IsError)
+            using (new FetchSafelyFromPool<StringBuilder>(Chummer.Utils.StringBuilderPool, out StringBuilder show))
             {
-                Log.Warn("\n\nError:\n{0}", result.Error);
-                return;
-            }
-
-            show += "\n\nClaims:";
-            foreach (Claim claim in result.User.Claims)
-            {
-                show += $"\r\n{claim.Type}: {claim.Value}";
-            }
-
-            Dictionary<string, JsonElement> values = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(result.TokenResponse.Raw);
-            if (values != null)
-            {
-                show += "\r\ntoken response...";
-                foreach (KeyValuePair<string, JsonElement> item in values)
+                if (result.IsError)
                 {
-                    show += $"\r\n{item.Key}: {item.Value}";
+                    Log.Warn("\n\nError:\n{0}", result.Error);
+                    return;
                 }
-            }
 
-            Log.Info(show);
+                show.AppendLine().AppendLine().Append("Claims:");
+                foreach (Claim claim in result.User.Claims)
+                {
+                    show.AppendLine().Append(claim.Type).Append(": ").Append(claim.Value);
+                }
+
+                Dictionary<string, JsonElement> values
+                    = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(
+                        result.TokenResponse.Raw);
+                if (values != null)
+                {
+                    show.AppendLine().Append("token response...");
+                    foreach (KeyValuePair<string, JsonElement> item in values)
+                    {
+                        show.AppendLine().Append(item.Key).Append(": ").Append(item.Value);
+                    }
+                }
+
+                Log.Info(show);
+            }
         }
 
         private static async Task NextSteps(LoginResult result)
@@ -690,7 +696,7 @@ namespace ChummerHub.Client.UI
                     frmWebBrowser = Chummer.Utils.RunOnMainThread(() => new frmWebBrowser());
                 }
                 frmWebBrowser.DoThreadSafe(x => x.ShowDialogSafe(Program.MainForm));
-                GetRolesStatus(this);
+                DoRolesStatus(this);
                 UpdateDisplay();
                 ResumeLayout(false);
             }
@@ -719,16 +725,15 @@ namespace ChummerHub.Client.UI
             }
         }
 
-        private IList<string> GetRolesStatus(Control sender)
+        private void DoRolesStatus(Control sender)
         {
-            try
+            using (CursorWait.New(sender, true))
             {
-                using (CursorWait.New(sender, true))
+                SinnersClient client = StaticUtils.GetClient();
+                if (client != null)
                 {
-                    SinnersClient client = StaticUtils.GetClient();
-                    if (client == null)
-                        return StaticUtils.UserRoles;
-                    ResultAccountGetRoles myresult = Chummer.Utils.RunWithoutThreadLock(() => client.GetRolesAsync());
+                    ResultAccountGetRoles myresult
+                        = Chummer.Utils.RunWithoutThreadLock(() => client.GetRolesAsync());
                     Utils.ShowErrorResponseForm(myresult);
                     PluginHandler.MainForm.DoThreadSafe(() =>
                     {
@@ -752,38 +757,16 @@ namespace ChummerHub.Client.UI
                         cbRoles.DataSource = bs;
                     });
                 }
-
-                return StaticUtils.UserRoles;
             }
-            catch (SerializationException)
-            {
-                LoginStatus = false;
-                return null;
-            }
-            catch (TaskCanceledException ex)
-            {
-                Log.Info(ex);
-            }
-            catch (Exception ex)
-            {
-                Log.Warn(ex);
-            }
-            finally
-            {
-                //myresult?.Dispose();
-            }
-            return null;
         }
 
-        private async Task<IList<string>> GetRolesStatusAsync(Control sender)
+        private async Task DoRolesStatusAsync(Control sender)
         {
-            try
+            using (await CursorWait.NewAsync(sender, true))
             {
-                using (await CursorWait.NewAsync(sender, true))
+                SinnersClient client = StaticUtils.GetClient();
+                if (client != null)
                 {
-                    SinnersClient client = StaticUtils.GetClient();
-                    if (client == null)
-                        return StaticUtils.UserRoles;
                     ResultAccountGetRoles myresult = await client.GetRolesAsync();
                     await Utils.ShowErrorResponseFormAsync(myresult);
                     await PluginHandler.MainForm.DoThreadSafeAsync(() =>
@@ -808,27 +791,64 @@ namespace ChummerHub.Client.UI
                         cbRoles.DataSource = bs;
                     });
                 }
+            }
+        }
 
-                return StaticUtils.UserRoles;
+        private IList<string> GetRolesStatus(Control sender)
+        {
+            try
+            {
+                DoRolesStatus(sender);
             }
             catch (SerializationException)
             {
                 LoginStatus = false;
-                return null;
+                return Array.Empty<string>();
             }
             catch (TaskCanceledException ex)
             {
                 Log.Info(ex);
+                return Array.Empty<string>();
             }
             catch (Exception ex)
             {
                 Log.Warn(ex);
+                return Array.Empty<string>();
             }
             finally
             {
                 //myresult?.Dispose();
             }
-            return null;
+
+            return StaticUtils.UserRoles;
+        }
+
+        private async Task<IList<string>> GetRolesStatusAsync(Control sender)
+        {
+            try
+            {
+                await DoRolesStatusAsync(sender);
+            }
+            catch (SerializationException)
+            {
+                LoginStatus = false;
+                return Array.Empty<string>();
+            }
+            catch (TaskCanceledException ex)
+            {
+                Log.Info(ex);
+                return Array.Empty<string>();
+            }
+            catch (Exception ex)
+            {
+                Log.Warn(ex);
+                return Array.Empty<string>();
+            }
+            finally
+            {
+                //myresult?.Dispose();
+            }
+            return StaticUtils.UserRoles;
         }
 
         private void cbVisibilityIsGroupVisible_CheckedChanged(object sender, EventArgs e)

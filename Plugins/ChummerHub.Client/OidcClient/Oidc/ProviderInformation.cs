@@ -1,7 +1,8 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using System;
 using System.Collections.Generic;
 using IdentityModel.Jwk;
 
@@ -66,7 +67,7 @@ namespace IdentityModel.OidcClient
         /// <value>
         /// The token end point authentication methods.
         /// </value>
-        public IEnumerable<string> TokenEndPointAuthenticationMethods { get; set; } = new string[] { };
+        public IEnumerable<string> TokenEndPointAuthenticationMethods { get; set; } = Array.Empty<string>();
 
 
         /// <summary>

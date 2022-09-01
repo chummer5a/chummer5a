@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Chummer;
 
 namespace SimpleHttpServer.RouteHandlers
 {
@@ -75,24 +76,27 @@ namespace SimpleHttpServer.RouteHandlers
             return response;
         }
 
-        HttpResponse Handle_LocalDir(HttpRequest request, string localPath)
+        private HttpResponse Handle_LocalDir(HttpRequest request, string localPath)
         {
-            StringBuilder output = new StringBuilder();
-            output.Append($"<h1> Directory: {request.Url} </h1>");
-                        
-            foreach (string entry in Directory.GetFiles(localPath))
-            {                
-                FileInfo fileInfo = new FileInfo(entry);
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder output))
+            {
+                output.Append($"<h1> Directory: {request.Url} </h1>");
 
-                string filename = fileInfo.Name;
-                output.Append(string.Format("<a href=\"{0}\">{0}</a> <br>",filename));                
-            }            
+                foreach (string entry in Directory.GetFiles(localPath))
+                {
+                    FileInfo fileInfo = new FileInfo(entry);
 
-            return new HttpResponse() {
-                StatusCode = "200",
-                ReasonPhrase = "Ok",
-                ContentAsUTF8 = output.ToString(),
-            };
+                    string filename = fileInfo.Name;
+                    output.AppendFormat("<a href=\"{0}\">{0}</a> <br>", filename);
+                }
+
+                return new HttpResponse
+                {
+                    StatusCode = "200",
+                    ReasonPhrase = "Ok",
+                    ContentAsUTF8 = output.ToString(),
+                };
+            }
         }
     }
 
@@ -110,7 +114,7 @@ namespace SimpleHttpServer.RouteHandlers
                 throw new ArgumentNullException(nameof(extension));
             }
 
-            if (!extension.StartsWith(".")) {
+            if (!extension.StartsWith(".", StringComparison.Ordinal)) {
                 extension = "." + extension;
             }
 

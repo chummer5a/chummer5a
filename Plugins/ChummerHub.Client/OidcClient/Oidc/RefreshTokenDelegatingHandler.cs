@@ -113,12 +113,9 @@ namespace IdentityModel.OidcClient
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             string accessToken = await GetAccessTokenAsync(cancellationToken);
-            if (accessToken.IsMissing())
+            if (accessToken.IsMissing() && await RefreshTokensAsync(cancellationToken) == false)
             {
-                if (await RefreshTokensAsync(cancellationToken) == false)
-                {
-                    return new HttpResponseMessage(HttpStatusCode.Unauthorized) { RequestMessage = request };
-                }
+                return new HttpResponseMessage(HttpStatusCode.Unauthorized) { RequestMessage = request };
             }
 
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);

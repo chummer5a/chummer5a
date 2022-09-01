@@ -229,7 +229,7 @@ namespace ChummerHub.Client.UI
             SaveTagsToSinner();
         }
 
-        private IEnumerable<Control> GetAllControls(Control container)
+        private static IEnumerable<Control> GetAllControls(Control container)
         {
             foreach (Control objLoopChild in container.Controls)
             {

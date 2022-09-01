@@ -21,9 +21,8 @@ namespace SimpleHttpServer.Models
 
         public override string ToString()
         {
-            if (!string.IsNullOrWhiteSpace(Content))
-                if (!Headers.ContainsKey("Content-Length"))
-                    Headers.Add("Content-Length", Content.Length.ToString());
+            if (!string.IsNullOrWhiteSpace(Content) && !Headers.ContainsKey("Content-Length"))
+                Headers.Add("Content-Length", Content.Length.ToString());
 
             return
                 $"{Method} {Url} HTTP/1.0\r\n{string.Join("\r\n", Headers.Select(x => $"{x.Key}: {x.Value}"))}\r\n\r\n{Content}";

@@ -109,13 +109,10 @@ namespace IdentityModel.OidcClient
                 return new TokenResponseValidationResult("Access token is missing on token response.");
             }
 
-            if (requireIdentityToken)
+            if (requireIdentityToken && response.IdentityToken.IsMissing())
             {
                 // token response must contain an identity token (openid scope is mandatory)
-                if (response.IdentityToken.IsMissing())
-                {
-                    return new TokenResponseValidationResult("Identity token is missing on token response.");
-                }
+                return new TokenResponseValidationResult("Identity token is missing on token response.");
             }
 
             if (response.IdentityToken.IsPresent())
