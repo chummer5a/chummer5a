@@ -78,19 +78,20 @@ namespace Chummer
             };
             pvt.Context.Operation.Name = "Operation CharacterShared.Constructor()";
             pvt.Properties.Add("Name", objCharacter?.Name);
-            pvt.Properties.Add("Path", objCharacter?.FileName);
+            string strCharacterFileName = objCharacter?.FileName; // Store this in a local so that we avoid possible weird semaphore collisions in the Shown delegate
+            pvt.Properties.Add("Path", strCharacterFileName);
             Shown += delegate
             {
                 pvt.Duration = DateTimeOffset.UtcNow - pvt.Timestamp;
-                if (objCharacter != null && Uri.TryCreate(objCharacter.FileName, UriKind.Absolute, out Uri uriResult))
+                if (strCharacterFileName != null && Uri.TryCreate(strCharacterFileName, UriKind.Absolute, out Uri uriResult))
                 {
                     pvt.Url = uriResult;
                 }
                 TelemetryClient.TrackPageView(pvt);
             };
-            if (GlobalSettings.LiveUpdateCleanCharacterFiles && !string.IsNullOrEmpty(objCharacter?.FileName) && File.Exists(objCharacter.FileName))
+            if (GlobalSettings.LiveUpdateCleanCharacterFiles && !string.IsNullOrEmpty(strCharacterFileName) && File.Exists(strCharacterFileName))
             {
-                _objCharacterFileWatcher = new FileSystemWatcher(Path.GetDirectoryName(objCharacter.FileName) ?? Path.GetPathRoot(objCharacter.FileName), Path.GetFileName(objCharacter.FileName));
+                _objCharacterFileWatcher = new FileSystemWatcher(Path.GetDirectoryName(strCharacterFileName) ?? Path.GetPathRoot(strCharacterFileName), Path.GetFileName(strCharacterFileName));
                 _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
             }
         }
