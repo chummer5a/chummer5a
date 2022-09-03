@@ -38,6 +38,7 @@ using Chummer.UI.Attributes;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using NLog;
+using OperationCanceledException = System.OperationCanceledException;
 
 namespace Chummer
 {
@@ -7653,23 +7654,22 @@ namespace Chummer
                 EntityType = ContactType.Contact
             };
             await CharacterObject.Contacts.AddAsync(objContact, token: token);
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+            await RequestCharacterUpdate(token);
+            await SetDirty(true, token);
         }
 
         protected async void DeleteContact(object sender, EventArgs e)
         {
             try
             {
-                if (sender is ContactControl objSender)
-                {
-                    if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteContact", token: GenericToken)))
-                        return;
+                if (!(sender is ContactControl objSender))
+                    return;
+                if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteContact", token: GenericToken)))
+                    return;
 
-                    await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken);
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
-                }
+                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken);
+                await RequestCharacterUpdate(GenericToken);
+                await SetDirty(true, GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -7689,23 +7689,22 @@ namespace Chummer
             };
 
             await CharacterObject.Contacts.AddAsync(objContact, token: token);
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+            await RequestCharacterUpdate(token);
+            await SetDirty(true, token);
         }
 
         protected async void DeletePet(object sender, EventArgs e)
         {
             try
             {
-                if (sender is PetControl objSender)
-                {
-                    if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteContact", token: GenericToken)))
-                        return;
+                if (!(sender is PetControl objSender))
+                    return;
+                if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteContact", token: GenericToken)))
+                    return;
 
-                    await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken);
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
-                }
+                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken);
+                await RequestCharacterUpdate(GenericToken);
+                await SetDirty(true, GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -7726,23 +7725,22 @@ namespace Chummer
             };
 
             await CharacterObject.Contacts.AddAsync(objContact, token: token);
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+            await RequestCharacterUpdate(token);
+            await SetDirty(true, token);
         }
 
         protected async void DeleteEnemy(object sender, EventArgs e)
         {
             try
             {
-                if (sender is ContactControl objSender)
-                {
-                    if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteEnemy", token: GenericToken)))
-                        return;
+                if (!(sender is ContactControl objSender))
+                    return;
+                if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteEnemy", token: GenericToken)))
+                    return;
 
-                    await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken);
-                    await RequestCharacterUpdate();
-                    await SetDirty(true);
-                }
+                await CharacterObject.Contacts.RemoveAsync(objSender.ContactObject, token: GenericToken);
+                await RequestCharacterUpdate(GenericToken);
+                await SetDirty(true, GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -8148,8 +8146,8 @@ namespace Chummer
                 Force = CharacterObject.MaxSpiritForce
             };
             await CharacterObject.Spirits.AddAsync(objSpirit, token: token);
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+            await RequestCharacterUpdate(token);
+            await SetDirty(true, token);
         }
 
         protected async ValueTask AddSprite(CancellationToken token = default)
@@ -8176,8 +8174,8 @@ namespace Chummer
                 Force = CharacterObject.MaxSpriteLevel
             };
             await CharacterObject.Spirits.AddAsync(objSprite, token: token);
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+            await RequestCharacterUpdate(token);
+            await SetDirty(true, token);
         }
 
         protected async void DeleteSpirit(object sender, EventArgs e)
@@ -8192,8 +8190,8 @@ namespace Chummer
                     return;
                 objSpirit.Fettered = false; // Fettered spirits consume MAG.
                 await CharacterObject.Spirits.RemoveAsync(objSpirit, token: GenericToken);
-                await RequestCharacterUpdate();
-                await SetDirty(true);
+                await RequestCharacterUpdate(GenericToken);
+                await SetDirty(true, GenericToken);
             }
             catch (OperationCanceledException)
             {
@@ -8454,8 +8452,8 @@ namespace Chummer
                 // Store our new order so it's loaded properly the next time we open the character
                 x.CacheSortOrder();
             }, token);
-
-            await SetDirty(true);
+            
+            await SetDirty(true, token);
         }
 
         /// <summary>
@@ -8473,19 +8471,12 @@ namespace Chummer
             }
         }
 
-        public async Task SetDirty(bool blnValue)
+        public Task SetDirty(bool blnValue, CancellationToken token = default)
         {
             if (_blnIsDirty == blnValue)
-                return;
+                return Task.CompletedTask;
             _blnIsDirty = blnValue;
-            try
-            {
-                await UpdateWindowTitleAsync(true, GenericToken);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
-            }
+            return UpdateWindowTitleAsync(true, token);
         }
 
         /// <summary>
@@ -8530,9 +8521,15 @@ namespace Chummer
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
 
-            await RequestCharacterUpdate();
-
-            await SetDirty(true);
+            try
+            {
+                await RequestCharacterUpdate(GenericToken);
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
         public async void MakeDirtyWithCharacterUpdate(object sender, ListChangedEventArgs e)
@@ -8543,16 +8540,28 @@ namespace Chummer
                 && e.ListChangedType != ListChangedType.Reset)
                 return;
 
-            await RequestCharacterUpdate();
-
-            await SetDirty(true);
+            try
+            {
+                await RequestCharacterUpdate(GenericToken);
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
         public async void MakeDirtyWithCharacterUpdate(object sender, EventArgs e)
         {
-            await RequestCharacterUpdate();
-
-            await SetDirty(true);
+            try
+            {
+                await RequestCharacterUpdate(GenericToken);
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
         public async void MakeDirty(object sender, NotifyCollectionChangedEventArgs e)
@@ -8560,21 +8569,35 @@ namespace Chummer
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
 
-            await SetDirty(true);
+            try
+            {
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
         public async void MakeDirty(object sender, EventArgs e)
         {
-            await SetDirty(true);
+            try
+            {
+                await SetDirty(true, GenericToken);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
+            }
         }
 
-        public async ValueTask RequestCharacterUpdate()
+        public async ValueTask RequestCharacterUpdate(CancellationToken token = default)
         {
             if (IsLoading)
                 return;
             try
             {
-                if (!await _objUpdateCharacterInfoSemaphoreSlim.WaitAsync(0, GenericToken))
+                if (!await _objUpdateCharacterInfoSemaphoreSlim.WaitAsync(0, token))
                     return;
             }
             catch (OperationCanceledException)
@@ -8585,31 +8608,30 @@ namespace Chummer
             {
                 CancellationTokenSource objNewSource = new CancellationTokenSource();
                 CancellationTokenSource objTemp = Interlocked.Exchange(ref _objUpdateCharacterInfoCancellationTokenSource, objNewSource);
-                if (objTemp?.IsCancellationRequested == true)
-                {
-                    try
-                    {
-                        objTemp.Cancel(false);
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        //swallow this
-                    }
-                    finally
-                    {
-                        objTemp.Dispose();
-                    }
-                }
-
                 try
                 {
-                    GenericToken.ThrowIfCancellationRequested();
+                    if (objTemp?.IsCancellationRequested == true)
+                    {
+                        try
+                        {
+                            objTemp.Cancel(false);
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            //swallow this
+                        }
+                        finally
+                        {
+                            objTemp.Dispose();
+                        }
+                    }
+                    token.ThrowIfCancellationRequested();
                 }
-                catch (OperationCanceledException)
+                catch
                 {
                     Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objNewSource);
                     objNewSource.Dispose();
-                    return;
+                    throw;
                 }
 
                 Task tskOriginalTask = Interlocked.Exchange(ref _tskUpdateCharacterInfo, null);
@@ -8986,7 +9008,7 @@ namespace Chummer
                                                   await LanguageManager.GetStringAsync("String_Space", token: token) +
                                                   objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
                                                   DateTime.Now);
-                                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token);
                                 CharacterObject.Nuyen -= decCost;
 
                                 ExpenseUndo objUndo = new ExpenseUndo();

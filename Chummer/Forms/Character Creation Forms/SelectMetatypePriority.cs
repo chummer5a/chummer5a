@@ -1537,10 +1537,10 @@ namespace Chummer
             }
         }
 
-        private void AddFreeSkills(int intFreeLevels, Improvement.ImprovementType type, string strSkill1, string strSkill2, string strSkill3)
+        private async ValueTask AddFreeSkills(int intFreeLevels, Improvement.ImprovementType type, string strSkill1, string strSkill2, string strSkill3)
         {
             List<Improvement> lstOldFreeSkillImprovements
-                = ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, type);
+                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, type);
             lstOldFreeSkillImprovements.RemoveAll(x => x.ImproveSource != Improvement.ImprovementSource.Heritage);
             if (intFreeLevels != 0)
             {
@@ -1553,9 +1553,9 @@ namespace Chummer
                     else
                     {
                         blnCommit = true;
-                        AddExoticSkillIfNecessary(strSkill1);
-                        ImprovementManager.CreateImprovement(_objCharacter, strSkill1, Improvement.ImprovementSource.Heritage, string.Empty,
-                            type, string.Empty, intFreeLevels);
+                        await AddExoticSkillIfNecessary(strSkill1);
+                        await ImprovementManager.CreateImprovementAsync(_objCharacter, strSkill1, Improvement.ImprovementSource.Heritage, string.Empty,
+                                                                        type, string.Empty, intFreeLevels);
                     }
                 }
 
@@ -1567,9 +1567,9 @@ namespace Chummer
                     else
                     {
                         blnCommit = true;
-                        AddExoticSkillIfNecessary(strSkill2);
-                        ImprovementManager.CreateImprovement(_objCharacter, strSkill2, Improvement.ImprovementSource.Heritage, string.Empty,
-                            type, string.Empty, intFreeLevels);
+                        await AddExoticSkillIfNecessary(strSkill2);
+                        await ImprovementManager.CreateImprovementAsync(_objCharacter, strSkill2, Improvement.ImprovementSource.Heritage, string.Empty,
+                                                                        type, string.Empty, intFreeLevels);
                     }
                 }
 
@@ -1581,22 +1581,22 @@ namespace Chummer
                     else
                     {
                         blnCommit = true;
-                        AddExoticSkillIfNecessary(strSkill3);
-                        ImprovementManager.CreateImprovement(_objCharacter, strSkill3, Improvement.ImprovementSource.Heritage, string.Empty,
-                            type, string.Empty, intFreeLevels);
+                        await AddExoticSkillIfNecessary(strSkill3);
+                        await ImprovementManager.CreateImprovementAsync(_objCharacter, strSkill3, Improvement.ImprovementSource.Heritage, string.Empty,
+                                                                        type, string.Empty, intFreeLevels);
                     }
                 }
 
                 if (lstOldFreeSkillImprovements.Count > 0)
-                    ImprovementManager.RemoveImprovements(_objCharacter, lstOldFreeSkillImprovements);
+                    await ImprovementManager.RemoveImprovementsAsync(_objCharacter, lstOldFreeSkillImprovements);
                 if (blnCommit)
-                    ImprovementManager.Commit(_objCharacter);
+                    await ImprovementManager.CommitAsync(_objCharacter);
 
-                void AddExoticSkillIfNecessary(string strDictionaryKey)
+                async ValueTask AddExoticSkillIfNecessary(string strDictionaryKey)
                 {
                     // Add exotic skills if we are increasing their base level
                     if (!ExoticSkill.IsExoticSkillName(strDictionaryKey) ||
-                        _objCharacter.SkillsSection.GetActiveSkill(strDictionaryKey) != null)
+                        await _objCharacter.SkillsSection.GetActiveSkillAsync(strDictionaryKey) != null)
                         return;
                     string strSkillName = strDictionaryKey;
                     string strSkillSpecific = string.Empty;
@@ -1606,11 +1606,11 @@ namespace Chummer
                         strSkillSpecific = strSkillName.Substring(intParenthesesIndex + 2, strSkillName.Length - intParenthesesIndex - 3);
                         strSkillName = strSkillName.Substring(0, intParenthesesIndex);
                     }
-                    _objCharacter.SkillsSection.AddExoticSkill(strSkillName, strSkillSpecific);
+                    await _objCharacter.SkillsSection.AddExoticSkillAsync(strSkillName, strSkillSpecific);
                 }
             }
             else
-                ImprovementManager.RemoveImprovements(_objCharacter, lstOldFreeSkillImprovements);
+                await ImprovementManager.RemoveImprovementsAsync(_objCharacter, lstOldFreeSkillImprovements);
         }
 
         /// <summary>

@@ -36,7 +36,7 @@ namespace Chummer
     /// </summary>
     /// <typeparam name="TKey">Key to use for the dictionary.</typeparam>
     /// <typeparam name="TValue">Values to use for the dictionary.</typeparam>
-    public sealed class LockingDictionary<TKey, TValue> : IDictionary, IDictionary<TKey, TValue>, IAsyncReadOnlyDictionary<TKey, TValue>, IProducerConsumerCollection<KeyValuePair<TKey, TValue>>, IHasLockObject, ISerializable, IDeserializationCallback
+    public sealed class LockingDictionary<TKey, TValue> : IDictionary, IAsyncDictionary<TKey, TValue>, IAsyncReadOnlyDictionary<TKey, TValue>, IProducerConsumerCollection<KeyValuePair<TKey, TValue>>, IHasLockObject, ISerializable, IDeserializationCallback
     {
         private readonly Dictionary<TKey, TValue> _dicData;
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
@@ -647,6 +647,30 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<TValue> GetValueAtAsync(TKey key, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _dicData[key];
+        }
+
+        public async ValueTask SetValueAtAsync(TKey key, TValue value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (_dicData.TryGetValue(key, out TValue objValue) && objValue.Equals(value))
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+                try
+                {
+                    _dicData[key] = value;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
+                }
+            }
+        }
+
         /// <inheritdoc />
         public object this[object key]
         {
@@ -688,6 +712,12 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<ICollection<TKey>> GetKeysAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _dicData.Keys;
+        }
+
         /// <inheritdoc />
         IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values
         {
@@ -710,6 +740,12 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _dicData.Values;
             }
+        }
+
+        public async ValueTask<ICollection<TValue>> GetValuesAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _dicData.Values;
         }
 
         /// <inheritdoc />

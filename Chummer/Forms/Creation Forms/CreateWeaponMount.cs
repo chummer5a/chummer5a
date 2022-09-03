@@ -366,7 +366,7 @@ namespace Chummer
 
             List<VehicleMod> lstOldRemovedVehicleMods
                 = _objMount.Mods.Where(x => !x.IncludedInVehicle && !_lstMods.Contains(x)).ToList();
-            _objMount.Mods.RemoveAll(x => lstOldRemovedVehicleMods.Contains(x));
+            await _objMount.Mods.RemoveAllAsync(x => lstOldRemovedVehicleMods.Contains(x));
             List<VehicleMod> lstNewVehicleMods = new List<VehicleMod>(_lstMods.Count);
             foreach (VehicleMod objMod in _lstMods)
             {
@@ -415,8 +415,8 @@ namespace Chummer
                         }
                         else
                         {
-                            _objMount.Mods.RemoveAll(x => lstNewVehicleMods.Contains(x));
-                            _objMount.Mods.AddRange(lstOldRemovedVehicleMods);
+                            await _objMount.Mods.RemoveAllAsync(x => lstNewVehicleMods.Contains(x));
+                            await _objMount.Mods.AddRangeAsync(lstOldRemovedVehicleMods);
                         }
                         return;
                     }
@@ -454,8 +454,8 @@ namespace Chummer
                         }
                         else
                         {
-                            _objMount.Mods.RemoveAll(x => lstNewVehicleMods.Contains(x));
-                            _objMount.Mods.AddRange(lstOldRemovedVehicleMods);
+                            await _objMount.Mods.RemoveAllAsync(x => lstNewVehicleMods.Contains(x));
+                            await _objMount.Mods.AddRangeAsync(lstOldRemovedVehicleMods);
                         }
                         return;
                     }

@@ -356,7 +356,7 @@ namespace Chummer.Backend.Attributes
             {
                 await AttributeList.ClearAsync();
                 await SpecialAttributeList.ClearAsync();
-                foreach (BindingSource objSource in _dicBindings.Values)
+                foreach (BindingSource objSource in await _dicBindings.GetValuesAsync())
                     objSource.Dispose();
                 await _dicBindings.DisposeAsync();
                 await _lstNormalAttributes.DisposeAsync();

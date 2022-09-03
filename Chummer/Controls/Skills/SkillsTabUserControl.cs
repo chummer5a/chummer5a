@@ -793,7 +793,7 @@ namespace Chummer.UI.Skills
                 if (await frmPickExoticSkill.ShowDialogSafeAsync(_objCharacter) != DialogResult.OK)
                     return;
 
-                objSkill = _objCharacter.SkillsSection.AddExoticSkill(frmPickExoticSkill.MyForm.SelectedExoticSkill,
+                objSkill = await _objCharacter.SkillsSection.AddExoticSkillAsync(frmPickExoticSkill.MyForm.SelectedExoticSkill,
                     frmPickExoticSkill.MyForm.SelectedExoticSkillSpecialisation);
             }
 

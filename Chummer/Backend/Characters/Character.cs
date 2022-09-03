@@ -437,7 +437,7 @@ namespace Chummer
             }
         }
 
-        private void SustainableOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void SustainableOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (SustainedCollection.Count == 0)
                 return;
@@ -448,21 +448,25 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Remove:
                     foreach (IHasInternalId objItem in e.OldItems)
                     {
-                        SustainedCollection.RemoveAll(x => ReferenceEquals(x.LinkedObject, objItem));
+                        await SustainedCollection.RemoveAllAsync(x => ReferenceEquals(x.LinkedObject, objItem));
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     foreach (IHasInternalId objItem in e.OldItems)
                     {
-                        SustainedCollection.RemoveAll(x => ReferenceEquals(x.LinkedObject, objItem));
+                        await SustainedCollection.RemoveAllAsync(x => ReferenceEquals(x.LinkedObject, objItem));
                     }
                     break;
                 case NotifyCollectionChangedAction.Move:
                     break;
                 case NotifyCollectionChangedAction.Reset:
-                    SustainedCollection.RemoveAll(x =>
-                        !Spells.Contains(x.LinkedObject) && !ComplexForms.Contains(x.LinkedObject) &&
-                        !CritterPowers.Contains(x.LinkedObject));
+                    await SustainedCollection.RemoveAllAsync(async x =>
+                                                                 !await Spells.AnyAsync(
+                                                                     y => ReferenceEquals(y, x.LinkedObject))
+                                                                 && !await ComplexForms.AnyAsync(
+                                                                     y => ReferenceEquals(y, x.LinkedObject)) &&
+                                                                 !await CritterPowers.AnyAsync(
+                                                                     y => ReferenceEquals(y, x.LinkedObject)));
                     break;
             }
         }
@@ -7491,7 +7495,7 @@ namespace Chummer
                                     {
                                         ExpenseLogEntry objExpenseLogEntry = new ExpenseLogEntry(this);
                                         objExpenseLogEntry.Load(objXmlExpense);
-                                        _lstExpenseLog.AddWithSort(objExpenseLogEntry);
+                                        await _lstExpenseLog.AddWithSortAsync(objExpenseLogEntry, token: token);
                                     }
 
                                     //Timekeeper.Finish("load_char_elog");
@@ -7602,7 +7606,7 @@ namespace Chummer
                                 {
                                     CalendarWeek objWeek = new CalendarWeek();
                                     objWeek.Load(objXmlWeek);
-                                    _lstCalendar.AddWithSort(objWeek, (x, y) => y.CompareTo(x));
+                                    await _lstCalendar.AddWithSortAsync(objWeek, (x, y) => y.CompareTo(x));
                                 }
 
                                 //Timekeeper.Finish("load_char_calendar");
@@ -10769,6 +10773,29 @@ namespace Chummer
                     Improvements.RemoveAll(x => string.IsNullOrEmpty(GetObjectName(x, GlobalSettings.DefaultLanguage, token)));
                     intNewImprovementCount = Improvements.Count;
                 }
+            }
+        }
+
+        public async ValueTask CleanUpOrphanedImprovementsAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                int intNewImprovementCount = 0;
+                int intOldImprovementCount = await Improvements.GetCountAsync(token);
+                // Loop this until we remove every single orphaned improvement (necessary because orphaned improvements can add other improvements)
+                while (intOldImprovementCount != intNewImprovementCount)
+                {
+                    intOldImprovementCount = await Improvements.GetCountAsync(token);
+                    // Relying on (a lack of) GetObjectName is slower than ideal, but much easier to maintain
+                    await Improvements.RemoveAllAsync(
+                        x => string.IsNullOrEmpty(GetObjectName(x, GlobalSettings.DefaultLanguage, token)));
+                    intNewImprovementCount = await Improvements.GetCountAsync(token);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
             }
         }
 

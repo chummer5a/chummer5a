@@ -1959,7 +1959,7 @@ namespace Chummer
                 foreach (KeyValuePair<string, SourcebookInfo> kvpInfo in dicResults)
                     _dicSourcebookInfos[kvpInfo.Key] = kvpInfo.Value;
 
-                return dicResults.Values.ToList();
+                return (await dicResults.GetValuesAsync(token)).ToList();
             }
             finally
             {

@@ -3417,8 +3417,8 @@ namespace Chummer
                                         if (objSkill.InternalId == strImprovedName)
                                         {
                                             await Task.WhenAll(
-                                                objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objSkill),
-                                                objCharacter.SkillsSection.KnowsoftSkills.RemoveAtAsync(i));
+                                                objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objSkill).AsTask(),
+                                                objCharacter.SkillsSection.KnowsoftSkills.RemoveAtAsync(i).AsTask());
                                         }
                                     }
                                 }

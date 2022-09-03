@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public sealed class ThreadSafeList<T> : IList<T>, IReadOnlyList<T>, IList, IProducerConsumerCollection<T>, IHasLockObject, IAsyncReadOnlyCollection<T>
+    public sealed class ThreadSafeList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IList, IProducerConsumerCollection<T>, IHasLockObject
     {
         private readonly List<T> _lstData;
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
@@ -133,6 +133,30 @@ namespace Chummer
                         return;
                     using (LockObject.EnterWriteLock())
                         _lstData[index] = value;
+                }
+            }
+        }
+
+        public async ValueTask<T> GetValueAtAsync(int index, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstData[index];
+        }
+
+        public async ValueTask SetValueAtAsync(int index, T value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (_lstData[index].Equals(value))
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+                try
+                {
+                    _lstData[index] = value;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
                 }
             }
         }

@@ -217,7 +217,7 @@ namespace Chummer
                         }, objTokenToUse);
                         foreach (CharacterCache objOldCache in setCachesToDispose)
                         {
-                            if (!_dicSavedCharacterCaches.Values.Contains(objOldCache))
+                            if (!(await _dicSavedCharacterCaches.GetValuesAsync(objTokenToUse)).Contains(objOldCache))
                                 await objOldCache.DisposeAsync();
                         }
                     }
@@ -1655,21 +1655,23 @@ namespace Chummer
             treCharacterList.ClearNodeBackground(objNode);
         }
 
-        private void treCharacterList_OnDefaultDragDrop(object sender, DragEventArgs e)
+        private async void treCharacterList_OnDefaultDragDrop(object sender, DragEventArgs e)
         {
             // Do not allow the root element to be moved.
             if (treCharacterList.SelectedNode == null || treCharacterList.SelectedNode.Level == 0 || treCharacterList.SelectedNode.Parent?.Tag?.ToString() == "Watch")
                 return;
 
-            if (e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
+            if (!e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false))
+                return;
+            if (!(sender is TreeView treSenderView))
+                return;
+            Point pt = treSenderView.PointToClient(new Point(e.X, e.Y));
+            TreeNode nodDestinationNode = treSenderView.GetNodeAt(pt);
+            if (nodDestinationNode?.Level > 0)
+                nodDestinationNode = nodDestinationNode.Parent;
+            string strDestinationNode = nodDestinationNode?.Tag?.ToString();
+            try
             {
-                if (!(sender is TreeView treSenderView))
-                    return;
-                Point pt = treSenderView.PointToClient(new Point(e.X, e.Y));
-                TreeNode nodDestinationNode = treSenderView.GetNodeAt(pt);
-                if (nodDestinationNode?.Level > 0)
-                    nodDestinationNode = nodDestinationNode.Parent;
-                string strDestinationNode = nodDestinationNode?.Tag?.ToString();
                 if (strDestinationNode != "Watch")
                 {
                     if (!(e.Data.GetData("System.Windows.Forms.TreeNode") is TreeNode nodNewNode))
@@ -1682,26 +1684,34 @@ namespace Chummer
                         switch (strDestinationNode)
                         {
                             case "Recent":
-                                GlobalSettings.FavoriteCharacters.Remove(objCache.FilePath);
-                                GlobalSettings.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
+                                await GlobalSettings.FavoriteCharacters.RemoveAsync(
+                                    objCache.FilePath, _objGenericToken);
+                                await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                    0, objCache.FilePath, _objGenericToken);
                                 break;
 
                             case "Favorite":
-                                GlobalSettings.FavoriteCharacters.AddWithSort(objCache.FilePath);
+                                await GlobalSettings.FavoriteCharacters.AddWithSortAsync(
+                                    objCache.FilePath, token: _objGenericToken);
                                 break;
                         }
                     }
                 }
-
-                IPlugin plugintag = null;
-                while (nodDestinationNode?.Tag != null && plugintag == null)
-                {
-                    if (nodDestinationNode.Tag is IPlugin temp)
-                        plugintag = temp;
-                    nodDestinationNode = nodDestinationNode.Parent;
-                }
-                plugintag?.DoCharacterList_DragDrop(sender, e, treCharacterList);
             }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+
+            IPlugin plugintag = null;
+            while (nodDestinationNode?.Tag != null && plugintag == null)
+            {
+                if (nodDestinationNode.Tag is IPlugin temp)
+                    plugintag = temp;
+                nodDestinationNode = nodDestinationNode.Parent;
+            }
+            if (plugintag != null)
+                await plugintag.DoCharacterList_DragDrop(sender, e, treCharacterList);
         }
 
         private void treCharacterList_OnDefaultItemDrag(object sender, ItemDragEventArgs e)
@@ -1915,27 +1925,36 @@ namespace Chummer
             }
         }
 
-        private void tsToggleFav_Click(object sender, EventArgs e)
+        private async void tsToggleFav_Click(object sender, EventArgs e)
         {
             if (treCharacterList.IsNullOrDisposed())
                 return;
 
             TreeNode t = treCharacterList.SelectedNode;
 
-            if (t?.Tag is CharacterCache objCache)
+            if (!(t?.Tag is CharacterCache objCache))
+                return;
+            try
             {
                 switch (t.Parent.Tag.ToString())
                 {
                     case "Favorite":
-                        GlobalSettings.FavoriteCharacters.Remove(objCache.FilePath);
-                        GlobalSettings.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
+                        await GlobalSettings.FavoriteCharacters.RemoveAsync(objCache.FilePath, _objGenericToken);
+                        await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                            0, objCache.FilePath, _objGenericToken);
                         break;
 
                     default:
-                        GlobalSettings.FavoriteCharacters.AddWithSort(objCache.FilePath);
+                        await GlobalSettings.FavoriteCharacters.AddWithSortAsync(
+                            objCache.FilePath, token: _objGenericToken);
                         break;
                 }
+
                 treCharacterList.SelectedNode = t;
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
             }
         }
 

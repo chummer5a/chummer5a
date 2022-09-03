@@ -77,9 +77,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="Stack{T}.Clear"/>
-        public async ValueTask ClearAsync()
+        public async ValueTask ClearAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
                 _stkData.Clear();
@@ -98,9 +98,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="Stack{T}.Contains"/>
-        public async ValueTask<bool> ContainsAsync(T item)
+        public async ValueTask<bool> ContainsAsync(T item, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _stkData.Contains(item);
         }
 
@@ -112,9 +112,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="Stack{T}.TrimExcess"/>
-        public async ValueTask TrimExcessAsync()
+        public async ValueTask TrimExcessAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
                 _stkData.TrimExcess();
@@ -133,9 +133,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="Stack{T}.Peek"/>
-        public async ValueTask<T> PeekAsync()
+        public async ValueTask<T> PeekAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _stkData.Peek();
         }
 
@@ -147,9 +147,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="Stack{T}.Pop"/>
-        public async ValueTask<T> PopAsync()
+        public async ValueTask<T> PopAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
                 return _stkData.Pop();
@@ -168,9 +168,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="Stack{T}.Push"/>
-        public async ValueTask PushAsync(T item)
+        public async ValueTask PushAsync(T item, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
                 _stkData.Push(item);
@@ -188,9 +188,9 @@ namespace Chummer
             return true;
         }
 
-        public async ValueTask<bool> TryAddAsync(T item)
+        public async ValueTask<bool> TryAddAsync(T item, CancellationToken token = default)
         {
-            await PushAsync(item);
+            await PushAsync(item, token);
             return true;
         }
 
@@ -225,10 +225,10 @@ namespace Chummer
             return new Tuple<bool, T>(false, default);
         }
 
-        public async ValueTask<Tuple<bool, T>> TryTakeAsync()
+        public async ValueTask<Tuple<bool, T>> TryTakeAsync(CancellationToken token = default)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
                 if (_stkData.Count > 0)
@@ -252,9 +252,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="Stack{T}.ToArray"/>
-        public async ValueTask<T[]> ToArrayAsync()
+        public async ValueTask<T[]> ToArrayAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _stkData.ToArray();
         }
 
@@ -279,16 +279,16 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="Stack{T}.CopyTo"/>
-        public async ValueTask CopyToAsync(T[] array, int index)
+        public async ValueTask CopyToAsync(T[] array, int index, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
                 _stkData.CopyTo(array, index);
         }
 
         /// <inheritdoc cref="Stack{T}.CopyTo"/>
-        public async ValueTask CopyToAsync(Array array, int index)
+        public async ValueTask CopyToAsync(Array array, int index, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 foreach (T objItem in _stkData)
                 {

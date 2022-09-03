@@ -31,7 +31,7 @@ using Chummer.Annotations;
 
 namespace Chummer
 {
-    public class ThreadSafeObservableCollection<T> : IList<T>, IList, IReadOnlyList<T>, INotifyCollectionChanged, INotifyPropertyChanged, IProducerConsumerCollection<T>, IHasLockObject, IAsyncReadOnlyCollection<T>
+    public class ThreadSafeObservableCollection<T> : IAsyncList<T>, IList, IAsyncReadOnlyList<T>, INotifyCollectionChanged, INotifyPropertyChanged, IProducerConsumerCollection<T>, IHasLockObject
     {
         protected readonly EnhancedObservableCollection<T> _lstData;
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
@@ -151,6 +151,30 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<T> GetValueAtAsync(int index, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstData[index];
+        }
+
+        public async ValueTask SetValueAtAsync(int index, T value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (_lstData[index].Equals(value))
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+                try
+                {
+                    _lstData[index] = value;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
+                }
+            }
+        }
+
         public virtual int Add(object value)
         {
             if (!(value is T objCastValue))
@@ -196,7 +220,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="EnhancedObservableCollection{T}.Clear" />
-        public async Task ClearAsync(CancellationToken token = default)
+        public async ValueTask ClearAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try

@@ -345,9 +345,14 @@
     <Compile Include="Backend\Helpers\SafeObjectPool.cs" />
     <Compile Include="Backend\Helpers\ThreadSafeForm.cs" />
     <Compile Include="Backend\Helpers\XmlElementWriteHelper.cs" />
+    <Compile Include="Backend\Interfaces\IAsyncCollection.cs" />
+    <Compile Include="Backend\Interfaces\IAsyncDictionary.cs" />
     <Compile Include="Backend\Interfaces\IAsyncEnumerable.cs" />
+    <Compile Include="Backend\Interfaces\IAsyncList.cs" />
     <Compile Include="Backend\Interfaces\IAsyncReadOnlyCollection.cs" />
     <Compile Include="Backend\Interfaces\IAsyncReadOnlyDictionary.cs" />
+    <Compile Include="Backend\Interfaces\IAsyncReadOnlyList.cs" />
+    <Compile Include="Backend\Interfaces\IAsyncSet.cs" />
     <Compile Include="Backend\Interfaces\IHasCharacterObjects.cs" />
     <Compile Include="Backend\Interfaces\IHasCost.cs" />
     <Compile Include="Backend\Interfaces\IHasLockObject.cs" />

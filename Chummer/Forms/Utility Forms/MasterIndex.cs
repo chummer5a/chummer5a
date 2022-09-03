@@ -179,7 +179,8 @@ namespace Chummer
         {
             _objSelectedSetting.PropertyChanged -= OnSelectedSettingChanged;
             _objGenericFormClosingCancellationTokenSource?.Cancel(false);
-            foreach (Task<string> tskLoop in _dicCachedNotes.Values)
+            // ReSharper disable once MethodSupportsCancellation
+            foreach (Task<string> tskLoop in await _dicCachedNotes.GetValuesAsync())
             {
                 try
                 {

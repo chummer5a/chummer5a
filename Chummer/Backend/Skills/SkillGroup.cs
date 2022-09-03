@@ -353,6 +353,41 @@ namespace Chummer.Backend.Skills
             return objSkillGroup;
         }
 
+        public static async Task<SkillGroup> GetAsync(Skill objSkill, CancellationToken token = default)
+        {
+            if (objSkill == null)
+                return null;
+            if (objSkill.SkillGroupObject != null)
+                return objSkill.SkillGroupObject;
+
+            if (string.IsNullOrWhiteSpace(objSkill.SkillGroup))
+                return null;
+
+            SkillGroup objSkillGroup =
+                await objSkill.CharacterObject.SkillsSection.SkillGroups.FindAsync(x => x.Name == objSkill.SkillGroup, token);
+            if (objSkillGroup != null)
+            {
+                if (!objSkillGroup.SkillList.Contains(objSkill))
+                    objSkillGroup.Add(objSkill);
+            }
+            else
+            {
+                objSkillGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
+                objSkillGroup.Add(objSkill);
+                await objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSortAsync(objSkillGroup,
+                    SkillsSection.CompareSkillGroups,
+                    (objExistingSkillGroup, objNewSkillGroup) =>
+                    {
+                        foreach (Skill x in objExistingSkillGroup.SkillList.Where(x =>
+                                     !objExistingSkillGroup.SkillList.Contains(x)))
+                            objExistingSkillGroup.Add(x);
+                        objNewSkillGroup.UnbindSkillGroup();
+                    }, token: token);
+            }
+
+            return objSkillGroup;
+        }
+
         public void Add(Skill skill)
         {
             // Do not add duplicate skills that we are still in the process of loading

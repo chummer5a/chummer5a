@@ -33,14 +33,14 @@ namespace Chummer
     /// <typeparam name="TKey">Type used for unique keys in the internal dictionary</typeparam>
     /// <typeparam name="TValue">Type used for values in the internal dictionary</typeparam>
     public sealed class LockingTypedOrderedDictionary<TKey, TValue> :
-        IDictionary<TKey, TValue>,
-        IList<KeyValuePair<TKey, TValue>>,
+        IAsyncDictionary<TKey, TValue>,
+        IAsyncList<KeyValuePair<TKey, TValue>>,
         IDictionary,
-        IReadOnlyList<KeyValuePair<TKey, TValue>>,
+        IAsyncReadOnlyList<KeyValuePair<TKey, TValue>>,
+        IAsyncReadOnlyDictionary<TKey, TValue>,
         ISerializable,
         IDeserializationCallback,
         IHasLockObject,
-        IAsyncReadOnlyDictionary<TKey, TValue>,
         IProducerConsumerCollection<KeyValuePair<TKey, TValue>>
     {
         private readonly Dictionary<TKey, TValue> _dicUnorderedData;
@@ -90,6 +90,49 @@ namespace Chummer
                 _dicUnorderedData.Clear();
                 _lstIndexes.Clear();
             }
+        }
+
+        /// <inheritdoc cref="IDictionary{TKey, TValue}.Clear" />
+        public async ValueTask ClearAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _dicUnorderedData.Clear();
+                _lstIndexes.Clear();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+        }
+
+        /// <inheritdoc />
+        public async ValueTask<bool> ContainsAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _dicUnorderedData.TryGetValue(item.Key, out TValue objValue) && objValue.Equals(item.Value);
+        }
+
+        /// <inheritdoc />
+        public async ValueTask CopyToAsync(KeyValuePair<TKey, TValue>[] array, int index, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                foreach (TKey key in _lstIndexes)
+                {
+                    array.SetValue(new KeyValuePair<TKey, TValue>(key, _dicUnorderedData[key]), index);
+                    ++index;
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public async ValueTask<bool> RemoveAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return await ContainsAsync(item, token) && await RemoveAsync(item.Key, token);
         }
 
         /// <inheritdoc cref="IEnumerable.GetEnumerator()" />
@@ -210,19 +253,19 @@ namespace Chummer
             }
         }
         
-        public Task AddAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
+        public ValueTask AddAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
         {
             return AddAsync(item.Key, item.Value, token);
         }
 
         /// <inheritdoc cref="Dictionary{TKey, TValue}.Add" />
-        public Task AddAsync(Tuple<TKey, TValue> item, CancellationToken token = default)
+        public ValueTask AddAsync(Tuple<TKey, TValue> item, CancellationToken token = default)
         {
             (TKey objKey, TValue objValue) = item;
             return AddAsync(objKey, objValue, token);
         }
         
-        public Task AddAsync(object key, object value, CancellationToken token = default)
+        public ValueTask AddAsync(object key, object value, CancellationToken token = default)
         {
             if (!(key is TKey objKey))
                 throw new ArgumentException(nameof(objKey));
@@ -231,7 +274,7 @@ namespace Chummer
             return AddAsync(objKey, objValue, token);
         }
         
-        public async Task AddAsync(TKey key, TValue value, CancellationToken token = default)
+        public async ValueTask AddAsync(TKey key, TValue value, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
@@ -239,6 +282,23 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 _dicUnorderedData.Add(key, value);
                 _lstIndexes.Add(key);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+        }
+
+        /// <inheritdoc />
+        public async ValueTask<bool> RemoveAsync(TKey key, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                if (!_dicUnorderedData.Remove(key))
+                    return false;
+                _lstIndexes.Remove(key);
+                return true;
             }
             finally
             {
@@ -422,6 +482,12 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<ICollection<TKey>> GetKeysAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstIndexes;
+        }
+
         /// <inheritdoc />
         public ICollection<TValue> Values
         {
@@ -435,6 +501,18 @@ namespace Chummer
                         lstReturn.Add(_dicUnorderedData[_lstIndexes[i]]);
                     return lstReturn;
                 }
+            }
+        }
+
+        public async ValueTask<ICollection<TValue>> GetValuesAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                // Needed to make sure ordering is retained
+                List<TValue> lstReturn = new List<TValue>(_dicUnorderedData.Count);
+                for (int i = 0; i < _dicUnorderedData.Count; ++i)
+                    lstReturn.Add(_dicUnorderedData[_lstIndexes[i]]);
+                return lstReturn;
             }
         }
 
@@ -610,6 +688,31 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<TValue> GetValueAtAsync(TKey key, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _dicUnorderedData[key];
+        }
+
+        public async ValueTask SetValueAtAsync(TKey key, TValue value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                TValue objOldValue = _dicUnorderedData[key];
+                if (objOldValue.Equals(value))
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+                try
+                {
+                    _dicUnorderedData[key] = value;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
+                }
+            }
+        }
+
         public object this[object key]
         {
             get
@@ -695,6 +798,90 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<KeyValuePair<TKey, TValue>> GetValueAtAsync(int index, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return new KeyValuePair<TKey, TValue>(_lstIndexes[index], _dicUnorderedData[_lstIndexes[index]]);
+        }
+
+        public async ValueTask SetValueAtAsync(int index, KeyValuePair<TKey, TValue> value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (_dicUnorderedData.TryGetValue(value.Key, out TValue objOldValue))
+                {
+                    int intOriginalIndex = _lstIndexes.IndexOf(value.Key);
+                    if (index == intOriginalIndex)
+                        return;
+                    TKey objKeyToRemove = _lstIndexes[index];
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+                    try
+                    {
+                        _lstIndexes[index] = value.Key;
+                        for (int i = intOriginalIndex; i < _lstIndexes.Count - 2; ++i)
+                        {
+                            if (i != index)
+                                _lstIndexes[i] = _lstIndexes[i + 1];
+                        }
+
+                        _lstIndexes.RemoveAt(_lstIndexes.Count - 1);
+                        if (objKeyToRemove != null)
+                            _dicUnorderedData.Remove(objKeyToRemove);
+                        if (!objOldValue.Equals(value.Value))
+                            _dicUnorderedData[value.Key] = value.Value;
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync();
+                    }
+                }
+                else
+                {
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+                    try
+                    {
+                        TKey objKeyToRemove = _lstIndexes[index];
+                        _dicUnorderedData.Remove(objKeyToRemove);
+                        _dicUnorderedData.Add(value.Key, value.Value);
+                        _lstIndexes[index] = value.Key;
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync();
+                    }
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public async ValueTask<int> IndexOfAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _dicUnorderedData.ContainsKey(item.Key) && _dicUnorderedData[item.Key].Equals(item.Value)
+                    ? _lstIndexes.IndexOf(item.Key)
+                    : -1;
+        }
+
+        /// <inheritdoc />
+        public async ValueTask InsertAsync(int index, KeyValuePair<TKey, TValue> item, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (_dicUnorderedData.ContainsKey(item.Key))
+                    throw new ArgumentException(null, nameof(item));
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+                try
+                {
+                    _dicUnorderedData.Add(item.Key, item.Value);
+                    _lstIndexes.Insert(index, item.Key);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
+                }
+            }
+        }
+
         public int IndexOf(TKey key)
         {
             using (EnterReadLock.Enter(LockObject))
@@ -705,9 +892,10 @@ namespace Chummer
 
         public int IndexOf(KeyValuePair<TKey, TValue> item)
         {
-            return _dicUnorderedData.ContainsKey(item.Key) && _dicUnorderedData[item.Key].Equals(item.Value)
-                ? _lstIndexes.IndexOf(item.Key)
-                : -1;
+            using (EnterReadLock.Enter(LockObject))
+                return _dicUnorderedData.ContainsKey(item.Key) && _dicUnorderedData[item.Key].Equals(item.Value)
+                    ? _lstIndexes.IndexOf(item.Key)
+                    : -1;
         }
 
         public int IndexOf(Tuple<TKey, TValue> item)
@@ -820,6 +1008,27 @@ namespace Chummer
                 {
                     _dicUnorderedData.Remove(objKeyToRemove);
                     _lstIndexes.RemoveAt(index);
+                }
+            }
+        }
+
+        /// <inheritdoc cref="List{T}.RemoveAt" />
+        public async ValueTask RemoveAtAsync(int index, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                TKey objKeyToRemove = _lstIndexes[index];
+                if (objKeyToRemove.Equals(default))
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+                try
+                {
+                    _dicUnorderedData.Remove(objKeyToRemove);
+                    _lstIndexes.RemoveAt(index);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
                 }
             }
         }
@@ -1050,14 +1259,14 @@ namespace Chummer
                 return _dicUnorderedData.Count;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IAsyncDictionary{TKey, TValue}.ContainsKeyAsync" />
         public async ValueTask<bool> ContainsKeyAsync(TKey key, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _dicUnorderedData.ContainsKey(key);
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="IAsyncDictionary{TKey, TValue}.TryGetValueAsync" />
         public async ValueTask<Tuple<bool, TValue>> TryGetValueAsync(TKey key, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))

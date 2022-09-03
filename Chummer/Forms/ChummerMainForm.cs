@@ -1264,24 +1264,24 @@ namespace Chummer
             }
         }
 
-        private void mnuMRU_MouseDown(object sender, MouseEventArgs e)
+        private async void mnuMRU_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Right)
                 return;
             string strFileName = ((ToolStripMenuItem)sender).Tag as string;
             if (!string.IsNullOrEmpty(strFileName))
-                GlobalSettings.FavoriteCharacters.AddWithSort(strFileName);
+                await GlobalSettings.FavoriteCharacters.AddWithSortAsync(strFileName);
         }
 
-        private void mnuStickyMRU_MouseDown(object sender, MouseEventArgs e)
+        private async void mnuStickyMRU_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Right)
                 return;
             string strFileName = ((ToolStripMenuItem)sender).Tag as string;
             if (!string.IsNullOrEmpty(strFileName))
             {
-                GlobalSettings.FavoriteCharacters.Remove(strFileName);
-                GlobalSettings.MostRecentlyUsedCharacters.Insert(0, strFileName);
+                await GlobalSettings.FavoriteCharacters.RemoveAsync(strFileName);
+                await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(0, strFileName);
             }
         }
 
@@ -1816,9 +1816,9 @@ namespace Chummer
                 objTemp.Dispose();
             }
 #endif
-            await Task.WhenAll(_lstOpenCharacterEditorForms.ClearAsync(),
-                               _lstOpenCharacterExportForms.ClearAsync(),
-                               _lstOpenCharacterSheetViewers.ClearAsync());
+            await Task.WhenAll(_lstOpenCharacterEditorForms.ClearAsync().AsTask(),
+                               _lstOpenCharacterExportForms.ClearAsync().AsTask(),
+                               _lstOpenCharacterSheetViewers.ClearAsync().AsTask());
             Properties.Settings.Default.WindowState = WindowState;
             if (WindowState == FormWindowState.Normal)
             {

@@ -1815,26 +1815,22 @@ namespace Chummer
                                                                                           .EssenceHoleGUID
                                                                                       && x.SourceID != Cyberware
                                                                                           .EssenceAntiHoleGUID
-                                                                                      && x.IsModularCurrentlyEquipped)
+                                                                                      && x.IsModularCurrentlyEquipped
+                                                                                      && x.CanRemoveThroughImprovements)
                                                                               .ToList())
                             {
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                                 {
-                                    if (objCyberware.CanRemoveThroughImprovements)
-                                    {
-                                        if (objCyberware.Parent != null)
-                                            await objCyberware.Parent.Children.RemoveAsync(objCyberware);
-                                        await CharacterObject.Cyberware.AddAsync(objCyberware);
-                                        objCyberware.ChangeModularEquip(false);
-                                    }
-
-                                    continue;
+                                    if (objCyberware.Parent != null)
+                                        await objCyberware.Parent.Children.RemoveAsync(objCyberware, GenericToken);
+                                    await CharacterObject.Cyberware.AddAsync(objCyberware, GenericToken);
+                                    objCyberware.ChangeModularEquip(false);
                                 }
-
-                                if (!objCyberware.CanRemoveThroughImprovements)
-                                    continue;
-                                objCyberware.DeleteCyberware();
-                                blnDoRefresh = true;
+                                else
+                                {
+                                    objCyberware.DeleteCyberware();
+                                    blnDoRefresh = true;
+                                }
                             }
 
                             if (blnDoRefresh)
@@ -1859,26 +1855,22 @@ namespace Chummer
                                                                                           .EssenceHoleGUID
                                                                                       && x.SourceID != Cyberware
                                                                                           .EssenceAntiHoleGUID
-                                                                                      && x.IsModularCurrentlyEquipped)
+                                                                                      && x.IsModularCurrentlyEquipped
+                                                                                      && x.CanRemoveThroughImprovements)
                                                                               .ToList())
                             {
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                                 {
-                                    if (objCyberware.CanRemoveThroughImprovements)
-                                    {
-                                        objCyberware.ChangeModularEquip(false);
-                                        if (objCyberware.Parent != null)
-                                            await objCyberware.Parent.Children.RemoveAsync(objCyberware);
-                                        await CharacterObject.Cyberware.AddAsync(objCyberware);
-                                    }
-
-                                    continue;
+                                    objCyberware.ChangeModularEquip(false);
+                                    if (objCyberware.Parent != null)
+                                        await objCyberware.Parent.Children.RemoveAsync(objCyberware);
+                                    await CharacterObject.Cyberware.AddAsync(objCyberware);
                                 }
-
-                                if (!objCyberware.CanRemoveThroughImprovements)
-                                    continue;
-                                objCyberware.DeleteCyberware();
-                                blnDoRefresh = true;
+                                else
+                                {
+                                    objCyberware.DeleteCyberware();
+                                    blnDoRefresh = true;
+                                }
                             }
 
                             if (blnDoRefresh)
@@ -1900,7 +1892,8 @@ namespace Chummer
                                                                                           .EssenceHoleGUID
                                                                                       && x.SourceID != Cyberware
                                                                                           .EssenceAntiHoleGUID
-                                                                                      && x.IsModularCurrentlyEquipped)
+                                                                                      && x.IsModularCurrentlyEquipped
+                                                                                      && x.CanRemoveThroughImprovements)
                                                                               .ToList())
                             {
                                 char chrAvail = objCyberware.TotalAvailTuple(false).Suffix;
@@ -1908,21 +1901,16 @@ namespace Chummer
                                     continue;
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
                                 {
-                                    if (objCyberware.CanRemoveThroughImprovements)
-                                    {
-                                        if (objCyberware.Parent != null)
-                                            await objCyberware.Parent.Children.RemoveAsync(objCyberware);
-                                        await CharacterObject.Cyberware.AddAsync(objCyberware);
-                                        objCyberware.ChangeModularEquip(false);
-                                    }
-
-                                    continue;
+                                    if (objCyberware.Parent != null)
+                                        await objCyberware.Parent.Children.RemoveAsync(objCyberware);
+                                    await CharacterObject.Cyberware.AddAsync(objCyberware);
+                                    objCyberware.ChangeModularEquip(false);
                                 }
-
-                                if (!objCyberware.CanRemoveThroughImprovements)
-                                    continue;
-                                objCyberware.DeleteCyberware();
-                                blnDoRefresh = true;
+                                else
+                                {
+                                    objCyberware.DeleteCyberware();
+                                    blnDoRefresh = true;
+                                }
                             }
 
                             if (blnDoRefresh)
@@ -4324,7 +4312,7 @@ namespace Chummer
                     InitiationGrade objGrade = new InitiationGrade(CharacterObject);
                     objGrade.Create(CharacterObject.InitiateGrade + 1, false, chkInitiationGroup.Checked,
                                     chkInitiationOrdeal.Checked, chkInitiationSchooling.Checked);
-                    CharacterObject.InitiationGrades.AddWithSort(objGrade);
+                    await CharacterObject.InitiationGrades.AddWithSortAsync(objGrade, token: GenericToken);
                 }
                 else if (CharacterObject.RESEnabled)
                 {
@@ -4353,7 +4341,7 @@ namespace Chummer
                     InitiationGrade objGrade = new InitiationGrade(CharacterObject);
                     objGrade.Create(CharacterObject.SubmersionGrade + 1, true, chkInitiationGroup.Checked,
                                     chkInitiationOrdeal.Checked, chkInitiationSchooling.Checked);
-                    CharacterObject.InitiationGrades.AddWithSort(objGrade);
+                    await CharacterObject.InitiationGrades.AddWithSortAsync(objGrade, token: GenericToken);
                 }
             }
             finally
@@ -13169,7 +13157,7 @@ namespace Chummer
                     objKarma.Create(CharacterObject.Karma,
                                     await LanguageManager.GetStringAsync("Label_SelectBP_StartingKarma", token: token),
                                     ExpenseType.Karma, DateTime.Now);
-                    CharacterObject.ExpenseEntries.AddWithSort(objKarma);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objKarma, token: token);
 
                     // Create an Undo entry so that the starting Karma amount can be modified if needed.
                     ExpenseUndo objKarmaUndo = new ExpenseUndo();
@@ -13210,7 +13198,7 @@ namespace Chummer
                 ExpenseLogEntry objNuyen = new ExpenseLogEntry(CharacterObject);
                 objNuyen.Create(CharacterObject.Nuyen, await LanguageManager.GetStringAsync("Title_LifestyleNuyen", token: token),
                                 ExpenseType.Nuyen, DateTime.Now);
-                CharacterObject.ExpenseEntries.AddWithSort(objNuyen);
+                await CharacterObject.ExpenseEntries.AddWithSortAsync(objNuyen, token: token);
 
                 // Create an Undo entry so that the Starting Nuyen amount can be modified if needed.
                 ExpenseUndo objNuyenUndo = new ExpenseUndo();

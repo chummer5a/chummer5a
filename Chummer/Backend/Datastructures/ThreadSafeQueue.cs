@@ -77,9 +77,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="Queue{T}.Clear" />
-        public async ValueTask ClearAsync()
+        public async ValueTask ClearAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
                 _queData.Clear();
@@ -98,9 +98,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="Queue{T}.Contains" />
-        public async ValueTask<bool> ContainsAsync(T item)
+        public async ValueTask<bool> ContainsAsync(T item, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _queData.Contains(item);
         }
 
@@ -112,9 +112,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="Queue{T}.TrimExcess" />
-        public async ValueTask TrimExcessAsync()
+        public async ValueTask TrimExcessAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
                 _queData.TrimExcess();
@@ -133,9 +133,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="Queue{T}.Peek" />
-        public async ValueTask<T> PeekAsync()
+        public async ValueTask<T> PeekAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
                 return _queData.Peek();
         }
 
@@ -147,9 +147,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="Queue{T}.Dequeue" />
-        public async ValueTask<T> DequeueAsync()
+        public async ValueTask<T> DequeueAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
                 return _queData.Dequeue();
@@ -168,9 +168,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="Queue{T}.Enqueue" />
-        public async ValueTask EnqueueAsync(T item)
+        public async ValueTask EnqueueAsync(T item, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
             try
             {
                 _queData.Enqueue(item);
