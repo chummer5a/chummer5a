@@ -1130,7 +1130,7 @@ namespace Chummer
                 {
                     case "Aspected Magician":
                     case "Enchanter":
-                        await _objCharacter.PushText.PushAsync(strSkill1);
+                        await _objCharacter.PushText.PushAsync(strSkill1, token);
                         break;
                 }
 

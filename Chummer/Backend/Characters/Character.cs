@@ -6817,10 +6817,10 @@ namespace Chummer
                                                 Power objPower = new Power(this);
                                                 objPower.Load(xmlPower);
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     _lstPowers.Add(objPower);
                                                 else
-                                                    await _lstPowers.AddAsync(objPower);
+                                                    await _lstPowers.AddAsync(objPower, token);
                                             }
                                         }
 
@@ -6837,10 +6837,10 @@ namespace Chummer
                                                 Power objPower = new Power(this);
                                                 objPower.Load(objNode);
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     _lstPowers.Add(objPower);
                                                 else
-                                                    await _lstPowers.AddAsync(objPower);
+                                                    await _lstPowers.AddAsync(objPower, token);
                                             }
                                         }
                                     }
@@ -7606,7 +7606,7 @@ namespace Chummer
                                 {
                                     CalendarWeek objWeek = new CalendarWeek();
                                     objWeek.Load(objXmlWeek);
-                                    await _lstCalendar.AddWithSortAsync(objWeek, (x, y) => y.CompareTo(x));
+                                    await _lstCalendar.AddWithSortAsync(objWeek, (x, y) => y.CompareTo(x), token: token);
                                 }
 
                                 //Timekeeper.Finish("load_char_calendar");
@@ -7911,7 +7911,7 @@ namespace Chummer
                                     return false;
                             if (blnSync)
                             {
-                                // ReSharper disable once MethodHasAsyncOverload
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 PostLoadMethods.Clear();
 
                                 foreach (Func<Task<bool>> funcToCall in PostLoadMethodsAsync)
@@ -7923,12 +7923,12 @@ namespace Chummer
                                         return false;
                                 }
 
-                                // ReSharper disable once MethodHasAsyncOverload
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 PostLoadMethodsAsync.Clear();
                             }
                             else
                             {
-                                await PostLoadMethods.ClearAsync();
+                                await PostLoadMethods.ClearAsync(token);
 
                                 foreach (Func<Task<bool>> funcToCall in PostLoadMethodsAsync)
                                 {
@@ -7936,7 +7936,7 @@ namespace Chummer
                                         return false;
                                 }
 
-                                await PostLoadMethodsAsync.ClearAsync();
+                                await PostLoadMethodsAsync.ClearAsync(token);
                             }
                             //Timekeeper.Finish("load_char_improvementrefreshers");
                         }
@@ -10789,7 +10789,7 @@ namespace Chummer
                     intOldImprovementCount = await Improvements.GetCountAsync(token);
                     // Relying on (a lack of) GetObjectName is slower than ideal, but much easier to maintain
                     await Improvements.RemoveAllAsync(
-                        x => string.IsNullOrEmpty(GetObjectName(x, GlobalSettings.DefaultLanguage, token)));
+                        x => string.IsNullOrEmpty(GetObjectName(x, GlobalSettings.DefaultLanguage, token)), token);
                     intNewImprovementCount = await Improvements.GetCountAsync(token);
                 }
             }

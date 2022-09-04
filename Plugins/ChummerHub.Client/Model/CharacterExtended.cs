@@ -303,7 +303,7 @@ namespace ChummerHub.Client.Sinners
                                    "Preparing Model", op_uploadChummer,
                                    CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
                         {
-                            PrepareModel();
+                            await PrepareModelAsync();
                         }
 
                         if (myState != null)

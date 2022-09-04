@@ -107,7 +107,7 @@ namespace Chummer
             {
                 try
                 {
-                    (bool blnHasEvaluator, XPathNavigator objEvaluator) = await s_StkXPathNavigatorPool.TryTakeAsync();
+                    (bool blnHasEvaluator, XPathNavigator objEvaluator) = await s_StkXPathNavigatorPool.TryTakeAsync(token);
                     if (!blnHasEvaluator)
                     {
                         await s_ObjXPathNavigatorDocumentLock.WaitAsync(token);
@@ -127,7 +127,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await s_StkXPathNavigatorPool.PushAsync(objEvaluator);
+                        await s_StkXPathNavigatorPool.PushAsync(objEvaluator, token);
                     }
 
                     blnIsSuccess = objReturn != null;
@@ -266,7 +266,7 @@ namespace Chummer
             bool blnIsSuccess;
             try
             {
-                (bool blnHasEvaluator, XPathNavigator objEvaluator) = await s_StkXPathNavigatorPool.TryTakeAsync();
+                (bool blnHasEvaluator, XPathNavigator objEvaluator) = await s_StkXPathNavigatorPool.TryTakeAsync(token);
                 if (!blnHasEvaluator)
                 {
                     await s_ObjXPathNavigatorDocumentLock.WaitAsync(token);
@@ -286,7 +286,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await s_StkXPathNavigatorPool.PushAsync(objEvaluator);
+                    await s_StkXPathNavigatorPool.PushAsync(objEvaluator, token);
                 }
 
                 blnIsSuccess = objReturn != null;

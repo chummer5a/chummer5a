@@ -3247,7 +3247,7 @@ namespace Chummer
                             await DoOnCharacterPropertyChanged(
                                 new PropertyChangedEventArgs(nameof(Character.DEPEnabled)));
 
-                        await RequestCharacterUpdate();
+                        await RequestCharacterUpdate(token);
                         // Immediately await character update because it re-applies essence loss improvements
                         try
                         {
@@ -3282,7 +3282,7 @@ namespace Chummer
                 await objCursorWait.DisposeAsync();
             }
 
-            await SetDirty(true);
+            await SetDirty(true, token);
         }
 
         private void mnuEditCopy_Click(object sender, EventArgs e)
@@ -10658,7 +10658,7 @@ namespace Chummer
                 foreach (Improvement imp in await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject, Improvement.ImprovementType.FreeSpellsSkill, token: token))
                 {
                     token.ThrowIfCancellationRequested();
-                    Skill skill = await CharacterObject.SkillsSection.GetActiveSkillAsync(imp.ImprovedName);
+                    Skill skill = await CharacterObject.SkillsSection.GetActiveSkillAsync(imp.ImprovedName, token);
                     if (skill == null)
                         continue;
                     int intSkillValue = skill.TotalBaseRating;
@@ -13745,8 +13745,8 @@ namespace Chummer
                     }
                     else
                     {
-                        await RequestCharacterUpdate();
-                        await SetDirty(true);
+                        await RequestCharacterUpdate(token);
+                        await SetDirty(true, token);
                     }
 
                     return frmPickGear.MyForm.AddAgain;
@@ -17172,8 +17172,8 @@ namespace Chummer
                 }
             }
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+            await RequestCharacterUpdate(token);
+            await SetDirty(true, token);
         }
 
         /// <summary>

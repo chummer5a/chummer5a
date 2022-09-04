@@ -545,7 +545,7 @@ namespace Chummer
                         if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther.CustomDataDirectoryKeys))
                         {
                             lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
-                            _dicCustomDataDirectoryKeys.Clear();
+                            await _dicCustomDataDirectoryKeys.ClearAsync();
                             foreach (KeyValuePair<string, bool> kvpOther in objOther.CustomDataDirectoryKeys)
                             {
                                 await _dicCustomDataDirectoryKeys.AddAsync(kvpOther.Key, kvpOther.Value);

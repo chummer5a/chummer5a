@@ -6548,7 +6548,7 @@ namespace Chummer
                     objExpense.Create(intKarmaCost, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_ExpenseSwapPositiveQuality", token: token)
                         , objSelectedQuality.CurrentDisplayNameShort
                         , await LanguageManager.GetStringAsync("String_Karma", token: token)), ExpenseType.Karma, DateTime.Now, true);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token);
                     CharacterObject.Karma += intKarmaCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -6587,7 +6587,7 @@ namespace Chummer
                 // Create the Karma expense.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(-intTotalKarmaCost, await LanguageManager.GetStringAsync("String_ExpenseRemoveNegativeQuality", token: token) + await LanguageManager.GetStringAsync("String_Space", token: token) + objSelectedQuality.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
-                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token);
                 CharacterObject.Karma -= intTotalKarmaCost;
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -7193,8 +7193,8 @@ namespace Chummer
                 }
             }
 
-            await RequestCharacterUpdate();
-            await SetDirty(true);
+            await RequestCharacterUpdate(token);
+            await SetDirty(true, token);
         }
 
         private async void cmdDeleteImprovement_Click(object sender, EventArgs e)
@@ -7674,7 +7674,7 @@ namespace Chummer
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseArmor", token: token) + await LanguageManager.GetStringAsync("String_Space", token: token) + objArmor.CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token);
                     CharacterObject.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -8132,7 +8132,7 @@ namespace Chummer
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleWeapon", token: token) + await LanguageManager.GetStringAsync("String_Space", token: token) + objWeapon.CurrentDisplayNameShort, ExpenseType.Nuyen,
                         DateTime.Now);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token);
                     CharacterObject.Nuyen -= decCost;
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -14788,7 +14788,7 @@ namespace Chummer
                 funcPropertyToUpdate?.Invoke(intFillCount);
             }
 
-            await SetDirty(true);
+            await SetDirty(true, token);
         }
 
         private async void chkCyberwareCM_CheckedChanged(object sender, EventArgs e)
