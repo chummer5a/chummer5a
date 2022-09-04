@@ -305,27 +305,27 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="ICollection.CopyTo" />
-        public void CopyTo(T[] array, int arrayIndex)
+        public void CopyTo(T[] array, int index)
         {
             using (EnterReadLock.Enter(LockObject))
             {
                 foreach (T objItem in _setData)
                 {
-                    array[arrayIndex] = objItem;
-                    ++arrayIndex;
+                    array[index] = objItem;
+                    ++index;
                 }
             }
         }
 
         /// <inheritdoc cref="ICollection.CopyTo" />
-        public async ValueTask CopyToAsync(T[] array, int arrayIndex, CancellationToken token = default)
+        public async ValueTask CopyToAsync(T[] array, int index, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 foreach (T objItem in _setData)
                 {
-                    array[arrayIndex] = objItem;
-                    ++arrayIndex;
+                    array[index] = objItem;
+                    ++index;
                 }
             }
         }

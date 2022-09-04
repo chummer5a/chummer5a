@@ -1253,7 +1253,7 @@ namespace Chummer
                                 }
 
                                 blnRemoveFreeSkills = false;
-                                AddFreeSkills(intFreeLevels, eType, strSkill1, strSkill2, strSkill3);
+                                await AddFreeSkills(intFreeLevels, eType, strSkill1, strSkill2, strSkill3);
 
                                 if (int.TryParse(
                                         (await xmlTalentPriorityNode.SelectSingleNodeAndCacheExpressionAsync(

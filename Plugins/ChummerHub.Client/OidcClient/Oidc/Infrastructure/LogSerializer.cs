@@ -1,4 +1,4 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
@@ -18,10 +18,10 @@ namespace IdentityModel.OidcClient.Infrastructure
         /// </summary>
         public static bool Enabled = true;
 
-        static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions()
+        static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
         {
-            IgnoreNullValues = true,
-            WriteIndented = true
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            WriteIndented = true,
         };
 
         static LogSerializer()

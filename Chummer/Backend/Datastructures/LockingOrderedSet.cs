@@ -356,10 +356,10 @@ namespace Chummer
                 _lstOrderedData.CopyTo(array, arrayIndex);
         }
 
-        public async ValueTask CopyToAsync(T[] array, int arrayIndex, CancellationToken token = default)
+        public async ValueTask CopyToAsync(T[] array, int index, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
-                _lstOrderedData.CopyTo(array, arrayIndex);
+                _lstOrderedData.CopyTo(array, index);
         }
 
         /// <inheritdoc />
