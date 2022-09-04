@@ -19,6 +19,7 @@ namespace IdentityModel.OidcClient
     {
         private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
         private readonly OidcClient _oidcClient;
+        private Task _tskTokenRefresher;
 
         private string _accessToken;
         private string _refreshToken;
@@ -113,7 +114,7 @@ namespace IdentityModel.OidcClient
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             string accessToken = await GetAccessTokenAsync(cancellationToken);
-            if (accessToken.IsMissing() && await RefreshTokensAsync(cancellationToken) == false)
+            if (accessToken.IsMissing() && !await RefreshTokensAsync(cancellationToken))
             {
                 return new HttpResponseMessage(HttpStatusCode.Unauthorized) { RequestMessage = request };
             }
@@ -126,7 +127,7 @@ namespace IdentityModel.OidcClient
                 return response;
             }
 
-            if (await RefreshTokensAsync(cancellationToken) == false)
+            if (!await RefreshTokensAsync(cancellationToken))
             {
                 return response;
             }
@@ -154,15 +155,22 @@ namespace IdentityModel.OidcClient
 
         private async Task<bool> RefreshTokensAsync(CancellationToken cancellationToken)
         {
+            Task tskTokenRefresher = Interlocked.Exchange(ref _tskTokenRefresher, null);
+            if (tskTokenRefresher != null)
+                await tskTokenRefresher.ConfigureAwait(false);
+
             if (await _lock.WaitAsync(Timeout, cancellationToken).ConfigureAwait(false))
             {
-                if (_refreshToken.IsMissing())
-                {
-                    return false;
-                }
-
                 try
                 {
+                    if (Interlocked.CompareExchange(ref _tskTokenRefresher, Task.CompletedTask, null) != null)
+                        return false;
+
+                    if (_refreshToken.IsMissing())
+                    {
+                        return false;
+                    }
+
                     RefreshTokenResult response = await _oidcClient.RefreshTokenAsync(_refreshToken, cancellationToken: cancellationToken).ConfigureAwait(false);
 
                     if (!response.IsError)
@@ -172,24 +180,25 @@ namespace IdentityModel.OidcClient
                         {
                             _refreshToken = response.RefreshToken;
                         }
-
-                        // This task definitely should not be left unawaited in case there's an exception that needs to be gotten,
-                        // but the original code was set up this way so and I have no time to look at how to actually make this safe.
-                        // There was a pragma here before that removed the Warning, but I removed it because this is a warning that should not be ignored.
-                        Task.Run(() =>
+                        
+                        await Interlocked.CompareExchange(ref _tskTokenRefresher, Task.Run(() =>
                         {
-                            foreach (EventHandler<TokenRefreshedEventArgs> del in TokenRefreshed.GetInvocationList())
+                            foreach (Delegate objHandler in TokenRefreshed.GetInvocationList())
                             {
+                                if (!(objHandler is EventHandler<TokenRefreshedEventArgs> del))
+                                    continue;
                                 try
                                 {
-                                    del(this, new TokenRefreshedEventArgs(response.AccessToken, response.RefreshToken, response.ExpiresIn));
+                                    del(this,
+                                        new TokenRefreshedEventArgs(response.AccessToken, response.RefreshToken,
+                                                                    response.ExpiresIn));
                                 }
                                 catch
                                 {
                                     // ignored
                                 }
                             }
-                        }).ConfigureAwait(false);
+                        }, cancellationToken), Task.CompletedTask);
 
                         return true;
                     }
