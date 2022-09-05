@@ -305,13 +305,26 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="ICollection.CopyTo" />
-        public void CopyTo(T[] array, int index)
+        public void CopyTo(T[] array, int arrayIndex)
         {
             using (EnterReadLock.Enter(LockObject))
             {
                 foreach (T objItem in _setData)
                 {
-                    array[index] = objItem;
+                    array[arrayIndex] = objItem;
+                    ++arrayIndex;
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public void CopyTo(Array array, int index)
+        {
+            using (EnterReadLock.Enter(LockObject))
+            {
+                foreach (T objItem in _setData)
+                {
+                    array.SetValue(objItem, index);
                     ++index;
                 }
             }
@@ -325,6 +338,18 @@ namespace Chummer
                 foreach (T objItem in _setData)
                 {
                     array[index] = objItem;
+                    ++index;
+                }
+            }
+        }
+
+        public async ValueTask CopyToAsync(Array array, int index, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                foreach (T objItem in _setData)
+                {
+                    array.SetValue(objItem, index);
                     ++index;
                 }
             }
@@ -408,31 +433,6 @@ namespace Chummer
             finally
             {
                 await objLocker.DisposeAsync();
-            }
-        }
-
-        /// <inheritdoc />
-        public void CopyTo(Array array, int index)
-        {
-            using (EnterReadLock.Enter(LockObject))
-            {
-                foreach (T objItem in _setData)
-                {
-                    array.SetValue(objItem, index);
-                    ++index;
-                }
-            }
-        }
-
-        public async ValueTask CopyToAsync(Array array, int index, CancellationToken token = default)
-        {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
-            {
-                foreach (T objItem in _setData)
-                {
-                    array.SetValue(objItem, index);
-                    ++index;
-                }
             }
         }
 
