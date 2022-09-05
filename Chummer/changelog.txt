@@ -84,6 +84,7 @@ Data Changes:
 - Fixed pricing of the Máquina Conversion from Hard Targets.
 - Prototype Materials no longer increases the special modifications limit for a character, but instead unlocks a quality called "Special Modifications (Prototype Materials)" that has the same effect as a single level of Special Modifications. Fixes #4872.
 - Ares Cheetah now properly has an acceleration of 2.
+- Fixed incorrect Matrix CM for the Hardening module. Closes #4909
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups

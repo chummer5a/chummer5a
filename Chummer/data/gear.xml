@@ -14039,6 +14039,7 @@
       <armorcapacity>[2]</armorcapacity>
       <cost>1500</cost>
       <devicerating>0</devicerating>
+      <matrixcmbonus>-3</matrixcmbonus>
     </gear>
     <gear>
       <id>7355616d-5d79-4d0a-96f2-5ca4095fcabf</id>
