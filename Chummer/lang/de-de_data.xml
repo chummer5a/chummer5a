@@ -21422,7 +21422,7 @@
 			<martialart translated="True">
 				<id>15ea5191-d615-4320-84e5-bffa90f8873e</id>
 				<name>Fiore Dei Liberi</name>
-				<translate>Fiore Dei Liberi</translate>
+				<translate>Fiore dei Liberi</translate>
 				<altpage>130</altpage>
 			</martialart>
 			<martialart translated="True">
@@ -21440,7 +21440,7 @@
 			<martialart translated="True">
 				<id>fa11a3e1-a658-4353-8d74-71337e3e1f29</id>
 				<name>Jogo Du Pau</name>
-				<translate>Jogo Du Pau</translate>
+				<translate>Jogo do Pau</translate>
 				<altpage>131</altpage>
 			</martialart>
 			<martialart>
@@ -21464,7 +21464,7 @@
 			<martialart translated="True">
 				<id>69097cfa-cfdd-49d9-b65a-e866d2296b7e</id>
 				<name>Kunst Des Fechtens</name>
-				<translate>Kunst Des Fechtens</translate>
+				<translate>Kunst des Fechtens</translate>
 				<altpage>132</altpage>
 			</martialart>
 			<martialart translated="True">
@@ -21506,7 +21506,7 @@
 			<martialart translated="True">
 				<id>3771abcc-6307-4ddf-9ab5-df86bc591da6</id>
 				<name>Sangre Y Acero</name>
-				<translate>Sangre Y Acero</translate>
+				<translate>Sangre y Acero</translate>
 				<altpage>133</altpage>
 			</martialart>
 			<martialart>
@@ -21518,7 +21518,7 @@
 			<martialart>
 				<id>6b5ae017-9fb1-46df-839b-4548ad360534</id>
 				<name>Turkish Archery</name>
-				<translate>Türkisches Bogenschiessen</translate>
+				<translate>Türkisches Bogenschießen</translate>
 				<altpage>134</altpage>
 			</martialart>
 			<martialart>
@@ -21530,8 +21530,8 @@
 			<martialart>
 				<id>24ee13d8-9b6d-4fc0-908c-d9904db364c7</id>
 				<name>Wrestling (Sport Style)</name>
-				<translate>Ringen</translate>
-				<altpage>134</altpage>
+				<translate>Freistilringen</translate>
+				<altpage>130</altpage>
 			</martialart>
 			<martialart>
 				<id>03e7e806-2bf6-43d2-ae51-9a724aca67fc</id>
@@ -21628,7 +21628,7 @@
 			<technique>
 				<id>eb766a12-66c7-44f4-bdc8-a3ae6f8f6770</id>
 				<name>Called Shot (Break Weapon)</name>
-				<translate>Angesagtes Ziel (Waffe zerbrechen)</translate>
+				<translate>Angesagtes Ziel (Waffe Zerbrechen)</translate>
 				<altpage>136</altpage>
 			</technique>
 			<technique>
@@ -21670,43 +21670,43 @@
 			<technique>
 				<id>0f324bd2-3fad-4721-9335-f82aaaee86cf</id>
 				<name>Close Quarter Firearms (Archery)</name>
-				<translate>Schiessen im Nahkampf (Projektilwaffen)</translate>
+				<translate>Schießen im Nahkampf (Projektilwaffen)</translate>
 				<altpage>138</altpage>
 			</technique>
 			<technique>
 				<id>05666129-d102-469f-a957-a6456027c9c9</id>
 				<name>Close Quarter Firearms (Thrown Weapons)</name>
-				<translate>Schiessen im Nahkampf (Wurfwaffen)</translate>
+				<translate>Schießen im Nahkampf (Wurfwaffen)</translate>
 				<altpage>138</altpage>
 			</technique>
 			<technique>
 				<id>c04ce0ed-32d8-4e00-9d50-7be7b5e250fc</id>
 				<name>Close Quarter Firearms (Automatics)</name>
-				<translate>Schiessen im Nahkampf (Schnellfeuerwaffen)</translate>
+				<translate>Schießen im Nahkampf (Schnellfeuerwaffen)</translate>
 				<altpage>138</altpage>
 			</technique>
 			<technique>
 				<id>8022a74f-547c-4b1e-82b2-e1ce42dbae62</id>
 				<name>Close Quarter Firearms (Exotic Ranged Weapon)</name>
-				<translate>Schiessen im Nahkampf (Exotische Fernkampfwaffe)</translate>
+				<translate>Schießen im Nahkampf (Exotische Fernkampfwaffen)</translate>
 				<altpage>138</altpage>
 			</technique>
 			<technique>
 				<id>34dcd6bd-dce4-43b9-bee8-ae18ab3a52b9</id>
 				<name>Close Quarter Firearms (Heavy Weapons)</name>
-				<translate>Schiessen im Nahkampf (Schwere Waffen)</translate>
+				<translate>Schießen im Nahkampf (Schwere Waffen)</translate>
 				<altpage>138</altpage>
 			</technique>
 			<technique>
 				<id>1d0afa0f-416a-4075-abbd-cc5112429639</id>
 				<name>Close Quarter Firearms (Longarms)</name>
-				<translate>Schiessen im Nahkampf (Gewehre)</translate>
+				<translate>Schießen im Nahkampf (Gewehre)</translate>
 				<altpage>138</altpage>
 			</technique>
 			<technique>
 				<id>44e0f0bb-2f30-4513-beab-1e0a6c033dd5</id>
 				<name>Close Quarter Firearms (Pistols)</name>
-				<translate>Schiessen im Nahkampf (Pistolen)</translate>
+				<translate>Schießen im Nahkampf (Pistolen)</translate>
 				<altpage>138</altpage>
 			</technique>
 			<technique>
@@ -21904,7 +21904,7 @@
 			<technique>
 				<id>53a18dd7-a2bd-46fd-a27e-eceafe406154</id>
 				<name>Releasing Talons</name>
-				<translate>Krallen ziehen</translate>
+				<translate>Krallen Ziehen</translate>
 				<altpage>137</altpage>
 			</technique>
 			<technique>
@@ -21988,7 +21988,7 @@
 			<technique>
 				<id>9d355a11-5e68-4c03-9676-9a3f555f977f</id>
 				<name>Throw Person</name>
-				<translate>Person werfen</translate>
+				<translate>Person Werfen</translate>
 				<altpage>137</altpage>
 			</technique>
 			<technique>
