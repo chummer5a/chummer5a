@@ -8701,6 +8701,66 @@
 				<altpage>99</altpage>
 			</metatype>
 			<metatype translated="True">
+				<id>61eae0b1-72fe-4624-90d9-a0d9ac33902d</id>
+				<name>Kokoro Cobra</name>
+				<translate>Kokoro-Kobra</translate>
+				<altpage>95</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>5975b592-7d3b-4b8f-9d7b-86720da9b5c0</id>
+				<name>Montauk</name>
+				<translate>Montauk</translate>
+				<altpage>97</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>4d01c80d-401f-43e7-833f-ebb994ceb445</id>
+				<name>Pandamonium</name>
+				<translate>Pandamonium</translate>
+				<altpage>98</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>c29c6b74-ab37-49fa-9d12-6768e66344db</id>
+				<name>Radhound (Small)</name>
+				<translate>Strahlenhund (klein)</translate>
+				<altpage>102</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>daf4ad8d-95db-475f-aaa9-93012f06c8ee</id>
+				<name>Radhound (Large)</name>
+				<translate>Strahlenhund (groß)</translate>
+				<altpage>102</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>1c661441-08d7-4c9d-afc3-f832299a2b1f</id>
+				<name>Shardik</name>
+				<translate>Shardik</translate>
+				<altpage>101</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>ee346daf-1ff6-4063-a1ed-1f49dd5e2070</id>
+				<name>Spidermoose</name>
+				<translate>Spinnenelch</translate>
+				<altpage>102</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>1bfbb44d-f4c0-47a4-bf34-c02cd6347185</id>
+				<name>Void Wasp</name>
+				<translate>Leerenwespe</translate>
+				<altpage>95</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>7f6fede6-988f-45ad-b3b0-a2a8f1fe2f81</id>
+				<name>Souleater Leech</name>
+				<translate>Seelenegel</translate>
+				<altpage>101</altpage>
+			</metatype>
+			<metatype translated="True">
+				<id>b70fc276-26ce-434c-9b4d-1ced2cbcf6a1</id>
+				<name>Spark Salmon</name>
+				<translate>Zitterlachs</translate>
+				<altpage>102</altpage>
+			</metatype>
+			<metatype translated="True">
 				<id>a29dbdbd-d20f-4b8e-b273-7913f32e0b04</id>
 				<name>Gum Toad (Demon)</name>
 				<translate>Harzkröte (Dämon)</translate>
@@ -32322,6 +32382,12 @@
 				<id>0dd183a3-85ce-4029-9de5-9b6aa1eb539c</id>
 				<name>Special Modifications</name>
 				<translate>Spezialmodifikationen</translate>
+				<altpage>167</altpage>
+			</quality>
+			<quality translated="True">
+				<id>56815ed4-4093-471a-a0a3-8f5b23675629</id>
+				<name>Special Modifications (Prototype Materials)</name>
+				<translate>Spezialmodifikationen (Prototypenteile)</translate>
 				<altpage>167</altpage>
 			</quality>
 			<quality translated="True">
