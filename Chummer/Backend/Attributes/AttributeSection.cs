@@ -997,6 +997,22 @@ namespace Chummer.Backend.Attributes
             }
         }
 
+        public async ValueTask<CharacterAttrib> GetAttributeByNameAsync(string abbrev, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                bool blnGetShifterAttribute = await _objCharacter.GetMetatypeCategoryAsync(token) == "Shapeshifter" && await _objCharacter.GetCreatedAsync(token)
+                    && await GetAttributeCategoryAsync(token) == CharacterAttrib.AttributeCategory.Shapeshifter;
+                CharacterAttrib objReturn
+                    = (await GetAttributeListAsync(token)).Find(att => att.Abbrev == abbrev
+                                                           && (att.MetatypeCategory
+                                                               == CharacterAttrib.AttributeCategory.Shapeshifter)
+                                                           == blnGetShifterAttribute)
+                      ?? (await GetSpecialAttributeListAsync(token)).Find(att => att.Abbrev == abbrev);
+                return objReturn;
+            }
+        }
+
         public BindingSource GetAttributeBindingByName(string abbrev, CancellationToken token = default)
         {
             using (EnterReadLock.Enter(LockObject, token))
@@ -1522,6 +1538,12 @@ namespace Chummer.Backend.Attributes
             }
         }
 
+        public async ValueTask<ThreadSafeObservableCollection<CharacterAttrib>> GetAttributeListAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstNormalAttributes;
+        }
+
         /// <summary>
         /// Character's Attributes.
         /// </summary>
@@ -1532,6 +1554,12 @@ namespace Chummer.Backend.Attributes
                 using (EnterReadLock.Enter(LockObject))
                     return _lstSpecialAttributes;
             }
+        }
+
+        public async ValueTask<ThreadSafeObservableCollection<CharacterAttrib>> GetSpecialAttributeListAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstSpecialAttributes;
         }
 
         public CharacterAttrib.AttributeCategory AttributeCategory
@@ -1560,6 +1588,12 @@ namespace Chummer.Backend.Attributes
                     }
                 }
             }
+        }
+
+        public async ValueTask<CharacterAttrib.AttributeCategory> GetAttributeCategoryAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _eAttributeCategory;
         }
 
         #endregion Properties

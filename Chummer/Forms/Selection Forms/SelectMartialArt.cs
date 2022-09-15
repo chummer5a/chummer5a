@@ -84,6 +84,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void lstMartialArts_DoubleClick(object sender, EventArgs e)
@@ -215,8 +216,9 @@ namespace Chummer
             string strSelectedId = lstMartialArts.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                _strSelectedMartialArt = lstMartialArts.SelectedValue.ToString();
+                _strSelectedMartialArt = strSelectedId;
                 DialogResult = DialogResult.OK;
+                Close();
             }
         }
 

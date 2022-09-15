@@ -68,7 +68,11 @@ namespace Chummer
             if (await cboCategory.DoThreadSafeFuncAsync(x => x.Items.Count) == 1)
             {
                 _strSelectedCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
-                DialogResult = DialogResult.OK;
+                await this.DoThreadSafeAsync(x =>
+                {
+                    x.DialogResult = DialogResult.OK;
+                    x.Close();
+                });
             }
         }
 
@@ -76,6 +80,7 @@ namespace Chummer
         {
             _strSelectedCategory = cboCategory.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         #endregion Control Events
@@ -120,6 +125,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
     }
 }

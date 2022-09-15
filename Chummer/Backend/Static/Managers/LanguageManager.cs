@@ -110,7 +110,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void TranslateWinForm(this Control objObject, string strIntoLanguage = "", bool blnDoResumeLayout = true, CancellationToken token = default)
         {
-            TranslateWinFormCoreAsync(true, objObject, strIntoLanguage, blnDoResumeLayout, token).GetAwaiter().GetResult();
+            TranslateWinFormCoreAsync(true, objObject, strIntoLanguage, blnDoResumeLayout, token).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace Chummer
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     objObject.DoThreadSafe((x, y) => x.SuspendLayout(), token);
                 else
-                    await objObject.DoThreadSafeAsync(x => x.SuspendLayout(), token);
+                    await objObject.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
             }
 
             if (string.IsNullOrEmpty(strIntoLanguage))
@@ -155,7 +155,7 @@ namespace Chummer
             bool blnLanguageLoaded = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? LoadLanguage(strIntoLanguage, token)
-                : await LoadLanguageAsync(strIntoLanguage, token);
+                : await LoadLanguageAsync(strIntoLanguage, token).ConfigureAwait(false);
             if (blnLanguageLoaded)
             {
                 RightToLeft eIntoRightToLeft = RightToLeft.No;
@@ -167,7 +167,7 @@ namespace Chummer
                 }
                 else
                 {
-                    (bool blnSuccess, LanguageData objLanguageData) = await LoadedLanguageData.TryGetValueAsync(strKey, token);
+                    (bool blnSuccess, LanguageData objLanguageData) = await LoadedLanguageData.TryGetValueAsync(strKey, token).ConfigureAwait(false);
                     if (blnSuccess)
                         eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
                 }
@@ -183,7 +183,7 @@ namespace Chummer
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     objObject.DoThreadSafe((x, y) => x.ResumeLayout(), token);
                 else
-                    await objObject.DoThreadSafeAsync(x => x.ResumeLayout(), token);
+                    await objObject.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
             }
         }
 
@@ -196,7 +196,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool LoadLanguage(string strLanguage, CancellationToken token = default)
         {
-            return LoadLanguageCoreAsync(true, strLanguage, token).GetAwaiter().GetResult();
+            return LoadLanguageCoreAsync(true, strLanguage, token).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -253,13 +253,13 @@ namespace Chummer
             else
             {
                 bool blnSuccess;
-                (blnSuccess, objLockerObject) = await s_DicLanguageDataLockers.TryGetValueAsync(strKey, token);
+                (blnSuccess, objLockerObject) = await s_DicLanguageDataLockers.TryGetValueAsync(strKey, token).ConfigureAwait(false);
                 while (!blnSuccess)
                 {
                     objLockerObject = Utils.SemaphorePool.Get();
                     try
                     {
-                        blnSuccess = await s_DicLanguageDataLockers.TryAddAsync(strKey, objLockerObject, token);
+                        blnSuccess = await s_DicLanguageDataLockers.TryAddAsync(strKey, objLockerObject, token).ConfigureAwait(false);
                         if (blnSuccess)
                             break;
                     }
@@ -268,8 +268,8 @@ namespace Chummer
                         if (!blnSuccess)
                             Utils.SemaphorePool.Return(ref objLockerObject);
                     }
-                    await Utils.SafeSleepAsync(token);
-                    (blnSuccess, objLockerObject) = await s_DicLanguageDataLockers.TryGetValueAsync(strKey, token);
+                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
+                    (blnSuccess, objLockerObject) = await s_DicLanguageDataLockers.TryGetValueAsync(strKey, token).ConfigureAwait(false);
                 }
             }
 
@@ -278,7 +278,7 @@ namespace Chummer
                 // ReSharper disable once MethodHasAsyncOverload
                 objLockerObject.SafeWait(token);
             else
-                await objLockerObject.WaitAsync(token);
+                await objLockerObject.WaitAsync(token).ConfigureAwait(false);
             try
             {
                 if (blnSync)
@@ -298,13 +298,13 @@ namespace Chummer
                 else
                 {
                     bool blnSuccess;
-                    (blnSuccess, objNewLanguage) = await s_DicLanguageData.TryGetValueAsync(strKey, token);
+                    (blnSuccess, objNewLanguage) = await s_DicLanguageData.TryGetValueAsync(strKey, token).ConfigureAwait(false);
                     if (!blnSuccess || objNewLanguage == null)
                     {
-                        if (await s_DicLanguageData.ContainsKeyAsync(strKey, token))
-                            await s_DicLanguageData.RemoveAsync(strKey, token);
-                        objNewLanguage = await Task.Run(() => new LanguageData(strLanguage), token);
-                        await s_DicLanguageData.AddAsync(strKey, objNewLanguage, token);
+                        if (await s_DicLanguageData.ContainsKeyAsync(strKey, token).ConfigureAwait(false))
+                            await s_DicLanguageData.RemoveAsync(strKey, token).ConfigureAwait(false);
+                        objNewLanguage = await Task.Run(() => new LanguageData(strLanguage), token).ConfigureAwait(false);
+                        await s_DicLanguageData.AddAsync(strKey, objNewLanguage, token).ConfigureAwait(false);
                     }
                 }
             }
@@ -589,7 +589,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetString(string strKey, string strLanguage = "", bool blnReturnError = true, CancellationToken token = default)
         {
-            return GetStringCoreAsync(true, strKey, strLanguage, blnReturnError, token).GetAwaiter().GetResult();
+            return GetStringCoreAsync(true, strKey, strLanguage, blnReturnError, token).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -639,7 +639,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static char GetChar(string strKey, string strLanguage, CancellationToken token = default)
         {
-            string strReturn = GetStringCoreAsync(true, strKey, strLanguage, false, token).GetAwaiter().GetResult();
+            string strReturn = GetStringCoreAsync(true, strKey, strLanguage, false, token).ConfigureAwait(false).GetAwaiter().GetResult();
             return string.IsNullOrWhiteSpace(strReturn) ? default : strReturn[0];
         }
 
@@ -687,7 +687,7 @@ namespace Chummer
             bool blnLanguageLoaded = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? LoadLanguage(strLanguage, token)
-                : await LoadLanguageAsync(strLanguage, token);
+                : await LoadLanguageAsync(strLanguage, token).ConfigureAwait(false);
             if (blnLanguageLoaded)
             {
                 string strLanguageKey = strLanguage.ToUpperInvariant();
@@ -702,7 +702,7 @@ namespace Chummer
                 else
                 {
                     (bool blnSuccess, LanguageData objLanguageData)
-                        = await LoadedLanguageData.TryGetValueAsync(strLanguageKey, token);
+                        = await LoadedLanguageData.TryGetValueAsync(strLanguageKey, token).ConfigureAwait(false);
                     if (blnSuccess && objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
                     {
                         return strReturn;
@@ -720,7 +720,7 @@ namespace Chummer
             {
                 bool blnSuccess;
                 (blnSuccess, strReturn)
-                    = await s_DicEnglishStrings.TryGetValueAsync(strKey, token);
+                    = await s_DicEnglishStrings.TryGetValueAsync(strKey, token).ConfigureAwait(false);
                 if (blnSuccess)
                     return strReturn;
             }
@@ -847,7 +847,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XPathDocument GetDataDocument(string strLanguage, CancellationToken token = default)
         {
-            return GetDataDocumentCoreAsync(true, strLanguage, token).GetAwaiter().GetResult();
+            return GetDataDocumentCoreAsync(true, strLanguage, token).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -875,7 +875,7 @@ namespace Chummer
             bool blnLanguageLoaded = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? LoadLanguage(strLanguage, token)
-                : await LoadLanguageAsync(strLanguage, token);
+                : await LoadLanguageAsync(strLanguage, token).ConfigureAwait(false);
             if (blnLanguageLoaded)
             {
                 string strKey = strLanguage.ToUpperInvariant();
@@ -888,7 +888,7 @@ namespace Chummer
                 }
                 else
                 {
-                    (bool blnSuccess, LanguageData objLanguageData) = await LoadedLanguageData.TryGetValueAsync(strKey, token);
+                    (bool blnSuccess, LanguageData objLanguageData) = await LoadedLanguageData.TryGetValueAsync(strKey, token).ConfigureAwait(false);
                     if (blnSuccess)
                     {
                         return objLanguageData.DataDocument;
@@ -1117,9 +1117,9 @@ namespace Chummer
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             return await GetStringAsync(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage,
-                                        token: token) + await GetStringAsync("String_Space", strLanguage, token: token)
-                                                      + '(' + await GetStringAsync(
-                                                          "String_DescAdept", strLanguage, token: token) + ')';
+                                        token: token).ConfigureAwait(false) + await GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false)
+                                                                            + '(' + await GetStringAsync(
+                                                                                "String_DescAdept", strLanguage, token: token).ConfigureAwait(false) + ')';
         }
 
         /// <summary>
@@ -1136,7 +1136,7 @@ namespace Chummer
         {
             return string.IsNullOrWhiteSpace(strExtra)
                 ? string.Empty
-                : TranslateExtraCoreAsync(true, strExtra, strIntoLanguage, objCharacter, strPreferFile, token).GetAwaiter().GetResult();
+                : TranslateExtraCoreAsync(true, strExtra, strIntoLanguage, objCharacter, strPreferFile, token).ConfigureAwait(false).GetAwaiter().GetResult();
             /*
             // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
             // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
@@ -1193,112 +1193,112 @@ namespace Chummer
                         strReturn = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? GetString("String_AttributeBODShort", strIntoLanguage, token: token)
-                            : await GetStringAsync("String_AttributeBODShort", strIntoLanguage, token: token);
+                            : await GetStringAsync("String_AttributeBODShort", strIntoLanguage, token: token).ConfigureAwait(false);
                         break;
 
                     case "AGI":
                         strReturn = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? GetString("String_AttributeAGIShort", strIntoLanguage, token: token)
-                            : await GetStringAsync("String_AttributeAGIShort", strIntoLanguage, token: token);
+                            : await GetStringAsync("String_AttributeAGIShort", strIntoLanguage, token: token).ConfigureAwait(false);
                         break;
 
                     case "REA":
                         strReturn = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? GetString("String_AttributeREAShort", strIntoLanguage, token: token)
-                            : await GetStringAsync("String_AttributeREAShort", strIntoLanguage, token: token);
+                            : await GetStringAsync("String_AttributeREAShort", strIntoLanguage, token: token).ConfigureAwait(false);
                         break;
 
                     case "STR":
                         strReturn = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? GetString("String_AttributeSTRShort", strIntoLanguage, token: token)
-                            : await GetStringAsync("String_AttributeSTRShort", strIntoLanguage, token: token);
+                            : await GetStringAsync("String_AttributeSTRShort", strIntoLanguage, token: token).ConfigureAwait(false);
                         break;
 
                     case "CHA":
                         strReturn = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? GetString("String_AttributeCHAShort", strIntoLanguage, token: token)
-                            : await GetStringAsync("String_AttributeCHAShort", strIntoLanguage, token: token);
+                            : await GetStringAsync("String_AttributeCHAShort", strIntoLanguage, token: token).ConfigureAwait(false);
                         break;
 
                     case "INT":
                         strReturn = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? GetString("String_AttributeINTShort", strIntoLanguage, token: token)
-                            : await GetStringAsync("String_AttributeINTShort", strIntoLanguage, token: token);
+                            : await GetStringAsync("String_AttributeINTShort", strIntoLanguage, token: token).ConfigureAwait(false);
                         break;
 
                     case "LOG":
                         strReturn = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? GetString("String_AttributeLOGShort", strIntoLanguage, token: token)
-                            : await GetStringAsync("String_AttributeLOGShort", strIntoLanguage, token: token);
+                            : await GetStringAsync("String_AttributeLOGShort", strIntoLanguage, token: token).ConfigureAwait(false);
                         break;
 
                     case "WIL":
                         strReturn = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? GetString("String_AttributeWILShort", strIntoLanguage, token: token)
-                            : await GetStringAsync("String_AttributeWILShort", strIntoLanguage, token: token);
+                            : await GetStringAsync("String_AttributeWILShort", strIntoLanguage, token: token).ConfigureAwait(false);
                         break;
 
                     case "EDG":
                         strReturn = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? GetString("String_AttributeEDGShort", strIntoLanguage, token: token)
-                            : await GetStringAsync("String_AttributeEDGShort", strIntoLanguage, token: token);
+                            : await GetStringAsync("String_AttributeEDGShort", strIntoLanguage, token: token).ConfigureAwait(false);
                         break;
 
                     case "MAG":
                         strReturn = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? GetString("String_AttributeMAGShort", strIntoLanguage, token: token)
-                            : await GetStringAsync("String_AttributeMAGShort", strIntoLanguage, token: token);
+                            : await GetStringAsync("String_AttributeMAGShort", strIntoLanguage, token: token).ConfigureAwait(false);
                         break;
 
                     case "MAGAdept":
                         strReturn = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? MAGAdeptString(strIntoLanguage, token: token)
-                            : await MAGAdeptStringAsync(strIntoLanguage, token: token);
+                            : await MAGAdeptStringAsync(strIntoLanguage, token: token).ConfigureAwait(false);
                         break;
 
                     case "RES":
                         strReturn = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? GetString("String_AttributeRESShort", strIntoLanguage, token: token)
-                            : await GetStringAsync("String_AttributeRESShort", strIntoLanguage, token: token);
+                            : await GetStringAsync("String_AttributeRESShort", strIntoLanguage, token: token).ConfigureAwait(false);
                         break;
 
                     case "DEP":
                         strReturn = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? GetString("String_AttributeDEPShort", strIntoLanguage, token: token)
-                            : await GetStringAsync("String_AttributeDEPShort", strIntoLanguage, token: token);
+                            : await GetStringAsync("String_AttributeDEPShort", strIntoLanguage, token: token).ConfigureAwait(false);
                         break;
 
                     case "Physical":
                         strReturn = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? GetString("Node_Physical", strIntoLanguage, token: token)
-                            : await GetStringAsync("Node_Physical", strIntoLanguage, token: token);
+                            : await GetStringAsync("Node_Physical", strIntoLanguage, token: token).ConfigureAwait(false);
                         break;
 
                     case "Mental":
                         strReturn = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? GetString("Node_Mental", strIntoLanguage, token: token)
-                            : await GetStringAsync("Node_Mental", strIntoLanguage, token: token);
+                            : await GetStringAsync("Node_Mental", strIntoLanguage, token: token).ConfigureAwait(false);
                         break;
 
                     case "Social":
                         strReturn = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? GetString("Node_Social", strIntoLanguage, token: token)
-                            : await GetStringAsync("Node_Social", strIntoLanguage, token: token);
+                            : await GetStringAsync("Node_Social", strIntoLanguage, token: token).ConfigureAwait(false);
                         break;
 
                     case "Left":
@@ -1312,21 +1312,21 @@ namespace Chummer
                         strReturn = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? GetString("String_Improvement_SideRight", strIntoLanguage, token: token)
-                            : await GetStringAsync("String_Improvement_SideRight", strIntoLanguage, token: token);
+                            : await GetStringAsync("String_Improvement_SideRight", strIntoLanguage, token: token).ConfigureAwait(false);
                         break;
 
                     case "All":
                         strReturn = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? GetString("String_All", strIntoLanguage, token: token)
-                            : await GetStringAsync("String_All", strIntoLanguage, token: token);
+                            : await GetStringAsync("String_All", strIntoLanguage, token: token).ConfigureAwait(false);
                         break;
 
                     case "None":
                         strReturn = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? GetString("String_None", strIntoLanguage, token: token)
-                            : await GetStringAsync("String_None", strIntoLanguage, token: token);
+                            : await GetStringAsync("String_None", strIntoLanguage, token: token).ConfigureAwait(false);
                         break;
 
                     default:
@@ -1360,7 +1360,7 @@ namespace Chummer
                                         {
                                             strTemp = await Task.Run(
                                                 () => FindString(strPreferFile, objCombinedToken),
-                                                objCombinedToken);
+                                                objCombinedToken).ConfigureAwait(false);
                                         }
                                         catch (OperationCanceledException)
                                         {
@@ -1393,7 +1393,7 @@ namespace Chummer
                                     {
                                         strTemp = await Task.Run(
                                             () => FindString(innerToken: objCombinedToken),
-                                            objCombinedToken);
+                                            objCombinedToken).ConfigureAwait(false);
                                     }
                                     catch (OperationCanceledException)
                                     {
@@ -1513,7 +1513,7 @@ namespace Chummer
         {
             return string.IsNullOrWhiteSpace(strExtra)
                 ? string.Empty
-                : ReverseTranslateExtraCoreAsync(true, strExtra, strFromLanguage, objCharacter, strPreferFile, token).GetAwaiter().GetResult();
+                : ReverseTranslateExtraCoreAsync(true, strExtra, strFromLanguage, objCharacter, strPreferFile, token).ConfigureAwait(false).GetAwaiter().GetResult();
             /*
             // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
             // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
@@ -1562,64 +1562,64 @@ namespace Chummer
                 return strExtra;
             // Attempt to translate CharacterAttribute names.
             // ReSharper disable once MethodHasAsyncOverload
-            if (strExtra == (blnSync ? GetString("String_AttributeBODShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeBODShort", strFromLanguage, token: token)))
+            if (strExtra == (blnSync ? GetString("String_AttributeBODShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeBODShort", strFromLanguage, token: token).ConfigureAwait(false)))
                 return "BOD";
             // ReSharper disable once MethodHasAsyncOverload
-            if (strExtra == (blnSync ? GetString("String_AttributeAGIShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeAGIShort", strFromLanguage, token: token)))
+            if (strExtra == (blnSync ? GetString("String_AttributeAGIShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeAGIShort", strFromLanguage, token: token).ConfigureAwait(false)))
                 return "AGI";
             // ReSharper disable once MethodHasAsyncOverload
-            if (strExtra == (blnSync ? GetString("String_AttributeREAShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeREAShort", strFromLanguage, token: token)))
+            if (strExtra == (blnSync ? GetString("String_AttributeREAShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeREAShort", strFromLanguage, token: token).ConfigureAwait(false)))
                 return "REA";
             // ReSharper disable once MethodHasAsyncOverload
-            if (strExtra == (blnSync ? GetString("String_AttributeSTRShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeSTRShort", strFromLanguage, token: token)))
+            if (strExtra == (blnSync ? GetString("String_AttributeSTRShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeSTRShort", strFromLanguage, token: token).ConfigureAwait(false)))
                 return "STR";
             // ReSharper disable once MethodHasAsyncOverload
-            if (strExtra == (blnSync ? GetString("String_AttributeCHAShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeCHAShort", strFromLanguage, token: token)))
+            if (strExtra == (blnSync ? GetString("String_AttributeCHAShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeCHAShort", strFromLanguage, token: token).ConfigureAwait(false)))
                 return "CHA";
             // ReSharper disable once MethodHasAsyncOverload
-            if (strExtra == (blnSync ? GetString("String_AttributeINTShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeINTShort", strFromLanguage, token: token)))
+            if (strExtra == (blnSync ? GetString("String_AttributeINTShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeINTShort", strFromLanguage, token: token).ConfigureAwait(false)))
                 return "INT";
             // ReSharper disable once MethodHasAsyncOverload
-            if (strExtra == (blnSync ? GetString("String_AttributeLOGShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeLOGShort", strFromLanguage, token: token)))
+            if (strExtra == (blnSync ? GetString("String_AttributeLOGShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeLOGShort", strFromLanguage, token: token).ConfigureAwait(false)))
                 return "LOG";
             // ReSharper disable once MethodHasAsyncOverload
-            if (strExtra == (blnSync ? GetString("String_AttributeWILShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeWILShort", strFromLanguage, token: token)))
+            if (strExtra == (blnSync ? GetString("String_AttributeWILShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeWILShort", strFromLanguage, token: token).ConfigureAwait(false)))
                 return "WIL";
             // ReSharper disable once MethodHasAsyncOverload
-            if (strExtra == (blnSync ? GetString("String_AttributeEDGShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeEDGShort", strFromLanguage, token: token)))
+            if (strExtra == (blnSync ? GetString("String_AttributeEDGShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeEDGShort", strFromLanguage, token: token).ConfigureAwait(false)))
                 return "EDG";
             // ReSharper disable once MethodHasAsyncOverload
-            if (strExtra == (blnSync ? GetString("String_AttributeMAGShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeMAGShort", strFromLanguage, token: token)))
+            if (strExtra == (blnSync ? GetString("String_AttributeMAGShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeMAGShort", strFromLanguage, token: token).ConfigureAwait(false)))
                 return "MAG";
             // ReSharper disable once MethodHasAsyncOverload
-            if (strExtra == (blnSync ? MAGAdeptString(strFromLanguage, token: token) : await MAGAdeptStringAsync(strFromLanguage, token: token)))
+            if (strExtra == (blnSync ? MAGAdeptString(strFromLanguage, token: token) : await MAGAdeptStringAsync(strFromLanguage, token: token).ConfigureAwait(false)))
                 return "MAGAdept";
             // ReSharper disable once MethodHasAsyncOverload
-            if (strExtra == (blnSync ? GetString("String_AttributeRESShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeRESShort", strFromLanguage, token: token)))
+            if (strExtra == (blnSync ? GetString("String_AttributeRESShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeRESShort", strFromLanguage, token: token).ConfigureAwait(false)))
                 return "RES";
             // ReSharper disable once MethodHasAsyncOverload
-            if (strExtra == (blnSync ? GetString("String_AttributeDEPShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeDEPShort", strFromLanguage, token: token)))
+            if (strExtra == (blnSync ? GetString("String_AttributeDEPShort", strFromLanguage, token: token) : await GetStringAsync("String_AttributeDEPShort", strFromLanguage, token: token).ConfigureAwait(false)))
                 return "DEP";
             // ReSharper disable once MethodHasAsyncOverload
-            if (strExtra == (blnSync ? GetString("Node_Physical", strFromLanguage, token: token) : await GetStringAsync("Node_Physical", strFromLanguage, token: token)))
+            if (strExtra == (blnSync ? GetString("Node_Physical", strFromLanguage, token: token) : await GetStringAsync("Node_Physical", strFromLanguage, token: token).ConfigureAwait(false)))
                 return "Physical";
             // ReSharper disable once MethodHasAsyncOverload
-            if (strExtra == (blnSync ? GetString("Node_Mental", strFromLanguage, token: token) : await GetStringAsync("Node_Mental", strFromLanguage, token: token)))
+            if (strExtra == (blnSync ? GetString("Node_Mental", strFromLanguage, token: token) : await GetStringAsync("Node_Mental", strFromLanguage, token: token).ConfigureAwait(false)))
                 return "Mental";
             // ReSharper disable once MethodHasAsyncOverload
-            if (strExtra == (blnSync ? GetString("Node_Social", strFromLanguage, token: token) : await GetStringAsync("Node_Social", strFromLanguage, token: token)))
+            if (strExtra == (blnSync ? GetString("Node_Social", strFromLanguage, token: token) : await GetStringAsync("Node_Social", strFromLanguage, token: token).ConfigureAwait(false)))
                 return "Social";
             // ReSharper disable once MethodHasAsyncOverload
-            if (strExtra == (blnSync ? GetString("String_Improvement_SideLeft", strFromLanguage, token: token) : await GetStringAsync("String_Improvement_SideLeft", strFromLanguage, token: token)))
+            if (strExtra == (blnSync ? GetString("String_Improvement_SideLeft", strFromLanguage, token: token) : await GetStringAsync("String_Improvement_SideLeft", strFromLanguage, token: token).ConfigureAwait(false)))
                 return "Left";
             // ReSharper disable once MethodHasAsyncOverload
-            if (strExtra == (blnSync ? GetString("String_Improvement_SideRight", strFromLanguage, token: token) : await GetStringAsync("String_Improvement_SideRight", strFromLanguage, token: token)))
+            if (strExtra == (blnSync ? GetString("String_Improvement_SideRight", strFromLanguage, token: token) : await GetStringAsync("String_Improvement_SideRight", strFromLanguage, token: token).ConfigureAwait(false)))
                 return "Right";
             // ReSharper disable once MethodHasAsyncOverload
-            if (strExtra == (blnSync ? GetString("String_All", strFromLanguage, token: token) : await GetStringAsync("String_All", strFromLanguage, token: token)))
+            if (strExtra == (blnSync ? GetString("String_All", strFromLanguage, token: token) : await GetStringAsync("String_All", strFromLanguage, token: token).ConfigureAwait(false)))
                 return "All";
             // ReSharper disable once MethodHasAsyncOverload
-            if (strExtra == (blnSync ? GetString("String_None", strFromLanguage, token: token) : await GetStringAsync("String_None", strFromLanguage, token: token)))
+            if (strExtra == (blnSync ? GetString("String_None", strFromLanguage, token: token) : await GetStringAsync("String_None", strFromLanguage, token: token).ConfigureAwait(false)))
                 return "None";
             // If no original could be found, just use whatever we were passed.
             string strReturn = strExtra;
@@ -1652,7 +1652,7 @@ namespace Chummer
                             {
                                 strTemp = await Task.Run(
                                     () => FindString(strPreferFile, objCombinedToken),
-                                    objCombinedToken);
+                                    objCombinedToken).ConfigureAwait(false);
                             }
                             catch (OperationCanceledException)
                             {
@@ -1685,7 +1685,7 @@ namespace Chummer
                         {
                             strTemp = await Task.Run(
                                 () => FindString(innerToken: objCombinedToken),
-                                objCombinedToken);
+                                objCombinedToken).ConfigureAwait(false);
                         }
                         catch (OperationCanceledException)
                         {
@@ -1918,7 +1918,7 @@ namespace Chummer
 
                 token.ThrowIfCancellationRequested();
 
-                XPathNavigator node = await xmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpressionAsync("/chummer/name");
+                XPathNavigator node = await xmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpressionAsync("/chummer/name").ConfigureAwait(false);
 
                 if (node == null)
                     continue;
@@ -1926,7 +1926,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
 
                 string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
-                if (await XmlManager.AnyXslFilesAsync(strLanguageCode, lstCharacterToUse, token))
+                if (await XmlManager.AnyXslFilesAsync(strLanguageCode, lstCharacterToUse, token).ConfigureAwait(false))
                 {
                     lstLanguages.Add(new ListItem(strLanguageCode, node.Value));
                 }

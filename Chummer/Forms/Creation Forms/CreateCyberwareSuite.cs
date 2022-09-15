@@ -225,6 +225,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void CreateCyberwareSuite_Load(object sender, EventArgs e)

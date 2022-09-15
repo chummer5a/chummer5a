@@ -820,6 +820,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -942,6 +943,7 @@ namespace Chummer
             _strSelectedKit = objSelectedKit[0];
             _strSelectCategory = objSelectedKit[1];
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         private async ValueTask WriteGear(XPathNavigator objXmlGear, TreeNode objParent)

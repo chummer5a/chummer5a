@@ -920,7 +920,7 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public int CalculatedTotalValue(bool blnIncludeCyberlimbs = true, CancellationToken token = default)
         {
-            return CalculatedTotalValueCore(true, blnIncludeCyberlimbs, token).GetAwaiter().GetResult();
+            return CalculatedTotalValueCore(true, blnIncludeCyberlimbs, token).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -1108,18 +1108,18 @@ namespace Chummer.Backend.Attributes
         public async ValueTask<int> GetTotalValueAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (await EnterReadLock.EnterAsync(_objCachedTotalValueLock, token))
+            using (await EnterReadLock.EnterAsync(_objCachedTotalValueLock, token).ConfigureAwait(false))
             {
                 if (_intCachedTotalValue == int.MinValue)
                 {
-                    IAsyncDisposable objLocker = await _objCachedTotalValueLock.EnterWriteLockAsync(token);
+                    IAsyncDisposable objLocker = await _objCachedTotalValueLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
-                        _intCachedTotalValue = await Task.Run(() => CalculatedTotalValueAsync(token: token), token);
+                        _intCachedTotalValue = await Task.Run(() => CalculatedTotalValueAsync(token: token), token).ConfigureAwait(false);
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync();
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 return _intCachedTotalValue;

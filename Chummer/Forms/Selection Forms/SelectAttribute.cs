@@ -43,6 +43,7 @@ namespace Chummer
         {
             _strReturnValue = cboAttribute.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         private async void SelectAttribute_Load(object sender, EventArgs e)
@@ -66,7 +67,11 @@ namespace Chummer
                 else
                 {
                     _strReturnValue = await cboAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
-                    DialogResult = DialogResult.OK;
+                    await this.DoThreadSafeAsync(x =>
+                    {
+                        x.DialogResult = DialogResult.OK;
+                        x.Close();
+                    });
                 }
             }
         }
@@ -74,6 +79,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         #endregion Control Events

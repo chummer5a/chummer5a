@@ -429,7 +429,7 @@ namespace Chummer
         /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
         public static bool SafeDeleteFile(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
         {
-            return SafeDeleteFileCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout, token).GetAwaiter()
+            return SafeDeleteFileCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout, token).ConfigureAwait(false).GetAwaiter()
                 .GetResult();
         }
 
@@ -481,7 +481,7 @@ namespace Chummer
                                                       // ReSharper disable once MethodHasAsyncOverload
                                                       ? LanguageManager.GetString("Message_Prompt_Delete_Existing_File", token: token)
                                                       : await LanguageManager.GetStringAsync(
-                                                          "Message_Prompt_Delete_Existing_File", token: token), strPath),
+                                                          "Message_Prompt_Delete_Existing_File", token: token).ConfigureAwait(false), strPath),
                                     buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning) != DialogResult.Yes)
                                 return false;
                         }
@@ -496,7 +496,7 @@ namespace Chummer
                     if (blnSync)
                         File.Delete(strPath);
                     else
-                        await Task.Run(() => File.Delete(strPath), token);
+                        await Task.Run(() => File.Delete(strPath), token).ConfigureAwait(false);
                 }
                 catch (PathTooLongException)
                 {
@@ -510,7 +510,7 @@ namespace Chummer
                         Program.ShowMessageBox(blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? LanguageManager.GetString("Message_Insufficient_Permissions_Warning", token: token)
-                            : await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token));
+                            : await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false));
                     return false;
                 }
                 catch (DirectoryNotFoundException)
@@ -532,7 +532,7 @@ namespace Chummer
                     if (blnSync)
                         SafeSleep(intWaitInterval, token);
                     else
-                        await SafeSleepAsync(intWaitInterval, token);
+                        await SafeSleepAsync(intWaitInterval, token).ConfigureAwait(false);
                     intTimeout -= intWaitInterval;
                 }
                 if (intTimeout < 0)
@@ -554,7 +554,7 @@ namespace Chummer
         /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
         public static bool SafeDeleteDirectory(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
         {
-            return SafeDeleteDirectoryCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout, token).GetAwaiter()
+            return SafeDeleteDirectoryCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout, token).ConfigureAwait(false).GetAwaiter()
                 .GetResult();
         }
 
@@ -597,7 +597,7 @@ namespace Chummer
                     return false;
             }
             else if (!await SafeClearDirectoryAsync(strPath, blnShowUnauthorizedAccess: blnShowUnauthorizedAccess,
-                                                    intTimeout: intTimeout, token: token))
+                                                    intTimeout: intTimeout, token: token).ConfigureAwait(false))
                 return false;
             int intWaitInterval = Math.Max(intTimeout / DefaultSleepDuration, DefaultSleepDuration);
             while (Directory.Exists(strPath))
@@ -617,7 +617,7 @@ namespace Chummer
                                             // ReSharper disable once MethodHasAsyncOverload
                                             ? LanguageManager.GetString("Message_Prompt_Delete_Existing_File", token: token)
                                             : await LanguageManager.GetStringAsync(
-                                                "Message_Prompt_Delete_Existing_File", token: token), strPath),
+                                                "Message_Prompt_Delete_Existing_File", token: token).ConfigureAwait(false), strPath),
                                     buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning) != DialogResult.Yes)
                                 return false;
                         }
@@ -631,7 +631,7 @@ namespace Chummer
                     if (blnSync)
                         Directory.Delete(strPath, true);
                     else
-                        await Task.Run(() => Directory.Delete(strPath, true), token);
+                        await Task.Run(() => Directory.Delete(strPath, true), token).ConfigureAwait(false);
                 }
                 catch (PathTooLongException)
                 {
@@ -645,7 +645,7 @@ namespace Chummer
                         Program.ShowMessageBox(blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? LanguageManager.GetString("Message_Insufficient_Permissions_Warning", token: token)
-                            : await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token));
+                            : await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false));
                     return false;
                 }
                 catch (DirectoryNotFoundException)
@@ -667,7 +667,7 @@ namespace Chummer
                     if (blnSync)
                         SafeSleep(intWaitInterval, token);
                     else
-                        await SafeSleepAsync(intWaitInterval, token);
+                        await SafeSleepAsync(intWaitInterval, token).ConfigureAwait(false);
                     intTimeout -= intWaitInterval;
                 }
                 if (intTimeout < 0)
@@ -692,7 +692,7 @@ namespace Chummer
         public static bool SafeClearDirectory(string strPath, string strSearchPattern = "*", bool blnRecursive = true, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
         {
             return SafeClearDirectoryCoreAsync(true, strPath, strSearchPattern, blnRecursive, blnShowUnauthorizedAccess,
-                intTimeout, token).GetAwaiter().GetResult();
+                intTimeout, token).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -740,7 +740,7 @@ namespace Chummer
                                 blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? LanguageManager.GetString("Message_Prompt_Delete_Existing_File", token: token)
-                                    : await LanguageManager.GetStringAsync("Message_Prompt_Delete_Existing_File", token: token),
+                                    : await LanguageManager.GetStringAsync("Message_Prompt_Delete_Existing_File", token: token).ConfigureAwait(false),
                                 strPath),
                             buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning)
                         != DialogResult.Yes)
@@ -777,7 +777,7 @@ namespace Chummer
             }
             foreach (Task<bool> x in atskSuccesses)
             {
-                if (!await x)
+                if (!await x.ConfigureAwait(false))
                     return false;
             }
             return true;
@@ -893,14 +893,9 @@ namespace Chummer
             {
                 try
                 {
-                    tcs.TrySetResult(DummyFunction());
-
+                    func.Invoke();
                     // This is needed because SetResult always needs a return type
-                    bool DummyFunction()
-                    {
-                        func.Invoke();
-                        return true;
-                    }
+                    tcs.TrySetResult(true);
                 }
                 catch (Exception e)
                 {
@@ -947,13 +942,9 @@ namespace Chummer
             {
                 try
                 {
-                    tcs.TrySetResult(await DummyFunction());
+                    await func;
                     // This is needed because SetResult always needs a return type
-                    async ValueTask<bool> DummyFunction()
-                    {
-                        await func;
-                        return true;
-                    }
+                    tcs.TrySetResult(true);
                 }
                 catch (Exception e)
                 {
@@ -1001,14 +992,9 @@ namespace Chummer
             {
                 try
                 {
-                    tcs.TrySetResult(DummyFunction());
-
+                    func.Invoke();
                     // This is needed because SetResult always needs a return type
-                    bool DummyFunction()
-                    {
-                        func.Invoke();
-                        return true;
-                    }
+                    tcs.TrySetResult(true);
                 }
                 catch (Exception e)
                 {
@@ -1065,13 +1051,9 @@ namespace Chummer
             {
                 try
                 {
-                    tcs.TrySetResult(await DummyFunction());
+                    await func;
                     // This is needed because SetResult always needs a return type
-                    async ValueTask<bool> DummyFunction()
-                    {
-                        await func;
-                        return true;
-                    }
+                    tcs.TrySetResult(true);
                 }
                 catch (Exception e)
                 {
@@ -1213,14 +1195,9 @@ namespace Chummer
                 TaskCompletionSource<bool> objCompletionSource = (TaskCompletionSource<bool>) x;
                 try
                 {
-                    objCompletionSource.TrySetResult(DummyFunction());
-
+                    func.Invoke();
                     // This is needed because SetResult always needs a return type
-                    bool DummyFunction()
-                    {
-                        func.Invoke();
-                        return true;
-                    }
+                    objCompletionSource.TrySetResult(true);
                 }
                 catch (Exception e)
                 {
@@ -1254,7 +1231,8 @@ namespace Chummer
                 TaskCompletionSource<T> objCompletionSource = (TaskCompletionSource<T>)x;
                 try
                 {
-                    objCompletionSource.TrySetResult(func());
+                    T objResult = func.Invoke();
+                    objCompletionSource.TrySetResult(objResult);
                 }
                 catch (Exception e)
                 {
@@ -1289,15 +1267,10 @@ namespace Chummer
                 (TaskCompletionSource<bool> objCompletionSource, CancellationToken objToken) = (Tuple<TaskCompletionSource<bool>, CancellationToken>)x;
                 try
                 {
-                    objCompletionSource.TrySetResult(DummyFunction());
-
+                    objToken.ThrowIfCancellationRequested();
+                    func.Invoke();
                     // This is needed because SetResult always needs a return type
-                    bool DummyFunction()
-                    {
-                        objToken.ThrowIfCancellationRequested();
-                        func.Invoke();
-                        return true;
-                    }
+                    objCompletionSource.TrySetResult(true);
                 }
                 catch (OperationCanceledException)
                 {
@@ -1338,7 +1311,8 @@ namespace Chummer
                 try
                 {
                     objToken.ThrowIfCancellationRequested();
-                    objCompletionSource.TrySetResult(func());
+                    T objResult = func.Invoke();
+                    objCompletionSource.TrySetResult(objResult);
                 }
                 catch (OperationCanceledException)
                 {
@@ -1510,6 +1484,7 @@ namespace Chummer
             SafeSleep(objTimeSpan.Milliseconds, token, blnForceDoEvents);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DoEventsSafe(bool blnForceDoEvents = false)
         {
             try

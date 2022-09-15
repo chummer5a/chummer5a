@@ -116,11 +116,13 @@ namespace Chummer
         {
             _strNotes = txtNotes.Text;
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private async void btnColorSelect_Click(object sender, EventArgs e)

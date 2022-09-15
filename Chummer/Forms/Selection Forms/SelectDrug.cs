@@ -416,6 +416,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private async void chkHideBannedGrades_CheckedChanged(object sender, EventArgs e)

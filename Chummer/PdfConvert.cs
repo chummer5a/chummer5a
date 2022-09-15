@@ -138,7 +138,7 @@ namespace Codaxy.WkHtmlToPdf
 
         public static void ConvertHtmlToPdf(PdfDocument document, PdfConvertEnvironment environment, PdfOutput woutput)
         {
-            ConvertHtmlToPdfCoreAsync(true, document, environment, woutput).GetAwaiter().GetResult();
+            ConvertHtmlToPdfCoreAsync(true, document, environment, woutput).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         public static Task ConvertHtmlToPdfAsync(PdfDocument document, PdfConvertEnvironment environment, PdfOutput woutput)
@@ -319,8 +319,8 @@ namespace Codaxy.WkHtmlToPdf
                                         {
                                             try
                                             {
-                                                await stream.BaseStream.WriteAsync(buffer, 0, buffer.Length, objToken);
-                                                await stream.WriteLineAsync();
+                                                await stream.BaseStream.WriteAsync(buffer, 0, buffer.Length, objToken).ConfigureAwait(false);
+                                                await stream.WriteLineAsync().ConfigureAwait(false);
                                             }
                                             catch (OperationCanceledException)
                                             {
@@ -352,7 +352,7 @@ namespace Codaxy.WkHtmlToPdf
                                 }
                                 else
                                 {
-                                    int intTaskResult = await tskAsyncProcess;
+                                    int intTaskResult = await tskAsyncProcess.ConfigureAwait(false);
                                     if (tskAsyncProcess.IsCompleted && !objToken.IsCancellationRequested)
                                     {
                                         if (intTaskResult != 0 && !File.Exists(outputPdfFilePath))
@@ -396,8 +396,8 @@ namespace Codaxy.WkHtmlToPdf
                         }
                         else
                         {
-                            while ((read = await fs.ReadAsync(buffer, 0, buffer.Length)) > 0)
-                                await woutput.OutputStream.WriteAsync(buffer, 0, read);
+                            while ((read = await fs.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
+                                await woutput.OutputStream.WriteAsync(buffer, 0, read).ConfigureAwait(false);
                         }
 
                         ArrayPool<byte>.Shared.Return(buffer);
@@ -418,7 +418,7 @@ namespace Codaxy.WkHtmlToPdf
                         // ReSharper disable once MethodHasAsyncOverload
                         Utils.SafeDeleteFile(outputPdfFilePath, true);
                     else
-                        await Utils.SafeDeleteFileAsync(outputPdfFilePath, true);
+                        await Utils.SafeDeleteFileAsync(outputPdfFilePath, true).ConfigureAwait(false);
                 }
             }
         }

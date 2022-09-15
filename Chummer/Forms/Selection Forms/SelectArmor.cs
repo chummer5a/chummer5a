@@ -147,6 +147,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private async void lstArmor_SelectedIndexChanged(object sender, EventArgs e)
@@ -604,6 +605,7 @@ namespace Chummer
                 _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
 
                 DialogResult = DialogResult.OK;
+                Close();
             }
         }
 

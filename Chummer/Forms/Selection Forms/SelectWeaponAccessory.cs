@@ -189,6 +189,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -626,6 +627,7 @@ namespace Chummer
                 _intSelectedRating = nudRating.Visible ? nudRating.ValueAsInt : 0;
                 _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
                 DialogResult = DialogResult.OK;
+                Close();
             }
         }
 

@@ -1133,11 +1133,11 @@ namespace ChummerHub.Client.Backend
 
         private static async Task OnMyAfterSelect(SINner sinner, CharacterCache objCache, TreeViewEventArgs treeViewEventArgs)
         {
-            using (await CursorWait.NewAsync(PluginHandler.MainForm, true))
+            using (await CursorWait.NewAsync(PluginHandler.MainForm, true).ConfigureAwait(false))
             {
                 if (string.IsNullOrEmpty(sinner.FilePath))
                 {
-                    objCache.FilePath = await DownloadFileTask(sinner, objCache);
+                    objCache.FilePath = await DownloadFileTask(sinner, objCache).ConfigureAwait(false);
                 }
                 if (!string.IsNullOrEmpty(objCache.FilePath))
                 {
@@ -1145,17 +1145,17 @@ namespace ChummerHub.Client.Backend
                     CharacterCache tempCache = new CharacterCache();
                     try
                     {
-                        if (await tempCache.LoadFromFileAsync(objCache.FilePath))
+                        if (await tempCache.LoadFromFileAsync(objCache.FilePath).ConfigureAwait(false))
                         {
                             objCache.CopyFrom(tempCache);
                         }
                     }
                     finally
                     {
-                        await tempCache.DisposeAsync();
+                        await tempCache.DisposeAsync().ConfigureAwait(false);
                     }
                 }
-                await PluginHandler.MainForm.CharacterRoster.UpdateCharacter(objCache);
+                await PluginHandler.MainForm.CharacterRoster.UpdateCharacter(objCache).ConfigureAwait(false);
                 treeViewEventArgs.Node.Text = objCache.CalculatedName();
             }
         }

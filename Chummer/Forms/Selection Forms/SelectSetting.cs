@@ -85,12 +85,14 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
             _strSettingsFile = cboSetting.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         #endregion Control Events

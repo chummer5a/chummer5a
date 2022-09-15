@@ -129,6 +129,7 @@ namespace Chummer
             {
                 case Keys.Escape:
                     DialogResult = DialogResult.OK;
+                    Close();
                     break;
 
                 case Keys.A:

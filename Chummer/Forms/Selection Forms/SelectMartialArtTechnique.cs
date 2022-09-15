@@ -96,6 +96,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -168,6 +169,7 @@ namespace Chummer
             {
                 _strSelectedTechnique = strSelectedId;
                 DialogResult = DialogResult.OK;
+                Close();
             }
         }
 

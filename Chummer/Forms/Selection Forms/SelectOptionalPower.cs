@@ -50,6 +50,7 @@ namespace Chummer
                 _strReturnPower = objSelectedItem.Item1;
                 _strReturnExtra = objSelectedItem.Item2;
                 DialogResult = DialogResult.OK;
+                Close();
             }
         }
 
@@ -77,6 +78,7 @@ namespace Chummer
                         _strReturnPower = objSelectedItem.Item1;
                         _strReturnExtra = objSelectedItem.Item2;
                         DialogResult = DialogResult.OK;
+                        Close();
                     }
                 }
                 else
@@ -87,6 +89,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         #endregion Control Events

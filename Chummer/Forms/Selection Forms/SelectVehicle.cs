@@ -157,6 +157,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private async void txtSearch_TextChanged(object sender, EventArgs e)

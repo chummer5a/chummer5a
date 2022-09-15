@@ -80,8 +80,9 @@ namespace Chummer
                     _strReturnName = txtName.Text;
                     _intBonus = nudBonus.ValueAsInt;
                     _strCondition = txtCondition.Text;
-                    _strLimitType = cboLimit.SelectedValue?.ToString();
+                    _strLimitType = strLimitType;
                     DialogResult = DialogResult.OK;
+                    Close();
                 }
             }
         }
@@ -89,6 +90,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         #endregion Control Events

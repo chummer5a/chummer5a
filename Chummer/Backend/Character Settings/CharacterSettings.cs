@@ -2462,6 +2462,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Amount of Karma that is used to create the character.
+        /// </summary>
+        public async ValueTask<int> GetBuildKarmaAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intBuildPoints;
+        }
+
+        /// <summary>
         /// Limit on the amount of karma that can be spent at creation on qualities
         /// </summary>
         public int QualityKarmaLimit
@@ -2481,6 +2490,15 @@ namespace Chummer
                     OnPropertyChanged();
                 }
             }
+        }
+
+        /// <summary>
+        /// Limit on the amount of karma that can be spent at creation on qualities
+        /// </summary>
+        public async ValueTask<int> GetQualityKarmaLimitAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intQualityKarmaLimit;
         }
 
         /// <summary>
@@ -3262,6 +3280,12 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<bool> GetMysAdeptAllowPpCareerAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnMysAdeptAllowPpCareer;
+        }
+
         /// <summary>
         /// Split MAG for Mystic Adepts so that they have a separate MAG rating for Adept Powers instead of using the special PP rules for mystic adepts
         /// </summary>
@@ -3292,6 +3316,12 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<bool> GetMysAdeptSecondMAGAttributeAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnMysAdeptSecondMAGAttribute;
+        }
+
         public bool MysAdeptSecondMAGAttributeEnabled
         {
             get
@@ -3299,6 +3329,12 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return !PrioritySpellsAsAdeptPowers && !MysAdeptAllowPpCareer;
             }
+        }
+
+        public async ValueTask<bool> GetMysAdeptSecondMAGAttributeEnabledAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return !await GetPrioritySpellsAsAdeptPowersAsync(token) && !await GetMysAdeptAllowPpCareerAsync(token);
         }
 
         /// <summary>
@@ -3325,6 +3361,12 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        public async ValueTask<string> GetContactPointsExpressionAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _strContactPointsExpression;
         }
 
         /// <summary>
@@ -3729,6 +3771,13 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<int> GetMetatypeCostsKarmaMultiplierAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intMetatypeCostMultiplier;
+
+        }
+
         /// <summary>
         /// Number of Limbs a standard character has.
         /// </summary>
@@ -3907,6 +3956,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// If true, the karma cost of qualities is doubled after the initial 25.
+        /// </summary>
+        public async ValueTask<bool> GetExceedPositiveQualitiesCostDoubledAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnExceedPositiveQualitiesCostDoubled;
+        }
+
+        /// <summary>
         /// Whether or not characters can have more than 25 BP in Negative Qualities.
         /// </summary>
         public bool ExceedNegativeQualities
@@ -3956,6 +4014,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// If true, the character will not receive additional BP from Negative Qualities past the initial 25
+        /// </summary>
+        public async ValueTask<bool> GetExceedNegativeQualitiesNoBonusAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnExceedNegativeQualitiesNoBonus;
         }
 
         /// <summary>
@@ -4767,6 +4834,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Allow Enemies to be bought and tracked like in 4e?
+        /// </summary>
+        public async ValueTask<bool> GetEnableEnemyTrackingAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnEnableEnemyTracking;
+        }
+
+        /// <summary>
         /// Do Enemies count towards Negative Quality Karma limit in create mode?
         /// </summary>
         public bool EnemyKarmaQualityLimit
@@ -5447,6 +5523,12 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<bool> GetPrioritySpellsAsAdeptPowersAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnPrioritySpellsAsAdeptPowers;
+        }
+
         /// <summary>
         /// Allows characters to spend their Karma before Priority Points.
         /// </summary>
@@ -5883,6 +5965,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost to purchase a Quality = BP Cost x this value.
+        /// </summary>
+        public async ValueTask<int> GetKarmaQualityAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaQuality;
+        }
+
+        /// <summary>
         /// Karma cost to purchase a Specialization for an active skill = this value.
         /// </summary>
         public int KarmaSpecialization
@@ -6108,6 +6199,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for each Spell = this value.
+        /// </summary>
+        public async ValueTask<int> GetKarmaSpellAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaSpell;
+        }
+
+        /// <summary>
         /// Karma cost for each Enhancement = this value.
         /// </summary>
         public int KarmaEnhancement
@@ -6233,6 +6333,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for a Contact = (Connection + Loyalty) x this value.
+        /// </summary>
+        public async ValueTask<int> GetKarmaContactAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaContact;
+        }
+
+        /// <summary>
         /// Karma cost for an Enemy = (Connection + Loyalty) x this value.
         /// </summary>
         public int KarmaEnemy
@@ -6255,6 +6364,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Karma cost for an Enemy = (Connection + Loyalty) x this value.
+        /// </summary>
+        public async ValueTask<int> GetKarmaEnemyAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaEnemy;
         }
 
         /// <summary>
@@ -6483,6 +6601,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for Alchemical Foci.
+        /// </summary>
+        public async ValueTask<int> GetKarmaAlchemicalFocusAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaAlchemicalFocus;
+        }
+
+        /// <summary>
         /// Karma cost for Banishing Foci.
         /// </summary>
         public int KarmaBanishingFocus
@@ -6505,6 +6632,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Karma cost for Banishing Foci.
+        /// </summary>
+        public async ValueTask<int> GetKarmaBanishingFocusAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaBanishingFocus;
         }
 
         /// <summary>
@@ -6533,6 +6669,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for Binding Foci.
+        /// </summary>
+        public async ValueTask<int> GetKarmaBindingFocusAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaBindingFocus;
+        }
+
+        /// <summary>
         /// Karma cost for Centering Foci.
         /// </summary>
         public int KarmaCenteringFocus
@@ -6555,6 +6700,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Karma cost for Centering Foci.
+        /// </summary>
+        public async ValueTask<int> GetKarmaCenteringFocusAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaCenteringFocus;
         }
 
         /// <summary>
@@ -6583,6 +6737,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for Counterspelling Foci.
+        /// </summary>
+        public async ValueTask<int> GetKarmaCounterspellingFocusAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaCounterspellingFocus;
+        }
+
+        /// <summary>
         /// Karma cost for Disenchanting Foci.
         /// </summary>
         public int KarmaDisenchantingFocus
@@ -6605,6 +6768,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Karma cost for Disenchanting Foci.
+        /// </summary>
+        public async ValueTask<int> GetKarmaDisenchantingFocusAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaDisenchantingFocus;
         }
 
         /// <summary>
@@ -6633,6 +6805,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for Flexible Signature Foci.
+        /// </summary>
+        public async ValueTask<int> GetKarmaFlexibleSignatureFocusAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaFlexibleSignatureFocus;
+        }
+
+        /// <summary>
         /// Karma cost for Masking Foci.
         /// </summary>
         public int KarmaMaskingFocus
@@ -6655,6 +6836,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Karma cost for Masking Foci.
+        /// </summary>
+        public async ValueTask<int> GetKarmaMaskingFocusAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaMaskingFocus;
         }
 
         /// <summary>
@@ -6683,6 +6873,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for Power Foci.
+        /// </summary>
+        public async ValueTask<int> GetKarmaPowerFocusAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaPowerFocus;
+        }
+
+        /// <summary>
         /// Karma cost for Qi Foci.
         /// </summary>
         public int KarmaQiFocus
@@ -6705,6 +6904,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Karma cost for Qi Foci.
+        /// </summary>
+        public async ValueTask<int> GetKarmaQiFocusAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaQiFocus;
         }
 
         /// <summary>
@@ -6733,6 +6941,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for Ritual Spellcasting Foci.
+        /// </summary>
+        public async ValueTask<int> GetKarmaRitualSpellcastingFocusAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaRitualSpellcastingFocus;
+        }
+
+        /// <summary>
         /// Karma cost for Spellcasting Foci.
         /// </summary>
         public int KarmaSpellcastingFocus
@@ -6755,6 +6972,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Karma cost for Spellcasting Foci.
+        /// </summary>
+        public async ValueTask<int> GetKarmaSpellcastingFocusAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaSpellcastingFocus;
         }
 
         /// <summary>
@@ -6783,6 +7009,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for Spell Shaping Foci.
+        /// </summary>
+        public async ValueTask<int> GetKarmaSpellShapingFocusAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaSpellShapingFocus;
+        }
+
+        /// <summary>
         /// Karma cost for Summoning Foci.
         /// </summary>
         public int KarmaSummoningFocus
@@ -6805,6 +7040,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Karma cost for Summoning Foci.
+        /// </summary>
+        public async ValueTask<int> GetKarmaSummoningFocusAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaSummoningFocus;
         }
 
         /// <summary>
@@ -6833,6 +7077,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Karma cost for Sustaining Foci.
+        /// </summary>
+        public async ValueTask<int> GetKarmaSustainingFocusAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaSustainingFocus;
+        }
+
+        /// <summary>
         /// Karma cost for Weapon Foci.
         /// </summary>
         public int KarmaWeaponFocus
@@ -6855,6 +7108,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Karma cost for Weapon Foci.
+        /// </summary>
+        public async ValueTask<int> GetKarmaWeaponFocusAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarmaWeaponFocus;
         }
 
         /// <summary>

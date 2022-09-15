@@ -2397,7 +2397,7 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode(string strLanguage, string strName, string strCategory, CancellationToken token = default)
         {
-            return GetNodeCoreAsync(true, strLanguage, strName, strCategory, token).GetAwaiter().GetResult();
+            return GetNodeCoreAsync(true, strLanguage, strName, strCategory, token).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         public Task<XmlNode> GetNodeAsync(string strLanguage, string strName, string strCategory, CancellationToken token = default)
@@ -2444,7 +2444,7 @@ namespace Chummer.Backend.Equipment
 
         public XPathNavigator GetNodeXPath(string strLanguage, string strName, string strCategory, CancellationToken token = default)
         {
-            return GetNodeXPathCoreAsync(true, strLanguage, strName, strCategory, token).GetAwaiter().GetResult();
+            return GetNodeXPathCoreAsync(true, strLanguage, strName, strCategory, token).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         public Task<XPathNavigator> GetNodeXPathAsync(string strLanguage, string strName, string strCategory, CancellationToken token = default)

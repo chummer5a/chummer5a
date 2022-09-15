@@ -2503,7 +2503,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedDamage(CultureInfo objCulture, string strLanguage)
         {
-            return CalculatedDamageCoreAsync(true, objCulture, strLanguage).GetAwaiter().GetResult();
+            return CalculatedDamageCoreAsync(true, objCulture, strLanguage).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -3145,7 +3145,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedAmmo(CultureInfo objCulture, string strLanguage)
         {
-            return CalculatedAmmoCoreAsync(true, objCulture, strLanguage).GetAwaiter().GetResult();
+            return CalculatedAmmoCoreAsync(true, objCulture, strLanguage).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -3433,7 +3433,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedMode(string strLanguage)
         {
-            return CalculatedModeCoreAsync(true, strLanguage).GetAwaiter().GetResult();
+            return CalculatedModeCoreAsync(true, strLanguage).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -3913,7 +3913,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string TotalAP(CultureInfo objCulture, string strLanguage)
         {
-            return TotalAPCoreAsync(true, objCulture, strLanguage).GetAwaiter().GetResult();
+            return TotalAPCoreAsync(true, objCulture, strLanguage).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -4076,7 +4076,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string TotalRC(CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip = false)
         {
-            return TotalRCCoreAsync(true, objCulture, strLanguage, blnRefreshRCToolTip).GetAwaiter().GetResult();
+            return TotalRCCoreAsync(true, objCulture, strLanguage, blnRefreshRCToolTip).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         /// <summary>

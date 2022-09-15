@@ -203,6 +203,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -326,6 +327,7 @@ namespace Chummer
             {
                 _strSelectedComplexForm = strSelectedItem;
                 DialogResult = DialogResult.OK;
+                Close();
             }
         }
 

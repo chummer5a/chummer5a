@@ -159,6 +159,7 @@ namespace Chummer
         {
             _strSelectCategory = string.Empty;
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -472,8 +473,11 @@ namespace Chummer
                     SelectedRating = nudRating.ValueAsInt;
                     _intMarkup = nudMarkup.ValueAsInt;
                     _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-                    _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicleMod.SelectSingleNodeAndCacheExpression("category")?.Value;
+                    _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0)
+                        ? cboCategory.SelectedValue?.ToString()
+                        : xmlVehicleMod.SelectSingleNodeAndCacheExpression("category")?.Value;
                     DialogResult = DialogResult.OK;
+                    Close();
                 }
             }
         }

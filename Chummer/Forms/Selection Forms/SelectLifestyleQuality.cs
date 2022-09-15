@@ -255,6 +255,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)

@@ -14883,7 +14883,7 @@ namespace Chummer
                     await lblDrugGrade.DoThreadSafeAsync(x => x.Text = objDrug.Grade.CurrentDisplayName, token);
                     await lblDrugCost.DoThreadSafeAsync(x => x.Text
                                                             = objDrug.Cost.ToString(
-                                                                  CharacterObject.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+                                                                  CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo)
                                                               + LanguageManager.GetString("String_NuyenSymbol"), token);
                     await lblDrugQty.DoThreadSafeAsync(x => x.Text = objDrug.Quantity.ToString(GlobalSettings.CultureInfo), token);
                     await btnIncreaseDrugQty.DoThreadSafeAsync(x => x.Enabled = objDrug.Cost <= CharacterObject.Nuyen, token);
@@ -14926,29 +14926,29 @@ namespace Chummer
             try
             {
                 while (IsDirty || IsLoading || SkipUpdate || IsCharacterUpdateRequested)
-                    await Utils.SafeSleepAsync(GenericToken);
+                    await Utils.SafeSleepAsync(GenericToken).ConfigureAwait(false);
 
                 string strCharacterFile = CharacterObject.FileName;
                 if (string.IsNullOrEmpty(strCharacterFile) || !File.Exists(strCharacterFile))
                     return;
 
                 // Character is not dirty and their save file was updated outside of Chummer5 while it is open, so reload them
-                CursorWait objCursorWaitOuter = await CursorWait.NewAsync(this, true, GenericToken);
+                CursorWait objCursorWaitOuter = await CursorWait.NewAsync(this, true, GenericToken).ConfigureAwait(false);
                 try
                 {
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken);
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
                     try
                     {
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName),
-                                                                             Character.NumLoadingSections + 1, GenericToken))
+                                                                             Character.NumLoadingSections + 1, GenericToken).ConfigureAwait(false))
                         {
                             SkipUpdate = true;
                             try
                             {
-                                await CharacterObject.LoadAsync(frmLoadingBar.MyForm, token: GenericToken);
+                                await CharacterObject.LoadAsync(frmLoadingBar.MyForm, token: GenericToken).ConfigureAwait(false);
                                 await frmLoadingBar.MyForm.PerformStepAsync(
-                                    await LanguageManager.GetStringAsync("String_UI"), token: GenericToken);
+                                    await LanguageManager.GetStringAsync("String_UI").ConfigureAwait(false), token: GenericToken).ConfigureAwait(false);
                             }
                             finally
                             {
@@ -14961,11 +14961,11 @@ namespace Chummer
                         await objCursorWait.DisposeAsync();
                     }
 
-                    await RequestCharacterUpdate();
+                    await RequestCharacterUpdate(GenericToken).ConfigureAwait(false);
                     // Immediately await character update because we know it's necessary
                     try
                     {
-                        await UpdateCharacterInfoTask;
+                        await UpdateCharacterInfoTask.ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
@@ -14976,18 +14976,18 @@ namespace Chummer
 
                     if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest
                         && Program.ShowMessageBox(
-                            this, await LanguageManager.GetStringAsync("Message_ImprovementLoadError"),
-                            await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError"),
+                            this, await LanguageManager.GetStringAsync("Message_ImprovementLoadError", token: GenericToken).ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError", token: GenericToken).ConfigureAwait(false),
                             MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     {
                         await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements,
-                                                    GenericToken);
-                        await CharacterObject.InternalIdsNeedingReapplyImprovements.ClearAsync();
+                                                    GenericToken).ConfigureAwait(false);
+                        await CharacterObject.InternalIdsNeedingReapplyImprovements.ClearAsync().ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await objCursorWaitOuter.DisposeAsync();
+                    await objCursorWaitOuter.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -15003,19 +15003,19 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             while (SkipUpdate)
-                await Utils.SafeSleepAsync(token);
+                await Utils.SafeSleepAsync(token).ConfigureAwait(false);
             SkipUpdate = true;
             try
             {
                 Task tskAutosave = Task.CompletedTask;
-                using (await EnterReadLock.EnterAsync(CharacterObject, token))
+                using (await EnterReadLock.EnterAsync(CharacterObject, token).ConfigureAwait(false))
                 {
                     if (AutosaveStopWatch.Elapsed.Minutes >= 5 && IsDirty)
                     {
                         tskAutosave = AutoSaveCharacter(token);
                     }
 
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token);
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token).ConfigureAwait(false);
                     try
                     {
                         // TODO: DataBind these wherever possible
@@ -15023,26 +15023,26 @@ namespace Chummer
                         if (CharacterObject.Metatype == "Free Spirit" && !CharacterObject.IsCritter ||
                             CharacterObject.MetatypeCategory.EndsWith("Spirits", StringComparison.Ordinal))
                         {
-                            await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                            await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                             await lblCritterPowerPoints.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
                                 x.Text = CharacterObject.CalculateFreeSpiritPowerPoints(token);
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                         else if (CharacterObject.IsFreeSprite)
                         {
-                            await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                            await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                             await lblCritterPowerPoints.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
                                 x.Text = CharacterObject.CalculateFreeSpritePowerPoints(token);
-                            }, token);
+                            }, token).ConfigureAwait(false);
                         }
                         else
                         {
-                            await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = false, token);
-                            await lblCritterPowerPoints.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            await lblCritterPowerPoints.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                         }
 
                         await Task.WhenAll(RefreshSelectedQuality(token), RefreshSelectedCyberware(token),
@@ -15054,12 +15054,12 @@ namespace Chummer
                                            RefreshSelectedComplexForm(token), RefreshSelectedCritterPower(token),
                                            RefreshSelectedAIProgram(token), RefreshSelectedMetamagic(token),
                                            RefreshSelectedMartialArt(token), UpdateInitiationCost(token),
-                                           RefreshSelectedImprovement(token));
-                        await tskAutosave;
+                                           RefreshSelectedImprovement(token)).ConfigureAwait(false);
+                        await tskAutosave.ConfigureAwait(false);
                     }
                     finally
                     {
-                        await objCursorWait.DisposeAsync();
+                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -19684,7 +19684,7 @@ namespace Chummer
         private async void cmdIncreasePowerPoints_Click(object sender, EventArgs e)
         {
             // Make sure the character has enough Karma to improve the CharacterAttribute.
-            int intKarmaCost = CharacterObject.Settings.KarmaMysticAdeptPowerPoint;
+            int intKarmaCost = CharacterObjectSettings.KarmaMysticAdeptPowerPoint;
             if (intKarmaCost > CharacterObject.Karma)
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);

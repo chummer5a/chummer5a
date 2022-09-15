@@ -41,7 +41,7 @@ namespace Chummer
         /// <returns>The compiled Xsl transform of <paramref name="strXslFilePath"/>.</returns>
         public static XslCompiledTransform GetTransformForFile(string strXslFilePath)
         {
-            return GetTransformForFileCoreAsync(true, strXslFilePath).GetAwaiter().GetResult();
+            return GetTransformForFileCoreAsync(true, strXslFilePath).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Chummer
                 // ReSharper disable once MethodHasAsyncOverload
                 blnSuccess = s_dicCompiledTransforms.TryGetValue(strXslFilePath, out tupCachedData);
             else
-                (blnSuccess, tupCachedData) = await s_dicCompiledTransforms.TryGetValueAsync(strXslFilePath);
+                (blnSuccess, tupCachedData) = await s_dicCompiledTransforms.TryGetValueAsync(strXslFilePath).ConfigureAwait(false);
 
             if (!blnSuccess || tupCachedData.Item1 <= datLastWriteTimeUtc)
             {
@@ -96,9 +96,9 @@ namespace Chummer
                 }
                 else
                 {
-                    await Task.Run(() => objReturn.Load(strXslFilePath));
+                    await Task.Run(() => objReturn.Load(strXslFilePath)).ConfigureAwait(false);
                     Tuple<DateTime, XslCompiledTransform> tupNewValue = new Tuple<DateTime, XslCompiledTransform>(datLastWriteTimeUtc, objReturn);
-                    await s_dicCompiledTransforms.AddOrUpdateAsync(strXslFilePath, tupNewValue, (x, y) => tupNewValue);
+                    await s_dicCompiledTransforms.AddOrUpdateAsync(strXslFilePath, tupNewValue, (x, y) => tupNewValue).ConfigureAwait(false);
                 }
             }
             else

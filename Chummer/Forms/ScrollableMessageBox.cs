@@ -180,7 +180,10 @@ namespace Chummer.Forms
                 case MessageBoxButtons.YesNo:
                     DialogResult = DialogResult.No;
                     break;
+                default:
+                    return;
             }
+            Close();
         }
 
         private void cmdButton2_Click(object sender, EventArgs e)
@@ -203,6 +206,7 @@ namespace Chummer.Forms
                 default:
                     return;
             }
+            Close();
         }
 
         private void cmdButton3_Click(object sender, EventArgs e)
@@ -218,6 +222,7 @@ namespace Chummer.Forms
                 default:
                     return;
             }
+            Close();
         }
     }
 }

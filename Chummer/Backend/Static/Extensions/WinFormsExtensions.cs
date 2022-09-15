@@ -180,7 +180,7 @@ namespace Chummer
 
                 return frmForm.ShowDialog(owner);
 #else
-                return await Utils.RunOnMainThreadAsync(() => frmForm.ShowDialog(owner), token);
+                return await Utils.RunOnMainThreadAsync(() => frmForm.ShowDialog(owner), token).ConfigureAwait(false);
 #endif
             }
 
@@ -618,7 +618,7 @@ namespace Chummer
                 }
 #else
                 else
-                    await Utils.RunOnMainThreadAsync(funcToRun, token);
+                    await Utils.RunOnMainThreadAsync(funcToRun, token).ConfigureAwait(false);
 #endif
             }
             catch (ObjectDisposedException) // e)
@@ -702,7 +702,7 @@ namespace Chummer
                 }
 #else
                 else
-                    await Utils.RunOnMainThreadAsync(() => funcToRun(objControl), token);
+                    await Utils.RunOnMainThreadAsync(() => funcToRun(objControl), token).ConfigureAwait(false);
 #endif
             }
             catch (ObjectDisposedException) // e)
@@ -786,7 +786,7 @@ namespace Chummer
                 }
 #else
                 else
-                    await Utils.RunOnMainThreadAsync(() => funcToRun(token), token);
+                    await Utils.RunOnMainThreadAsync(() => funcToRun(token), token).ConfigureAwait(false);
 #endif
             }
             catch (ObjectDisposedException) // e)
@@ -870,7 +870,7 @@ namespace Chummer
                 }
 #else
                 else
-                    await Utils.RunOnMainThreadAsync(() => funcToRun(objControl, token), token);
+                    await Utils.RunOnMainThreadAsync(() => funcToRun(objControl, token), token).ConfigureAwait(false);
 #endif
             }
             catch (ObjectDisposedException) // e)
@@ -1237,8 +1237,8 @@ namespace Chummer
                 }
 #else
                 objReturn = objControl == null
-                    ? await Task.Run(funcToRun, token)
-                    : await Utils.RunOnMainThreadAsync(funcToRun, token);
+                    ? await Task.Run(funcToRun, token).ConfigureAwait(false)
+                    : await Utils.RunOnMainThreadAsync(funcToRun, token).ConfigureAwait(false);
 #endif
             }
             catch (ObjectDisposedException) // e)
@@ -1329,8 +1329,8 @@ namespace Chummer
                 }
 #else
                 objReturn = objControl == null
-                    ? await Task.Run(() => funcToRun(null), token)
-                    : await Utils.RunOnMainThreadAsync(() => funcToRun(objControl), token);
+                    ? await Task.Run(() => funcToRun(null), token).ConfigureAwait(false)
+                    : await Utils.RunOnMainThreadAsync(() => funcToRun(objControl), token).ConfigureAwait(false);
 #endif
             }
             catch (ObjectDisposedException) // e)
@@ -1421,8 +1421,8 @@ namespace Chummer
                 }
 #else
                 objReturn = objControl == null
-                    ? await Task.Run(() => funcToRun(token), token)
-                    : await Utils.RunOnMainThreadAsync(() => funcToRun(token), token);
+                    ? await Task.Run(() => funcToRun(token), token).ConfigureAwait(false)
+                    : await Utils.RunOnMainThreadAsync(() => funcToRun(token), token).ConfigureAwait(false);
 #endif
             }
             catch (ObjectDisposedException) // e)
@@ -1513,8 +1513,8 @@ namespace Chummer
                 }
 #else
                 objReturn = objControl == null
-                    ? await Task.Run(() => funcToRun(null, token), token)
-                    : await Utils.RunOnMainThreadAsync(() => funcToRun(objControl, token), token);
+                    ? await Task.Run(() => funcToRun(null, token), token).ConfigureAwait(false)
+                    : await Utils.RunOnMainThreadAsync(() => funcToRun(objControl, token), token).ConfigureAwait(false);
 #endif
             }
             catch (ObjectDisposedException) // e)

@@ -47,6 +47,7 @@ namespace Chummer
                 _strReturnValue = strSelectedLimit;
                 _strSelectedDisplayLimit = ((ListItem)cboLimit.SelectedItem).Name;
                 DialogResult = DialogResult.OK;
+                Close();
             }
         }
 
@@ -73,6 +74,7 @@ namespace Chummer
                         _strSelectedDisplayLimit
                             = ((ListItem) await cboLimit.DoThreadSafeFuncAsync(x => x.SelectedItem)).Name;
                         DialogResult = DialogResult.OK;
+                        Close();
                     }
                 }
                 else
@@ -83,6 +85,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         #endregion Control Events

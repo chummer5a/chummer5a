@@ -106,19 +106,18 @@ namespace Chummer
 
                 // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
                 if (await cboSpec.DoThreadSafeFuncAsync(x => x.Items.Count == 1 && x.DropDownStyle == ComboBoxStyle.DropDownList) && AllowAutoSelect)
-                    AcceptForm();
+                    await this.DoThreadSafeAsync(x => x.AcceptForm());
 
                 if (!string.IsNullOrEmpty(_strForceItem))
                 {
                     await cboSpec.DoThreadSafeAsync(x => x.SelectedIndex = x.FindStringExact(_strForceItem));
-                    if (await cboSpec.DoThreadSafeFuncAsync(x => x.SelectedIndex) != -1)
-                        AcceptForm();
-                    else
+                    if (await cboSpec.DoThreadSafeFuncAsync(x => x.SelectedIndex) == -1)
                     {
                         await cboSpec.PopulateWithListItemsAsync((new ListItem(_strForceItem, _strForceItem)).Yield());
                         await cboSpec.DoThreadSafeAsync(x => x.SelectedIndex = 0);
-                        AcceptForm();
                     }
+
+                    await this.DoThreadSafeAsync(x => x.AcceptForm());
                 }
             }
         }
@@ -126,6 +125,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -187,7 +187,10 @@ namespace Chummer
         private void AcceptForm()
         {
             if (!string.IsNullOrEmpty(SelectedItem))
+            {
                 DialogResult = DialogResult.OK;
+                Close();
+            }
         }
 
         #endregion Methods

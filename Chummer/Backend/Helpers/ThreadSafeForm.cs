@@ -45,13 +45,13 @@ namespace Chummer
 
         public static async ValueTask<ThreadSafeForm<T>> GetAsync(Func<T> funcFormConstructor, CancellationToken token = default)
         {
-            return new ThreadSafeForm<T>(await Utils.RunOnMainThreadAsync(funcFormConstructor, token));
+            return new ThreadSafeForm<T>(await Utils.RunOnMainThreadAsync(funcFormConstructor, token).ConfigureAwait(false));
         }
 
         public static async ValueTask<ThreadSafeForm<T>> GetAsync(Func<CancellationToken, T> funcFormConstructor, CancellationToken token = default)
         {
             return new ThreadSafeForm<T>(
-                await Utils.RunOnMainThreadAsync(() => funcFormConstructor.Invoke(token), token));
+                await Utils.RunOnMainThreadAsync(() => funcFormConstructor.Invoke(token), token).ConfigureAwait(false));
         }
 
         public void Dispose()

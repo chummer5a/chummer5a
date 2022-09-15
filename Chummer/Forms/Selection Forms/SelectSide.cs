@@ -40,6 +40,7 @@ namespace Chummer
         {
             _strSelectedSide = cboSide.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         private async void SelectSide_Load(object sender, EventArgs e)
@@ -85,6 +86,7 @@ namespace Chummer
         {
             _strSelectedSide = strSide;
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         #endregion Methods
@@ -92,6 +94,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
     }
 }

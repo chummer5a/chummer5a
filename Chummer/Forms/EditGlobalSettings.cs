@@ -142,6 +142,7 @@ namespace Chummer
             }
             if (_blnDirty)
                 await Utils.RestartApplication(_strSelectedLanguage, "Message_Options_CloseForms");
+            await this.DoThreadSafeAsync(x => x.Close());
         }
 
         private async void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
@@ -690,6 +691,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private async void chkEnablePlugins_CheckedChanged(object sender, EventArgs e)

@@ -479,6 +479,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void chkTrustFund_Changed(object sender, EventArgs e)

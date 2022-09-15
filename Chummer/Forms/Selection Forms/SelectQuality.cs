@@ -183,6 +183,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private async void chkLimitList_CheckedChanged(object sender, EventArgs e)

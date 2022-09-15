@@ -3988,7 +3988,7 @@ namespace Chummer.Backend.Equipment
 
         public decimal GetCalculatedESSPrototypeInvariant(int intRating, Grade objGrade)
         {
-            return GetCalculatedESSPrototypeInvariantCoreAsync(true, intRating, objGrade).GetAwaiter().GetResult();
+            return GetCalculatedESSPrototypeInvariantCoreAsync(true, intRating, objGrade).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         public Task<decimal> GetCalculatedESSPrototypeInvariantAsync(int intRating, Grade objGrade)

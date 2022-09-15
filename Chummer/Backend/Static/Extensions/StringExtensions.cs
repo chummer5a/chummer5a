@@ -1350,7 +1350,7 @@ namespace Chummer
                 {
                     if (!s_RtbRtfManipulator.IsHandleCreated)
                     {
-                        await Utils.RunOnMainThreadAsync(() => s_RtbRtfManipulator.CreateControl(), token);
+                        await Utils.RunOnMainThreadAsync(() => s_RtbRtfManipulator.CreateControl(), token).ConfigureAwait(false);
                     }
                     return await s_RtbRtfManipulator.DoThreadSafeFuncAsync(x =>
                     {
@@ -1435,7 +1435,7 @@ namespace Chummer
                     {
                         if (!s_RtbRtfManipulator.IsHandleCreated)
                         {
-                            await Utils.RunOnMainThreadAsync(() => s_RtbRtfManipulator.CreateControl(), token);
+                            await Utils.RunOnMainThreadAsync(() => s_RtbRtfManipulator.CreateControl(), token).ConfigureAwait(false);
                         }
 
                         try
@@ -1543,7 +1543,7 @@ namespace Chummer
                     {
                         if (!s_RtbRtfManipulator.IsHandleCreated)
                         {
-                            await Utils.RunOnMainThreadAsync(() => s_RtbRtfManipulator.CreateControl(), token);
+                            await Utils.RunOnMainThreadAsync(() => s_RtbRtfManipulator.CreateControl(), token).ConfigureAwait(false);
                         }
                         try
                         {

@@ -121,17 +121,20 @@ namespace Chummer
         {
             AddAgain = false;
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             AddAgain = true;
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private async void treModules_AfterSelect(object sender, TreeViewEventArgs e)

@@ -366,7 +366,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XPathNavigator LoadXPath(string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
         {
-            return LoadXPathCoreAsync(true, strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token).GetAwaiter().GetResult();
+            return LoadXPathCoreAsync(true, strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -401,7 +401,7 @@ namespace Chummer
             strFileName = Path.GetFileName(strFileName);
             // Wait to make sure our data directories are loaded before proceeding
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? EnterReadLock.Enter(s_objDataDirectoriesLock, token) : await EnterReadLock.EnterAsync(s_objDataDirectoriesLock, token))
+            using (blnSync ? EnterReadLock.Enter(s_objDataDirectoriesLock, token) : await EnterReadLock.EnterAsync(s_objDataDirectoriesLock, token).ConfigureAwait(false))
             {
                 if (string.IsNullOrEmpty(strLanguage))
                     strLanguage = GlobalSettings.Language;
@@ -439,7 +439,7 @@ namespace Chummer
                             // ReSharper disable once MethodHasAsyncOverload
                             objLocker = s_objDataDirectoriesLock.EnterWriteLock(token);
                         else
-                            objLockerAsync = await s_objDataDirectoriesLock.EnterWriteLockAsync(token);
+                            objLockerAsync = await s_objDataDirectoriesLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                         try
                         {
                             token.ThrowIfCancellationRequested();
@@ -457,7 +457,7 @@ namespace Chummer
                                 // ReSharper disable once MethodHasAsyncOverload
                                 objLocker.Dispose();
                             else
-                                await objLockerAsync.DisposeAsync();
+                                await objLockerAsync.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                 }
@@ -477,7 +477,7 @@ namespace Chummer
                     else
                     {
                         bool blnLoadSuccess;
-                        (blnLoadSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token);
+                        (blnLoadSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token).ConfigureAwait(false);
                         blnDoLoad = !blnLoadSuccess;
                     }
                 }
@@ -495,13 +495,13 @@ namespace Chummer
                     else
                     {
                         xmlDocumentOfReturn
-                            = await LoadAsync(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token);
+                            = await LoadAsync(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false);
                         // Need this conditional so that we actually await the line above before we check to see if the load was successful or not
                         // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
                         if (xmlDocumentOfReturn != null)
                         {
                             (blnLoadSuccess, xmlReferenceOfReturn)
-                                = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token);
+                                = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token).ConfigureAwait(false);
                         }
                         else
                         {
@@ -534,7 +534,7 @@ namespace Chummer
                 XPathDocument objTemp = blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? xmlReferenceOfReturn.GetXPathContent(token)
-                    : await xmlReferenceOfReturn.GetXPathContentAsync(token);
+                    : await xmlReferenceOfReturn.GetXPathContentAsync(token).ConfigureAwait(false);
 
                 return objTemp.CreateNavigator();
             }
@@ -552,7 +552,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XmlDocument Load(string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
         {
-            return LoadCoreAsync(true, strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token).GetAwaiter().GetResult();
+            return LoadCoreAsync(true, strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -588,7 +588,7 @@ namespace Chummer
             using (blnSync
                        // ReSharper disable once MethodHasAsyncOverload
                        ? EnterReadLock.Enter(s_objDataDirectoriesLock, token)
-                       : await EnterReadLock.EnterAsync(s_objDataDirectoriesLock, token))
+                       : await EnterReadLock.EnterAsync(s_objDataDirectoriesLock, token).ConfigureAwait(false))
             {
                 foreach (string strDirectory in s_SetDataDirectories)
                 {
@@ -669,7 +669,7 @@ namespace Chummer
                 else
                 {
                     bool blnSuccess;
-                    (blnSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token);
+                    (blnSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token).ConfigureAwait(false);
                     if (!blnSuccess)
                     {
                         int intEmergencyRelease = 0;
@@ -678,17 +678,17 @@ namespace Chummer
                         for (; intEmergencyRelease <= Utils.SleepEmergencyReleaseMaxTicks; ++intEmergencyRelease)
                         {
                             // The file was not found in the reference list, so it must be loaded.
-                            if (await s_DicXmlDocuments.TryAddAsync(objDataKey, xmlReferenceOfReturn, token))
+                            if (await s_DicXmlDocuments.TryAddAsync(objDataKey, xmlReferenceOfReturn, token).ConfigureAwait(false))
                             {
                                 blnLoadFile = true;
                                 break;
                             }
 
-                            await xmlReferenceOfReturn.DisposeAsync();
+                            await xmlReferenceOfReturn.DisposeAsync().ConfigureAwait(false);
 
                             // It somehow got added in the meantime, so let's fetch it again
                             (blnSuccess, xmlReferenceOfReturn)
-                                = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token);
+                                = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token).ConfigureAwait(false);
                             if (blnSuccess)
                                 break;
                             // We're iterating the loop because we failed to get the reference, so we need to re-allocate our reference because it was in an out-argument above
@@ -700,7 +700,7 @@ namespace Chummer
                                 .SleepEmergencyReleaseMaxTicks) // Shouldn't ever happen, but just in case it does, emergency exit out of the loading function
                         {
                             Utils.BreakIfDebug();
-                            await xmlReferenceOfReturn.DisposeAsync();
+                            await xmlReferenceOfReturn.DisposeAsync().ConfigureAwait(false);
                             return new XmlDocument {XmlResolver = null};
                         }
                     }
@@ -714,7 +714,7 @@ namespace Chummer
                         // ReSharper disable once MethodHasAsyncOverload
                         objLocker = xmlReferenceOfReturn.LockObject.EnterWriteLock(token);
                     else
-                        objLockerAsync = await xmlReferenceOfReturn.LockObject.EnterWriteLockAsync(token);
+                        objLockerAsync = await xmlReferenceOfReturn.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
@@ -724,7 +724,7 @@ namespace Chummer
                             XmlDocument xmlBaseDocument = blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? Load(strFileName, null, strLanguage, token: token)
-                                : await LoadAsync(strFileName, null, strLanguage, token: token);
+                                : await LoadAsync(strFileName, null, strLanguage, token: token).ConfigureAwait(false);
                             xmlReturn = xmlBaseDocument.Clone() as XmlDocument;
                         }
                         else if (!strLanguage.Equals(GlobalSettings.DefaultLanguage,
@@ -734,7 +734,7 @@ namespace Chummer
                             XmlDocument xmlBaseDocument = blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? Load(strFileName, null, GlobalSettings.DefaultLanguage, token: token)
-                                : await LoadAsync(strFileName, null, GlobalSettings.DefaultLanguage, token: token);
+                                : await LoadAsync(strFileName, null, GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false);
                             xmlReturn = xmlBaseDocument.Clone() as XmlDocument;
                         }
 
@@ -794,7 +794,7 @@ namespace Chummer
                             XPathDocument objDataDoc = blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? LanguageManager.GetDataDocument(strLanguage, token)
-                                : await LanguageManager.GetDataDocumentAsync(strLanguage, token);
+                                : await LanguageManager.GetDataDocumentAsync(strLanguage, token).ConfigureAwait(false);
                             if (objDataDoc != null)
                             {
                                 XmlNode xmlBaseChummerNode = xmlReturn.SelectSingleNode("/chummer");
@@ -813,7 +813,7 @@ namespace Chummer
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             xmlReferenceOfReturn.SetXmlContent(xmlReturn, token);
                         else
-                            await xmlReferenceOfReturn.SetXmlContentAsync(xmlReturn, token);
+                            await xmlReferenceOfReturn.SetXmlContentAsync(xmlReturn, token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -821,7 +821,7 @@ namespace Chummer
                             // ReSharper disable once MethodHasAsyncOverload
                             objLocker.Dispose();
                         else
-                            await objLockerAsync.DisposeAsync();
+                            await objLockerAsync.DisposeAsync().ConfigureAwait(false);
                     }
 
                     // Make sure we do not override the cached document with our live data
@@ -830,7 +830,7 @@ namespace Chummer
                         XmlDocument objTemp = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? xmlReferenceOfReturn.GetXmlContent(token)
-                            : await xmlReferenceOfReturn.GetXmlContentAsync(token);
+                            : await xmlReferenceOfReturn.GetXmlContentAsync(token).ConfigureAwait(false);
                         xmlReturn = objTemp.Clone() as XmlDocument;
                     }
                 }
@@ -839,7 +839,7 @@ namespace Chummer
                     XmlDocument objTemp = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? xmlReferenceOfReturn.GetXmlContent(token)
-                        : await xmlReferenceOfReturn.GetXmlContentAsync(token);
+                        : await xmlReferenceOfReturn.GetXmlContentAsync(token).ConfigureAwait(false);
                     // Make sure we do not override the cached document with our live data
                     if (GlobalSettings.LiveCustomData && blnHasCustomData)
                         xmlReturn = objTemp.Clone() as XmlDocument;
@@ -866,14 +866,14 @@ namespace Chummer
                 if (blnHasLiveCustomData || (blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? !xmlReferenceOfReturn.GetDuplicatesChecked(token)
-                        : !await xmlReferenceOfReturn.GetDuplicatesCheckedAsync(token)))
+                        : !await xmlReferenceOfReturn.GetDuplicatesCheckedAsync(token).ConfigureAwait(false)))
                 {
                     // Set early to make sure work isn't done multiple times in case of multiple threads
                     if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverload
                         xmlReferenceOfReturn.SetDuplicatesChecked(true, token);
                     else
-                        await xmlReferenceOfReturn.SetDuplicatesCheckedAsync(true, token);
+                        await xmlReferenceOfReturn.SetDuplicatesCheckedAsync(true, token).ConfigureAwait(false);
                     using (XmlNodeList xmlNodeList = xmlReturn.SelectNodes("/chummer/*"))
                     {
                         if (xmlNodeList?.Count > 0)
@@ -2058,13 +2058,13 @@ namespace Chummer
 
         public static async Task<bool> AnyXslFilesAsync(string strLanguage, IEnumerable<Character> lstCharacters = null, CancellationToken token = default)
         {
-            return (await GetXslFilesFromLocalDirectoryAsync(strLanguage, lstCharacters, false, false, token)).Item1;
+            return (await GetXslFilesFromLocalDirectoryAsync(strLanguage, lstCharacters, false, false, token).ConfigureAwait(false)).Item1;
         }
 
         public static async Task<List<ListItem>> GetXslFilesFromLocalDirectoryAsync(string strLanguage,
                                                                    IEnumerable<Character> lstCharacters = null, bool blnUsePool = false, CancellationToken token = default)
         {
-            return (await GetXslFilesFromLocalDirectoryAsync(strLanguage, lstCharacters, true, blnUsePool, token)).Item2;
+            return (await GetXslFilesFromLocalDirectoryAsync(strLanguage, lstCharacters, true, blnUsePool, token).ConfigureAwait(false)).Item2;
         }
 
         public static async Task<Tuple<bool, List<ListItem>>> GetXslFilesFromLocalDirectoryAsync(string strLanguage, IEnumerable<Character> lstCharacters, bool blnDoList, bool blnUsePool, CancellationToken token = default)
@@ -2083,14 +2083,14 @@ namespace Chummer
                     foreach (Character objCharacter in lstCharacters)
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach (XPathNavigator xmlSheet in await (await objCharacter.LoadDataXPathAsync("sheets.xml", strLanguage, token: token))
+                        foreach (XPathNavigator xmlSheet in await (await objCharacter.LoadDataXPathAsync("sheets.xml", strLanguage, token: token).ConfigureAwait(false))
                                      .SelectAndCacheExpressionAsync(
                                          "/chummer/sheets[@lang="
                                          + strLanguage.CleanXPath()
-                                         + "]/sheet[not(hide)]"))
+                                         + "]/sheet[not(hide)]").ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
-                            string strSheetFileName = (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("filename"))?.Value;
+                            string strSheetFileName = (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("filename").ConfigureAwait(false))?.Value;
                             if (string.IsNullOrEmpty(strSheetFileName))
                                 continue;
                             if (!blnDoList)
@@ -2104,23 +2104,23 @@ namespace Chummer
                                                                   StringComparison.OrdinalIgnoreCase)
                                                   ? Path.Combine(strLanguage, strSheetFileName)
                                                   : strSheetFileName,
-                                              (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
-                                              ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)));
+                                              (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value
+                                              ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
                         }
                     }
                 }
                 else
                 {
-                    XPathNodeIterator xmlIterator = await (await LoadXPathAsync("sheets.xml", null, strLanguage, token: token))
+                    XPathNodeIterator xmlIterator = await (await LoadXPathAsync("sheets.xml", null, strLanguage, token: token).ConfigureAwait(false))
                         .SelectAndCacheExpressionAsync(
-                            "/chummer/sheets[@lang=" + strLanguage.CleanXPath() + "]/sheet[not(hide)]");
+                            "/chummer/sheets[@lang=" + strLanguage.CleanXPath() + "]/sheet[not(hide)]").ConfigureAwait(false);
                     if (blnDoList)
                         lstSheets = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(xmlIterator.Count);
 
                     foreach (XPathNavigator xmlSheet in xmlIterator)
                     {
                         token.ThrowIfCancellationRequested();
-                        string strSheetFileName = (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("filename"))?.Value;
+                        string strSheetFileName = (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("filename").ConfigureAwait(false))?.Value;
                         if (string.IsNullOrEmpty(strSheetFileName))
                             continue;
                         if (!blnDoList)
@@ -2134,8 +2134,8 @@ namespace Chummer
                                                               StringComparison.OrdinalIgnoreCase)
                                               ? Path.Combine(strLanguage, strSheetFileName)
                                               : strSheetFileName,
-                                          (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
-                                          ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)));
+                                          (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value
+                                          ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
                     }
                 }
             }
@@ -2190,9 +2190,9 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {
-                    await objWriter.WriteStartDocumentAsync();
+                    await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
                     // <results>
-                    await objWriter.WriteStartElementAsync("results", token: token);
+                    await objWriter.WriteStartElementAsync("results", token: token).ConfigureAwait(false);
 
                     foreach (string strFile in Directory.EnumerateFiles(Utils.GetDataFolderPath, "*.xml"))
                     {
@@ -2217,15 +2217,15 @@ namespace Chummer
                             blnExists = true;
 
                         // <file name="x" needstobeadded="y">
-                        await objWriter.WriteStartElementAsync("file", token: token);
-                        await objWriter.WriteAttributeStringAsync("name", strFileName, token: token);
+                        await objWriter.WriteStartElementAsync("file", token: token).ConfigureAwait(false);
+                        await objWriter.WriteAttributeStringAsync("name", strFileName, token: token).ConfigureAwait(false);
 
                         if (blnExists)
                         {
                             // Load the current English file.
-                            XPathNavigator objEnglishDoc = await LoadXPathAsync(strFileName, token: token);
+                            XPathNavigator objEnglishDoc = await LoadXPathAsync(strFileName, token: token).ConfigureAwait(false);
                             XPathNavigator objEnglishRoot
-                                = await objEnglishDoc.SelectSingleNodeAndCacheExpressionAsync("/chummer");
+                                = await objEnglishDoc.SelectSingleNodeAndCacheExpressionAsync("/chummer").ConfigureAwait(false);
 
                             foreach (XPathNavigator objType in objEnglishRoot.SelectChildren(XPathNodeType.Element))
                             {
@@ -2239,7 +2239,7 @@ namespace Chummer
                                     // This is done since not all of the books are available in every language or the user may only wish to verify the content of certain books.
                                     bool blnContinue = true;
                                     XPathNavigator xmlSource
-                                        = await objChild.SelectSingleNodeAndCacheExpressionAsync("source");
+                                        = await objChild.SelectSingleNodeAndCacheExpressionAsync("source").ConfigureAwait(false);
                                     if (xmlSource != null)
                                     {
                                         blnContinue = lstBooks.Contains(xmlSource.Value);
@@ -2262,7 +2262,7 @@ namespace Chummer
                                         XPathNavigator xmlTranslatedType
                                             = objLanguageRoot.SelectSingleNode(strTypeName);
                                         XPathNavigator xmlName
-                                            = await objChild.SelectSingleNodeAndCacheExpressionAsync("name");
+                                            = await objChild.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false);
                                         // Look for a matching entry in the Language file.
                                         if (xmlName != null)
                                         {
@@ -2281,15 +2281,15 @@ namespace Chummer
                                                 if (objChild.HasChildren)
                                                 {
                                                     if (await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                            "translate") != null)
+                                                            "translate").ConfigureAwait(false) != null)
                                                         blnTranslate = true;
 
                                                     // Do not mark page as missing if the original does not have it.
-                                                    if (await objChild.SelectSingleNodeAndCacheExpressionAsync("page")
+                                                    if (await objChild.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false)
                                                         != null)
                                                     {
                                                         if (await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                                "altpage") != null)
+                                                                "altpage").ConfigureAwait(false) != null)
                                                             blnAltPage = true;
                                                     }
                                                     else
@@ -2301,10 +2301,10 @@ namespace Chummer
                                                             "paragons.xml", StringComparison.OrdinalIgnoreCase))
                                                     {
                                                         if (await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                                "altadvantage") != null)
+                                                                "altadvantage").ConfigureAwait(false) != null)
                                                             blnAdvantage = true;
                                                         if (await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                                "altdisadvantage") != null)
+                                                                "altdisadvantage").ConfigureAwait(false) != null)
                                                             blnDisadvantage = true;
                                                     }
                                                     else
@@ -2317,7 +2317,7 @@ namespace Chummer
                                                 {
                                                     blnAltPage = true;
                                                     if (await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                            "@translate") != null)
+                                                            "@translate").ConfigureAwait(false) != null)
                                                         blnTranslate = true;
                                                 }
 
@@ -2327,25 +2327,25 @@ namespace Chummer
                                                     if (!blnTypeWritten)
                                                     {
                                                         blnTypeWritten = true;
-                                                        await objWriter.WriteStartElementAsync(strTypeName, token: token);
+                                                        await objWriter.WriteStartElementAsync(strTypeName, token: token).ConfigureAwait(false);
                                                     }
 
                                                     // <results>
-                                                    await objWriter.WriteStartElementAsync(strChildName, token: token);
+                                                    await objWriter.WriteStartElementAsync(strChildName, token: token).ConfigureAwait(false);
                                                     await objWriter.WriteElementStringAsync(
-                                                        "name", strChildNameElement, token: token);
+                                                        "name", strChildNameElement, token: token).ConfigureAwait(false);
                                                     if (!blnTranslate)
-                                                        await objWriter.WriteElementStringAsync("missing", "translate", token: token);
+                                                        await objWriter.WriteElementStringAsync("missing", "translate", token: token).ConfigureAwait(false);
                                                     if (!blnAltPage)
-                                                        await objWriter.WriteElementStringAsync("missing", "altpage", token: token);
+                                                        await objWriter.WriteElementStringAsync("missing", "altpage", token: token).ConfigureAwait(false);
                                                     if (!blnAdvantage)
                                                         await objWriter.WriteElementStringAsync(
-                                                            "missing", "altadvantage", token: token);
+                                                            "missing", "altadvantage", token: token).ConfigureAwait(false);
                                                     if (!blnDisadvantage)
                                                         await objWriter.WriteElementStringAsync(
-                                                            "missing", "altdisadvantage", token: token);
+                                                            "missing", "altdisadvantage", token: token).ConfigureAwait(false);
                                                     // </results>
-                                                    await objWriter.WriteEndElementAsync();
+                                                    await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                                 }
                                             }
                                             else
@@ -2353,32 +2353,32 @@ namespace Chummer
                                                 if (!blnTypeWritten)
                                                 {
                                                     blnTypeWritten = true;
-                                                    await objWriter.WriteStartElementAsync(strTypeName, token: token);
+                                                    await objWriter.WriteStartElementAsync(strTypeName, token: token).ConfigureAwait(false);
                                                 }
 
                                                 // No match was found, so write out that the data item is missing.
                                                 // <result>
-                                                await objWriter.WriteStartElementAsync(strChildName, token: token);
+                                                await objWriter.WriteStartElementAsync(strChildName, token: token).ConfigureAwait(false);
                                                 await objWriter.WriteAttributeStringAsync(
-                                                    "needstobeadded", bool.TrueString, token: token);
-                                                await objWriter.WriteElementStringAsync("name", strChildNameElement, token: token);
+                                                    "needstobeadded", bool.TrueString, token: token).ConfigureAwait(false);
+                                                await objWriter.WriteElementStringAsync("name", strChildNameElement, token: token).ConfigureAwait(false);
                                                 // </result>
-                                                await objWriter.WriteEndElementAsync();
+                                                await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                             }
 
                                             if (strFileName == "metatypes.xml")
                                             {
                                                 XPathNavigator xmlMetavariants
                                                     = await objChild.SelectSingleNodeAndCacheExpressionAsync(
-                                                        "metavariants");
+                                                        "metavariants").ConfigureAwait(false);
                                                 if (xmlMetavariants != null)
                                                 {
                                                     foreach (XPathNavigator objMetavariant in await xmlMetavariants
-                                                                 .SelectAndCacheExpressionAsync("metavariant"))
+                                                                 .SelectAndCacheExpressionAsync("metavariant").ConfigureAwait(false))
                                                     {
                                                         string strMetavariantName
                                                             = (await objMetavariant
-                                                                .SelectSingleNodeAndCacheExpressionAsync("name")).Value;
+                                                                .SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false)).Value;
                                                         XPathNavigator objTranslate =
                                                             objLanguageRoot.SelectSingleNode(
                                                                 "metatypes/metatype[name = "
@@ -2390,11 +2390,11 @@ namespace Chummer
                                                             bool blnTranslate
                                                                 = await objTranslate
                                                                     .SelectSingleNodeAndCacheExpressionAsync(
-                                                                        "translate") != null;
+                                                                        "translate").ConfigureAwait(false) != null;
                                                             bool blnAltPage
                                                                 = await objTranslate
                                                                       .SelectSingleNodeAndCacheExpressionAsync(
-                                                                          "altpage")
+                                                                          "altpage").ConfigureAwait(false)
                                                                   != null;
 
                                                             // Item exists, so make sure it has its translate attribute populated.
@@ -2403,23 +2403,23 @@ namespace Chummer
                                                                 if (!blnTypeWritten)
                                                                 {
                                                                     blnTypeWritten = true;
-                                                                    await objWriter.WriteStartElementAsync(strTypeName, token: token);
+                                                                    await objWriter.WriteStartElementAsync(strTypeName, token: token).ConfigureAwait(false);
                                                                 }
 
                                                                 // <result>
-                                                                await objWriter.WriteStartElementAsync("metavariants", token: token);
-                                                                await objWriter.WriteStartElementAsync("metavariant", token: token);
+                                                                await objWriter.WriteStartElementAsync("metavariants", token: token).ConfigureAwait(false);
+                                                                await objWriter.WriteStartElementAsync("metavariant", token: token).ConfigureAwait(false);
                                                                 await objWriter.WriteElementStringAsync(
-                                                                    "name", strMetavariantName, token: token);
+                                                                    "name", strMetavariantName, token: token).ConfigureAwait(false);
                                                                 if (!blnTranslate)
                                                                     await objWriter.WriteElementStringAsync(
-                                                                        "missing", "translate", token: token);
+                                                                        "missing", "translate", token: token).ConfigureAwait(false);
                                                                 if (!blnAltPage)
                                                                     await objWriter.WriteElementStringAsync(
-                                                                        "missing", "altpage", token: token);
-                                                                await objWriter.WriteEndElementAsync();
+                                                                        "missing", "altpage", token: token).ConfigureAwait(false);
+                                                                await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                                                 // </result>
-                                                                await objWriter.WriteEndElementAsync();
+                                                                await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                                             }
                                                         }
                                                         else
@@ -2427,19 +2427,19 @@ namespace Chummer
                                                             if (!blnTypeWritten)
                                                             {
                                                                 blnTypeWritten = true;
-                                                                await objWriter.WriteStartElementAsync(strTypeName, token: token);
+                                                                await objWriter.WriteStartElementAsync(strTypeName, token: token).ConfigureAwait(false);
                                                             }
 
                                                             // <result>
-                                                            await objWriter.WriteStartElementAsync("metavariants", token: token);
-                                                            await objWriter.WriteStartElementAsync("metavariant", token: token);
+                                                            await objWriter.WriteStartElementAsync("metavariants", token: token).ConfigureAwait(false);
+                                                            await objWriter.WriteStartElementAsync("metavariant", token: token).ConfigureAwait(false);
                                                             await objWriter.WriteAttributeStringAsync(
-                                                                "needstobeadded", bool.TrueString, token: token);
+                                                                "needstobeadded", bool.TrueString, token: token).ConfigureAwait(false);
                                                             await objWriter.WriteElementStringAsync(
-                                                                "name", strMetavariantName, token: token);
-                                                            await objWriter.WriteEndElementAsync();
+                                                                "name", strMetavariantName, token: token).ConfigureAwait(false);
+                                                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                                             // </result>
-                                                            await objWriter.WriteEndElementAsync();
+                                                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                                         }
                                                     }
                                                 }
@@ -2452,7 +2452,7 @@ namespace Chummer
                                         else if (strFile.EndsWith("tips.xml", StringComparison.OrdinalIgnoreCase))
                                         {
                                             XPathNavigator xmlText
-                                                = await objChild.SelectSingleNodeAndCacheExpressionAsync("text");
+                                                = await objChild.SelectSingleNodeAndCacheExpressionAsync("text").ConfigureAwait(false);
                                             // Look for a matching entry in the Language file.
                                             if (xmlText != null)
                                             {
@@ -2466,9 +2466,9 @@ namespace Chummer
                                                     // A match was found, so see what elements, if any, are missing.
                                                     bool blnTranslate
                                                         = await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                              "translate") != null
+                                                              "translate").ConfigureAwait(false) != null
                                                           || (await xmlNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                              "@translated"))?.Value == bool.TrueString;
+                                                              "@translated").ConfigureAwait(false))?.Value == bool.TrueString;
 
                                                     // At least one piece of data was missing so write out the result node.
                                                     if (!blnTranslate)
@@ -2476,18 +2476,18 @@ namespace Chummer
                                                         if (!blnTypeWritten)
                                                         {
                                                             blnTypeWritten = true;
-                                                            await objWriter.WriteStartElementAsync(strTypeName, token: token);
+                                                            await objWriter.WriteStartElementAsync(strTypeName, token: token).ConfigureAwait(false);
                                                         }
 
                                                         // <results>
-                                                        await objWriter.WriteStartElementAsync(strChildName, token: token);
+                                                        await objWriter.WriteStartElementAsync(strChildName, token: token).ConfigureAwait(false);
                                                         await objWriter.WriteElementStringAsync(
-                                                            "text", strChildTextElement, token: token);
+                                                            "text", strChildTextElement, token: token).ConfigureAwait(false);
                                                         if (!blnTranslate)
                                                             await objWriter.WriteElementStringAsync(
-                                                                "missing", "translate", token: token);
+                                                                "missing", "translate", token: token).ConfigureAwait(false);
                                                         // </results>
-                                                        await objWriter.WriteEndElementAsync();
+                                                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                                     }
                                                 }
                                                 else
@@ -2500,13 +2500,13 @@ namespace Chummer
 
                                                     // No match was found, so write out that the data item is missing.
                                                     // <result>
-                                                    await objWriter.WriteStartElementAsync(strChildName, token: token);
+                                                    await objWriter.WriteStartElementAsync(strChildName, token: token).ConfigureAwait(false);
                                                     await objWriter.WriteAttributeStringAsync(
-                                                        "needstobeadded", bool.TrueString, token: token);
+                                                        "needstobeadded", bool.TrueString, token: token).ConfigureAwait(false);
                                                     await objWriter.WriteElementStringAsync(
-                                                        "text", strChildTextElement, token: token);
+                                                        "text", strChildTextElement, token: token).ConfigureAwait(false);
                                                     // </result>
-                                                    await objWriter.WriteEndElementAsync();
+                                                    await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                                 }
                                             }
                                         }
@@ -2523,21 +2523,21 @@ namespace Chummer
                                                 {
                                                     // Make sure the translate attribute is populated.
                                                     if (await objNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                            "@translate") == null)
+                                                            "@translate").ConfigureAwait(false) == null)
                                                     {
                                                         if (!blnTypeWritten)
                                                         {
                                                             blnTypeWritten = true;
-                                                            await objWriter.WriteStartElementAsync(strTypeName, token: token);
+                                                            await objWriter.WriteStartElementAsync(strTypeName, token: token).ConfigureAwait(false);
                                                         }
 
                                                         // <result>
-                                                        await objWriter.WriteStartElementAsync(strChildName, token: token);
+                                                        await objWriter.WriteStartElementAsync(strChildName, token: token).ConfigureAwait(false);
                                                         await objWriter.WriteElementStringAsync(
-                                                            "name", strChildInnerText, token: token);
-                                                        await objWriter.WriteElementStringAsync("missing", "translate", token: token);
+                                                            "name", strChildInnerText, token: token).ConfigureAwait(false);
+                                                        await objWriter.WriteElementStringAsync("missing", "translate", token: token).ConfigureAwait(false);
                                                         // </result>
-                                                        await objWriter.WriteEndElementAsync();
+                                                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                                     }
                                                 }
                                                 else
@@ -2545,17 +2545,17 @@ namespace Chummer
                                                     if (!blnTypeWritten)
                                                     {
                                                         blnTypeWritten = true;
-                                                        await objWriter.WriteStartElementAsync(strTypeName, token: token);
+                                                        await objWriter.WriteStartElementAsync(strTypeName, token: token).ConfigureAwait(false);
                                                     }
 
                                                     // No match was found, so write out that the data item is missing.
                                                     // <result>
-                                                    await objWriter.WriteStartElementAsync(strChildName, token: token);
+                                                    await objWriter.WriteStartElementAsync(strChildName, token: token).ConfigureAwait(false);
                                                     await objWriter.WriteAttributeStringAsync(
-                                                        "needstobeadded", bool.TrueString, token: token);
-                                                    await objWriter.WriteElementStringAsync("name", strChildInnerText, token: token);
+                                                        "needstobeadded", bool.TrueString, token: token).ConfigureAwait(false);
+                                                    await objWriter.WriteElementStringAsync("name", strChildInnerText, token: token).ConfigureAwait(false);
                                                     // </result>
-                                                    await objWriter.WriteEndElementAsync();
+                                                    await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                                 }
                                             }
                                         }
@@ -2563,7 +2563,7 @@ namespace Chummer
                                 }
 
                                 if (blnTypeWritten)
-                                    await objWriter.WriteEndElementAsync();
+                                    await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                             }
 
                             // Now loop through the translation file and determine if there are any entries in there that are not part of the base content.
@@ -2574,7 +2574,7 @@ namespace Chummer
                                 {
                                     token.ThrowIfCancellationRequested();
                                     string strChildNameElement
-                                        = (await objChild.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
+                                        = (await objChild.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value;
                                     // Look for a matching entry in the English file.
                                     if (!string.IsNullOrEmpty(strChildNameElement))
                                     {
@@ -2585,27 +2585,27 @@ namespace Chummer
                                         if (objNode == null)
                                         {
                                             // <noentry>
-                                            await objWriter.WriteStartElementAsync("noentry", token: token);
-                                            await objWriter.WriteStartElementAsync(strChildName, token: token);
-                                            await objWriter.WriteElementStringAsync("name", strChildNameElement, token: token);
-                                            await objWriter.WriteEndElementAsync();
+                                            await objWriter.WriteStartElementAsync("noentry", token: token).ConfigureAwait(false);
+                                            await objWriter.WriteStartElementAsync(strChildName, token: token).ConfigureAwait(false);
+                                            await objWriter.WriteElementStringAsync("name", strChildNameElement, token: token).ConfigureAwait(false);
+                                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                             // </noentry>
-                                            await objWriter.WriteEndElementAsync();
+                                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                         }
                                     }
                                 }
                             }
                         }
                         else
-                            await objWriter.WriteAttributeStringAsync("needstobeadded", bool.TrueString, token: token);
+                            await objWriter.WriteAttributeStringAsync("needstobeadded", bool.TrueString, token: token).ConfigureAwait(false);
 
                         // </file>
-                        await objWriter.WriteEndElementAsync();
+                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                     }
 
                     // </results>
-                    await objWriter.WriteEndElementAsync();
-                    await objWriter.WriteEndDocumentAsync();
+                    await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                    await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
                 }
             }
         }

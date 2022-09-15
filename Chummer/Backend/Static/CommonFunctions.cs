@@ -1646,7 +1646,7 @@ namespace Chummer
         /// <returns></returns>
         public static string GetTextFromPdf(string strSource, string strText, Character objCharacter = null)
         {
-            return GetTextFromPdfCoreAsync(true, strSource, strText, objCharacter).GetAwaiter().GetResult();
+            return GetTextFromPdfCoreAsync(true, strSource, strText, objCharacter).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -1690,10 +1690,10 @@ namespace Chummer
             string strBook = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? LanguageBookCodeFromAltCode(strTemp[0], string.Empty, objCharacter)
-                : await LanguageBookCodeFromAltCodeAsync(strTemp[0], string.Empty, objCharacter);
+                : await LanguageBookCodeFromAltCodeAsync(strTemp[0], string.Empty, objCharacter).ConfigureAwait(false);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            (bool blnSuccess, SourcebookInfo objBookInfo) = await GlobalSettings.SourcebookInfos.TryGetValueAsync(strBook);
+            (bool blnSuccess, SourcebookInfo objBookInfo) = await GlobalSettings.SourcebookInfos.TryGetValueAsync(strBook).ConfigureAwait(false);
             // If the sourcebook was not found, we can't open anything.
             if (!blnSuccess || objBookInfo == null)
                 return string.Empty;
@@ -1728,7 +1728,7 @@ namespace Chummer
             int intBlockEndIndex = -1;
             int intExtraAllCapsInfo = 0;
             bool blnTitleWithColon = false; // it is either an uppercase title or title in a paragraph with a colon
-            string strReturn = blnSync ? FetchTexts().GetAwaiter().GetResult() : await Task.Run(FetchTexts);
+            string strReturn = blnSync ? FetchTexts().ConfigureAwait(false).GetAwaiter().GetResult() : await Task.Run(FetchTexts).ConfigureAwait(false);
 
             async Task<string> FetchTexts()
             {
@@ -1762,7 +1762,7 @@ namespace Chummer
                         return blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? LanguageManager.GetString("Error_Message_PDF_IndexOutOfBounds", false)
-                            : await LanguageManager.GetStringAsync("Error_Message_PDF_IndexOutOfBounds", false);
+                            : await LanguageManager.GetStringAsync("Error_Message_PDF_IndexOutOfBounds", false).ConfigureAwait(false);
                     }
 
                     // don't trust it to be correct, trim all whitespace and remove empty strings before we even start

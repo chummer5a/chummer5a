@@ -102,6 +102,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private async void nudRating_ValueChanged(object sender, EventArgs e)
@@ -579,6 +580,7 @@ namespace Chummer
                 Markup = nudMarkup.Value;
                 BlackMarketDiscount = chkBlackMarketDiscount.Checked;
                 DialogResult = DialogResult.OK;
+                Close();
             }
         }
 

@@ -122,6 +122,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private async void trePowers_AfterSelect(object sender, TreeViewEventArgs e)
@@ -452,6 +453,7 @@ namespace Chummer
             }
 
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)

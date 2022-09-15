@@ -196,6 +196,7 @@ namespace Chummer
                 SelectedMentor = strSelectedId;
 
                 DialogResult = DialogResult.OK;
+                Close();
             }
         }
 
@@ -255,6 +256,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         #endregion Control Events

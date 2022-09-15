@@ -242,7 +242,11 @@ namespace Chummer
                         string.Format(GlobalSettings.CultureInfo,
                                       await LanguageManager.GetStringAsync("Message_Improvement_EmptySelectionListNamed"),
                                       _strSourceName));
-                    DialogResult = DialogResult.Cancel;
+                    await this.DoThreadSafeAsync(x =>
+                    {
+                        x.DialogResult = DialogResult.Cancel;
+                        x.Close();
+                    });
                     return;
                 }
 
@@ -255,7 +259,11 @@ namespace Chummer
             if (await cboSkill.DoThreadSafeFuncAsync(x => x.Items.Count) == 1)
             {
                 _strReturnValue = await cboSkill.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
-                DialogResult = DialogResult.OK;
+                await this.DoThreadSafeAsync(x =>
+                {
+                    x.DialogResult = DialogResult.OK;
+                    x.Close();
+                });
             }
         }
 
@@ -263,11 +271,13 @@ namespace Chummer
         {
             _strReturnValue = cboSkill.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         #endregion Control Events

@@ -50,11 +50,13 @@ namespace Chummer
         private void cmdOK_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private async void SelectLifestyleStartingNuyen_Load(object sender, EventArgs e)

@@ -712,7 +712,7 @@ namespace ChummerHub.Client.UI
             {
                 if (frmWebBrowser == null)
                 {
-                    frmWebBrowser = await Chummer.Utils.RunOnMainThreadAsync(() => new frmWebBrowser());
+                    frmWebBrowser = await Chummer.Utils.RunOnMainThreadAsync(() => new frmWebBrowser()).ConfigureAwait(false);
                 }
                 await frmWebBrowser.DoThreadSafeAsync(x => x.ShowDialogSafe(Program.MainForm));
                 await GetRolesStatusAsync(this);

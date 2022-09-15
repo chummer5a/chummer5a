@@ -47,13 +47,18 @@ namespace Chummer
             else
             {
                 _strReturnValue = strValue;
-                DialogResult = DialogResult.OK;
+                await this.DoThreadSafeAsync(x =>
+                {
+                    x.DialogResult = DialogResult.OK;
+                    x.Close();
+                });
             }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void SelectText_Shown(object sender, EventArgs e)

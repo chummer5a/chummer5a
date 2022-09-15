@@ -649,7 +649,7 @@ namespace Chummer
 
         public bool LoadFromFile(string strFile)
         {
-            return LoadFromFileCoreAsync(true, strFile).GetAwaiter().GetResult();
+            return LoadFromFileCoreAsync(true, strFile).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         public Task<bool> LoadFromFileAsync(string strFile)
@@ -659,7 +659,12 @@ namespace Chummer
 
         private async Task<bool> LoadFromFileCoreAsync(bool blnSync, string strFile)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IDisposable objSyncLocker = null;
+            IAsyncDisposable objLocker = null;
+            if (blnSync)
+                objSyncLocker = LockObject.EnterWriteLock();
+            else
+                objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
                 _tskRunningDownloadTask = null;
@@ -671,14 +676,14 @@ namespace Chummer
                     strErrorText = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? LanguageManager.GetString("MessageTitle_FileNotFound")
-                        : await LanguageManager.GetStringAsync("MessageTitle_FileNotFound");
+                        : await LanguageManager.GetStringAsync("MessageTitle_FileNotFound").ConfigureAwait(false);
                 }
                 else
                 {
                     // If we run into any problems loading the character cache, fail out early.
                     try
                     {
-                        XPathDocument xmlDoc = blnSync ? LoadXPathDocument() : await Task.Run(LoadXPathDocument);
+                        XPathDocument xmlDoc = blnSync ? LoadXPathDocument() : await Task.Run(LoadXPathDocument).ConfigureAwait(false);
 
                         XPathDocument LoadXPathDocument()
                         {
@@ -695,7 +700,7 @@ namespace Chummer
                         xmlSourceNode = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? xmlDoc.CreateNavigator().SelectSingleNodeAndCacheExpression("/character")
-                            : await xmlDoc.CreateNavigator().SelectSingleNodeAndCacheExpressionAsync("/character");
+                            : await xmlDoc.CreateNavigator().SelectSingleNodeAndCacheExpressionAsync("/character").ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
@@ -728,32 +733,32 @@ namespace Chummer
                     }
                     else
                     {
-                        _strDescription = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("description"))?.Value;
-                        _strBuildMethod = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("buildmethod"))?.Value;
-                        _strBackground = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("background"))?.Value;
-                        _strCharacterNotes = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("notes"))?.Value;
-                        _strGameNotes = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("gamenotes"))?.Value;
-                        _strConcept = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("concept"))?.Value;
-                        _strKarma = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("totalkarma"))?.Value;
-                        _strMetatype = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("metatype"))?.Value;
-                        _strMetavariant = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("metavariant"))?.Value;
-                        _strPlayerName = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("playername"))?.Value;
-                        _strCharacterName = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
-                        _strCharacterAlias = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("alias"))?.Value;
-                        _blnCreated = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("created"))?.Value == bool.TrueString;
-                        _strEssence = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("totaless"))?.Value;
+                        _strDescription = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("description").ConfigureAwait(false))?.Value;
+                        _strBuildMethod = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("buildmethod").ConfigureAwait(false))?.Value;
+                        _strBackground = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("background").ConfigureAwait(false))?.Value;
+                        _strCharacterNotes = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("notes").ConfigureAwait(false))?.Value;
+                        _strGameNotes = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("gamenotes").ConfigureAwait(false))?.Value;
+                        _strConcept = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("concept").ConfigureAwait(false))?.Value;
+                        _strKarma = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("totalkarma").ConfigureAwait(false))?.Value;
+                        _strMetatype = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("metatype").ConfigureAwait(false))?.Value;
+                        _strMetavariant = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("metavariant").ConfigureAwait(false))?.Value;
+                        _strPlayerName = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("playername").ConfigureAwait(false))?.Value;
+                        _strCharacterName = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value;
+                        _strCharacterAlias = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("alias").ConfigureAwait(false))?.Value;
+                        _blnCreated = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("created").ConfigureAwait(false))?.Value == bool.TrueString;
+                        _strEssence = (await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("totaless").ConfigureAwait(false))?.Value;
                     }
 
                     string strSettings
                         = (blnSync
                               // ReSharper disable once MethodHasAsyncOverload
                               ? xmlSourceNode.SelectSingleNodeAndCacheExpression("settings")
-                              : await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("settings"))?.Value
+                              : await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("settings").ConfigureAwait(false))?.Value
                           ?? string.Empty;
                     if (!string.IsNullOrEmpty(strSettings))
                     {
                         (bool blnSuccess, CharacterSettings objSettings)
-                            = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(strSettings);
+                            = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(strSettings).ConfigureAwait(false);
                         if (blnSuccess)
                             _strSettingsFile = objSettings.DisplayName;
                         else
@@ -763,8 +768,8 @@ namespace Chummer
                                 ? LanguageManager.GetString("MessageTitle_FileNotFound") +
                                   // ReSharper disable once MethodHasAsyncOverload
                                   LanguageManager.GetString("String_Space")
-                                : await LanguageManager.GetStringAsync("MessageTitle_FileNotFound") +
-                                  await LanguageManager.GetStringAsync("String_Space");
+                                : await LanguageManager.GetStringAsync("MessageTitle_FileNotFound").ConfigureAwait(false) +
+                                  await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
                             _strSettingsFile = strTemp + '[' + strSettings + ']';
                         }
                     }
@@ -775,14 +780,14 @@ namespace Chummer
                         = (blnSync
                               // ReSharper disable once MethodHasAsyncOverload
                               ? xmlSourceNode.SelectSingleNodeAndCacheExpression("mugshot")
-                              : await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("mugshot"))?.Value
+                              : await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("mugshot").ConfigureAwait(false))?.Value
                           ?? string.Empty;
                     if (string.IsNullOrEmpty(strMugshotBase64))
                     {
                         XPathNavigator xmlMainMugshotIndex = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? xmlSourceNode.SelectSingleNodeAndCacheExpression("mainmugshotindex")
-                            : await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("mainmugshotindex");
+                            : await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("mainmugshotindex").ConfigureAwait(false);
                         if (xmlMainMugshotIndex != null &&
                             int.TryParse(xmlMainMugshotIndex.Value, out int intMainMugshotIndex) &&
                             intMainMugshotIndex >= 0)
@@ -790,7 +795,7 @@ namespace Chummer
                             XPathNodeIterator xmlMugshotList = blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? xmlSourceNode.SelectAndCacheExpression("mugshots/mugshot")
-                                : await xmlSourceNode.SelectAndCacheExpressionAsync("mugshots/mugshot");
+                                : await xmlSourceNode.SelectAndCacheExpressionAsync("mugshots/mugshot").ConfigureAwait(false);
                             if (xmlMugshotList.Count > intMainMugshotIndex)
                             {
                                 int intIndex = 0;
@@ -820,8 +825,8 @@ namespace Chummer
                         }
                         else
                         {
-                            using (Image imgMugshot = await strMugshotBase64.ToImageAsync())
-                                _imgMugshot = await imgMugshot.GetCompressedImageAsync();
+                            using (Image imgMugshot = await strMugshotBase64.ToImageAsync().ConfigureAwait(false))
+                                _imgMugshot = await imgMugshot.GetCompressedImageAsync().ConfigureAwait(false);
                         }
                     }
                 }
@@ -842,7 +847,10 @@ namespace Chummer
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                if (blnSync)
+                    objSyncLocker.Dispose();
+                else
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

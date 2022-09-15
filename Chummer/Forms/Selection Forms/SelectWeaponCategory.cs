@@ -76,12 +76,13 @@ namespace Chummer
                 switch (lstCategory.Count)
                 {
                     case 0:
-                        ConfirmSelection(string.Empty);
-                        break;
+                        await this.DoThreadSafeAsync(x => x.ConfirmSelection(string.Empty));
+                        return;
 
                     case 1:
-                        ConfirmSelection(lstCategory[0].Value.ToString());
-                        break;
+                        string strSelect = lstCategory[0].Value.ToString();
+                        await this.DoThreadSafeAsync(x => x.ConfirmSelection(strSelect));
+                        return;
                 }
                 
                 await cboCategory.PopulateWithListItemsAsync(lstCategory);
@@ -102,6 +103,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         #endregion Control Events
@@ -110,7 +112,7 @@ namespace Chummer
         {
             _strSelectedCategory = strSelection;
             DialogResult = DialogResult.OK;
-            this.DoThreadSafe(x => x.Close());
+            Close();
         }
 
         #region Properties

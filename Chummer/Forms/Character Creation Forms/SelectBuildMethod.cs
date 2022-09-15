@@ -75,7 +75,11 @@ namespace Chummer
                                                                           x.Value, objSelectedGameplayOption))).Key;
             }
             _objCharacter.IgnoreRules = chkIgnoreRules.Checked;
-            await this.DoThreadSafeAsync(x => x.DialogResult = DialogResult.OK);
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            });
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)

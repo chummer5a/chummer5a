@@ -1017,7 +1017,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static Character LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, LoadingBar frmLoadingBar = null, CancellationToken token = default)
         {
-            return LoadCharacterCoreAsync(true, strFileName, strNewName, blnClearFileName, blnShowErrors, frmLoadingBar, token).GetAwaiter().GetResult();
+            return LoadCharacterCoreAsync(true, strFileName, strNewName, blnClearFileName, blnShowErrors, frmLoadingBar, token).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -1060,7 +1060,7 @@ namespace Chummer
                 {
                     objCharacter = blnSync
                         ? OpenCharacters.FirstOrDefault(x => x.FileName == strFileName)
-                        : await OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFileName, token);
+                        : await OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFileName, token).ConfigureAwait(false);
                     if (objCharacter != null)
                         return objCharacter;
                 }
@@ -1105,12 +1105,12 @@ namespace Chummer
                     if (blnLoadAutosave && ShowMessageBox(
                         string.Format(GlobalSettings.CultureInfo,
                                       // ReSharper disable once MethodHasAsyncOverload
-                                      blnSync ? LanguageManager.GetString("Message_AutosaveFound", token: token) : await LanguageManager.GetStringAsync("Message_AutosaveFound", token: token),
+                                      blnSync ? LanguageManager.GetString("Message_AutosaveFound", token: token) : await LanguageManager.GetStringAsync("Message_AutosaveFound", token: token).ConfigureAwait(false),
                             Path.GetFileName(strFileName),
                             File.GetLastWriteTimeUtc(objCharacter.FileName).ToLocalTime(),
                             File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
                         // ReSharper disable once MethodHasAsyncOverload
-                        blnSync ? LanguageManager.GetString("MessageTitle_AutosaveFound", token: token) : await LanguageManager.GetStringAsync("MessageTitle_AutosaveFound", token: token),
+                        blnSync ? LanguageManager.GetString("MessageTitle_AutosaveFound", token: token) : await LanguageManager.GetStringAsync("MessageTitle_AutosaveFound", token: token).ConfigureAwait(false),
                         MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     {
                         blnLoadAutosave = false;
@@ -1123,12 +1123,12 @@ namespace Chummer
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     OpenCharacters.Add(objCharacter);
                 else
-                    await OpenCharacters.AddAsync(objCharacter, token);
+                    await OpenCharacters.AddAsync(objCharacter, token).ConfigureAwait(false);
                 //Timekeeper.Start("load_file");
                 bool blnLoaded = blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? objCharacter.Load(frmLoadingBar, blnShowErrors, token)
-                    : await objCharacter.LoadAsync(frmLoadingBar, blnShowErrors, token);
+                    : await objCharacter.LoadAsync(frmLoadingBar, blnShowErrors, token).ConfigureAwait(false);
                 //Timekeeper.Finish("load_file");
                 if (!blnLoaded)
                 {
@@ -1137,7 +1137,7 @@ namespace Chummer
                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         OpenCharacters.Remove(objCharacter);
                     else
-                        await OpenCharacters.RemoveAsync(objCharacter, token);
+                        await OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                     return null;
                 }
 
@@ -1160,12 +1160,12 @@ namespace Chummer
                         blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? LanguageManager.GetString("Message_FileNotFound", token: token)
-                            : await LanguageManager.GetStringAsync("Message_FileNotFound", token: token),
+                            : await LanguageManager.GetStringAsync("Message_FileNotFound", token: token).ConfigureAwait(false),
                         strFileName),
                     blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? LanguageManager.GetString("MessageTitle_FileNotFound", token: token)
-                        : await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token),
+                        : await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token).ConfigureAwait(false),
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return objCharacter;
