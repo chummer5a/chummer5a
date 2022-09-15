@@ -14582,12 +14582,19 @@ namespace Chummer
                     foreach (DpiFriendlyCheckBoxDisguisedAsButton chkCmBox in lstCheckBoxes)
                     {
                         int intCurrentBoxTag = Convert.ToInt32(await chkCmBox.DoThreadSafeFuncAsync(x => x.Tag, token), GlobalSettings.InvariantCultureInfo);
-                        await chkCmBox.DoThreadSafeAsync(x => x.BackColor
-                                                             = SystemColors
-                                                                 .Control, token); // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
+                        await chkCmBox.DoThreadSafeAsync(x =>
+                        {
+                            x.BackColor = ColorManager.ControlLight; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
+                            if (x.Focused)
+                                x.Parent.Focus();
+                        }, token);
                         if (check && intCurrentBoxTag <= value)
                         {
-                            await chkCmBox.DoThreadSafeAsync(x => x.Checked = true, token);
+                            await chkCmBox.DoThreadSafeAsync(x =>
+                            {
+                                x.Checked = true;
+                                x.BackColor = ColorManager.ControlDarkestLight; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
+                            }, token);
                         }
 
                         if (intCurrentBoxTag <= intConditionMax)
@@ -14612,9 +14619,9 @@ namespace Chummer
                             await chkCmBox.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.BackColor
-                                    = SystemColors
-                                        .ControlDark; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
+                                x.BackColor = x.Checked
+                                    ? ColorManager.ControlTextLight
+                                    : ColorManager.ControlDarkerLight; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
                                 if (intCurrentBoxTag == intConditionMax + intOverflow)
                                 {
                                     x.ImageDpi96 = Properties.Resources.rip;
@@ -14701,7 +14708,24 @@ namespace Chummer
                             await chkCmBox.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Checked = intCurrentBoxTag <= intCurrentConditionFilled;
+                                if (intCurrentBoxTag <= intCurrentConditionFilled)
+                                {
+                                    x.Checked = true;
+                                    if (x.BackColor == ColorManager.ControlLight || x.BackColor == ColorManager.ControlDarkestLight)
+                                        x.BackColor = ColorManager.ControlDarkestLight; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
+                                    else
+                                        x.BackColor = ColorManager.ControlTextLight; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
+                                }
+                                else
+                                {
+                                    x.Checked = false;
+                                    if (x.BackColor == ColorManager.ControlLight || x.BackColor == ColorManager.ControlDarkestLight)
+                                        x.BackColor = ColorManager.ControlLight; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
+                                    else
+                                        x.BackColor = ColorManager.ControlDarkerLight; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
+                                }
+                                if (x.Focused)
+                                    x.Parent.Focus();
                             }, token);
                         }
                         else
@@ -14710,6 +14734,12 @@ namespace Chummer
                             {
                                 x.Visible = false;
                                 x.Checked = false;
+                                if (x.BackColor == ColorManager.ControlLight || x.BackColor == ColorManager.ControlDarkestLight)
+                                    x.BackColor = ColorManager.ControlLight; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
+                                else
+                                    x.BackColor = ColorManager.ControlDarkerLight; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
+                                if (x.Focused)
+                                    x.Parent.Focus();
                             }, token);
                         }
                     }
@@ -14763,12 +14793,30 @@ namespace Chummer
                             int intCurrentBoxTag = Convert.ToInt32(await chkCmBox.DoThreadSafeFuncAsync(x => x.Tag, token), GlobalSettings.InvariantCultureInfo);
                             if (intCurrentBoxTag < intBoxTag)
                             {
-                                await chkCmBox.DoThreadSafeAsync(x => x.Checked = true, token);
+                                await chkCmBox.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = true;
+                                    if (x.BackColor == ColorManager.ControlLight || x.BackColor == ColorManager.ControlDarkestLight)
+                                        x.BackColor = ColorManager.ControlDarkestLight; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
+                                    else
+                                        x.BackColor = ColorManager.ControlTextLight; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
+                                    if (x.Focused)
+                                        x.Parent.Focus();
+                                }, token);
                                 ++intFillCount;
                             }
                             else if (intCurrentBoxTag > intBoxTag)
                             {
-                                await chkCmBox.DoThreadSafeAsync(x => x.Checked = false, token);
+                                await chkCmBox.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    if (x.BackColor == ColorManager.ControlLight || x.BackColor == ColorManager.ControlDarkestLight)
+                                        x.BackColor = ColorManager.ControlLight; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
+                                    else
+                                        x.BackColor = ColorManager.ControlDarkerLight; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
+                                    if (x.Focused)
+                                        x.Parent.Focus();
+                                }, token);
                             }
                         }
                     }

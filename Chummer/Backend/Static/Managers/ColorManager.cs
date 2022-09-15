@@ -380,19 +380,19 @@ namespace Chummer
         private static Color HighlightDark { get; } = GenerateDarkModeColor(HighlightLight);
 
         public static Color ControlText => IsLightMode ? ControlTextLight : ControlTextDark;
-        private static Color ControlTextLight { get; } = SystemColors.ControlText;
+        public static Color ControlTextLight { get; } = SystemColors.ControlText;
         private static Color ControlTextDark { get; } = GenerateDarkModeColor(ControlTextLight);
 
         public static Color ControlDarkest => IsLightMode ? ControlDarkestLight : ControlDarkestDark;
-        private static Color ControlDarkestLight { get; } = SystemColors.ControlDarkDark;
+        public static Color ControlDarkestLight { get; } = SystemColors.ControlDarkDark;
         private static Color ControlDarkestDark { get; } = GenerateDarkModeColor(ControlDarkestLight);
 
         public static Color ControlDarker => IsLightMode ? ControlDarkerLight : ControlDarkerDark;
-        private static Color ControlDarkerLight { get; } = SystemColors.ControlDark;
+        public static Color ControlDarkerLight { get; } = SystemColors.ControlDark;
         private static Color ControlDarkerDark { get; } = GenerateDarkModeColor(ControlDarkerLight);
 
         public static Color Control => IsLightMode ? ControlLight : ControlDark;
-        private static Color ControlLight { get; } = SystemColors.Control;
+        public static Color ControlLight { get; } = SystemColors.Control;
         private static Color ControlDark { get; } = GenerateDarkModeColor(ControlLight);
 
         public static Color ControlLighter => IsLightMode ? ControlLighterLight : ControlLighterDark;
