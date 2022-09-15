@@ -540,37 +540,6 @@ namespace Chummer
             }
         }
 
-        private async void CharacterSheetViewer_CursorChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                if (UseWaitCursor)
-                {
-                    await Task.WhenAll(this.DoThreadSafeAsync(x =>
-                                       {
-                                           x.tsPrintPreview.Enabled = false;
-                                           x.tsSaveAsHtml.Enabled = false;
-                                       }, _objGenericToken),
-                                       cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, _objGenericToken),
-                                       cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, _objGenericToken));
-                }
-                else
-                {
-                    await Task.WhenAll(this.DoThreadSafeAsync(x =>
-                                       {
-                                           x.tsPrintPreview.Enabled = true;
-                                           x.tsSaveAsHtml.Enabled = true;
-                                       }, _objGenericToken),
-                                       cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken),
-                                       cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken));
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
-            }
-        }
-
         #endregion Control Events
 
         #region Methods

@@ -278,7 +278,6 @@ namespace Chummer
             this.Text = "Character Viewer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CharacterSheetViewer_FormClosing);
             this.Load += new System.EventHandler(this.CharacterSheetViewer_Load);
-            this.CursorChanged += new System.EventHandler(this.CharacterSheetViewer_CursorChanged);
             this.cmsSaveButton.ResumeLayout(false);
             this.cmsPrintButton.ResumeLayout(false);
             this.tlpMain.ResumeLayout(false);
