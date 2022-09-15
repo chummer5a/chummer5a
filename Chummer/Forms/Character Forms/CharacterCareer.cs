@@ -19516,7 +19516,7 @@ namespace Chummer
                     strText = await objComplexForm.DisplayFvAsync(GlobalSettings.Language);
                     await lblFV.DoThreadSafeAsync(x => x.Text = strText, token);
                     await lblFV.SetToolTipAsync(objComplexForm.FvTooltip, token);
-                    await objComplexForm.SetSourceDetailAsync(lblSpellSource, token);
+                    await objComplexForm.SetSourceDetailAsync(lblComplexFormSource, token);
                     // Determine the size of the Threading Dice Pool.
                     await dpcComplexFormDicePool.DoThreadSafeAsync(x => x.DicePool = objComplexForm.DicePool, token);
                     await dpcComplexFormDicePool.SetLabelToolTipAsync(objComplexForm.DicePoolTooltip, token);
