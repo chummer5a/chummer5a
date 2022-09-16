@@ -1992,7 +1992,7 @@ namespace Chummer
                         {
                             foreach (string strAbbrev in Backend.Equipment.Cyberware.CyberlimbAttributeAbbrevs)
                             {
-                                CharacterAttrib objAttribute = GetAttribute(strAbbrev);
+                                CharacterAttrib objAttribute = await GetAttributeAsync(strAbbrev);
                                 if (objAttribute == null)
                                     continue;
                                 if (!dicChangedProperties.TryGetValue(objAttribute,
@@ -27149,19 +27149,19 @@ namespace Chummer
         /// <summary>
         /// Whether the character is allowed to gain free spells that are limited to the Touch range.
         /// </summary>
-        public async ValueTask<Tuple<bool, bool>> AllowFreeSpellsAsync()
+        public async ValueTask<Tuple<bool, bool>> AllowFreeSpellsAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
                 //Free Spells (typically from Dedicated Spellslinger or custom Improvements) are only handled manually
                 //in Career Mode. Create mode manages itself.
-                int intFreeGenericSpells = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.FreeSpells))
+                int intFreeGenericSpells = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.FreeSpells, token: token))
                     .StandardRound();
                 int intFreeTouchOnlySpells = 0;
                 foreach (Improvement imp in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
-                             Improvement.ImprovementType.FreeSpellsATT))
+                             Improvement.ImprovementType.FreeSpellsATT, token: token))
                 {
-                    int intAttValue = GetAttribute(imp.ImprovedName).TotalValue;
+                    int intAttValue = await (await GetAttributeAsync(imp.ImprovedName, token: token)).GetTotalValueAsync(token);
                     if (imp.UniqueName.Contains("half"))
                         intAttValue = (intAttValue + 1) / 2;
                     if (imp.UniqueName.Contains("touchonly"))
@@ -27170,11 +27170,13 @@ namespace Chummer
                         intFreeGenericSpells += intAttValue;
                 }
 
+                ThreadSafeObservableCollection<Spell> lstSpells = await GetSpellsAsync(token);
+                SkillsSection objSkillsSection = await GetSkillsSectionAsync(token);
                 foreach (Improvement imp in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
-                             Improvement.ImprovementType.FreeSpellsSkill))
+                             Improvement.ImprovementType.FreeSpellsSkill, token: token))
                 {
-                    Skill skill = await SkillsSection.GetActiveSkillAsync(imp.ImprovedName);
-                    int intSkillValue = (await SkillsSection.GetActiveSkillAsync(imp.ImprovedName)).TotalBaseRating;
+                    Skill skill = await objSkillsSection.GetActiveSkillAsync(imp.ImprovedName, token);
+                    int intSkillValue = (await objSkillsSection.GetActiveSkillAsync(imp.ImprovedName, token)).TotalBaseRating;
                     if (imp.UniqueName.Contains("half"))
                         intSkillValue = (intSkillValue + 1) / 2;
                     if (imp.UniqueName.Contains("touchonly"))
@@ -27182,14 +27184,14 @@ namespace Chummer
                     else
                         intFreeGenericSpells += intSkillValue;
                     //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this
-                    intFreeGenericSpells += skill.Specializations.Count(spec =>
-                        Spells.Any(spell => spell.Category == spec.Name && !spell.FreeBonus));
+                    intFreeGenericSpells += await skill.Specializations.CountAsync(spec =>
+                        lstSpells.AnyAsync(spell => spell.Category == spec.Name && !spell.FreeBonus), token);
                 }
 
-                int intTotalFreeNonTouchSpellsCount = Spells.Count(spell =>
-                    spell.FreeBonus && (spell.Range != "T" && spell.Range != "T (A)"));
-                int intTotalFreeTouchOnlySpellsCount = Spells.Count(spell =>
-                    spell.FreeBonus && (spell.Range == "T" || spell.Range == "T (A)"));
+                int intTotalFreeNonTouchSpellsCount = await lstSpells.CountAsync(spell =>
+                    spell.FreeBonus && (spell.Range != "T" && spell.Range != "T (A)"), token: token);
+                int intTotalFreeTouchOnlySpellsCount = await lstSpells.CountAsync(spell =>
+                    spell.FreeBonus && (spell.Range == "T" || spell.Range == "T (A)"), token: token);
                 return new Tuple<bool, bool>(intFreeTouchOnlySpells > intTotalFreeTouchOnlySpellsCount,
                     intFreeGenericSpells > intTotalFreeNonTouchSpellsCount +
                     Math.Max(intTotalFreeTouchOnlySpellsCount - intFreeTouchOnlySpells, 0));

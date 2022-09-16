@@ -1901,7 +1901,7 @@ namespace Chummer
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
                             {
                                 CharacterAttrib objMAGAdept =
-                                    CharacterObject.AttributeSection.GetAttributeByName("MAGAdept", GenericToken);
+                                    await CharacterObject.AttributeSection.GetAttributeByNameAsync("MAGAdept", GenericToken);
                                 if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                 {
                                     await CharacterObject.AttributeSection.Attributes.AddAsync(objMAGAdept);
@@ -2102,7 +2102,7 @@ namespace Chummer
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
                             {
                                 CharacterAttrib objMAGAdept =
-                                    CharacterObject.AttributeSection.GetAttributeByName("MAGAdept", GenericToken);
+                                    await CharacterObject.AttributeSection.GetAttributeByNameAsync("MAGAdept", GenericToken);
                                 if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                 {
                                     await CharacterObject.AttributeSection.Attributes.AddAsync(objMAGAdept);
@@ -2116,7 +2116,7 @@ namespace Chummer
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute)
                             {
                                 CharacterAttrib objMAGAdept =
-                                    CharacterObject.AttributeSection.GetAttributeByName("MAGAdept", GenericToken);
+                                    await CharacterObject.AttributeSection.GetAttributeByNameAsync("MAGAdept", GenericToken);
                                 if (await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                 {
                                     await CharacterObject.AttributeSection.Attributes.RemoveAsync(objMAGAdept);
@@ -2143,7 +2143,7 @@ namespace Chummer
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
                             {
                                 CharacterAttrib objMAGAdept =
-                                    CharacterObject.AttributeSection.GetAttributeByName("MAGAdept", GenericToken);
+                                    await CharacterObject.AttributeSection.GetAttributeByNameAsync("MAGAdept", GenericToken);
                                 if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                 {
                                     await CharacterObject.AttributeSection.Attributes.AddAsync(objMAGAdept);
@@ -2165,7 +2165,7 @@ namespace Chummer
                                 if (CharacterObjectSettings.MysAdeptSecondMAGAttribute)
                                 {
                                     CharacterAttrib objMAGAdept =
-                                        CharacterObject.AttributeSection.GetAttributeByName("MAGAdept", GenericToken);
+                                        await CharacterObject.AttributeSection.GetAttributeByNameAsync("MAGAdept", GenericToken);
                                     if (await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                     {
                                         await CharacterObject.AttributeSection.Attributes.RemoveAsync(objMAGAdept);
@@ -3027,7 +3027,7 @@ namespace Chummer
                     }
 
                     // Permanently reduce the CharacterAttribute's value.
-                    CharacterObject.GetAttribute(frmPickAttribute.MyForm.SelectedAttribute).Degrade(1);
+                    (await CharacterObject.GetAttributeAsync(frmPickAttribute.MyForm.SelectedAttribute)).Degrade(1);
                 }
 
                 await RequestCharacterUpdate(GenericToken);
@@ -4544,8 +4544,8 @@ namespace Chummer
 
             do
             {
-                (bool blnCanTouchOnlySpellBeFree, bool blnCanGenericSpellBeFree) = await CharacterObject.AllowFreeSpellsAsync();
-                int intSpellKarmaCost = CharacterObject.SpellKarmaCost("Spells");
+                (bool blnCanTouchOnlySpellBeFree, bool blnCanGenericSpellBeFree) = await CharacterObject.AllowFreeSpellsAsync(GenericToken);
+                int intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Spells", GenericToken);
                 // Make sure the character has enough Karma before letting them select a Spell.
                 if (CharacterObject.Karma < intSpellKarmaCost && !(blnCanTouchOnlySpellBeFree || blnCanGenericSpellBeFree))
                 {
@@ -4572,11 +4572,11 @@ namespace Chummer
                     objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.MyForm.Limited, frmPickSpell.MyForm.Extended, frmPickSpell.MyForm.Alchemical);
                     if (objSpell.Alchemical)
                     {
-                        intSpellKarmaCost = CharacterObject.SpellKarmaCost("Preparations");
+                        intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Preparations", GenericToken);
                     }
                     else if (objSpell.Category == "Rituals")
                     {
-                        intSpellKarmaCost = CharacterObject.SpellKarmaCost("Rituals");
+                        intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Rituals", GenericToken);
                     }
 
                     if (objSpell.InternalId.IsEmptyGuid())
@@ -9180,7 +9180,7 @@ namespace Chummer
             {
                 case KarmaExpenseType.ImproveAttribute:
                     {
-                        CharacterObject.GetAttribute(strUndoId).Degrade(1);
+                        (await CharacterObject.GetAttributeAsync(strUndoId, token: GenericToken)).Degrade(1);
                         break;
                     }
                 case KarmaExpenseType.AddPowerPoint:
@@ -10359,7 +10359,7 @@ namespace Chummer
 
         private async void tsCreateSpell_Click(object sender, EventArgs e)
         {
-            int intSpellKarmaCost = CharacterObject.SpellKarmaCost("Spells");
+            int intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Spells");
             // Make sure the character has enough Karma before letting them select a Spell.
             if (CharacterObject.Karma < intSpellKarmaCost)
             {
@@ -10379,11 +10379,11 @@ namespace Chummer
                 Spell objSpell = frmSpell.MyForm.SelectedSpell;
                 if (objSpell.Alchemical)
                 {
-                    intSpellKarmaCost = CharacterObject.SpellKarmaCost("Preparations");
+                    intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Preparations");
                 }
                 else if (objSpell.Category == "Rituals")
                 {
-                    intSpellKarmaCost = CharacterObject.SpellKarmaCost("Rituals");
+                    intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Rituals");
                 }
 
                 if (CharacterObject.Karma < intSpellKarmaCost)
@@ -13194,7 +13194,7 @@ namespace Chummer
                     }
                 }
 
-                int intKarmaExpense = objFocus.BindingKarmaCost();
+                int intKarmaExpense = await objFocus.BindingKarmaCostAsync(GenericToken);
                 if (intKarmaExpense > CharacterObject.Karma)
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -19926,7 +19926,7 @@ namespace Chummer
                     blnPayWithKarma = true;
             }
 
-            int intSpellKarmaCost = CharacterObject.SpellKarmaCost("Enchantments");
+            int intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Enchantments");
 
             if (blnPayWithKarma)
             {

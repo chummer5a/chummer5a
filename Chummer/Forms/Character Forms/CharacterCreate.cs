@@ -1464,7 +1464,7 @@ namespace Chummer
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
                             {
                                 CharacterAttrib objMAGAdept =
-                                    CharacterObject.AttributeSection.GetAttributeByName("MAGAdept", GenericToken);
+                                    await CharacterObject.AttributeSection.GetAttributeByNameAsync("MAGAdept", GenericToken);
                                 if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept, GenericToken))
                                 {
                                     await CharacterObject.AttributeSection.Attributes.AddAsync(objMAGAdept, GenericToken);
@@ -1664,7 +1664,7 @@ namespace Chummer
                                 && CharacterObject.AttributeSection.Attributes != null)
                             {
                                 CharacterAttrib objMAGAdept =
-                                    CharacterObject.AttributeSection.GetAttributeByName("MAGAdept", GenericToken);
+                                    await CharacterObject.AttributeSection.GetAttributeByNameAsync("MAGAdept", GenericToken);
                                 if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                 {
                                     await CharacterObject.AttributeSection.Attributes.AddAsync(objMAGAdept);
@@ -1679,7 +1679,7 @@ namespace Chummer
                                 && CharacterObject.AttributeSection.Attributes != null)
                             {
                                 CharacterAttrib objMAGAdept =
-                                    CharacterObject.AttributeSection.GetAttributeByName("MAGAdept", GenericToken);
+                                    await CharacterObject.AttributeSection.GetAttributeByNameAsync("MAGAdept", GenericToken);
                                 if (await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                 {
                                     await CharacterObject.AttributeSection.Attributes.RemoveAsync(objMAGAdept);
@@ -1709,7 +1709,7 @@ namespace Chummer
                                 && CharacterObject.AttributeSection.Attributes != null)
                             {
                                 CharacterAttrib objMAGAdept =
-                                    CharacterObject.AttributeSection.GetAttributeByName("MAGAdept", GenericToken);
+                                    await CharacterObject.AttributeSection.GetAttributeByNameAsync("MAGAdept", GenericToken);
                                 if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                 {
                                     await CharacterObject.AttributeSection.Attributes.AddAsync(objMAGAdept);
@@ -1732,7 +1732,7 @@ namespace Chummer
                                     && CharacterObject.AttributeSection.Attributes != null)
                                 {
                                     CharacterAttrib objMAGAdept =
-                                        CharacterObject.AttributeSection.GetAttributeByName("MAGAdept", GenericToken);
+                                        await CharacterObject.AttributeSection.GetAttributeByNameAsync("MAGAdept", GenericToken);
                                     if (await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                     {
                                         await CharacterObject.AttributeSection.Attributes.RemoveAsync(objMAGAdept);
@@ -10613,12 +10613,12 @@ namespace Chummer
                 || (await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject, Improvement.ImprovementType.FreeSpellsATT, token: token).ConfigureAwait(false)).Count > 0
                 || (await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject, Improvement.ImprovementType.FreeSpellsSkill, token: token).ConfigureAwait(false)).Count > 0)
             {
-                var lstSpells = await CharacterObject.GetSpellsAsync(token);
+                ThreadSafeObservableCollection<Spell> lstSpells = await CharacterObject.GetSpellsAsync(token);
                 // Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
-                int spells = await lstSpells.CountAsync(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category != "Rituals" && !spell.FreeBonus);
-                int intTouchOnlySpells = await lstSpells.CountAsync(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category != "Rituals" && (spell.Range == "T (A)" || spell.Range == "T") && !spell.FreeBonus);
-                int rituals = await lstSpells.CountAsync(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category == "Rituals" && !spell.FreeBonus);
-                int preps = await lstSpells.CountAsync(spell => spell.Grade == 0 && spell.Alchemical && !spell.FreeBonus);
+                int spells = await lstSpells.CountAsync(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category != "Rituals" && !spell.FreeBonus, token: token);
+                int intTouchOnlySpells = await lstSpells.CountAsync(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category != "Rituals" && (spell.Range == "T (A)" || spell.Range == "T") && !spell.FreeBonus, token: token);
+                int rituals = await lstSpells.CountAsync(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category == "Rituals" && !spell.FreeBonus, token: token);
+                int preps = await lstSpells.CountAsync(spell => spell.Grade == 0 && spell.Alchemical && !spell.FreeBonus, token: token);
 
                 token.ThrowIfCancellationRequested();
 
@@ -10974,7 +10974,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 intInitiationPoints += objGrade.KarmaCost;
                 // Add the Karma cost of extra Metamagic/Echoes to the Initiation cost.
-                int metamagicKarma = Math.Max(await CharacterObject.Metamagics.CountAsync(x => x.Grade == objGrade.Grade) - 1, 0);
+                int metamagicKarma = Math.Max(await CharacterObject.Metamagics.CountAsync(x => x.Grade == objGrade.Grade, token: token) - 1, 0);
                 intInitiationPoints += CharacterObjectSettings.KarmaMetamagic * metamagicKarma;
             }
 
