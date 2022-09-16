@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -493,7 +494,7 @@ namespace Chummer
         private async ValueTask<bool> RequirementMet(XmlNode objXmlQuality, bool blnShowMessage)
         {
             // Ignore the rules.
-            if (_objCharacter.IgnoreRules)
+            if (await _objCharacter.GetIgnoreRulesAsync())
                 return true;
 
             // See if the character already has this Quality and whether or not multiple copies are allowed.
@@ -855,9 +856,9 @@ namespace Chummer
                                             case "attribute":
                                                 // Check to see if an Attribute meets a requirement.
                                                 CharacterAttrib objAttribute
-                                                    = _objCharacter.GetAttribute(objXmlRequired["name"].InnerText);
+                                                    = await _objCharacter.GetAttributeAsync(objXmlRequired["name"].InnerText);
                                                 // Make sure the Attribute's total value meets the requirement.
-                                                if (objXmlRequired["total"] != null && objAttribute.TotalValue
+                                                if (objXmlRequired["total"] != null && await objAttribute.GetTotalValueAsync()
                                                     >= Convert.ToInt32(objXmlRequired["total"].InnerText,
                                                                        GlobalSettings.InvariantCultureInfo))
                                                 {
@@ -870,11 +871,11 @@ namespace Chummer
                                                 // Check if the character's Attributes add up to a particular total.
                                                 string strAttributes = objXmlRequired["attributes"].InnerText;
                                                 strAttributes
-                                                    = _objCharacter.AttributeSection
-                                                                   .ProcessAttributesInXPath(strAttributes);
-                                                object objProcess
-                                                    = CommonFunctions.EvaluateInvariantXPath(
-                                                        strAttributes, out bool blnIsSuccess);
+                                                    = await _objCharacter.AttributeSection
+                                                                         .ProcessAttributesInXPathAsync(strAttributes);
+                                                (bool blnIsSuccess, object objProcess)
+                                                    = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                                        strAttributes);
                                                 if ((blnIsSuccess ? ((double) objProcess).StandardRound() : 0)
                                                     >= Convert.ToInt32(objXmlRequired["val"].InnerText,
                                                                        GlobalSettings.InvariantCultureInfo))
@@ -1210,7 +1211,7 @@ namespace Chummer
                                             case "attribute":
                                                 // Check to see if an Attribute meets a requirement.
                                                 CharacterAttrib objAttribute
-                                                    = _objCharacter.GetAttribute(objXmlRequired["name"].InnerText);
+                                                    = await _objCharacter.GetAttributeAsync(objXmlRequired["name"].InnerText);
                                                 // Make sure the Attribute's total value meets the requirement.
                                                 if (objXmlRequired["total"] != null && objAttribute.TotalValue
                                                     >= Convert.ToInt32(objXmlRequired["total"].InnerText,
@@ -1225,11 +1226,11 @@ namespace Chummer
                                                 // Check if the character's Attributes add up to a particular total.
                                                 string strAttributes = objXmlRequired["attributes"].InnerText;
                                                 strAttributes
-                                                    = _objCharacter.AttributeSection
-                                                                   .ProcessAttributesInXPath(strAttributes);
-                                                object objProcess
-                                                    = CommonFunctions.EvaluateInvariantXPath(
-                                                        strAttributes, out bool blnIsSuccess);
+                                                    = await _objCharacter.AttributeSection
+                                                                         .ProcessAttributesInXPathAsync(strAttributes);
+                                                (bool blnIsSuccess, object objProcess)
+                                                    = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                                        strAttributes);
                                                 if ((blnIsSuccess ? ((double)objProcess).StandardRound() : 0)
                                                     >= Convert.ToInt32(objXmlRequired["val"].InnerText,
                                                                        GlobalSettings.InvariantCultureInfo))

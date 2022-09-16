@@ -472,7 +472,7 @@ namespace Chummer
             {
                 if (!_objCharacter.Created)
                 {
-                    int intSpellLimit = _objCharacter.MAG.TotalValue * 2;
+                    int intSpellLimit = await (await _objCharacter.GetAttributeAsync("MAG")).GetTotalValueAsync() * 2;
                     if (await chkAlchemical.DoThreadSafeFuncAsync(x => x.Checked))
                     {
                         if (intAlchPrepCount >= intSpellLimit)

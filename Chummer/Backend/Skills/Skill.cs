@@ -181,7 +181,9 @@ namespace Chummer.Backend.Skills
                     await objWriter.WriteElementStringAsync("notes", Notes, token: token);
                 await objWriter.WriteElementStringAsync("source", await CharacterObject.LanguageBookShortAsync(Source, strLanguageToPrint), token: token);
                 await objWriter.WriteElementStringAsync("page", DisplayPage(strLanguageToPrint), token: token);
-                await objWriter.WriteElementStringAsync("attributemod", CharacterObject.GetAttribute(Attribute).TotalValue.ToString(objCulture), token: token);
+                await objWriter.WriteElementStringAsync("attributemod",
+                                                        (await (await CharacterObject.GetAttributeAsync(Attribute,
+                                                            token: token)).GetTotalValueAsync(token)).ToString(objCulture), token: token);
                 await objWriter.WriteElementStringAsync("ratingmod", (intRatingModifiers + intDicePoolModifiers).ToString(objCulture), token: token);
                 await objWriter.WriteElementStringAsync("poolmod", intDicePoolModifiers.ToString(objCulture), token: token);
                 await objWriter.WriteElementStringAsync("islanguage", IsLanguage.ToString(GlobalSettings.InvariantCultureInfo), token: token);

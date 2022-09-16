@@ -4052,21 +4052,22 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="treFoci">TreeView of foci.</param>
         /// <param name="intNewRating">New rating that the focus is supposed to have.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>True if the new rating complies by focus limits or the gear is not bonded, false otherwise</returns>
-        public async ValueTask<bool> RefreshSingleFocusRating(TreeView treFoci, int intNewRating)
+        public async ValueTask<bool> RefreshSingleFocusRating(TreeView treFoci, int intNewRating, CancellationToken token = default)
         {
             if (Bonded)
             {
-                int intMaxFocusTotal = _objCharacter.MAG.TotalValue * 5;
-                if (_objCharacter.Settings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
-                    intMaxFocusTotal = Math.Min(intMaxFocusTotal, _objCharacter.MAGAdept.TotalValue * 5);
+                int intMaxFocusTotal = await (await _objCharacter.GetAttributeAsync("MAG", token: token)).GetTotalValueAsync(token) * 5;
+                if (await (await _objCharacter.GetSettingsAsync(token)).GetMysAdeptSecondMAGAttributeAsync(token) && await _objCharacter.GetIsMysticAdeptAsync(token))
+                    intMaxFocusTotal = Math.Min(intMaxFocusTotal, await (await _objCharacter.GetAttributeAsync("MAGAdept", token: token)).GetTotalValueAsync(token) * 5);
 
-                int intFociTotal = await _objCharacter.Foci.SumAsync(x => x.GearObject != this, x => x.Rating);
+                int intFociTotal = await (await _objCharacter.GetFociAsync(token)).SumAsync(x => x.GearObject != this, x => x.Rating, token);
 
-                if (intFociTotal + intNewRating > intMaxFocusTotal && !_objCharacter.IgnoreRules)
+                if (intFociTotal + intNewRating > intMaxFocusTotal && !await _objCharacter.GetIgnoreRulesAsync(token))
                 {
-                    Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_FocusMaximumForce"),
-                        await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum"), MessageBoxButtons.OK,
+                    Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_FocusMaximumForce", token: token),
+                        await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum", token: token), MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
                     return false;
                 }
@@ -4079,13 +4080,13 @@ namespace Chummer.Backend.Equipment
                 case "Foci":
                 case "Metamagic Foci":
                     {
-                        TreeNode nodFocus = await treFoci.DoThreadSafeFuncAsync(x => x.FindNodeByTag(this));
+                        TreeNode nodFocus = await treFoci.DoThreadSafeFuncAsync(x => x.FindNodeByTag(this), token: token);
                         if (nodFocus != null)
                         {
                             string strText = CurrentDisplayName.Replace(
-                                await LanguageManager.GetStringAsync(RatingLabel),
-                                await LanguageManager.GetStringAsync("String_Force"));
-                            await treFoci.DoThreadSafeFuncAsync(() => nodFocus.Text = strText);
+                                await LanguageManager.GetStringAsync(RatingLabel, token: token),
+                                await LanguageManager.GetStringAsync("String_Force", token: token));
+                            await treFoci.DoThreadSafeFuncAsync(() => nodFocus.Text = strText, token: token);
                         }
                     }
                     break;
@@ -4099,13 +4100,13 @@ namespace Chummer.Backend.Equipment
                             StackedFocus objStack = _objCharacter.StackedFoci[i];
                             if (objStack.GearId != InternalId)
                                 continue;
-                            TreeNode nodFocus = await treFoci.DoThreadSafeFuncAsync(x => x.FindNode(objStack.InternalId));
+                            TreeNode nodFocus = await treFoci.DoThreadSafeFuncAsync(x => x.FindNode(objStack.InternalId), token: token);
                             if (nodFocus != null)
                             {
                                 string strText = CurrentDisplayName.Replace(
-                                    await LanguageManager.GetStringAsync(RatingLabel),
-                                    await LanguageManager.GetStringAsync("String_Force"));
-                                await treFoci.DoThreadSafeFuncAsync(() => nodFocus.Text = strText);
+                                    await LanguageManager.GetStringAsync(RatingLabel, token: token),
+                                    await LanguageManager.GetStringAsync("String_Force", token: token));
+                                await treFoci.DoThreadSafeFuncAsync(() => nodFocus.Text = strText, token: token);
                             }
 
                             break;

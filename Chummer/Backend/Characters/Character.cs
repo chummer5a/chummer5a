@@ -7905,7 +7905,9 @@ namespace Chummer
                             // Curb Mystic Adept power points if the values that were loaded in would be illegal
                             if (MysticAdeptPowerPoints > 0)
                             {
-                                int intMAGTotalValue = MAG.TotalValue;
+                                int intMAGTotalValue = blnSync
+                                    ? MAG.TotalValue
+                                    : await (await GetAttributeAsync("MAG", token: token)).GetTotalValueAsync(token);
                                 if (MysticAdeptPowerPoints > intMAGTotalValue)
                                     MysticAdeptPowerPoints = intMAGTotalValue;
                             }
@@ -8315,63 +8317,64 @@ namespace Chummer
                     int intDamageResistanceDice = (await ImprovementManager
                             .ValueOfAsync(this, Improvement.ImprovementType.DamageResistance, token: token))
                                                   .StandardRound();
+                    int intBodTotalValue = await (await GetAttributeAsync("BOD", token: token)).GetTotalValueAsync(token);
                     // <armordicestun />
                     await objWriter.WriteElementStringAsync("armordicestun",
-                                                            (BOD.TotalValue + intDamageResistanceDice
-                                                                            + TotalArmorRating).ToString(objCulture), token: token);
+                                                            (intBodTotalValue + intDamageResistanceDice
+                                                                              + TotalArmorRating).ToString(objCulture), token: token);
                     // <firearmordicestun />
                     await objWriter.WriteElementStringAsync("firearmordicestun",
-                                                            (BOD.TotalValue + intDamageResistanceDice
-                                                                            + TotalFireArmorRating)
+                                                            (intBodTotalValue + intDamageResistanceDice
+                                                                              + TotalFireArmorRating)
                                                             .ToString(objCulture), token: token);
                     // <coldarmordicestun />
                     await objWriter.WriteElementStringAsync("coldarmordicestun",
-                                                            (BOD.TotalValue + intDamageResistanceDice
-                                                                            + TotalColdArmorRating)
+                                                            (intBodTotalValue + intDamageResistanceDice
+                                                                              + TotalColdArmorRating)
                                                             .ToString(objCulture), token: token);
                     // <electricityarmordicestun />
                     await objWriter.WriteElementStringAsync("electricityarmordicestun",
-                                                            (BOD.TotalValue + intDamageResistanceDice
-                                                                            + TotalElectricityArmorRating)
+                                                            (intBodTotalValue + intDamageResistanceDice
+                                                                              + TotalElectricityArmorRating)
                                                             .ToString(objCulture), token: token);
                     // <acidarmordicestun />
                     await objWriter.WriteElementStringAsync("acidarmordicestun",
-                                                            (BOD.TotalValue + intDamageResistanceDice
-                                                                            + TotalAcidArmorRating)
+                                                            (intBodTotalValue + intDamageResistanceDice
+                                                                              + TotalAcidArmorRating)
                                                             .ToString(objCulture), token: token);
                     // <fallingarmordicestun />
                     await objWriter.WriteElementStringAsync("fallingarmordicestun",
-                                                            (BOD.TotalValue + intDamageResistanceDice
-                                                                            + TotalFallingArmorRating)
+                                                            (intBodTotalValue + intDamageResistanceDice
+                                                                              + TotalFallingArmorRating)
                                                             .ToString(objCulture), token: token);
                     // <armordicephysical />
                     await objWriter.WriteElementStringAsync("armordicephysical",
-                                                            (BOD.TotalValue + intDamageResistanceDice
-                                                                            + TotalArmorRating).ToString(objCulture), token: token);
+                                                            (intBodTotalValue + intDamageResistanceDice
+                                                                              + TotalArmorRating).ToString(objCulture), token: token);
                     // <firearmordicephysical />
                     await objWriter.WriteElementStringAsync("firearmordicephysical",
-                                                            (BOD.TotalValue + intDamageResistanceDice
-                                                                            + TotalFireArmorRating)
+                                                            (intBodTotalValue + intDamageResistanceDice
+                                                                              + TotalFireArmorRating)
                                                             .ToString(objCulture), token: token);
                     // <coldarmordicephysical />
                     await objWriter.WriteElementStringAsync("coldarmordicephysical",
-                                                            (BOD.TotalValue + intDamageResistanceDice
-                                                                            + TotalColdArmorRating)
+                                                            (intBodTotalValue + intDamageResistanceDice
+                                                                              + TotalColdArmorRating)
                                                             .ToString(objCulture), token: token);
                     // <electricityarmordicephysical />
                     await objWriter.WriteElementStringAsync("electricityarmordicephysical",
-                                                            (BOD.TotalValue + intDamageResistanceDice
-                                                                            + TotalElectricityArmorRating)
+                                                            (intBodTotalValue + intDamageResistanceDice
+                                                                              + TotalElectricityArmorRating)
                                                             .ToString(objCulture), token: token);
                     // <acidarmordicephysical />
                     await objWriter.WriteElementStringAsync("acidarmordicephysical",
-                                                            (BOD.TotalValue + intDamageResistanceDice
-                                                                            + TotalAcidArmorRating)
+                                                            (intBodTotalValue + intDamageResistanceDice
+                                                                              + TotalAcidArmorRating)
                                                             .ToString(objCulture), token: token);
                     // <fallingarmordicephysical />
                     await objWriter.WriteElementStringAsync("fallingarmordicephysical",
-                                                            (BOD.TotalValue + intDamageResistanceDice
-                                                                            + TotalFallingArmorRating)
+                                                            (intBodTotalValue + intDamageResistanceDice
+                                                                              + TotalFallingArmorRating)
                                                             .ToString(objCulture), token: token);
 
                     bool blnIsAI = IsAI;
@@ -18565,6 +18568,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Foci.
+        /// </summary>
+        public async ValueTask<ThreadSafeList<Focus>> GetFociAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstFoci;
+        }
+
+        /// <summary>
         /// Stacked Foci.
         /// </summary>
         public ThreadSafeList<StackedFocus> StackedFoci
@@ -18574,6 +18586,15 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _lstStackedFoci;
             }
+        }
+
+        /// <summary>
+        /// Stacked Foci.
+        /// </summary>
+        public async ValueTask<ThreadSafeList<StackedFocus>> GetStackedFociAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstStackedFoci;
         }
 
         /// <summary>
@@ -27185,7 +27206,7 @@ namespace Chummer
                         intFreeGenericSpells += intSkillValue;
                     //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this
                     intFreeGenericSpells += await skill.Specializations.CountAsync(spec =>
-                        lstSpells.AnyAsync(spell => spell.Category == spec.Name && !spell.FreeBonus), token);
+                        lstSpells.AnyAsync(spell => spell.Category == spec.Name && !spell.FreeBonus, token: token), token);
                 }
 
                 int intTotalFreeNonTouchSpellsCount = await lstSpells.CountAsync(spell =>
@@ -30634,7 +30655,9 @@ namespace Chummer
                             // Curb Mystic Adept power points if the values that were loaded in would be illegal
                             if (MysticAdeptPowerPoints > 0)
                             {
-                                int intMAGTotalValue = MAG.TotalValue;
+                                int intMAGTotalValue = blnSync
+                                    ? MAG.TotalValue
+                                    : await (await GetAttributeAsync("MAG")).GetTotalValueAsync();
                                 if (MysticAdeptPowerPoints > intMAGTotalValue)
                                     MysticAdeptPowerPoints = intMAGTotalValue;
                             }

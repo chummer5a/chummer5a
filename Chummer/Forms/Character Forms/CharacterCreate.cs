@@ -4295,10 +4295,12 @@ namespace Chummer
                 if (CharacterObject.MAGEnabled)
                 {
                     // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
-                    if (CharacterObject.InitiateGrade + 1 > CharacterObject.MAG.TotalValue ||
+                    if (CharacterObject.InitiateGrade + 1 > (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken))
+                            .GetTotalValueAsync(GenericToken)) ||
                         CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
                                                                            && CharacterObject.InitiateGrade + 1
-                                                                           > CharacterObject.MAGAdept.TotalValue)
+                                                                           > (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: GenericToken))
+                                                                               .GetTotalValueAsync(GenericToken)))
                     {
                         Program.ShowMessageBox(
                             this, await LanguageManager.GetStringAsync("Message_CannotIncreaseInitiateGrade"),
@@ -4327,7 +4329,8 @@ namespace Chummer
                     });
 
                     // Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
-                    if (CharacterObject.SubmersionGrade + 1 > CharacterObject.RES.TotalValue)
+                    if (CharacterObject.SubmersionGrade + 1 > (await (await CharacterObject.GetAttributeAsync("RES", token: GenericToken))
+                            .GetTotalValueAsync(GenericToken)))
                     {
                         Program.ShowMessageBox(
                             this, await LanguageManager.GetStringAsync("Message_CannotIncreaseSubmersionGrade"),
@@ -9375,16 +9378,20 @@ namespace Chummer
 
             if (!CharacterObject.IgnoreRules)
             {
-                if (intFociTotal > CharacterObject.MAG.TotalValue * 5 ||
-                    CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && CharacterObject.InitiateGrade + 1 > CharacterObject.MAGAdept.TotalValue)
+                if (intFociTotal > (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken))
+                        .GetTotalValueAsync(GenericToken)) * 5 ||
+                    CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && CharacterObject.InitiateGrade + 1 > (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: GenericToken))
+                        .GetTotalValueAsync(GenericToken)))
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_FocusMaximumForce"), await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     e.Cancel = true;
                     return;
                 }
 
-                if (intFociCount > CharacterObject.MAG.TotalValue ||
-                    CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && intFociCount > CharacterObject.MAGAdept.TotalValue)
+                if (intFociCount > (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken))
+                        .GetTotalValueAsync(GenericToken)) ||
+                    CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && intFociCount > (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: GenericToken))
+                        .GetTotalValueAsync(GenericToken)))
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_FocusMaximumNumber"), await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     e.Cancel = true;

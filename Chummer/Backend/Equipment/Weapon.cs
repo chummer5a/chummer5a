@@ -4342,12 +4342,16 @@ namespace Chummer.Backend.Equipment
                         }
 
                         if (intUseSTR == 0)
-                            intUseSTR = _objCharacter.STR.TotalValue;
+                            intUseSTR = blnSync
+                                ? _objCharacter.STR.TotalValue
+                                : await (await _objCharacter.GetAttributeAsync("STR")).GetTotalValueAsync();
                     }
                 }
                 else if (ParentVehicle == null)
                 {
-                    intUseSTR = _objCharacter.STR.TotalValue;
+                    intUseSTR = blnSync
+                        ? _objCharacter.STR.TotalValue
+                        : await (await _objCharacter.GetAttributeAsync("STR")).GetTotalValueAsync();
                 }
 
                 if (Category == "Throwing Weapons" || Skill?.DictionaryKey == "Throwing Weapons")

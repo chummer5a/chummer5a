@@ -5020,9 +5020,11 @@ namespace Chummer
 
                         int intFociTotal = 0;
 
-                        int intMaxFocusTotal = CharacterObject.MAG.TotalValue * 5;
+                        int intMaxFocusTotal = (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken))
+                            .GetTotalValueAsync(GenericToken)) * 5;
                         if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                            intMaxFocusTotal = Math.Min(intMaxFocusTotal, CharacterObject.MAGAdept.TotalValue * 5);
+                            intMaxFocusTotal = Math.Min(intMaxFocusTotal, (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: GenericToken))
+                                                            .GetTotalValueAsync(GenericToken)) * 5);
 
                         foreach (Gear objGear in CharacterObject.Gear)
                         {
@@ -5115,9 +5117,11 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Add:
                         {
                             bool blnWarned = false;
-                            int intMaxFocusTotal = CharacterObject.MAG.TotalValue * 5;
+                            int intMaxFocusTotal = (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken))
+                                .GetTotalValueAsync(GenericToken)) * 5;
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                                intMaxFocusTotal = Math.Min(intMaxFocusTotal, CharacterObject.MAGAdept.TotalValue * 5);
+                                intMaxFocusTotal = Math.Min(intMaxFocusTotal, (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: GenericToken))
+                                                                .GetTotalValueAsync(GenericToken)) * 5);
 
                             HashSet<Gear> setNewGears = new HashSet<Gear>();
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
@@ -5315,9 +5319,11 @@ namespace Chummer
                             }
 
                             bool blnWarned = false;
-                            int intMaxFocusTotal = CharacterObject.MAG.TotalValue * 5;
+                            int intMaxFocusTotal = (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken))
+                                .GetTotalValueAsync(GenericToken)) * 5;
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
-                                intMaxFocusTotal = Math.Min(intMaxFocusTotal, CharacterObject.MAGAdept.TotalValue * 5);
+                                intMaxFocusTotal = Math.Min(intMaxFocusTotal, (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: GenericToken))
+                                                                .GetTotalValueAsync(GenericToken)) * 5);
 
                             HashSet<Gear> setNewGears = new HashSet<Gear>();
                             foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)

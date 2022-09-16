@@ -4185,7 +4185,9 @@ namespace Chummer
                                                                + await LanguageManager.GetStringAsync(
                                                                    "String_Possessed") + ')';
 
-                            int intHalfMAGRoundedUp = CharacterObject.MAG.TotalValue.DivAwayFromZero(2);
+                            int intHalfMAGRoundedUp
+                                = (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken))
+                                    .GetTotalValueAsync(GenericToken)).DivAwayFromZero(2);
                             await ImprovementManager.CreateImprovementAsync(
                                 objMerge, "BOD", Improvement.ImprovementSource.Metatype, "Possession",
                                 Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
@@ -5214,10 +5216,18 @@ namespace Chummer
             if (CharacterObject.MAGEnabled)
             {
                 // Make sure that the Initiate Grade is not attempting to go above the character's MAG CharacterAttribute.
-                if (CharacterObject.InitiateGrade + 1 > CharacterObject.MAG.TotalValue ||
-                    CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && CharacterObject.InitiateGrade + 1 > CharacterObject.MAGAdept.TotalValue)
+                if (CharacterObject.InitiateGrade + 1
+                    > (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)).GetTotalValueAsync(
+                        GenericToken)) ||
+                    await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(GenericToken)
+                    && await CharacterObject.GetIsMysticAdeptAsync(GenericToken) && CharacterObject.InitiateGrade + 1
+                    > (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: GenericToken))
+                        .GetTotalValueAsync(GenericToken)))
                 {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotIncreaseInitiateGrade"), await LanguageManager.GetStringAsync("MessageTitle_CannotIncreaseInitiateGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(
+                        this, await LanguageManager.GetStringAsync("Message_CannotIncreaseInitiateGrade"),
+                        await LanguageManager.GetStringAsync("MessageTitle_CannotIncreaseInitiateGrade"),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
@@ -5240,7 +5250,7 @@ namespace Chummer
 
                 if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken))
                 {
-                    if (10000 > CharacterObject.Nuyen)
+                    if (10000 > await CharacterObject.GetNuyenAsync(GenericToken))
                     {
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
@@ -5306,7 +5316,7 @@ namespace Chummer
             else if (CharacterObject.RESEnabled)
             {
                 // Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
-                if (CharacterObject.SubmersionGrade + 1 > CharacterObject.RES.TotalValue)
+                if (CharacterObject.SubmersionGrade + 1 > (await (await CharacterObject.GetAttributeAsync("RES", token: GenericToken)).GetTotalValueAsync(GenericToken)))
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotIncreaseSubmersionGrade"), await LanguageManager.GetStringAsync("MessageTitle_CannotIncreaseSubmersionGrade"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -13140,16 +13150,20 @@ namespace Chummer
 
             if (!CharacterObject.IgnoreRules)
             {
-                if (intFociTotal > CharacterObject.MAG.TotalValue * 5 ||
-                    CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && intFociTotal > CharacterObject.MAGAdept.TotalValue * 5)
+                if (intFociTotal > (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken))
+                        .GetTotalValueAsync(GenericToken)) * 5 ||
+                    await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(GenericToken) && await CharacterObject.GetIsMysticAdeptAsync(GenericToken) && intFociTotal > (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: GenericToken))
+                        .GetTotalValueAsync(GenericToken)) * 5)
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_FocusMaximumForce"), await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     e.Cancel = true;
                     return;
                 }
 
-                if (intFociCount > CharacterObject.MAG.TotalValue ||
-                    CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && intFociCount > CharacterObject.MAGAdept.TotalValue)
+                if (intFociCount > (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken))
+                        .GetTotalValueAsync(GenericToken)) ||
+                    await CharacterObjectSettings.GetMysAdeptSecondMAGAttributeAsync(GenericToken) && await CharacterObject.GetIsMysticAdeptAsync(GenericToken) && intFociCount > (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: GenericToken))
+                        .GetTotalValueAsync(GenericToken)))
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_FocusMaximumNumber"), await LanguageManager.GetStringAsync("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     e.Cancel = true;
@@ -14348,7 +14362,7 @@ namespace Chummer
 
         private async void cmdEdgeSpent_Click(object sender, EventArgs e)
         {
-            if (CharacterObject.EdgeUsed >= CharacterObject.EDG.TotalValue)
+            if (CharacterObject.EdgeUsed >= (await (await CharacterObject.GetAttributeAsync("EDG", token: GenericToken)).GetTotalValueAsync(GenericToken)))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotSpendEdge"),
                     await LanguageManager.GetStringAsync("MessageTitle_CannotSpendEdge"), MessageBoxButtons.OK,
@@ -19747,7 +19761,7 @@ namespace Chummer
                 return;
             }
 
-            if (CharacterObject.MysticAdeptPowerPoints + 1 > CharacterObject.MAG.TotalValue)
+            if (CharacterObject.MysticAdeptPowerPoints + 1 > (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)).GetTotalValueAsync(GenericToken)))
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughMagic"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughMagic"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
