@@ -10953,68 +10953,71 @@ namespace Chummer
         /// <summary>
         /// Calculate the number of Free Spirit Power Points used.
         /// </summary>
-        public string CalculateFreeSpiritPowerPoints(CancellationToken token = default)
+        public async ValueTask<string> CalculateFreeSpiritPowerPointsAsync(CancellationToken token = default)
         {
-            string strSpace = LanguageManager.GetString("String_Space", token: token);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
 
-            using (EnterReadLock.Enter(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (Metatype == "Free Spirit" && !IsCritter)
+                if (await GetMetatypeAsync(token).ConfigureAwait(false) == "Free Spirit" && !await GetIsCritterAsync(token).ConfigureAwait(false))
                 {
                     // PC Free Spirit.
-                    decimal decPowerPoints = 0;
+                    decimal decPowerPoints = await (await GetCritterPowersAsync(token).ConfigureAwait(false))
+                                                   .SumAsync(x => x.CountTowardsLimit, x => x.PowerPoints, token: token)
+                                                   .ConfigureAwait(false);
 
-                    foreach (CritterPower objPower in CritterPowers)
-                    {
-                        if (objPower.CountTowardsLimit)
-                            decPowerPoints += objPower.PowerPoints;
-                    }
-
-                    int intPowerPoints = EDG.TotalValue + ImprovementManager
-                                                          .ValueOf(
-                                                              this, Improvement.ImprovementType.FreeSpiritPowerPoints, token: token)
-                                                          .StandardRound();
+                    int intPowerPoints = await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false))
+                                               .GetTotalValueAsync(token).ConfigureAwait(false)
+                                         + (await ImprovementManager
+                                                  .ValueOfAsync(this, Improvement.ImprovementType.FreeSpiritPowerPoints,
+                                                                token: token).ConfigureAwait(false)).StandardRound();
 
                     // If the house rule to base Power Points on the character's MAG value instead, use the character's MAG.
-                    if (Settings.FreeSpiritPowerPointsMAG)
-                        intPowerPoints = MAG.TotalValue + ImprovementManager.ValueOf(this,
-                            Improvement.ImprovementType.FreeSpiritPowerPoints, token: token).StandardRound();
+                    if (await (await GetSettingsAsync(token).ConfigureAwait(false)).GetFreeSpiritPowerPointsMAGAsync(token).ConfigureAwait(false))
+                        intPowerPoints = await (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
+                                               .GetTotalValueAsync(token).ConfigureAwait(false)
+                                         + (await ImprovementManager
+                                                  .ValueOfAsync(this, Improvement.ImprovementType.FreeSpiritPowerPoints,
+                                                                token: token).ConfigureAwait(false)).StandardRound();
 
                     return intPowerPoints.ToString(GlobalSettings.CultureInfo) + strSpace + '('
                            + (intPowerPoints - decPowerPoints).ToString(GlobalSettings.CultureInfo) + strSpace
-                           + LanguageManager.GetString("String_Remaining", token: token) + ')';
+                           + await LanguageManager.GetStringAsync("String_Remaining", token: token).ConfigureAwait(false) + ')';
                 }
                 else
                 {
                     int intPowerPoints;
 
-                    switch (Metatype)
+                    switch (await GetMetatypeAsync(token).ConfigureAwait(false))
                     {
                         case "Free Spirit":
                             // Critter Free Spirits have a number of Power Points equal to their EDG plus any Free Spirit Power Points Improvements.
-                            intPowerPoints = EDG.TotalValue + ImprovementManager
-                                                              .ValueOf(
-                                                                  this,
-                                                                  Improvement.ImprovementType.FreeSpiritPowerPoints, token: token)
-                                                              .StandardRound();
+                            intPowerPoints = await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false))
+                                                   .GetTotalValueAsync(token).ConfigureAwait(false)
+                                             + (await ImprovementManager
+                                                      .ValueOfAsync(
+                                                          this, Improvement.ImprovementType.FreeSpiritPowerPoints,
+                                                          token: token).ConfigureAwait(false)).StandardRound();
                             break;
                         case "Ally Spirit":
                             // Ally Spirits get a number of Power Points equal to their MAG.
-                            intPowerPoints = MAG.TotalValue;
+                            intPowerPoints = await (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
+                                                   .GetTotalValueAsync(token).ConfigureAwait(false);
                             break;
                         default:
                             // Spirits get 1 Power Point for every 3 full points of Force (MAG) they possess.
-                            intPowerPoints = MAG.TotalValue / 3;
+                            intPowerPoints = await (await GetAttributeAsync("MAG", token: token).ConfigureAwait(false))
+                                                   .GetTotalValueAsync(token).ConfigureAwait(false) / 3;
                             break;
                     }
 
-                    int intUsed = CritterPowers.Count(x => x.Category != "Weakness"
-                                                           && x
-                                                               .CountTowardsLimit); // _objCharacter.CritterPowers.Count - intExisting;
+                    decimal decUsed = await (await GetCritterPowersAsync(token).ConfigureAwait(false))
+                                            .SumAsync(x => x.Category != "Weakness" && x.CountTowardsLimit,
+                                                      x => x.PowerPoints, token: token).ConfigureAwait(false);
 
                     return intPowerPoints.ToString(GlobalSettings.CultureInfo) + strSpace + '('
-                           + (intPowerPoints - intUsed).ToString(GlobalSettings.CultureInfo) + strSpace
-                           + LanguageManager.GetString("String_Remaining", token: token) + ')';
+                           + (intPowerPoints - decUsed).ToString(GlobalSettings.CultureInfo) + strSpace
+                           + await LanguageManager.GetStringAsync("String_Remaining", token: token) + ')';
                 }
             }
         }
@@ -11022,28 +11025,26 @@ namespace Chummer
         /// <summary>
         /// Calculate the number of Free Sprite Power Points used.
         /// </summary>
-        public string CalculateFreeSpritePowerPoints(CancellationToken token = default)
+        public async ValueTask<string> CalculateFreeSpritePowerPointsAsync(CancellationToken token = default)
         {
             // Free Sprite Power Points.
-            int intUsedPowerPoints = 0;
-
-            using (EnterReadLock.Enter(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                foreach (CritterPower objPower in CritterPowers)
-                {
-                    if (objPower.CountTowardsLimit)
-                        ++intUsedPowerPoints;
-                }
+                decimal decUsedPowerPoints = await (await GetCritterPowersAsync(token).ConfigureAwait(false))
+                                                   .SumAsync(x => x.CountTowardsLimit, x => x.PowerPoints, token)
+                                                   .ConfigureAwait(false);
 
-                int intPowerPoints = EDG.TotalValue + ImprovementManager
-                                                      .ValueOf(this, Improvement.ImprovementType.FreeSpiritPowerPoints, token: token)
-                                                      .StandardRound();
+                int intPowerPoints = await (await GetAttributeAsync("EDG", token: token).ConfigureAwait(false))
+                                           .GetTotalValueAsync(token).ConfigureAwait(false)
+                                     + (await ImprovementManager
+                                              .ValueOfAsync(this, Improvement.ImprovementType.FreeSpiritPowerPoints,
+                                                            token: token).ConfigureAwait(false)).StandardRound();
 
-                string strSpace = LanguageManager.GetString("String_Space", token: token);
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
 
                 return intPowerPoints.ToString(GlobalSettings.CultureInfo) + strSpace + '('
-                       + (intPowerPoints - intUsedPowerPoints).ToString(GlobalSettings.CultureInfo)
-                       + strSpace + LanguageManager.GetString("String_Remaining", token: token) + ')';
+                       + (intPowerPoints - decUsedPowerPoints).ToString(GlobalSettings.CultureInfo)
+                       + strSpace + await LanguageManager.GetStringAsync("String_Remaining", token: token).ConfigureAwait(false) + ')';
             }
         }
 
@@ -13855,6 +13856,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether or not character creation rules should be ignored.
+        /// </summary>
+        public async ValueTask<bool> GetIgnoreRulesAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _blnIgnoreRules;
+        }
+
+        /// <summary>
         /// Contact Points.
         /// </summary>
         public int ContactPoints
@@ -14236,6 +14246,36 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Karma.
+        /// </summary>
+        public async ValueTask<int> GetKarmaAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _intKarma;
+        }
+        /// <summary>
+        /// Karma.
+        /// </summary>
+        public async ValueTask SetKarmaAsync(int value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                if (_intKarma == value)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+                try
+                {
+                    _intKarma = value;
+                    OnPropertyChanged(nameof(Karma));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
+                }
+            }
+        }
+
         public string DisplayKarma
         {
             get
@@ -14494,6 +14534,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Whether or not the character is a Critter.
+        /// </summary>
+        public async ValueTask<bool> GetIsCritterAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnIsCritter;
         }
 
         /// <summary>
@@ -18452,6 +18501,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Spirits and Sprites.
+        /// </summary>
+        public async ValueTask<ThreadSafeObservableCollection<Spirit>> GetSpiritsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstSpirits;
+        }
+
+        /// <summary>
         /// Magician Spells.
         /// </summary>
         [HubTag(true)]
@@ -18465,6 +18523,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Magician Spells.
+        /// </summary>
+        public async ValueTask<ThreadSafeObservableCollection<Spell>> GetSpellsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstSpells;
+        }
+
+        /// <summary>
         /// Sustained Spells
         /// </summary>
         public ThreadSafeObservableCollection<SustainedObject> SustainedCollection
@@ -18474,6 +18541,15 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _lstSustainedObjects;
             }
+        }
+
+        /// <summary>
+        /// Sustained Spells.
+        /// </summary>
+        public async ValueTask<ThreadSafeObservableCollection<SustainedObject>> GetSustainedCollectionAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstSustainedObjects;
         }
 
         /// <summary>
@@ -18514,6 +18590,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Adept Powers.
+        /// </summary>
+        public async ValueTask<ThreadSafeBindingList<Power>> GetPowersAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstPowers;
+        }
+
+        /// <summary>
         /// Technomancer Complex Forms.
         /// </summary>
         [HubTag(true)]
@@ -18524,6 +18609,15 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _lstComplexForms;
             }
+        }
+
+        /// <summary>
+        /// Technomancer Complex Forms.
+        /// </summary>
+        public async ValueTask<ThreadSafeObservableCollection<ComplexForm>> GetComplexFormsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstComplexForms;
         }
 
         /// <summary>
@@ -18540,6 +18634,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// AI Programs and Advanced Programs
+        /// </summary>
+        public async ValueTask<ThreadSafeObservableCollection<AIProgram>> GetAIProgramsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstAIPrograms;
+        }
+
+        /// <summary>
         /// Martial Arts.
         /// </summary>
         public ThreadSafeObservableCollection<MartialArt> MartialArts
@@ -18552,6 +18655,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Martial Arts.
+        /// </summary>
+        public async ValueTask<ThreadSafeObservableCollection<MartialArt>> GetMartialArtsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstMartialArts;
+        }
+
+        /// <summary>
         /// Limit Modifiers.
         /// </summary>
         public ThreadSafeObservableCollection<LimitModifier> LimitModifiers
@@ -18561,6 +18673,15 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _lstLimitModifiers;
             }
+        }
+
+        /// <summary>
+        /// Limit Modifiers.
+        /// </summary>
+        public async ValueTask<ThreadSafeObservableCollection<LimitModifier>> GetLimitModifiersAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstLimitModifiers;
         }
 
         /// <summary>
@@ -18577,6 +18698,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Armor.
+        /// </summary>
+        public async ValueTask<ThreadSafeObservableCollection<Armor>> GetArmorAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstArmor;
+        }
+
+        /// <summary>
         /// Cyberware and Bioware.
         /// </summary>
         [HubTag(true)]
@@ -18587,6 +18717,15 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _lstCyberware;
             }
+        }
+
+        /// <summary>
+        /// Cyberware and Bioware.
+        /// </summary>
+        public async ValueTask<ThreadSafeObservableCollection<Cyberware>> GetCyberwareAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstCyberware;
         }
 
         /// <summary>
@@ -18603,6 +18742,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Weapons.
+        /// </summary>
+        public async ValueTask<ThreadSafeObservableCollection<Weapon>> GetWeaponsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstWeapons;
+        }
+
+        /// <summary>
         /// Lifestyles.
         /// </summary>
         public ThreadSafeObservableCollection<Lifestyle> Lifestyles
@@ -18612,6 +18760,15 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _lstLifestyles;
             }
+        }
+
+        /// <summary>
+        /// Lifestyles.
+        /// </summary>
+        public async ValueTask<ThreadSafeObservableCollection<Lifestyle>> GetLifestylesAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstLifestyles;
         }
 
         /// <summary>
@@ -18628,6 +18785,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Gear.
+        /// </summary>
+        public async ValueTask<ThreadSafeObservableCollection<Gear>> GetGearAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstGear;
+        }
+
+        /// <summary>
         /// Vehicles.
         /// </summary>
         [HubTag(true)]
@@ -18638,6 +18804,15 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _lstVehicles;
             }
+        }
+
+        /// <summary>
+        /// Vehicles.
+        /// </summary>
+        public async ValueTask<ThreadSafeObservableCollection<Vehicle>> GetVehiclesAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstVehicles;
         }
 
         /// <summary>
@@ -18691,6 +18866,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Critter Powers.
+        /// </summary>
+        public async ValueTask<ThreadSafeObservableCollection<CritterPower>> GetCritterPowersAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstCritterPowers;
+        }
+
+        /// <summary>
         /// Initiation and Submersion Grades.
         /// </summary>
         public ThreadSafeObservableCollection<InitiationGrade> InitiationGrades
@@ -18700,6 +18884,15 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _lstInitiationGrades;
             }
+        }
+
+        /// <summary>
+        /// Initiation and Submersion Grades.
+        /// </summary>
+        public async ValueTask<ThreadSafeObservableCollection<InitiationGrade>> GetInitiationGradesAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstInitiationGrades;
         }
 
         /// <summary>
@@ -20790,6 +20983,15 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Custom Drugs created by the character.
+        /// </summary>
+        public async ValueTask<ThreadSafeObservableCollection<Drug>> GetDrugsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _lstDrugs;
+        }
+
         #region Condition Monitors
 
         /// <summary>
@@ -21194,6 +21396,37 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Amount of Nuyen the character has.
+        /// </summary>
+        public async ValueTask<decimal> GetNuyenAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _decNuyen;
+        }
+
+        /// <summary>
+        /// Amount of Nuyen the character has.
+        /// </summary>
+        public async ValueTask SetNuyenAsync(decimal value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_decNuyen == value)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _decNuyen = value;
+                    OnPropertyChanged(nameof(Nuyen));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+        }
+
         public decimal StolenNuyen
         {
             get
@@ -21212,6 +21445,31 @@ namespace Chummer
                         _decStolenNuyen = value;
                         OnPropertyChanged();
                     }
+                }
+            }
+        }
+        
+        public async ValueTask<decimal> GetStolenNuyenAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _decStolenNuyen;
+        }
+
+        public async ValueTask SetStolenNuyenAsync(decimal value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_decNuyen == value)
+                    return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    _decStolenNuyen = value;
+                    OnPropertyChanged(nameof(StolenNuyen));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -21259,6 +21517,12 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<decimal> GetStartingNuyenAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _decStartingNuyen;
+        }
+
         private decimal _decCachedTotalStartingNuyen = decimal.MinValue;
 
         public decimal TotalStartingNuyen
@@ -21284,6 +21548,28 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<decimal> GetTotalStartingNuyenAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_decCachedTotalStartingNuyen == decimal.MinValue)
+                {
+                    decimal decFromKarma
+                        = await CalculateStartingNuyenFromKarmaAsync(
+                            Math.Min(await GetNuyenBPAsync(token), await GetTotalNuyenMaximumBPAsync(token)),
+                            await GetStartingNuyenAsync(token), token);
+                    _decCachedTotalStartingNuyen = decFromKarma +
+                                                   await ImprovementManager.ValueOfAsync(
+                                                       this, Improvement.ImprovementType.Nuyen, token: token).ConfigureAwait(false) -
+                                                   await ImprovementManager.ValueOfAsync(
+                                                       this, Improvement.ImprovementType.Nuyen
+                                                       , strImprovedName: "Stolen", token: token).ConfigureAwait(false);
+                }
+
+                return _decCachedTotalStartingNuyen;
+            }
+        }
+
         private decimal CalculateStartingNuyenFromKarma(decimal decKarma, decimal decStartingNuyen)
         {
             using (EnterReadLock.Enter(LockObject))
@@ -21306,6 +21592,38 @@ namespace Chummer
                             CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out bool blnIsSuccess);
                         if (blnIsSuccess)
                             decFromKarma = Convert.ToDecimal((double) objProcess);
+                    }
+                }
+                else
+                    decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                     out decFromKarma);
+
+                return decFromKarma;
+            }
+        }
+
+        private async ValueTask<decimal> CalculateStartingNuyenFromKarmaAsync(decimal decKarma, decimal decStartingNuyen, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                decimal decFromKarma = 0.0m;
+                string strExpression = (await (await GetSettingsAsync(token)).GetChargenKarmaToNuyenExpressionAsync(token))
+                                       .Replace("{Karma}",
+                                                decKarma.ToString(GlobalSettings.InvariantCultureInfo))
+                                       .Replace("{PriorityNuyen}",
+                                                decStartingNuyen.ToString(GlobalSettings.InvariantCultureInfo));
+                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                    {
+                        sbdValue.Append(strExpression);
+                        await (await GetAttributeSectionAsync(token)).ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token);
+
+                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                        (bool blnIsSuccess, object objProcess)
+                            = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token);
+                        if (blnIsSuccess)
+                            decFromKarma = Convert.ToDecimal((double)objProcess);
                     }
                 }
                 else
@@ -21352,6 +21670,15 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Number of Build Points put into Nuyen.
+        /// </summary>
+        public async ValueTask<decimal> GetNuyenBPAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _decNuyenBP;
+        }
+
         public decimal TotalNuyenMaximumBP
         {
             get
@@ -21370,6 +21697,33 @@ namespace Chummer
                                              + ImprovementManager.ValueOf(
                                                  this, Improvement.ImprovementType.NuyenMaxBP)), 0);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Number of Build Points put into Nuyen.
+        /// </summary>
+        public async ValueTask<decimal> GetTotalNuyenMaximumBPAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                const decimal decMaxValue = int.MaxValue;
+                // If UnrestrictedNuyen is enabled, return the maximum possible value
+                if (await GetIgnoreRulesAsync(token).ConfigureAwait(false))
+                {
+                    return decMaxValue;
+                }
+
+                CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
+                if (await objSettings.GetUnrestrictedNuyenAsync(token).ConfigureAwait(false))
+                {
+                    return decMaxValue;
+                }
+
+                return Math.Max(Math.Min(decMaxValue,
+                                         await objSettings.GetNuyenMaximumBPAsync(token).ConfigureAwait(false)
+                                         + await ImprovementManager.ValueOfAsync(
+                                             this, Improvement.ImprovementType.NuyenMaxBP, token: token).ConfigureAwait(false)), 0);
             }
         }
 
@@ -21734,6 +22088,15 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Character's Metatype.
+        /// </summary>
+        public async ValueTask<string> GetMetatypeAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _strMetatype;
+        }
+
         public Guid MetatypeGuid
         {
             get
@@ -21943,6 +22306,9 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Metatype Category.
+        /// </summary>
         public async ValueTask<string> GetMetatypeCategoryAsync(CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token))
@@ -22635,6 +23001,15 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return MetatypeCategory == "Free Sprite";
             }
+        }
+
+        /// <summary>
+        /// Whether or not the character is a Free Sprite.
+        /// </summary>
+        public async ValueTask<bool> GetIsFreeSpriteAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return MetatypeCategory == "Free Sprite";
         }
 
         #endregion
@@ -30689,6 +31064,22 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<int> GetMetagenicPositiveQualityKarmaAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_intCachedMetagenicPositiveQualities == int.MinValue)
+                {
+                    ThreadSafeObservableCollection<Quality> lstQualities = await GetQualitiesAsync(token).ConfigureAwait(false);
+                    _intCachedMetagenicPositiveQualities = await lstQualities.SumAsync(objQuality =>
+                            objQuality.Type == QualityType.Positive && objQuality.ContributeToMetagenicLimit,
+                        objQuality => objQuality.BP, token: token).ConfigureAwait(false);
+                }
+
+                return _intCachedMetagenicPositiveQualities;
+            }
+        }
+
         private int _intCachedMetagenicNegativeQualities = int.MinValue;
         public int MetagenicNegativeQualityKarma
         {
@@ -30713,6 +31104,28 @@ namespace Chummer
 
                     return _intCachedMetagenicNegativeQualities;
                 }
+            }
+        }
+
+        public async ValueTask<int> GetMetagenicNegativeQualityKarmaAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_intCachedMetagenicNegativeQualities == int.MinValue)
+                {
+                    ThreadSafeObservableCollection<Quality> lstQualities = await GetQualitiesAsync(token).ConfigureAwait(false);
+                    int intNewValue = await lstQualities.SumAsync(objQuality =>
+                            objQuality.Type == QualityType.Negative && objQuality.ContributeToMetagenicLimit,
+                        objQuality => objQuality.BP, token: token).ConfigureAwait(false);
+                    // Deduct the amount for free Qualities.
+                    intNewValue -=
+                        (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.FreeNegativeQualities, token: token).ConfigureAwait(false))
+                                          .StandardRound();
+
+                    _intCachedMetagenicNegativeQualities = intNewValue;
+                }
+
+                return _intCachedMetagenicNegativeQualities;
             }
         }
 

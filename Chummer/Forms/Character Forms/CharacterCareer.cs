@@ -4261,9 +4261,9 @@ namespace Chummer
                             }
 
                             // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
-                            if (!objMerge.CritterPowers.Any(objCritterPower =>
+                            if (!await objMerge.CritterPowers.AnyAsync(objCritterPower =>
                                                                 objCritterPower.Name == "Immunity"
-                                                                && objCritterPower.Extra == "Normal Weapons"))
+                                                                && objCritterPower.Extra == "Normal Weapons", GenericToken))
                             {
                                 XmlNode objPower
                                     = xmlPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
@@ -6261,9 +6261,10 @@ namespace Chummer
                         int intDummy = 0;
                         if (objXmlQuality != null && objXmlQuality["nolevels"] == null && objXmlQuality.TryGetInt32FieldQuickly("limit", ref intDummy))
                         {
-                            intRatingToAdd -= CharacterObject.Qualities.Count(x =>
-                                                                                  x.SourceIDString.Equals(frmPickQuality.MyForm.SelectedQuality,
-                                                                                      StringComparison.InvariantCultureIgnoreCase) && string.IsNullOrEmpty(x.SourceName));
+                            intRatingToAdd -= await CharacterObject.Qualities.CountAsync(x =>
+                                x.SourceIDString.Equals(frmPickQuality.MyForm.SelectedQuality,
+                                                        StringComparison.InvariantCultureIgnoreCase)
+                                && string.IsNullOrEmpty(x.SourceName), GenericToken);
                         }
                     }
 
@@ -6282,8 +6283,10 @@ namespace Chummer
                             blnFreeCost = true;
                         // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
                         else if (objXmlQuality["name"]?.InnerText == "Mentor Spirit" &&
-                                 CharacterObject.Qualities.Any(x =>
-                                                                   x.Name == "The Beast's Way" || x.Name == "The Spiritual Way"))
+                                 await CharacterObject.Qualities.AnyAsync(x =>
+                                                                              x.Name == "The Beast's Way"
+                                                                              || x.Name == "The Spiritual Way",
+                                                                          GenericToken))
                             blnFreeCost = true;
 
                         int intQualityBP = 0;
@@ -6471,9 +6474,9 @@ namespace Chummer
                     int intDummy = 0;
                     if (objXmlQuality != null && objXmlQuality["nolevels"] == null && objXmlQuality.TryGetInt32FieldQuickly("limit", ref intDummy))
                     {
-                        intRatingToAdd -= CharacterObject.Qualities.Count(x =>
+                        intRatingToAdd -= await CharacterObject.Qualities.CountAsync(x =>
                             x.SourceIDString.Equals(frmPickQuality.MyForm.SelectedQuality,
-                                StringComparison.InvariantCultureIgnoreCase) && string.IsNullOrEmpty(x.SourceName));
+                                StringComparison.InvariantCultureIgnoreCase) && string.IsNullOrEmpty(x.SourceName), GenericToken);
                     }
                 }
 
@@ -7468,16 +7471,19 @@ namespace Chummer
 
         #region ContextMenu Events
 
-        private void InitiationContextMenu_Opening(object sender, CancelEventArgs e)
+        private async void InitiationContextMenu_Opening(object sender, CancelEventArgs e)
         {
             // Enable and disable menu items
-            if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
+            if (!(await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is InitiationGrade objGrade))
                 return;
             int intGrade = objGrade.Grade;
-            bool blnHasArt = CharacterObject.Arts.Any(art => art.Grade == intGrade);
-            bool blnHasBonus = CharacterObject.Metamagics.Any(bonus => bonus.Grade == intGrade) || CharacterObject.Spells.Any(spell => spell.Grade == intGrade);
-            tsMetamagicAddArt.Enabled = !blnHasArt;
-            tsMetamagicAddMetamagic.Enabled = !blnHasBonus;
+            bool blnHasArt = await CharacterObject.Arts.AnyAsync(art => art.Grade == intGrade);
+            bool blnHasBonus = await CharacterObject.Metamagics.AnyAsync(bonus => bonus.Grade == intGrade) || await CharacterObject.Spells.AnyAsync(spell => spell.Grade == intGrade);
+            await this.DoThreadSafeAsync(() =>
+            {
+                tsMetamagicAddArt.Enabled = !blnHasArt;
+                tsMetamagicAddMetamagic.Enabled = !blnHasBonus;
+            });
         }
 
         private async void tsCyberwareAddAsPlugin_Click(object sender, EventArgs e)
@@ -12150,8 +12156,8 @@ namespace Chummer
             foreach (Vehicle objCharacterVehicle in CharacterObject.Vehicles)
             {
                 if (objCharacterVehicle.WeaponMounts.Count > 0
-                    || objCharacterVehicle.Mods.Any(objVehicleMod => objVehicleMod.Name.Contains("Drone Arm")
-                                                                     || objVehicleMod.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal)))
+                    || await objCharacterVehicle.Mods.AnyAsync(objVehicleMod => objVehicleMod.Name.Contains("Drone Arm")
+                                                                     || objVehicleMod.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal), GenericToken))
                 {
                     lstVehicles.Add(objCharacterVehicle);
                 }
@@ -15067,24 +15073,26 @@ namespace Chummer
                     try
                     {
                         // TODO: DataBind these wherever possible
-
-                        if (CharacterObject.Metatype == "Free Spirit" && !CharacterObject.IsCritter ||
-                            CharacterObject.MetatypeCategory.EndsWith("Spirits", StringComparison.Ordinal))
+                        if (await CharacterObject.GetMetatypeAsync(token).ConfigureAwait(false) == "Free Spirit"
+                            && !await CharacterObject.GetIsCritterAsync(token).ConfigureAwait(false)
+                            || (await CharacterObject.GetMetatypeCategoryAsync(token).ConfigureAwait(false)).EndsWith("Spirits", StringComparison.Ordinal))
                         {
                             await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                            string strFreeSpiritPowerPoints = await CharacterObject.CalculateFreeSpiritPowerPointsAsync(token).ConfigureAwait(false);
                             await lblCritterPowerPoints.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Text = CharacterObject.CalculateFreeSpiritPowerPoints(token);
+                                x.Text = strFreeSpiritPowerPoints;
                             }, token).ConfigureAwait(false);
                         }
-                        else if (CharacterObject.IsFreeSprite)
+                        else if (await CharacterObject.GetIsFreeSpriteAsync(token).ConfigureAwait(false))
                         {
                             await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                            string strFreeSpritePowerPoints = await CharacterObject.CalculateFreeSpritePowerPointsAsync(token).ConfigureAwait(false);
                             await lblCritterPowerPoints.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.Text = CharacterObject.CalculateFreeSpritePowerPoints(token);
+                                x.Text = strFreeSpritePowerPoints;
                             }, token).ConfigureAwait(false);
                         }
                         else
@@ -19771,8 +19779,8 @@ namespace Chummer
                 return;
 
             // Evaluate each object
-            bool blnPayWithKarma = CharacterObject.Metamagics.Any(objMetamagic => objMetamagic.Grade == objGrade.Grade) ||
-                                   CharacterObject.Spells.Any(objSpell => objSpell.Grade == objGrade.Grade);
+            bool blnPayWithKarma = await CharacterObject.Metamagics.AnyAsync(objMetamagic => objMetamagic.Grade == objGrade.Grade, GenericToken) ||
+                                   await CharacterObject.Spells.AnyAsync(objSpell => objSpell.Grade == objGrade.Grade, GenericToken);
 
             // Additional Metamagics beyond the standard 1 per Grade cost additional Karma, so ask if the user wants to spend the additional Karma.
             if (blnPayWithKarma && CharacterObject.Karma < CharacterObjectSettings.KarmaMetamagic)
@@ -19987,10 +19995,10 @@ namespace Chummer
 
             // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
             // Evaluate each object
-            bool blnPayWithKarma = CharacterObject.Metamagics.Any(objMetamagic => objMetamagic.Grade == intGrade)
-                || CharacterObject.Spells.Any(objSpell => objSpell.Grade == intGrade);
+            bool blnPayWithKarma = await CharacterObject.Metamagics.AnyAsync(objMetamagic => objMetamagic.Grade == intGrade, GenericToken)
+                || await CharacterObject.Spells.AnyAsync(objSpell => objSpell.Grade == intGrade, GenericToken);
 
-            int intSpellKarmaCost = CharacterObject.SpellKarmaCost("Rituals");
+            int intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Rituals", GenericToken);
             if (blnPayWithKarma)
             {
                 if (CharacterObject.Karma < intSpellKarmaCost)
@@ -20789,13 +20797,13 @@ namespace Chummer
             // Check the item's Cost and make sure the character can afford it.
             if (decCost > CharacterObject.Nuyen)
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
-                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: GenericToken),
+                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: GenericToken),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
-            if (!CharacterObject.Improvements.Any(imp =>
-                imp.ImproveSource == Improvement.ImprovementSource.Drug && imp.SourceName == selectedDrug.InternalId))
+            if (!await CharacterObject.Improvements.AnyAsync(imp =>
+                imp.ImproveSource == Improvement.ImprovementSource.Drug && imp.SourceName == selectedDrug.InternalId, GenericToken))
             {
                 selectedDrug.GenerateImprovement();
             }

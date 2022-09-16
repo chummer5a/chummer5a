@@ -2552,6 +2552,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Maximum number of Build Points that can be spent on Nuyen.
+        /// </summary>
+        public async ValueTask<decimal> GetNuyenMaximumBPAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _decNuyenMaximumBP;
+        }
+
+        /// <summary>
         /// Blocked grades of cyber/bioware in Create mode.
         /// </summary>
         public HashSet<string> BannedWareGrades
@@ -3363,9 +3372,12 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// The XPath expression to use to determine how many contact points the character has
+        /// </summary>
         public async ValueTask<string> GetContactPointsExpressionAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                 return _strContactPointsExpression;
         }
 
@@ -3393,6 +3405,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine how many knowledge points the character has
+        /// </summary>
+        public async ValueTask<string> GetKnowledgePointsExpressionAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _strKnowledgePointsExpression;
         }
 
         /// <summary>
@@ -3427,6 +3448,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine how much nuyen the character gets at character creation
+        /// </summary>
+        public async ValueTask<string> GetChargenKarmaToNuyenExpressionAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _strChargenKarmaToNuyenExpression;
         }
 
         /// <summary>
@@ -4943,6 +4973,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether or not characters are unrestricted in the number of points they can invest in Nuyen.
+        /// </summary>
+        public async ValueTask<bool> GetUnrestrictedNuyenAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _blnUnrestrictedNuyen;
+        }
+
+        /// <summary>
         /// Whether or not Stacked Foci can have a combined Force higher than 6.
         /// </summary>
         public bool AllowHigherStackedFoci
@@ -5215,6 +5254,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// House rule: Free Spirits calculate their Power Points based on their MAG instead of EDG.
+        /// </summary>
+        public async ValueTask<bool> GetFreeSpiritPowerPointsMAGAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+                return _blnFreeSpiritPowerPointsMAG;
         }
 
         /// <summary>
