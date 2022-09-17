@@ -13189,7 +13189,7 @@ namespace Chummer
             try
             {
                 // If the character was built with Karma, record their staring Karma amount (if any).
-                if (CharacterObject.Karma > 0)
+                if (CharacterObject.Karma != 0)
                 {
                     ExpenseLogEntry objKarma = new ExpenseLogEntry(CharacterObject);
                     objKarma.Create(CharacterObject.Karma,

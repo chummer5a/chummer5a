@@ -54,6 +54,7 @@ Application Changes:
 - Skills that are not part of a skill group are no longer printed or exported as being part of a skill group.
 - Fixed minor formatting issues when printing movement speeds in non-English languages.
 - Loading a character with an unavailable settings file is now overwhelmingly more likely to pick a default setting whose build method matches the one that the character was made with. Fixes #4889.
+- Characters that leave character creation with negative karma (possible if ignoring character creation rules) will now have an entry in their karma logs showing their negative starting karma.
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.
