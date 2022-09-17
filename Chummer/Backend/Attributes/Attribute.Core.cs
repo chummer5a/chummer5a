@@ -1617,6 +1617,18 @@ namespace Chummer.Backend.Attributes
 
         private int _intCachedUpgradeKarmaCost = int.MinValue;
 
+        // This houserule does not work with how MAG / RES loss due to ESS loss in Chargen is handled
+        // As long as the true Metatype Min is always 1, this will work. That should be the case for RAW, but can be problematic in CustomData
+        // TODO: The handling of MAG / RES loss in chargen should be changed to use maybe use ImprovementType.AttributeLevel
+        private static readonly IReadOnlyCollection<string> s_SetAlternateMetatypeAttributeKarmaExceptions
+            = new HashSet<string>
+            {
+                "MAG",
+                "RES",
+                "DEP",
+                "MAGAdept"
+            };
+
         /// <summary>
         /// Karma price to upgrade. Returns negative if impossible
         /// </summary>
@@ -1643,17 +1655,8 @@ namespace Chummer.Backend.Attributes
                 {
                     intUpgradeCost = (intValue + 1) * intOptionsCost;
                 }
-
-                // This houserule does not work with how MAG / RES loss due to ESS loss in Chargen is handled
-                // As long as the true Metatype Min is always 1, this will work. That should be the case for RAW, but can be problematic in CustomData
-                // TODO: The handling of MAG / RES loss in chargen should be changed to use maybe use ImprovementType.AttributeLevel
-                var excludedAttributes = new HashSet<string>()
-                {
-                    "MAG",
-                    "RES",
-                    "MAGAdept"
-                };
-                if (_objCharacter.Settings.AlternateMetatypeAttributeKarma && !excludedAttributes.Contains(Abbrev))
+                
+                if (_objCharacter.Settings.AlternateMetatypeAttributeKarma && !s_SetAlternateMetatypeAttributeKarmaExceptions.Contains(Abbrev))
                     intUpgradeCost -= (MetatypeMinimum - 1) * intOptionsCost;
 
                 decimal decExtra = 0;
