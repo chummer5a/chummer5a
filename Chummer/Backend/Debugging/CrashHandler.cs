@@ -210,11 +210,11 @@ namespace Chummer.Backend
 
 #if DEBUG
                 using (Process crashHandler
-                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"), "crash " + Path.Combine(Utils.GetStartupPath, "json.txt")
-                                                                + " --debug"))
+                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"), "crash \"" + Path.Combine(Utils.GetStartupPath, "json.txt")
+                                                                + "\" --debug"))
 #else
                 using (Process crashHandler
-                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"), "crash " + Path.Combine(Utils.GetStartupPath, "json.txt")))
+                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"), "crash \"" + Path.Combine(Utils.GetStartupPath, "json.txt") + "\""))
 #endif
                     crashHandler?.WaitForExit();
             }
