@@ -1643,7 +1643,17 @@ namespace Chummer.Backend.Attributes
                 {
                     intUpgradeCost = (intValue + 1) * intOptionsCost;
                 }
-                if (_objCharacter.Settings.AlternateMetatypeAttributeKarma)
+
+                // This houserule does not work with how MAG / RES loss due to ESS loss in Chargen is handled
+                // As long as the true Metatype Min is always 1, this will work. That should be the case for RAW, but can be problematic in CustomData
+                // TODO: The handling of MAG / RES loss in chargen should be changed to use maybe use ImprovementType.AttributeLevel
+                var excludedAttributes = new HashSet<string>()
+                {
+                    "MAG",
+                    "RES",
+                    "MAGAdept"
+                };
+                if (_objCharacter.Settings.AlternateMetatypeAttributeKarma && !excludedAttributes.Contains(Abbrev))
                     intUpgradeCost -= (MetatypeMinimum - 1) * intOptionsCost;
 
                 decimal decExtra = 0;
