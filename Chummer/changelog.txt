@@ -85,6 +85,9 @@ Data Changes:
 - Prototype Materials no longer increases the special modifications limit for a character, but instead unlocks a quality called "Special Modifications (Prototype Materials)" that has the same effect as a single level of Special Modifications. Fixes #4872.
 - Ares Cheetah now properly has an acceleration of 2.
 - Fixed incorrect Matrix CM for the Hardening module. Closes #4909
+- Smart Tires are now properly recognized as tires.
+- Added missing Off-Road Suspension mod to the Yamaha Growler.
+- Added missing, German-specific vehicle mods to the Harley-Davidson Nightmare, the Evo Falcon-EX, and the Thundercloud Mustang. Fixes #4919.
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups

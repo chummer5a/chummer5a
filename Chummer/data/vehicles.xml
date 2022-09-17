@@ -159,7 +159,7 @@
       </gears>
       <mods>
         <name>Gyro-Stabilization</name>
-        <name>Smart Tire</name>
+        <name rating="1">Smart Tires</name>
       </mods>
       <seats>1</seats>
     </vehicle>
@@ -366,7 +366,7 @@
         </gear>
       </gears>
       <mods>
-        <name>Smart Tire</name>
+        <name rating="2">Smart Tires</name>
         <name>Secondary Propulsion (Amphibious, Surface)</name>
       </mods>
       <seats>2</seats>
@@ -5323,6 +5323,9 @@
           <maxrating>6</maxrating>
         </gear>
       </gears>
+      <mods>
+        <name>Off-Road Suspension</name>
+      </mods>
       <seats>1</seats>
     </vehicle>
     <vehicle>
@@ -10784,7 +10787,7 @@
           <OR>
             <name>Ares Paladin</name>
             <name>CrashCart Medicart (Large)</name>
-            <name>EVO Falcon-EX</name>
+            <name>Evo Falcon-EX</name>
           </OR>
         </vehicledetails>
       </required>
@@ -10885,17 +10888,20 @@
     </mod>
     <mod>
       <id>349772a1-1ba6-4cc7-a607-20b02a31d5d1</id>
-      <name>Smart Tire</name>
+      <name>Smart Tires</name>
       <page>?</page>
       <source>R5</source>
       <avail>0</avail>
       <category>Model-Specific</category>
       <cost>0</cost>
-      <rating>0</rating>
+      <rating>qty</rating>
       <slots>0</slots>
       <required>
         <vehicledetails>
-          <name>Horizon-Doble Revolution</name>
+          <OR>
+            <name>Horizon-Doble Revolution</name>
+            <name>Thundercloud Mustang</name>
+          </OR>
         </vehicledetails>
       </required>
     </mod>
